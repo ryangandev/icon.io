@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 interface ColorSquareProps {
     color: string;
@@ -11,11 +11,17 @@ interface ColorPaletteProps {
 
 const ColorSquare: React.FC<ColorSquareProps> = (props: ColorSquareProps) => {
     return (
-        <div className="color-square" onClick={props.onClick} style={{ backgroundColor: props.color }} ></div>
-    )
-}   
+        <div
+            className="color-square"
+            onClick={props.onClick}
+            style={{ backgroundColor: props.color }}
+        ></div>
+    );
+};
 
-const ColorPalette: React.FC<ColorPaletteProps> = (props: ColorPaletteProps) => {
+const ColorPalette: React.FC<ColorPaletteProps> = (
+    props: ColorPaletteProps,
+) => {
     const colors = [
         '#000000',
         '#ff0000',
@@ -42,24 +48,31 @@ const ColorPalette: React.FC<ColorPaletteProps> = (props: ColorPaletteProps) => 
     ];
 
     const [selectedColor, setSelectedColor] = useState('#000000');
-    
+
     const handleColorChange = (color: string) => {
         setSelectedColor(color);
-        props.handleColorChange(color)
-    }
+        props.handleColorChange(color);
+    };
 
     return (
         <div className="color-toolbar">
-            <div className="select-color-square" style={{ backgroundColor: selectedColor }}></div>
+            <div
+                className="select-color-square"
+                style={{ backgroundColor: selectedColor }}
+            ></div>
             <div className="color-palette">
                 {colors.map((color, index) => {
                     return (
-                        <ColorSquare key={index} onClick={() => handleColorChange(color)} color={color} />
-                    )
+                        <ColorSquare
+                            key={index}
+                            onClick={() => handleColorChange(color)}
+                            color={color}
+                        />
+                    );
                 })}
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default ColorPalette;

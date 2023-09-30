@@ -2,8 +2,8 @@ import { Server } from 'socket.io';
 
 function updatePlayerList(io: Server, roomId: string, roomStore) {
     const updatedUserList = roomStore[roomId]['userList'];
-    updatedUserList.forEach(user => {
-        Object.keys(roomStore[roomId][user]).forEach(key => {
+    updatedUserList.forEach((user) => {
+        Object.keys(roomStore[roomId][user]).forEach((key) => {
             io.to(key).emit('updatePlayers', updatedUserList);
         });
     });
@@ -19,7 +19,4 @@ function getRoomsStatus(roomStore) {
     });
 }
 
-export {
-    updatePlayerList,
-    getRoomsStatus,
-}
+export { updatePlayerList, getRoomsStatus };

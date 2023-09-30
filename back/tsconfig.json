@@ -1,8 +1,9 @@
 {
-    "include": ["back/**/*"],
-
+    "include": ["**/*"],
+    "exclude": ["node_modules", "build"],
     "compilerOptions": {
-        "outDir": "out",
+        "outDir": "build",
+        "rootDir": "./",
 
         // enable top-level await and import/export syntax
         "target": "es2017",

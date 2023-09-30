@@ -1,20 +1,19 @@
-import { useParams, useNavigate } from 'react-router-dom';
-import { socket } from '../socket';
-import { useEffect, useState} from 'react';
-import CanvasDrawing from '../components/CanvasDrawing';
-import ChatWindow from '../components/ChatWindow';
-import PlayerInfoContainer from '../components/PlayerInfoContainer';
-import GameInfoBar from '../components/GameInfoBar';
-import { Modal } from 'antd';
-import '../styles/RoomPage.css'
-import '../styles/CommonStyles.css'
-import { Button } from 'antd';
+import { useParams, useNavigate } from "react-router-dom";
+import { socket } from "../socket";
+import { useEffect, useState } from "react";
+import CanvasDrawing from "../components/CanvasDrawing";
+import ChatWindow from "../components/ChatWindow";
+import PlayerInfoContainer from "../components/PlayerInfoContainer";
+import GameInfoBar from "../components/GameInfoBar";
+import { Modal } from "antd";
+import "../styles/RoomPage.css";
+import "../styles/CommonStyles.css";
+import { Button } from "antd";
 
 function RoomPage() {
-
     const { roomId } = useParams();
     const navigate = useNavigate();
-    const username = localStorage.getItem('username');
+    const username = localStorage.getItem("username");
 
     const [isDrawer, setIsDrawer] = useState<boolean>(true);
     const [isPending, setIsPending] = useState<boolean>(true);
@@ -25,24 +24,24 @@ function RoomPage() {
     // https://socket.io/how-to/use-with-react
     useEffect(() => {
         socket.connect();
-        socket.emit('active_room', { username, roomId });
-        
+        socket.emit("active_room", { username, roomId });
+
         return () => {
             socket.disconnect();
         };
-    }, [roomId, username]); 
+    }, [roomId, username]);
 
     const handleOnLeave = () => {
-        navigate('/Lobby');
-    }
+        navigate("/Lobby");
+    };
 
     const handleStartGame = () => {
         setGameStart(true);
 
-        socket.emit('startGame', true, roomId);
-    }
-    
-    socket.on('drawer', (is_drawer, word) => {
+        socket.emit("startGame", true, roomId);
+    };
+
+    socket.on("drawer", (is_drawer, word) => {
         console.log(is_drawer, word);
 
         setIsDrawer(is_drawer);
@@ -50,54 +49,71 @@ function RoomPage() {
         setIsPending(false);
     });
 
-    socket.on('stop', data => {
+    socket.on("stop", (data) => {
         setGameStart(data);
-    })
+    });
 
-    socket.on('roomError', (roomError) => {
+    socket.on("roomError", (roomError) => {
         setRoomError(roomError);
     });
 
-    return ( 
+    return (
         <>
-        { isPending && (
-            <div className='body-container' style={{ marginTop: '20px' }}>Fetching...</div>
-        )}
-        {
-            roomError && (
-                <Modal title="The room you are looking for does not exist."
+            {isPending && (
+                <div className="body-container" style={{ marginTop: "20px" }}>
+                    Fetching...
+                </div>
+            )}
+            {roomError && (
+                <Modal
+                    title="The room you are looking for does not exist."
                     open={roomError}
-                    onOk={handleOnLeave}>Click OK to be redirected to the lobby.
+                    onOk={handleOnLeave}
+                >
+                    Click OK to be redirected to the lobby.
                 </Modal>
-            )
-        }
-        { !isPending && (
-            <div className='room-container'>
-                <div className='game-info-header'>
-                    <GameInfoBar roomId={roomId} isDrawer={isDrawer} wordForDrawer={wordForDrawer} handleOnLeave={handleOnLeave} />
-                </div>
-                <div className='body-container'>
-                    <PlayerInfoContainer roomId={roomId} />
-                    <div style={{ marginLeft: 10, marginRight: 10}}>
-                        <CanvasDrawing userName={username} roomId={roomId} isDrawer={isDrawer}/>
+            )}
+            {!isPending && (
+                <div className="room-container">
+                    <div className="game-info-header">
+                        <GameInfoBar
+                            roomId={roomId}
+                            isDrawer={isDrawer}
+                            wordForDrawer={wordForDrawer}
+                            handleOnLeave={handleOnLeave}
+                        />
                     </div>
-                    <div className='right-room'>
-                        <ChatWindow userName={username} roomId={roomId} isDrawer={isDrawer} gameStart={gameStart} />
-                        {
-                            isDrawer && !gameStart && (
-                                <Button onClick={handleStartGame} size="large" className='startBtn'>Start the game!</Button>
-                            )
-                        }
-                        
+                    <div className="body-container">
+                        <PlayerInfoContainer roomId={roomId} />
+                        <div style={{ marginLeft: 10, marginRight: 10 }}>
+                            <CanvasDrawing
+                                userName={username}
+                                roomId={roomId}
+                                isDrawer={isDrawer}
+                            />
+                        </div>
+                        <div className="right-room">
+                            <ChatWindow
+                                userName={username}
+                                roomId={roomId}
+                                isDrawer={isDrawer}
+                                gameStart={gameStart}
+                            />
+                            {isDrawer && !gameStart && (
+                                <Button
+                                    onClick={handleStartGame}
+                                    size="large"
+                                    className="startBtn"
+                                >
+                                    Start the game!
+                                </Button>
+                            )}
+                        </div>
                     </div>
-                    
                 </div>
-                
-            </div>
-        )}
+            )}
         </>
-        
-    )
+    );
 }
 
 export default RoomPage;

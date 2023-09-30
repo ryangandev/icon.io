@@ -30,4 +30,4 @@ const wordBank: WordBank = {
     ],
 };
 
-export default wordBank;
+export { wordBank };

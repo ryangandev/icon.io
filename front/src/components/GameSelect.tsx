@@ -42,9 +42,9 @@ const GameSelect: FC<Props> = (props) => {
     const backgroundColor = isHovered ? darken(props.color, 0.2) : props.color;
 
     return (
-        <img 
-            src={props.img} 
-            alt="logo" 
+        <img
+            src={props.img}
+            alt="logo"
             style={{
                 width: 300,
                 height: 300,
@@ -56,7 +56,7 @@ const GameSelect: FC<Props> = (props) => {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         />
-    )
-}
+    );
+};
 
 export default GameSelect;

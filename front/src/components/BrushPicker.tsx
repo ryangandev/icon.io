@@ -1,5 +1,5 @@
-import { Space } from "antd";
-import { useState } from "react";
+import { Space } from 'antd';
+import { useState } from 'react';
 
 // const brushSizes: {[key: string]: number} = {
 //     '1': 2,
@@ -13,9 +13,15 @@ interface BrushPickerProps {
     handleBrushChange: (brushOption: number) => void;
 }
 
-const BrushPicker: React.FC<BrushPickerProps> = ({ brushSizes, handleBrushChange }) => {
+const BrushPicker: React.FC<BrushPickerProps> = ({
+    brushSizes,
+    handleBrushChange,
+}) => {
     const [selectedBrushOption, setSelectedBrushOption] = useState(1);
-    const brushOptions = Array.from({ length: Object.keys(brushSizes).length }, (_, i) => i + 1);
+    const brushOptions = Array.from(
+        { length: Object.keys(brushSizes).length },
+        (_, i) => i + 1,
+    );
 
     return (
         <Space style={{ display: 'flex', marginLeft: 40 }}>
@@ -39,12 +45,12 @@ const BrushPicker: React.FC<BrushPickerProps> = ({ brushSizes, handleBrushChange
                             height: brushSizes[brushOption.toString()],
                             backgroundColor: 'black',
                             borderRadius: '50%',
-                          }}
+                        }}
                     />
                 </div>
             ))}
         </Space>
     );
 };
-  
+
 export default BrushPicker;

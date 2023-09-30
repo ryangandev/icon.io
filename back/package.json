@@ -1,11 +1,11 @@
 {
   "scripts": {
-    "build": "rimraf out && mkdir out && tsc",
+    "build": "rimraf build && mkdir build && tsc",
     "watch": "npm run build && tsc-watch --onSuccess \"npm run start\"",
-    "start:dev": "cd out && cross-env PROD=0 node server.js",
-    "start:deploy": "cd out && NODE_ENV=production pm2 start server.js",
-    "start": "cd out && cross-env PROD=1 node server.js",
-    "build:deploy": "rm -rf out && mkdir out && tsc && (cd front && npm run build)"
+    "start:dev": "cd build && cross-env PROD=0 node server.js", 
+    "start:prod": "cd build && cross-env PROD=1 node server.js",
+    "build:deploy": "rm -rf build && mkdir build && tsc && (cd front && npm run build)",
+    "start:deploy": "cd build && NODE_ENV=production pm2 start server.js"
   },
   "type": "module",
   "dependencies": {

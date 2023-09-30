@@ -18,7 +18,12 @@ const dataURLToImageData = async (dataURL: string): Promise<ImageData> => {
             canvas.height = img.height;
             const ctx = canvas.getContext('2d')!;
             ctx.drawImage(img, 0, 0);
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const imageData = ctx.getImageData(
+                0,
+                0,
+                canvas.width,
+                canvas.height,
+            );
             resolve(imageData);
         };
     });

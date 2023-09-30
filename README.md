@@ -1,21 +1,27 @@
-# CST480 Final Project
+<p align="center">
+    <img alt="Icon.io Logo" src="https://github.com/ryangandev/icon.io/blob/main/front/public/favicon.ico" height="auto" width="200">
+</p>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<h1 align="center">Icon.io</h1>
 
-## Available Scripts
+## 🚀 About
 
-In the project directory, you can run:
+Icon.io is a newer version of my original project, [**Icon**](https://github.com/ryangandev/icon.io/tree/old-version). Initially built as my final project for my Web Development class in a team of 3 at Drexel University. This refined version employs the same core technologies as the original, while incorporating bug fixes and following to best practices.
 
-### `npm run build`
+## 🛠️ How To Run
 
-Builds the app for production to the `out` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Prerequisites
 
-### `npm run start:dev`
+Icon.io is built using React for the frontend and Node.js for the backend, each located within its respective directory: `front` and `back`. To get started, follow the instructions provided below.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Frontend
 
-### `npm run start`
+-   For frontend setup, follow the instructions in the [Front README]().
 
-Runs the app in production mode.
+### Backend
+
+-   For backend setup, follow the instructions in the [Back README]().
+
+### 🗃️ Old Version
+
+If you are interested in the old version of Icon.io, you can find it in the [old-version](https://github.com/ryangandev/icon.io/blob/old-version/README.md) branch.

@@ -1,12 +1,14 @@
 import { FC, useState } from 'react';
 import { Button, Modal } from 'antd';
-import'../styles/LobbyPage.css';
+import '../styles/LobbyPage.css';
 
 interface RoomCreateModalProps {
     handleOnCreateRoomBtnClick: () => void;
 }
 
-const RoomCreateModal: FC<RoomCreateModalProps> = (props: RoomCreateModalProps) => {
+const RoomCreateModal: FC<RoomCreateModalProps> = (
+    props: RoomCreateModalProps,
+) => {
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [modalText, setModalText] = useState('Click OK to create a new room');
@@ -18,7 +20,7 @@ const RoomCreateModal: FC<RoomCreateModalProps> = (props: RoomCreateModalProps) 
     const handleOk = () => {
         setModalText('Creating a new room...');
         setConfirmLoading(true);
-        
+
         setTimeout(() => {
             setOpen(false);
             setConfirmLoading(false);
@@ -33,7 +35,11 @@ const RoomCreateModal: FC<RoomCreateModalProps> = (props: RoomCreateModalProps) 
 
     return (
         <>
-            <Button type="primary" className="action-button" onClick={showModal}>
+            <Button
+                type="primary"
+                className="action-button"
+                onClick={showModal}
+            >
                 Create Room
             </Button>
             <Modal

@@ -1,7 +1,10 @@
 import React, { FC, useState, useEffect, useRef, useContext } from 'react';
 import { socket } from '../socket';
 import Toolbar from './Toolbar';
-import { imageDataToDataURL, dataURLToImageData } from '../helper-functions/ImgDataAndUrlConversion';
+import {
+    imageDataToDataURL,
+    dataURLToImageData,
+} from '../helper-functions/ImgDataAndUrlConversion';
 
 interface BrushOptions {
     color: string;
@@ -14,8 +17,8 @@ interface Coordinate {
     x: number;
     y: number;
 }
-  
-const brushSizes: {[key: string]: number} = {
+
+const brushSizes: { [key: string]: number } = {
     '1': 4,
     '2': 10,
     '3': 18,
@@ -25,15 +28,15 @@ const brushSizes: {[key: string]: number} = {
 type CanvasProps = {
     userName: string | null;
     roomId: string | undefined;
-    isDrawer : boolean;
-
-   
+    isDrawer: boolean;
 };
 
-const CanvasDrawing: FC<CanvasProps> = ({ userName, roomId, isDrawer}) => {
+const CanvasDrawing: FC<CanvasProps> = ({ userName, roomId, isDrawer }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isDrawing, setIsDrawing] = useState(false);
-    const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
+    const [context, setContext] = useState<CanvasRenderingContext2D | null>(
+        null,
+    );
     const [gameStart, setGameStart] = useState<boolean>(false);
     const [brushOptions, setBrushOptions] = useState<BrushOptions>({
         color: '#000000',
@@ -44,10 +47,9 @@ const CanvasDrawing: FC<CanvasProps> = ({ userName, roomId, isDrawer}) => {
     const previousStatesRef = useRef<ImageData[]>([]);
 
     useEffect(() => {
- 
         if (canvasRef.current) {
             const ctx = canvasRef.current.getContext('2d');
-       
+
             if (ctx) {
                 setContext(ctx);
             }
@@ -61,7 +63,11 @@ const CanvasDrawing: FC<CanvasProps> = ({ userName, roomId, isDrawer}) => {
             }
         };
 
-        const receiveDrawHandler = (coords: Coordinate, color: string, size: number) => {
+        const receiveDrawHandler = (
+            coords: Coordinate,
+            color: string,
+            size: number,
+        ) => {
             if (context) {
                 context.lineTo(coords.x, coords.y);
                 context.strokeStyle = color;
@@ -81,13 +87,21 @@ const CanvasDrawing: FC<CanvasProps> = ({ userName, roomId, isDrawer}) => {
             if (context && lastStateDataURL) {
                 const lastState = await dataURLToImageData(lastStateDataURL);
                 context.putImageData(lastState, 0, 0);
-                previousStatesRef.current = previousStatesRef.current.slice(0, previousStatesRef.current.length - 1);
+                previousStatesRef.current = previousStatesRef.current.slice(
+                    0,
+                    previousStatesRef.current.length - 1,
+                );
             }
         };
 
         const receiveClearCanvasHandler = () => {
             if (context) {
-                context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+                context.clearRect(
+                    0,
+                    0,
+                    context.canvas.width,
+                    context.canvas.height,
+                );
                 previousStatesRef.current = [];
             }
         };
@@ -98,12 +112,11 @@ const CanvasDrawing: FC<CanvasProps> = ({ userName, roomId, isDrawer}) => {
         socket.on('receiveUndoDraw', receiveUndoDrawHandler);
         socket.on('receiveClearCanvas', receiveClearCanvasHandler);
 
-
         // Cleanup the event listener
         return () => {
             socket.off('receiveStartDraw', receiveStartDrawHandler);
             socket.off('receiveDraw', receiveDrawHandler);
-            socket.off('receiveStopDraw', receiveStopDrawHandler); 
+            socket.off('receiveStopDraw', receiveStopDrawHandler);
             socket.off('receiveUndoDraw', receiveUndoDrawHandler);
             socket.off('receiveClearCanvas', receiveClearCanvasHandler);
         };
@@ -130,7 +143,10 @@ const CanvasDrawing: FC<CanvasProps> = ({ userName, roomId, isDrawer}) => {
             if (prevStates.length > 0) {
                 const lastState = prevStates[prevStates.length - 1];
                 context.putImageData(lastState, 0, 0);
-                previousStatesRef.current = prevStates.slice(0, prevStates.length - 1);
+                previousStatesRef.current = prevStates.slice(
+                    0,
+                    prevStates.length - 1,
+                );
 
                 const lastStateDataURL = imageDataToDataURL(lastState);
                 socket.emit('undoDraw', userName, roomId, lastStateDataURL);
@@ -140,7 +156,12 @@ const CanvasDrawing: FC<CanvasProps> = ({ userName, roomId, isDrawer}) => {
 
     const handleClearCanvas = () => {
         if (context) {
-            context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+            context.clearRect(
+                0,
+                0,
+                context.canvas.width,
+                context.canvas.height,
+            );
             previousStatesRef.current = [];
 
             socket.emit('clearCanvas', userName, roomId);
@@ -150,13 +171,23 @@ const CanvasDrawing: FC<CanvasProps> = ({ userName, roomId, isDrawer}) => {
     // Save the current canvas state to the previousStates array
     const saveCanvasState = () => {
         if (context) {
-            const canvasState = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
-            previousStatesRef.current = [...previousStatesRef.current, canvasState];
+            const canvasState = context.getImageData(
+                0,
+                0,
+                context.canvas.width,
+                context.canvas.height,
+            );
+            previousStatesRef.current = [
+                ...previousStatesRef.current,
+                canvasState,
+            ];
         }
     };
 
     // Get mouse coordinates relative to canvas, otherwise it will be relative to the window
-    const getRelativeMouseCoords = (event: React.MouseEvent<HTMLCanvasElement>): Coordinate => {
+    const getRelativeMouseCoords = (
+        event: React.MouseEvent<HTMLCanvasElement>,
+    ): Coordinate => {
         const canvasBounds = canvasRef.current!.getBoundingClientRect();
         return {
             x: event.clientX - canvasBounds.left,
@@ -177,14 +208,21 @@ const CanvasDrawing: FC<CanvasProps> = ({ userName, roomId, isDrawer}) => {
     const draw = (event: React.MouseEvent<HTMLCanvasElement>) => {
         if (!isDrawing) return;
         const coords: Coordinate = getRelativeMouseCoords(event);
-        
+
         context!.lineTo(coords.x, coords.y);
         context!.strokeStyle = brushOptions.color;
         context!.lineWidth = brushOptions.size;
         context!.lineCap = 'round';
         context!.stroke();
 
-        socket.emit('draw', userName, roomId, coords, brushOptions.color, brushOptions.size);
+        socket.emit(
+            'draw',
+            userName,
+            roomId,
+            coords,
+            brushOptions.color,
+            brushOptions.size,
+        );
     };
 
     const stopDrawing = () => {
@@ -194,88 +232,131 @@ const CanvasDrawing: FC<CanvasProps> = ({ userName, roomId, isDrawer}) => {
         socket.emit('stopDraw', userName, roomId);
     };
 
-    socket.on('start', data => {
+    socket.on('start', (data) => {
         setGameStart(data);
         console.log(isDrawer);
         console.log(gameStart);
-    })
+    });
 
-    socket.on('stop', data=> {
+    socket.on('stop', (data) => {
         setGameStart(data);
-    })
+    });
 
     return (
         <>
-        {gameStart && isDrawer &&(
-            <div style={{  width: 750, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-            <div >
-                <canvas 
-                    ref={canvasRef} 
-                    width="750" 
-                    height="550" 
-                    style={{ border: '2px solid black', backgroundColor: 'white', borderRadius: '10px' }}
-                    onMouseDown={startDrawing}
-                    onMouseMove={draw}
-                    onMouseUp={stopDrawing}
-                    onMouseOut={stopDrawing} 
-                />
-                <Toolbar 
-                    brushSizes={brushSizes}
-                    handleColorChange={handleColorChange}
-                    handleBrushChange={handleBrushChange}
-                    handleClearCanvas={handleClearCanvas}
-                    handleUndo={handleUndo}
-                />
+            {gameStart && isDrawer && (
+                <div
+                    style={{
+                        width: 750,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                    }}
+                >
+                    <div>
+                        <canvas
+                            ref={canvasRef}
+                            width="750"
+                            height="550"
+                            style={{
+                                border: '2px solid black',
+                                backgroundColor: 'white',
+                                borderRadius: '10px',
+                            }}
+                            onMouseDown={startDrawing}
+                            onMouseMove={draw}
+                            onMouseUp={stopDrawing}
+                            onMouseOut={stopDrawing}
+                        />
+                        <Toolbar
+                            brushSizes={brushSizes}
+                            handleColorChange={handleColorChange}
+                            handleBrushChange={handleBrushChange}
+                            handleClearCanvas={handleClearCanvas}
+                            handleUndo={handleUndo}
+                        />
+                    </div>
                 </div>
-            </div>           
-        )}
+            )}
 
-        {gameStart && !isDrawer && (
-            <div style={{  width: 750, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <div>
-                    <canvas 
-                        ref={canvasRef} 
-                        width="750" 
-                        height="550" 
-                        style={{ border: '2px solid black', backgroundColor: 'white', borderRadius: '10px' }}
-                    />
+            {gameStart && !isDrawer && (
+                <div
+                    style={{
+                        width: 750,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                    }}
+                >
+                    <div>
+                        <canvas
+                            ref={canvasRef}
+                            width="750"
+                            height="550"
+                            style={{
+                                border: '2px solid black',
+                                backgroundColor: 'white',
+                                borderRadius: '10px',
+                            }}
+                        />
+                    </div>
                 </div>
-            </div>
-        )}
+            )}
 
-        {!gameStart && isDrawer && (
-            <div style={{  width: 750, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <div >
-                <canvas 
-                    ref={canvasRef} 
-                    width="750" 
-                    height="550" 
-                    style={{ border: '2px solid black', backgroundColor: 'white', borderRadius: '10px' }}
-
-                />
-                <Toolbar 
-                    brushSizes={brushSizes}
-                    handleColorChange={()=>null}
-                    handleBrushChange={()=>null}
-                    handleClearCanvas={()=>null}
-                    handleUndo={()=>null}
-                />
+            {!gameStart && isDrawer && (
+                <div
+                    style={{
+                        width: 750,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                    }}
+                >
+                    <div>
+                        <canvas
+                            ref={canvasRef}
+                            width="750"
+                            height="550"
+                            style={{
+                                border: '2px solid black',
+                                backgroundColor: 'white',
+                                borderRadius: '10px',
+                            }}
+                        />
+                        <Toolbar
+                            brushSizes={brushSizes}
+                            handleColorChange={() => null}
+                            handleBrushChange={() => null}
+                            handleClearCanvas={() => null}
+                            handleUndo={() => null}
+                        />
+                    </div>
                 </div>
-            </div>                      
-        )}
-        {!gameStart && !isDrawer &&  (
-            <div style={{  width: 750, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <div >
-                    <canvas 
-                        ref={canvasRef} 
-                        width="750" 
-                        height="550" 
-                        style={{ border: '2px solid black', backgroundColor: 'white', borderRadius: '10px' }}
-                    />
-                <h3>Waiting for the host...</h3>
+            )}
+            {!gameStart && !isDrawer && (
+                <div
+                    style={{
+                        width: 750,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                    }}
+                >
+                    <div>
+                        <canvas
+                            ref={canvasRef}
+                            width="750"
+                            height="550"
+                            style={{
+                                border: '2px solid black',
+                                backgroundColor: 'white',
+                                borderRadius: '10px',
+                            }}
+                        />
+                        <h3>Waiting for the host...</h3>
+                    </div>
                 </div>
-            </div>                      
-        )}
+            )}
         </>
     );
 };
