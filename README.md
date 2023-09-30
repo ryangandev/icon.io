@@ -6,7 +6,9 @@
 
 ## 🚀 About
 
-Icon.io is a newer version of my original project, [**Icon**](https://github.com/ryangandev/icon.io/tree/old-version). Initially built as my final project for my Web Development class in a team of 3 at Drexel University. This refined version employs the same core technologies as the original, while incorporating bug fixes and following to best practices.
+Icon.io is a web-based, online multiplayer gaming platform developed using React and Node.js with TypeScript. It currently hosts Draw & Guess, which you can enjoy with your friends, and plans are underway to add more games soon!
+
+Icon.io is an evolved version of my original project, [**Icon**](https://github.com/ryangandev/icon.io/tree/old-version), initially built as my final project for a Web Development class in a team of three at Drexel University. This refined version retains the same core technologies as the original, while incorporating bug fixes and adhering to best practices.
 
 ## 🛠️ How To Run
 
