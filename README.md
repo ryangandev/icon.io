@@ -24,6 +24,10 @@ Icon.io is built using React for the frontend and Node.js for the backend, each 
 
 -   For backend setup, follow the instructions in the [Back README](https://github.com/ryangandev/icon.io/blob/main/back/README.md).
 
-### 🗃️ Old Version
+## 🗃️ Old Version
 
 If you are interested in the old version of Icon.io, you can find it in the [old-version](https://github.com/ryangandev/icon.io/blob/old-version/README.md) branch.
+
+## 📝 License
+
+This project is [MIT](https://github.com/ryangandev/icon.io/blob/main/LICENSE) licensed.
