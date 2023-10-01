@@ -1,4 +1,4 @@
-import { useState, FC } from 'react';
+import { useState, FC, useEffect } from 'react';
 import { Button, Input, Typography } from 'antd';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import icon from '../assets/Game-Icon.png';
@@ -6,9 +6,18 @@ import '../styles/pages/Landing.css';
 import toast from 'react-hot-toast';
 
 const Landing: FC = () => {
-    const [name, setName] = useState<string>('');
+    const [name, setName] = useState<string>(
+        sessionStorage.getItem('username') || '',
+    );
     const [inputStatus, setInputStatus] = useState<'' | 'error' | undefined>();
     const navigate: NavigateFunction = useNavigate();
+
+    useEffect(() => {
+        if (name.trim() !== '') {
+            navigate('/Home');
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [navigate]);
 
     const handleOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setName(e.target.value);
@@ -23,7 +32,6 @@ const Landing: FC = () => {
         } else {
             sessionStorage.setItem('username', name);
             navigate('/Home');
-            toast.success(`Welcome, ${name}!`);
         }
     };
 
