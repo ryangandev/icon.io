@@ -6,10 +6,10 @@ body {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     background-color: #FDF9F1;
-    background-image: url(../assets/Bg-Decor.png);
+    /* background-image: url(../assets/Bg-Decor.png);
     background-repeat: no-repeat;
     background-size: 100vw 40%;
-    background-position: center bottom;
+    background-position: center bottom; */
     z-index: -1;
 }
 
@@ -40,4 +40,10 @@ body::-webkit-scrollbar-thumb:hover {
 
 body::-webkit-scrollbar-thumb:active {
     background-color: #555;
+}
+
+.AppLayout {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
 }

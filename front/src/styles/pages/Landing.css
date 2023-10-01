@@ -1,0 +1,58 @@
+.landing-layout {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    gap: 40px;
+    --logo-height: 90px;
+    --landing-font-size: 20px;
+    --landing-font-weight: 700;
+    --landing-block-element-width: 340px;
+    --landing-block-element-height: 50px;
+}
+
+.landing-logo-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    user-select: none;
+}
+
+.landing-logo-img {
+    width: var(--logo-height);
+    height: var(--logo-height);
+}
+
+.landing-logo-text {
+    font-weight: bold;
+    font-size: var(--logo-height);
+    line-height: var(--logo-height);
+}
+
+.landing-name-input {
+    width: var(--landing-block-element-width); 
+    height: var(--landing-block-element-height); 
+    font-size: var(--landing-font-size);
+    font-weight: var(--landing-font-weight);
+    text-align: center;
+}
+
+.landing-submit-button {
+    width: var(--landing-block-element-width); 
+    height: var(--landing-block-element-height); 
+    font-size: var(--landing-font-size);
+    font-weight: var(--landing-font-weight);
+}
+
+@media (max-width: 640px) {
+    .landing-layout {
+        --logo-height: 70px;
+        --landing-font-size: 16px;
+        --landing-font-weight: 500;
+        --landing-block-element-width: 280px;
+        --landing-block-element-height: 40px;
+    }
+}

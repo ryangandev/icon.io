@@ -1,11 +1,10 @@
 import { useState, FC } from 'react';
-import { Button, Input, Space, Typography } from 'antd';
+import { Button, Input, Typography } from 'antd';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import icon from '../assets/Game-Icon.png';
-import '../styles/LandingPage.css';
-import '../styles/CommonStyles.css';
+import '../styles/pages/Landing.css';
 
-const LandingPage: FC = () => {
+const Landing: FC = () => {
     const [name, setName] = useState<string>('');
     const [inputStatus, setInputStatus] = useState<'' | 'error' | undefined>();
     const navigate: NavigateFunction = useNavigate();
@@ -20,24 +19,22 @@ const LandingPage: FC = () => {
             setInputStatus('error');
             return;
         } else {
-            localStorage.setItem('username', name);
+            sessionStorage.setItem('username', name);
             navigate('/Home');
-            console.log(name);
         }
     };
 
     return (
-        <div className="defaultPageLayout">
-            <Space id="landingPageHeader">
-                <img id="landingPageIcon" src={icon} alt="logo" />
-                <Typography id="landingPageText">icon.io</Typography>
-            </Space>
+        <div className="landing-layout">
+            <div className="landing-logo-container">
+                <img className="landing-logo-img" src={icon} alt="logo" />
+                <Typography className="landing-logo-text">con.io</Typography>
+            </div>
 
-            {/* TODO: Append number to duplicate usernames that may be added */}
             <Input
                 size="large"
                 placeholder="Enter your name"
-                id="landingNameField"
+                className="landing-name-input"
                 maxLength={18}
                 onChange={handleOnchange}
                 required={true}
@@ -45,9 +42,8 @@ const LandingPage: FC = () => {
             />
 
             <Button
-                size="large"
                 type="primary"
-                id="landingButton"
+                className="landing-submit-button"
                 onClick={handleOnClick}
             >
                 PLAY!
@@ -56,4 +52,4 @@ const LandingPage: FC = () => {
     );
 };
 
-export default LandingPage;
+export default Landing;

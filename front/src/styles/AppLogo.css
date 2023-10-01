@@ -1,0 +1,30 @@
+.logo-container {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    z-index: -1;
+    gap: 3px;
+    --logo-height: 30px;
+}
+
+.logo-img {
+    width: var(--logo-height);
+    height: var(--logo-height);
+}
+
+.logo-text {
+    font-weight: bold;
+    font-size: var(--logo-height);
+    line-height: var(--logo-height);
+}
+
+@media (max-width: 640px) {
+    .logo-container {
+        opacity: 0;
+    }
+}
