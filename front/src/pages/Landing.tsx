@@ -3,6 +3,7 @@ import { Button, Input, Typography } from 'antd';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import icon from '../assets/Game-Icon.png';
 import '../styles/pages/Landing.css';
+import toast from 'react-hot-toast';
 
 const Landing: FC = () => {
     const [name, setName] = useState<string>('');
@@ -16,11 +17,13 @@ const Landing: FC = () => {
 
     const handleOnClick = () => {
         if (name.trim() === '') {
+            toast.error('Name cannot be empty!');
             setInputStatus('error');
             return;
         } else {
             sessionStorage.setItem('username', name);
             navigate('/Home');
+            toast.success(`Welcome, ${name}!`);
         }
     };
 
@@ -39,6 +42,7 @@ const Landing: FC = () => {
                 onChange={handleOnchange}
                 required={true}
                 status={inputStatus}
+                onPressEnter={handleOnClick}
             />
 
             <Button
