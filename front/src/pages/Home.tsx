@@ -30,36 +30,43 @@ const HomePage: FC = () => {
 
     return (
         <div className="home-layout">
-            <Space style={{ marginBottom: 30 }}>
-                <h1 className="userGreeting"> Welcome, {username}!</h1>
+            <div className="home-header">
+                <span className="home-header-text"> Welcome, {username}!</span>
                 <Button
-                    type="text"
+                    type="default"
+                    ghost
+                    danger
                     onClick={handleLogout}
-                    className="logoutButton"
+                    className="home-header-logout-btn"
                 >
-                    <div style={{ borderBottom: '3px solid blue' }}>
-                        Log out
-                    </div>
+                    Log out
                 </Button>
-            </Space>
+            </div>
 
-            <h2 style={{ textAlign: 'center' }}>SELECT A GAME TO PLAY</h2>
-            <Space style={{ margin: 30 }}>
-                <div style={{ userSelect: 'none', margin: '15px 40px' }}>
+            <h2 className="home-game-select-text">SELECT A GAME TO PLAY</h2>
+            <Space
+                className="home-games-section-layout"
+                size={50}
+                wrap={true}
+                align="center"
+            >
+                <div>
                     <Link to="/Lobby">
-                        <GameSelect color="#FFDFBF" img={draw} />
+                        <GameSelect
+                            gameTitle="Draw & Guess"
+                            color="#FFDFBF"
+                            img={draw}
+                        />
                     </Link>
                 </div>
-                <div
-                    style={{
-                        margin: '15px 40px',
-                        pointerEvents: 'none',
-                        userSelect: 'none',
-                        opacity: 0.2,
-                    }}
-                >
+                <div>
                     <Link to="/Lobby">
-                        <GameSelect color="#A7A6BA" img={minesweeper} />
+                        <GameSelect
+                            gameTitle="Minesweeper"
+                            color="#A7A6BA"
+                            img={minesweeper}
+                            isAvailable={false}
+                        />
                     </Link>
                 </div>
             </Space>
