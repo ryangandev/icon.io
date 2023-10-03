@@ -14,7 +14,7 @@ const SocketContext = createContext<SocketContextProps | null>(null);
 const SocketProvider: React.FC<SocketContextProviderProps> = ({ children }) => {
     const socket = useMemo(
         () =>
-            io(process.env.ICONIO_SERVER_URL || 'http://localhost:30000', {
+            io(process.env.ICONIO_SERVER_URL || 'http://localhost:3000', {
                 autoConnect: false,
                 reconnection: true,
                 reconnectionAttempts: 5,
