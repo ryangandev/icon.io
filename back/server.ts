@@ -14,7 +14,7 @@ import {
     handleSendMessage,
     updatePlayerList,
 } from './socket/index.js';
-import { wordBank } from './libs/index.js';
+import { wordBank, generateRoomId, getRandomInt } from './libs/index.js';
 
 let app = express();
 let __dirname = path.dirname(url.fileURLToPath(import.meta.url));
@@ -35,21 +35,6 @@ let port = 3000;
 
 let roomStore = {};
 let socketStore: { [key: string]: { roomId: string; username: string } } = {};
-
-function generateRoomId(): string {
-    let id = '';
-    let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    for (let i = 0; i < 6; i++) {
-        id += chars.charAt(Math.floor(Math.random() * 36));
-    }
-    return id;
-}
-
-function getRandomInt(min: number, max: number) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
-}
 
 // endpoint to create new room!
 app.post('/room', function (req: Request, res: Response) {
