@@ -1,12 +1,11 @@
 import { FC, useEffect } from 'react';
 import { Button, Space } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-import draw from '../assets/draw-and-guess-bg.png';
-import minesweeper from '../assets/minesweeper-bg.png';
 import GameSelect from '../components/GameSelect';
 import '../styles/pages/Home.css';
 import toast from 'react-hot-toast';
 import { useSocket } from '../hooks/useSocket';
+import { GameData } from '../data/game';
 
 const HomePage: FC = () => {
     const username = sessionStorage.getItem('username');
@@ -91,25 +90,16 @@ const HomePage: FC = () => {
                         wrap={true}
                         align="center"
                     >
-                        <div>
-                            <Link to="/Lobby">
+                        {GameData.map((game, index) => (
+                            <Link key={game.title} to={game.navigateTo}>
                                 <GameSelect
-                                    gameTitle="Draw & Guess"
-                                    color="#FFDFBF"
-                                    img={draw}
+                                    gameTitle={game.title}
+                                    color={game.thumbnailBgColor}
+                                    img={game.thumbnailImg}
+                                    isAvailable={game.isAvailable}
                                 />
                             </Link>
-                        </div>
-                        <div>
-                            <Link to="/Lobby">
-                                <GameSelect
-                                    gameTitle="Minesweeper"
-                                    color="#A7A6BA"
-                                    img={minesweeper}
-                                    isAvailable={false}
-                                />
-                            </Link>
-                        </div>
+                        ))}
                     </Space>
                 </div>
             )}
