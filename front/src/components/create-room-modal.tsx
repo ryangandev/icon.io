@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import { Button, Modal } from 'antd';
-import '../styles/LobbyPage.css';
+import '../styles/pages/lobbies/draw-and-guess-lobby.css';
 
 interface RoomCreateModalProps {
     handleOnCreateRoomBtnClick: () => void;

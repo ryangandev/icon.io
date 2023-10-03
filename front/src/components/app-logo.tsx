@@ -1,6 +1,6 @@
 import Typography from 'antd/es/typography/Typography';
 import icon from '../assets/Game-Icon.png';
-import '../styles/AppLogo.css';
+import '../styles/components/app-logo.css';
 
 const AppLogo = () => {
     return (

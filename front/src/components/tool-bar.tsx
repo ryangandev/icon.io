@@ -1,5 +1,5 @@
 import ColorPalette from './color-palette';
-import '../styles/Toolbar.css';
+import '../styles/components/tool-bar.css';
 import { DeleteOutlined, RollbackOutlined } from '@ant-design/icons';
 import { Button, Space } from 'antd';
 import BrushPicker from './brush-picker';

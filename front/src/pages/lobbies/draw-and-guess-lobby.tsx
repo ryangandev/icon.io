@@ -5,8 +5,8 @@ import { Link, useNavigate, NavigateFunction } from 'react-router-dom';
 import icon from '../../assets/Game-Icon.png';
 import type { ColumnsType } from 'antd/es/table';
 import axios from 'axios';
-import '../../styles/LobbyPage.css';
 import RoomCreateModal from '../../components/create-room-modal';
+import '../../styles/pages/lobbies/draw-and-guess-lobby.css';
 
 interface RoomStatus {
     roomId: string;

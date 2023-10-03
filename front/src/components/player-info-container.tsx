@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import '../styles/PlayerInfoContainer.css';
+import '../styles/components/player-info-container.css';
 import scoreIcon from '../assets/score-icon.png';
 import { useSocket } from '../hooks/useSocket';
 

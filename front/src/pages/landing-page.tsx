@@ -2,7 +2,7 @@ import { useState, FC, useEffect } from 'react';
 import { Button, Input, Typography } from 'antd';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import icon from '../assets/Game-Icon.png';
-import '../styles/pages/Landing.css';
+import '../styles/pages/landing-page.css';
 import toast from 'react-hot-toast';
 
 const Landing: FC = () => {

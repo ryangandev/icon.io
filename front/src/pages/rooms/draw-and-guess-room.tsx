@@ -5,7 +5,7 @@ import ChatWindow from '../../components/chat-window';
 import PlayerInfoContainer from '../../components/player-info-container';
 import GameInfoBar from '../../components/game-info-bar';
 import { Modal } from 'antd';
-import '../../styles/RoomPage.css';
+import '../../styles/pages/rooms/draw-and-guess-room.css';
 import { Button } from 'antd';
 import { useSocket } from '../../hooks/useSocket';
 

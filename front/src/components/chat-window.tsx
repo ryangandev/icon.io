@@ -1,4 +1,4 @@
-import '../styles/ChatWindow.css';
+import '../styles/components/chat-window.css';
 import { Input } from 'antd';
 import { EnterOutlined } from '@ant-design/icons';
 import { useEffect, useRef, useState } from 'react';

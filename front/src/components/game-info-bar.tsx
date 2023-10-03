@@ -1,4 +1,4 @@
-import '../styles/GameInfoBar.css';
+import '../styles/components/game-info-bar.css';
 import { Button } from 'antd';
 import { ClockCircleOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useState } from 'react';

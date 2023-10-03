@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import toast from 'react-hot-toast';
-import '../styles/components/GameSelectContainer.css';
+import '../styles/components/game-select-container.css';
 
 interface GameSelectProps {
     gameTitle: string;
