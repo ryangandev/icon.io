@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { socket } from '../socket';
+import { useSocket } from '../hooks/useSocket';
 
 interface TimerProps {
     countdownInSec: number;
@@ -7,6 +7,7 @@ interface TimerProps {
     roomId: string | undefined;
 }
 const TimerTicks: React.FC<TimerProps> = (props: TimerProps) => {
+    const { socket } = useSocket();
     const [countdown, setCountdown] = useState(props.countdownInSec);
     const [stop, setStop] = useState<boolean>(false);
     const roomId = props.roomId;
@@ -25,7 +26,7 @@ const TimerTicks: React.FC<TimerProps> = (props: TimerProps) => {
 
             return () => clearInterval(interval);
         }
-    }, [props.isTimerRunning, props.countdownInSec, countdown]);
+    }, [socket, props.isTimerRunning, props.countdownInSec, countdown]);
 
     return <div>{countdown}</div>;
 };

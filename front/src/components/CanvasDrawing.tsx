@@ -1,10 +1,10 @@
-import React, { FC, useState, useEffect, useRef, useContext } from 'react';
-import { socket } from '../socket';
+import React, { FC, useState, useEffect, useRef } from 'react';
 import Toolbar from './Toolbar';
 import {
     imageDataToDataURL,
     dataURLToImageData,
 } from '../helper-functions/ImgDataAndUrlConversion';
+import { useSocket } from '../hooks/useSocket';
 
 interface BrushOptions {
     color: string;
@@ -32,6 +32,7 @@ type CanvasProps = {
 };
 
 const CanvasDrawing: FC<CanvasProps> = ({ userName, roomId, isDrawer }) => {
+    const { socket } = useSocket();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isDrawing, setIsDrawing] = useState(false);
     const [context, setContext] = useState<CanvasRenderingContext2D | null>(
@@ -120,7 +121,7 @@ const CanvasDrawing: FC<CanvasProps> = ({ userName, roomId, isDrawer }) => {
             socket.off('receiveUndoDraw', receiveUndoDrawHandler);
             socket.off('receiveClearCanvas', receiveClearCanvasHandler);
         };
-    }, [context, previousStatesRef, gameStart]); // ignore saveCanvasState() function in the dependency array
+    }, [socket, context, previousStatesRef, gameStart]); // ignore saveCanvasState() function in the dependency array
 
     const handleColorChange = (color: string) => {
         setBrushOptions({

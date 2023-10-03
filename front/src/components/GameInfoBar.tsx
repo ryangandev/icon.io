@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import { ClockCircleOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import TimerTicks from '../helper-functions/TimerTicks';
-import { socket } from '../socket';
+import { useSocket } from '../hooks/useSocket';
 
 interface GameInfoBarProps {
     roomId: string | undefined;
@@ -13,6 +13,7 @@ interface GameInfoBarProps {
 }
 
 const GameInfoBar: React.FC<GameInfoBarProps> = (props: GameInfoBarProps) => {
+    const { socket } = useSocket();
     const roundTime = 10;
     const [isTimeTicking, setIsTimeTicking] = useState<boolean>(false);
     const [timer, setTimer] = useState(roundTime);

@@ -1,66 +1,66 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { socket } from "../socket";
-import { useEffect, useState } from "react";
-import CanvasDrawing from "../components/CanvasDrawing";
-import ChatWindow from "../components/ChatWindow";
-import PlayerInfoContainer from "../components/PlayerInfoContainer";
-import GameInfoBar from "../components/GameInfoBar";
-import { Modal } from "antd";
-import "../styles/RoomPage.css";
-import "../styles/CommonStyles.css";
-import { Button } from "antd";
+import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import CanvasDrawing from '../components/CanvasDrawing';
+import ChatWindow from '../components/ChatWindow';
+import PlayerInfoContainer from '../components/PlayerInfoContainer';
+import GameInfoBar from '../components/GameInfoBar';
+import { Modal } from 'antd';
+import '../styles/RoomPage.css';
+import { Button } from 'antd';
+import { useSocket } from '../hooks/useSocket';
 
 function RoomPage() {
     const { roomId } = useParams();
     const navigate = useNavigate();
-    const username = localStorage.getItem("username");
+    const username = localStorage.getItem('username');
+    const { socket } = useSocket();
 
     const [isDrawer, setIsDrawer] = useState<boolean>(true);
     const [isPending, setIsPending] = useState<boolean>(true);
     const [roomError, setRoomError] = useState<boolean>(true);
-    const [wordForDrawer, setWordForDrawer] = useState<string>("");
+    const [wordForDrawer, setWordForDrawer] = useState<string>('');
     const [gameStart, setGameStart] = useState<boolean>(false);
 
     // https://socket.io/how-to/use-with-react
     useEffect(() => {
-        socket.connect();
-        socket.emit("active_room", { username, roomId });
+        socket.emit('active_room', { username, roomId });
+        socket.on('drawer', (is_drawer, word) => {
+            console.log(is_drawer, word);
+
+            setIsDrawer(is_drawer);
+            setWordForDrawer(word);
+            setIsPending(false);
+        });
+
+        socket.on('stop', (data) => {
+            setGameStart(data);
+        });
+
+        socket.on('roomError', (roomError) => {
+            setRoomError(roomError);
+        });
 
         return () => {
-            socket.disconnect();
+            socket.off('drawer');
+            socket.off('stop');
+            socket.off('roomError');
         };
-    }, [roomId, username]);
+    }, [socket, roomId, username]);
 
     const handleOnLeave = () => {
-        navigate("/Lobby");
+        navigate('/Lobby');
     };
 
     const handleStartGame = () => {
         setGameStart(true);
 
-        socket.emit("startGame", true, roomId);
+        socket.emit('startGame', true, roomId);
     };
-
-    socket.on("drawer", (is_drawer, word) => {
-        console.log(is_drawer, word);
-
-        setIsDrawer(is_drawer);
-        setWordForDrawer(word);
-        setIsPending(false);
-    });
-
-    socket.on("stop", (data) => {
-        setGameStart(data);
-    });
-
-    socket.on("roomError", (roomError) => {
-        setRoomError(roomError);
-    });
 
     return (
         <>
             {isPending && (
-                <div className="body-container" style={{ marginTop: "20px" }}>
+                <div className="body-container" style={{ marginTop: '20px' }}>
                     Fetching...
                 </div>
             )}

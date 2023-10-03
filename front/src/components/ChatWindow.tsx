@@ -2,7 +2,7 @@ import '../styles/ChatWindow.css';
 import { Input } from 'antd';
 import { EnterOutlined } from '@ant-design/icons';
 import { useEffect, useRef, useState } from 'react';
-import { socket } from '../socket';
+import { useSocket } from '../hooks/useSocket';
 
 type ChatWindowProps = {
     userName: string | null;
@@ -11,6 +11,7 @@ type ChatWindowProps = {
     gameStart: boolean;
 };
 const ChatWindow = (props: ChatWindowProps) => {
+    const { socket } = useSocket();
     const [messages, setMessages] = useState<string[]>([]);
     const [inputMessage, setInputMessage] = useState<string>('');
     const [alreadyReceivedPts, setAlreadyReceivedPts] =
@@ -36,7 +37,7 @@ const ChatWindow = (props: ChatWindowProps) => {
         return () => {
             socket.off('receiveMessage');
         };
-    }, [messages]);
+    }, [socket, messages]);
 
     const handleInputMessageChange = (
         event: React.ChangeEvent<HTMLInputElement>,

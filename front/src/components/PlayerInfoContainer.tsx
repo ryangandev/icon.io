@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import '../styles/PlayerInfoContainer.css';
 import scoreIcon from '../assets/score-icon.png';
-import { socket } from '../socket';
+import { useSocket } from '../hooks/useSocket';
 
 interface PlayerInfoProps {
     username: string;
@@ -13,6 +13,7 @@ interface PlayerInfoContainerProps {
 }
 
 const PlayerInfo: React.FC<PlayerInfoProps> = (props: PlayerInfoProps) => {
+    const { socket } = useSocket();
     const [score, setScore] = useState<number>(0);
     const [isDrawer, setIsDrawer] = useState<boolean>(false);
     const roomId = props.roomId;
@@ -41,7 +42,7 @@ const PlayerInfo: React.FC<PlayerInfoProps> = (props: PlayerInfoProps) => {
             socket.off('receiveScore', onReceiveScore);
             socket.off('correctAnswer', onCorrectAnswer);
         };
-    }, [userName, roomId, score]);
+    }, [socket, userName, roomId, score]);
 
     return (
         <div className={isDrawer ? 'player-info-drawer' : 'player-info'}>
@@ -66,6 +67,7 @@ const PlayerInfo: React.FC<PlayerInfoProps> = (props: PlayerInfoProps) => {
 const PlayerInfoContainer: React.FC<PlayerInfoContainerProps> = (
     props: PlayerInfoContainerProps,
 ) => {
+    const { socket } = useSocket();
     const [playerList, setPlayerList] = useState<string[]>([]);
 
     useEffect(() => {
@@ -76,7 +78,7 @@ const PlayerInfoContainer: React.FC<PlayerInfoContainerProps> = (
         return () => {
             socket.off('updatePlayers');
         };
-    }, [playerList, props.roomId]);
+    }, [socket, playerList, props.roomId]);
 
     return (
         <div className="player-info-container">
