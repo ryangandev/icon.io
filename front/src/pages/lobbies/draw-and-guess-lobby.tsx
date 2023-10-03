@@ -2,10 +2,10 @@ import { useEffect, useState, FC } from 'react';
 import { Button, Space, Input, Typography, Table } from 'antd';
 import { RollbackOutlined } from '@ant-design/icons';
 import { Link, useNavigate, NavigateFunction } from 'react-router-dom';
-import icon from '../assets/Game-Icon.png';
+import icon from '../../assets/Game-Icon.png';
 import type { ColumnsType } from 'antd/es/table';
 import axios from 'axios';
-import '../styles/LobbyPage.css';
+import '../../styles/LobbyPage.css';
 import RoomCreateModal from '../../components/RoomCreateModal';
 
 interface RoomStatus {

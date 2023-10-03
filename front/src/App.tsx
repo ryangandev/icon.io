@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Layout from './layoutpage';
+import Layout from './layout';
 import Landing from './pages/landing-page';
 import Home from './pages/home-page';
 import DrawAndGuessLobby from './pages/lobbies/draw-and-guess-lobby';
