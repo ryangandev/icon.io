@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Layout from './Layout';
-import Landing from './pages/Landing';
-import Home from './pages/Home';
-import LobbyPage from './pages/LobbyPage';
-import RoomPage from './pages/RoomPage';
-import NotFound from './pages/NotFound';
+import Layout from './layoutpage';
+import Landing from './pages/landing-page';
+import Home from './pages/home-page';
+import DrawAndGuessLobby from './pages/lobbies/draw-and-guess-lobby';
+import DrawAndGuessRoom from './pages/rooms/draw-and-guess-room';
+import NotFound from './pages/not-found-page';
 import { SocketProvider } from './providers/socket-provider';
 
 export default function App() {
@@ -17,8 +17,11 @@ export default function App() {
                         <Route index element={<Landing />} />
                         <Route path="/Landing" element={<Landing />} />
                         <Route path="/Home" element={<Home />} />
-                        <Route path="/Lobby" element={<LobbyPage />} />
-                        <Route path="/Room/:roomId" element={<RoomPage />} />
+                        <Route path="/Lobby" element={<DrawAndGuessLobby />} />
+                        <Route
+                            path="/Room/:roomId"
+                            element={<DrawAndGuessRoom />}
+                        />
                         <Route path="*" element={<NotFound />} />
                     </Route>
                 </Routes>

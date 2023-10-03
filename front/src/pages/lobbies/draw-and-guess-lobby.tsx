@@ -1,12 +1,12 @@
-import { useEffect, useState, FC } from "react";
-import { Button, Space, Input, Typography, Table } from "antd";
-import { RollbackOutlined } from "@ant-design/icons";
-import { Link, useNavigate, NavigateFunction } from "react-router-dom";
-import icon from "../assets/Game-Icon.png";
-import type { ColumnsType } from "antd/es/table";
-import axios from "axios";
-import "../styles/LobbyPage.css";
-import RoomCreateModal from "../components/RoomCreateModal";
+import { useEffect, useState, FC } from 'react';
+import { Button, Space, Input, Typography, Table } from 'antd';
+import { RollbackOutlined } from '@ant-design/icons';
+import { Link, useNavigate, NavigateFunction } from 'react-router-dom';
+import icon from '../assets/Game-Icon.png';
+import type { ColumnsType } from 'antd/es/table';
+import axios from 'axios';
+import '../styles/LobbyPage.css';
+import RoomCreateModal from '../../components/RoomCreateModal';
 
 interface RoomStatus {
     roomId: string;
@@ -22,9 +22,9 @@ const LobbyPage: FC = () => {
     const [rooms, setRooms] = useState<RoomStatus[]>([]);
     const [search, setSearch] = useState<number>();
     const [createResponseMessage, setCreateResponseMessage] =
-        useState<string>("");
+        useState<string>('');
 
-    const username = localStorage.getItem("username");
+    const username = localStorage.getItem('username');
     const navigate: NavigateFunction = useNavigate();
 
     useEffect(() => {
@@ -35,7 +35,7 @@ const LobbyPage: FC = () => {
                     const rooms = await response.data;
                     setRooms(rooms);
                 } else {
-                    console.log("Error from fetching rooms");
+                    console.log('Error from fetching rooms');
                 }
             } catch (error) {
                 console.log(error);
@@ -60,15 +60,15 @@ const LobbyPage: FC = () => {
     };
 
     const handleOnPlayNowBtnClick = () => {
-        console.log("Join a random public room!");
+        console.log('Join a random public room!');
     };
 
     const handleOnCreateRoomBtnClick = () => {
         const dataBody = { username: username };
 
-        fetch("http://localhost:3000/room", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+        fetch('http://localhost:3000/room', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dataBody),
         })
             .then(function (response: Response) {
@@ -89,33 +89,33 @@ const LobbyPage: FC = () => {
 
     const columns: ColumnsType<RoomStatus> = [
         {
-            title: "Room ID",
-            dataIndex: "roomId",
-            align: "center",
+            title: 'Room ID',
+            dataIndex: 'roomId',
+            align: 'center',
         },
         {
-            title: "Seats",
-            dataIndex: "seats",
-            align: "center",
+            title: 'Seats',
+            dataIndex: 'seats',
+            align: 'center',
         },
         {
-            title: "Status",
-            dataIndex: "status",
-            align: "center",
+            title: 'Status',
+            dataIndex: 'status',
+            align: 'center',
             render: (status: boolean) =>
-                status ? "In progress" : "Waiting for players",
+                status ? 'In progress' : 'Waiting for players',
         },
         {
-            title: "Join",
-            dataIndex: "",
-            align: "center",
+            title: 'Join',
+            dataIndex: '',
+            align: 'center',
             render: (_, record: RoomStatus) => (
                 <Link to={`/Room/${record.roomId}`}>
                     <Button
                         type="primary"
                         style={{
-                            backgroundColor: "#FED382",
-                            color: "#000000",
+                            backgroundColor: '#FED382',
+                            color: '#000000',
                         }}
                     >
                         Join
@@ -136,7 +136,7 @@ const LobbyPage: FC = () => {
                                 width: 175,
                                 height: 75,
                                 fontSize: 40,
-                                marginTop: "25px",
+                                marginTop: '25px',
                             }}
                         >
                             <RollbackOutlined />
@@ -153,7 +153,7 @@ const LobbyPage: FC = () => {
                             alt="logo"
                         />
                         <Typography
-                            style={{ fontSize: 40, fontWeight: "bold" }}
+                            style={{ fontSize: 40, fontWeight: 'bold' }}
                         >
                             Draw & Guess
                         </Typography>
@@ -161,8 +161,8 @@ const LobbyPage: FC = () => {
                     <Typography
                         style={{
                             fontSize: 25,
-                            fontWeight: "bold",
-                            textAlign: "center",
+                            fontWeight: 'bold',
+                            textAlign: 'center',
                         }}
                     >
                         Select a room to join
@@ -173,19 +173,19 @@ const LobbyPage: FC = () => {
                         size="large"
                         allowClear
                         onChange={handleSearchOnchange}
-                        style={{ width: 250, float: "right", marginTop: 25 }}
+                        style={{ width: 250, float: 'right', marginTop: 25 }}
                     />
                     <Table
                         style={{
                             width: 800,
                             marginTop: 25,
                             borderRadius: 10,
-                            boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.25)",
+                            boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.25)',
                         }}
                         columns={columns}
                         dataSource={rooms}
                         rowClassName={(record, index) =>
-                            index % 2 === 0 ? "row-even" : "row-odd"
+                            index % 2 === 0 ? 'row-even' : 'row-odd'
                         }
                     />
 
