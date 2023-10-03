@@ -1,1 +1,1 @@
-export * from './wordBank.js';
+export * from './word-bank.js';

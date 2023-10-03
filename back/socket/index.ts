@@ -1,3 +1,3 @@
-export * from './canvasEventHandler.js';
-export * from './chatEventHandler.js';
-export * from './playerListUpdateHandler.js';
+export * from './canvas-event-handlers.js';
+export * from './chat-event-handlers.js';
+export * from './player-list-update-handlers.js';
