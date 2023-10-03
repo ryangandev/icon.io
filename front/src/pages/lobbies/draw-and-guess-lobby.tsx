@@ -6,7 +6,7 @@ import icon from '../../assets/Game-Icon.png';
 import type { ColumnsType } from 'antd/es/table';
 import axios from 'axios';
 import '../../styles/LobbyPage.css';
-import RoomCreateModal from '../../components/RoomCreateModal';
+import RoomCreateModal from '../../components/create-room-modal';
 
 interface RoomStatus {
     roomId: string;

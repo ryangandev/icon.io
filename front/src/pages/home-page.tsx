@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import { Button, Space } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-import GameSelect from '../components/GameSelect';
+import GameSelect from '../components/game-select-container';
 import '../styles/pages/Home.css';
 import toast from 'react-hot-toast';
 import { useSocket } from '../hooks/useSocket';

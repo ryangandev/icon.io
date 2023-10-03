@@ -1,8 +1,8 @@
-import ColorPalette from './ColorPalette';
+import ColorPalette from './color-palette';
 import '../styles/Toolbar.css';
 import { DeleteOutlined, RollbackOutlined } from '@ant-design/icons';
 import { Button, Space } from 'antd';
-import BrushPicker from './BrushPicker';
+import BrushPicker from './brush-picker';
 
 interface ToolBarProps {
     brushSizes: { [key: string]: number };

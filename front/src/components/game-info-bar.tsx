@@ -2,7 +2,7 @@ import '../styles/GameInfoBar.css';
 import { Button } from 'antd';
 import { ClockCircleOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useState } from 'react';
-import TimerTicks from '../helper-functions/TimerTicks';
+import TimerTicks from '../helper-functions/time-ticks';
 import { useSocket } from '../hooks/useSocket';
 
 interface GameInfoBarProps {

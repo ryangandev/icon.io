@@ -1,9 +1,9 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import CanvasDrawing from '../../components/CanvasDrawing';
-import ChatWindow from '../../components/ChatWindow';
-import PlayerInfoContainer from '../../components/PlayerInfoContainer';
-import GameInfoBar from '../../components/GameInfoBar';
+import CanvasDrawing from '../../components/drawable-canvas';
+import ChatWindow from '../../components/chat-window';
+import PlayerInfoContainer from '../../components/player-info-container';
+import GameInfoBar from '../../components/game-info-bar';
 import { Modal } from 'antd';
 import '../../styles/RoomPage.css';
 import { Button } from 'antd';

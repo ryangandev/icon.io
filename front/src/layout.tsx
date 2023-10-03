@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import AppLogo from './components/AppLogo';
+import AppLogo from './components/app-logo';
 import { Toaster } from 'react-hot-toast';
 
 const Layout = () => {

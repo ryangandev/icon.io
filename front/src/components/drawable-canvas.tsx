@@ -1,9 +1,9 @@
 import React, { FC, useState, useEffect, useRef } from 'react';
-import Toolbar from './Toolbar';
+import Toolbar from './tool-bar';
 import {
     imageDataToDataURL,
     dataURLToImageData,
-} from '../helper-functions/ImgDataAndUrlConversion';
+} from '../helper-functions/image-data-and-url-conversion';
 import { useSocket } from '../hooks/useSocket';
 
 interface BrushOptions {
