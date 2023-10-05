@@ -1,31 +1,107 @@
 import { useEffect, useState, FC } from 'react';
 import { Button, Space, Input, Typography, Table } from 'antd';
-import { RollbackOutlined } from '@ant-design/icons';
-import { Link, useNavigate, NavigateFunction } from 'react-router-dom';
+import {
+    RollbackOutlined,
+    RightCircleOutlined,
+    LockOutlined,
+    UnlockOutlined,
+} from '@ant-design/icons';
+import { Link, useNavigate } from 'react-router-dom';
 import icon from '../../assets/Game-Icon.png';
 import type { ColumnsType } from 'antd/es/table';
 import axios from 'axios';
 import RoomCreateModal from '../../components/create-room-modal';
 import '../../styles/pages/lobbies/draw-and-guess-lobby.css';
 
-interface RoomStatus {
+interface RoomInfo {
     roomId: string;
-    seats: string;
-    status: string;
+    roomName: string;
+    roomType: 'locked' | 'unlocked';
+    numberOfSeatsTaken: number;
+    totalSeats: number;
+    owner: string;
+    status: 'open' | 'full' | 'in progress';
 }
-
-// don't throw error if status code not 200 level
-axios.defaults.validateStatus = () => true;
+const roomList: RoomInfo[] = [
+    {
+        roomId: '1',
+        roomName: 'Room2222222 Alpha',
+        roomType: 'unlocked',
+        numberOfSeatsTaken: 3,
+        totalSeats: 6,
+        owner: 'Alice',
+        status: 'open',
+    },
+    {
+        roomId: '2',
+        roomName: 'Room Bravo',
+        roomType: 'unlocked',
+        numberOfSeatsTaken: 5,
+        totalSeats: 5,
+        owner: 'Bob',
+        status: 'full',
+    },
+    {
+        roomId: '3',
+        roomName: 'Room Charlie',
+        roomType: 'unlocked',
+        numberOfSeatsTaken: 2,
+        totalSeats: 4,
+        owner: 'Charlie',
+        status: 'in progress',
+    },
+    {
+        roomId: '4',
+        roomName: 'Room Delta',
+        roomType: 'locked',
+        numberOfSeatsTaken: 0,
+        totalSeats: 6,
+        owner: 'Dave',
+        status: 'open',
+    },
+    {
+        roomId: '5',
+        roomName: 'Room Alpha',
+        roomType: 'locked',
+        numberOfSeatsTaken: 3,
+        totalSeats: 6,
+        owner: 'Alice',
+        status: 'open',
+    },
+    {
+        roomId: '6',
+        roomName: 'Room Bravo',
+        roomType: 'locked',
+        numberOfSeatsTaken: 5,
+        totalSeats: 5,
+        owner: 'Bob',
+        status: 'full',
+    },
+    {
+        roomId: '7',
+        roomName: 'Room Charlie',
+        roomType: 'locked',
+        numberOfSeatsTaken: 2,
+        totalSeats: 4,
+        owner: 'Charlie',
+        status: 'in progress',
+    },
+    {
+        roomId: '8',
+        roomName: 'Room Delta',
+        roomType: 'locked',
+        numberOfSeatsTaken: 0,
+        totalSeats: 6,
+        owner: 'Dave',
+        status: 'open',
+    },
+    // ... (more rooms)
+];
 
 const LobbyPage: FC = () => {
-    const { Search } = Input;
-    const [rooms, setRooms] = useState<RoomStatus[]>([]);
-    const [search, setSearch] = useState<number>();
-    const [createResponseMessage, setCreateResponseMessage] =
-        useState<string>('');
-
-    const username = localStorage.getItem('username');
-    const navigate: NavigateFunction = useNavigate();
+    const [rooms, setRooms] = useState<RoomInfo[]>([]);
+    const username = sessionStorage.getItem('username');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchRooms = async () => {
@@ -52,12 +128,7 @@ const LobbyPage: FC = () => {
         return () => {
             clearInterval(intervalId);
         };
-    }, [search]);
-
-    const handleSearchOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        setSearch(Number(e.target.value));
-    };
+    }, []);
 
     const handleOnPlayNowBtnClick = () => {
         console.log('Join a random public room!');
@@ -78,41 +149,93 @@ const LobbyPage: FC = () => {
                     });
                 } else {
                     response.json().then(function ({ error }) {
-                        setCreateResponseMessage(error);
+                        console.log(error);
                     });
                 }
             })
             .catch(function (error: any) {
-                setCreateResponseMessage(error);
+                console.log(error);
             });
     };
 
-    const columns: ColumnsType<RoomStatus> = [
+    const columns: ColumnsType<RoomInfo> = [
         {
-            title: 'Room ID',
-            dataIndex: 'roomId',
-            align: 'center',
+            title: 'Room Name',
+            dataIndex: 'roomName',
+            key: 'roomName',
+            width: 200,
         },
         {
-            title: 'Seats',
-            dataIndex: 'seats',
-            align: 'center',
+            title: 'Owner',
+            dataIndex: 'owner',
+            key: 'owner',
+            width: 150,
         },
         {
             title: 'Status',
             dataIndex: 'status',
+            key: 'status',
             align: 'center',
-            render: (status: boolean) =>
-                status ? 'In progress' : 'Waiting for players',
+            render: (_, record: RoomInfo) => (
+                <>
+                    {record.status === 'open' ? (
+                        <Typography.Text style={{ color: 'green' }}>
+                            Open
+                        </Typography.Text>
+                    ) : record.status === 'full' ? (
+                        <Typography.Text style={{ color: 'red' }}>
+                            Full
+                        </Typography.Text>
+                    ) : (
+                        <Typography.Text style={{ color: 'orange' }}>
+                            In Progress
+                        </Typography.Text>
+                    )}
+                </>
+            ),
+            width: 150,
         },
         {
-            title: 'Join',
-            dataIndex: '',
+            title: 'Seats',
+            key: 'seats',
             align: 'center',
-            render: (_, record: RoomStatus) => (
+            width: 150,
+            render: (_, record: RoomInfo) =>
+                `${record.numberOfSeatsTaken} / ${record.totalSeats}`,
+        },
+        {
+            title: 'Room Type',
+            dataIndex: 'roomType',
+            key: 'roomType',
+            align: 'center',
+            render: (_, record: RoomInfo) => (
+                <>
+                    {record.roomType === 'locked' ? (
+                        <LockOutlined
+                            style={{ fontSize: '16px', color: 'red' }}
+                        />
+                    ) : (
+                        <UnlockOutlined
+                            style={{ fontSize: '16px', color: 'green' }}
+                        />
+                    )}
+                </>
+            ),
+            width: 150,
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            align: 'center',
+            width: 100,
+            render: (_, record: RoomInfo) => (
                 <Link to={`/Room/${record.roomId}`}>
                     <Button
                         type="primary"
+                        disabled={
+                            record.status !== 'open' ||
+                            record.numberOfSeatsTaken >= record.totalSeats
+                        }
                         style={{
                             backgroundColor: '#FED382',
                             color: '#000000',
@@ -126,90 +249,73 @@ const LobbyPage: FC = () => {
     ];
 
     return (
-        <>
+        <div className="lobby-layout">
             <div className="lobby-container">
-                <div className="header-container">
-                    <Link to="/Home">
-                        <Button
-                            type="text"
-                            style={{
-                                width: 175,
-                                height: 75,
-                                fontSize: 40,
-                                marginTop: '25px',
-                            }}
-                        >
-                            <RollbackOutlined />
-                            Back
-                        </Button>
-                    </Link>
-                </div>
-
-                <div className="room-select-container">
-                    <Space style={{ marginBottom: 50 }}>
-                        <img
-                            style={{ width: 60, height: 60, marginRight: 20 }}
-                            src={icon}
-                            alt="logo"
-                        />
-                        <Typography
-                            style={{ fontSize: 40, fontWeight: 'bold' }}
-                        >
-                            Draw & Guess
-                        </Typography>
-                    </Space>
-                    <Typography
-                        style={{
-                            fontSize: 25,
-                            fontWeight: 'bold',
-                            textAlign: 'center',
-                        }}
-                    >
-                        Select a room to join
+                <Space
+                    size="large"
+                    direction="horizontal"
+                    align="center"
+                    className="draw-and-guess-lobby-header"
+                >
+                    <img
+                        className="draw-and-guess-lobby-header-icon"
+                        src={icon}
+                        alt="logo"
+                    />
+                    <Typography className="draw-and-guess-lobby-header-text">
+                        Draw & Guess
                     </Typography>
+                </Space>
 
-                    <Search
-                        placeholder="Search Room by ID"
-                        size="large"
-                        allowClear
-                        onChange={handleSearchOnchange}
-                        style={{ width: 250, float: 'right', marginTop: 25 }}
-                    />
-                    <Table
-                        style={{
-                            width: 800,
-                            marginTop: 25,
-                            borderRadius: 10,
-                            boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.25)',
-                        }}
-                        columns={columns}
-                        dataSource={rooms}
-                        rowClassName={(record, index) =>
-                            index % 2 === 0 ? 'row-even' : 'row-odd'
-                        }
+                <Space
+                    size={'middle'}
+                    className="draw-and-guess-lobby-btn-group"
+                >
+                    <Button
+                        type="primary"
+                        className="action-button"
+                        ghost
+                        onClick={handleOnPlayNowBtnClick}
+                        icon={<RightCircleOutlined />}
+                    >
+                        Play Now!
+                    </Button>
+
+                    <RoomCreateModal
+                        handleOnCreateRoomBtnClick={handleOnCreateRoomBtnClick}
                     />
 
-                    <Space>
-                        <Button
-                            type="primary"
-                            className="action-button"
-                            onClick={handleOnPlayNowBtnClick}
-                        >
-                            Play Now!
-                        </Button>
+                    <Button
+                        type="primary"
+                        className="action-button"
+                        danger
+                        ghost
+                        onClick={() => navigate('/')}
+                        icon={<RollbackOutlined />}
+                    >
+                        Back
+                    </Button>
+                </Space>
 
-                        <RoomCreateModal
-                            handleOnCreateRoomBtnClick={
-                                handleOnCreateRoomBtnClick
-                            }
-                        />
-                    </Space>
-                    <Space>
-                        <p>{createResponseMessage}</p>
-                    </Space>
-                </div>
+                <Table
+                    className="draw-and-guess-lobby-info-table"
+                    columns={columns}
+                    dataSource={roomList}
+                    footer={() => (
+                        <div className="draw-and-guess-lobby-info-table-footer">
+                            Total Rooms: {roomList.length}
+                        </div>
+                    )}
+                    // pagination={false}
+                    bordered
+                    rowKey={(record) => record.roomId}
+                    scroll={{ y: 400 }} // table max height
+                    rowClassName={(record, index) =>
+                        index % 2 === 0 ? 'row-even' : 'row-odd'
+                    }
+                />
             </div>
-        </>
+        </div>
     );
 };
 

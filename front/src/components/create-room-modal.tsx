@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
 import { Button, Modal } from 'antd';
+import { PlusCircleOutlined } from '@ant-design/icons';
 import '../styles/pages/lobbies/draw-and-guess-lobby.css';
 
 interface RoomCreateModalProps {
@@ -37,8 +38,10 @@ const RoomCreateModal: FC<RoomCreateModalProps> = (
         <>
             <Button
                 type="primary"
+                ghost
                 className="action-button"
                 onClick={showModal}
+                icon={<PlusCircleOutlined />}
             >
                 Create Room
             </Button>
