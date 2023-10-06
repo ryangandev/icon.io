@@ -1,14 +1,7 @@
-function generateRoomId(): string {
-    let id = '';
-    let possibleChars =
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (let i = 0; i < 6; i++) {
-        id += possibleChars.charAt(
-            Math.floor(Math.random() * possibleChars.length),
-        );
-    }
+import { v4 as uuidv4 } from 'uuid';
 
-    return id;
+function generateRoomId(): string {
+    return uuidv4();
 }
 
 function getRandomInt(min: number, max: number) {
