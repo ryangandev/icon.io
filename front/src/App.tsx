@@ -6,6 +6,7 @@ import DrawAndGuessLobby from './pages/lobbies/draw-and-guess-lobby';
 import DrawAndGuessRoom from './pages/rooms/draw-and-guess-room';
 import NotFound from './pages/not-found-page';
 import { SocketProvider } from './providers/socket-provider';
+import ValidateAuth from './components/validate-auth';
 
 export default function App() {
     return (
@@ -16,12 +17,17 @@ export default function App() {
                         {/* Page Components */}
                         <Route index element={<Landing />} />
                         <Route path="/Landing" element={<Landing />} />
-                        <Route path="/Home" element={<Home />} />
-                        <Route path="/Lobby" element={<DrawAndGuessLobby />} />
-                        <Route
-                            path="/Room/:roomId"
-                            element={<DrawAndGuessRoom />}
-                        />
+                        <Route element={<ValidateAuth />}>
+                            <Route path="/Home" element={<Home />} />
+                            <Route
+                                path="/Lobby"
+                                element={<DrawAndGuessLobby />}
+                            />
+                            <Route
+                                path="/Room/:roomId"
+                                element={<DrawAndGuessRoom />}
+                            />
+                        </Route>
                         <Route path="*" element={<NotFound />} />
                     </Route>
                 </Routes>

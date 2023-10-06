@@ -13,27 +13,23 @@ const HomePage: FC = () => {
     const { socket } = useSocket();
 
     useEffect(() => {
-        if (!username) {
-            setTimeout(() => {
-                navigate('/Landing');
-                toast.error('You have to enter a username before playing!');
-            }, 100);
+        if (socket.connected) {
+            console.log(
+                'socket is currently connected; connected socket id is: ',
+                socket.id,
+            );
         } else {
-            if (socket.connected) {
-                console.log('socket is currently connected');
-            } else {
-                console.log('socket is not connected, trying to connect...');
-                try {
-                    socket.connect();
-                    socket.on('connect', () => {
-                        console.log('connected, socket id is: ', socket.id);
-                    });
-                } catch (err) {
-                    console.log('error connecting socket: ', err);
-                }
+            console.log('socket is not connected, trying to connect...');
+            try {
+                socket.connect();
+                socket.on('connect', () => {
+                    console.log('connected, socket id is: ', socket.id);
+                });
+            } catch (err) {
+                console.log('error connecting socket: ', err);
             }
-            toast.success(`Welcome, ${username}!`);
         }
+        toast.success(`Welcome, ${username}!`);
 
         socket.on('connect_error', (error) => {
             console.log('Connection Error:', error);
@@ -82,7 +78,7 @@ const HomePage: FC = () => {
                     </div>
 
                     <h2 className="home-game-select-text">
-                        SELECT A GAME TO PLAY
+                        Select a game to play!
                     </h2>
                     <Space
                         className="home-games-section-layout"
