@@ -4,6 +4,16 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import * as url from 'url';
 import path from 'path';
+import {
+    CreateDrawAndGuessRoomRequestBody,
+    DrawAndGuessDetailRoomInfo,
+    PlayerInfo,
+} from './models/types.js';
+import {
+    generateRoomId,
+    getDrawAndGuessLobbyRoomInfo,
+    getRoomStatus,
+} from './libs/utils.js';
 
 const app = express();
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
@@ -20,12 +30,77 @@ const io = new Server(server, {
     },
 });
 
+let drawAndGuessDetailRoomInfoList: Record<string, DrawAndGuessDetailRoomInfo> =
+    {};
+
 io.on('connection', (socket) => {
-    console.log('a user connected: ' + socket.id);
+    console.log('a user is connected: ' + socket.id);
 
     socket.on('disconnect', () => {
         console.log('client: ' + socket.id + ' disconnected');
     });
+
+    socket.on('clientJoinDrawAndGuessLobby', () => {
+        console.log('client: ' + socket.id + ' joined draw and guess lobby');
+        const drawAndGuessLobbySimplifiedRoomList = Object.values(
+            drawAndGuessDetailRoomInfoList,
+        ).map(getDrawAndGuessLobbyRoomInfo);
+
+        socket.emit(
+            'updateDrawAndGuessLobbyRoomList',
+            drawAndGuessLobbySimplifiedRoomList,
+        );
+    });
+
+    socket.on(
+        'createDrawAndGuessRoom',
+        (request: CreateDrawAndGuessRoomRequestBody) => {
+            const {
+                roomName,
+                ownerUsername,
+                maxSize,
+                isPrivate,
+                password,
+                maxRound,
+            } = request;
+            const roomId = generateRoomId();
+            const owner: PlayerInfo = {
+                username: ownerUsername,
+                score: 0,
+            };
+
+            const newDrawAndGuessRoom: DrawAndGuessDetailRoomInfo = {
+                roomId,
+                roomName,
+                owner,
+                status: getRoomStatus(1, maxSize),
+                currentSize: 1,
+                maxSize,
+                maxRound,
+                isPrivate,
+                password,
+                playerList: {
+                    [socket.id]: owner,
+                },
+                currentDrawer: socket.id,
+                currentWord: '',
+                currentRound: 1,
+                isGameStarted: false,
+                isGameEnded: false,
+            };
+
+            drawAndGuessDetailRoomInfoList[roomId] = newDrawAndGuessRoom;
+
+            const drawAndGuessLobbySimplifiedRoomList = Object.values(
+                drawAndGuessDetailRoomInfoList,
+            ).map(getDrawAndGuessLobbyRoomInfo);
+
+            io.emit(
+                'updateDrawAndGuessLobbyRoomList',
+                drawAndGuessLobbySimplifiedRoomList,
+            );
+        },
+    );
 });
 
 app.get('/', (req: Request, res: Response) => {
