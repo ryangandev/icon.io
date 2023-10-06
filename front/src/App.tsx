@@ -7,6 +7,7 @@ import DrawAndGuessRoom from './pages/rooms/draw-and-guess-room';
 import NotFound from './pages/not-found-page';
 import { SocketProvider } from './providers/socket-provider';
 import ValidateAuth from './components/validate-auth';
+import RequireSocket from './components/require-socket';
 
 export default function App() {
     return (
@@ -19,14 +20,16 @@ export default function App() {
                         <Route path="/Landing" element={<Landing />} />
                         <Route element={<ValidateAuth />}>
                             <Route path="/Gamehub" element={<Gamehub />} />
-                            <Route
-                                path="/Lobby"
-                                element={<DrawAndGuessLobby />}
-                            />
-                            <Route
-                                path="/Room/:roomId"
-                                element={<DrawAndGuessRoom />}
-                            />
+                            <Route element={<RequireSocket />}>
+                                <Route
+                                    path="/Lobby"
+                                    element={<DrawAndGuessLobby />}
+                                />
+                                <Route
+                                    path="/Room/:roomId"
+                                    element={<DrawAndGuessRoom />}
+                                />
+                            </Route>
                         </Route>
                         <Route path="*" element={<NotFound />} />
                     </Route>
