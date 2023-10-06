@@ -14,7 +14,7 @@ const Landing: FC = () => {
 
     useEffect(() => {
         if (name.trim() !== '') {
-            navigate('/Home');
+            navigate('/Gamehub');
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [navigate]);
@@ -31,7 +31,7 @@ const Landing: FC = () => {
             return;
         } else {
             sessionStorage.setItem('username', name);
-            navigate('/Home');
+            navigate('/Gamehub');
         }
     };
 

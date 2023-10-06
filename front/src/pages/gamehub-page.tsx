@@ -2,12 +2,12 @@ import { FC, useEffect } from 'react';
 import { Button, Space } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import GameSelect from '../components/game-select-container';
-import '../styles/pages/home-page.css';
+import '../styles/pages/gamehub-page.css';
 import toast from 'react-hot-toast';
 import { useSocket } from '../hooks/useSocket';
 import { GameData } from '../data/game';
 
-const HomePage: FC = () => {
+const GamehubPage: FC = () => {
     const username = sessionStorage.getItem('username');
     const navigate = useNavigate();
     const { socket } = useSocket();
@@ -60,9 +60,9 @@ const HomePage: FC = () => {
             {!username ? (
                 <div>Redirecting...</div>
             ) : (
-                <div className="home-layout">
-                    <div className="home-header">
-                        <span className="home-header-text">
+                <div className="gamehub-layout">
+                    <div className="gamehub-header">
+                        <span className="gamehub-header-text">
                             {' '}
                             Welcome, {username}!
                         </span>
@@ -71,17 +71,17 @@ const HomePage: FC = () => {
                             ghost
                             danger
                             onClick={handleLogout}
-                            className="home-header-logout-btn"
+                            className="gamehub-header-logout-btn"
                         >
                             Log out
                         </Button>
                     </div>
 
-                    <h2 className="home-game-select-text">
+                    <h2 className="gamehub-game-select-text">
                         Select a game to play!
                     </h2>
                     <Space
-                        className="home-games-section-layout"
+                        className="gamehub-games-section-layout"
                         size={50}
                         wrap={true}
                         align="center"
@@ -103,4 +103,4 @@ const HomePage: FC = () => {
     );
 };
 
-export default HomePage;
+export default GamehubPage;

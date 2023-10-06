@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './layout';
 import Landing from './pages/landing-page';
-import Home from './pages/home-page';
+import Gamehub from './pages/gamehub-page';
 import DrawAndGuessLobby from './pages/lobbies/draw-and-guess-lobby';
 import DrawAndGuessRoom from './pages/rooms/draw-and-guess-room';
 import NotFound from './pages/not-found-page';
@@ -18,7 +18,7 @@ export default function App() {
                         <Route index element={<Landing />} />
                         <Route path="/Landing" element={<Landing />} />
                         <Route element={<ValidateAuth />}>
-                            <Route path="/Home" element={<Home />} />
+                            <Route path="/Gamehub" element={<Gamehub />} />
                             <Route
                                 path="/Lobby"
                                 element={<DrawAndGuessLobby />}
