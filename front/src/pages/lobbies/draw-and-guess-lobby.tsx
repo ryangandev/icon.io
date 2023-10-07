@@ -1,78 +1,51 @@
-import { useEffect, useState, FC } from 'react';
-import { Button, Space, Input, Typography, Table } from 'antd';
+import { useEffect, useState } from 'react';
+import { Button, Space, Typography, Table } from 'antd';
 import {
     RollbackOutlined,
     RightCircleOutlined,
     LockOutlined,
     UnlockOutlined,
+    PlusCircleOutlined,
 } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import icon from '../../assets/Game-Icon.png';
 import type { ColumnsType } from 'antd/es/table';
-import RoomCreateModal from '../../components/create-room-modal';
+import RoomCreateForm from '../../components/room-create-form';
 import '../../styles/pages/lobbies/draw-and-guess-lobby.css';
 import { useSocket } from '../../hooks/useSocket';
+import { RoomCreateRequestBody, RoomInfo } from '../../models/types';
 
-type RoomStatus = 'open' | 'full' | 'in progress';
-
-interface PlayerInfo {
-    username: string;
-    socketId: string;
-    score: number;
-}
-
-interface RoomInfo {
-    roomId: string;
-    roomName: string;
-    owner: PlayerInfo;
-    status: RoomStatus;
-    currentSize: number;
-    maxSize: number;
-    maxRound: number;
-    isPrivate: boolean;
-}
-
-const LobbyPage: FC = () => {
+const DrawAndGuessLobby = () => {
     const { socket } = useSocket();
     const [roomList, setRoomList] = useState<RoomInfo[]>([]);
-    const username = sessionStorage.getItem('username');
+    const [formOpen, setFormOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         socket.emit('clientJoinDrawAndGuessLobby');
 
         socket.on('updateDrawAndGuessLobbyRoomList', (rooms: RoomInfo[]) => {
-            console.log('updateDrawAndGuessLobbyRoomList event received!');
+            console.log(
+                'updateDrawAndGuessLobbyRoomList event received! Current Rooms are: ',
+                rooms,
+            );
             setRoomList(rooms);
         });
-    }, []);
+
+        return () => {
+            socket.off('updateDrawAndGuessLobbyRoomList');
+        };
+    }, [socket]);
 
     const handleOnPlayNowBtnClick = () => {
         console.log('Join a random public room!');
     };
 
-    const handleOnCreateRoomBtnClick = () => {
-        const dataBody = { username: username };
+    const onCreate = (drawAndGuessRoomCreateRequest: RoomCreateRequestBody) => {
+        console.log('Received values of form: ', drawAndGuessRoomCreateRequest);
 
-        fetch('http://localhost:3000/room', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dataBody),
-        })
-            .then(function (response: Response) {
-                if (response.status === 200) {
-                    response.json().then(function ({ roomId }) {
-                        navigate(`/Room/${roomId}`);
-                    });
-                } else {
-                    response.json().then(function ({ error }) {
-                        console.log(error);
-                    });
-                }
-            })
-            .catch(function (error: any) {
-                console.log(error);
-            });
+        socket.emit('createDrawAndGuessRoom', drawAndGuessRoomCreateRequest);
+        setFormOpen(false);
     };
 
     return (
@@ -108,8 +81,20 @@ const LobbyPage: FC = () => {
                         Play Now!
                     </Button>
 
-                    <RoomCreateModal
-                        handleOnCreateRoomBtnClick={handleOnCreateRoomBtnClick}
+                    <Button
+                        type="primary"
+                        ghost
+                        onClick={() => {
+                            setFormOpen(true);
+                        }}
+                        icon={<PlusCircleOutlined />}
+                    >
+                        Create Room
+                    </Button>
+                    <RoomCreateForm
+                        open={formOpen}
+                        onCancel={() => setFormOpen(false)}
+                        onCreate={onCreate}
                     />
 
                     <Button
@@ -117,7 +102,7 @@ const LobbyPage: FC = () => {
                         className="action-button"
                         danger
                         ghost
-                        onClick={() => navigate('/')}
+                        onClick={() => navigate('/Gamehub')}
                         icon={<RollbackOutlined />}
                     >
                         Back
@@ -146,8 +131,6 @@ const LobbyPage: FC = () => {
     );
 };
 
-export default LobbyPage;
-
 const columns: ColumnsType<RoomInfo> = [
     {
         title: 'Room Name',
@@ -157,15 +140,17 @@ const columns: ColumnsType<RoomInfo> = [
     },
     {
         title: 'Owner',
-        dataIndex: 'owner',
         key: 'owner',
-        width: 150,
+        width: 175,
+        render: (_, record: RoomInfo) => (
+            <Typography.Text>{record.owner.username}</Typography.Text>
+        ),
     },
     {
         title: 'Status',
-        dataIndex: 'status',
         key: 'status',
         align: 'center',
+        width: 125,
         render: (_, record: RoomInfo) => (
             <>
                 {record.status === 'open' ? (
@@ -183,24 +168,31 @@ const columns: ColumnsType<RoomInfo> = [
                 )}
             </>
         ),
-        width: 150,
+    },
+    {
+        title: 'Rounds',
+        dataIndex: 'rounds',
+        key: 'rounds',
+        align: 'center',
+        width: 125,
     },
     {
         title: 'Seats',
         key: 'seats',
         align: 'center',
-        width: 150,
+        width: 125,
         render: (_, record: RoomInfo) =>
-            `${record.currentSize} / ${record.maxSize}`,
+            `${record.currentPlayerCount} / ${record.maxPlayers}`,
     },
     {
-        title: 'Room Type',
+        title: 'Password?',
         dataIndex: 'roomType',
         key: 'roomType',
         align: 'center',
+        width: 125,
         render: (_, record: RoomInfo) => (
             <>
-                {record.isPrivate ? (
+                {record.password ? (
                     <LockOutlined style={{ fontSize: '16px', color: 'red' }} />
                 ) : (
                     <UnlockOutlined
@@ -209,7 +201,6 @@ const columns: ColumnsType<RoomInfo> = [
                 )}
             </>
         ),
-        width: 150,
     },
     {
         title: 'Action',
@@ -222,7 +213,7 @@ const columns: ColumnsType<RoomInfo> = [
                     type="primary"
                     disabled={
                         record.status !== 'open' ||
-                        record.currentSize >= record.maxSize
+                        record.currentPlayerCount >= record.maxPlayers
                     }
                     style={{
                         backgroundColor: '#FED382',
@@ -235,3 +226,5 @@ const columns: ColumnsType<RoomInfo> = [
         ),
     },
 ];
+
+export default DrawAndGuessLobby;
