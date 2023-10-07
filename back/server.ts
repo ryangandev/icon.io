@@ -5,9 +5,9 @@ import cors from 'cors';
 import * as url from 'url';
 import path from 'path';
 import {
-    CreateDrawAndGuessRoomRequestBody,
     DrawAndGuessDetailRoomInfo,
     PlayerInfo,
+    RoomCreateRequestBody,
 } from './models/types.js';
 import {
     generateRoomId,
@@ -52,55 +52,45 @@ io.on('connection', (socket) => {
         );
     });
 
-    socket.on(
-        'createDrawAndGuessRoom',
-        (request: CreateDrawAndGuessRoomRequestBody) => {
-            const {
-                roomName,
-                ownerUsername,
-                maxSize,
-                isPrivate,
-                password,
-                maxRound,
-            } = request;
-            const roomId = generateRoomId();
-            const owner: PlayerInfo = {
-                username: ownerUsername,
-                score: 0,
-            };
+    socket.on('createDrawAndGuessRoom', (request: RoomCreateRequestBody) => {
+        const { roomName, ownerUsername, maxPlayers, rounds, password } =
+            request;
+        const roomId = generateRoomId();
+        const owner: PlayerInfo = {
+            username: ownerUsername,
+            score: 0,
+        };
 
-            const newDrawAndGuessRoom: DrawAndGuessDetailRoomInfo = {
-                roomId,
-                roomName,
-                owner,
-                status: getRoomStatus(1, maxSize),
-                currentSize: 1,
-                maxSize,
-                maxRound,
-                isPrivate,
-                password,
-                playerList: {
-                    [socket.id]: owner,
-                },
-                currentDrawer: socket.id,
-                currentWord: '',
-                currentRound: 1,
-                isGameStarted: false,
-                isGameEnded: false,
-            };
+        const newDrawAndGuessRoom: DrawAndGuessDetailRoomInfo = {
+            roomId,
+            roomName,
+            owner,
+            status: getRoomStatus(1, maxPlayers),
+            currentPlayerCount: 1,
+            maxPlayers,
+            rounds,
+            password,
+            playerList: {
+                [socket.id]: owner,
+            },
+            currentDrawer: socket.id,
+            currentWord: '',
+            currentRound: 1,
+            isGameStarted: false,
+            isGameEnded: false,
+        };
 
-            drawAndGuessDetailRoomInfoList[roomId] = newDrawAndGuessRoom;
+        drawAndGuessDetailRoomInfoList[roomId] = newDrawAndGuessRoom;
 
-            const drawAndGuessLobbySimplifiedRoomList = Object.values(
-                drawAndGuessDetailRoomInfoList,
-            ).map(getDrawAndGuessLobbyRoomInfo);
+        const drawAndGuessLobbySimplifiedRoomList = Object.values(
+            drawAndGuessDetailRoomInfoList,
+        ).map(getDrawAndGuessLobbyRoomInfo);
 
-            io.emit(
-                'updateDrawAndGuessLobbyRoomList',
-                drawAndGuessLobbySimplifiedRoomList,
-            );
-        },
-    );
+        io.emit(
+            'updateDrawAndGuessLobbyRoomList',
+            drawAndGuessLobbySimplifiedRoomList,
+        );
+    });
 });
 
 app.get('/', (req: Request, res: Response) => {
