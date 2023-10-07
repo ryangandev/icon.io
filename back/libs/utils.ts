@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import {
     DrawAndGuessDetailRoomInfo,
-    RoomInfoBase,
+    RoomInfo,
     RoomStatus,
 } from '../models/types.js';
 
@@ -29,16 +29,16 @@ const getRoomStatus = (
 
 const getDrawAndGuessLobbyRoomInfo = (
     drawAndGuessDetailRoomInfo: DrawAndGuessDetailRoomInfo,
-): RoomInfoBase => {
+): RoomInfo => {
     return {
         roomId: drawAndGuessDetailRoomInfo.roomId,
         roomName: drawAndGuessDetailRoomInfo.roomName,
         owner: drawAndGuessDetailRoomInfo.owner,
         status: drawAndGuessDetailRoomInfo.status,
-        currentSize: drawAndGuessDetailRoomInfo.currentSize,
-        maxSize: drawAndGuessDetailRoomInfo.maxSize,
-        maxRound: drawAndGuessDetailRoomInfo.maxRound,
-        isPrivate: drawAndGuessDetailRoomInfo.isPrivate,
+        currentPlayerCount: drawAndGuessDetailRoomInfo.currentPlayerCount,
+        maxPlayers: drawAndGuessDetailRoomInfo.maxPlayers,
+        rounds: drawAndGuessDetailRoomInfo.rounds,
+        password: drawAndGuessDetailRoomInfo.password,
     };
 };
 
