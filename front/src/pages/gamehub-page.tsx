@@ -1,5 +1,5 @@
 import { FC, useEffect } from 'react';
-import { Button, Space } from 'antd';
+import { Button, Space, Typography } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import GameSelect from '../components/game-select-container';
 import '../styles/pages/gamehub-page.css';
@@ -61,11 +61,11 @@ const GamehubPage: FC = () => {
                 <div>Redirecting...</div>
             ) : (
                 <div className="gamehub-layout">
-                    <div className="gamehub-header">
-                        <span className="gamehub-header-text">
+                    <Space size="large" className="gamehub-header">
+                        <Typography.Text className="gamehub-header-text">
                             {' '}
                             Welcome, {username}!
-                        </span>
+                        </Typography.Text>
                         <Button
                             type="default"
                             ghost
@@ -75,11 +75,14 @@ const GamehubPage: FC = () => {
                         >
                             Log out
                         </Button>
-                    </div>
+                    </Space>
 
-                    <h2 className="gamehub-game-select-text">
+                    <Typography.Title
+                        level={3}
+                        className="gamehub-game-select-text"
+                    >
                         Select a game to play!
-                    </h2>
+                    </Typography.Title>
                     <Space
                         className="gamehub-games-section-layout"
                         size={50}
