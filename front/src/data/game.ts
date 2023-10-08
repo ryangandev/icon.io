@@ -4,14 +4,14 @@ import minesweeper from '../assets/minesweeper-bg.png';
 const GameData = [
     {
         title: 'Draw & Guess',
-        navigateTo: '/Lobby',
+        navigateTo: '/Gamehub/DrawAndGuess/Lobby',
         thumbnailImg: draw,
         thumbnailBgColor: '#FFDFBF',
         isAvailable: true,
     },
     {
         title: 'Minesweeper',
-        navigateTo: '/Lobby',
+        navigateTo: '/Gamehub/Minesweeper/Lobby',
         thumbnailImg: minesweeper,
         thumbnailBgColor: '#A7A6BA',
         isAvailable: false,

@@ -18,15 +18,16 @@ export default function App() {
                         {/* Page Components */}
                         <Route index element={<Landing />} />
                         <Route path="/Landing" element={<Landing />} />
+
                         <Route element={<ValidateAuth />}>
                             <Route path="/Gamehub" element={<Gamehub />} />
                             <Route element={<RequireSocket />}>
                                 <Route
-                                    path="/Lobby"
+                                    path="/Gamehub/DrawAndGuess/Lobby"
                                     element={<DrawAndGuessLobby />}
                                 />
                                 <Route
-                                    path="/Room/:roomId"
+                                    path="/Gamehub/DrawAndGuess/Room/:roomId"
                                     element={<DrawAndGuessRoom />}
                                 />
                             </Route>
