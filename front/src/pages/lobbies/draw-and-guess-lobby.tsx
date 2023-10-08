@@ -31,6 +31,14 @@ const DrawAndGuessLobby = () => {
             setRoomList(rooms);
         });
 
+        socket.on('createDrawAndGuessRoomSuccess', (room: RoomInfo) => {
+            console.log(
+                'createDrawAndGuessRoomSuccess event received! Room is: ',
+                room,
+            );
+            navigate(`/Gamehub/DrawAndGuess/Room/${room.roomId}`);
+        });
+
         return () => {
             socket.off('updateDrawAndGuessLobbyRoomList');
         };
@@ -190,7 +198,7 @@ const columns: ColumnsType<RoomInfo> = [
         align: 'center',
         width: 100,
         render: (_, record: RoomInfo) => (
-            <Link to={`/Room/${record.roomId}`}>
+            <Link to={`/Gamehub/DrawAndGuess/Room/${record.roomId}`}>
                 <Button
                     type="primary"
                     disabled={

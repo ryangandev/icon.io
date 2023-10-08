@@ -82,6 +82,8 @@ io.on('connection', (socket) => {
 
         drawAndGuessDetailRoomInfoList[roomId] = newDrawAndGuessRoom;
 
+        console.log('new room created', JSON.stringify(newDrawAndGuessRoom));
+
         const drawAndGuessLobbySimplifiedRoomList = Object.values(
             drawAndGuessDetailRoomInfoList,
         ).map(getDrawAndGuessLobbyRoomInfo);
@@ -89,6 +91,11 @@ io.on('connection', (socket) => {
         io.emit(
             'updateDrawAndGuessLobbyRoomList',
             drawAndGuessLobbySimplifiedRoomList,
+        );
+
+        socket.emit(
+            'createDrawAndGuessRoomSuccess',
+            getDrawAndGuessLobbyRoomInfo(newDrawAndGuessRoom),
         );
     });
 });
