@@ -1,12 +1,4 @@
-.lobby-layout {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    position: relative;
-}
-
-.lobby-layout::before {
+.draw-and-guess-lobby-layout::before {
     content: '';
     position: absolute;
     top: 0;
@@ -21,17 +13,16 @@
     z-index: -1;
 }
 
-.lobby-container {
+.draw-and-guess-lobby-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 1000px;
-    padding: 0 20px;
+    padding: 0 20px 20px 20px;
 }
 
 .draw-and-guess-lobby-header {
     margin-top: 30px;
-    margin-bottom: 60px;
+    margin-bottom: 40px;
     align-items: start;
 }
 
@@ -54,6 +45,7 @@
 }
 
 .draw-and-guess-lobby-info-table {
+    max-width: 1000px;
     background-color: transparent;
 }
 
@@ -75,6 +67,3 @@
 .ant-table-thead > tr > th {
     background-color: antiquewhite !important;
 }
-
-/* .ant-table-footer {
-} */

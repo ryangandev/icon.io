@@ -2,14 +2,13 @@ import { useEffect, useState } from 'react';
 import { Button, Space, Typography, Table } from 'antd';
 import {
     RollbackOutlined,
-    RightCircleOutlined,
     LockOutlined,
     UnlockOutlined,
     PlusCircleOutlined,
 } from '@ant-design/icons';
+import type { ColumnsType } from 'antd/es/table';
 import { Link, useNavigate } from 'react-router-dom';
 import icon from '../../assets/Game-Icon.png';
-import type { ColumnsType } from 'antd/es/table';
 import RoomCreateForm from '../../components/room-create-form';
 import '../../styles/pages/lobbies/draw-and-guess-lobby.css';
 import { useSocket } from '../../hooks/useSocket';
@@ -37,10 +36,6 @@ const DrawAndGuessLobby = () => {
         };
     }, [socket]);
 
-    const handleOnPlayNowBtnClick = () => {
-        console.log('Join a random public room!');
-    };
-
     const onCreate = (drawAndGuessRoomCreateRequest: RoomCreateRequestBody) => {
         console.log('Received values of form: ', drawAndGuessRoomCreateRequest);
 
@@ -49,8 +44,8 @@ const DrawAndGuessLobby = () => {
     };
 
     return (
-        <div className="lobby-layout">
-            <div className="lobby-container">
+        <div className="draw-and-guess-lobby-layout">
+            <div className="draw-and-guess-lobby-container">
                 <Space
                     size="large"
                     direction="horizontal"
@@ -62,9 +57,9 @@ const DrawAndGuessLobby = () => {
                         src={icon}
                         alt="logo"
                     />
-                    <Typography className="draw-and-guess-lobby-header-text">
+                    <Typography.Text className="draw-and-guess-lobby-header-text">
                         Draw & Guess
-                    </Typography>
+                    </Typography.Text>
                 </Space>
 
                 <Space
@@ -73,17 +68,6 @@ const DrawAndGuessLobby = () => {
                 >
                     <Button
                         type="primary"
-                        className="action-button"
-                        ghost
-                        onClick={handleOnPlayNowBtnClick}
-                        icon={<RightCircleOutlined />}
-                    >
-                        Play Now!
-                    </Button>
-
-                    <Button
-                        type="primary"
-                        ghost
                         onClick={() => {
                             setFormOpen(true);
                         }}
@@ -99,9 +83,7 @@ const DrawAndGuessLobby = () => {
 
                     <Button
                         type="primary"
-                        className="action-button"
                         danger
-                        ghost
                         onClick={() => navigate('/Gamehub')}
                         icon={<RollbackOutlined />}
                     >
@@ -215,10 +197,6 @@ const columns: ColumnsType<RoomInfo> = [
                         record.status !== 'open' ||
                         record.currentPlayerCount >= record.maxPlayers
                     }
-                    style={{
-                        backgroundColor: '#FED382',
-                        color: '#000000',
-                    }}
                 >
                     Join
                 </Button>

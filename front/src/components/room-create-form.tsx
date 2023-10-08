@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Input, Modal, Select } from 'antd';
+import { Input, Modal, Select, Typography } from 'antd';
 import '../styles/pages/lobbies/draw-and-guess-lobby.css';
 import { Form } from 'antd';
 import { RoomCreateRequestBody } from '../models/types';
@@ -16,7 +16,7 @@ const RoomCreateForm = ({ open, onCancel, onCreate }: RoomCreateFormProps) => {
     const [form] = Form.useForm();
     const username = sessionStorage.getItem('username');
     const defaultRoomCreateRequest: RoomCreateRequestBody = {
-        roomName: 'Creating a new room...',
+        roomName: username! + "'s Room",
         ownerUsername: username!,
         rounds: 2,
         maxPlayers: 8,
@@ -30,9 +30,9 @@ const RoomCreateForm = ({ open, onCancel, onCreate }: RoomCreateFormProps) => {
         <Modal
             open={open}
             title={
-                <span style={{ fontSize: 20, fontWeight: 600 }}>
+                <Typography.Text style={{ fontSize: 20, fontWeight: 600 }}>
                     Creating a new room
-                </span>
+                </Typography.Text>
             }
             okText="Create"
             cancelText="Cancel"
