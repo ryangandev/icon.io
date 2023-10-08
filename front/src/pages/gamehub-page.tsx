@@ -23,13 +23,13 @@ const GamehubPage: FC = () => {
             try {
                 socket.connect();
                 socket.on('connect', () => {
+                    toast.success(`Welcome, ${username}!`);
                     console.log('connected, socket id is: ', socket.id);
                 });
             } catch (err) {
                 console.log('error connecting socket: ', err);
             }
         }
-        toast.success(`Welcome, ${username}!`);
 
         socket.on('connect_error', (error) => {
             console.log('Connection Error:', error);
