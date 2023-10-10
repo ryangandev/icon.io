@@ -5,6 +5,11 @@ interface PlayerInfo {
     score: number;
 }
 
+interface OwnerInfo {
+    username: string;
+    socketId: string;
+}
+
 interface RoomCreateRequestBody {
     roomName: string;
     ownerUsername: string;
@@ -16,7 +21,7 @@ interface RoomCreateRequestBody {
 interface RoomInfo {
     roomId: string;
     roomName: string;
-    owner: PlayerInfo;
+    owner: OwnerInfo;
     status: RoomStatus;
     currentPlayerCount: number;
     maxPlayers: number;
@@ -35,8 +40,9 @@ interface DrawAndGuessDetailRoomInfo extends RoomInfo {
 
 export type {
     RoomStatus,
+    PlayerInfo,
+    OwnerInfo,
     RoomCreateRequestBody,
     RoomInfo,
-    PlayerInfo,
     DrawAndGuessDetailRoomInfo,
 };

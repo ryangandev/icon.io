@@ -1,5 +1,5 @@
 import { Server, Socket } from 'socket.io';
-import { DrawAndGuessDetailRoomInfo } from '../../models/types.js';
+import { DrawAndGuessDetailRoomInfo, OwnerInfo } from '../../models/types.js';
 import {
     getDrawAndGuessLobbyRoomInfo,
     getRoomStatus,
@@ -88,11 +88,30 @@ const roomEventsHandler = (
             currentRoom.currentPlayerCount = Object.keys(
                 currentRoom.playerList,
             ).length; // If app gets slow, use counter instead
-            currentRoom.status = getRoomStatus(
-                currentRoom.currentPlayerCount,
-                currentRoom.maxPlayers,
-                currentRoom.isGameStarted,
-            );
+
+            // If the room is empty, delete the room
+            if (currentRoom.currentPlayerCount === 0) {
+                delete drawAndGuessDetailRoomInfoList[roomId];
+            } else {
+                // If the leaving client is the owner, transfer ownership to the next client
+                if (currentRoom.owner.socketId === socket.id) {
+                    const newOwnerSocketId = Object.keys(
+                        currentRoom.playerList,
+                    )[0];
+                    const newOwnerInfo: OwnerInfo = {
+                        username:
+                            currentRoom.playerList[newOwnerSocketId].username,
+                        socketId: newOwnerSocketId,
+                    };
+                    currentRoom.owner = newOwnerInfo;
+                }
+
+                currentRoom.status = getRoomStatus(
+                    currentRoom.currentPlayerCount,
+                    currentRoom.maxPlayers,
+                    currentRoom.isGameStarted,
+                );
+            }
 
             socket.leave(roomId);
             socketInRooms[socket.id].delete(roomId);

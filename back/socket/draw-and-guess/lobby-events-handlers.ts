@@ -1,7 +1,7 @@
 import { Server, Socket } from 'socket.io';
 import {
     DrawAndGuessDetailRoomInfo,
-    PlayerInfo,
+    OwnerInfo,
     RoomCreateRequestBody,
 } from '../../models/types.js';
 import {
@@ -32,9 +32,9 @@ const lobbyEventsHandler = (
         const { roomName, ownerUsername, maxPlayers, rounds, password } =
             request;
         const roomId = generateRoomId();
-        const owner: PlayerInfo = {
+        const owner: OwnerInfo = {
             username: ownerUsername,
-            score: 0,
+            socketId: socket.id,
         };
 
         // Creating an new empty room
