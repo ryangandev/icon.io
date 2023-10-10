@@ -46,6 +46,7 @@ io.on('connection', (socket) => {
             drawAndGuessDetailRoomInfoList,
         ).map(getDrawAndGuessLobbyRoomInfo);
 
+        // Notify the current client that they joined the lobby and send the room list
         socket.emit(
             'updateDrawAndGuessLobbyRoomList',
             drawAndGuessLobbySimplifiedRoomList,
@@ -61,6 +62,7 @@ io.on('connection', (socket) => {
             score: 0,
         };
 
+        // Creating an new empty room
         const newDrawAndGuessRoom: DrawAndGuessDetailRoomInfo = {
             roomId,
             roomName,
@@ -86,11 +88,13 @@ io.on('connection', (socket) => {
             drawAndGuessDetailRoomInfoList,
         ).map(getDrawAndGuessLobbyRoomInfo);
 
+        // Notify all clients in the lobby that a new room has been created
         io.emit(
             'updateDrawAndGuessLobbyRoomList',
             drawAndGuessLobbySimplifiedRoomList,
         );
 
+        // Notify the current client that the room has been created
         socket.emit(
             'createDrawAndGuessRoomSuccess',
             getDrawAndGuessLobbyRoomInfo(newDrawAndGuessRoom),
@@ -100,45 +104,59 @@ io.on('connection', (socket) => {
     socket.on(
         'clientJoinDrawAndGuessRoom',
         (roomId: string, username: string) => {
-            if (!drawAndGuessDetailRoomInfoList[roomId]) {
-                socket.emit('roomError', true);
-                return;
+            try {
+                if (!drawAndGuessDetailRoomInfoList[roomId]) {
+                    throw new Error('Room does not exist.');
+                }
+
+                const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
+
+                if (currentRoom.status !== 'open') {
+                    throw new Error('Room is not open.');
+                }
+
+                if (currentRoom.password !== '') {
+                    throw new Error('Password is required.');
+                }
+
+                currentRoom.playerList[socket.id] = {
+                    username: username,
+                    score: 0,
+                };
+                currentRoom.currentPlayerCount = Object.keys(
+                    currentRoom.playerList,
+                ).length; // If app gets slow, use counter instead
+                currentRoom.status = getRoomStatus(
+                    currentRoom.currentPlayerCount,
+                    currentRoom.maxPlayers,
+                );
+
+                socket.join(roomId);
+                console.log('current room info: ', currentRoom);
+
+                const drawAndGuessLobbySimplifiedRoomList = Object.values(
+                    drawAndGuessDetailRoomInfoList,
+                ).map(getDrawAndGuessLobbyRoomInfo);
+
+                // Notify all clients in the lobby that a client has joined a room
+                io.emit(
+                    'updateDrawAndGuessLobbyRoomList',
+                    drawAndGuessLobbySimplifiedRoomList,
+                );
+
+                // Notify all clients in the room that a new client has joined
+                io.to(roomId).emit(
+                    'newClientJoinDrawAndGuessRoomSuccess',
+                    currentRoom,
+                );
+            } catch (error: any) {
+                console.error(error);
+                // Notify the current client that there was an error
+                socket.emit('roomError', {
+                    status: true,
+                    message: error.message,
+                });
             }
-
-            const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
-
-            if (currentRoom.status !== 'open') {
-                socket.emit('roomError', true);
-                return;
-            }
-
-            if (currentRoom.password !== '') {
-                socket.emit('passwordRequired', true);
-                return;
-            }
-
-            currentRoom.currentPlayerCount += 1;
-            currentRoom.status = getRoomStatus(
-                currentRoom.currentPlayerCount,
-                currentRoom.maxPlayers,
-            );
-            currentRoom.playerList[socket.id] = {
-                username: username,
-                score: 0,
-            };
-
-            console.log('current room info: ', currentRoom);
-
-            const drawAndGuessLobbySimplifiedRoomList = Object.values(
-                drawAndGuessDetailRoomInfoList,
-            ).map(getDrawAndGuessLobbyRoomInfo);
-
-            io.emit(
-                'updateDrawAndGuessLobbyRoomList',
-                drawAndGuessLobbySimplifiedRoomList,
-            );
-
-            socket.emit('joinDrawAndGuessRoomSuccess', currentRoom);
         },
     );
 });

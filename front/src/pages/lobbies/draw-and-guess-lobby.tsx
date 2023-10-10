@@ -13,6 +13,7 @@ import RoomCreateForm from '../../components/room-create-form';
 import '../../styles/pages/lobbies/draw-and-guess-lobby.css';
 import { useSocket } from '../../hooks/useSocket';
 import { RoomCreateRequestBody, RoomInfo } from '../../models/types';
+import toast from 'react-hot-toast';
 
 const DrawAndGuessLobby = () => {
     const { socket } = useSocket();
@@ -53,6 +54,114 @@ const DrawAndGuessLobby = () => {
         socket.emit('createDrawAndGuessRoom', drawAndGuessRoomCreateRequest);
         setFormOpen(false);
     };
+
+    const columns: ColumnsType<RoomInfo> = [
+        {
+            title: 'Room Name',
+            dataIndex: 'roomName',
+            key: 'roomName',
+            width: 200,
+        },
+        {
+            title: 'Owner',
+            key: 'owner',
+            width: 175,
+            render: (_, record: RoomInfo) => (
+                <Typography.Text>{record.owner.username}</Typography.Text>
+            ),
+        },
+        {
+            title: 'Status',
+            key: 'status',
+            align: 'center',
+            width: 125,
+            render: (_, record: RoomInfo) => (
+                <>
+                    {record.status === 'open' ? (
+                        <Typography.Text style={{ color: 'green' }}>
+                            Open
+                        </Typography.Text>
+                    ) : record.status === 'full' ? (
+                        <Typography.Text style={{ color: 'red' }}>
+                            Full
+                        </Typography.Text>
+                    ) : (
+                        <Typography.Text style={{ color: 'orange' }}>
+                            In Progress
+                        </Typography.Text>
+                    )}
+                </>
+            ),
+        },
+        {
+            title: 'Rounds',
+            dataIndex: 'rounds',
+            key: 'rounds',
+            align: 'center',
+            width: 125,
+        },
+        {
+            title: 'Seats',
+            key: 'seats',
+            align: 'center',
+            width: 125,
+            render: (_, record: RoomInfo) =>
+                `${record.currentPlayerCount} / ${record.maxPlayers}`,
+        },
+        {
+            title: 'Password?',
+            dataIndex: 'roomType',
+            key: 'roomType',
+            align: 'center',
+            width: 125,
+            render: (_, record: RoomInfo) => (
+                <>
+                    {record.password ? (
+                        <LockOutlined
+                            style={{ fontSize: '16px', color: 'red' }}
+                        />
+                    ) : (
+                        <UnlockOutlined
+                            style={{ fontSize: '16px', color: 'green' }}
+                        />
+                    )}
+                </>
+            ),
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            align: 'center',
+            width: 100,
+            render: (_, record: RoomInfo) => (
+                <Button
+                    type="primary"
+                    onClick={() => {
+                        if (record.status === 'open') {
+                            socket.emit(
+                                'clientJoinDrawAndGuessRoom',
+                                record.roomId,
+                                username,
+                            );
+                            navigate(
+                                `/Gamehub/DrawAndGuess/Room/${record.roomId}`,
+                            );
+                        } else {
+                            toast.error(
+                                'The room you are trying to join is not open.',
+                            );
+                        }
+                    }}
+                    disabled={
+                        record.status !== 'open' ||
+                        record.currentPlayerCount >= record.maxPlayers
+                    }
+                >
+                    Join
+                </Button>
+            ),
+        },
+    ];
 
     return (
         <div className="draw-and-guess-lobby-layout">
@@ -123,97 +232,5 @@ const DrawAndGuessLobby = () => {
         </div>
     );
 };
-
-const columns: ColumnsType<RoomInfo> = [
-    {
-        title: 'Room Name',
-        dataIndex: 'roomName',
-        key: 'roomName',
-        width: 200,
-    },
-    {
-        title: 'Owner',
-        key: 'owner',
-        width: 175,
-        render: (_, record: RoomInfo) => (
-            <Typography.Text>{record.owner.username}</Typography.Text>
-        ),
-    },
-    {
-        title: 'Status',
-        key: 'status',
-        align: 'center',
-        width: 125,
-        render: (_, record: RoomInfo) => (
-            <>
-                {record.status === 'open' ? (
-                    <Typography.Text style={{ color: 'green' }}>
-                        Open
-                    </Typography.Text>
-                ) : record.status === 'full' ? (
-                    <Typography.Text style={{ color: 'red' }}>
-                        Full
-                    </Typography.Text>
-                ) : (
-                    <Typography.Text style={{ color: 'orange' }}>
-                        In Progress
-                    </Typography.Text>
-                )}
-            </>
-        ),
-    },
-    {
-        title: 'Rounds',
-        dataIndex: 'rounds',
-        key: 'rounds',
-        align: 'center',
-        width: 125,
-    },
-    {
-        title: 'Seats',
-        key: 'seats',
-        align: 'center',
-        width: 125,
-        render: (_, record: RoomInfo) =>
-            `${record.currentPlayerCount} / ${record.maxPlayers}`,
-    },
-    {
-        title: 'Password?',
-        dataIndex: 'roomType',
-        key: 'roomType',
-        align: 'center',
-        width: 125,
-        render: (_, record: RoomInfo) => (
-            <>
-                {record.password ? (
-                    <LockOutlined style={{ fontSize: '16px', color: 'red' }} />
-                ) : (
-                    <UnlockOutlined
-                        style={{ fontSize: '16px', color: 'green' }}
-                    />
-                )}
-            </>
-        ),
-    },
-    {
-        title: 'Action',
-        key: 'action',
-        align: 'center',
-        width: 100,
-        render: (_, record: RoomInfo) => (
-            <Link to={`/Gamehub/DrawAndGuess/Room/${record.roomId}`}>
-                <Button
-                    type="primary"
-                    disabled={
-                        record.status !== 'open' ||
-                        record.currentPlayerCount >= record.maxPlayers
-                    }
-                >
-                    Join
-                </Button>
-            </Link>
-        ),
-    },
-];
 
 export default DrawAndGuessLobby;
