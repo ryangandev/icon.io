@@ -14,7 +14,8 @@ import {
     handleSendMessage,
     updatePlayerList,
 } from './socket/index.js';
-import { wordBank, generateRoomId, getRandomInt } from './libs/index.js';
+import { generateRoomId, getRandomInt } from './libs/utils.js';
+import { wordBank } from './libs/word-bank.js';
 
 let app = express();
 let __dirname = path.dirname(url.fileURLToPath(import.meta.url));
