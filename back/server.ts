@@ -7,6 +7,7 @@ import path from 'path';
 import { DrawAndGuessDetailRoomInfo } from './models/types.js';
 import lobbyEventsHandler from './socket/draw-and-guess/lobby-events-handlers.js';
 import roomEventsHandler from './socket/draw-and-guess/room-events-handler.js';
+import clientDepartureOnDisconnectHandler from './socket/client-disconnect-handler.js';
 
 const app = express();
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
@@ -25,6 +26,7 @@ const io = new Server(server, {
 
 let drawAndGuessDetailRoomInfoList: Record<string, DrawAndGuessDetailRoomInfo> =
     {};
+let socketInRooms: Record<string, Set<string>> = {};
 
 io.on('connection', (socket) => {
     console.log('a user is connected: ' + socket.id);
@@ -38,12 +40,22 @@ io.on('connection', (socket) => {
     // const rooms = Array.from(socket.rooms);
     // console.log('socket rooms info: ', rooms);
 
-    socket.on('disconnect', () => {
-        console.log('client: ' + socket.id + ' disconnected');
-    });
+    // handles disconnecting client
+    clientDepartureOnDisconnectHandler(
+        io,
+        socket,
+        drawAndGuessDetailRoomInfoList,
+        socketInRooms,
+    );
 
+    // handles draw and guess lobby and room events
     lobbyEventsHandler(io, socket, drawAndGuessDetailRoomInfoList);
-    roomEventsHandler(io, socket, drawAndGuessDetailRoomInfoList);
+    roomEventsHandler(
+        io,
+        socket,
+        drawAndGuessDetailRoomInfoList,
+        socketInRooms,
+    );
 });
 
 app.get('/', (req: Request, res: Response) => {

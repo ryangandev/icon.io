@@ -9,6 +9,7 @@ const roomEventsHandler = (
     io: Server,
     socket: Socket,
     drawAndGuessDetailRoomInfoList: Record<string, DrawAndGuessDetailRoomInfo>,
+    socketInRooms: Record<string, Set<string>>,
 ) => {
     socket.on(
         'clientJoinDrawAndGuessRoom',
@@ -38,10 +39,16 @@ const roomEventsHandler = (
                 currentRoom.status = getRoomStatus(
                     currentRoom.currentPlayerCount,
                     currentRoom.maxPlayers,
+                    currentRoom.isGameStarted,
                 );
 
                 socket.join(roomId);
+                if (!socketInRooms[socket.id]) {
+                    socketInRooms[socket.id] = new Set();
+                }
+                socketInRooms[socket.id].add(roomId);
                 console.log('current room info: ', currentRoom);
+                console.log('socket in rooms: ', socketInRooms);
 
                 const drawAndGuessLobbySimplifiedRoomList = Object.values(
                     drawAndGuessDetailRoomInfoList,
@@ -68,6 +75,54 @@ const roomEventsHandler = (
             }
         },
     );
+
+    socket.on('clientLeaveDrawAndGuessRoom', (roomId: string) => {
+        try {
+            if (!drawAndGuessDetailRoomInfoList[roomId]) {
+                throw new Error('Room does not exist.');
+            }
+
+            const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
+
+            delete currentRoom.playerList[socket.id];
+            currentRoom.currentPlayerCount = Object.keys(
+                currentRoom.playerList,
+            ).length; // If app gets slow, use counter instead
+            currentRoom.status = getRoomStatus(
+                currentRoom.currentPlayerCount,
+                currentRoom.maxPlayers,
+                currentRoom.isGameStarted,
+            );
+
+            socket.leave(roomId);
+            socketInRooms[socket.id].delete(roomId);
+            console.log('current room info: ', currentRoom);
+            console.log('socket in rooms: ', socketInRooms);
+
+            const drawAndGuessLobbySimplifiedRoomList = Object.values(
+                drawAndGuessDetailRoomInfoList,
+            ).map(getDrawAndGuessLobbyRoomInfo);
+
+            // Notify all clients in the lobby that a client has left a room
+            io.emit(
+                'updateDrawAndGuessLobbyRoomList',
+                drawAndGuessLobbySimplifiedRoomList,
+            );
+
+            // Notify all clients in the room that a client has left
+            io.to(roomId).emit(
+                'clientLeaveDrawAndGuessRoomSuccess',
+                currentRoom,
+            );
+        } catch (error: any) {
+            console.error(error);
+            // Notify the current client that there was an error
+            socket.emit('roomError', {
+                status: true,
+                message: error.message,
+            });
+        }
+    });
 };
 
 export default roomEventsHandler;

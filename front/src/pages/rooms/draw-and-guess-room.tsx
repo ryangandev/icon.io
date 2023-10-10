@@ -40,6 +40,19 @@ const DrawAndGuessRoom = () => {
             },
         );
 
+        socket.on(
+            'clientLeaveDrawAndGuessRoomSuccess',
+            (currentRoomInfo: DrawAndGuessDetailRoomInfo) => {
+                console.log(
+                    'Client ' + socket.id + ' left room: ',
+                    currentRoomInfo.roomId,
+                    ' successfully! Current Room info: ',
+                    currentRoomInfo,
+                );
+                setCurrentRoomInfo(currentRoomInfo);
+            },
+        );
+
         socket.on('drawer', (is_drawer, word) => {
             console.log(is_drawer, word);
 
@@ -59,6 +72,7 @@ const DrawAndGuessRoom = () => {
 
         return () => {
             socket.off('newClientJoinDrawAndGuessRoomSuccess');
+            socket.off('clientLeaveDrawAndGuessRoomSuccess');
             socket.off('drawer');
             socket.off('stop');
             socket.off('roomError');
@@ -66,6 +80,7 @@ const DrawAndGuessRoom = () => {
     }, [socket, roomId, username]);
 
     const handleOnLeave = () => {
+        socket.emit('clientLeaveDrawAndGuessRoom', roomId);
         navigate('/Gamehub/DrawAndGuess/Lobby');
     };
 
