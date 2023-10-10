@@ -30,7 +30,7 @@ const PasswordPromptModal = ({
                 onCancel();
             }}
             onOk={handleSubmit}
-            width={300}
+            width={350}
         >
             <Input.Password
                 placeholder="Password"
@@ -39,6 +39,11 @@ const PasswordPromptModal = ({
                 showCount
                 maxLength={20}
                 required
+                onPressEnter={handleSubmit}
+                style={{
+                    marginTop: 10,
+                    marginBottom: 10,
+                }}
             />
         </Modal>
     );
