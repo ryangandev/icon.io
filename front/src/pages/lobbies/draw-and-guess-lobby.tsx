@@ -45,7 +45,7 @@ const DrawAndGuessLobby = () => {
                     password,
                 );
                 socket.emit(
-                    'clientJoinDrawAndGuessRoom',
+                    'clientJoinDrawAndGuessRoomRequest',
                     room.roomId,
                     username,
                     password,
@@ -53,18 +53,21 @@ const DrawAndGuessLobby = () => {
             },
         );
 
-        socket.on('clientEnterCorrectPassword', (roomId: string) => {
-            console.log(
-                'clientEnterCorrectPassword event received! Room ID is: ',
-                roomId,
-            );
-            toast.success('Joining room...');
-            navigate(`/Gamehub/DrawAndGuess/Room/${roomId}`);
-        });
+        socket.on(
+            'approveClientJoinDrawAndGuessRoomRequest',
+            (roomId: string) => {
+                console.log(
+                    'approveClientJoinDrawAndGuessRoomRequest event received! Room ID is: ',
+                    roomId,
+                );
+                toast.success('Joining room...');
+                navigate(`/Gamehub/DrawAndGuess/Room/${roomId}`);
+            },
+        );
 
-        socket.on('clientEnterPasswordError', (data) => {
+        socket.on('rejectClientJoinDrawAndGuessRoomRequest', (data) => {
             console.log(
-                'clientEnterPasswordError event received! Error message is: ',
+                'rejectClientJoinDrawAndGuessRoomRequest event received! Error message is: ',
                 data.message,
             );
             toast.error(data.message);
@@ -73,8 +76,8 @@ const DrawAndGuessLobby = () => {
         return () => {
             socket.off('updateDrawAndGuessLobbyRoomList');
             socket.off('createDrawAndGuessRoomSuccess');
-            socket.off('clientEnterCorrectPassword');
-            socket.off('clientEnterPasswordError');
+            socket.off('approveClientJoinDrawAndGuessRoomRequest');
+            socket.off('rejectClientJoinDrawAndGuessRoomRequest');
         };
     }, [socket]);
 
@@ -84,7 +87,10 @@ const DrawAndGuessLobby = () => {
             drawAndGuessRoomCreateRequest,
         );
 
-        socket.emit('createDrawAndGuessRoom', drawAndGuessRoomCreateRequest);
+        socket.emit(
+            'createDrawAndGuessRoomRequest',
+            drawAndGuessRoomCreateRequest,
+        );
         setFormOpen(false);
     };
 
@@ -94,11 +100,10 @@ const DrawAndGuessLobby = () => {
                 setPasswordPromptOpen(true);
             } else {
                 socket.emit(
-                    'clientJoinDrawAndGuessRoom',
+                    'clientJoinDrawAndGuessRoomRequest',
                     record.roomId,
                     username,
                 );
-                navigate(`/Gamehub/DrawAndGuess/Room/${record.roomId}`);
             }
         } else {
             toast.error('The room you are trying to join is not open.');
@@ -107,7 +112,7 @@ const DrawAndGuessLobby = () => {
 
     const onPasswordSubmit = (record: RoomInfo, password: string) => {
         socket.emit(
-            'clientJoinDrawAndGuessRoom',
+            'clientJoinDrawAndGuessRoomRequest',
             record.roomId,
             username,
             password,
@@ -210,8 +215,8 @@ const DrawAndGuessLobby = () => {
                     <PasswordPromptModal
                         open={passwordPromptOpen}
                         onCancel={() => setPasswordPromptOpen(false)}
-                        onPasswordSubmit={(password) =>
-                            onPasswordSubmit(record, password)
+                        onPasswordSubmit={(passwordEntered) =>
+                            onPasswordSubmit(record, passwordEntered)
                         }
                     />
                 </>

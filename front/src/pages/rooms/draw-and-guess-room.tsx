@@ -27,7 +27,7 @@ const DrawAndGuessRoom = () => {
     // https://socket.io/how-to/use-with-react
     useEffect(() => {
         socket.on(
-            'newClientJoinDrawAndGuessRoomSuccess',
+            'clientJoinDrawAndGuessRoomSuccess',
             (currentRoomInfo: DrawAndGuessDetailRoomInfo) => {
                 console.log(
                     'Client ' + socket.id + ' joined room: ',
@@ -71,7 +71,7 @@ const DrawAndGuessRoom = () => {
         });
 
         return () => {
-            socket.off('newClientJoinDrawAndGuessRoomSuccess');
+            socket.off('clientJoinDrawAndGuessRoomSuccess');
             socket.off('clientLeaveDrawAndGuessRoomSuccess');
             socket.off('drawer');
             socket.off('stop');
