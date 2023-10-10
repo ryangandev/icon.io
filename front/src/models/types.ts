@@ -24,4 +24,19 @@ interface RoomInfo {
     password: string;
 }
 
-export type { RoomStatus, PlayerInfo, RoomCreateRequestBody, RoomInfo };
+interface DrawAndGuessDetailRoomInfo extends RoomInfo {
+    playerList: Record<string, PlayerInfo>;
+    currentDrawer: string; // current drawer's socket id
+    currentWord: string;
+    currentRound: number;
+    isGameStarted: boolean;
+    isGameEnded: boolean;
+}
+
+export type {
+    RoomStatus,
+    PlayerInfo,
+    RoomCreateRequestBody,
+    RoomInfo,
+    DrawAndGuessDetailRoomInfo,
+};

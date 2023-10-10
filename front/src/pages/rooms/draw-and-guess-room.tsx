@@ -8,8 +8,9 @@ import { Modal } from 'antd';
 import '../../styles/pages/rooms/draw-and-guess-room.css';
 import { Button } from 'antd';
 import { useSocket } from '../../hooks/useSocket';
+import { DrawAndGuessDetailRoomInfo } from '../../models/types';
 
-function RoomPage() {
+const DrawAndGuessRoom = () => {
     const { roomId } = useParams();
     const navigate = useNavigate();
     const username = localStorage.getItem('username');
@@ -17,13 +18,28 @@ function RoomPage() {
 
     const [isDrawer, setIsDrawer] = useState<boolean>(true);
     const [isPending, setIsPending] = useState<boolean>(true);
-    const [roomError, setRoomError] = useState<boolean>(true);
+    const [roomError, setRoomError] = useState<boolean>(false);
     const [wordForDrawer, setWordForDrawer] = useState<string>('');
     const [gameStart, setGameStart] = useState<boolean>(false);
+    const [currentRoomInfo, setCurrentRoomInfo] =
+        useState<DrawAndGuessDetailRoomInfo | null>(null);
 
     // https://socket.io/how-to/use-with-react
     useEffect(() => {
-        socket.emit('active_room', { username, roomId });
+        socket.on(
+            'joinDrawAndGuessRoomSuccess',
+            (currentRoomInfo: DrawAndGuessDetailRoomInfo) => {
+                console.log(
+                    'Client ' + socket.id + ' joined room: ',
+                    currentRoomInfo.roomId,
+                    ' successfully! Current Room info: ',
+                    currentRoomInfo,
+                );
+                setIsPending(false);
+                setCurrentRoomInfo(currentRoomInfo);
+            },
+        );
+
         socket.on('drawer', (is_drawer, word) => {
             console.log(is_drawer, word);
 
@@ -37,10 +53,12 @@ function RoomPage() {
         });
 
         socket.on('roomError', (roomError) => {
+            console.log('roomError received: ', roomError);
             setRoomError(roomError);
         });
 
         return () => {
+            socket.off('joinDrawAndGuessRoomSuccess');
             socket.off('drawer');
             socket.off('stop');
             socket.off('roomError');
@@ -48,7 +66,7 @@ function RoomPage() {
     }, [socket, roomId, username]);
 
     const handleOnLeave = () => {
-        navigate('/Lobby');
+        navigate('/Gamehub/DrawAndGuess/Lobby');
     };
 
     const handleStartGame = () => {
@@ -59,11 +77,7 @@ function RoomPage() {
 
     return (
         <>
-            {isPending && (
-                <div className="body-container" style={{ marginTop: '20px' }}>
-                    Fetching...
-                </div>
-            )}
+            {isPending && <div>Loading...</div>}
             {roomError && (
                 <Modal
                     title="The room you are looking for does not exist."
@@ -114,6 +128,6 @@ function RoomPage() {
             )}
         </>
     );
-}
+};
 
-export default RoomPage;
+export default DrawAndGuessRoom;

@@ -16,6 +16,7 @@ import { RoomCreateRequestBody, RoomInfo } from '../../models/types';
 
 const DrawAndGuessLobby = () => {
     const { socket } = useSocket();
+    const username = sessionStorage.getItem('username');
     const [roomList, setRoomList] = useState<RoomInfo[]>([]);
     const [formOpen, setFormOpen] = useState(false);
     const navigate = useNavigate();
@@ -36,11 +37,13 @@ const DrawAndGuessLobby = () => {
                 'createDrawAndGuessRoomSuccess event received! Room is: ',
                 room,
             );
+            socket.emit('clientJoinDrawAndGuessRoom', room.roomId, username);
             navigate(`/Gamehub/DrawAndGuess/Room/${room.roomId}`);
         });
 
         return () => {
             socket.off('updateDrawAndGuessLobbyRoomList');
+            socket.off('createDrawAndGuessRoomSuccess');
         };
     }, [socket]);
 
