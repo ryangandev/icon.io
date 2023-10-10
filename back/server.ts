@@ -36,6 +36,15 @@ let drawAndGuessDetailRoomInfoList: Record<string, DrawAndGuessDetailRoomInfo> =
 io.on('connection', (socket) => {
     console.log('a user is connected: ' + socket.id);
 
+    // Helpful socket.io debugging methods
+    // check how many sockets in a room with a partiular roomid
+    // const room = io.sockets.adapter.rooms.get(roomId);
+    // console.log('socket room info: ', room);
+
+    // check rooms that a socket is in given a socket id
+    // const rooms = Array.from(socket.rooms);
+    // console.log('socket rooms info: ', rooms);
+
     socket.on('disconnect', () => {
         console.log('client: ' + socket.id + ' disconnected');
     });
