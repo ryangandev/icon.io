@@ -7,19 +7,21 @@ import {
     PlusCircleOutlined,
 } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import icon from '../../assets/Game-Icon.png';
 import RoomCreateForm from '../../components/room-create-form';
 import '../../styles/pages/lobbies/draw-and-guess-lobby.css';
 import { useSocket } from '../../hooks/useSocket';
 import { RoomCreateRequestBody, RoomInfo } from '../../models/types';
 import toast from 'react-hot-toast';
+import PasswordPromptModal from '../../components/password-prmopt-modal';
 
 const DrawAndGuessLobby = () => {
     const { socket } = useSocket();
     const username = sessionStorage.getItem('username');
     const [roomList, setRoomList] = useState<RoomInfo[]>([]);
     const [formOpen, setFormOpen] = useState(false);
+    const [passwordPromptOpen, setPasswordPromptOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -33,26 +35,83 @@ const DrawAndGuessLobby = () => {
             setRoomList(rooms);
         });
 
-        socket.on('createDrawAndGuessRoomSuccess', (room: RoomInfo) => {
+        socket.on(
+            'createDrawAndGuessRoomSuccess',
+            (room: RoomInfo, password: string) => {
+                console.log(
+                    'createDrawAndGuessRoomSuccess event received! Room is: ',
+                    room,
+                    ' and password is: ',
+                    password,
+                );
+                socket.emit(
+                    'clientJoinDrawAndGuessRoom',
+                    room.roomId,
+                    username,
+                    password,
+                );
+            },
+        );
+
+        socket.on('clientEnterCorrectPassword', (roomId: string) => {
             console.log(
-                'createDrawAndGuessRoomSuccess event received! Room is: ',
-                room,
+                'clientEnterCorrectPassword event received! Room ID is: ',
+                roomId,
             );
-            socket.emit('clientJoinDrawAndGuessRoom', room.roomId, username);
-            navigate(`/Gamehub/DrawAndGuess/Room/${room.roomId}`);
+            toast.success('Joining room...');
+            navigate(`/Gamehub/DrawAndGuess/Room/${roomId}`);
+        });
+
+        socket.on('clientEnterPasswordError', (data) => {
+            console.log(
+                'clientEnterPasswordError event received! Error message is: ',
+                data.message,
+            );
+            toast.error(data.message);
         });
 
         return () => {
             socket.off('updateDrawAndGuessLobbyRoomList');
             socket.off('createDrawAndGuessRoomSuccess');
+            socket.off('clientEnterCorrectPassword');
+            socket.off('clientEnterPasswordError');
         };
     }, [socket]);
 
     const onCreate = (drawAndGuessRoomCreateRequest: RoomCreateRequestBody) => {
-        console.log('Received values of form: ', drawAndGuessRoomCreateRequest);
+        console.log(
+            'Received values from form: ',
+            drawAndGuessRoomCreateRequest,
+        );
 
         socket.emit('createDrawAndGuessRoom', drawAndGuessRoomCreateRequest);
         setFormOpen(false);
+    };
+
+    const onJoinRoom = (record: RoomInfo) => {
+        if (record.status === 'open') {
+            if (record.password) {
+                setPasswordPromptOpen(true);
+            } else {
+                socket.emit(
+                    'clientJoinDrawAndGuessRoom',
+                    record.roomId,
+                    username,
+                );
+                navigate(`/Gamehub/DrawAndGuess/Room/${record.roomId}`);
+            }
+        } else {
+            toast.error('The room you are trying to join is not open.');
+        }
+    };
+
+    const onPasswordSubmit = (record: RoomInfo, password: string) => {
+        socket.emit(
+            'clientJoinDrawAndGuessRoom',
+            record.roomId,
+            username,
+            password,
+        );
     };
 
     const columns: ColumnsType<RoomInfo> = [
@@ -134,31 +193,28 @@ const DrawAndGuessLobby = () => {
             align: 'center',
             width: 100,
             render: (_, record: RoomInfo) => (
-                <Button
-                    type="primary"
-                    onClick={() => {
-                        if (record.status === 'open') {
-                            socket.emit(
-                                'clientJoinDrawAndGuessRoom',
-                                record.roomId,
-                                username,
-                            );
-                            navigate(
-                                `/Gamehub/DrawAndGuess/Room/${record.roomId}`,
-                            );
-                        } else {
-                            toast.error(
-                                'The room you are trying to join is not open.',
-                            );
+                <>
+                    <Button
+                        type="primary"
+                        danger={record.password !== ''}
+                        onClick={() => {
+                            onJoinRoom(record);
+                        }}
+                        disabled={
+                            record.status !== 'open' ||
+                            record.currentPlayerCount >= record.maxPlayers
                         }
-                    }}
-                    disabled={
-                        record.status !== 'open' ||
-                        record.currentPlayerCount >= record.maxPlayers
-                    }
-                >
-                    Join
-                </Button>
+                    >
+                        Join
+                    </Button>
+                    <PasswordPromptModal
+                        open={passwordPromptOpen}
+                        onCancel={() => setPasswordPromptOpen(false)}
+                        onPasswordSubmit={(password) =>
+                            onPasswordSubmit(record, password)
+                        }
+                    />
+                </>
             ),
         },
     ];

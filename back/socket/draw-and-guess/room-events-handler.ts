@@ -13,7 +13,7 @@ const roomEventsHandler = (
 ) => {
     socket.on(
         'clientJoinDrawAndGuessRoom',
-        (roomId: string, username: string) => {
+        (roomId: string, username: string, password: string) => {
             try {
                 if (!drawAndGuessDetailRoomInfoList[roomId]) {
                     throw new Error('Room does not exist.');
@@ -25,8 +25,13 @@ const roomEventsHandler = (
                     throw new Error('Room is not open.');
                 }
 
-                if (currentRoom.password !== '') {
-                    throw new Error('Password is required.');
+                // If room has password, check if password is correct
+                if (currentRoom.password && currentRoom.password !== password) {
+                    socket.emit('clientEnterPasswordError', {
+                        status: true,
+                        message: 'Incorrect password. Please try again.',
+                    });
+                    return;
                 }
 
                 currentRoom.playerList[socket.id] = {
@@ -53,6 +58,8 @@ const roomEventsHandler = (
                 const drawAndGuessLobbySimplifiedRoomList = Object.values(
                     drawAndGuessDetailRoomInfoList,
                 ).map(getDrawAndGuessLobbyRoomInfo);
+
+                socket.emit('clientEnterCorrectPassword', roomId);
 
                 // Notify all clients in the lobby that a client has joined a room
                 io.emit(

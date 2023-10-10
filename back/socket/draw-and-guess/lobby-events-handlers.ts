@@ -73,6 +73,7 @@ const lobbyEventsHandler = (
         socket.emit(
             'createDrawAndGuessRoomSuccess',
             getDrawAndGuessLobbyRoomInfo(newDrawAndGuessRoom),
+            password,
         );
     });
 };
