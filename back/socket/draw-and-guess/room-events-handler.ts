@@ -62,16 +62,16 @@ const roomEventsHandler = (
                 // Notify the current client that they will be joining the room
                 socket.emit('approveClientJoinDrawAndGuessRoomRequest', roomId);
 
-                // Notify all clients in the lobby that a client has joined a room
-                io.emit(
-                    'updateDrawAndGuessLobbyRoomList',
-                    drawAndGuessLobbySimplifiedRoomList,
-                );
-
                 // Notify all clients in the room that a new client has joined
                 io.to(roomId).emit(
                     'clientJoinDrawAndGuessRoomSuccess',
                     currentRoom,
+                );
+
+                // Notify all clients in the lobby that a client has joined a room
+                io.emit(
+                    'updateDrawAndGuessLobbyRoomList',
+                    drawAndGuessLobbySimplifiedRoomList,
                 );
             } catch (error: any) {
                 console.error(error);
@@ -130,16 +130,16 @@ const roomEventsHandler = (
                 drawAndGuessDetailRoomInfoList,
             ).map(getDrawAndGuessLobbyRoomInfo);
 
-            // Notify all clients in the lobby that a client has left a room
-            io.emit(
-                'updateDrawAndGuessLobbyRoomList',
-                drawAndGuessLobbySimplifiedRoomList,
-            );
-
             // Notify all clients in the room that a client has left
             io.to(roomId).emit(
                 'clientLeaveDrawAndGuessRoomSuccess',
                 currentRoom,
+            );
+
+            // Notify all clients in the lobby that a client has left a room
+            io.emit(
+                'updateDrawAndGuessLobbyRoomList',
+                drawAndGuessLobbySimplifiedRoomList,
             );
         } catch (error: any) {
             console.error(error);
