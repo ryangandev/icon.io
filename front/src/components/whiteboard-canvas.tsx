@@ -1,10 +1,10 @@
 import React, { FC, useState, useEffect, useRef } from 'react';
-import WhiteBoardToolBar from './whiteboard-toolbar';
 import {
     imageDataToDataURL,
     dataURLToImageData,
 } from '../helper-functions/image-data-and-url-conversion';
 import { useSocket } from '../hooks/useSocket';
+import '../styles/components/whiteboard-canvas.css';
 
 interface BrushOptions {
     color: string;
@@ -248,38 +248,16 @@ const WhiteBoardCanvas: FC<WhiteBoardCanvasProps> = ({
     });
 
     return (
-        <div
-            style={{
-                width: 800,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-            }}
-        >
-            <div>
-                <canvas
-                    ref={canvasRef}
-                    width="800"
-                    height="600"
-                    style={{
-                        border: '2px solid black',
-                        backgroundColor: 'white',
-                        borderRadius: '10px',
-                    }}
-                    onMouseDown={startDrawing}
-                    onMouseMove={draw}
-                    onMouseUp={stopDrawing}
-                    onMouseOut={stopDrawing}
-                />
-                <WhiteBoardToolBar
-                    brushSizes={brushSizes}
-                    handleColorChange={handleColorChange}
-                    handleBrushChange={handleBrushChange}
-                    handleClearCanvas={handleClearCanvas}
-                    handleUndo={handleUndo}
-                />
-            </div>
-        </div>
+        <canvas
+            ref={canvasRef}
+            width={768}
+            height={576}
+            className="whiteboard-canvas"
+            onMouseDown={startDrawing}
+            onMouseMove={draw}
+            onMouseUp={stopDrawing}
+            onMouseOut={stopDrawing}
+        />
     );
 };
 

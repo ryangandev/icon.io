@@ -1,28 +1,47 @@
-.room-container {
+.draw-and-guess-room-layout {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    height: 100vh;
-    padding-top: 45px;
+    max-width: 1300px;
+    width: 100%;
+    background-color: aqua;
+    --component-background-color: #fff;
+    --component-border-radius: 4px;
+    --component-border-color: #00000060;
+    --component-gap: 10px;
 }
 
-.game-info-header {
-    margin-bottom: 7px;
-}
-
-.body-container {
+.draw-and-guess-room-body {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: start;
+    background-color: aquamarine;
 }
 
-.right-room {
+.draw-and-guess-room-body-left {
+    display: flex;
+    flex-direction: column;
+    max-width: 240px;
+    width: 240px;
+    background-color: blue;
+}
+
+.draw-and-guess-room-body-center {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-items: center;
+    max-width: 800px;
+    background-color: blueviolet;
+    padding-bottom: 30px;
+}
+
+.draw-and-guess-room-body-right {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.startBtn {
+/* .startBtn {
     margin-top: 13px;
     width: 250px;
     background-color: #fff9d0;
@@ -30,4 +49,4 @@
 
 .startBtn:hover {
     background-color: wheat;
-}
+} */

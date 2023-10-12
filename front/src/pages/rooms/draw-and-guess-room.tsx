@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import CanvasDrawing from '../../components/drawable-canvas';
+import WhiteBoardCanvas from '../../components/whiteboard-canvas';
 import ChatWindow from '../../components/chat-window';
 import PlayerInfoContainer from '../../components/player-info-container';
 import GameInfoBar from '../../components/game-info-bar';
@@ -16,15 +16,14 @@ const DrawAndGuessRoom = () => {
     const username = localStorage.getItem('username');
     const { socket } = useSocket();
 
+    const [currentRoomInfo, setCurrentRoomInfo] =
+        useState<DrawAndGuessDetailRoomInfo | null>(null);
     const [isDrawer, setIsDrawer] = useState<boolean>(true);
     const [isPending, setIsPending] = useState<boolean>(true);
     const [roomError, setRoomError] = useState<boolean>(false);
     const [wordForDrawer, setWordForDrawer] = useState<string>('');
     const [gameStart, setGameStart] = useState<boolean>(false);
-    const [currentRoomInfo, setCurrentRoomInfo] =
-        useState<DrawAndGuessDetailRoomInfo | null>(null);
 
-    // https://socket.io/how-to/use-with-react
     useEffect(() => {
         socket.on(
             'clientJoinDrawAndGuessRoomSuccess',
@@ -103,25 +102,40 @@ const DrawAndGuessRoom = () => {
                 </Modal>
             )}
             {!isPending && (
-                <div className="room-container">
-                    <div className="game-info-header">
-                        <GameInfoBar
-                            roomId={roomId}
-                            isDrawer={isDrawer}
-                            wordForDrawer={wordForDrawer}
-                            handleOnLeave={handleOnLeave}
-                        />
-                    </div>
-                    <div className="body-container">
-                        <PlayerInfoContainer roomId={roomId} />
-                        <div style={{ marginLeft: 10, marginRight: 10 }}>
-                            <CanvasDrawing
+                <div className="draw-and-guess-room-layout">
+                    <GameInfoBar
+                        roomId={roomId}
+                        isDrawer={isDrawer}
+                        wordForDrawer={wordForDrawer}
+                        handleOnLeave={handleOnLeave}
+                    />
+
+                    <div className="draw-and-guess-room-body">
+                        <div className="draw-and-guess-room-body-left">
+                            {Object.entries(
+                                currentRoomInfo?.playerList || {},
+                            ).map(([socketId, playerInfo]) => (
+                                <PlayerInfoContainer
+                                    key={socketId}
+                                    playerInfo={playerInfo}
+                                    isClient={socketId === socket.id}
+                                    isCurrentDrawer={
+                                        socketId ===
+                                        currentRoomInfo?.currentDrawer
+                                    }
+                                />
+                            ))}
+                        </div>
+
+                        <div className="draw-and-guess-room-body-center">
+                            <WhiteBoardCanvas
                                 userName={username}
                                 roomId={roomId}
                                 isDrawer={isDrawer}
                             />
                         </div>
-                        <div className="right-room">
+
+                        {/* <div className="draw-and-guess-room-body-right">
                             <ChatWindow
                                 userName={username}
                                 roomId={roomId}
@@ -134,10 +148,10 @@ const DrawAndGuessRoom = () => {
                                     size="large"
                                     className="startBtn"
                                 >
-                                    Start the game!
+                                    Start
                                 </Button>
                             )}
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             )}
