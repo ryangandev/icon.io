@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect, useRef } from 'react';
-import Toolbar from './tool-bar';
+import WhiteBoardToolBar from './whiteboard-toolbar';
 import {
     imageDataToDataURL,
     dataURLToImageData,
@@ -25,13 +25,17 @@ const brushSizes: { [key: string]: number } = {
     '4': 28,
 };
 
-type CanvasProps = {
+type WhiteBoardCanvasProps = {
     userName: string | null;
     roomId: string | undefined;
     isDrawer: boolean;
 };
 
-const CanvasDrawing: FC<CanvasProps> = ({ userName, roomId, isDrawer }) => {
+const WhiteBoardCanvas: FC<WhiteBoardCanvasProps> = ({
+    userName,
+    roomId,
+    isDrawer,
+}) => {
     const { socket } = useSocket();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isDrawing, setIsDrawing] = useState(false);
@@ -244,122 +248,39 @@ const CanvasDrawing: FC<CanvasProps> = ({ userName, roomId, isDrawer }) => {
     });
 
     return (
-        <>
-            {gameStart && isDrawer && (
-                <div
+        <div
+            style={{
+                width: 800,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+            }}
+        >
+            <div>
+                <canvas
+                    ref={canvasRef}
+                    width="800"
+                    height="600"
                     style={{
-                        width: 750,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
+                        border: '2px solid black',
+                        backgroundColor: 'white',
+                        borderRadius: '10px',
                     }}
-                >
-                    <div>
-                        <canvas
-                            ref={canvasRef}
-                            width="750"
-                            height="550"
-                            style={{
-                                border: '2px solid black',
-                                backgroundColor: 'white',
-                                borderRadius: '10px',
-                            }}
-                            onMouseDown={startDrawing}
-                            onMouseMove={draw}
-                            onMouseUp={stopDrawing}
-                            onMouseOut={stopDrawing}
-                        />
-                        <Toolbar
-                            brushSizes={brushSizes}
-                            handleColorChange={handleColorChange}
-                            handleBrushChange={handleBrushChange}
-                            handleClearCanvas={handleClearCanvas}
-                            handleUndo={handleUndo}
-                        />
-                    </div>
-                </div>
-            )}
-
-            {gameStart && !isDrawer && (
-                <div
-                    style={{
-                        width: 750,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                >
-                    <div>
-                        <canvas
-                            ref={canvasRef}
-                            width="750"
-                            height="550"
-                            style={{
-                                border: '2px solid black',
-                                backgroundColor: 'white',
-                                borderRadius: '10px',
-                            }}
-                        />
-                    </div>
-                </div>
-            )}
-
-            {!gameStart && isDrawer && (
-                <div
-                    style={{
-                        width: 750,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                >
-                    <div>
-                        <canvas
-                            ref={canvasRef}
-                            width="750"
-                            height="550"
-                            style={{
-                                border: '2px solid black',
-                                backgroundColor: 'white',
-                                borderRadius: '10px',
-                            }}
-                        />
-                        <Toolbar
-                            brushSizes={brushSizes}
-                            handleColorChange={() => null}
-                            handleBrushChange={() => null}
-                            handleClearCanvas={() => null}
-                            handleUndo={() => null}
-                        />
-                    </div>
-                </div>
-            )}
-            {!gameStart && !isDrawer && (
-                <div
-                    style={{
-                        width: 750,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                >
-                    <div>
-                        <canvas
-                            ref={canvasRef}
-                            width="750"
-                            height="550"
-                            style={{
-                                border: '2px solid black',
-                                backgroundColor: 'white',
-                                borderRadius: '10px',
-                            }}
-                        />
-                        <h3>Waiting for the host...</h3>
-                    </div>
-                </div>
-            )}
-        </>
+                    onMouseDown={startDrawing}
+                    onMouseMove={draw}
+                    onMouseUp={stopDrawing}
+                    onMouseOut={stopDrawing}
+                />
+                <WhiteBoardToolBar
+                    brushSizes={brushSizes}
+                    handleColorChange={handleColorChange}
+                    handleBrushChange={handleBrushChange}
+                    handleClearCanvas={handleClearCanvas}
+                    handleUndo={handleUndo}
+                />
+            </div>
+        </div>
     );
 };
 
-export default CanvasDrawing;
+export default WhiteBoardCanvas;

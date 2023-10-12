@@ -4,7 +4,7 @@ import { DeleteOutlined, RollbackOutlined } from '@ant-design/icons';
 import { Button, Space } from 'antd';
 import BrushPicker from './brush-picker';
 
-interface ToolBarProps {
+interface WhiteBoardToolBarProps {
     brushSizes: { [key: string]: number };
     handleColorChange: (color: string) => void;
     handleBrushChange: (brushOption: number) => void;
@@ -12,7 +12,9 @@ interface ToolBarProps {
     handleUndo: () => void;
 }
 
-const ToolBar: React.FC<ToolBarProps> = (props: ToolBarProps) => {
+const WhiteBoardToolBar: React.FC<WhiteBoardToolBarProps> = (
+    props: WhiteBoardToolBarProps,
+) => {
     return (
         <Space
             style={{
@@ -48,4 +50,4 @@ const ToolBar: React.FC<ToolBarProps> = (props: ToolBarProps) => {
     );
 };
 
-export default ToolBar;
+export default WhiteBoardToolBar;
