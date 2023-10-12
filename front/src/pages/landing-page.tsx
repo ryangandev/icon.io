@@ -51,6 +51,7 @@ const Landing: FC = () => {
                 required={true}
                 status={inputStatus}
                 onPressEnter={handleOnClick}
+                autoFocus={true}
             />
 
             <Button

@@ -52,6 +52,8 @@ const RoomCreateForm = ({ open, onCancel, onCreate }: RoomCreateFormProps) => {
             }}
             confirmLoading={confirmLoading}
             width={550}
+            getContainer={document.getElementById('app')!} // Manually telling the modal dialog to render within root DOM
+            destroyOnClose={true} // Destroy modal on close ensure that autoFocus eveytime the modal is opened
         >
             <Form
                 form={form}
@@ -85,6 +87,7 @@ const RoomCreateForm = ({ open, onCancel, onCreate }: RoomCreateFormProps) => {
                         showCount
                         maxLength={40}
                         style={{ width: 350 }}
+                        autoFocus
                     />
                 </Form.Item>
 

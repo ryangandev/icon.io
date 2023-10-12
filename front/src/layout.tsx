@@ -4,7 +4,7 @@ import { Toaster } from 'react-hot-toast';
 
 const Layout = () => {
     return (
-        <main className="AppLayout">
+        <main className="AppLayout" id="app">
             <AppLogo />
             <Outlet />
             <Toaster position="top-center" />
