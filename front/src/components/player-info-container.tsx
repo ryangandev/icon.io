@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import '../styles/components/player-info-container.css';
-import scoreIcon from '../assets/score-icon.png';
 import { PlayerInfo } from '../models/types';
 
 interface PlayerInfoContainerProps {
@@ -19,18 +18,21 @@ const PlayerInfoContainer = ({
     useEffect(() => {}, []);
 
     return (
-        <div className="player-info">
-            <div className="player-info-name">
-                {username} {isClient ? '(You)' : ''}
+        <div className="draw-and-guess-room-player-info-container">
+            <div className="draw-and-guess-room-player-info-container-left">
+                <span className="draw-and-guess-room-player-info-ranking">
+                    #8
+                </span>
             </div>
-            <div className="player-info-score">
-                <img
-                    src={scoreIcon}
-                    style={{ height: 20, width: 20, marginRight: 5 }}
-                    alt="score"
-                />
-                {score} points
+            <div className="draw-and-guess-room-player-info-container-center">
+                <span className="draw-and-guess-room-player-info-username">
+                    {username} {isClient ? '(You)' : ''}
+                </span>
+                <span className="draw-and-guess-room-player-info-score">
+                    {score} pts
+                </span>
             </div>
+            <div className="draw-and-guess-room-player-info-container-right"></div>
         </div>
     );
 };
