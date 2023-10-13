@@ -1,54 +1,40 @@
 import '../styles/components/game-info-bar.css';
 import { Button } from 'antd';
-import { ClockCircleOutlined, LogoutOutlined } from '@ant-design/icons';
-import { useState } from 'react';
-import TimerTicks from '../helper-functions/time-ticks';
-import { useSocket } from '../hooks/useSocket';
+import {
+    FieldTimeOutlined,
+    LogoutOutlined,
+    SettingOutlined,
+} from '@ant-design/icons';
 
 interface GameInfoBarProps {
-    roomId: string | undefined;
-    isDrawer: boolean;
-    wordForDrawer: string;
     handleOnLeave: () => void;
 }
 
-const GameInfoBar: React.FC<GameInfoBarProps> = (props: GameInfoBarProps) => {
-    const { socket } = useSocket();
-    const roundTime = 10;
-    const [isTimeTicking, setIsTimeTicking] = useState<boolean>(false);
-    const [timer, setTimer] = useState(roundTime);
-    const isDrawer = props.isDrawer;
-    const word = props.wordForDrawer;
-    const roomId = props.roomId;
-
-    socket.on('startTimer', (data) => {
-        setIsTimeTicking(true);
-    });
-
+const GameInfoBar: React.FC<GameInfoBarProps> = ({
+    handleOnLeave,
+}: GameInfoBarProps) => {
     return (
         <div className="game-info-container">
-            <div className="left-info">
-                <div className="room-info">Room: {props.roomId}</div>
+            <div className="game-info-container-left">
+                <FieldTimeOutlined style={{ fontSize: 32 }} />
+                <span style={{ fontWeight: 500, fontSize: 24 }}>00:00</span>
             </div>
-            {isDrawer && (
-                <div className="middle-info">
-                    <div style={{ fontSize: 12 }}>Draw</div>
-                    <div style={{ fontSize: 30, fontWeight: 600 }}>{word}</div>
-                </div>
-            )}
-            <div className="right-info">
-                <ClockCircleOutlined className="clock-icon" />
-                <div className="timer">
-                    <TimerTicks
-                        countdownInSec={timer}
-                        isTimerRunning={isTimeTicking}
-                        roomId={roomId}
-                    />
-                </div>
-                <div className="round-info">Round 1/5</div>
-                <Button className="logout-btn" onClick={props.handleOnLeave}>
-                    <LogoutOutlined className="logout-icon" />
-                </Button>
+            <div className="game-info-container-center">
+                <span style={{ fontWeight: 400, fontSize: 12 }}>Draw</span>
+                <span style={{ fontWeight: 700, fontSize: 24 }}>H e l l o</span>
+            </div>
+
+            <div className="game-info-container-right">
+                <Button
+                    className="game-info-btn"
+                    onClick={() => {}}
+                    icon={<SettingOutlined style={{ fontSize: 32 }} />}
+                />
+                <Button
+                    className="game-info-btn"
+                    onClick={handleOnLeave}
+                    icon={<LogoutOutlined style={{ fontSize: 32 }} />}
+                />
             </div>
         </div>
     );
