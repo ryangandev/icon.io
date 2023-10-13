@@ -62,17 +62,19 @@ const roomEventsHandler = (
                 // Notify the current client that they will be joining the room
                 socket.emit('approveClientJoinDrawAndGuessRoomRequest', roomId);
 
-                // Notify all clients in the room that a new client has joined
-                io.to(roomId).emit(
-                    'clientJoinDrawAndGuessRoomSuccess',
-                    currentRoom,
-                );
-
                 // Notify all clients in the lobby that a client has joined a room
                 io.emit(
                     'updateDrawAndGuessLobbyRoomList',
                     drawAndGuessLobbySimplifiedRoomList,
                 );
+
+                setTimeout(() => {
+                    // Notify all clients in the room that a new client has joined
+                    io.to(roomId).emit(
+                        'clientJoinDrawAndGuessRoomSuccess',
+                        currentRoom,
+                    );
+                }, 250); // Delay to ensure that the client has joined the room
             } catch (error: any) {
                 console.error(error);
                 // Notify the current client that there was an error
