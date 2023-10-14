@@ -12,17 +12,17 @@ import { DrawAndGuessDetailRoomInfo } from '../../models/types';
 
 const DrawAndGuessRoom = () => {
     const { roomId } = useParams();
+    const { socket } = useSocket();
     const navigate = useNavigate();
     const username = localStorage.getItem('username');
-    const { socket } = useSocket();
 
     const [currentRoomInfo, setCurrentRoomInfo] =
         useState<DrawAndGuessDetailRoomInfo | null>(null);
-    const [isDrawer, setIsDrawer] = useState<boolean>(true);
-    const [isPending, setIsPending] = useState<boolean>(true);
     const [roomError, setRoomError] = useState<boolean>(false);
-    const [wordForDrawer, setWordForDrawer] = useState<string>('');
     const [gameStart, setGameStart] = useState<boolean>(false);
+    const isDrawer = currentRoomInfo?.currentDrawer === socket.id;
+    const isRoomOwner = currentRoomInfo?.owner.socketId === socket.id;
+    const isGameStarted = currentRoomInfo?.isGameStarted;
 
     useEffect(() => {
         socket.on(
@@ -34,7 +34,6 @@ const DrawAndGuessRoom = () => {
                     ' successfully! Current Room info: ',
                     currentRoomInfo,
                 );
-                setIsPending(false);
                 setCurrentRoomInfo(currentRoomInfo);
             },
         );
@@ -51,18 +50,6 @@ const DrawAndGuessRoom = () => {
                 setCurrentRoomInfo(currentRoomInfo);
             },
         );
-
-        socket.on('drawer', (is_drawer, word) => {
-            console.log(is_drawer, word);
-
-            setIsDrawer(is_drawer);
-            setWordForDrawer(word);
-            setIsPending(false);
-        });
-
-        socket.on('stop', (data) => {
-            setGameStart(data);
-        });
 
         socket.on('roomError', (roomError) => {
             console.log('roomError received: ', roomError);
@@ -91,8 +78,7 @@ const DrawAndGuessRoom = () => {
 
     return (
         <>
-            {isPending && <div>Loading...</div>}
-            {roomError && (
+            {roomError ? (
                 <Modal
                     title="The room you are looking for does not exist."
                     open={roomError}
@@ -100,15 +86,9 @@ const DrawAndGuessRoom = () => {
                 >
                     Click OK to be redirected to the lobby.
                 </Modal>
-            )}
-            {!isPending && (
+            ) : (
                 <div className="draw-and-guess-room-layout">
-                    <GameInfoBar
-                        roomId={roomId}
-                        isDrawer={isDrawer}
-                        wordForDrawer={wordForDrawer}
-                        handleOnLeave={handleOnLeave}
-                    />
+                    <GameInfoBar handleOnLeave={handleOnLeave} />
 
                     <div className="draw-and-guess-room-body">
                         <div className="draw-and-guess-room-body-left">
@@ -135,23 +115,23 @@ const DrawAndGuessRoom = () => {
                             />
                         </div>
 
-                        {/* <div className="draw-and-guess-room-body-right">
+                        <div className="draw-and-guess-room-body-right">
                             <ChatWindow
                                 userName={username}
                                 roomId={roomId}
                                 isDrawer={isDrawer}
                                 gameStart={gameStart}
                             />
-                            {isDrawer && !gameStart && (
+                            {isRoomOwner && !isGameStarted && (
                                 <Button
                                     onClick={handleStartGame}
                                     size="large"
                                     className="startBtn"
                                 >
-                                    Start
+                                    START
                                 </Button>
                             )}
-                        </div> */}
+                        </div>
                     </div>
                 </div>
             )}

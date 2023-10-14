@@ -79,7 +79,7 @@ const DrawAndGuessLobby = () => {
             socket.off('approveClientJoinDrawAndGuessRoomRequest');
             socket.off('rejectClientJoinDrawAndGuessRoomRequest');
         };
-    }, [socket]);
+    }, [socket, username, navigate]);
 
     const onCreate = (drawAndGuessRoomCreateRequest: RoomCreateRequestBody) => {
         console.log(

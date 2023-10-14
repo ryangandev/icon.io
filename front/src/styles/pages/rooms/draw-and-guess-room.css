@@ -1,52 +1,58 @@
 .draw-and-guess-room-layout {
     display: flex;
     flex-direction: column;
-    max-width: 1300px;
+    max-width: 1312px;
     width: 100%;
-    background-color: aqua;
-    --component-background-color: #fff;
-    --component-border-radius: 4px;
-    --component-border-color: #00000060;
-    --component-gap: 10px;
+    gap: var(--component-gap);
+    padding-top: 70px;
+    --component-background-color: #ffffff;
+    --component-border-radius: 8px;
+    --component-border: 1px solid #00000020;
+    --component-gap: 6px;
 }
 
 .draw-and-guess-room-body {
     display: flex;
     flex-direction: row;
     justify-content: start;
-    background-color: aquamarine;
+    align-items: flex-start;
+    gap: var(--component-gap);
 }
 
 .draw-and-guess-room-body-left {
     display: flex;
     flex-direction: column;
-    max-width: 240px;
-    width: 240px;
-    background-color: blue;
+    width: 220px;
+    border: var(--component-border);
+    border-radius: var(--component-border-radius);
+    overflow: hidden;
 }
 
 .draw-and-guess-room-body-center {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
-    align-items: center;
-    max-width: 800px;
-    background-color: blueviolet;
-    padding-bottom: 30px;
+    width: 800px;
 }
 
 .draw-and-guess-room-body-right {
     display: flex;
     flex-direction: column;
     align-items: center;
+    max-width: 280px;
+    width: 100%;
+    gap: var(--component-gap);
 }
 
-/* .startBtn {
-    margin-top: 13px;
-    width: 250px;
+.startBtn {
+    width: 100%;
     background-color: #fff9d0;
+    font-weight: 600;
 }
 
 .startBtn:hover {
     background-color: wheat;
-} */
+}
+
+.startBtn:active {
+    filter: brightness(0.8);
+}
