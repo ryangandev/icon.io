@@ -1,10 +1,11 @@
-import React, { FC, useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     imageDataToDataURL,
     dataURLToImageData,
 } from '../helper-functions/image-data-and-url-conversion';
 import { useSocket } from '../hooks/useSocket';
 import '../styles/components/whiteboard-canvas.css';
+import WhiteBoardToolBar from './whiteboard-toolbar';
 
 interface BrushOptions {
     color: string;
@@ -31,11 +32,11 @@ type WhiteBoardCanvasProps = {
     isDrawer: boolean;
 };
 
-const WhiteBoardCanvas: FC<WhiteBoardCanvasProps> = ({
+const WhiteBoardCanvas = ({
     userName,
     roomId,
     isDrawer,
-}) => {
+}: WhiteBoardCanvasProps) => {
     const { socket } = useSocket();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isDrawing, setIsDrawing] = useState(false);
@@ -125,6 +126,7 @@ const WhiteBoardCanvas: FC<WhiteBoardCanvasProps> = ({
             socket.off('receiveUndoDraw', receiveUndoDrawHandler);
             socket.off('receiveClearCanvas', receiveClearCanvasHandler);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket, context, previousStatesRef, gameStart]); // ignore saveCanvasState() function in the dependency array
 
     const handleColorChange = (color: string) => {
@@ -248,16 +250,25 @@ const WhiteBoardCanvas: FC<WhiteBoardCanvasProps> = ({
     });
 
     return (
-        <canvas
-            ref={canvasRef}
-            width={768}
-            height={576}
-            className="whiteboard-canvas"
-            onMouseDown={startDrawing}
-            onMouseMove={draw}
-            onMouseUp={stopDrawing}
-            onMouseOut={stopDrawing}
-        />
+        <div className="whiteboard-canvas-container">
+            <canvas
+                ref={canvasRef}
+                width={798}
+                height={598}
+                className="whiteboard-canvas"
+                onMouseDown={startDrawing}
+                onMouseMove={draw}
+                onMouseUp={stopDrawing}
+                onMouseOut={stopDrawing}
+            />
+            <WhiteBoardToolBar
+                brushSizes={brushSizes}
+                handleColorChange={handleColorChange}
+                handleBrushChange={handleBrushChange}
+                handleClearCanvas={handleClearCanvas}
+                handleUndo={handleUndo}
+            />
+        </div>
     );
 };
 

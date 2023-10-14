@@ -1,0 +1,58 @@
+.white-board-toolbar-layout {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* Color picker styles */
+.whiteboard-toolbar-color-palette-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.whiteboard-toolbar-selected-color {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+}
+
+.whiteboard-toolbar-color-palette {
+    display: flex;
+    flex-wrap: wrap;
+    width: 285px;
+    gap: 1px;
+}
+
+.whiteboard-toolbar-color-square {
+    width: 25px;
+    height: 25px;
+    border-radius: 4px;
+    border: none;
+}
+
+.whiteboard-toolbar-color-square:hover {
+    opacity: 0.7;
+}
+
+.whiteboard-toolbar-color-square:active {
+    filter: brightness(0.8);
+}
+
+/* Brush picker styles */
+.brush-picker {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;   
+}
+
+/* Action button styles */
+.whiteboard-toolbar-button {
+    background-color: #d4f1d4;
+    border: none;
+}
