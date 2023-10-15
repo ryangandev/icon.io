@@ -5,17 +5,16 @@ import * as url from 'url';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
+import { handleSendMessage, updatePlayerList } from '../socket/index.js';
 import {
     handleStartDraw,
     handleDraw,
     handleStopDraw,
     handleUndoDraw,
     handleClearCanvas,
-    handleSendMessage,
-    updatePlayerList,
-} from './socket/index.js';
-import { generateRoomId, getRandomInt } from './libs/utils.js';
-import { wordBank } from './libs/word-bank.js';
+} from './canvas-event-handlers.js';
+import { generateRoomId, getRandomInt } from '../libs/utils.js';
+import { wordBank } from '../libs/word-bank.js';
 
 let app = express();
 let __dirname = path.dirname(url.fileURLToPath(import.meta.url));
