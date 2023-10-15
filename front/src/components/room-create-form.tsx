@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Input, Modal, Select, Typography } from 'antd';
 import '../styles/pages/lobbies/draw-and-guess-lobby.css';
 import { Form } from 'antd';
@@ -6,13 +5,21 @@ import { RoomCreateRequestBody } from '../models/types';
 
 interface RoomCreateFormProps {
     open: boolean;
+    confirmLoading: boolean;
+    setConfirmLoading: (confirmLoading: boolean) => void;
     onCancel: () => void;
     onCreate: (requestBody: RoomCreateRequestBody) => void;
 }
 
 const { Option } = Select;
 
-const RoomCreateForm = ({ open, onCancel, onCreate }: RoomCreateFormProps) => {
+const RoomCreateForm = ({
+    open,
+    onCancel,
+    onCreate,
+    confirmLoading,
+    setConfirmLoading,
+}: RoomCreateFormProps) => {
     const [form] = Form.useForm();
     const username = sessionStorage.getItem('username');
     const defaultRoomCreateRequest: RoomCreateRequestBody = {
@@ -24,7 +31,6 @@ const RoomCreateForm = ({ open, onCancel, onCreate }: RoomCreateFormProps) => {
     };
     const maxPlayersOptions = [2, 3, 4, 5, 6, 7, 8];
     const maxRoundsOptions = [1, 2, 3, 4];
-    const [confirmLoading, setConfirmLoading] = useState(false);
 
     return (
         <Modal
@@ -41,6 +47,7 @@ const RoomCreateForm = ({ open, onCancel, onCreate }: RoomCreateFormProps) => {
                 onCancel();
             }}
             onOk={() => {
+                setConfirmLoading(true);
                 form.validateFields()
                     .then((createRoomRequest: RoomCreateRequestBody) => {
                         form.resetFields();

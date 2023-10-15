@@ -1,0 +1,33 @@
+.game-info-board {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 4px 16px 8px 16px;
+    align-items: start;
+    width: 100%;
+    height: 194px;
+    box-sizing: border-box;
+    font-size: 14px;
+    background-color: var(--component-background-color);
+    border: var(--component-border);
+    border-radius: var(--component-border-radius);
+}
+
+.game-info-board-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    width: 50%;
+    box-sizing: border-box;
+    height: 30px;
+    gap: var(--component-gap);
+    border-bottom: 2px solid black;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.game-info-board-text {
+    font-weight: 500;
+}

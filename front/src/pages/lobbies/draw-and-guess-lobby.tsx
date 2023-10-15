@@ -21,6 +21,8 @@ const DrawAndGuessLobby = () => {
     const username = sessionStorage.getItem('username');
     const [roomList, setRoomList] = useState<RoomInfo[]>([]);
     const [formOpen, setFormOpen] = useState(false);
+    const [createRoomRequestLoading, setcreateRoomRequestLoading] =
+        useState(false);
     const [passwordPromptOpen, setPasswordPromptOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -44,6 +46,7 @@ const DrawAndGuessLobby = () => {
                     ' and password is: ',
                     password,
                 );
+                setcreateRoomRequestLoading(false);
                 socket.emit(
                     'clientJoinDrawAndGuessRoomRequest',
                     room.roomId,
@@ -258,6 +261,8 @@ const DrawAndGuessLobby = () => {
                     </Button>
                     <RoomCreateForm
                         open={formOpen}
+                        confirmLoading={createRoomRequestLoading}
+                        setConfirmLoading={setcreateRoomRequestLoading}
                         onCancel={() => setFormOpen(false)}
                         onCreate={onCreate}
                     />

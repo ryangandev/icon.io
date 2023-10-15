@@ -9,6 +9,7 @@ import '../../styles/pages/rooms/draw-and-guess-room.css';
 import { Button } from 'antd';
 import { useSocket } from '../../hooks/useSocket';
 import { DrawAndGuessDetailRoomInfo } from '../../models/types';
+import GameInfoBoard from '../../components/game-info-board';
 
 const DrawAndGuessRoom = () => {
     const { roomId } = useParams();
@@ -17,7 +18,25 @@ const DrawAndGuessRoom = () => {
     const username = localStorage.getItem('username');
 
     const [currentRoomInfo, setCurrentRoomInfo] =
-        useState<DrawAndGuessDetailRoomInfo | null>(null);
+        useState<DrawAndGuessDetailRoomInfo>({
+            roomId: '',
+            roomName: '',
+            owner: {
+                username: '',
+                socketId: '',
+            },
+            status: 'open',
+            currentPlayerCount: 0,
+            maxPlayers: 8,
+            rounds: 3,
+            password: '',
+            playerList: {},
+            currentDrawer: '', // current drawer's socket id
+            currentWord: '',
+            currentRound: 0,
+            isGameStarted: false,
+            isGameEnded: false,
+        });
     const [roomError, setRoomError] = useState<boolean>(false);
     const [gameStart, setGameStart] = useState<boolean>(false);
     const isDrawer = currentRoomInfo?.currentDrawer === socket.id;
@@ -116,6 +135,21 @@ const DrawAndGuessRoom = () => {
                         </div>
 
                         <div className="draw-and-guess-room-body-right">
+                            <GameInfoBoard
+                                name={currentRoomInfo.roomName}
+                                owner={currentRoomInfo.owner.username}
+                                status={currentRoomInfo.status}
+                                players={
+                                    currentRoomInfo.currentPlayerCount +
+                                    '/' +
+                                    currentRoomInfo.maxPlayers
+                                }
+                                rounds={
+                                    currentRoomInfo.currentRound +
+                                    '/' +
+                                    currentRoomInfo.rounds
+                                }
+                            />
                             <ChatWindow
                                 userName={username}
                                 roomId={roomId}
