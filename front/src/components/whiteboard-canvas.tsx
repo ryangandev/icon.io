@@ -26,30 +26,24 @@ const brushSizes: { [key: string]: number } = {
     '4': 28,
 };
 
-type WhiteBoardCanvasProps = {
-    userName: string | null;
-    roomId: string | undefined;
+interface WhiteBoardCanvasProps {
+    roomId: string;
     isDrawer: boolean;
-};
+}
 
-const WhiteBoardCanvas = ({
-    userName,
-    roomId,
-    isDrawer,
-}: WhiteBoardCanvasProps) => {
+const WhiteBoardCanvas = ({ roomId, isDrawer }: WhiteBoardCanvasProps) => {
     const { socket } = useSocket();
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [isDrawing, setIsDrawing] = useState(false);
     const [context, setContext] = useState<CanvasRenderingContext2D | null>(
         null,
     );
-    const [gameStart, setGameStart] = useState<boolean>(false);
     const [brushOptions, setBrushOptions] = useState<BrushOptions>({
         color: '#000000',
         size: 5,
         shape: 'round',
         brush: '1',
     });
+    const [isDrawing, setIsDrawing] = useState(false);
     const previousStatesRef = useRef<ImageData[]>([]);
 
     useEffect(() => {
@@ -61,7 +55,7 @@ const WhiteBoardCanvas = ({
             }
         }
 
-        const receiveStartDrawHandler = (coords: Coordinate) => {
+        const drawerStartDrawingHandler = (coords: Coordinate) => {
             if (context) {
                 saveCanvasState();
                 context.beginPath();
@@ -69,11 +63,12 @@ const WhiteBoardCanvas = ({
             }
         };
 
-        const receiveDrawHandler = (
+        const drawerContinueDrawingHandler = (
             coords: Coordinate,
             color: string,
             size: number,
         ) => {
+            console.log('receivedraw', coords);
             if (context) {
                 context.lineTo(coords.x, coords.y);
                 context.strokeStyle = color;
@@ -83,13 +78,13 @@ const WhiteBoardCanvas = ({
             }
         };
 
-        const receiveStopDrawHandler = () => {
+        const drawerStopDrawingHandler = () => {
             if (context) {
                 context.closePath();
             }
         };
 
-        const receiveUndoDrawHandler = async (lastStateDataURL: string) => {
+        const drawerUndoHandler = async (lastStateDataURL: string) => {
             if (context && lastStateDataURL) {
                 const lastState = await dataURLToImageData(lastStateDataURL);
                 context.putImageData(lastState, 0, 0);
@@ -100,7 +95,7 @@ const WhiteBoardCanvas = ({
             }
         };
 
-        const receiveClearCanvasHandler = () => {
+        const drawerClearHandler = () => {
             if (context) {
                 context.clearRect(
                     0,
@@ -112,22 +107,22 @@ const WhiteBoardCanvas = ({
             }
         };
 
-        socket.on('receiveStartDraw', receiveStartDrawHandler);
-        socket.on('receiveDraw', receiveDrawHandler);
-        socket.on('receiveStopDraw', receiveStopDrawHandler);
-        socket.on('receiveUndoDraw', receiveUndoDrawHandler);
-        socket.on('receiveClearCanvas', receiveClearCanvasHandler);
+        socket.on('drawerStartDrawing', drawerStartDrawingHandler);
+        socket.on('drawerContinueDrawing', drawerContinueDrawingHandler);
+        socket.on('drawerStopDrawing', drawerStopDrawingHandler);
+        socket.on('drawerUndo', drawerUndoHandler);
+        socket.on('drawerClear', drawerClearHandler);
 
         // Cleanup the event listener
         return () => {
-            socket.off('receiveStartDraw', receiveStartDrawHandler);
-            socket.off('receiveDraw', receiveDrawHandler);
-            socket.off('receiveStopDraw', receiveStopDrawHandler);
-            socket.off('receiveUndoDraw', receiveUndoDrawHandler);
-            socket.off('receiveClearCanvas', receiveClearCanvasHandler);
+            socket.off('drawerStartDrawing', drawerStartDrawingHandler);
+            socket.off('drawerContinueDrawing', drawerContinueDrawingHandler);
+            socket.off('drawerStopDrawing', drawerStopDrawingHandler);
+            socket.off('drawerUndo', drawerUndoHandler);
+            socket.off('drawerClear', drawerClearHandler);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [socket, context, previousStatesRef, gameStart]); // ignore saveCanvasState() function in the dependency array
+    }, [socket, context, previousStatesRef]); // ignore saveCanvasState() function in the dependency array
 
     const handleColorChange = (color: string) => {
         setBrushOptions({
@@ -156,7 +151,7 @@ const WhiteBoardCanvas = ({
                 );
 
                 const lastStateDataURL = imageDataToDataURL(lastState);
-                socket.emit('undoDraw', userName, roomId, lastStateDataURL);
+                socket.emit('undo', roomId, lastStateDataURL);
             }
         }
     };
@@ -171,7 +166,7 @@ const WhiteBoardCanvas = ({
             );
             previousStatesRef.current = [];
 
-            socket.emit('clearCanvas', userName, roomId);
+            socket.emit('clear', roomId);
         }
     };
 
@@ -203,19 +198,23 @@ const WhiteBoardCanvas = ({
     };
 
     const startDrawing = (event: React.MouseEvent<HTMLCanvasElement>) => {
+        if (!isDrawer) return;
+
         saveCanvasState();
         const coords: Coordinate = getRelativeMouseCoords(event);
         setIsDrawing(true);
         context?.beginPath();
         context?.moveTo(coords.x, coords.y);
 
-        socket.emit('startDraw', userName, roomId, coords);
+        socket.emit('startDrawing', roomId, coords);
     };
 
-    const draw = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    const continueDrawing = (event: React.MouseEvent<HTMLCanvasElement>) => {
+        if (!isDrawer) return;
         if (!isDrawing) return;
-        const coords: Coordinate = getRelativeMouseCoords(event);
 
+        const coords: Coordinate = getRelativeMouseCoords(event);
+        console.log(coords);
         context!.lineTo(coords.x, coords.y);
         context!.strokeStyle = brushOptions.color;
         context!.lineWidth = brushOptions.size;
@@ -223,8 +222,7 @@ const WhiteBoardCanvas = ({
         context!.stroke();
 
         socket.emit(
-            'draw',
-            userName,
+            'continueDrawing',
             roomId,
             coords,
             brushOptions.color,
@@ -233,21 +231,13 @@ const WhiteBoardCanvas = ({
     };
 
     const stopDrawing = () => {
+        if (!isDrawer) return;
+
         setIsDrawing(false);
         context?.closePath();
 
-        socket.emit('stopDraw', userName, roomId);
+        socket.emit('stopDrawing', roomId);
     };
-
-    socket.on('start', (data) => {
-        setGameStart(data);
-        console.log(isDrawer);
-        console.log(gameStart);
-    });
-
-    socket.on('stop', (data) => {
-        setGameStart(data);
-    });
 
     return (
         <div className="whiteboard-canvas-container">
@@ -257,17 +247,22 @@ const WhiteBoardCanvas = ({
                 height={598}
                 className="whiteboard-canvas"
                 onMouseDown={startDrawing}
-                onMouseMove={draw}
+                onMouseMove={continueDrawing}
                 onMouseUp={stopDrawing}
                 onMouseOut={stopDrawing}
+                style={{
+                    cursor: isDrawer ? 'default' : 'not-allowed',
+                }}
             />
-            <WhiteBoardToolBar
-                brushSizes={brushSizes}
-                handleColorChange={handleColorChange}
-                handleBrushChange={handleBrushChange}
-                handleClearCanvas={handleClearCanvas}
-                handleUndo={handleUndo}
-            />
+            {isDrawer && (
+                <WhiteBoardToolBar
+                    brushSizes={brushSizes}
+                    handleColorChange={handleColorChange}
+                    handleBrushChange={handleBrushChange}
+                    handleClearCanvas={handleClearCanvas}
+                    handleUndo={handleUndo}
+                />
+            )}
         </div>
     );
 };

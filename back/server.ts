@@ -5,9 +5,10 @@ import cors from 'cors';
 import * as url from 'url';
 import path from 'path';
 import { DrawAndGuessDetailRoomInfo } from './models/types.js';
-import lobbyEventsHandler from './socket/draw-and-guess/lobby-events-handlers.js';
+import lobbyEventsHandler from './socket/draw-and-guess/lobby-events-handler.js';
 import roomEventsHandler from './socket/draw-and-guess/room-events-handler.js';
 import clientDepartureOnDisconnectHandler from './socket/client-disconnect-handler.js';
+import whiteboardCanvasEventHandler from './socket/draw-and-guess/whiteboard-canvas-events-handler.js';
 
 const app = express();
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
@@ -56,6 +57,7 @@ io.on('connection', (socket) => {
         drawAndGuessDetailRoomInfoList,
         socketInRooms,
     );
+    whiteboardCanvasEventHandler(socket);
 });
 
 app.get('/', (req: Request, res: Response) => {

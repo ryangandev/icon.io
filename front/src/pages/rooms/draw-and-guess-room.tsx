@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import WhiteBoardCanvas from '../../components/whiteboard-canvas';
 import ChatWindow from '../../components/chat-window';
@@ -12,10 +12,9 @@ import { DrawAndGuessDetailRoomInfo } from '../../models/types';
 import GameInfoBoard from '../../components/game-info-board';
 
 const DrawAndGuessRoom = () => {
-    const { roomId } = useParams();
     const { socket } = useSocket();
     const navigate = useNavigate();
-    const username = localStorage.getItem('username');
+    const username = sessionStorage.getItem('username');
 
     const [currentRoomInfo, setCurrentRoomInfo] =
         useState<DrawAndGuessDetailRoomInfo>({
@@ -27,8 +26,8 @@ const DrawAndGuessRoom = () => {
             },
             status: 'open',
             currentPlayerCount: 0,
-            maxPlayers: 8,
-            rounds: 3,
+            maxPlayers: 0,
+            rounds: 0,
             password: '',
             playerList: {},
             currentDrawer: '', // current drawer's socket id
@@ -38,10 +37,8 @@ const DrawAndGuessRoom = () => {
             isGameEnded: false,
         });
     const [roomError, setRoomError] = useState<boolean>(false);
-    const [gameStart, setGameStart] = useState<boolean>(false);
-    const isDrawer = currentRoomInfo?.currentDrawer === socket.id;
-    const isRoomOwner = currentRoomInfo?.owner.socketId === socket.id;
-    const isGameStarted = currentRoomInfo?.isGameStarted;
+    const isDrawer = currentRoomInfo.currentDrawer === socket.id;
+    const isRoomOwner = currentRoomInfo.owner.socketId === socket.id;
 
     useEffect(() => {
         socket.on(
@@ -82,17 +79,11 @@ const DrawAndGuessRoom = () => {
             socket.off('stop');
             socket.off('roomError');
         };
-    }, [socket, roomId, username]);
+    }, [socket]);
 
     const handleOnLeave = () => {
-        socket.emit('clientLeaveDrawAndGuessRoom', roomId);
+        socket.emit('clientLeaveDrawAndGuessRoom', currentRoomInfo.roomId);
         navigate('/Gamehub/DrawAndGuess/Lobby');
-    };
-
-    const handleStartGame = () => {
-        setGameStart(true);
-
-        socket.emit('startGame', true, roomId);
     };
 
     return (
@@ -111,25 +102,24 @@ const DrawAndGuessRoom = () => {
 
                     <div className="draw-and-guess-room-body">
                         <div className="draw-and-guess-room-body-left">
-                            {Object.entries(
-                                currentRoomInfo?.playerList || {},
-                            ).map(([socketId, playerInfo]) => (
-                                <PlayerInfoContainer
-                                    key={socketId}
-                                    playerInfo={playerInfo}
-                                    isClient={socketId === socket.id}
-                                    isCurrentDrawer={
-                                        socketId ===
-                                        currentRoomInfo?.currentDrawer
-                                    }
-                                />
-                            ))}
+                            {Object.entries(currentRoomInfo.playerList).map(
+                                ([socketId, playerInfo]) => (
+                                    <PlayerInfoContainer
+                                        key={socketId}
+                                        playerInfo={playerInfo}
+                                        isClient={socketId === socket.id}
+                                        isCurrentDrawer={
+                                            socketId ===
+                                            currentRoomInfo.currentDrawer
+                                        }
+                                    />
+                                ),
+                            )}
                         </div>
 
                         <div className="draw-and-guess-room-body-center">
                             <WhiteBoardCanvas
-                                userName={username}
-                                roomId={roomId}
+                                roomId={currentRoomInfo.roomId}
                                 isDrawer={isDrawer}
                             />
                         </div>
@@ -152,13 +142,13 @@ const DrawAndGuessRoom = () => {
                             />
                             <ChatWindow
                                 userName={username}
-                                roomId={roomId}
+                                roomId={currentRoomInfo.roomId}
                                 isDrawer={isDrawer}
-                                gameStart={gameStart}
+                                gameStart={currentRoomInfo.isGameStarted}
                             />
-                            {isRoomOwner && !isGameStarted && (
+                            {isRoomOwner && !currentRoomInfo.isGameStarted && (
                                 <Button
-                                    onClick={handleStartGame}
+                                    onClick={() => {}}
                                     size="large"
                                     className="startBtn"
                                 >
