@@ -9,6 +9,7 @@ import lobbyEventsHandler from './socket/draw-and-guess/lobby-events-handler.js'
 import roomEventsHandler from './socket/draw-and-guess/room-events-handler.js';
 import clientDepartureOnDisconnectHandler from './socket/client-disconnect-handler.js';
 import whiteboardCanvasEventHandler from './socket/draw-and-guess/whiteboard-canvas-events-handler.js';
+import ChatEventsHandler from './socket/draw-and-guess/chat-events-handler.js';
 
 const app = express();
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
@@ -58,6 +59,7 @@ io.on('connection', (socket) => {
         socketInRooms,
     );
     whiteboardCanvasEventHandler(socket);
+    ChatEventsHandler(io, socket);
 });
 
 app.get('/', (req: Request, res: Response) => {

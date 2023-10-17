@@ -141,10 +141,10 @@ const DrawAndGuessRoom = () => {
                                 }
                             />
                             <ChatWindow
-                                userName={username}
+                                username={username}
                                 roomId={currentRoomInfo.roomId}
                                 isDrawer={isDrawer}
-                                gameStart={currentRoomInfo.isGameStarted}
+                                isGameStarted={currentRoomInfo.isGameStarted}
                             />
                             {isRoomOwner && !currentRoomInfo.isGameStarted && (
                                 <Button

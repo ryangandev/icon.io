@@ -5,21 +5,28 @@ import { useEffect, useRef, useState } from 'react';
 import { useSocket } from '../hooks/useSocket';
 
 interface ChatWindowProps {
-    userName: string | null;
-    roomId: string | undefined;
+    username: string | null;
+    roomId: string;
     isDrawer: boolean;
-    gameStart: boolean;
+    isGameStarted: boolean;
 }
 
-const ChatWindow = (props: ChatWindowProps) => {
+interface Message {
+    username: string;
+    message: string;
+    color?: string;
+}
+
+const ChatWindow = ({
+    username,
+    roomId,
+    isDrawer,
+    isGameStarted,
+}: ChatWindowProps) => {
     const { socket } = useSocket();
-    const [messages, setMessages] = useState<string[]>([]);
-    const [inputMessage, setInputMessage] = useState<string>('');
-    const [alreadyReceivedPts, setAlreadyReceivedPts] =
-        useState<boolean>(false);
     const messageContainerRef = useRef<HTMLDivElement>(null);
-    const user = props.userName;
-    const room = props.roomId;
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [inputMessage, setInputMessage] = useState<string>('');
 
     // Scroll to bottom smoothly of chat window when new message is sent
     useEffect(() => {
@@ -30,8 +37,11 @@ const ChatWindow = (props: ChatWindowProps) => {
             });
         }
 
-        socket.on('receiveMessage', (message) => {
-            setMessages([...messages, message]);
+        socket.on('receiveMessage', (username: string, message: string) => {
+            setMessages([
+                ...messages,
+                { username: username, message: message },
+            ]);
         });
 
         return () => {
@@ -48,23 +58,18 @@ const ChatWindow = (props: ChatWindowProps) => {
     const handleOnMessageSend = () => {
         if (inputMessage === '') return;
 
-        setInputMessage(inputMessage);
+        setMessages([
+            ...messages,
+            {
+                username: username + '(You)',
+                message: inputMessage,
+                color: '#d4f1d4',
+            },
+        ]);
 
-        setMessages([...messages, user + '(Me): ' + inputMessage]);
-
-        //Chat
-        socket.emit(
-            'sendMessage',
-            inputMessage,
-            user,
-            room,
-            alreadyReceivedPts,
-        );
+        socket.emit('sendMessage', roomId, username, inputMessage);
         setInputMessage('');
     };
-    socket.on('ptsReceived', (data) => {
-        setAlreadyReceivedPts(data);
-    });
 
     return (
         <div className="chat-window-container">
@@ -76,8 +81,14 @@ const ChatWindow = (props: ChatWindowProps) => {
                 <div className="spacer" />
                 <div className="message-wrapper">
                     {messages.map((message, index) => (
-                        <div key={index} className="message">
-                            {message}
+                        <div
+                            key={index}
+                            className="message"
+                            style={{
+                                backgroundColor: message.color,
+                            }}
+                        >
+                            {message.username}: {message.message}
                         </div>
                     ))}
                 </div>
@@ -88,6 +99,8 @@ const ChatWindow = (props: ChatWindowProps) => {
                 value={inputMessage}
                 onChange={handleInputMessageChange}
                 onPressEnter={handleOnMessageSend}
+                maxLength={40}
+                disabled={isDrawer}
                 suffix={<EnterOutlined onClick={handleOnMessageSend} />}
             />
         </div>
