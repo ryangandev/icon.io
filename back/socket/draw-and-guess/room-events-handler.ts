@@ -101,6 +101,8 @@ const roomEventsHandler = (
                 }
 
                 const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
+                const isLeavingClientOwner =
+                    currentRoom.owner.socketId === socket.id;
 
                 delete currentRoom.playerList[socket.id];
                 currentRoom.currentPlayerCount = Object.keys(
@@ -112,7 +114,7 @@ const roomEventsHandler = (
                     delete drawAndGuessDetailRoomInfoList[roomId];
                 } else {
                     // If the leaving client is the owner, transfer ownership to the next client
-                    if (currentRoom.owner.socketId === socket.id) {
+                    if (isLeavingClientOwner) {
                         const newOwnerSocketId = Object.keys(
                             currentRoom.playerList,
                         )[0];
@@ -123,6 +125,17 @@ const roomEventsHandler = (
                             socketId: newOwnerSocketId,
                         };
                         currentRoom.owner = newOwnerInfo;
+
+                        // Notify all clients in the room that the ownership has been transferred here
+                        io.to(roomId).emit(
+                            'receiveMessage',
+                            '📢 System',
+                            'Previous owner ' +
+                                username +
+                                ' has left the room. ' +
+                                newOwnerInfo.username +
+                                ' is now the owner.',
+                        );
                     }
 
                     currentRoom.status = getRoomStatus(
@@ -147,11 +160,14 @@ const roomEventsHandler = (
                     currentRoom,
                 );
 
-                io.to(roomId).emit(
-                    'receiveMessage',
-                    '📢 System',
-                    username + ' has left the room.',
-                );
+                // Only notify if the leaving client is not the owner, because the ownership transfer was notified above
+                if (!isLeavingClientOwner) {
+                    io.to(roomId).emit(
+                        'receiveMessage',
+                        '📢 System',
+                        username + ' has left the room.',
+                    );
+                }
 
                 // Notify all clients in the lobby that a client has left a room
                 io.emit(
