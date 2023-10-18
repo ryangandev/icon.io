@@ -4,6 +4,7 @@ import {
     getDrawAndGuessLobbyRoomInfo,
     getRoomStatus,
 } from '../../libs/utils.js';
+import { CustomError } from '../../models/error.js';
 
 const roomEventsHandler = (
     io: Server,
@@ -16,13 +17,21 @@ const roomEventsHandler = (
         (roomId: string, username: string, password: string) => {
             try {
                 if (!drawAndGuessDetailRoomInfoList[roomId]) {
-                    throw new Error('Room does not exist.');
+                    const err: CustomError = new Error(
+                        'Room does not exist.',
+                    ) as CustomError;
+                    err.errorType = 'roomNotExist';
+                    throw err;
                 }
 
                 const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
 
                 if (currentRoom.status !== 'open') {
-                    throw new Error('Room is not open.');
+                    const err: CustomError = new Error(
+                        'Room is not open.',
+                    ) as CustomError;
+                    err.errorType = 'roomNotOpen';
+                    throw err;
                 }
 
                 // If room has password, check if password is correct, if not, send reject event
@@ -87,6 +96,7 @@ const roomEventsHandler = (
                 socket.emit('roomError', {
                     status: true,
                     message: error.message,
+                    errorType: error.errorType,
                 });
             }
         },
@@ -97,7 +107,11 @@ const roomEventsHandler = (
         (roomId: string, username: string) => {
             try {
                 if (!drawAndGuessDetailRoomInfoList[roomId]) {
-                    throw new Error('Room does not exist.');
+                    const err: CustomError = new Error(
+                        'Room does not exist.',
+                    ) as CustomError;
+                    err.errorType = 'roomNotExist';
+                    throw err;
                 }
 
                 const currentRoom = drawAndGuessDetailRoomInfoList[roomId];

@@ -10,6 +10,8 @@ import { Button } from 'antd';
 import { useSocket } from '../../hooks/useSocket';
 import { DrawAndGuessDetailRoomInfo } from '../../models/types';
 import GameInfoBoard from '../../components/game-info-board';
+import { CustomError } from '../../models/error';
+import toast from 'react-hot-toast';
 
 const DrawAndGuessRoom = () => {
     const { socket } = useSocket();
@@ -36,7 +38,7 @@ const DrawAndGuessRoom = () => {
             isGameStarted: false,
             isGameEnded: false,
         });
-    const [roomError, setRoomError] = useState<boolean>(false);
+    const [roomDoesNotExist, setRoomDoesNotExist] = useState<boolean>(false);
     const isDrawer = currentRoomInfo.currentDrawer === socket.id;
     const isRoomOwner = currentRoomInfo.owner.socketId === socket.id;
 
@@ -67,16 +69,19 @@ const DrawAndGuessRoom = () => {
             },
         );
 
-        socket.on('roomError', (roomError) => {
+        socket.on('roomError', (roomError: CustomError) => {
             console.log('roomError received: ', roomError);
-            setRoomError(roomError);
+            if (roomError.errorType === 'roomNotExist') {
+                setRoomDoesNotExist(true);
+            }
+            if (roomError.errorType === 'notEnoughPlayers') {
+                toast.error(roomError.message);
+            }
         });
 
         return () => {
             socket.off('clientJoinDrawAndGuessRoomSuccess');
             socket.off('clientLeaveDrawAndGuessRoomSuccess');
-            socket.off('drawer');
-            socket.off('stop');
             socket.off('roomError');
         };
     }, [socket]);
@@ -90,12 +95,16 @@ const DrawAndGuessRoom = () => {
         navigate('/Gamehub/DrawAndGuess/Lobby');
     };
 
+    const handleStartGame = () => {
+        socket.emit('startDrawAndGuessGame', currentRoomInfo.roomId);
+    };
+
     return (
         <>
-            {roomError ? (
+            {roomDoesNotExist ? (
                 <Modal
                     title="The room you are looking for does not exist."
-                    open={roomError}
+                    open={roomDoesNotExist}
                     onOk={handleOnLeave}
                 >
                     Click OK to be redirected to the lobby.
@@ -154,7 +163,7 @@ const DrawAndGuessRoom = () => {
                             />
                             {isRoomOwner && !currentRoomInfo.isGameStarted && (
                                 <Button
-                                    onClick={() => {}}
+                                    onClick={handleStartGame}
                                     size="large"
                                     className="startBtn"
                                 >
