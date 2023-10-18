@@ -28,10 +28,17 @@ const brushSizes: { [key: string]: number } = {
 
 interface WhiteBoardCanvasProps {
     roomId: string;
+    ownerName: string;
     isDrawer: boolean;
+    isGameStarted: boolean;
 }
 
-const WhiteBoardCanvas = ({ roomId, isDrawer }: WhiteBoardCanvasProps) => {
+const WhiteBoardCanvas = ({
+    roomId,
+    ownerName,
+    isDrawer,
+    isGameStarted,
+}: WhiteBoardCanvasProps) => {
     const { socket } = useSocket();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [context, setContext] = useState<CanvasRenderingContext2D | null>(
@@ -254,6 +261,11 @@ const WhiteBoardCanvas = ({ roomId, isDrawer }: WhiteBoardCanvasProps) => {
                     cursor: isDrawer ? 'default' : 'not-allowed',
                 }}
             />
+            {!isGameStarted && (
+                <div className="whiteboard-canvas-overlay">
+                    Waiting for the owner {ownerName} to start the game...
+                </div>
+            )}
             {isDrawer && (
                 <WhiteBoardToolBar
                     brushSizes={brushSizes}

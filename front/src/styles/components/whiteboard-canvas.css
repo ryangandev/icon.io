@@ -1,4 +1,5 @@
 .whiteboard-canvas-container {
+    position: relative;
     display: flex;
     flex-direction: column;
     width: 800px;
@@ -6,11 +7,27 @@
 }
 
 .whiteboard-canvas {
+    position: relative;
     display: block;
     width: 100%;
     height: 600px;
     box-sizing: border-box;
     border: var(--component-border);
     background-color: var(--component-background-color);
+    border-radius: var(--component-border-radius);
+}
+
+.whiteboard-canvas-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 600px;
+    background-color: rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
     border-radius: var(--component-border-radius);
 }

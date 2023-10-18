@@ -120,7 +120,9 @@ const DrawAndGuessRoom = () => {
                         <div className="draw-and-guess-room-body-center">
                             <WhiteBoardCanvas
                                 roomId={currentRoomInfo.roomId}
+                                ownerName={currentRoomInfo.owner.username}
                                 isDrawer={isDrawer}
+                                isGameStarted={currentRoomInfo.isGameStarted}
                             />
                         </div>
 
