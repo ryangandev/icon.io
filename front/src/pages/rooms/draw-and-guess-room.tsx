@@ -82,7 +82,11 @@ const DrawAndGuessRoom = () => {
     }, [socket]);
 
     const handleOnLeave = () => {
-        socket.emit('clientLeaveDrawAndGuessRoom', currentRoomInfo.roomId);
+        socket.emit(
+            'clientLeaveDrawAndGuessRoom',
+            currentRoomInfo.roomId,
+            username,
+        );
         navigate('/Gamehub/DrawAndGuess/Lobby');
     };
 

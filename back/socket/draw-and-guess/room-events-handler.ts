@@ -74,6 +74,12 @@ const roomEventsHandler = (
                         'clientJoinDrawAndGuessRoomSuccess',
                         currentRoom,
                     );
+
+                    io.to(roomId).emit(
+                        'receiveMessage',
+                        '📢 System',
+                        username + ' has joined the room.',
+                    );
                 }, 250); // Delay to ensure that the client has joined the room
             } catch (error: any) {
                 console.error(error);
@@ -86,72 +92,82 @@ const roomEventsHandler = (
         },
     );
 
-    socket.on('clientLeaveDrawAndGuessRoom', (roomId: string) => {
-        try {
-            if (!drawAndGuessDetailRoomInfoList[roomId]) {
-                throw new Error('Room does not exist.');
-            }
-
-            const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
-
-            delete currentRoom.playerList[socket.id];
-            currentRoom.currentPlayerCount = Object.keys(
-                currentRoom.playerList,
-            ).length; // If app gets slow, use counter instead
-
-            // If the room is empty, delete the room
-            if (currentRoom.currentPlayerCount === 0) {
-                delete drawAndGuessDetailRoomInfoList[roomId];
-            } else {
-                // If the leaving client is the owner, transfer ownership to the next client
-                if (currentRoom.owner.socketId === socket.id) {
-                    const newOwnerSocketId = Object.keys(
-                        currentRoom.playerList,
-                    )[0];
-                    const newOwnerInfo: OwnerInfo = {
-                        username:
-                            currentRoom.playerList[newOwnerSocketId].username,
-                        socketId: newOwnerSocketId,
-                    };
-                    currentRoom.owner = newOwnerInfo;
+    socket.on(
+        'clientLeaveDrawAndGuessRoom',
+        (roomId: string, username: string) => {
+            try {
+                if (!drawAndGuessDetailRoomInfoList[roomId]) {
+                    throw new Error('Room does not exist.');
                 }
 
-                currentRoom.status = getRoomStatus(
-                    currentRoom.currentPlayerCount,
-                    currentRoom.maxPlayers,
-                    currentRoom.isGameStarted,
+                const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
+
+                delete currentRoom.playerList[socket.id];
+                currentRoom.currentPlayerCount = Object.keys(
+                    currentRoom.playerList,
+                ).length; // If app gets slow, use counter instead
+
+                // If the room is empty, delete the room
+                if (currentRoom.currentPlayerCount === 0) {
+                    delete drawAndGuessDetailRoomInfoList[roomId];
+                } else {
+                    // If the leaving client is the owner, transfer ownership to the next client
+                    if (currentRoom.owner.socketId === socket.id) {
+                        const newOwnerSocketId = Object.keys(
+                            currentRoom.playerList,
+                        )[0];
+                        const newOwnerInfo: OwnerInfo = {
+                            username:
+                                currentRoom.playerList[newOwnerSocketId]
+                                    .username,
+                            socketId: newOwnerSocketId,
+                        };
+                        currentRoom.owner = newOwnerInfo;
+                    }
+
+                    currentRoom.status = getRoomStatus(
+                        currentRoom.currentPlayerCount,
+                        currentRoom.maxPlayers,
+                        currentRoom.isGameStarted,
+                    );
+                }
+
+                socket.leave(roomId);
+                socketInRooms[socket.id].delete(roomId);
+                console.log('current room info: ', currentRoom);
+                console.log('socket in rooms: ', socketInRooms);
+
+                const drawAndGuessLobbySimplifiedRoomList = Object.values(
+                    drawAndGuessDetailRoomInfoList,
+                ).map(getDrawAndGuessLobbyRoomInfo);
+
+                // Notify all clients in the room that a client has left
+                io.to(roomId).emit(
+                    'clientLeaveDrawAndGuessRoomSuccess',
+                    currentRoom,
                 );
+
+                io.to(roomId).emit(
+                    'receiveMessage',
+                    '📢 System',
+                    username + ' has left the room.',
+                );
+
+                // Notify all clients in the lobby that a client has left a room
+                io.emit(
+                    'updateDrawAndGuessLobbyRoomList',
+                    drawAndGuessLobbySimplifiedRoomList,
+                );
+            } catch (error: any) {
+                console.error(error);
+                // Notify the current client that there was an error
+                socket.emit('roomError', {
+                    status: true,
+                    message: error.message,
+                });
             }
-
-            socket.leave(roomId);
-            socketInRooms[socket.id].delete(roomId);
-            console.log('current room info: ', currentRoom);
-            console.log('socket in rooms: ', socketInRooms);
-
-            const drawAndGuessLobbySimplifiedRoomList = Object.values(
-                drawAndGuessDetailRoomInfoList,
-            ).map(getDrawAndGuessLobbyRoomInfo);
-
-            // Notify all clients in the room that a client has left
-            io.to(roomId).emit(
-                'clientLeaveDrawAndGuessRoomSuccess',
-                currentRoom,
-            );
-
-            // Notify all clients in the lobby that a client has left a room
-            io.emit(
-                'updateDrawAndGuessLobbyRoomList',
-                drawAndGuessLobbySimplifiedRoomList,
-            );
-        } catch (error: any) {
-            console.error(error);
-            // Notify the current client that there was an error
-            socket.emit('roomError', {
-                status: true,
-                message: error.message,
-            });
-        }
-    });
+        },
+    );
 };
 
 export default roomEventsHandler;
