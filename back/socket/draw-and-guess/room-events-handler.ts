@@ -46,6 +46,7 @@ const roomEventsHandler = (
                 currentRoom.playerList[socket.id] = {
                     username: username,
                     score: 0,
+                    hasDrawnCurrentRound: false,
                 };
                 currentRoom.currentPlayerCount = Object.keys(
                     currentRoom.playerList,

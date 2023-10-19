@@ -3,6 +3,7 @@ type RoomStatus = 'open' | 'full' | 'in progress';
 interface PlayerInfo {
     username: string;
     score: number;
+    hasDrawnCurrentRound: boolean;
 }
 
 interface OwnerInfo {
