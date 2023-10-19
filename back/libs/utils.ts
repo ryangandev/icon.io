@@ -4,6 +4,7 @@ import {
     RoomInfo,
     RoomStatus,
 } from '../models/types.js';
+import { WordBank } from './word-bank.js';
 
 const generateRoomId = (): string => {
     return uuidv4();
@@ -42,9 +43,34 @@ const getDrawAndGuessLobbyRoomInfo = (
     };
 };
 
+const getRandomCategory = (wordBank: WordBank): Record<string, string[]> => {
+    const categoryList = Object.keys(wordBank);
+    const randomCategoryIndex = getRandomInt(0, categoryList.length);
+    const randomCategory = categoryList[randomCategoryIndex];
+
+    return {
+        [randomCategory]: wordBank[randomCategory],
+    };
+};
+
+const getRandomChoicesFromCategory = (
+    wordList: string[],
+    numberOfChoices: number,
+): string[] => {
+    const selectedIndexes = new Set<number>();
+
+    while (selectedIndexes.size < numberOfChoices) {
+        selectedIndexes.add(getRandomInt(0, wordList.length));
+    }
+
+    return [...selectedIndexes].map((index) => wordList[index]);
+};
+
 export {
     generateRoomId,
     getRandomInt,
     getRoomStatus,
     getDrawAndGuessLobbyRoomInfo,
+    getRandomCategory,
+    getRandomChoicesFromCategory,
 };
