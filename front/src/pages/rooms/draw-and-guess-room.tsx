@@ -36,7 +36,6 @@ const DrawAndGuessRoom = () => {
             currentWord: '',
             currentRound: 0,
             isGameStarted: false,
-            isGameEnded: false,
         });
     const [roomDoesNotExist, setRoomDoesNotExist] = useState<boolean>(false);
     const isDrawer = currentRoomInfo.currentDrawer === socket.id;

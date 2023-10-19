@@ -35,7 +35,6 @@ interface DrawAndGuessDetailRoomInfo extends RoomInfo {
     currentWord: string;
     currentRound: number;
     isGameStarted: boolean;
-    isGameEnded: boolean;
 }
 
 export type {
