@@ -3,7 +3,6 @@ type RoomStatus = 'open' | 'full' | 'in progress';
 interface PlayerInfo {
     username: string;
     score: number;
-    hasDrawnCurrentRound: boolean;
 }
 
 interface OwnerInfo {
@@ -36,6 +35,7 @@ interface DrawAndGuessDetailRoomInfo extends RoomInfo {
     currentWord: string;
     currentRound: number;
     isGameStarted: boolean;
+    drawerQueue: Set<string>; // queue of socket ids
 }
 
 export type {

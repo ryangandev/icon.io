@@ -54,6 +54,7 @@ const lobbyEventsHandler = (
                 currentWord: '',
                 currentRound: 0,
                 isGameStarted: false,
+                drawerQueue: new Set(),
             };
 
             drawAndGuessDetailRoomInfoList[roomId] = newDrawAndGuessRoom;

@@ -46,7 +46,6 @@ const roomEventsHandler = (
                 currentRoom.playerList[socket.id] = {
                     username: username,
                     score: 0,
-                    hasDrawnCurrentRound: false,
                 };
                 currentRoom.currentPlayerCount = Object.keys(
                     currentRoom.playerList,
@@ -106,6 +105,7 @@ const roomEventsHandler = (
     socket.on(
         'clientLeaveDrawAndGuessRoom',
         (roomId: string, username: string) => {
+            // TODO: add a boolean parameter for an edge case when the client leaves the room when the game is in progress
             try {
                 if (!drawAndGuessDetailRoomInfoList[roomId]) {
                     const err: CustomError = new Error(
