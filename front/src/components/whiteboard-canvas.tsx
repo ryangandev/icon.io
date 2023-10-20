@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-    imageDataToDataURL,
-    dataURLToImageData,
-} from '../helper-functions/image-data-and-url-conversion';
+import { imageDataToDataURL, dataURLToImageData } from '../libs/utils';
 import { useSocket } from '../hooks/useSocket';
 import '../styles/components/whiteboard-canvas.css';
 import WhiteBoardToolBar from './whiteboard-toolbar';
+import { Button, Space, Typography } from 'antd';
 
 interface BrushOptions {
     color: string;
@@ -31,6 +29,10 @@ interface WhiteBoardCanvasProps {
     ownerName: string;
     isDrawer: boolean;
     isGameStarted: boolean;
+    isWordSelectingPhase: boolean;
+    wordChoices?: string[];
+    wordSelectPhaseTimer: number;
+    setWordSelectPhaseTimer: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const WhiteBoardCanvas = ({
@@ -38,6 +40,10 @@ const WhiteBoardCanvas = ({
     ownerName,
     isDrawer,
     isGameStarted,
+    isWordSelectingPhase,
+    wordChoices = [],
+    wordSelectPhaseTimer,
+    setWordSelectPhaseTimer,
 }: WhiteBoardCanvasProps) => {
     const { socket } = useSocket();
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -75,7 +81,6 @@ const WhiteBoardCanvas = ({
             color: string,
             size: number,
         ) => {
-            console.log('receivedraw', coords);
             if (context) {
                 context.lineTo(coords.x, coords.y);
                 context.strokeStyle = color;
@@ -130,6 +135,21 @@ const WhiteBoardCanvas = ({
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket, context, previousStatesRef]); // ignore saveCanvasState() function in the dependency array
+
+    useEffect(() => {
+        let intervalId: NodeJS.Timeout | number;
+
+        // For wordSelectPhaseTimer countdown
+        if (isWordSelectingPhase && wordSelectPhaseTimer > 0) {
+            intervalId = setInterval(() => {
+                setWordSelectPhaseTimer((prevTimer) => prevTimer - 1);
+            }, 1000);
+        }
+
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [isWordSelectingPhase, setWordSelectPhaseTimer, wordSelectPhaseTimer]);
 
     const handleColorChange = (color: string) => {
         setBrushOptions({
@@ -205,7 +225,7 @@ const WhiteBoardCanvas = ({
     };
 
     const startDrawing = (event: React.MouseEvent<HTMLCanvasElement>) => {
-        if (!isDrawer) return;
+        if (!isDrawer || isWordSelectingPhase) return;
 
         saveCanvasState();
         const coords: Coordinate = getRelativeMouseCoords(event);
@@ -217,11 +237,10 @@ const WhiteBoardCanvas = ({
     };
 
     const continueDrawing = (event: React.MouseEvent<HTMLCanvasElement>) => {
-        if (!isDrawer) return;
+        if (!isDrawer || isWordSelectingPhase) return;
         if (!isDrawing) return;
 
         const coords: Coordinate = getRelativeMouseCoords(event);
-        console.log(coords);
         context!.lineTo(coords.x, coords.y);
         context!.strokeStyle = brushOptions.color;
         context!.lineWidth = brushOptions.size;
@@ -238,7 +257,7 @@ const WhiteBoardCanvas = ({
     };
 
     const stopDrawing = () => {
-        if (!isDrawer) return;
+        if (!isDrawer || isWordSelectingPhase) return;
 
         setIsDrawing(false);
         context?.closePath();
@@ -266,7 +285,47 @@ const WhiteBoardCanvas = ({
                     Waiting for the owner {ownerName} to start the game...
                 </div>
             )}
-            {isDrawer && (
+            {isGameStarted && isWordSelectingPhase && isDrawer && (
+                <div className="whiteboard-canvas-overlay">
+                    <Typography.Title level={3}>
+                        Select a word to draw:
+                    </Typography.Title>
+                    <Space direction="horizontal">
+                        {wordChoices.map((word, index) => (
+                            <Button
+                                key={index}
+                                size="large"
+                                onClick={() => {
+                                    socket.emit(
+                                        'drawerSelectWordFinished',
+                                        roomId,
+                                        word,
+                                    );
+                                }}
+                                style={{
+                                    fontWeight: 600,
+                                }}
+                            >
+                                {word}
+                            </Button>
+                        ))}
+                    </Space>
+                    <Typography.Title level={2}>
+                        {wordSelectPhaseTimer}
+                    </Typography.Title>
+                </div>
+            )}
+            {isGameStarted && isWordSelectingPhase && !isDrawer && (
+                <div className="whiteboard-canvas-overlay">
+                    <Typography.Title level={3}>
+                        Waiting for the drawer to select a word...
+                    </Typography.Title>
+                    <Typography.Title level={2}>
+                        {wordSelectPhaseTimer}
+                    </Typography.Title>
+                </div>
+            )}
+            {isGameStarted && isDrawer && (
                 <WhiteBoardToolBar
                     brushSizes={brushSizes}
                     handleColorChange={handleColorChange}
