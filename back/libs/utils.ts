@@ -53,7 +53,7 @@ const getRandomCategory = (wordBank: WordBank): Record<string, string[]> => {
     };
 };
 
-const getRandomChoicesFromCategory = (
+const getRandomChoicesFromList = (
     wordList: string[],
     numberOfChoices: number,
 ): string[] => {
@@ -66,11 +66,24 @@ const getRandomChoicesFromCategory = (
     return [...selectedIndexes].map((index) => wordList[index]);
 };
 
+const getRandomElementFromSet = (set: Set<string>): string => {
+    const randomIndex = getRandomInt(0, set.size);
+    const iterator = set.values();
+    let result = iterator.next();
+
+    for (let i = 0; i < randomIndex; i++) {
+        result = iterator.next();
+    }
+
+    return result.value;
+};
+
 export {
     generateRoomId,
     getRandomInt,
     getRoomStatus,
     getDrawAndGuessLobbyRoomInfo,
     getRandomCategory,
-    getRandomChoicesFromCategory,
+    getRandomChoicesFromList,
+    getRandomElementFromSet,
 };

@@ -29,4 +29,16 @@ const dataURLToImageData = async (dataURL: string): Promise<ImageData> => {
     });
 };
 
-export { imageDataToDataURL, dataURLToImageData };
+const formatTimeInMinutesAndSeconds = (timeInSeconds: number): string => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return `${minutes < 10 ? '0' + minutes : minutes}:${
+        seconds < 10 ? '0' + seconds : seconds
+    }`;
+};
+
+export {
+    imageDataToDataURL,
+    dataURLToImageData,
+    formatTimeInMinutesAndSeconds,
+};
