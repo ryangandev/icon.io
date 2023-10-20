@@ -52,9 +52,14 @@ const lobbyEventsHandler = (
                 playerList: {},
                 currentDrawer: '',
                 currentWord: '',
+                currentWordLength: 0,
                 currentRound: 0,
                 isGameStarted: false,
+                isWordSelectingPhase: false,
+                isDrawingPhase: false,
                 drawerQueue: new Set(),
+                wordCategory: '',
+                wordChoices: [],
             };
 
             drawAndGuessDetailRoomInfoList[roomId] = newDrawAndGuessRoom;
