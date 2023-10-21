@@ -329,6 +329,7 @@ const DrawAndGuessRoom = () => {
                                     '/' +
                                     currentRoomInfo.rounds
                                 }
+                                wordCategory={currentRoomInfo.wordCategory}
                             />
                             <ChatWindow
                                 username={username}

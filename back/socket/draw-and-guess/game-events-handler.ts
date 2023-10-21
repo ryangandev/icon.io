@@ -58,7 +58,9 @@ const GameEventsHandler = (
             io.to(roomId).emit(
                 'receiveMessage',
                 '📢 System',
-                'Game has started!',
+                'Game has started! The word category for this game is "' +
+                    currentRoom.wordCategory +
+                    '"!',
             );
 
             const drawAndGuessLobbySimplifiedRoomList = Object.values(

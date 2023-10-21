@@ -1,5 +1,4 @@
 import '../styles/components/game-info-board.css';
-import { CiBullhorn } from 'react-icons/ci';
 
 interface GameInfoBoardProps {
     name: string;
@@ -7,6 +6,7 @@ interface GameInfoBoardProps {
     status: string;
     players: string;
     rounds: string;
+    wordCategory: string;
 }
 
 const GameInfoBoard = ({
@@ -15,6 +15,7 @@ const GameInfoBoard = ({
     status,
     players,
     rounds,
+    wordCategory,
 }: GameInfoBoardProps) => {
     const gameInfoItems = [
         { label: 'Name', value: name },
@@ -22,16 +23,17 @@ const GameInfoBoard = ({
         { label: 'Status', value: status },
         { label: 'Players', value: players },
         { label: 'Rounds', value: rounds },
+        { label: 'Category', value: wordCategory },
     ];
 
     return (
         <div className="game-info-board">
             <div className="game-info-board-header">
-                <CiBullhorn style={{ fontSize: 18 }} />
+                📜
                 <span>Room Info</span>
             </div>
             {gameInfoItems.map((item, index) => (
-                <div key={index}>
+                <div className="game-info-board-row" key={index}>
                     {item.label}:{' '}
                     <span className="game-info-board-text">{item.value}</span>
                 </div>
