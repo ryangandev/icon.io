@@ -40,9 +40,9 @@ const formatTimeInMinutesAndSeconds = (timeInSeconds: number): string => {
 };
 
 const statusColors: Record<RoomStatus, string> = {
-    Open: 'green',
-    Full: 'red',
-    'In Progress': 'orange',
+    Open: '#2ECC71',
+    Full: '#E74C3C',
+    'In Progress': '#F39C12',
 };
 
 export {

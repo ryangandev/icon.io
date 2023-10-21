@@ -36,6 +36,7 @@ interface WhiteBoardCanvasProps {
     setWordSelectPhaseTimer: React.Dispatch<React.SetStateAction<number>>;
     isRoomOwner: boolean;
     handleStartGame: () => void;
+    currentDrawer: string;
 }
 
 const WhiteBoardCanvas = ({
@@ -49,6 +50,7 @@ const WhiteBoardCanvas = ({
     setWordSelectPhaseTimer,
     isRoomOwner,
     handleStartGame,
+    currentDrawer,
 }: WhiteBoardCanvasProps) => {
     const { socket } = useSocket();
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -346,7 +348,7 @@ const WhiteBoardCanvas = ({
             {isGameStarted && isWordSelectingPhase && !isDrawer && (
                 <div className="whiteboard-canvas-overlay">
                     <Typography.Title level={3}>
-                        Waiting for the drawer to select a word...
+                        Waiting for {currentDrawer} to select a word...
                     </Typography.Title>
                     <Typography.Title level={2}>
                         {wordSelectPhaseTimer}

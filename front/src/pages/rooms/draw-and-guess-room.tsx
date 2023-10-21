@@ -370,6 +370,7 @@ const DrawAndGuessRoom = () => {
                                 }
                                 isRoomOwner={isRoomOwner}
                                 handleStartGame={handleStartGame}
+                                currentDrawer={currentDrawerUsername}
                             />
                         </div>
 
