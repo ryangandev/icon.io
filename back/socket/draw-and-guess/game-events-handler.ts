@@ -179,6 +179,10 @@ const GameEventsHandler = (
     };
 
     const startNewDrawerTurn = (currentRoom: DrawAndGuessDetailRoomInfo) => {
+        // Clear the canvas for the new drawer
+        io.to(currentRoom.roomId).emit('drawerClear');
+
+        // Select a new drawer from the drawer queue
         const newDrawer = getRandomElementFromSet(currentRoom.drawerQueue);
         const randomChoicesFromCategory = getRandomChoicesFromList(
             wordBank[currentRoom.wordCategory],
