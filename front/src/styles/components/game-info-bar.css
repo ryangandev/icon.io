@@ -10,11 +10,12 @@
     background-color: var(--component-background-color);
     border: var(--component-border);
     border-radius: var(--component-border-radius);
+    --game-info-component-gap: 16px;
 }
 
 .game-info-container-left {
     display: flex;
-    gap: 16px;
+    gap: var(--game-info-component-gap);
 }
 
 .game-info-container-center {
@@ -27,7 +28,8 @@
 .game-info-container-right {
     display: flex;
     flex-direction: row;
-    gap: 24px;
+    gap: var(--game-info-component-gap);
+    align-items: center;
 }
 
 .game-info-btn {
@@ -36,4 +38,25 @@
     border: none;
     justify-content: center;
     align-items: center;
+}
+
+.game-info-status {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.game-info-action-indicator {
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.game-info-current-word {
+    font-weight: 700;
+    font-size: 24px;
+}
+
+.game-info-hint {
+    font-weight: 700;
+    letter-spacing: 5px;
+    margin-right: -5px; /* To compensate the letter-spacing for the last character */
 }

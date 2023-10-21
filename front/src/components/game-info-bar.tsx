@@ -14,6 +14,7 @@ interface GameInfoBarProps {
     isWordSelectingPhase: boolean;
     isDrawingPhase: boolean;
     isDrawer: boolean;
+    currentRound: number;
     currentDrawer: string;
     currentWord: string;
     currentWordHint: string;
@@ -28,6 +29,7 @@ const GameInfoBar = ({
     isWordSelectingPhase,
     isDrawingPhase,
     isDrawer,
+    currentRound,
     currentDrawer,
     currentWord,
     currentWordHint,
@@ -74,29 +76,31 @@ const GameInfoBar = ({
                 </span>
             </div>
             <div className="game-info-container-center">
-                {!isGameStarted && <></>}
+                {!isGameStarted && (
+                    <span className="game-info-status">
+                        Waiting for players...
+                    </span>
+                )}
                 {isWordSelectingPhase && (
-                    <span style={{ fontWeight: 400, fontSize: 18 }}>
-                        <span style={{ fontWeight: 700 }}>{currentDrawer}</span>{' '}
+                    <span className="game-info-status">
+                        <span style={{ fontWeight: 800 }}>{currentDrawer}</span>{' '}
                         is selecting a word
                     </span>
                 )}
                 {isDrawingPhase && isDrawer && (
                     <>
-                        <span style={{ fontWeight: 400, fontSize: 12 }}>
-                            Draw
-                        </span>
-                        <span style={{ fontWeight: 700, fontSize: 24 }}>
+                        <span className="game-info-action-indicator">Draw</span>
+                        <span className="game-info-current-word">
                             {currentWord}
                         </span>
                     </>
                 )}
                 {isDrawingPhase && !isDrawer && (
                     <>
-                        <span style={{ fontWeight: 400, fontSize: 12 }}>
+                        <span className="game-info-action-indicator">
                             Guess
                         </span>
-                        <span style={{ fontWeight: 700, fontSize: 24 }}>
+                        <span className="game-info-current-word game-info-hint ">
                             {currentWordHint}
                         </span>
                     </>
@@ -104,6 +108,7 @@ const GameInfoBar = ({
             </div>
 
             <div className="game-info-container-right">
+                <span className="game-info-status">Round: {currentRound}</span>
                 <Button
                     className="game-info-btn"
                     onClick={() => {}}

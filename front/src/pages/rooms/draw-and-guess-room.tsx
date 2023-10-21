@@ -345,6 +345,7 @@ const DrawAndGuessRoom = () => {
                         }
                         isDrawingPhase={currentRoomInfo.isDrawingPhase}
                         isDrawer={isDrawer}
+                        currentRound={currentRoomInfo.currentRound}
                         currentDrawer={currentDrawerUsername}
                         currentWord={currentRoomInfo.currentWord}
                         currentWordHint={currentRoomInfo.currentWordHint}
