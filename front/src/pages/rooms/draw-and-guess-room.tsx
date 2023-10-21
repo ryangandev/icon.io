@@ -17,16 +17,6 @@ const DrawAndGuessRoom = () => {
     const { socket } = useSocket();
     const navigate = useNavigate();
     const username = sessionStorage.getItem('username');
-    const timer = {
-        wordSelectPhaseTimer: 15,
-        drawingPhaseTimer: 20,
-    };
-    const [wordSelectPhaseTimer, setWordSelectPhaseTimer] = useState<number>(
-        timer.wordSelectPhaseTimer,
-    );
-    const [drawingPhaseTimer, setDrawingPhaseTimer] = useState<number>(
-        timer.drawingPhaseTimer,
-    );
     const [currentRoomInfo, setCurrentRoomInfo] =
         useState<DrawAndGuessDetailRoomInfo>({
             roomId: '',
@@ -57,6 +47,16 @@ const DrawAndGuessRoom = () => {
     const isDrawer = currentRoomInfo.currentDrawer === socket.id;
     const isRoomOwner = currentRoomInfo.owner.socketId === socket.id;
 
+    const timer = {
+        wordSelectPhaseTimer: 15,
+        drawingPhaseTimer: 15,
+    };
+    const [wordSelectPhaseTimer, setWordSelectPhaseTimer] = useState<number>(
+        timer.wordSelectPhaseTimer,
+    );
+    const [drawingPhaseTimer, setDrawingPhaseTimer] = useState<number>(
+        timer.drawingPhaseTimer,
+    );
     // Use ref to store timeout id to avoid stale closure during useEffect
     const wordChoiceTimeoutId = useRef<NodeJS.Timeout | null>(null);
     const drawingPhaseTimeoutId = useRef<NodeJS.Timeout | null>(null);
@@ -223,6 +223,20 @@ const DrawAndGuessRoom = () => {
             },
         );
 
+        socket.on(
+            'endDrawAndGuessGame',
+            (currentRoomInfo: DrawAndGuessDetailRoomInfo) => {
+                console.log(
+                    'endDrawAndGuessGame event received: ',
+                    currentRoomInfo,
+                );
+                setCurrentRoomInfo((prevRoomInfo) => ({
+                    ...prevRoomInfo,
+                    ...currentRoomInfo,
+                }));
+            },
+        );
+
         return () => {
             socket.off('clientJoinDrawAndGuessRoomSuccess');
             socket.off('clientLeaveDrawAndGuessRoomSuccess');
@@ -234,6 +248,7 @@ const DrawAndGuessRoom = () => {
             socket.off('drawingPhaseStarted');
             socket.off('drawingPhaseStartedForDrawer');
             socket.off('drawingPhaseEnded');
+            socket.off('endDrawAndGuessGame');
 
             if (wordChoiceTimeoutId.current) {
                 clearTimeout(wordChoiceTimeoutId.current);

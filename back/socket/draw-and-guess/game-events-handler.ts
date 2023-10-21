@@ -47,19 +47,19 @@ const GameEventsHandler = (
             );
             currentRoom.wordCategory = randomCategoryName;
 
-            // Announce all clients in the room that game has started
-            io.to(roomId).emit(
-                'receiveMessage',
-                '📢 System',
-                'Game has started!',
-            );
-
             // Update the clients about room info
             io.to(roomId).emit('startDrawAndGuessGameSuccess', {
                 isGameStarted: currentRoom.isGameStarted,
                 status: currentRoom.status,
                 wordCategory: currentRoom.wordCategory,
             });
+
+            // Announce all clients in the room that game has started
+            io.to(roomId).emit(
+                'receiveMessage',
+                '📢 System',
+                'Game has started!',
+            );
 
             const drawAndGuessLobbySimplifiedRoomList = Object.values(
                 drawAndGuessDetailRoomInfoList,
@@ -132,14 +132,33 @@ const GameEventsHandler = (
             } else if (currentRoom.currentRound < currentRoom.rounds) {
                 startNewRound(currentRoom);
             } else {
+                currentRoom.currentRound = 0;
                 currentRoom.isGameStarted = false;
                 currentRoom.status = getRoomStatus(
                     currentRoom.currentPlayerCount,
                     currentRoom.maxPlayers,
                     currentRoom.isGameStarted,
                 );
+                currentRoom.wordCategory = '';
 
-                io.to(roomId).emit('gameEnded');
+                // Update the clients about room info
+                io.to(roomId).emit('endDrawAndGuessGame', currentRoom);
+
+                // Announce all clients in the room that game has ended
+                io.to(roomId).emit(
+                    'receiveMessage',
+                    '📢 System',
+                    'Game has ended!',
+                );
+
+                const drawAndGuessLobbySimplifiedRoomList = Object.values(
+                    drawAndGuessDetailRoomInfoList,
+                ).map(getDrawAndGuessLobbyRoomInfo);
+
+                io.emit(
+                    'updateDrawAndGuessLobbyRoomList',
+                    drawAndGuessLobbySimplifiedRoomList,
+                );
             }
         } catch (error: any) {
             console.log(error);
