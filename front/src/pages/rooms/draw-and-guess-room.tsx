@@ -13,12 +13,15 @@ import GameInfoBoard from '../../components/game-info-board';
 import { CustomError } from '../../models/error';
 import toast from 'react-hot-toast';
 import { roomInfoInitialObject } from '../../data/roomInfo';
+import useScreenSize from '../../hooks/useScreenSize';
 
 const DrawAndGuessRoom = () => {
     const { socket } = useSocket();
     const navigate = useNavigate();
     const username = sessionStorage.getItem('username');
     const [roomDoesNotExist, setRoomDoesNotExist] = useState<boolean>(false);
+    const { currentScreenWidth } = useScreenSize();
+    const isSmallerScreen = currentScreenWidth < 1200;
 
     // Room info attributes
     const [currentRoomInfo, setCurrentRoomInfo] =
@@ -254,6 +257,63 @@ const DrawAndGuessRoom = () => {
         socket.emit('startDrawAndGuessGame', currentRoomInfo.roomId);
     };
 
+    const renderLeftAndRightBodyContent = () => {
+        return (
+            <>
+                {/* Player Info Section */}
+                <div className="draw-and-guess-room-body-left">
+                    {Object.entries(currentRoomInfo.playerList).map(
+                        ([socketId, playerInfo]) => (
+                            <PlayerInfoContainer
+                                key={socketId}
+                                playerInfo={playerInfo}
+                                isClient={socketId === socket.id}
+                                isCurrentDrawer={
+                                    socketId === currentRoomInfo.currentDrawer
+                                }
+                            />
+                        ),
+                    )}
+                </div>
+
+                {/* Game Info & Chat Window Section */}
+                <div className="draw-and-guess-room-body-right">
+                    <GameInfoBoard
+                        name={currentRoomInfo.roomName}
+                        owner={currentRoomInfo.owner.username}
+                        status={currentRoomInfo.status}
+                        players={
+                            currentRoomInfo.currentPlayerCount +
+                            '/' +
+                            currentRoomInfo.maxPlayers
+                        }
+                        rounds={
+                            currentRoomInfo.currentRound +
+                            '/' +
+                            currentRoomInfo.rounds
+                        }
+                        wordCategory={currentRoomInfo.wordCategory}
+                    />
+                    <ChatWindow
+                        username={username}
+                        roomId={currentRoomInfo.roomId}
+                        isDrawer={isDrawer}
+                        isGameStarted={currentRoomInfo.isGameStarted}
+                    />
+                    {/* {isRoomOwner && !currentRoomInfo.isGameStarted && (
+                        <Button
+                            onClick={handleStartGame}
+                            size="large"
+                            className="startBtn"
+                        >
+                            START
+                        </Button>
+                    )} */}
+                </div>
+            </>
+        );
+    };
+
     return (
         <>
             {roomDoesNotExist ? (
@@ -281,22 +341,6 @@ const DrawAndGuessRoom = () => {
                     />
 
                     <div className="draw-and-guess-room-body">
-                        <div className="draw-and-guess-room-body-left">
-                            {Object.entries(currentRoomInfo.playerList).map(
-                                ([socketId, playerInfo]) => (
-                                    <PlayerInfoContainer
-                                        key={socketId}
-                                        playerInfo={playerInfo}
-                                        isClient={socketId === socket.id}
-                                        isCurrentDrawer={
-                                            socketId ===
-                                            currentRoomInfo.currentDrawer
-                                        }
-                                    />
-                                ),
-                            )}
-                        </div>
-
                         <div className="draw-and-guess-room-body-center">
                             <WhiteBoardCanvas
                                 roomId={currentRoomInfo.roomId}
@@ -314,39 +358,13 @@ const DrawAndGuessRoom = () => {
                             />
                         </div>
 
-                        <div className="draw-and-guess-room-body-right">
-                            <GameInfoBoard
-                                name={currentRoomInfo.roomName}
-                                owner={currentRoomInfo.owner.username}
-                                status={currentRoomInfo.status}
-                                players={
-                                    currentRoomInfo.currentPlayerCount +
-                                    '/' +
-                                    currentRoomInfo.maxPlayers
-                                }
-                                rounds={
-                                    currentRoomInfo.currentRound +
-                                    '/' +
-                                    currentRoomInfo.rounds
-                                }
-                                wordCategory={currentRoomInfo.wordCategory}
-                            />
-                            <ChatWindow
-                                username={username}
-                                roomId={currentRoomInfo.roomId}
-                                isDrawer={isDrawer}
-                                isGameStarted={currentRoomInfo.isGameStarted}
-                            />
-                            {isRoomOwner && !currentRoomInfo.isGameStarted && (
-                                <Button
-                                    onClick={handleStartGame}
-                                    size="large"
-                                    className="startBtn"
-                                >
-                                    START
-                                </Button>
-                            )}
-                        </div>
+                        {isSmallerScreen ? (
+                            <div className="side-by-side-wrapper-when-smaller-screen">
+                                {renderLeftAndRightBodyContent()}
+                            </div>
+                        ) : (
+                            <>{renderLeftAndRightBodyContent()}</>
+                        )}
                     </div>
                 </div>
             )}
