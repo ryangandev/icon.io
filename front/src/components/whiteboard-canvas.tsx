@@ -33,6 +33,8 @@ interface WhiteBoardCanvasProps {
     wordChoices?: string[];
     wordSelectPhaseTimer: number;
     setWordSelectPhaseTimer: React.Dispatch<React.SetStateAction<number>>;
+    isRoomOwner: boolean;
+    handleStartGame: () => void;
 }
 
 const WhiteBoardCanvas = ({
@@ -44,6 +46,8 @@ const WhiteBoardCanvas = ({
     wordChoices = [],
     wordSelectPhaseTimer,
     setWordSelectPhaseTimer,
+    isRoomOwner,
+    handleStartGame,
 }: WhiteBoardCanvasProps) => {
     const { socket } = useSocket();
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -280,9 +284,21 @@ const WhiteBoardCanvas = ({
                     cursor: isDrawer ? 'default' : 'not-allowed',
                 }}
             />
-            {!isGameStarted && (
+            {!isGameStarted && !isRoomOwner && (
                 <div className="whiteboard-canvas-overlay">
-                    Waiting for the owner {ownerName} to start the game...
+                    Waiting for the owner to start the game...
+                </div>
+            )}
+            {!isGameStarted && isRoomOwner && (
+                <div className="whiteboard-canvas-overlay">
+                    Waiting for other players to join...
+                    <Button
+                        onClick={handleStartGame}
+                        size="large"
+                        className="startBtn"
+                    >
+                        START
+                    </Button>
                 </div>
             )}
             {isGameStarted && isWordSelectingPhase && isDrawer && (
