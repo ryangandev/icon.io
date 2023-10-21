@@ -5,17 +5,19 @@ import { PlayerInfo } from '../models/types';
 interface PlayerInfoContainerProps {
     playerInfo: PlayerInfo;
     isClient: boolean;
-    isRoomOwner: boolean;
+    isCurrentPlayerRoomOwner: boolean;
     isCurrentDrawer: boolean;
+    ranking: number;
 }
 
 const PlayerInfoContainer = ({
     playerInfo,
     isClient,
-    isRoomOwner,
+    isCurrentPlayerRoomOwner,
     isCurrentDrawer,
+    ranking,
 }: PlayerInfoContainerProps) => {
-    const { username, points, receivedPointsThisTurn } = playerInfo;
+    const { username, points } = playerInfo;
 
     useEffect(() => {}, []);
 
@@ -23,7 +25,7 @@ const PlayerInfoContainer = ({
         <div className="draw-and-guess-room-player-info-container">
             <div className="draw-and-guess-room-player-info-container-left">
                 <span className="draw-and-guess-room-player-info-ranking">
-                    #8
+                    #{ranking}
                 </span>
             </div>
             <div className="draw-and-guess-room-player-info-container-center">
@@ -35,6 +37,11 @@ const PlayerInfoContainer = ({
                 </span>
             </div>
             <div className="draw-and-guess-room-player-info-container-right"></div>
+            {isCurrentPlayerRoomOwner && (
+                <span className="draw-and-guess-room-player-info-owner-icon">
+                    👑
+                </span>
+            )}
         </div>
     );
 };
