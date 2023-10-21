@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import {
     DrawAndGuessDetailRoomInfo,
+    PlayerInfo,
     RoomInfo,
     RoomStatus,
 } from '../models/types.js';
@@ -82,6 +83,38 @@ const convertStrToUnderscores = (str: string): string => {
     return str.replace(/\S/g, '_');
 };
 
+const resetPoints = (
+    playerList: Record<string, PlayerInfo>,
+): Record<string, PlayerInfo> => {
+    return Object.fromEntries(
+        Object.entries(playerList).map(([socketId, playerInfo]) => {
+            return [
+                socketId,
+                {
+                    ...playerInfo,
+                    points: 0,
+                },
+            ];
+        }),
+    );
+};
+
+const resetReceivedPointsThisTurn = (
+    playerList: Record<string, PlayerInfo>,
+): Record<string, PlayerInfo> => {
+    return Object.fromEntries(
+        Object.entries(playerList).map(([socketId, playerInfo]) => {
+            return [
+                socketId,
+                {
+                    ...playerInfo,
+                    receivedPointsThisTurn: false,
+                },
+            ];
+        }),
+    );
+};
+
 export {
     generateRoomId,
     getRandomInt,
@@ -91,4 +124,6 @@ export {
     getRandomChoicesFromList,
     getRandomElementFromSet,
     convertStrToUnderscores,
+    resetPoints,
+    resetReceivedPointsThisTurn,
 };

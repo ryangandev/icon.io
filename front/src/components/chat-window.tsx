@@ -9,6 +9,8 @@ interface ChatWindowProps {
     roomId: string;
     isDrawer: boolean;
     isGameStarted: boolean;
+    isDrawingPhase: boolean;
+    receivedPointsThisTurn: boolean;
 }
 
 interface Message {
@@ -22,6 +24,8 @@ const ChatWindow = ({
     roomId,
     isDrawer,
     isGameStarted,
+    isDrawingPhase,
+    receivedPointsThisTurn,
 }: ChatWindowProps) => {
     const { socket } = useSocket();
     const messageContainerRef = useRef<HTMLDivElement>(null);
@@ -36,18 +40,31 @@ const ChatWindow = ({
                 behavior: 'smooth',
             });
         }
+    }, [messages]);
 
+    useEffect(() => {
         socket.on('receiveMessage', (username: string, message: string) => {
-            setMessages([
-                ...messages,
+            setMessages((prevMessages) => [
+                ...prevMessages,
                 { username: username, message: message },
             ]);
         });
 
+        socket.on(
+            'correctGuessAnnouncement',
+            (username: string, message: string) => {
+                setMessages((prevMessages) => [
+                    ...prevMessages,
+                    { username: username, message: message, color: '#d4f1d4' },
+                ]);
+            },
+        );
+
         return () => {
             socket.off('receiveMessage');
+            socket.off('correctGuessAnnouncement');
         };
-    }, [socket, messages]);
+    }, [socket]);
 
     const handleInputMessageChange = (
         event: React.ChangeEvent<HTMLInputElement>,
@@ -57,17 +74,21 @@ const ChatWindow = ({
 
     const handleOnMessageSend = () => {
         if (inputMessage === '') return;
+        if (!isDrawingPhase) {
+            setMessages([
+                ...messages,
+                {
+                    username: username + '(You)',
+                    message: inputMessage,
+                    color: '#d4f1d4',
+                },
+            ]);
 
-        setMessages([
-            ...messages,
-            {
-                username: username + '(You)',
-                message: inputMessage,
-                color: '#d4f1d4',
-            },
-        ]);
+            socket.emit('sendMessage', roomId, username, inputMessage);
+        } else if (isDrawingPhase) {
+            socket.emit('takingAGuess', roomId, username, inputMessage);
+        }
 
-        socket.emit('sendMessage', roomId, username, inputMessage);
         setInputMessage('');
     };
 
@@ -100,7 +121,7 @@ const ChatWindow = ({
                 onChange={handleInputMessageChange}
                 onPressEnter={handleOnMessageSend}
                 maxLength={40}
-                disabled={isDrawer}
+                disabled={isDrawer || receivedPointsThisTurn}
                 suffix={<EnterOutlined onClick={handleOnMessageSend} />}
             />
         </div>

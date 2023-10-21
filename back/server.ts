@@ -60,7 +60,7 @@ io.on('connection', (socket) => {
         socketInRooms,
     );
     whiteboardCanvasEventHandler(socket);
-    ChatEventsHandler(io, socket);
+    ChatEventsHandler(io, socket, drawAndGuessDetailRoomInfoList);
     GameEventsHandler(io, socket, drawAndGuessDetailRoomInfoList);
 });
 
@@ -74,5 +74,5 @@ app.get('/*', function (req: Request, res: Response) {
 
 const port = 3000;
 server.listen(port, () => {
-    console.log(`✔️ Listening on port ${port}`);
+    console.log(`✅ Listening on port ${port}`);
 });
