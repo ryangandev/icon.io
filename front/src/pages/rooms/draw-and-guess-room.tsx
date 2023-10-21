@@ -179,6 +179,7 @@ const DrawAndGuessRoom = () => {
                     isDrawingPhase: data.isDrawingPhase,
                     wordChoices: data.wordChoices,
                 }));
+                setWordSelectPhaseTimer(0);
                 setDrawingPhaseTimer(timer.drawingPhaseTimer);
             },
         );
@@ -218,6 +219,7 @@ const DrawAndGuessRoom = () => {
                     currentWord: data.currentWord,
                     currentWordLength: data.currentWordLength,
                 }));
+                setDrawingPhaseTimer(0);
             },
         );
 
