@@ -34,12 +34,8 @@ const DrawAndGuessRoom = () => {
         wordSelectPhaseTimer: 15,
         drawingPhaseTimer: 15,
     };
-    const [wordSelectPhaseTimer, setWordSelectPhaseTimer] = useState<number>(
-        timer.wordSelectPhaseTimer,
-    );
-    const [drawingPhaseTimer, setDrawingPhaseTimer] = useState<number>(
-        timer.drawingPhaseTimer,
-    );
+    const [wordSelectPhaseTimer, setWordSelectPhaseTimer] = useState<number>(0);
+    const [drawingPhaseTimer, setDrawingPhaseTimer] = useState<number>(0);
     // Use ref to store timeout id to avoid stale closure during useEffect
     const wordChoiceTimeoutId = useRef<NodeJS.Timeout | null>(null);
     const drawingPhaseTimeoutId = useRef<NodeJS.Timeout | null>(null);
