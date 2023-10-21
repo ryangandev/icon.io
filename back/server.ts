@@ -5,12 +5,14 @@ import cors from 'cors';
 import * as url from 'url';
 import path from 'path';
 import { DrawAndGuessDetailRoomInfo } from './models/types.js';
-import lobbyEventsHandler from './socket/draw-and-guess/lobby-events-handler.js';
-import roomEventsHandler from './socket/draw-and-guess/room-events-handler.js';
-import clientDepartureOnDisconnectHandler from './socket/client-disconnect-handler.js';
-import whiteboardCanvasEventHandler from './socket/draw-and-guess/whiteboard-canvas-events-handler.js';
-import ChatEventsHandler from './socket/draw-and-guess/chat-events-handler.js';
-import GameEventsHandler from './socket/draw-and-guess/game-events-handler.js';
+import {
+    ChatEventsHandler,
+    GameEventsHandler,
+    lobbyEventsHandler,
+    roomEventsHandler,
+    whiteboardCanvasEventHandler,
+} from './socket/draw-and-guess/index.js';
+import { clientDepartureOnDisconnectHandler } from './socket/client-disconnect-handler.js';
 
 const app = express();
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));

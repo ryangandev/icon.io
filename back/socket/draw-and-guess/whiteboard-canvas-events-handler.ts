@@ -32,4 +32,4 @@ const whiteboardCanvasEventHandler = (socket: Socket) => {
     });
 };
 
-export default whiteboardCanvasEventHandler;
+export { whiteboardCanvasEventHandler };

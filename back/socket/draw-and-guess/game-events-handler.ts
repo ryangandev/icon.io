@@ -225,4 +225,4 @@ const GameEventsHandler = (
     };
 };
 
-export default GameEventsHandler;
+export { GameEventsHandler };

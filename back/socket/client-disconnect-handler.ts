@@ -79,4 +79,4 @@ const clientDepartureOnDisconnectHandler = (
     });
 };
 
-export default clientDepartureOnDisconnectHandler;
+export { clientDepartureOnDisconnectHandler };

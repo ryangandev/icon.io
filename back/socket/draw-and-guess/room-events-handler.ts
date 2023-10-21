@@ -202,4 +202,4 @@ const roomEventsHandler = (
     );
 };
 
-export default roomEventsHandler;
+export { roomEventsHandler };

@@ -87,4 +87,4 @@ const lobbyEventsHandler = (
     );
 };
 
-export default lobbyEventsHandler;
+export { lobbyEventsHandler };

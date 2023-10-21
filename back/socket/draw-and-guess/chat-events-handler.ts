@@ -57,4 +57,4 @@ const ChatEventsHandler = (
     );
 };
 
-export default ChatEventsHandler;
+export { ChatEventsHandler };
