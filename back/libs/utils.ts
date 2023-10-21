@@ -78,6 +78,10 @@ const getRandomElementFromSet = (set: Set<string>): string => {
     return result.value;
 };
 
+const convertStrToUnderscores = (str: string): string => {
+    return str.replace(/\S/g, '_');
+};
+
 export {
     generateRoomId,
     getRandomInt,
@@ -86,4 +90,5 @@ export {
     getRandomCategory,
     getRandomChoicesFromList,
     getRandomElementFromSet,
+    convertStrToUnderscores,
 };

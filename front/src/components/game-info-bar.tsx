@@ -14,8 +14,9 @@ interface GameInfoBarProps {
     isWordSelectingPhase: boolean;
     isDrawingPhase: boolean;
     isDrawer: boolean;
+    currentDrawer: string;
     currentWord: string;
-    currentWordLength: number;
+    currentWordHint: string;
     handleOnLeave: () => void;
     startTimeRef: React.MutableRefObject<number | null>;
     drawingPhaseTimer: number;
@@ -27,8 +28,9 @@ const GameInfoBar = ({
     isWordSelectingPhase,
     isDrawingPhase,
     isDrawer,
+    currentDrawer,
     currentWord,
-    currentWordLength,
+    currentWordHint,
     handleOnLeave,
     startTimeRef,
     drawingPhaseTimer,
@@ -74,8 +76,9 @@ const GameInfoBar = ({
             <div className="game-info-container-center">
                 {!isGameStarted && <></>}
                 {isWordSelectingPhase && (
-                    <span style={{ fontWeight: 400, fontSize: 12 }}>
-                        Drawer is selecting a word
+                    <span style={{ fontWeight: 400, fontSize: 18 }}>
+                        <span style={{ fontWeight: 700 }}>{currentDrawer}</span>{' '}
+                        is selecting a word
                     </span>
                 )}
                 {isDrawingPhase && isDrawer && (
@@ -94,7 +97,7 @@ const GameInfoBar = ({
                             Guess
                         </span>
                         <span style={{ fontWeight: 700, fontSize: 24 }}>
-                            {currentWordLength} letters
+                            {currentWordHint}
                         </span>
                     </>
                 )}

@@ -29,6 +29,8 @@ const DrawAndGuessRoom = () => {
     const currentRoomInfoRef = useRef(currentRoomInfo); // Use ref to store currentRoomInfo to avoid stale closure during useEffect
     const isDrawer = currentRoomInfo.currentDrawer === socket.id;
     const isRoomOwner = currentRoomInfo.owner.socketId === socket.id;
+    const currentDrawerUsername =
+        currentRoomInfo.playerList[currentRoomInfo.currentDrawer]?.username;
 
     // Timer attributes
     const [wordSelectPhaseTimer, setWordSelectPhaseTimer] = useState<number>(0);
@@ -159,14 +161,14 @@ const DrawAndGuessRoom = () => {
         socket.on(
             'drawingPhaseStarted',
             (data: {
-                currentWordLength: number;
+                currentWordHint: string;
                 isWordSelectingPhase: boolean;
                 isDrawingPhase: boolean;
                 wordChoices: string[];
             }) => {
                 setCurrentRoomInfo((prevRoomInfo) => ({
                     ...prevRoomInfo,
-                    currentWordLength: data.currentWordLength,
+                    currentWordHint: data.currentWordHint,
                     isWordSelectingPhase: data.isWordSelectingPhase,
                     isDrawingPhase: data.isDrawingPhase,
                     wordChoices: data.wordChoices,
@@ -213,14 +215,14 @@ const DrawAndGuessRoom = () => {
                 isDrawingPhase: boolean;
                 currentDrawer: string;
                 currentWord: string;
-                currentWordLength: number;
+                currentWordHint: string;
             }) => {
                 setCurrentRoomInfo((prevRoomInfo) => ({
                     ...prevRoomInfo,
                     isDrawingPhase: data.isDrawingPhase,
                     currentDrawer: data.currentDrawer,
                     currentWord: data.currentWord,
-                    currentWordLength: data.currentWordLength,
+                    currentWordHint: data.currentWordHint,
                 }));
                 setDrawingPhaseTimer(0);
             },
@@ -319,15 +321,6 @@ const DrawAndGuessRoom = () => {
                         isDrawer={isDrawer}
                         isGameStarted={currentRoomInfo.isGameStarted}
                     />
-                    {/* {isRoomOwner && !currentRoomInfo.isGameStarted && (
-                        <Button
-                            onClick={handleStartGame}
-                            size="large"
-                            className="startBtn"
-                        >
-                            START
-                        </Button>
-                    )} */}
                 </div>
             </>
         );
@@ -352,8 +345,9 @@ const DrawAndGuessRoom = () => {
                         }
                         isDrawingPhase={currentRoomInfo.isDrawingPhase}
                         isDrawer={isDrawer}
+                        currentDrawer={currentDrawerUsername}
                         currentWord={currentRoomInfo.currentWord}
-                        currentWordLength={currentRoomInfo.currentWordLength}
+                        currentWordHint={currentRoomInfo.currentWordHint}
                         handleOnLeave={handleOnLeave}
                         startTimeRef={drawingPhaseIntervalStartTimeRef}
                         drawingPhaseTimer={drawingPhaseTimer}

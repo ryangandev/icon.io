@@ -52,7 +52,7 @@ const lobbyEventsHandler = (
                 playerList: {},
                 currentDrawer: '',
                 currentWord: '',
-                currentWordLength: 0,
+                currentWordHint: '',
                 currentRound: 0,
                 isGameStarted: false,
                 isWordSelectingPhase: false,

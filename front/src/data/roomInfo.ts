@@ -15,7 +15,7 @@ const roomInfoInitialObject: DrawAndGuessDetailRoomInfo = {
     playerList: {},
     currentDrawer: '', // current drawer's socket id
     currentWord: '',
-    currentWordLength: 0,
+    currentWordHint: '',
     currentRound: 0,
     isGameStarted: false,
     isWordSelectingPhase: false,

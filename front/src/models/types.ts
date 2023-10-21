@@ -33,7 +33,7 @@ interface DrawAndGuessDetailRoomInfo extends RoomInfo {
     playerList: Record<string, PlayerInfo>;
     currentDrawer: string; // current drawer's socket id
     currentWord: string;
-    currentWordLength: number;
+    currentWordHint: string;
     currentRound: number;
     isGameStarted: boolean;
     isWordSelectingPhase: boolean;

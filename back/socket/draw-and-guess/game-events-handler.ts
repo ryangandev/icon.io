@@ -7,6 +7,7 @@ import {
     getRandomChoicesFromList,
     getRoomStatus,
     getRandomElementFromSet,
+    convertStrToUnderscores,
 } from '../../libs/utils.js';
 import { wordBank } from '../../libs/word-bank.js';
 
@@ -88,14 +89,14 @@ const GameEventsHandler = (
         try {
             const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
             currentRoom.currentWord = word;
-            currentRoom.currentWordLength = word.length;
+            currentRoom.currentWordHint = convertStrToUnderscores(word);
             currentRoom.isWordSelectingPhase = false;
             currentRoom.isDrawingPhase = true;
             currentRoom.wordChoices = []; // Empty the word choices after the drawer has selected a word
 
             // Notify all clients in the room that the drawer has selected a word and drawing phase has started
             io.to(roomId).emit('drawingPhaseStarted', {
-                currentWordLength: currentRoom.currentWordLength,
+                currentWordHint: currentRoom.currentWordHint,
                 isWordSelectingPhase: currentRoom.isWordSelectingPhase,
                 isDrawingPhase: currentRoom.isDrawingPhase,
                 wordChoices: currentRoom.wordChoices,
@@ -119,14 +120,14 @@ const GameEventsHandler = (
             currentRoom.isDrawingPhase = false;
             currentRoom.currentDrawer = '';
             currentRoom.currentWord = '';
-            currentRoom.currentWordLength = 0;
+            currentRoom.currentWordHint = '';
 
             // Notify all clients in the room that drawing phase has ended
             io.to(roomId).emit('drawingPhaseEnded', {
                 isDrawingPhase: currentRoom.isDrawingPhase,
                 currentDrawer: currentRoom.currentDrawer,
                 currentWord: currentRoom.currentWord,
-                currentWordLength: currentRoom.currentWordLength,
+                currentWordHint: currentRoom.currentWordHint,
             });
 
             if (currentRoom.drawerQueue.size > 0) {
