@@ -7,6 +7,7 @@ import {
 } from '@ant-design/icons';
 import { useEffect } from 'react';
 import { formatTimeInMinutesAndSeconds } from '../libs/utils';
+import { timer } from '../data/timer';
 
 interface GameInfoBarProps {
     isGameStarted: boolean;
@@ -16,6 +17,7 @@ interface GameInfoBarProps {
     currentWord: string;
     currentWordLength: number;
     handleOnLeave: () => void;
+    startTimeRef: React.MutableRefObject<number | null>;
     drawingPhaseTimer: number;
     setDrawingPhaseTimer: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -28,24 +30,32 @@ const GameInfoBar = ({
     currentWord,
     currentWordLength,
     handleOnLeave,
+    startTimeRef,
     drawingPhaseTimer,
     setDrawingPhaseTimer,
 }: GameInfoBarProps) => {
     useEffect(() => {
         let intervalId: NodeJS.Timeout | number;
 
-        // For drawingPhaseTimer countdown
+        // Initialize start time when entering word selecting phase
+        if (isDrawingPhase && drawingPhaseTimer === timer.drawingPhaseTimer) {
+            startTimeRef.current = Date.now();
+        }
+
         if (isDrawingPhase && drawingPhaseTimer > 0) {
             intervalId = setInterval(() => {
-                setDrawingPhaseTimer((prevTimer) => prevTimer - 1);
+                const elapsed = Date.now() - (startTimeRef.current || 0); // Calculate the time passed since the start of drawing phase
+                const remainingTime =
+                    timer.drawingPhaseTimer - Math.floor(elapsed / 1000); // Calculate the remaining time
+                setDrawingPhaseTimer(Math.max(0, remainingTime)); // Ensure it doesn't go below 0
             }, 1000);
         }
 
-        // Cleanup: clear the interval when component unmounts or conditions change
         return () => {
             clearInterval(intervalId);
         };
-    }, [isDrawingPhase, drawingPhaseTimer, setDrawingPhaseTimer]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isDrawingPhase, drawingPhaseTimer]); // Refs don't need to be included because they don't cause re-render when they change, and their current value is always accessible
 
     return (
         <div className="game-info-container">

@@ -4,6 +4,7 @@ import { useSocket } from '../hooks/useSocket';
 import '../styles/components/whiteboard-canvas.css';
 import WhiteBoardToolBar from './whiteboard-toolbar';
 import { Button, Space, Typography } from 'antd';
+import { timer } from '../data/timer';
 
 interface BrushOptions {
     color: string;
@@ -26,11 +27,11 @@ const brushSizes: { [key: string]: number } = {
 
 interface WhiteBoardCanvasProps {
     roomId: string;
-    ownerName: string;
     isDrawer: boolean;
     isGameStarted: boolean;
     isWordSelectingPhase: boolean;
-    wordChoices?: string[];
+    wordChoices: string[];
+    startTimeRef: React.MutableRefObject<number | null>;
     wordSelectPhaseTimer: number;
     setWordSelectPhaseTimer: React.Dispatch<React.SetStateAction<number>>;
     isRoomOwner: boolean;
@@ -39,11 +40,11 @@ interface WhiteBoardCanvasProps {
 
 const WhiteBoardCanvas = ({
     roomId,
-    ownerName,
     isDrawer,
     isGameStarted,
     isWordSelectingPhase,
     wordChoices = [],
+    startTimeRef,
     wordSelectPhaseTimer,
     setWordSelectPhaseTimer,
     isRoomOwner,
@@ -143,17 +144,28 @@ const WhiteBoardCanvas = ({
     useEffect(() => {
         let intervalId: NodeJS.Timeout | number;
 
-        // For wordSelectPhaseTimer countdown
+        // Initialize start time when entering drawing phase
+        if (
+            isWordSelectingPhase &&
+            wordSelectPhaseTimer === timer.wordSelectPhaseTimer
+        ) {
+            startTimeRef.current = Date.now();
+        }
+
         if (isWordSelectingPhase && wordSelectPhaseTimer > 0) {
             intervalId = setInterval(() => {
-                setWordSelectPhaseTimer((prevTimer) => prevTimer - 1);
+                const elapsed = Date.now() - (startTimeRef.current || 0); // Calculate the time passed since the start of the drawing phase
+                const remainingTime =
+                    timer.wordSelectPhaseTimer - Math.floor(elapsed / 1000); // Calculate the remaining time
+                setWordSelectPhaseTimer(Math.max(0, remainingTime)); // Ensure it doesn't go below 0
             }, 1000);
         }
 
         return () => {
             clearInterval(intervalId);
         };
-    }, [isWordSelectingPhase, setWordSelectPhaseTimer, wordSelectPhaseTimer]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isWordSelectingPhase, wordSelectPhaseTimer]); // Refs don't need to be included because they don't cause re-render when they change, and their current value is always accessible
 
     const handleColorChange = (color: string) => {
         setBrushOptions({
