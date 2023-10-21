@@ -1,4 +1,4 @@
-import { RoomStatus } from '../models/types';
+import { PlayerInfo, RoomStatus } from '../models/types';
 
 const imageDataToDataURL = (imageData: ImageData): string => {
     const canvas = document.createElement('canvas');
@@ -45,9 +45,16 @@ const statusColors: Record<RoomStatus, string> = {
     'In Progress': '#F39C12',
 };
 
+const sortPlayerListByPoints = (
+    playerList: Record<string, PlayerInfo>,
+): Array<[string, PlayerInfo]> => {
+    return Object.entries(playerList).sort((a, b) => b[1].points - a[1].points);
+};
+
 export {
     imageDataToDataURL,
     dataURLToImageData,
     formatTimeInMinutesAndSeconds,
     statusColors,
+    sortPlayerListByPoints,
 };

@@ -14,6 +14,7 @@ import toast from 'react-hot-toast';
 import { roomInfoInitialObject } from '../../data/roomInfo';
 import useScreenSize from '../../hooks/useScreenSize';
 import { timer } from '../../data/timer';
+import { sortPlayerListByPoints } from '../../libs/utils';
 
 const DrawAndGuessRoom = () => {
     const { socket } = useSocket();
@@ -283,15 +284,19 @@ const DrawAndGuessRoom = () => {
             <>
                 {/* Player Info Section */}
                 <div className="draw-and-guess-room-body-left">
-                    {Object.entries(currentRoomInfo.playerList).map(
-                        ([socketId, playerInfo]) => (
+                    {sortPlayerListByPoints(currentRoomInfo.playerList).map(
+                        ([socketId, playerInfo], index) => (
                             <PlayerInfoContainer
                                 key={socketId}
                                 playerInfo={playerInfo}
                                 isClient={socketId === socket.id}
+                                isCurrentPlayerRoomOwner={
+                                    socketId === currentRoomInfo.owner.socketId
+                                }
                                 isCurrentDrawer={
                                     socketId === currentRoomInfo.currentDrawer
                                 }
+                                ranking={index + 1}
                             />
                         ),
                     )}
