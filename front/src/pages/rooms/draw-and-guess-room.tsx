@@ -308,11 +308,7 @@ const DrawAndGuessRoom = () => {
                             '/' +
                             currentRoomInfo.maxPlayers
                         }
-                        rounds={
-                            currentRoomInfo.currentRound +
-                            '/' +
-                            currentRoomInfo.rounds
-                        }
+                        rounds={currentRoomInfo.rounds}
                         wordCategory={currentRoomInfo.wordCategory}
                     />
                     <ChatWindow

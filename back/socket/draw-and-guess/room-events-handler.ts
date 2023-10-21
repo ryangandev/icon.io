@@ -26,7 +26,7 @@ const roomEventsHandler = (
 
                 const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
 
-                if (currentRoom.status !== 'open') {
+                if (currentRoom.status !== 'Open') {
                     const err: CustomError = new Error(
                         'Room is not open.',
                     ) as CustomError;

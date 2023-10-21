@@ -1,3 +1,5 @@
+import { RoomStatus } from '../models/types';
+
 const imageDataToDataURL = (imageData: ImageData): string => {
     const canvas = document.createElement('canvas');
     canvas.width = imageData.width;
@@ -37,8 +39,15 @@ const formatTimeInMinutesAndSeconds = (timeInSeconds: number): string => {
     }`;
 };
 
+const statusColors: Record<RoomStatus, string> = {
+    Open: 'green',
+    Full: 'red',
+    'In Progress': 'orange',
+};
+
 export {
     imageDataToDataURL,
     dataURLToImageData,
     formatTimeInMinutesAndSeconds,
+    statusColors,
 };

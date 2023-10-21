@@ -22,10 +22,10 @@ const getRoomStatus = (
     isStarted: boolean = false,
 ): RoomStatus => {
     if (isStarted) {
-        return 'in progress';
+        return 'In Progress';
     }
 
-    return currentSize === maxSize ? 'full' : 'open';
+    return currentSize === maxSize ? 'Full' : 'Open';
 };
 
 const getDrawAndGuessLobbyRoomInfo = (

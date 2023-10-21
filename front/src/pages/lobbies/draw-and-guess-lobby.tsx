@@ -15,6 +15,7 @@ import { useSocket } from '../../hooks/useSocket';
 import { RoomCreateRequestBody, RoomInfo } from '../../models/types';
 import toast from 'react-hot-toast';
 import PasswordPromptModal from '../../components/password-prmopt-modal';
+import { statusColors } from '../../libs/utils';
 
 const DrawAndGuessLobby = () => {
     const { socket } = useSocket();
@@ -98,7 +99,7 @@ const DrawAndGuessLobby = () => {
     };
 
     const onJoinRoom = (record: RoomInfo) => {
-        if (record.status === 'open') {
+        if (record.status === 'Open') {
             if (record.password) {
                 setPasswordPromptOpen(true);
             } else {
@@ -143,21 +144,9 @@ const DrawAndGuessLobby = () => {
             align: 'center',
             width: 125,
             render: (_, record: RoomInfo) => (
-                <>
-                    {record.status === 'open' ? (
-                        <Typography.Text style={{ color: 'green' }}>
-                            Open
-                        </Typography.Text>
-                    ) : record.status === 'full' ? (
-                        <Typography.Text style={{ color: 'red' }}>
-                            Full
-                        </Typography.Text>
-                    ) : (
-                        <Typography.Text style={{ color: 'orange' }}>
-                            In Progress
-                        </Typography.Text>
-                    )}
-                </>
+                <Typography.Text style={{ color: statusColors[record.status] }}>
+                    {record.status}
+                </Typography.Text>
             ),
         },
         {
@@ -209,7 +198,7 @@ const DrawAndGuessLobby = () => {
                             onJoinRoom(record);
                         }}
                         disabled={
-                            record.status !== 'open' ||
+                            record.status !== 'Open' ||
                             record.currentPlayerCount >= record.maxPlayers
                         }
                     >

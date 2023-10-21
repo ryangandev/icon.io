@@ -7,7 +7,7 @@ const roomInfoInitialObject: DrawAndGuessDetailRoomInfo = {
         username: '',
         socketId: '',
     },
-    status: 'open',
+    status: 'Open',
     currentPlayerCount: 0,
     maxPlayers: 0,
     rounds: 0,

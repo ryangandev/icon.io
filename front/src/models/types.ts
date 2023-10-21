@@ -1,4 +1,4 @@
-type RoomStatus = 'open' | 'full' | 'in progress';
+type RoomStatus = 'Open' | 'Full' | 'In Progress';
 
 interface PlayerInfo {
     username: string;
