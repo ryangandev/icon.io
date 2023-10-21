@@ -38,6 +38,7 @@ interface DrawAndGuessDetailRoomInfo extends RoomInfo {
     isGameStarted: boolean;
     isWordSelectingPhase: boolean;
     isDrawingPhase: boolean;
+    isReviewingPhase: boolean;
     drawerQueue: Set<string>; // queue of socket ids
     wordCategory: string;
     wordChoices: string[];

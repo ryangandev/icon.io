@@ -38,6 +38,7 @@ const DrawAndGuessRoom = () => {
             isGameStarted: false,
             isWordSelectingPhase: false,
             isDrawingPhase: false,
+            isReviewingPhase: false,
             drawerQueue: new Set(),
             wordCategory: '',
             wordChoices: [],
