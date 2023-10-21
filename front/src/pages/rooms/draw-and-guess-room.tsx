@@ -219,10 +219,6 @@ const DrawAndGuessRoom = () => {
         socket.on(
             'playersReceivedPointsFromCorrectGuess',
             (updatedPlayerList: Record<string, PlayerInfo>) => {
-                console.log(
-                    'playersReceivedPointsFromCorrectGuess event received: ',
-                    updatedPlayerList,
-                );
                 setCurrentRoomInfo((prevRoomInfo) => ({
                     ...prevRoomInfo,
                     playerList: updatedPlayerList,
@@ -340,7 +336,6 @@ const DrawAndGuessRoom = () => {
                         username={username}
                         roomId={currentRoomInfo.roomId}
                         isDrawer={isDrawer}
-                        isGameStarted={currentRoomInfo.isGameStarted}
                         isDrawingPhase={currentRoomInfo.isDrawingPhase}
                         receivedPointsThisTurn={
                             currentRoomInfo.playerList[socket.id]

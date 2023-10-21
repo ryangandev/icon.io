@@ -8,7 +8,6 @@ interface ChatWindowProps {
     username: string | null;
     roomId: string;
     isDrawer: boolean;
-    isGameStarted: boolean;
     isDrawingPhase: boolean;
     receivedPointsThisTurn: boolean;
 }
@@ -23,7 +22,6 @@ const ChatWindow = ({
     username,
     roomId,
     isDrawer,
-    isGameStarted,
     isDrawingPhase,
     receivedPointsThisTurn,
 }: ChatWindowProps) => {

@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import '../styles/components/player-info-container.css';
 import { PlayerInfo } from '../models/types';
 
@@ -18,8 +17,6 @@ const PlayerInfoContainer = ({
     ranking,
 }: PlayerInfoContainerProps) => {
     const { username, points } = playerInfo;
-
-    useEffect(() => {}, []);
 
     return (
         <div className="draw-and-guess-room-player-info-container">
