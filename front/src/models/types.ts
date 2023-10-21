@@ -2,7 +2,8 @@ type RoomStatus = 'Open' | 'Full' | 'In Progress';
 
 interface PlayerInfo {
     username: string;
-    score: number;
+    points: number;
+    receivedPointsThisTurn: boolean;
 }
 
 interface OwnerInfo {
