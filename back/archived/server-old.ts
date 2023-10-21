@@ -5,7 +5,6 @@ import * as url from 'url';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
-import { handleSendMessage, updatePlayerList } from '../socket/index.js';
 import {
     handleStartDraw,
     handleDraw,
@@ -13,6 +12,8 @@ import {
     handleUndoDraw,
     handleClearCanvas,
 } from './canvas-event-handlers.js';
+import { handleSendMessage } from './chat-event-handlers.js';
+import { updatePlayerList } from './player-list-update-handlers.js';
 import { generateRoomId, getRandomInt } from '../libs/utils.js';
 import { wordBank } from '../libs/word-bank.js';
 
