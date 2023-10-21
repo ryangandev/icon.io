@@ -8,6 +8,8 @@ import {
     getRoomStatus,
     getRandomElementFromSet,
     convertStrToUnderscores,
+    resetReceivedPointsThisTurn,
+    resetPoints,
 } from '../../libs/utils.js';
 import { wordBank } from '../../libs/word-bank.js';
 
@@ -36,6 +38,9 @@ const GameEventsHandler = (
                 throw err;
             }
 
+            // Reset all players' points
+            currentRoom.playerList = resetPoints(currentRoom.playerList);
+
             // Select a random category from the word bank
             const randomCategory = getRandomCategory(wordBank);
             const randomCategoryName = Object.keys(randomCategory)[0];
@@ -48,8 +53,10 @@ const GameEventsHandler = (
             );
             currentRoom.wordCategory = randomCategoryName;
 
+            console.log('startDrawAndGuessGame', currentRoom);
             // Update the clients about room info
             io.to(roomId).emit('startDrawAndGuessGameSuccess', {
+                playerList: currentRoom.playerList,
                 isGameStarted: currentRoom.isGameStarted,
                 status: currentRoom.status,
                 wordCategory: currentRoom.wordCategory,
@@ -185,6 +192,11 @@ const GameEventsHandler = (
         // Clear the canvas for the new drawer
         io.to(currentRoom.roomId).emit('drawerClear');
 
+        // Reset all players' receivedPointsThisTurn to false
+        currentRoom.playerList = resetReceivedPointsThisTurn(
+            currentRoom.playerList,
+        );
+
         // Select a new drawer from the drawer queue
         const newDrawer = getRandomElementFromSet(currentRoom.drawerQueue);
         const randomChoicesFromCategory = getRandomChoicesFromList(
@@ -199,6 +211,7 @@ const GameEventsHandler = (
 
         // Notify all clients in the room that a new drawer has been selected and word selecting phase has started
         io.to(currentRoom.roomId).emit('wordSelectingPhaseStarted', {
+            playerList: currentRoom.playerList,
             currentDrawer: currentRoom.currentDrawer,
             drawerQueue: [...currentRoom.drawerQueue],
             isWordSelectingPhase: currentRoom.isWordSelectingPhase,

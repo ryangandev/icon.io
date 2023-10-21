@@ -7,7 +7,11 @@ import GameInfoBar from '../../components/game-info-bar';
 import { Modal } from 'antd';
 import '../../styles/pages/rooms/draw-and-guess-room.css';
 import { useSocket } from '../../hooks/useSocket';
-import { DrawAndGuessDetailRoomInfo, RoomStatus } from '../../models/types';
+import {
+    DrawAndGuessDetailRoomInfo,
+    PlayerInfo,
+    RoomStatus,
+} from '../../models/types';
 import GameInfoBoard from '../../components/game-info-board';
 import { CustomError } from '../../models/error';
 import toast from 'react-hot-toast';
@@ -83,12 +87,14 @@ const DrawAndGuessRoom = () => {
         socket.on(
             'startDrawAndGuessGameSuccess',
             (data: {
+                playerList: Record<string, PlayerInfo>;
                 isGameStarted: boolean;
                 status: RoomStatus;
                 wordCategory: string;
             }) => {
                 setCurrentRoomInfo((prevRoomInfo) => ({
                     ...prevRoomInfo,
+                    playerList: data.playerList,
                     isGameStarted: data.isGameStarted,
                     status: data.status,
                     wordCategory: data.wordCategory,
@@ -110,12 +116,14 @@ const DrawAndGuessRoom = () => {
         socket.on(
             'wordSelectingPhaseStarted',
             (data: {
+                playerList: Record<string, PlayerInfo>;
                 currentDrawer: string;
                 drawerQueue: string[];
                 isWordSelectingPhase: boolean;
             }) => {
                 setCurrentRoomInfo((prevRoomInfo) => ({
                     ...prevRoomInfo,
+                    playerList: data.playerList,
                     currentDrawer: data.currentDrawer,
                     drawerQueue: new Set(data.drawerQueue),
                     isWordSelectingPhase: data.isWordSelectingPhase,
@@ -149,7 +157,6 @@ const DrawAndGuessRoom = () => {
                     actualEndTime >= expectedEndTime &&
                     currentRoomInfoRef.current.currentWord === ''
                 ) {
-                    console.log('drawerSelectWordFinished event emitting...');
                     socket.emit(
                         'drawerSelectWordFinished',
                         currentRoomInfoRef.current.roomId,
@@ -201,7 +208,6 @@ const DrawAndGuessRoom = () => {
                 const actualEndTime = Date.now();
 
                 if (actualEndTime >= expectedEndTime) {
-                    console.log('drawingPhaseTimerEnded event emitting...');
                     socket.emit(
                         'drawingPhaseTimerEnded',
                         currentRoomInfoRef.current.roomId,
@@ -209,6 +215,20 @@ const DrawAndGuessRoom = () => {
                 }
             }, timer.drawingPhaseTimer * 1000);
         });
+
+        socket.on(
+            'playersReceivedPointsFromCorrectGuess',
+            (updatedPlayerList: Record<string, PlayerInfo>) => {
+                console.log(
+                    'playersReceivedPointsFromCorrectGuess event received: ',
+                    updatedPlayerList,
+                );
+                setCurrentRoomInfo((prevRoomInfo) => ({
+                    ...prevRoomInfo,
+                    playerList: updatedPlayerList,
+                }));
+            },
+        );
 
         socket.on(
             'drawingPhaseEnded',
@@ -253,6 +273,7 @@ const DrawAndGuessRoom = () => {
             socket.off('drawerReceiveWordChoices');
             socket.off('drawingPhaseStarted');
             socket.off('drawingPhaseStartedForDrawer');
+            socket.off('playersReceivedPointsFromCorrectGuess');
             socket.off('drawingPhaseEnded');
             socket.off('endDrawAndGuessGame');
 
@@ -263,7 +284,6 @@ const DrawAndGuessRoom = () => {
                 clearTimeout(drawingPhaseTimeoutId.current);
             }
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket]);
 
     const handleOnLeave = () => {
@@ -321,6 +341,11 @@ const DrawAndGuessRoom = () => {
                         roomId={currentRoomInfo.roomId}
                         isDrawer={isDrawer}
                         isGameStarted={currentRoomInfo.isGameStarted}
+                        isDrawingPhase={currentRoomInfo.isDrawingPhase}
+                        receivedPointsThisTurn={
+                            currentRoomInfo.playerList[socket.id]
+                                ?.receivedPointsThisTurn
+                        }
                     />
                 </div>
             </>
