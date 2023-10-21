@@ -12,42 +12,22 @@ import { DrawAndGuessDetailRoomInfo, RoomStatus } from '../../models/types';
 import GameInfoBoard from '../../components/game-info-board';
 import { CustomError } from '../../models/error';
 import toast from 'react-hot-toast';
+import { roomInfoInitialObject } from '../../data/roomInfo';
 
 const DrawAndGuessRoom = () => {
     const { socket } = useSocket();
     const navigate = useNavigate();
     const username = sessionStorage.getItem('username');
-    const [currentRoomInfo, setCurrentRoomInfo] =
-        useState<DrawAndGuessDetailRoomInfo>({
-            roomId: '',
-            roomName: '',
-            owner: {
-                username: '',
-                socketId: '',
-            },
-            status: 'open',
-            currentPlayerCount: 0,
-            maxPlayers: 0,
-            rounds: 0,
-            password: '',
-            playerList: {},
-            currentDrawer: '', // current drawer's socket id
-            currentWord: '',
-            currentWordLength: 0,
-            currentRound: 0,
-            isGameStarted: false,
-            isWordSelectingPhase: false,
-            isDrawingPhase: false,
-            isReviewingPhase: false,
-            drawerQueue: new Set(),
-            wordCategory: '',
-            wordChoices: [],
-        });
-    const currentRoomInfoRef = useRef(currentRoomInfo); // Use ref to store currentRoomInfo to avoid stale closure during useEffect
     const [roomDoesNotExist, setRoomDoesNotExist] = useState<boolean>(false);
+
+    // Room info attributes
+    const [currentRoomInfo, setCurrentRoomInfo] =
+        useState<DrawAndGuessDetailRoomInfo>(roomInfoInitialObject);
+    const currentRoomInfoRef = useRef(currentRoomInfo); // Use ref to store currentRoomInfo to avoid stale closure during useEffect
     const isDrawer = currentRoomInfo.currentDrawer === socket.id;
     const isRoomOwner = currentRoomInfo.owner.socketId === socket.id;
 
+    // Timer attributes
     const timer = {
         wordSelectPhaseTimer: 15,
         drawingPhaseTimer: 15,
