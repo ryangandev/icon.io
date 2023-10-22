@@ -6,31 +6,31 @@ import '../styles/pages/landing-page.css';
 import toast from 'react-hot-toast';
 
 const Landing: FC = () => {
-    const [name, setName] = useState<string>(
+    const [username, setUsername] = useState<string>(
         sessionStorage.getItem('username') || '',
     );
     const [inputStatus, setInputStatus] = useState<'' | 'error' | undefined>();
     const navigate: NavigateFunction = useNavigate();
 
     useEffect(() => {
-        if (name.trim() !== '') {
+        if (username.trim() !== '') {
             navigate('/Gamehub');
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [navigate]);
 
     const handleOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setName(e.target.value);
+        setUsername(e.target.value);
         setInputStatus(undefined);
     };
 
     const handleOnClick = () => {
-        if (name.trim() === '') {
-            toast.error('Name cannot be empty!');
+        if (username.trim() === '') {
+            toast.error('Username cannot be empty!');
             setInputStatus('error');
-            return;
+            setUsername('');
         } else {
-            sessionStorage.setItem('username', name);
+            sessionStorage.setItem('username', username);
             navigate('/Gamehub');
         }
     };
@@ -44,7 +44,8 @@ const Landing: FC = () => {
 
             <Input
                 size="large"
-                placeholder="Enter your name"
+                value={username}
+                placeholder="Enter your username"
                 className="landing-name-input"
                 maxLength={18}
                 onChange={handleOnchange}
