@@ -1,0 +1,13 @@
+@keyframes oscillateAnimation {
+    0%, 75%, 100% {
+        transform: translateX(-5px);
+    }
+    37.5% {
+        transform: translateX(5px);
+    }
+}
+
+
+.oscillate-emoji {
+    animation: oscillateAnimation 2s ease-in-out infinite;
+}
