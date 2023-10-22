@@ -34,7 +34,7 @@ const ChatEventsHandler = (
                 io.to(roomId).emit(
                     'correctGuessAnnouncement',
                     '📢 System',
-                    username + ' guess the correct word!',
+                    username + ' guessed the correct word!',
                 );
 
                 io.to(roomId).emit(

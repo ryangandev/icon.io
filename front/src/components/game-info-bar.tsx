@@ -18,6 +18,7 @@ interface GameInfoBarProps {
     currentDrawer: string;
     currentWord: string;
     currentWordHint: string;
+    receivedPointsThisTurn: boolean;
     handleOnLeave: () => void;
     startTimeRef: React.MutableRefObject<number | null>;
     drawingPhaseTimer: number;
@@ -33,6 +34,7 @@ const GameInfoBar = ({
     currentDrawer,
     currentWord,
     currentWordHint,
+    receivedPointsThisTurn,
     handleOnLeave,
     startTimeRef,
     drawingPhaseTimer,
@@ -97,12 +99,20 @@ const GameInfoBar = ({
                 )}
                 {isDrawingPhase && !isDrawer && (
                     <>
-                        <span className="game-info-action-indicator">
-                            Guess
-                        </span>
-                        <span className="game-info-current-word game-info-hint ">
-                            {currentWordHint}
-                        </span>
+                        {receivedPointsThisTurn ? (
+                            <span className="game-info-status">
+                                ✅ You Guessed the Correct Word!
+                            </span>
+                        ) : (
+                            <>
+                                <span className="game-info-action-indicator">
+                                    Guess
+                                </span>
+                                <span className="game-info-current-word game-info-hint ">
+                                    {currentWordHint}
+                                </span>
+                            </>
+                        )}
                     </>
                 )}
             </div>

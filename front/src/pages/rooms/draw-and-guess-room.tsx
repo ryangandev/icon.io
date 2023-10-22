@@ -36,6 +36,8 @@ const DrawAndGuessRoom = () => {
     const isRoomOwner = currentRoomInfo.owner.socketId === socket.id;
     const currentDrawerUsername =
         currentRoomInfo.playerList[currentRoomInfo.currentDrawer]?.username;
+    const receivedPointsThisTurn =
+        currentRoomInfo.playerList[socket.id]?.receivedPointsThisTurn;
 
     // Timer attributes
     const [wordSelectPhaseTimer, setWordSelectPhaseTimer] = useState<number>(0);
@@ -351,10 +353,7 @@ const DrawAndGuessRoom = () => {
                         roomId={currentRoomInfo.roomId}
                         isDrawer={isDrawer}
                         isDrawingPhase={currentRoomInfo.isDrawingPhase}
-                        receivedPointsThisTurn={
-                            currentRoomInfo.playerList[socket.id]
-                                ?.receivedPointsThisTurn
-                        }
+                        receivedPointsThisTurn={receivedPointsThisTurn}
                     />
                 </div>
             </>
@@ -384,6 +383,7 @@ const DrawAndGuessRoom = () => {
                         currentDrawer={currentDrawerUsername}
                         currentWord={currentRoomInfo.currentWord}
                         currentWordHint={currentRoomInfo.currentWordHint}
+                        receivedPointsThisTurn={receivedPointsThisTurn}
                         handleOnLeave={handleOnLeave}
                         startTimeRef={drawingPhaseIntervalStartTimeRef}
                         drawingPhaseTimer={drawingPhaseTimer}
