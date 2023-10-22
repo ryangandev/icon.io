@@ -13,6 +13,9 @@ const GamehubPage: FC = () => {
     const { socket } = useSocket();
 
     useEffect(() => {
+        console.log('A user is entering, username is: ', username);
+        if (!username) return;
+
         if (socket.connected) {
             console.log(
                 'socket is currently connected; connected socket id is: ',
@@ -58,7 +61,9 @@ const GamehubPage: FC = () => {
     return (
         <>
             {!username ? (
-                <div>Redirecting...</div>
+                <div style={{ marginTop: 40, fontSize: 30, fontWeight: 600 }}>
+                    Redirecting...
+                </div>
             ) : (
                 <div className="gamehub-layout">
                     <Space size="large" className="gamehub-header">
