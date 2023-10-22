@@ -282,6 +282,19 @@ const DrawAndGuessRoom = () => {
         };
     }, [socket]);
 
+    useEffect(() => {
+        return () => {
+            if (currentRoomInfoRef.current.roomId !== '') {
+                console.log('Component unmounting triggered');
+                socket.emit(
+                    'clientLeaveDrawAndGuessRoom',
+                    currentRoomInfoRef.current.roomId,
+                    username,
+                );
+            }
+        };
+    }, [socket, username]);
+
     const handleOnLeave = () => {
         socket.emit(
             'clientLeaveDrawAndGuessRoom',
