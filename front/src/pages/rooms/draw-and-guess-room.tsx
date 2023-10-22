@@ -322,10 +322,11 @@ const DrawAndGuessRoom = () => {
                                 isCurrentPlayerRoomOwner={
                                     socketId === currentRoomInfo.owner.socketId
                                 }
-                                isCurrentDrawer={
+                                isCurrentPlayerDrawer={
                                     socketId === currentRoomInfo.currentDrawer
                                 }
                                 ranking={index + 1}
+                                isDrawingPhase={currentRoomInfo.isDrawingPhase}
                             />
                         ),
                     )}

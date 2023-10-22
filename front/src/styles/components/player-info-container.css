@@ -3,7 +3,6 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-around;
     width: 220px;
     height: 60px;
     box-sizing: border-box;
@@ -14,25 +13,50 @@
     background-color: #f0f0f0;
 }
 
+.draw-and-guess-room-player-info-container-left {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    box-sizing: border-box;
+}
+
 .draw-and-guess-room-player-info-container-center{
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width: 144px;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.draw-and-guess-room-player-info-container-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 36px;
+    box-sizing: border-box;
 }
 
 .draw-and-guess-room-player-info-ranking {
     font-weight: 900;
     font-size: 20px;
-    color: #00000080;
+    color: #808080;
 }
 
 .draw-and-guess-room-player-info-container:nth-child(1) .draw-and-guess-room-player-info-ranking {
-    color: #FF0000;
+    color: #E74C3C;
 }
 
 .draw-and-guess-room-player-info-container:nth-child(2) .draw-and-guess-room-player-info-ranking {
-    color: #e8b923;
+    color: #2ECC71;
+}
+
+.draw-and-guess-room-player-info-container:nth-child(3) .draw-and-guess-room-player-info-ranking {
+    color: #3498DB;
 }
 
 .draw-and-guess-room-player-info-username {

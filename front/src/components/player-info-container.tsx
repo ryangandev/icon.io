@@ -1,20 +1,23 @@
 import '../styles/components/player-info-container.css';
+import '../assets/animations/oscillate.css';
 import { PlayerInfo } from '../models/types';
 
 interface PlayerInfoContainerProps {
     playerInfo: PlayerInfo;
     isClient: boolean;
     isCurrentPlayerRoomOwner: boolean;
-    isCurrentDrawer: boolean;
+    isCurrentPlayerDrawer: boolean;
     ranking: number;
+    isDrawingPhase: boolean;
 }
 
 const PlayerInfoContainer = ({
     playerInfo,
     isClient,
     isCurrentPlayerRoomOwner,
-    isCurrentDrawer,
+    isCurrentPlayerDrawer,
     ranking,
+    isDrawingPhase,
 }: PlayerInfoContainerProps) => {
     const { username, points } = playerInfo;
 
@@ -33,7 +36,13 @@ const PlayerInfoContainer = ({
                     {points} pts
                 </span>
             </div>
-            <div className="draw-and-guess-room-player-info-container-right"></div>
+            <div className="draw-and-guess-room-player-info-container-right">
+                {isCurrentPlayerDrawer && (
+                    <span className={isDrawingPhase ? 'oscillate-emoji' : ''}>
+                        🖌️
+                    </span>
+                )}
+            </div>
             {isCurrentPlayerRoomOwner && (
                 <span className="draw-and-guess-room-player-info-owner-icon">
                     👑
