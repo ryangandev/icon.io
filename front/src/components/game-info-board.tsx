@@ -31,8 +31,7 @@ const GameInfoBoard = ({
     return (
         <div className="game-info-board">
             <div className="game-info-board-header">
-                📜
-                <span>Room Info</span>
+                📜 <span>Room Info</span>
             </div>
             {gameInfoItems.map((item, index) => (
                 <div className="game-info-board-row" key={index}>
