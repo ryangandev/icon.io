@@ -399,6 +399,10 @@ const DrawAndGuessRoom = () => {
                                 isWordSelectingPhase={
                                     currentRoomInfo.isWordSelectingPhase
                                 }
+                                isDrawingPhase={currentRoomInfo.isDrawingPhase}
+                                isReviewingPhase={
+                                    currentRoomInfo.isReviewingPhase
+                                }
                                 wordChoices={currentRoomInfo.wordChoices}
                                 startTimeRef={
                                     wordSelectingPhaseIntervalStartTimeRef

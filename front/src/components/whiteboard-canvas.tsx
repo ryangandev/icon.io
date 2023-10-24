@@ -30,6 +30,8 @@ interface WhiteBoardCanvasProps {
     isDrawer: boolean;
     isGameStarted: boolean;
     isWordSelectingPhase: boolean;
+    isDrawingPhase: boolean;
+    isReviewingPhase: boolean;
     wordChoices: string[];
     startTimeRef: React.MutableRefObject<number | null>;
     wordSelectPhaseTimer: number;
@@ -44,6 +46,8 @@ const WhiteBoardCanvas = ({
     isDrawer,
     isGameStarted,
     isWordSelectingPhase,
+    isDrawingPhase,
+    isReviewingPhase,
     wordChoices = [],
     startTimeRef,
     wordSelectPhaseTimer,
@@ -243,7 +247,7 @@ const WhiteBoardCanvas = ({
     };
 
     const startDrawing = (event: React.MouseEvent<HTMLCanvasElement>) => {
-        if (!isDrawer || isWordSelectingPhase) return;
+        if (!isDrawer || !isDrawingPhase) return;
 
         saveCanvasState();
         const coords: Coordinate = getRelativeMouseCoords(event);
@@ -255,7 +259,7 @@ const WhiteBoardCanvas = ({
     };
 
     const continueDrawing = (event: React.MouseEvent<HTMLCanvasElement>) => {
-        if (!isDrawer || isWordSelectingPhase) return;
+        if (!isDrawer || !isDrawingPhase) return;
         if (!isDrawing) return;
 
         const coords: Coordinate = getRelativeMouseCoords(event);
@@ -275,7 +279,7 @@ const WhiteBoardCanvas = ({
     };
 
     const stopDrawing = () => {
-        if (!isDrawer || isWordSelectingPhase) return;
+        if (!isDrawer || !isDrawingPhase) return;
 
         setIsDrawing(false);
         context?.closePath();
