@@ -5,9 +5,9 @@ import {
     LogoutOutlined,
     SettingOutlined,
 } from '@ant-design/icons';
-import { useEffect } from 'react';
 import { formatTimeInMinutesAndSeconds } from '../libs/utils';
 import { timer } from '../data/timer';
+import useCountdownTimer from '../hooks/useCountDownTimer';
 
 interface GameInfoBarProps {
     isGameStarted: boolean;
@@ -40,28 +40,13 @@ const GameInfoBar = ({
     drawingPhaseTimer,
     setDrawingPhaseTimer,
 }: GameInfoBarProps) => {
-    useEffect(() => {
-        let intervalId: NodeJS.Timeout | number;
-
-        // Initialize start time when entering word selecting phase
-        if (isDrawingPhase && drawingPhaseTimer === timer.drawingPhaseTimer) {
-            startTimeRef.current = Date.now();
-        }
-
-        if (isDrawingPhase && drawingPhaseTimer > 0) {
-            intervalId = setInterval(() => {
-                const elapsed = Date.now() - (startTimeRef.current || 0); // Calculate the time passed since the start of drawing phase
-                const remainingTime =
-                    timer.drawingPhaseTimer - Math.floor(elapsed / 1000); // Calculate the remaining time
-                setDrawingPhaseTimer(Math.max(0, remainingTime)); // Ensure it doesn't go below 0
-            }, 1000);
-        }
-
-        return () => {
-            clearInterval(intervalId);
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isDrawingPhase, drawingPhaseTimer]); // Refs don't need to be included because they don't cause re-render when they change, and their current value is always accessible
+    useCountdownTimer(
+        isDrawingPhase,
+        drawingPhaseTimer,
+        setDrawingPhaseTimer,
+        startTimeRef,
+        timer.drawingPhaseTimer,
+    );
 
     return (
         <div className="game-info-container">

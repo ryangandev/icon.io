@@ -5,6 +5,7 @@ import '../styles/components/whiteboard-canvas.css';
 import WhiteBoardToolBar from './whiteboard-toolbar';
 import { Button, Space, Typography } from 'antd';
 import { timer } from '../data/timer';
+import useCountdownTimer from '../hooks/useCountDownTimer';
 
 interface BrushOptions {
     color: string;
@@ -155,59 +156,21 @@ const WhiteBoardCanvas = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket, context, previousStatesRef]); // ignore saveCanvasState() function in the dependency array
 
-    useEffect(() => {
-        let intervalId: NodeJS.Timeout | number;
+    useCountdownTimer(
+        isWordSelectingPhase,
+        wordSelectPhaseTimer,
+        setWordSelectPhaseTimer,
+        wordSelectPhaseStartTimeRef,
+        timer.wordSelectPhaseTimer,
+    );
 
-        // Initialize start time when entering drawing phase
-        if (
-            isWordSelectingPhase &&
-            wordSelectPhaseTimer === timer.wordSelectPhaseTimer
-        ) {
-            wordSelectPhaseStartTimeRef.current = Date.now();
-        }
-
-        if (isWordSelectingPhase && wordSelectPhaseTimer > 0) {
-            intervalId = setInterval(() => {
-                const elapsed =
-                    Date.now() - (wordSelectPhaseStartTimeRef.current || 0); // Calculate the time passed since the start of the drawing phase
-                const remainingTime =
-                    timer.wordSelectPhaseTimer - Math.floor(elapsed / 1000); // Calculate the remaining time
-                setWordSelectPhaseTimer(Math.max(0, remainingTime)); // Ensure it doesn't go below 0
-            }, 1000);
-        }
-
-        return () => {
-            clearInterval(intervalId);
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isWordSelectingPhase, wordSelectPhaseTimer]); // Refs don't need to be included because they don't cause re-render when they change, and their current value is always accessible
-
-    useEffect(() => {
-        let intervalId: NodeJS.Timeout | number;
-
-        // Initialize start time when entering reviewing phase
-        if (
-            isReviewingPhase &&
-            reviewingPhaseTimer === timer.reviewingPhaseTimer
-        ) {
-            reviewingPhaseStartTimeRef.current = Date.now();
-        }
-
-        if (isReviewingPhase && reviewingPhaseTimer > 0) {
-            intervalId = setInterval(() => {
-                const elapsed =
-                    Date.now() - (reviewingPhaseStartTimeRef.current || 0); // Calculate the time passed since the start of the reviewing phase
-                const remainingTime =
-                    timer.reviewingPhaseTimer - Math.floor(elapsed / 1000); // Calculate the remaining time
-                setReviewingPhaseTimer(Math.max(0, remainingTime)); // Ensure it doesn't go below 0
-            }, 1000);
-        }
-
-        return () => {
-            clearInterval(intervalId);
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isReviewingPhase, reviewingPhaseTimer]); // Refs don't need to be included because they don't cause re-render when they change, and their current value is always accessible
+    useCountdownTimer(
+        isReviewingPhase,
+        reviewingPhaseTimer,
+        setReviewingPhaseTimer,
+        reviewingPhaseStartTimeRef,
+        timer.reviewingPhaseTimer,
+    );
 
     const handleColorChange = (color: string) => {
         setBrushOptions({
