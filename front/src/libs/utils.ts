@@ -51,10 +51,36 @@ const sortPlayerListByPoints = (
     return Object.entries(playerList).sort((a, b) => b[1].points - a[1].points);
 };
 
+const setupTimeoutForPhase = (
+    timeoutIdRef: React.MutableRefObject<NodeJS.Timeout | null>,
+    startTimeRef: React.MutableRefObject<number | null>,
+    timerValue: number,
+    callback: () => void,
+) => {
+    // Clear any previous timeout
+    if (timeoutIdRef.current) {
+        clearTimeout(timeoutIdRef.current);
+    }
+
+    // Record the start time
+    startTimeRef.current = Date.now();
+
+    // Set up the timeout
+    timeoutIdRef.current = setTimeout(() => {
+        const expectedEndTime = (startTimeRef.current || 0) + timerValue * 1000;
+        const actualEndTime = Date.now();
+
+        if (actualEndTime >= expectedEndTime) {
+            callback();
+        }
+    }, timerValue * 1000);
+};
+
 export {
     imageDataToDataURL,
     dataURLToImageData,
     formatTimeInMinutesAndSeconds,
     statusColors,
     sortPlayerListByPoints,
+    setupTimeoutForPhase,
 };

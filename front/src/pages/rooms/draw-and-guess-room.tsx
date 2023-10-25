@@ -18,7 +18,7 @@ import toast from 'react-hot-toast';
 import { roomInfoInitialObject } from '../../data/roomInfo';
 import useScreenSize from '../../hooks/useScreenSize';
 import { timer } from '../../data/timer';
-import { sortPlayerListByPoints } from '../../libs/utils';
+import { setupTimeoutForPhase, sortPlayerListByPoints } from '../../libs/utils';
 
 const DrawAndGuessRoom = () => {
     const { socket } = useSocket();
@@ -145,31 +145,20 @@ const DrawAndGuessRoom = () => {
                 wordChoices: wordChoices,
             }));
 
-            // Clear any previous timeout before setting a new one
-            if (wordSelectingPhaseTimeoutId.current) {
-                clearTimeout(wordSelectingPhaseTimeoutId.current);
-            }
-
-            // Record the start time of the word selecting phase
-            wordSelectingPhaseTimeoutStartTimeRef.current = Date.now();
-
-            // Drawer has 15 seconds to select a word
-            wordSelectingPhaseTimeoutId.current = setTimeout(() => {
-                const expectedEndTime =
-                    (wordSelectingPhaseTimeoutStartTimeRef.current || 0) +
-                    timer.wordSelectPhaseTimer * 1000;
-                const actualEndTime = Date.now();
-                if (
-                    actualEndTime >= expectedEndTime &&
-                    currentRoomInfoRef.current.currentWord === ''
-                ) {
-                    socket.emit(
-                        'drawerSelectWordFinished',
-                        currentRoomInfoRef.current.roomId,
-                        wordChoices[0],
-                    );
-                }
-            }, timer.wordSelectPhaseTimer * 1000);
+            setupTimeoutForPhase(
+                wordSelectingPhaseTimeoutId,
+                wordSelectingPhaseTimeoutStartTimeRef,
+                timer.wordSelectPhaseTimer,
+                () => {
+                    if (currentRoomInfoRef.current.currentWord === '') {
+                        socket.emit(
+                            'drawerSelectWordFinished',
+                            currentRoomInfoRef.current.roomId,
+                            wordChoices[0],
+                        );
+                    }
+                },
+            );
         });
 
         socket.on(
@@ -199,27 +188,17 @@ const DrawAndGuessRoom = () => {
                 currentWord: word,
             }));
 
-            // Clear any previous timeout before setting a new one
-            if (drawingPhaseTimeoutId.current) {
-                clearTimeout(drawingPhaseTimeoutId.current);
-            }
-
-            // Record the start time of the drawing phase
-            drawingPhaseTimeoutStartTimeRef.current = Date.now();
-
-            drawingPhaseTimeoutId.current = setTimeout(() => {
-                const expectedEndTime =
-                    (drawingPhaseTimeoutStartTimeRef.current || 0) +
-                    timer.drawingPhaseTimer * 1000;
-                const actualEndTime = Date.now();
-
-                if (actualEndTime >= expectedEndTime) {
+            setupTimeoutForPhase(
+                drawingPhaseTimeoutId,
+                drawingPhaseTimeoutStartTimeRef,
+                timer.drawingPhaseTimer,
+                () => {
                     socket.emit(
                         'drawingPhaseTimerEnded',
                         currentRoomInfoRef.current.roomId,
                     );
-                }
-            }, timer.drawingPhaseTimer * 1000);
+                },
+            );
         });
 
         socket.on(
@@ -239,7 +218,6 @@ const DrawAndGuessRoom = () => {
                 isReviewingPhase: boolean;
                 currentWord: string;
             }) => {
-                console.log('reviewingPhaseStarted event received: ', data);
                 setCurrentRoomInfo((prevRoomInfo) => ({
                     ...prevRoomInfo,
                     isDrawingPhase: data.isDrawingPhase,
@@ -253,27 +231,17 @@ const DrawAndGuessRoom = () => {
                 if (currentRoomInfoRef.current.currentDrawer !== socket.id)
                     return;
 
-                // Clear any previous timeout before setting a new one
-                if (reviewingPhaseTimeoutId.current) {
-                    clearTimeout(reviewingPhaseTimeoutId.current);
-                }
-
-                // Record the start time of the reviewing phase
-                reviewingPhaseTimeoutStartTimeRef.current = Date.now();
-
-                reviewingPhaseTimeoutId.current = setTimeout(() => {
-                    const expectedEndTime =
-                        (reviewingPhaseTimeoutStartTimeRef.current || 0) +
-                        timer.reviewingPhaseTimer * 1000;
-                    const actualEndTime = Date.now();
-
-                    if (actualEndTime >= expectedEndTime) {
+                setupTimeoutForPhase(
+                    reviewingPhaseTimeoutId,
+                    reviewingPhaseTimeoutStartTimeRef,
+                    timer.reviewingPhaseTimer,
+                    () => {
                         socket.emit(
                             'reviewingPhaseTimerEnded',
                             currentRoomInfoRef.current.roomId,
                         );
-                    }
-                }, timer.reviewingPhaseTimer * 1000);
+                    },
+                );
             },
         );
 
@@ -285,7 +253,6 @@ const DrawAndGuessRoom = () => {
                 currentWord: string;
                 currentWordHint: string;
             }) => {
-                console.log('reviewingPhaseEnded event received: ', data);
                 setCurrentRoomInfo((prevRoomInfo) => ({
                     ...prevRoomInfo,
                     isReviewingPhase: data.isReviewingPhase,
@@ -300,10 +267,6 @@ const DrawAndGuessRoom = () => {
         socket.on(
             'endDrawAndGuessGame',
             (currentRoomInfo: DrawAndGuessDetailRoomInfo) => {
-                console.log(
-                    'endDrawAndGuessGame event received: ',
-                    currentRoomInfo,
-                );
                 setCurrentRoomInfo((prevRoomInfo) => ({
                     ...prevRoomInfo,
                     ...currentRoomInfo,
@@ -338,7 +301,6 @@ const DrawAndGuessRoom = () => {
     useEffect(() => {
         return () => {
             if (currentRoomInfoRef.current.roomId !== '') {
-                console.log('Component unmounting triggered');
                 socket.emit(
                     'clientLeaveDrawAndGuessRoom',
                     currentRoomInfoRef.current.roomId,
