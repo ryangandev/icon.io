@@ -33,12 +33,16 @@ interface WhiteBoardCanvasProps {
     isDrawingPhase: boolean;
     isReviewingPhase: boolean;
     wordChoices: string[];
-    startTimeRef: React.MutableRefObject<number | null>;
+    wordSelectPhaseStartTimeRef: React.MutableRefObject<number | null>;
     wordSelectPhaseTimer: number;
     setWordSelectPhaseTimer: React.Dispatch<React.SetStateAction<number>>;
+    reviewingPhaseStartTimeRef: React.MutableRefObject<number | null>;
+    reviewingPhaseTimer: number;
+    setReviewingPhaseTimer: React.Dispatch<React.SetStateAction<number>>;
     isRoomOwner: boolean;
     handleStartGame: () => void;
     currentDrawer: string;
+    currentWord: string;
 }
 
 const WhiteBoardCanvas = ({
@@ -49,12 +53,16 @@ const WhiteBoardCanvas = ({
     isDrawingPhase,
     isReviewingPhase,
     wordChoices = [],
-    startTimeRef,
+    wordSelectPhaseStartTimeRef,
     wordSelectPhaseTimer,
     setWordSelectPhaseTimer,
+    reviewingPhaseStartTimeRef,
+    reviewingPhaseTimer,
+    setReviewingPhaseTimer,
     isRoomOwner,
     handleStartGame,
     currentDrawer,
+    currentWord,
 }: WhiteBoardCanvasProps) => {
     const { socket } = useSocket();
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -155,12 +163,13 @@ const WhiteBoardCanvas = ({
             isWordSelectingPhase &&
             wordSelectPhaseTimer === timer.wordSelectPhaseTimer
         ) {
-            startTimeRef.current = Date.now();
+            wordSelectPhaseStartTimeRef.current = Date.now();
         }
 
         if (isWordSelectingPhase && wordSelectPhaseTimer > 0) {
             intervalId = setInterval(() => {
-                const elapsed = Date.now() - (startTimeRef.current || 0); // Calculate the time passed since the start of the drawing phase
+                const elapsed =
+                    Date.now() - (wordSelectPhaseStartTimeRef.current || 0); // Calculate the time passed since the start of the drawing phase
                 const remainingTime =
                     timer.wordSelectPhaseTimer - Math.floor(elapsed / 1000); // Calculate the remaining time
                 setWordSelectPhaseTimer(Math.max(0, remainingTime)); // Ensure it doesn't go below 0
@@ -172,6 +181,33 @@ const WhiteBoardCanvas = ({
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isWordSelectingPhase, wordSelectPhaseTimer]); // Refs don't need to be included because they don't cause re-render when they change, and their current value is always accessible
+
+    useEffect(() => {
+        let intervalId: NodeJS.Timeout | number;
+
+        // Initialize start time when entering reviewing phase
+        if (
+            isReviewingPhase &&
+            reviewingPhaseTimer === timer.reviewingPhaseTimer
+        ) {
+            reviewingPhaseStartTimeRef.current = Date.now();
+        }
+
+        if (isReviewingPhase && reviewingPhaseTimer > 0) {
+            intervalId = setInterval(() => {
+                const elapsed =
+                    Date.now() - (reviewingPhaseStartTimeRef.current || 0); // Calculate the time passed since the start of the reviewing phase
+                const remainingTime =
+                    timer.reviewingPhaseTimer - Math.floor(elapsed / 1000); // Calculate the remaining time
+                setReviewingPhaseTimer(Math.max(0, remainingTime)); // Ensure it doesn't go below 0
+            }, 1000);
+        }
+
+        return () => {
+            clearInterval(intervalId);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isReviewingPhase, reviewingPhaseTimer]); // Refs don't need to be included because they don't cause re-render when they change, and their current value is always accessible
 
     const handleColorChange = (color: string) => {
         setBrushOptions({
@@ -367,6 +403,16 @@ const WhiteBoardCanvas = ({
                     handleClearCanvas={handleClearCanvas}
                     handleUndo={handleUndo}
                 />
+            )}
+            {isGameStarted && isReviewingPhase && (
+                <div className="whiteboard-canvas-overlay">
+                    <Typography.Title level={3}>
+                        The word was: <b>{currentWord}</b>
+                    </Typography.Title>
+                    <Typography.Title level={2}>
+                        {reviewingPhaseTimer}
+                    </Typography.Title>
+                </div>
             )}
         </div>
     );

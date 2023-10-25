@@ -123,15 +123,33 @@ const GameEventsHandler = (
         try {
             const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
 
-            // Reset the room info
             currentRoom.isDrawingPhase = false;
+            currentRoom.isReviewingPhase = true;
+
+            // Notify all clients in the room that drawing phase has ended and reviewing phase has started
+            io.to(roomId).emit('reviewingPhaseStarted', {
+                isDrawingPhase: currentRoom.isDrawingPhase,
+                isReviewingPhase: currentRoom.isReviewingPhase,
+                currentWord: currentRoom.currentWord,
+            });
+        } catch (error: any) {
+            console.log(error);
+        }
+    });
+
+    socket.on('reviewingPhaseTimerEnded', (roomId: string) => {
+        try {
+            const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
+
+            // Reset the room info
+            currentRoom.isReviewingPhase = false;
             currentRoom.currentDrawer = '';
             currentRoom.currentWord = '';
             currentRoom.currentWordHint = '';
 
-            // Notify all clients in the room that drawing phase has ended
-            io.to(roomId).emit('drawingPhaseEnded', {
-                isDrawingPhase: currentRoom.isDrawingPhase,
+            // Notify all clients in the room that reviewing phase has ended
+            io.to(roomId).emit('reviewingPhaseEnded', {
+                isReviewingPhase: currentRoom.isReviewingPhase,
                 currentDrawer: currentRoom.currentDrawer,
                 currentWord: currentRoom.currentWord,
                 currentWordHint: currentRoom.currentWordHint,

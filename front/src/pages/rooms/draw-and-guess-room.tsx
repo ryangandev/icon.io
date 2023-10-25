@@ -42,14 +42,18 @@ const DrawAndGuessRoom = () => {
     // Timer attributes
     const [wordSelectPhaseTimer, setWordSelectPhaseTimer] = useState<number>(0);
     const [drawingPhaseTimer, setDrawingPhaseTimer] = useState<number>(0);
+    const [reviewingPhaseTimer, setReviewingPhaseTimer] = useState<number>(0);
     // Use ref to store timeout id to avoid stale closure during useEffect
     const wordSelectingPhaseTimeoutId = useRef<NodeJS.Timeout | null>(null);
     const drawingPhaseTimeoutId = useRef<NodeJS.Timeout | null>(null);
+    const reviewingPhaseTimeoutId = useRef<NodeJS.Timeout | null>(null);
     // The refs below are for storing the start time of each phase to apply date based solution to setTimeout and setInterval
     const wordSelectingPhaseIntervalStartTimeRef = useRef<number | null>(null);
     const drawingPhaseIntervalStartTimeRef = useRef<number | null>(null);
+    const reviewingPhaseIntervalStartTimeRef = useRef<number | null>(null);
     const wordSelectingPhaseTimeoutStartTimeRef = useRef<number | null>(null);
     const drawingPhaseTimeoutStartTimeRef = useRef<number | null>(null);
+    const reviewingPhaseTimeoutStartTimeRef = useRef<number | null>(null);
 
     useEffect(() => {
         currentRoomInfoRef.current = currentRoomInfo;
@@ -229,21 +233,67 @@ const DrawAndGuessRoom = () => {
         );
 
         socket.on(
-            'drawingPhaseEnded',
+            'reviewingPhaseStarted',
             (data: {
                 isDrawingPhase: boolean;
+                isReviewingPhase: boolean;
+                currentWord: string;
+            }) => {
+                console.log('reviewingPhaseStarted event received: ', data);
+                setCurrentRoomInfo((prevRoomInfo) => ({
+                    ...prevRoomInfo,
+                    isDrawingPhase: data.isDrawingPhase,
+                    isReviewingPhase: data.isReviewingPhase,
+                    currentWord: data.currentWord,
+                }));
+                setDrawingPhaseTimer(0);
+                setReviewingPhaseTimer(timer.reviewingPhaseTimer);
+
+                // Only the drawer will continue to emit the below event
+                if (currentRoomInfoRef.current.currentDrawer !== socket.id)
+                    return;
+
+                // Clear any previous timeout before setting a new one
+                if (reviewingPhaseTimeoutId.current) {
+                    clearTimeout(reviewingPhaseTimeoutId.current);
+                }
+
+                // Record the start time of the reviewing phase
+                reviewingPhaseTimeoutStartTimeRef.current = Date.now();
+
+                reviewingPhaseTimeoutId.current = setTimeout(() => {
+                    const expectedEndTime =
+                        (reviewingPhaseTimeoutStartTimeRef.current || 0) +
+                        timer.reviewingPhaseTimer * 1000;
+                    const actualEndTime = Date.now();
+
+                    if (actualEndTime >= expectedEndTime) {
+                        socket.emit(
+                            'reviewingPhaseTimerEnded',
+                            currentRoomInfoRef.current.roomId,
+                        );
+                    }
+                }, timer.reviewingPhaseTimer * 1000);
+            },
+        );
+
+        socket.on(
+            'reviewingPhaseEnded',
+            (data: {
+                isReviewingPhase: boolean;
                 currentDrawer: string;
                 currentWord: string;
                 currentWordHint: string;
             }) => {
+                console.log('reviewingPhaseEnded event received: ', data);
                 setCurrentRoomInfo((prevRoomInfo) => ({
                     ...prevRoomInfo,
-                    isDrawingPhase: data.isDrawingPhase,
+                    isReviewingPhase: data.isReviewingPhase,
                     currentDrawer: data.currentDrawer,
                     currentWord: data.currentWord,
                     currentWordHint: data.currentWordHint,
                 }));
-                setDrawingPhaseTimer(0);
+                setReviewingPhaseTimer(0);
             },
         );
 
@@ -272,7 +322,8 @@ const DrawAndGuessRoom = () => {
             socket.off('drawingPhaseStarted');
             socket.off('drawingPhaseStartedForDrawer');
             socket.off('playersReceivedPointsFromCorrectGuess');
-            socket.off('drawingPhaseEnded');
+            socket.off('reviewingPhaseStarted');
+            socket.off('reviewingPhaseEnded');
             socket.off('endDrawAndGuessGame');
 
             if (wordSelectingPhaseTimeoutId.current) {
@@ -399,16 +450,22 @@ const DrawAndGuessRoom = () => {
                                     currentRoomInfo.isReviewingPhase
                                 }
                                 wordChoices={currentRoomInfo.wordChoices}
-                                startTimeRef={
+                                wordSelectPhaseStartTimeRef={
                                     wordSelectingPhaseIntervalStartTimeRef
                                 }
                                 wordSelectPhaseTimer={wordSelectPhaseTimer}
                                 setWordSelectPhaseTimer={
                                     setWordSelectPhaseTimer
                                 }
+                                reviewingPhaseStartTimeRef={
+                                    reviewingPhaseIntervalStartTimeRef
+                                }
+                                reviewingPhaseTimer={reviewingPhaseTimer}
+                                setReviewingPhaseTimer={setReviewingPhaseTimer}
                                 isRoomOwner={isRoomOwner}
                                 handleStartGame={handleStartGame}
                                 currentDrawer={currentDrawerUsername}
+                                currentWord={currentRoomInfo.currentWord}
                             />
                         </div>
 
