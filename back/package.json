@@ -4,7 +4,7 @@
     "watch": "npm run build && tsc-watch --onSuccess \"npm run start\"",
     "start:dev": "cd build && cross-env PROD=0 node server.js",
     "start:prod": "cd build && cross-env PROD=1 node server.js",
-    "build:deploy": "rm -rf build && mkdir build && tsc && (cd front && npm run build)",
+    "build:deploy": "rm -rf build && mkdir build && tsc && (cd ../front && npm run build)",
     "start:deploy": "cd build && NODE_ENV=production pm2 start server.js"
   },
   "type": "module",
