@@ -22,13 +22,19 @@ const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 const publicStaticFolder = path.join(__dirname, 'public');
 
 app.use(express.json());
-app.use(cors());
+app.use(
+    cors({
+        origin: [corsOrigin, 'https://icon.ryiscrispy.com'],
+        credentials: true,
+    }),
+);
 app.use(express.static(publicStaticFolder));
 
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: corsOrigin,
+        origin: [corsOrigin, 'https://icon.ryiscrispy.com'],
+        credentials: true,
     },
 });
 
