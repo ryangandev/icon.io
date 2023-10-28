@@ -1,6 +1,6 @@
 const timer = {
     wordSelectPhaseTimer: 15,
-    drawingPhaseTimer: 30,
+    drawingPhaseTimer: 90,
     reviewingPhaseTimer: 10,
 };
 
