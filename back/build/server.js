@@ -12,16 +12,12 @@ const app = express();
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 const publicStaticFolder = path.join(__dirname, 'public');
 app.use(express.json());
-app.use(cors({
-    origin: [corsOrigin, 'https://icon.ryiscrispy.com'],
-    credentials: true,
-}));
+app.use(cors());
 app.use(express.static(publicStaticFolder));
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: [corsOrigin, 'https://icon.ryiscrispy.com'],
-        credentials: true,
+        origin: corsOrigin,
     },
 });
 let drawAndGuessDetailRoomInfoList = {};
