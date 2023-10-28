@@ -12,15 +12,23 @@ interface SocketContextProps {
 const SocketContext = createContext<SocketContextProps | null>(null);
 
 const SocketProvider: React.FC<SocketContextProviderProps> = ({ children }) => {
+    // https://socket.io/how-to/use-with-react#example
+    const URL =
+        process.env.NODE_ENV === 'production'
+            ? undefined
+            : 'http://localhost:3000';
+
+    // Initialize socket
     const socket = useMemo(
         () =>
-            io(process.env.ICONIO_SERVER_URL || 'http://localhost:3000', {
+            // @ts-ignore: "undefined" means the URL will be computed from the `window.location` object
+            io(URL, {
                 autoConnect: false,
                 reconnection: true,
                 reconnectionAttempts: 5,
                 reconnectionDelay: 1000,
             }),
-        [],
+        [URL],
     );
 
     useEffect(() => {
