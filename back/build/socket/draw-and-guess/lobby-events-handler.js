@@ -1,7 +1,6 @@
 import { getDrawAndGuessLobbyRoomInfo, generateRoomId, getRoomStatus, } from '../../libs/utils.js';
 const lobbyEventsHandler = (io, socket, drawAndGuessDetailRoomInfoList) => {
     socket.on('clientJoinDrawAndGuessLobby', () => {
-        console.log('client: ' + socket.id + ' joined draw and guess lobby');
         const drawAndGuessLobbySimplifiedRoomList = Object.values(drawAndGuessDetailRoomInfoList).map(getDrawAndGuessLobbyRoomInfo);
         // Notify the current client that they joined the lobby and send the room list
         socket.emit('updateDrawAndGuessLobbyRoomList', drawAndGuessLobbySimplifiedRoomList);
@@ -37,7 +36,6 @@ const lobbyEventsHandler = (io, socket, drawAndGuessDetailRoomInfoList) => {
             wordChoices: [],
         };
         drawAndGuessDetailRoomInfoList[roomId] = newDrawAndGuessRoom;
-        console.log('new room created', newDrawAndGuessRoom);
         const drawAndGuessLobbySimplifiedRoomList = Object.values(drawAndGuessDetailRoomInfoList).map(getDrawAndGuessLobbyRoomInfo);
         // Notify the current client that the room has been created
         socket.emit('createDrawAndGuessRoomSuccess', getDrawAndGuessLobbyRoomInfo(newDrawAndGuessRoom), password);

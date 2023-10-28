@@ -16,7 +16,6 @@ const lobbyEventsHandler = (
     drawAndGuessDetailRoomInfoList: Record<string, DrawAndGuessDetailRoomInfo>,
 ) => {
     socket.on('clientJoinDrawAndGuessLobby', () => {
-        console.log('client: ' + socket.id + ' joined draw and guess lobby');
         const drawAndGuessLobbySimplifiedRoomList = Object.values(
             drawAndGuessDetailRoomInfoList,
         ).map(getDrawAndGuessLobbyRoomInfo);
@@ -64,8 +63,6 @@ const lobbyEventsHandler = (
             };
 
             drawAndGuessDetailRoomInfoList[roomId] = newDrawAndGuessRoom;
-
-            console.log('new room created', newDrawAndGuessRoom);
 
             const drawAndGuessLobbySimplifiedRoomList = Object.values(
                 drawAndGuessDetailRoomInfoList,
