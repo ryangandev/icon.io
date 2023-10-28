@@ -56,6 +56,13 @@ const GameEventsHandler = (io, socket, drawAndGuessDetailRoomInfoList) => {
             currentRoom.isWordSelectingPhase = false;
             currentRoom.isDrawingPhase = true;
             currentRoom.wordChoices = []; // Empty the word choices after the drawer has selected a word
+            console.log('In room ' +
+                roomId +
+                ', drawer ' +
+                currentRoom.currentDrawer +
+                ' has selected the word ' +
+                word +
+                '.');
             // Notify all clients in the room that the drawer has selected a word and drawing phase has started
             io.to(roomId).emit('drawingPhaseStarted', {
                 currentWordHint: currentRoom.currentWordHint,

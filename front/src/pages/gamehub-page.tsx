@@ -17,20 +17,17 @@ const GamehubPage: FC = () => {
         if (!username) return;
 
         if (socket.connected) {
-            console.log(
-                'socket is currently connected; connected socket id is: ',
-                socket.id,
-            );
+            console.log('Socket is currently connected');
         } else {
-            console.log('socket is not connected, trying to connect...');
+            console.log('Socket is not connected, trying to connect...');
             try {
                 socket.connect();
                 socket.on('connect', () => {
                     toast.success(`Welcome, ${username}!`);
-                    console.log('connected, socket id is: ', socket.id);
+                    console.log('Socket successfully connected!');
                 });
             } catch (err) {
-                console.log('error connecting socket: ', err);
+                console.log('Error connecting socket: ', err);
             }
         }
 
@@ -51,9 +48,9 @@ const GamehubPage: FC = () => {
 
     const handleLogout = () => {
         sessionStorage.removeItem('username');
-        console.log('logging out, disconnecting socket...');
+        console.log('Logging out, disconnecting socket...');
         socket.disconnect();
-        console.log('socket disconnected is: ', socket.disconnected);
+        console.log('Socket disconnected is: ', socket.disconnected);
         navigate('/Landing');
         toast.success('Logged out successfully!');
     };

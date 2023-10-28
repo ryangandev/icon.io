@@ -13,10 +13,6 @@ const clientDepartureOnDisconnectHandler = (
             console.log('client: ' + socket.id + ' disconnected');
             // Go through all rooms that the disconnecting socket is in and remove the it from them
             const roomsSocketIsIn = socketInRooms[socket.id] || new Set();
-            console.log(
-                'rooms socket is in before disconnection: ',
-                roomsSocketIsIn,
-            );
 
             roomsSocketIsIn.forEach((roomId) => {
                 const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
@@ -50,8 +46,6 @@ const clientDepartureOnDisconnectHandler = (
                             currentRoom.isGameStarted,
                         );
                     }
-
-                    console.log('current room info: ', currentRoom);
 
                     const drawAndGuessLobbySimplifiedRoomList = Object.values(
                         drawAndGuessDetailRoomInfoList,

@@ -296,6 +296,7 @@ const DrawAndGuessRoom = () => {
                 clearTimeout(drawingPhaseTimeoutId.current);
             }
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket]);
 
     useEffect(() => {

@@ -38,7 +38,7 @@ const lobbyEventsHandler = (io, socket, drawAndGuessDetailRoomInfoList) => {
         drawAndGuessDetailRoomInfoList[roomId] = newDrawAndGuessRoom;
         const drawAndGuessLobbySimplifiedRoomList = Object.values(drawAndGuessDetailRoomInfoList).map(getDrawAndGuessLobbyRoomInfo);
         // Notify the current client that the room has been created
-        socket.emit('createDrawAndGuessRoomSuccess', getDrawAndGuessLobbyRoomInfo(newDrawAndGuessRoom), password);
+        socket.emit('createDrawAndGuessRoomSuccess', newDrawAndGuessRoom.roomId, password);
         // Notify all clients in the lobby that a new room has been created
         io.emit('updateDrawAndGuessLobbyRoomList', drawAndGuessLobbySimplifiedRoomList);
     });

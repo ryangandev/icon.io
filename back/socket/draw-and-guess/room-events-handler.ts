@@ -62,7 +62,6 @@ const roomEventsHandler = (
                     socketInRooms[socket.id] = new Set();
                 }
                 socketInRooms[socket.id].add(roomId);
-                console.log('socket in rooms: ', socketInRooms);
 
                 const drawAndGuessLobbySimplifiedRoomList = Object.values(
                     drawAndGuessDetailRoomInfoList,
@@ -162,7 +161,6 @@ const roomEventsHandler = (
 
                 socket.leave(roomId);
                 socketInRooms[socket.id].delete(roomId);
-                console.log('socket in rooms: ', socketInRooms);
 
                 const drawAndGuessLobbySimplifiedRoomList = Object.values(
                     drawAndGuessDetailRoomInfoList,

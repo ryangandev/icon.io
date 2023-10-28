@@ -71,7 +71,7 @@ const lobbyEventsHandler = (
             // Notify the current client that the room has been created
             socket.emit(
                 'createDrawAndGuessRoomSuccess',
-                getDrawAndGuessLobbyRoomInfo(newDrawAndGuessRoom),
+                newDrawAndGuessRoom.roomId,
                 password,
             );
 

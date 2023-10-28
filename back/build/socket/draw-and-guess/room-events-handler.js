@@ -33,7 +33,6 @@ const roomEventsHandler = (io, socket, drawAndGuessDetailRoomInfoList, socketInR
                 socketInRooms[socket.id] = new Set();
             }
             socketInRooms[socket.id].add(roomId);
-            console.log('socket in rooms: ', socketInRooms);
             const drawAndGuessLobbySimplifiedRoomList = Object.values(drawAndGuessDetailRoomInfoList).map(getDrawAndGuessLobbyRoomInfo);
             // Notify the current client that they will be joining the room
             socket.emit('approveClientJoinDrawAndGuessRoomRequest', roomId);
@@ -92,7 +91,6 @@ const roomEventsHandler = (io, socket, drawAndGuessDetailRoomInfoList, socketInR
             }
             socket.leave(roomId);
             socketInRooms[socket.id].delete(roomId);
-            console.log('socket in rooms: ', socketInRooms);
             const drawAndGuessLobbySimplifiedRoomList = Object.values(drawAndGuessDetailRoomInfoList).map(getDrawAndGuessLobbyRoomInfo);
             // Notify all clients in the room that a client has left
             io.to(roomId).emit('clientLeaveDrawAndGuessRoomSuccess', currentRoom);

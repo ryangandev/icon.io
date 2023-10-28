@@ -31,26 +31,16 @@ const DrawAndGuessLobby = () => {
         socket.emit('clientJoinDrawAndGuessLobby');
 
         socket.on('updateDrawAndGuessLobbyRoomList', (rooms: RoomInfo[]) => {
-            console.log(
-                'updateDrawAndGuessLobbyRoomList event received! Current Rooms are: ',
-                rooms,
-            );
             setRoomList(rooms);
         });
 
         socket.on(
             'createDrawAndGuessRoomSuccess',
-            (room: RoomInfo, password: string) => {
-                console.log(
-                    'createDrawAndGuessRoomSuccess event received! Room is: ',
-                    room,
-                    ' and password is: ',
-                    password,
-                );
+            (roomId: string, password: string) => {
                 setcreateRoomRequestLoading(false);
                 socket.emit(
                     'clientJoinDrawAndGuessRoomRequest',
-                    room.roomId,
+                    roomId,
                     username,
                     password,
                 );
@@ -86,11 +76,6 @@ const DrawAndGuessLobby = () => {
     }, [socket, username, navigate]);
 
     const onCreate = (drawAndGuessRoomCreateRequest: RoomCreateRequestBody) => {
-        console.log(
-            'Received values from form: ',
-            drawAndGuessRoomCreateRequest,
-        );
-
         socket.emit(
             'createDrawAndGuessRoomRequest',
             drawAndGuessRoomCreateRequest,
