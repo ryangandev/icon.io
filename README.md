@@ -19,6 +19,19 @@ Icon.io is an evolved version of my original project, [**Icon**](https://github.
 
 See [`docs/ANALYSIS.md`](docs/ANALYSIS.md) for a feature inventory, known issues, and the roadmap.
 
+## ✅ Checks
+
+The two applications keep their own dependencies, but linting, type-checking, tests and the build all run from the repository root:
+
+```zsh
+npm ci && npm run install:all
+npm run verify
+```
+
+`verify` is lint → typecheck → test → build, which is exactly what CI runs on every pull request. The individual steps are `npm run lint`, `npm run typecheck`, `npm test` and `npm run build`.
+
+Linting is a root-level command with one shared config, [`.oxlintrc.json`](.oxlintrc.json), covering both packages.
+
 ## 🛠️ How To Run - Development
 
 Icon.io is built using React for the frontend and Node.js for the backend, each located within its respective directory: `front` and `back`. To run the app in development, follow the instructions provided below.

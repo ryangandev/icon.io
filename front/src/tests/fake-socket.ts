@@ -68,11 +68,11 @@ const createFakeSocket = ({
             return socket;
         },
 
-        connect: vi.fn(() => {
+        connect: vi.fn<() => void>(() => {
             socket.connected = true;
         }),
 
-        disconnect: vi.fn(() => {
+        disconnect: vi.fn<() => void>(() => {
             socket.connected = false;
         }),
 
