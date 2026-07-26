@@ -305,10 +305,23 @@ const DrawAndGuessRoom = () => {
   // them: by the time the server hears this, we are ready for the reply.
   // The join broadcast is sent while this page is still navigating, so
   // asking once mounted is what makes arriving in a room deterministic.
+  //
+  // Asked again on every reconnect. socket.io reopens a dropped connection by
+  // itself, without reloading the page, and the reply is what carries the
+  // drawing and — for the drawer — the word: both are sent to one socket, and
+  // the socket that received them is gone.
   useEffect(() => {
-    if (roomId) {
+    if (!roomId) return;
+
+    const askForState = () =>
       socket.emit('requestDrawAndGuessRoomState', roomId);
-    }
+
+    socket.on('connect', askForState);
+    if (socket.connected) askForState();
+
+    return () => {
+      socket.off('connect', askForState);
+    };
   }, [socket, roomId]);
 
   useEffect(() => {

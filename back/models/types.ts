@@ -38,6 +38,28 @@ interface RoomInfo {
   password: string;
 }
 
+interface Coordinate {
+  x: number;
+  y: number;
+}
+
+/** One continuous line, from mouse-down to mouse-up. */
+interface CanvasStroke {
+  color: string;
+  size: number;
+  points: Coordinate[];
+}
+
+/**
+ * The room's drawing, in the same replayable form every client holds it in.
+ * `pointCount` is a running total so the size cap is an O(1) check rather than
+ * a walk of the whole drawing on every point.
+ */
+interface RoomCanvas {
+  strokes: CanvasStroke[];
+  pointCount: number;
+}
+
 /**
  * Everything below is keyed by player id rather than socket id. A socket id
  * changes on every reload; a player id does not, which is what lets a seat, a
@@ -57,6 +79,10 @@ interface DrawAndGuessDetailRoomInfo extends RoomInfo {
   wordCategory: WordCategory | ''; // '' when no game is in progress
   wordChoices: string[];
   phaseEndsAt: number; // epoch ms the current phase ends; 0 when idle
+  // Sent to arrivals on its own rather than with the room snapshot: a snapshot
+  // goes out every time anyone joins or leaves, and the drawing is the largest
+  // thing in the room.
+  canvas: RoomCanvas;
 }
 
 /**
@@ -104,6 +130,9 @@ export type {
   OwnerInfo,
   RoomCreateRequestBody,
   RoomInfo,
+  Coordinate,
+  CanvasStroke,
+  RoomCanvas,
   DrawAndGuessDetailRoomInfo,
   LobbyRoomInfo,
   DrawAndGuessRoomState,

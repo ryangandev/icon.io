@@ -11,6 +11,7 @@ import {
   resetReceivedPointsThisTurn,
 } from '../libs/utils.js';
 import type { DrawAndGuessDetailRoomInfo } from '../models/types.js';
+import { createRoomCanvas } from '../socket/draw-and-guess/canvas.js';
 
 const makeRoom = (
   overrides: Partial<DrawAndGuessDetailRoomInfo> = {},
@@ -43,6 +44,7 @@ const makeRoom = (
   wordCategory: '',
   wordChoices: [],
   phaseEndsAt: 0,
+  canvas: createRoomCanvas(),
   ...overrides,
 });
 

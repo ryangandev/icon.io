@@ -19,10 +19,19 @@ import {
 } from '../../libs/game-clock.js';
 import type { PlayerSessionRegistry } from '../../libs/player-session.js';
 import { wordBank } from '../../libs/word-bank.js';
+import { clearCanvas } from './canvas.js';
 
 const MIN_PLAYERS_TO_START = 2;
 const WORD_CHOICE_COUNT = 3;
 const SYSTEM = '📢 System';
+
+/**
+ * How long a turn waits for a drawer whose connection dropped mid-drawing,
+ * before giving up and moving on. A reload takes about a second; this is the
+ * bound on how long everyone else stares at a frozen canvas if they were not
+ * reloading but leaving.
+ */
+const DEFAULT_DRAWER_HOLD_SECONDS = 10;
 
 const roomError = (message: string, errorType: ErrorType): CustomError => {
   const error = new Error(message) as CustomError;
@@ -54,6 +63,10 @@ const createDrawAndGuessGameEngine = (
   phaseDurationsInSeconds: PhaseDurationsInSeconds = defaultPhaseDurations,
 ) => {
   const phaseTimers = new Map<string, NodeJS.Timeout>();
+  /** How long a room is still waiting for a drawer who dropped, keyed by room. */
+  const drawerHoldTimers = new Map<string, NodeJS.Timeout>();
+  const drawerHoldInSeconds =
+    phaseDurationsInSeconds.drawerHold ?? DEFAULT_DRAWER_HOLD_SECONDS;
 
   /**
    * Sends to whichever socket a player is currently using. Room state is keyed
@@ -73,6 +86,14 @@ const createDrawAndGuessGameEngine = (
     if (pending) {
       clearTimeout(pending);
       phaseTimers.delete(roomId);
+    }
+  };
+
+  const clearDrawerHold = (roomId: string) => {
+    const pending = drawerHoldTimers.get(roomId);
+    if (pending) {
+      clearTimeout(pending);
+      drawerHoldTimers.delete(roomId);
     }
   };
 
@@ -172,6 +193,9 @@ const createDrawAndGuessGameEngine = (
   };
 
   const startNewDrawerTurn = (room: DrawAndGuessDetailRoomInfo) => {
+    // The server's copy of the drawing is wiped exactly where every client
+    // wipes theirs, which is what keeps the two the same thing.
+    clearCanvas(room.canvas);
     io.to(room.roomId).emit('drawerClear');
     room.playerList = resetReceivedPointsThisTurn(room.playerList);
 
@@ -278,6 +302,7 @@ const createDrawAndGuessGameEngine = (
 
   const endTurn = (room: DrawAndGuessDetailRoomInfo) => {
     clearPhaseTimer(room.roomId);
+    clearDrawerHold(room.roomId);
 
     room.isWordSelectingPhase = false;
     room.isDrawingPhase = false;
@@ -311,6 +336,7 @@ const createDrawAndGuessGameEngine = (
 
   const endGame = (room: DrawAndGuessDetailRoomInfo) => {
     clearPhaseTimer(room.roomId);
+    clearDrawerHold(room.roomId);
 
     room.currentRound = 0;
     room.isGameStarted = false;
@@ -373,30 +399,88 @@ const createDrawAndGuessGameEngine = (
   /**
    * The drawer's connection dropped, but they keep their seat.
    *
-   * The turn does not wait for them. A drawer who is not there cannot draw, and
-   * holding a whole room still for the length of the reconnect grace would cost
-   * everyone else far more than it saves the one player — especially as the
-   * canvas is not yet synced server-side, so even a fast return would find a
-   * blank board. They keep their score and their place in the room; they lose
-   * this turn.
+   * This used to end the turn on the spot, and it had to: the canvas lived only
+   * in the clients' memory, so even a drawer who came back a second later would
+   * have found a blank board and nothing worth returning to. The drawing is on
+   * the server now, so the turn is worth holding briefly — a reload takes about
+   * a second, and it comes back to the same board with the same clock still
+   * running.
+   *
+   * Briefly, though. Nothing has been invested in a turn whose word has not
+   * been chosen yet, and an absent drawer will not be choosing one, so that
+   * case is still skipped at once. A turn already under way waits, but only for
+   * `drawerHoldInSeconds` — long enough for a refresh, short enough that a room
+   * whose drawer has actually gone is not left staring at a frozen canvas.
    */
-  const skipTurnOfAbsentDrawer = (
+  const handleDrawerDisconnect = (
     room: DrawAndGuessDetailRoomInfo,
     playerId: string,
   ) => {
     if (!room.isGameStarted) return;
     if (room.currentDrawer !== playerId) return;
 
-    announce(
-      room.roomId,
-      'The drawer lost connection. Skipping to the next turn.',
+    if (room.isWordSelectingPhase) {
+      announce(
+        room.roomId,
+        'The drawer lost connection. Skipping to the next turn.',
+      );
+      endTurn(room);
+      return;
+    }
+
+    // The reveal needs nobody in particular; it runs itself out.
+    if (!room.isDrawingPhase) return;
+
+    // Never outlast the phase it is holding open.
+    const holdInSeconds = Math.min(
+      drawerHoldInSeconds,
+      getRemainingPhaseMs(room) / 1000,
     );
-    endTurn(room);
+
+    clearDrawerHold(room.roomId);
+    drawerHoldTimers.set(
+      room.roomId,
+      setTimeout(() => {
+        drawerHoldTimers.delete(room.roomId);
+
+        // They may have come back, left properly, or had the turn end under
+        // them in the time we spent waiting.
+        const current = rooms[room.roomId];
+        if (!current) return;
+        if (current.currentDrawer !== playerId) return;
+        if (current.playerList[playerId]?.isConnected) return;
+
+        announce(
+          current.roomId,
+          'The drawer did not come back. Skipping to the next turn.',
+        );
+        endTurn(current);
+      }, holdInSeconds * 1000),
+    );
   };
 
-  /** Drops a room's pending timer when the room itself is deleted. */
+  /**
+   * They came back inside the hold, so the turn is theirs again.
+   *
+   * What only the drawer knows — the word, the canvas — is not re-sent here:
+   * this runs during the identity handshake, before the room page has mounted
+   * and subscribed. The page asks for it, in `room-events-handler.ts`.
+   */
+  const handleDrawerReturn = (
+    room: DrawAndGuessDetailRoomInfo,
+    playerId: string,
+  ) => {
+    if (room.currentDrawer !== playerId) return;
+    if (!drawerHoldTimers.has(room.roomId)) return;
+
+    clearDrawerHold(room.roomId);
+    announce(room.roomId, 'The drawer is back. Carry on!');
+  };
+
+  /** Drops a room's pending timers when the room itself is deleted. */
   const disposeRoom = (roomId: string) => {
     clearPhaseTimer(roomId);
+    clearDrawerHold(roomId);
   };
 
   /**
@@ -419,7 +503,8 @@ const createDrawAndGuessGameEngine = (
     startGame,
     selectWord,
     handlePlayerDeparture,
-    skipTurnOfAbsentDrawer,
+    handleDrawerDisconnect,
+    handleDrawerReturn,
     disposeRoom,
   };
 };

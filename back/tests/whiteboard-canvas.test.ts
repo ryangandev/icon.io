@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { Socket } from 'socket.io-client';
+import type { CanvasStroke } from '../models/types.js';
 import {
   collect,
   createRoom,
@@ -13,6 +14,16 @@ import {
 
 const RED = '#ff0000';
 const DOT = { x: 10, y: 20 };
+
+/** What the server would hand somebody arriving in this room right now. */
+const canvasSeenOnArrival = (
+  client: Socket,
+  roomId: string,
+): Promise<CanvasStroke[]> => {
+  const synced = waitFor<CanvasStroke[]>(client, 'syncWhiteboardCanvas');
+  client.emit('requestDrawAndGuessRoomState', roomId);
+  return synced;
+};
 
 describe('the whiteboard relay', () => {
   let harness: TestServer;
@@ -122,6 +133,103 @@ describe('the whiteboard relay', () => {
     await settle();
 
     expect(relayed).toEqual([]);
+  });
+});
+
+/*
+ * The drawing used to live only in each client's memory: the server relayed
+ * stroke events and kept none of them, so anyone arriving after a stroke was
+ * drawn sat in front of an empty board until the drawer happened to draw again.
+ */
+describe('the stored drawing', () => {
+  let harness: TestServer;
+
+  beforeEach(async () => {
+    harness = await startTestServer({
+      wordSelecting: 0.2,
+      drawing: 5,
+      reviewing: 0.2,
+    });
+  });
+
+  afterEach(async () => {
+    await harness.teardown();
+  });
+
+  /*
+   * A room in progress is closed to new players, so the arrival this matters
+   * for is a player who is already in the room and whose page has just
+   * (re)mounted — a reload, or a navigation back into the room.
+   */
+  it('hands the drawing so far to a player arriving mid-turn', async () => {
+    const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
+
+    drawer.emit('startDrawing', roomId, { x: 1, y: 2 }, RED, 4);
+    drawer.emit('continueDrawing', roomId, { x: 3, y: 4 }, RED, 4);
+    drawer.emit('stopDrawing', roomId);
+    drawer.emit('startDrawing', roomId, { x: 9, y: 9 }, '#0000ff', 10);
+    await settle();
+
+    expect(await canvasSeenOnArrival(guesser, roomId)).toEqual([
+      {
+        color: RED,
+        size: 4,
+        points: [
+          { x: 1, y: 2 },
+          { x: 3, y: 4 },
+        ],
+      },
+      { color: '#0000ff', size: 10, points: [{ x: 9, y: 9 }] },
+    ]);
+  });
+
+  it('drops the last stroke on undo, and all of them on clear', async () => {
+    const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
+
+    drawer.emit('startDrawing', roomId, { x: 1, y: 1 }, RED, 4);
+    drawer.emit('startDrawing', roomId, { x: 2, y: 2 }, RED, 4);
+    drawer.emit('undo', roomId);
+    await settle();
+
+    expect(await canvasSeenOnArrival(guesser, roomId)).toEqual([
+      { color: RED, size: 4, points: [{ x: 1, y: 1 }] },
+    ]);
+
+    drawer.emit('clear', roomId);
+    await settle();
+
+    expect(await canvasSeenOnArrival(guesser, roomId)).toEqual([]);
+  });
+
+  it('starts every turn with a blank canvas', async () => {
+    const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
+
+    drawer.emit('startDrawing', roomId, { x: 1, y: 1 }, RED, 4);
+    await settle();
+    expect(await canvasSeenOnArrival(guesser, roomId)).toHaveLength(1);
+
+    // Wait out this turn; the next one clears the board for everybody.
+    await waitFor(guesser, 'drawingPhaseStarted', 9000);
+
+    expect(await canvasSeenOnArrival(guesser, roomId)).toEqual([]);
+  });
+
+  /*
+   * The stored drawing is built from the same events the relay broadcasts, in
+   * the same place, so an event that is refused reaches neither.
+   */
+  it('does not record a stroke it refused to relay', async () => {
+    const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
+    const outsider = await harness.connect();
+
+    outsider.emit('startDrawing', roomId, { x: 1, y: 1 }, RED, 4);
+    guesser.emit('startDrawing', roomId, { x: 2, y: 2 }, RED, 4);
+    // A continue with no stroke of its own to extend cannot have come from a
+    // canvas, and replaying it would draw from wherever the last path ended.
+    drawer.emit('continueDrawing', roomId, { x: 3, y: 3 }, RED, 4);
+    await settle();
+
+    expect(await canvasSeenOnArrival(guesser, roomId)).toEqual([]);
   });
 });
 

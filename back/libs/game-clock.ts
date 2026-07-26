@@ -25,12 +25,19 @@ interface PhaseDurationsInSeconds {
   wordSelecting: number;
   drawing: number;
   reviewing: number;
+  /**
+   * How long a turn waits for a drawer whose connection dropped mid-drawing.
+   * Optional because it is not a phase: the engine falls back to its own
+   * default, and a test that only cares about phase lengths need not name it.
+   */
+  drawerHold?: number;
 }
 
 const phaseDurationsInSeconds: PhaseDurationsInSeconds = {
   wordSelecting: readSecondsFromEnv('WORD_SELECT_SECONDS', 15),
   drawing: readSecondsFromEnv('DRAWING_SECONDS', 90),
   reviewing: readSecondsFromEnv('REVIEW_SECONDS', 10),
+  drawerHold: readSecondsFromEnv('DRAWER_HOLD_SECONDS', 10),
 };
 
 /**

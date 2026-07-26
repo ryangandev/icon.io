@@ -7,6 +7,12 @@ import {
   roomIdOnly,
   startDrawingRequest,
 } from '../../libs/validation.js';
+import {
+  beginStroke,
+  clearCanvas,
+  extendStroke,
+  undoStroke,
+} from './canvas.js';
 
 /**
  * The canvas relay.
@@ -27,23 +33,34 @@ const whiteboardCanvasEventHandler = (
   rooms: Record<string, DrawAndGuessDetailRoomInfo>,
   sessions: PlayerSessionRegistry,
 ) => {
-  const holdsThePencil = (roomId: string): boolean => {
+  /**
+   * The room this socket may currently draw in, or null. Returns the room
+   * itself because every event below goes on to record itself in that room's
+   * canvas — the stored drawing and the relayed one are built from the same
+   * events, in the same place, so they cannot drift apart.
+   */
+  const pencilRoomOf = (roomId: string): DrawAndGuessDetailRoomInfo | null => {
     // Identity comes from the connection, never from the payload.
     const playerId = sessions.playerIdFor(socket.id);
-    if (!playerId) return false;
+    if (!playerId) return null;
 
     const room = rooms[roomId];
-    if (!room) return false;
-    if (!room.playerList[playerId]) return false; // not in this room
-    if (room.currentDrawer !== playerId) return false; // not their turn
-    return room.isDrawingPhase; // and not before or after it
+    if (!room) return null;
+    if (!room.playerList[playerId]) return null; // not in this room
+    if (room.currentDrawer !== playerId) return null; // not their turn
+    if (!room.isDrawingPhase) return null; // and not before or after it
+
+    return room;
   };
 
   socket.on('startDrawing', (...rawArgs: unknown[]) => {
     const validated = parseArgs(startDrawingRequest, rawArgs, 'startDrawing');
     if (!validated) return;
     const [roomId, coords, color, size] = validated;
-    if (!holdsThePencil(roomId)) return;
+
+    const room = pencilRoomOf(roomId);
+    if (!room) return;
+    if (!beginStroke(room.canvas, color, size, coords)) return;
 
     socket.broadcast.to(roomId).emit('drawerStartDrawing', coords, color, size);
   });
@@ -56,7 +73,10 @@ const whiteboardCanvasEventHandler = (
     );
     if (!validated) return;
     const [roomId, coords, color, size] = validated;
-    if (!holdsThePencil(roomId)) return;
+
+    const room = pencilRoomOf(roomId);
+    if (!room) return;
+    if (!extendStroke(room.canvas, coords)) return;
 
     socket.broadcast
       .to(roomId)
@@ -67,7 +87,10 @@ const whiteboardCanvasEventHandler = (
     const validated = parseArgs(roomIdOnly, rawArgs, 'stopDrawing');
     if (!validated) return;
     const [roomId] = validated;
-    if (!holdsThePencil(roomId)) return;
+
+    // Nothing to record: a stroke is complete as soon as its last point
+    // arrives. The event exists so a client can close its path.
+    if (!pencilRoomOf(roomId)) return;
 
     socket.broadcast.to(roomId).emit('drawerStopDrawing');
   });
@@ -79,7 +102,10 @@ const whiteboardCanvasEventHandler = (
     const validated = parseArgs(roomIdOnly, rawArgs, 'undo');
     if (!validated) return;
     const [roomId] = validated;
-    if (!holdsThePencil(roomId)) return;
+
+    const room = pencilRoomOf(roomId);
+    if (!room) return;
+    undoStroke(room.canvas);
 
     socket.broadcast.to(roomId).emit('drawerUndo');
   });
@@ -88,7 +114,10 @@ const whiteboardCanvasEventHandler = (
     const validated = parseArgs(roomIdOnly, rawArgs, 'clear');
     if (!validated) return;
     const [roomId] = validated;
-    if (!holdsThePencil(roomId)) return;
+
+    const room = pencilRoomOf(roomId);
+    if (!room) return;
+    clearCanvas(room.canvas);
 
     socket.broadcast.to(roomId).emit('drawerClear');
   });

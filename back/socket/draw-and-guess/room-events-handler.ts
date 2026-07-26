@@ -166,6 +166,23 @@ const roomEventsHandler = (
       'clientJoinDrawAndGuessRoomSuccess',
       getDrawAndGuessRoomState(currentRoom),
     );
+
+    // Whatever has been drawn so far, to this socket alone. A joiner, a player
+    // returning from a reload and a drawer resuming their own turn all arrive
+    // through here, and all three used to find a blank board.
+    socket.emit('syncWhiteboardCanvas', currentRoom.canvas.strokes);
+
+    // The word is drawer-private, so the snapshot omits it while it is in
+    // play. A drawer who reloads lost their copy of it along with the page,
+    // and cannot draw a word they can no longer see — so send it again, to
+    // them alone, at the one moment their listeners are known to be live.
+    if (currentRoom.currentDrawer === playerId) {
+      if (currentRoom.isWordSelectingPhase) {
+        socket.emit('drawerReceiveWordChoices', currentRoom.wordChoices);
+      } else if (currentRoom.isDrawingPhase) {
+        socket.emit('drawingPhaseStartedForDrawer', currentRoom.currentWord);
+      }
+    }
   });
 
   socket.on('clientLeaveDrawAndGuessRoom', (...rawArgs: unknown[]) => {

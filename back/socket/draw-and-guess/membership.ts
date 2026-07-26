@@ -188,8 +188,9 @@ const createRoomMembership = (
       );
       announce(room.roomId, `${player.username} lost connection.`);
 
-      // The seat waits for them; the turn does not.
-      gameEngine.skipTurnOfAbsentDrawer(room, playerId);
+      // The seat waits for them. So, briefly, does their turn — the drawing is
+      // kept server-side now, so there is something to come back to.
+      gameEngine.handleDrawerDisconnect(room, playerId);
 
       const key = graceKey(room.roomId, playerId);
       graceTimers.set(
@@ -235,6 +236,9 @@ const createRoomMembership = (
         getDrawAndGuessRoomState(room),
       );
       announce(room.roomId, `${player.username} reconnected.`);
+
+      // If the room was holding a turn open for them, it can stop.
+      gameEngine.handleDrawerReturn(room, playerId);
     }
 
     emitLobby();
