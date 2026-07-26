@@ -10,6 +10,15 @@
 
 Icon.io is an evolved version of my original project, [**Icon**](https://github.com/ryangandev/icon.io/tree/old-version), initially built as my final project for a Web Development class in a team of three at Drexel University. This refined version retains the same core technologies as the original, while incorporating bug fixes and adhering to best practices.
 
+## 🧱 Stack
+
+| Layer    | Tech                                                         |
+| -------- | ------------------------------------------------------------ |
+| Frontend | React 19 · TypeScript 7 · Vite 8 · Ant Design 6 · Socket.io   |
+| Backend  | Node.js 20+ · TypeScript 7 · Express 5 · Socket.io           |
+
+See [`docs/ANALYSIS.md`](docs/ANALYSIS.md) for a feature inventory, known issues, and the roadmap.
+
 ## 🛠️ How To Run - Development
 
 Icon.io is built using React for the frontend and Node.js for the backend, each located within its respective directory: `front` and `back`. To run the app in development, follow the instructions provided below.
