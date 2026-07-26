@@ -29,11 +29,11 @@ const username = trimmedString(USERNAME_MAX);
 const password = z.string().max(PASSWORD_MAX).optional().default('');
 
 const roomCreateRequest = z.object({
-    roomName: trimmedString(ROOM_NAME_MAX),
-    ownerUsername: username,
-    maxPlayers: z.number().int().min(2).max(8),
-    rounds: z.number().int().min(1).max(4),
-    password: password,
+  roomName: trimmedString(ROOM_NAME_MAX),
+  ownerUsername: username,
+  maxPlayers: z.number().int().min(2).max(8),
+  rounds: z.number().int().min(1).max(4),
+  password: password,
 });
 
 const joinRoomRequest = z.tuple([roomId, username, password]);
@@ -44,20 +44,25 @@ const chatRequest = z.tuple([roomId, username, trimmedString(MESSAGE_MAX)]);
 
 // The canvas is a fixed 798x598; allow a small margin for rounding at the edges.
 const coordinate = z.object({
-    x: z.number().finite().min(-10).max(1000),
-    y: z.number().finite().min(-10).max(1000),
+  x: z.number().finite().min(-10).max(1000),
+  y: z.number().finite().min(-10).max(1000),
 });
 const brushColor = z.string().regex(/^#[0-9a-fA-F]{3,8}$/);
 const brushSize = z.number().finite().min(1).max(100);
 
 // A stroke is described in full from its first point, so any client can replay
 // it without waiting to learn the colour from a later event.
-const startDrawingRequest = z.tuple([roomId, coordinate, brushColor, brushSize]);
+const startDrawingRequest = z.tuple([
+  roomId,
+  coordinate,
+  brushColor,
+  brushSize,
+]);
 const continueDrawingRequest = z.tuple([
-    roomId,
-    coordinate,
-    brushColor,
-    brushSize,
+  roomId,
+  coordinate,
+  brushColor,
+  brushSize,
 ]);
 
 /**
@@ -66,32 +71,32 @@ const continueDrawingRequest = z.tuple([
  * produce them, and echoing details back only helps someone probing the API.
  */
 const parseArgs = <T>(
-    schema: z.ZodType<T>,
-    args: unknown,
-    eventName: string,
+  schema: z.ZodType<T>,
+  args: unknown,
+  eventName: string,
 ): T | null => {
-    const result = schema.safeParse(args);
+  const result = schema.safeParse(args);
 
-    if (!result.success) {
-        console.warn(
-            `Rejected "${eventName}": ${result.error.issues
-                .map((issue) => `${issue.path.join('.') || '(root)'} ${issue.message}`)
-                .join('; ')}`,
-        );
-        return null;
-    }
+  if (!result.success) {
+    console.warn(
+      `Rejected "${eventName}": ${result.error.issues
+        .map((issue) => `${issue.path.join('.') || '(root)'} ${issue.message}`)
+        .join('; ')}`,
+    );
+    return null;
+  }
 
-    return result.data;
+  return result.data;
 };
 
 export {
-    parseArgs,
-    roomCreateRequest,
-    joinRoomRequest,
-    leaveRoomRequest,
-    roomIdOnly,
-    selectWordRequest,
-    chatRequest,
-    startDrawingRequest,
-    continueDrawingRequest,
+  parseArgs,
+  roomCreateRequest,
+  joinRoomRequest,
+  leaveRoomRequest,
+  roomIdOnly,
+  selectWordRequest,
+  chatRequest,
+  startDrawingRequest,
+  continueDrawingRequest,
 };

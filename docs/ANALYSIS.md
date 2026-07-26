@@ -24,7 +24,8 @@ happens over Socket.io. Server state lives in two module-level objects in
 [`back/server.ts`](../back/server.ts):
 
 ```ts
-let drawAndGuessDetailRoomInfoList: Record<string, DrawAndGuessDetailRoomInfo> = {};
+let drawAndGuessDetailRoomInfoList: Record<string, DrawAndGuessDetailRoomInfo> =
+  {};
 let socketInRooms: Record<string, Set<string>> = {};
 ```
 
@@ -33,15 +34,15 @@ reasonable trade — it just needs to be a conscious one.
 
 **Handler layout** (`back/socket/draw-and-guess/`):
 
-| File                                  | Responsibility                                    |
-| ------------------------------------- | ------------------------------------------------- |
-| `game-engine.ts`                      | The turn state machine and the phase clock        |
-| `lobby-events-handler.ts`             | List rooms, create room                           |
-| `room-events-handler.ts`              | Join / leave, ownership transfer                  |
-| `game-events-handler.ts`              | Socket glue over the engine                       |
-| `chat-events-handler.ts`              | Chat messages and guess checking                  |
-| `whiteboard-canvas-events-handler.ts` | Relay draw / undo / clear events                  |
-| `../client-disconnect-handler.ts`     | Cleanup on disconnect                             |
+| File                                  | Responsibility                             |
+| ------------------------------------- | ------------------------------------------ |
+| `game-engine.ts`                      | The turn state machine and the phase clock |
+| `lobby-events-handler.ts`             | List rooms, create room                    |
+| `room-events-handler.ts`              | Join / leave, ownership transfer           |
+| `game-events-handler.ts`              | Socket glue over the engine                |
+| `chat-events-handler.ts`              | Chat messages and guess checking           |
+| `whiteboard-canvas-events-handler.ts` | Relay draw / undo / clear events           |
+| `../client-disconnect-handler.ts`     | Cleanup on disconnect                      |
 
 **The server is authoritative.** This is the main structural change from the
 original design, and it is worth stating plainly because everything else follows
@@ -132,7 +133,11 @@ list, and that list is `io.emit`-ed to every connected client. Any client that
 opened the lobby received every room's password:
 
 ```json
-{ "roomName": "Secret Room", "status": "Open", "password": "hunter2-SUPERSECRET" }
+{
+  "roomName": "Secret Room",
+  "status": "Open",
+  "password": "hunter2-SUPERSECRET"
+}
 ```
 
 The frontend only ever used the field as a boolean, to pick a 🔒 or 🔓 icon.
@@ -145,7 +150,7 @@ guessing, on every leave event during a turn.
 **Fixed** by introducing explicit wire types and routing every emit through a
 builder. The lobby summary carries `hasPassword: boolean`; the room snapshot
 drops `password` and omits `currentWord`/`wordChoices` while the word is in play.
-They are *omitted* rather than blanked, so the client's merge does not clobber
+They are _omitted_ rather than blanked, so the client's merge does not clobber
 the drawer's own copy. The server also no longer echoes the password back to the
 room's creator, and no longer logs the room object.
 
@@ -203,7 +208,7 @@ answered.
 Two things this turned up. The first attempt used `.catch('')` for the optional
 password, which substitutes the default on failure — so an over-long password
 created a room the requester believed was locked and that was actually open.
-And `getRandomChoicesFromList()` loops until it has N *distinct* indexes, so a
+And `getRandomChoicesFromList()` loops until it has N _distinct_ indexes, so a
 word-bank category with fewer than three entries would have spun forever.
 
 _Verified:_ ten malformed room requests, a burst of room-scoped events with a
@@ -328,21 +333,21 @@ above; it is a real UX bug and small to fix.
 
 ## 4. Modernization: what changed
 
-| | Before | After |
-| --- | --- | --- |
-| Build (front) | react-scripts 5.0.1 (CRA, deprecated) | **Vite 8** |
-| React | 18.2 | **19.2** |
-| Ant Design | 5.9 | **6.5** |
-| Router | react-router-dom 6.8 | **react-router 8.3** |
-| TypeScript | 4.9 | **7.0** |
-| Express | 4.19 | **5.2** |
-| Socket.io | 4.7 | **4.8** |
-| Lint | CRA built-in (eslint 8) | **oxlint** |
-| Node | 18 types | **20+**, `@types/node` 26 |
-| Frontend install | ~1,500 packages | **106** |
-| Backend install | ~800 packages | **129** |
-| Prod build time | ~30 s | **~0.8 s** |
-| `npm audit` | 2 high (react-router CSRF) | **0** |
+|                  | Before                                | After                     |
+| ---------------- | ------------------------------------- | ------------------------- |
+| Build (front)    | react-scripts 5.0.1 (CRA, deprecated) | **Vite 8**                |
+| React            | 18.2                                  | **19.2**                  |
+| Ant Design       | 5.9                                   | **6.5**                   |
+| Router           | react-router-dom 6.8                  | **react-router 8.3**      |
+| TypeScript       | 4.9                                   | **7.0**                   |
+| Express          | 4.19                                  | **5.2**                   |
+| Socket.io        | 4.7                                   | **4.8**                   |
+| Lint             | CRA built-in (eslint 8)               | **oxlint**                |
+| Node             | 18 types                              | **20+**, `@types/node` 26 |
+| Frontend install | ~1,500 packages                       | **106**                   |
+| Backend install  | ~800 packages                         | **129**                   |
+| Prod build time  | ~30 s                                 | **~0.8 s**                |
+| `npm audit`      | 2 high (react-router CSRF)            | **0**                     |
 
 **Notable decisions:**
 
@@ -387,7 +392,7 @@ Shorten them to play a whole game through in seconds while developing:
 
 ### Adding a game
 
-The codebase is *shaped* for multiple games — routes, assets, and the Gamehub
+The codebase is _shaped_ for multiple games — routes, assets, and the Gamehub
 picker all anticipate it — but nothing is abstracted yet. Draw & Guess logic is
 hardcoded into event names (`startDrawAndGuessGame`,
 `updateDrawAndGuessLobbyRoomList`) and into the single
@@ -401,7 +406,7 @@ twice, extract the generic part:
 2. **Namespaced events** — `room:join` / `room:leave` with a `gameType`
    discriminator, instead of `clientJoinDrawAndGuessRoomRequest`.
 3. **Per-game module** — each game registers `{ id, minPlayers, maxPlayers,
-   createInitialState, handlers }`. Draw & Guess becomes the first consumer.
+createInitialState, handlers }`. Draw & Guess becomes the first consumer.
 4. **Shared types package.** `front/src/models/types.ts` and
    `back/models/types.ts` are currently **byte-identical copies** that must be
    edited in lockstep. A `shared/` directory referenced by both tsconfigs
@@ -413,16 +418,16 @@ twice, extract the generic part:
 Several of these got substantially cheaper in this pass, because the two things
 they all depended on — a server-owned clock and a replayable drawing — now exist.
 
-| Feature | Notes |
-| --- | --- |
-| **End the turn early when everyone has guessed** | The engine already tracks `receivedPointsThisTurn` and owns the timer. Count the players who have scored against the players who are not drawing, and call the phase over. Perhaps twenty lines now. |
-| **Reconnection** | The blocker was client-authoritative timing; that is gone. Issue a persistent player id, keep the seat alive for ~30s, and re-send the room snapshot on return — the mechanism for that already exists as `requestDrawAndGuessRoomState`. Biggest UX win available. |
-| **Late-joiner canvas sync** | The drawing is a stroke list now. Keep it on the server too and send it with the room snapshot. |
-| **Progressive letter hints** | Reveal a letter at 60s and 30s. The engine holds the word and the clock, so this is a scheduled callback plus an emit. |
-| **Time-weighted scoring** | Award points on remaining time instead of a flat 100. `getRemainingPhaseMs()` already gives you the number. |
-| **Close-guess feedback** | "Sam is close!" on Levenshtein distance 1–2. Cheap and fun, and the guess now runs server-side where you'd put it. |
-| **Custom word lists** | Per-room word packs; the word bank is already a plain record. |
-| **Round summary screen** | Show per-turn point deltas during the review phase. |
+| Feature                                          | Notes                                                                                                                                                                                                                                                               |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **End the turn early when everyone has guessed** | The engine already tracks `receivedPointsThisTurn` and owns the timer. Count the players who have scored against the players who are not drawing, and call the phase over. Perhaps twenty lines now.                                                                |
+| **Reconnection**                                 | The blocker was client-authoritative timing; that is gone. Issue a persistent player id, keep the seat alive for ~30s, and re-send the room snapshot on return — the mechanism for that already exists as `requestDrawAndGuessRoomState`. Biggest UX win available. |
+| **Late-joiner canvas sync**                      | The drawing is a stroke list now. Keep it on the server too and send it with the room snapshot.                                                                                                                                                                     |
+| **Progressive letter hints**                     | Reveal a letter at 60s and 30s. The engine holds the word and the clock, so this is a scheduled callback plus an emit.                                                                                                                                              |
+| **Time-weighted scoring**                        | Award points on remaining time instead of a flat 100. `getRemainingPhaseMs()` already gives you the number.                                                                                                                                                         |
+| **Close-guess feedback**                         | "Sam is close!" on Levenshtein distance 1–2. Cheap and fun, and the guess now runs server-side where you'd put it.                                                                                                                                                  |
+| **Custom word lists**                            | Per-room word packs; the word bank is already a plain record.                                                                                                                                                                                                       |
+| **Round summary screen**                         | Show per-turn point deltas during the review phase.                                                                                                                                                                                                                 |
 
 ### Infrastructure worth having
 
@@ -467,6 +472,6 @@ now true:
 6. **Late-joiner canvas sync.** Cheap once the stroke list lives server-side.
 7. **Progressive hints and time-weighted scoring.** An evening each, and the
    engine gives you everything both need.
-8. *Then* consider a second game — on top of an extracted room layer.
+8. _Then_ consider a second game — on top of an extracted room layer.
 
 Items 1–4 are each an evening. Items 5–6 are a weekend apiece.

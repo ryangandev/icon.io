@@ -1,27 +1,27 @@
 {
-    "include": ["**/*.ts"],
-    "exclude": ["node_modules", "build", "archived"],
-    "compilerOptions": {
-        "outDir": "build",
-        "rootDir": "./",
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "build", "archived"],
+  "compilerOptions": {
+    "outDir": "build",
+    "rootDir": "./",
 
-        // Node 20+ ESM: top-level await, import/export, .js specifiers
-        "target": "es2022",
-        "lib": ["es2023"],
-        "module": "nodenext",
-        "moduleResolution": "nodenext",
+    // Node 20+ ESM: top-level await, import/export, .js specifiers
+    "target": "es2022",
+    "lib": ["es2023"],
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
 
-        // type checking
-        "strict": true,
-        "noImplicitAny": true,
-        "noUncheckedIndexedAccess": false,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
+    // type checking
+    "strict": true,
+    "noImplicitAny": true,
+    "noUncheckedIndexedAccess": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
 
-        "esModuleInterop": true,
-        "verbatimModuleSyntax": true,
-        "resolveJsonModule": true,
-        "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true
-    }
+    "esModuleInterop": true,
+    "verbatimModuleSyntax": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  }
 }

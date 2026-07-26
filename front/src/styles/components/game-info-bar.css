@@ -1,62 +1,62 @@
 .game-info-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    min-width: 800px;
-    height: 55px;
-    box-sizing: border-box;
-    padding: 0 12px;
-    background-color: var(--component-background-color);
-    border: var(--component-border);
-    border-radius: var(--component-border-radius);
-    --game-info-component-gap: 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 800px;
+  height: 55px;
+  box-sizing: border-box;
+  padding: 0 12px;
+  background-color: var(--component-background-color);
+  border: var(--component-border);
+  border-radius: var(--component-border-radius);
+  --game-info-component-gap: 16px;
 }
 
 .game-info-container-left {
-    display: flex;
-    gap: var(--game-info-component-gap);
+  display: flex;
+  gap: var(--game-info-component-gap);
 }
 
 .game-info-container-center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .game-info-container-right {
-    display: flex;
-    flex-direction: row;
-    gap: var(--game-info-component-gap);
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: var(--game-info-component-gap);
+  align-items: center;
 }
 
 .game-info-btn {
-    display: flex;
-    background-color: transparent;
-    border: none;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  background-color: transparent;
+  border: none;
+  justify-content: center;
+  align-items: center;
 }
 
 .game-info-status {
-    font-weight: 600;
-    font-size: 18px;
+  font-weight: 600;
+  font-size: 18px;
 }
 
 .game-info-action-indicator {
-    font-weight: 400;
-    font-size: 12px;
+  font-weight: 400;
+  font-size: 12px;
 }
 
 .game-info-current-word {
-    font-weight: 700;
-    font-size: 24px;
+  font-weight: 700;
+  font-size: 24px;
 }
 
 .game-info-hint {
-    font-weight: 700;
-    letter-spacing: 5px;
-    margin-right: -5px; /* To compensate the letter-spacing for the last character */
+  font-weight: 700;
+  letter-spacing: 5px;
+  margin-right: -5px; /* To compensate the letter-spacing for the last character */
 }

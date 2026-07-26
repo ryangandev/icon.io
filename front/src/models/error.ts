@@ -1,11 +1,8 @@
 type ErrorType =
-    | 'roomNotExist'
-    | 'roomNotOpen'
-    | 'incorrectPassword'
-    | 'notEnoughPlayers';
+  'roomNotExist' | 'roomNotOpen' | 'incorrectPassword' | 'notEnoughPlayers';
 
 interface CustomError extends Error {
-    errorType: ErrorType;
+  errorType: ErrorType;
 }
 
 export type { CustomError };

@@ -1,282 +1,269 @@
 import type { Server, Socket } from 'socket.io';
 import type {
-    DrawAndGuessDetailRoomInfo,
-    OwnerInfo,
+  DrawAndGuessDetailRoomInfo,
+  OwnerInfo,
 } from '../../models/types.js';
 import {
-    getDrawAndGuessLobbyRoomInfo,
-    getDrawAndGuessRoomState,
-    getRoomStatus,
+  getDrawAndGuessLobbyRoomInfo,
+  getDrawAndGuessRoomState,
+  getRoomStatus,
 } from '../../libs/utils.js';
 import type { CustomError } from '../../models/error.js';
 import type { DrawAndGuessGameEngine } from './game-engine.js';
 import {
-    joinRoomRequest,
-    leaveRoomRequest,
-    parseArgs,
-    roomIdOnly,
+  joinRoomRequest,
+  leaveRoomRequest,
+  parseArgs,
+  roomIdOnly,
 } from '../../libs/validation.js';
 
 const roomEventsHandler = (
-    io: Server,
-    socket: Socket,
-    drawAndGuessDetailRoomInfoList: Record<string, DrawAndGuessDetailRoomInfo>,
-    socketInRooms: Record<string, Set<string>>,
-    gameEngine: DrawAndGuessGameEngine,
+  io: Server,
+  socket: Socket,
+  drawAndGuessDetailRoomInfoList: Record<string, DrawAndGuessDetailRoomInfo>,
+  socketInRooms: Record<string, Set<string>>,
+  gameEngine: DrawAndGuessGameEngine,
 ) => {
-    socket.on(
-        'clientJoinDrawAndGuessRoomRequest',
-        (...rawArgs: unknown[]) => {
-            const validated = parseArgs(
-                joinRoomRequest,
-                // The password is optional on the wire for unlocked rooms.
-                [rawArgs[0], rawArgs[1], rawArgs[2] ?? ''],
-                'clientJoinDrawAndGuessRoomRequest',
-            );
-            if (!validated) return;
-            const [roomId, username, password] = validated;
-
-            try {
-                if (!drawAndGuessDetailRoomInfoList[roomId]) {
-                    const err: CustomError = new Error(
-                        'Room does not exist.',
-                    ) as CustomError;
-                    err.errorType = 'roomNotExist';
-                    throw err;
-                }
-
-                const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
-
-                if (currentRoom.status !== 'Open') {
-                    const err: CustomError = new Error(
-                        'Room is not open.',
-                    ) as CustomError;
-                    err.errorType = 'roomNotOpen';
-                    throw err;
-                }
-
-                // If room has password, check if password is correct, if not, send reject event
-                if (currentRoom.password && currentRoom.password !== password) {
-                    socket.emit('rejectClientJoinDrawAndGuessRoomRequest', {
-                        status: true,
-                        message: 'Incorrect password. Please try again.',
-                    });
-                    return;
-                }
-
-                currentRoom.playerList[socket.id] = {
-                    username: username,
-                    points: 0,
-                    receivedPointsThisTurn: false,
-                };
-                currentRoom.currentPlayerCount = Object.keys(
-                    currentRoom.playerList,
-                ).length; // If app gets slow, use counter instead
-                currentRoom.status = getRoomStatus(
-                    currentRoom.currentPlayerCount,
-                    currentRoom.maxPlayers,
-                    currentRoom.isGameStarted,
-                );
-
-                socket.join(roomId);
-                if (!socketInRooms[socket.id]) {
-                    socketInRooms[socket.id] = new Set();
-                }
-                socketInRooms[socket.id].add(roomId);
-
-                const drawAndGuessLobbySimplifiedRoomList = Object.values(
-                    drawAndGuessDetailRoomInfoList,
-                ).map(getDrawAndGuessLobbyRoomInfo);
-
-                // Notify the current client that they will be joining the room
-                socket.emit('approveClientJoinDrawAndGuessRoomRequest', roomId);
-
-                // Notify all clients in the lobby that a client has joined a room
-                io.emit(
-                    'updateDrawAndGuessLobbyRoomList',
-                    drawAndGuessLobbySimplifiedRoomList,
-                );
-
-                // These used to be delayed by 250ms "to ensure that the client
-                // has joined the room". socket.join() above is synchronous on a
-                // single node, so by this line the socket is already a member
-                // and the delay bought nothing — it only meant that on a slow
-                // connection the room state arrived after the client had
-                // already rendered, and that a client which left within those
-                // 250ms was still announced as joining.
-                io.to(roomId).emit(
-                    'clientJoinDrawAndGuessRoomSuccess',
-                    getDrawAndGuessRoomState(currentRoom),
-                );
-
-                io.to(roomId).emit(
-                    'receiveMessage',
-                    '📢 System',
-                    username + ' has joined the room.',
-                );
-            } catch (error: any) {
-                console.error(error);
-                // Notify the current client that there was an error
-                socket.emit('roomError', {
-                    status: true,
-                    message: error.message,
-                    errorType: error.errorType,
-                });
-            }
-        },
+  socket.on('clientJoinDrawAndGuessRoomRequest', (...rawArgs: unknown[]) => {
+    const validated = parseArgs(
+      joinRoomRequest,
+      // The password is optional on the wire for unlocked rooms.
+      [rawArgs[0], rawArgs[1], rawArgs[2] ?? ''],
+      'clientJoinDrawAndGuessRoomRequest',
     );
+    if (!validated) return;
+    const [roomId, username, password] = validated;
 
-    /**
-     * Asked for by the room page once it has mounted and its listeners are
-     * live. The join broadcast above races the joining client's own
-     * navigation — it cannot have subscribed yet — so rather than guessing how
-     * long that takes, the client says when it is ready.
-     */
-    socket.on('requestDrawAndGuessRoomState', (...rawArgs: unknown[]) => {
-        const validated = parseArgs(
-            roomIdOnly,
-            rawArgs,
-            'requestDrawAndGuessRoomState',
-        );
-        if (!validated) return;
-        const [roomId] = validated;
+    try {
+      if (!drawAndGuessDetailRoomInfoList[roomId]) {
+        const err: CustomError = new Error(
+          'Room does not exist.',
+        ) as CustomError;
+        err.errorType = 'roomNotExist';
+        throw err;
+      }
 
-        const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
-        if (!currentRoom) {
-            socket.emit('roomError', {
-                status: true,
-                message: 'Room does not exist.',
-                errorType: 'roomNotExist',
-            });
-            return;
+      const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
+
+      if (currentRoom.status !== 'Open') {
+        const err: CustomError = new Error('Room is not open.') as CustomError;
+        err.errorType = 'roomNotOpen';
+        throw err;
+      }
+
+      // If room has password, check if password is correct, if not, send reject event
+      if (currentRoom.password && currentRoom.password !== password) {
+        socket.emit('rejectClientJoinDrawAndGuessRoomRequest', {
+          status: true,
+          message: 'Incorrect password. Please try again.',
+        });
+        return;
+      }
+
+      currentRoom.playerList[socket.id] = {
+        username: username,
+        points: 0,
+        receivedPointsThisTurn: false,
+      };
+      currentRoom.currentPlayerCount = Object.keys(
+        currentRoom.playerList,
+      ).length; // If app gets slow, use counter instead
+      currentRoom.status = getRoomStatus(
+        currentRoom.currentPlayerCount,
+        currentRoom.maxPlayers,
+        currentRoom.isGameStarted,
+      );
+
+      socket.join(roomId);
+      if (!socketInRooms[socket.id]) {
+        socketInRooms[socket.id] = new Set();
+      }
+      socketInRooms[socket.id].add(roomId);
+
+      const drawAndGuessLobbySimplifiedRoomList = Object.values(
+        drawAndGuessDetailRoomInfoList,
+      ).map(getDrawAndGuessLobbyRoomInfo);
+
+      // Notify the current client that they will be joining the room
+      socket.emit('approveClientJoinDrawAndGuessRoomRequest', roomId);
+
+      // Notify all clients in the lobby that a client has joined a room
+      io.emit(
+        'updateDrawAndGuessLobbyRoomList',
+        drawAndGuessLobbySimplifiedRoomList,
+      );
+
+      // These used to be delayed by 250ms "to ensure that the client
+      // has joined the room". socket.join() above is synchronous on a
+      // single node, so by this line the socket is already a member
+      // and the delay bought nothing — it only meant that on a slow
+      // connection the room state arrived after the client had
+      // already rendered, and that a client which left within those
+      // 250ms was still announced as joining.
+      io.to(roomId).emit(
+        'clientJoinDrawAndGuessRoomSuccess',
+        getDrawAndGuessRoomState(currentRoom),
+      );
+
+      io.to(roomId).emit(
+        'receiveMessage',
+        '📢 System',
+        username + ' has joined the room.',
+      );
+    } catch (error: any) {
+      console.error(error);
+      // Notify the current client that there was an error
+      socket.emit('roomError', {
+        status: true,
+        message: error.message,
+        errorType: error.errorType,
+      });
+    }
+  });
+
+  /**
+   * Asked for by the room page once it has mounted and its listeners are
+   * live. The join broadcast above races the joining client's own
+   * navigation — it cannot have subscribed yet — so rather than guessing how
+   * long that takes, the client says when it is ready.
+   */
+  socket.on('requestDrawAndGuessRoomState', (...rawArgs: unknown[]) => {
+    const validated = parseArgs(
+      roomIdOnly,
+      rawArgs,
+      'requestDrawAndGuessRoomState',
+    );
+    if (!validated) return;
+    const [roomId] = validated;
+
+    const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
+    if (!currentRoom) {
+      socket.emit('roomError', {
+        status: true,
+        message: 'Room does not exist.',
+        errorType: 'roomNotExist',
+      });
+      return;
+    }
+
+    socket.emit(
+      'clientJoinDrawAndGuessRoomSuccess',
+      getDrawAndGuessRoomState(currentRoom),
+    );
+  });
+
+  socket.on('clientLeaveDrawAndGuessRoom', (...rawArgs: unknown[]) => {
+    const validated = parseArgs(
+      leaveRoomRequest,
+      rawArgs,
+      'clientLeaveDrawAndGuessRoom',
+    );
+    if (!validated) return;
+    const [roomId, username] = validated;
+
+    try {
+      if (!drawAndGuessDetailRoomInfoList[roomId]) {
+        const err: CustomError = new Error(
+          'Room does not exist.',
+        ) as CustomError;
+        err.errorType = 'roomNotExist';
+        throw err;
+      }
+
+      const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
+
+      // Leaving a room you were never in used to run the whole
+      // departure anyway: the player count was recomputed, ownership
+      // could be handed on, and the room was told somebody had left.
+      // Checked before anything is mutated, so a stray or repeated
+      // leave is simply ignored.
+      if (!currentRoom.playerList[socket.id]) return;
+
+      const isLeavingClientOwner = currentRoom.owner.socketId === socket.id;
+
+      delete currentRoom.playerList[socket.id];
+      currentRoom.currentPlayerCount = Object.keys(
+        currentRoom.playerList,
+      ).length; // If app gets slow, use counter instead
+
+      // If the room is empty, delete the room
+      if (currentRoom.currentPlayerCount === 0) {
+        gameEngine.disposeRoom(roomId);
+        delete drawAndGuessDetailRoomInfoList[roomId];
+      } else {
+        // If the leaving client is the owner, transfer ownership to the next client
+        if (isLeavingClientOwner) {
+          const newOwnerSocketId = Object.keys(currentRoom.playerList)[0];
+          const newOwnerInfo: OwnerInfo = {
+            username: currentRoom.playerList[newOwnerSocketId].username,
+            socketId: newOwnerSocketId,
+          };
+          currentRoom.owner = newOwnerInfo;
+
+          // Notify all clients in the room that the ownership has been transferred here
+          io.to(roomId).emit(
+            'receiveMessage',
+            '📢 System',
+            'Previous owner ' +
+              username +
+              ' has left the room. ' +
+              newOwnerInfo.username +
+              ' is now the owner.',
+          );
         }
 
-        socket.emit(
-            'clientJoinDrawAndGuessRoomSuccess',
-            getDrawAndGuessRoomState(currentRoom),
+        currentRoom.status = getRoomStatus(
+          currentRoom.currentPlayerCount,
+          currentRoom.maxPlayers,
+          currentRoom.isGameStarted,
         );
-    });
+      }
 
-    socket.on(
-        'clientLeaveDrawAndGuessRoom',
-        (...rawArgs: unknown[]) => {
-            const validated = parseArgs(
-                leaveRoomRequest,
-                rawArgs,
-                'clientLeaveDrawAndGuessRoom',
-            );
-            if (!validated) return;
-            const [roomId, username] = validated;
+      socket.leave(roomId);
+      // A socket with no entry here threw, and did so only after the
+      // room had already been mutated — leaving the room short a
+      // player while the client was told the leave had failed.
+      socketInRooms[socket.id]?.delete(roomId);
 
-            try {
-                if (!drawAndGuessDetailRoomInfoList[roomId]) {
-                    const err: CustomError = new Error(
-                        'Room does not exist.',
-                    ) as CustomError;
-                    err.errorType = 'roomNotExist';
-                    throw err;
-                }
+      // Notify all clients in the room that a client has left
+      io.to(roomId).emit(
+        'clientLeaveDrawAndGuessRoomSuccess',
+        getDrawAndGuessRoomState(currentRoom),
+      );
 
-                const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
+      // Only notify if the leaving client is not the owner, because the ownership transfer was notified above
+      if (!isLeavingClientOwner) {
+        io.to(roomId).emit(
+          'receiveMessage',
+          '📢 System',
+          username + ' has left the room.',
+        );
+      }
 
-                // Leaving a room you were never in used to run the whole
-                // departure anyway: the player count was recomputed, ownership
-                // could be handed on, and the room was told somebody had left.
-                // Checked before anything is mutated, so a stray or repeated
-                // leave is simply ignored.
-                if (!currentRoom.playerList[socket.id]) return;
+      // A departure can strand a turn — the drawer may have been the
+      // one who left, or the room may have dropped below two players.
+      if (drawAndGuessDetailRoomInfoList[roomId]) {
+        gameEngine.handlePlayerDeparture(currentRoom, socket.id);
+      }
 
-                const isLeavingClientOwner =
-                    currentRoom.owner.socketId === socket.id;
-
-                delete currentRoom.playerList[socket.id];
-                currentRoom.currentPlayerCount = Object.keys(
-                    currentRoom.playerList,
-                ).length; // If app gets slow, use counter instead
-
-                // If the room is empty, delete the room
-                if (currentRoom.currentPlayerCount === 0) {
-                    gameEngine.disposeRoom(roomId);
-                    delete drawAndGuessDetailRoomInfoList[roomId];
-                } else {
-                    // If the leaving client is the owner, transfer ownership to the next client
-                    if (isLeavingClientOwner) {
-                        const newOwnerSocketId = Object.keys(
-                            currentRoom.playerList,
-                        )[0];
-                        const newOwnerInfo: OwnerInfo = {
-                            username:
-                                currentRoom.playerList[newOwnerSocketId]
-                                    .username,
-                            socketId: newOwnerSocketId,
-                        };
-                        currentRoom.owner = newOwnerInfo;
-
-                        // Notify all clients in the room that the ownership has been transferred here
-                        io.to(roomId).emit(
-                            'receiveMessage',
-                            '📢 System',
-                            'Previous owner ' +
-                                username +
-                                ' has left the room. ' +
-                                newOwnerInfo.username +
-                                ' is now the owner.',
-                        );
-                    }
-
-                    currentRoom.status = getRoomStatus(
-                        currentRoom.currentPlayerCount,
-                        currentRoom.maxPlayers,
-                        currentRoom.isGameStarted,
-                    );
-                }
-
-                socket.leave(roomId);
-                // A socket with no entry here threw, and did so only after the
-                // room had already been mutated — leaving the room short a
-                // player while the client was told the leave had failed.
-                socketInRooms[socket.id]?.delete(roomId);
-
-                // Notify all clients in the room that a client has left
-                io.to(roomId).emit(
-                    'clientLeaveDrawAndGuessRoomSuccess',
-                    getDrawAndGuessRoomState(currentRoom),
-                );
-
-                // Only notify if the leaving client is not the owner, because the ownership transfer was notified above
-                if (!isLeavingClientOwner) {
-                    io.to(roomId).emit(
-                        'receiveMessage',
-                        '📢 System',
-                        username + ' has left the room.',
-                    );
-                }
-
-                // A departure can strand a turn — the drawer may have been the
-                // one who left, or the room may have dropped below two players.
-                if (drawAndGuessDetailRoomInfoList[roomId]) {
-                    gameEngine.handlePlayerDeparture(currentRoom, socket.id);
-                }
-
-                // Notify all clients in the lobby that a client has left a room.
-                // Built after the departure is handled, so an ended game is
-                // reflected as 'Open' rather than a stale 'In Progress'.
-                io.emit(
-                    'updateDrawAndGuessLobbyRoomList',
-                    Object.values(drawAndGuessDetailRoomInfoList).map(
-                        getDrawAndGuessLobbyRoomInfo,
-                    ),
-                );
-            } catch (error: any) {
-                console.error(error);
-                // Notify the current client that there was an error
-                socket.emit('roomError', {
-                    status: true,
-                    message: error.message,
-                });
-            }
-        },
-    );
+      // Notify all clients in the lobby that a client has left a room.
+      // Built after the departure is handled, so an ended game is
+      // reflected as 'Open' rather than a stale 'In Progress'.
+      io.emit(
+        'updateDrawAndGuessLobbyRoomList',
+        Object.values(drawAndGuessDetailRoomInfoList).map(
+          getDrawAndGuessLobbyRoomInfo,
+        ),
+      );
+    } catch (error: any) {
+      console.error(error);
+      // Notify the current client that there was an error
+      socket.emit('roomError', {
+        status: true,
+        message: error.message,
+      });
+    }
+  });
 };
 
 export { roomEventsHandler };

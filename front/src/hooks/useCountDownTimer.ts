@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 const secondsUntil = (deadline: number): number =>
-    deadline === 0 ? 0 : Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+  deadline === 0 ? 0 : Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
 
 /**
  * Counts down to a deadline issued by the server.
@@ -16,23 +16,23 @@ const secondsUntil = (deadline: number): number =>
  * again, rather than resuming from wherever it was frozen.
  */
 const useCountdownTimer = (deadline: number): number => {
-    const [secondsRemaining, setSecondsRemaining] = useState(() =>
-        secondsUntil(deadline),
-    );
+  const [secondsRemaining, setSecondsRemaining] = useState(() =>
+    secondsUntil(deadline),
+  );
 
-    useEffect(() => {
-        setSecondsRemaining(secondsUntil(deadline));
+  useEffect(() => {
+    setSecondsRemaining(secondsUntil(deadline));
 
-        if (deadline === 0) return;
+    if (deadline === 0) return;
 
-        const intervalId = setInterval(() => {
-            setSecondsRemaining(secondsUntil(deadline));
-        }, 250);
+    const intervalId = setInterval(() => {
+      setSecondsRemaining(secondsUntil(deadline));
+    }, 250);
 
-        return () => clearInterval(intervalId);
-    }, [deadline]);
+    return () => clearInterval(intervalId);
+  }, [deadline]);
 
-    return secondsRemaining;
+  return secondsRemaining;
 };
 
 export default useCountdownTimer;

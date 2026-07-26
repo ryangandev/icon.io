@@ -1,33 +1,33 @@
 import { randomUUID } from 'node:crypto';
 import type {
-    DrawAndGuessDetailRoomInfo,
-    DrawAndGuessRoomState,
-    LobbyRoomInfo,
-    PlayerInfo,
-    RoomStatus,
+  DrawAndGuessDetailRoomInfo,
+  DrawAndGuessRoomState,
+  LobbyRoomInfo,
+  PlayerInfo,
+  RoomStatus,
 } from '../models/types.js';
 import type { WordBank, WordCategory } from './word-bank.js';
 
 const generateRoomId = (): string => {
-    return randomUUID();
+  return randomUUID();
 };
 
 const getRandomInt = (min: number, max: number) => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
 };
 
 const getRoomStatus = (
-    currentSize: number,
-    maxSize: number,
-    isStarted: boolean = false,
+  currentSize: number,
+  maxSize: number,
+  isStarted: boolean = false,
 ): RoomStatus => {
-    if (isStarted) {
-        return 'In Progress';
-    }
+  if (isStarted) {
+    return 'In Progress';
+  }
 
-    return currentSize === maxSize ? 'Full' : 'Open';
+  return currentSize === maxSize ? 'Full' : 'Open';
 };
 
 /**
@@ -37,18 +37,18 @@ const getRoomStatus = (
  * icon, while the raw value was readable by anyone who opened the lobby.
  */
 const getDrawAndGuessLobbyRoomInfo = (
-    drawAndGuessDetailRoomInfo: DrawAndGuessDetailRoomInfo,
+  drawAndGuessDetailRoomInfo: DrawAndGuessDetailRoomInfo,
 ): LobbyRoomInfo => {
-    return {
-        roomId: drawAndGuessDetailRoomInfo.roomId,
-        roomName: drawAndGuessDetailRoomInfo.roomName,
-        owner: drawAndGuessDetailRoomInfo.owner,
-        status: drawAndGuessDetailRoomInfo.status,
-        currentPlayerCount: drawAndGuessDetailRoomInfo.currentPlayerCount,
-        maxPlayers: drawAndGuessDetailRoomInfo.maxPlayers,
-        rounds: drawAndGuessDetailRoomInfo.rounds,
-        hasPassword: drawAndGuessDetailRoomInfo.password !== '',
-    };
+  return {
+    roomId: drawAndGuessDetailRoomInfo.roomId,
+    roomName: drawAndGuessDetailRoomInfo.roomName,
+    owner: drawAndGuessDetailRoomInfo.owner,
+    status: drawAndGuessDetailRoomInfo.status,
+    currentPlayerCount: drawAndGuessDetailRoomInfo.currentPlayerCount,
+    maxPlayers: drawAndGuessDetailRoomInfo.maxPlayers,
+    rounds: drawAndGuessDetailRoomInfo.rounds,
+    hasPassword: drawAndGuessDetailRoomInfo.password !== '',
+  };
 };
 
 /**
@@ -64,31 +64,31 @@ const getDrawAndGuessLobbyRoomInfo = (
  * the whole room by `reviewingPhaseStarted`.
  */
 const getDrawAndGuessRoomState = (
-    room: DrawAndGuessDetailRoomInfo,
+  room: DrawAndGuessDetailRoomInfo,
 ): DrawAndGuessRoomState => {
-    const isWordInPlay = room.isWordSelectingPhase || room.isDrawingPhase;
+  const isWordInPlay = room.isWordSelectingPhase || room.isDrawingPhase;
 
-    const roomState: DrawAndGuessRoomState = {
-        ...getDrawAndGuessLobbyRoomInfo(room),
-        playerList: room.playerList,
-        currentDrawer: room.currentDrawer,
-        currentWordHint: room.currentWordHint,
-        currentRound: room.currentRound,
-        isGameStarted: room.isGameStarted,
-        isWordSelectingPhase: room.isWordSelectingPhase,
-        isDrawingPhase: room.isDrawingPhase,
-        isReviewingPhase: room.isReviewingPhase,
-        drawerQueue: [...room.drawerQueue],
-        wordCategory: room.wordCategory,
-        phaseEndsInMs: getRemainingPhaseMs(room),
-    };
+  const roomState: DrawAndGuessRoomState = {
+    ...getDrawAndGuessLobbyRoomInfo(room),
+    playerList: room.playerList,
+    currentDrawer: room.currentDrawer,
+    currentWordHint: room.currentWordHint,
+    currentRound: room.currentRound,
+    isGameStarted: room.isGameStarted,
+    isWordSelectingPhase: room.isWordSelectingPhase,
+    isDrawingPhase: room.isDrawingPhase,
+    isReviewingPhase: room.isReviewingPhase,
+    drawerQueue: [...room.drawerQueue],
+    wordCategory: room.wordCategory,
+    phaseEndsInMs: getRemainingPhaseMs(room),
+  };
 
-    if (!isWordInPlay) {
-        roomState.currentWord = room.currentWord;
-        roomState.wordChoices = room.wordChoices;
-    }
+  if (!isWordInPlay) {
+    roomState.currentWord = room.currentWord;
+    roomState.wordChoices = room.wordChoices;
+  }
 
-    return roomState;
+  return roomState;
 };
 
 /**
@@ -97,89 +97,89 @@ const getDrawAndGuessRoomState = (
  * down correctly — it anchors this against its own `Date.now()`.
  */
 const getRemainingPhaseMs = (room: DrawAndGuessDetailRoomInfo): number => {
-    return Math.max(0, room.phaseEndsAt - Date.now());
+  return Math.max(0, room.phaseEndsAt - Date.now());
 };
 
 const getRandomCategory = (
-    wordBank: WordBank,
+  wordBank: WordBank,
 ): { name: WordCategory; words: string[] } => {
-    const categoryList = Object.keys(wordBank) as WordCategory[];
-    const randomCategoryIndex = getRandomInt(0, categoryList.length);
-    const name = categoryList[randomCategoryIndex]!;
+  const categoryList = Object.keys(wordBank) as WordCategory[];
+  const randomCategoryIndex = getRandomInt(0, categoryList.length);
+  const name = categoryList[randomCategoryIndex]!;
 
-    return { name, words: wordBank[name] };
+  return { name, words: wordBank[name] };
 };
 
 const getRandomChoicesFromList = (
-    wordList: string[],
-    numberOfChoices: number,
+  wordList: string[],
+  numberOfChoices: number,
 ): string[] => {
-    // Asking for more distinct choices than the list can supply would spin
-    // forever, taking the whole server with it.
-    const target = Math.min(numberOfChoices, wordList.length);
-    const selectedIndexes = new Set<number>();
+  // Asking for more distinct choices than the list can supply would spin
+  // forever, taking the whole server with it.
+  const target = Math.min(numberOfChoices, wordList.length);
+  const selectedIndexes = new Set<number>();
 
-    while (selectedIndexes.size < target) {
-        selectedIndexes.add(getRandomInt(0, wordList.length));
-    }
+  while (selectedIndexes.size < target) {
+    selectedIndexes.add(getRandomInt(0, wordList.length));
+  }
 
-    return [...selectedIndexes].map((index) => wordList[index]);
+  return [...selectedIndexes].map((index) => wordList[index]);
 };
 
 const getRandomElementFromSet = (set: Set<string>): string | undefined => {
-    if (set.size === 0) return undefined;
+  if (set.size === 0) return undefined;
 
-    const randomIndex = getRandomInt(0, set.size);
-    return [...set][randomIndex];
+  const randomIndex = getRandomInt(0, set.size);
+  return [...set][randomIndex];
 };
 
 const convertStrToUnderscores = (str: string): string => {
-    return str.replace(/\S/g, '_');
+  return str.replace(/\S/g, '_');
 };
 
 const resetPoints = (
-    playerList: Record<string, PlayerInfo>,
+  playerList: Record<string, PlayerInfo>,
 ): Record<string, PlayerInfo> => {
-    return Object.fromEntries(
-        Object.entries(playerList).map(([socketId, playerInfo]) => {
-            return [
-                socketId,
-                {
-                    ...playerInfo,
-                    points: 0,
-                },
-            ];
-        }),
-    );
+  return Object.fromEntries(
+    Object.entries(playerList).map(([socketId, playerInfo]) => {
+      return [
+        socketId,
+        {
+          ...playerInfo,
+          points: 0,
+        },
+      ];
+    }),
+  );
 };
 
 const resetReceivedPointsThisTurn = (
-    playerList: Record<string, PlayerInfo>,
+  playerList: Record<string, PlayerInfo>,
 ): Record<string, PlayerInfo> => {
-    return Object.fromEntries(
-        Object.entries(playerList).map(([socketId, playerInfo]) => {
-            return [
-                socketId,
-                {
-                    ...playerInfo,
-                    receivedPointsThisTurn: false,
-                },
-            ];
-        }),
-    );
+  return Object.fromEntries(
+    Object.entries(playerList).map(([socketId, playerInfo]) => {
+      return [
+        socketId,
+        {
+          ...playerInfo,
+          receivedPointsThisTurn: false,
+        },
+      ];
+    }),
+  );
 };
 
 export {
-    generateRoomId,
-    getRandomInt,
-    getRoomStatus,
-    getDrawAndGuessLobbyRoomInfo,
-    getDrawAndGuessRoomState,
-    getRemainingPhaseMs,
-    getRandomCategory,
-    getRandomChoicesFromList,
-    getRandomElementFromSet,
-    convertStrToUnderscores,
-    resetPoints,
-    resetReceivedPointsThisTurn,
+  generateRoomId,
+  getRandomInt,
+  getRoomStatus,
+  getDrawAndGuessLobbyRoomInfo,
+  getDrawAndGuessRoomState,
+  getRemainingPhaseMs,
+  getRandomCategory,
+  getRandomChoicesFromList,
+  getRandomElementFromSet,
+  convertStrToUnderscores,
+  resetPoints,
+  resetReceivedPointsThisTurn,
 };

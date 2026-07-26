@@ -6,17 +6,17 @@ import { createFakeSocket, type FakeSocket } from './fake-socket';
 import type { Socket } from 'socket.io-client';
 
 interface RenderWithSocketOptions {
-    socket?: FakeSocket;
-    /** Initial URL, so a test can arrive the way a deep link would. */
-    route?: string;
-    /** The route pattern the element is mounted at, when it reads params. */
-    path?: string;
-    /** Rendered for any other path, to show where a redirect landed. */
-    elsewhere?: ReactElement;
+  socket?: FakeSocket;
+  /** Initial URL, so a test can arrive the way a deep link would. */
+  route?: string;
+  /** The route pattern the element is mounted at, when it reads params. */
+  path?: string;
+  /** Rendered for any other path, to show where a redirect landed. */
+  elsewhere?: ReactElement;
 }
 
 interface RenderWithSocketResult extends RenderResult {
-    socket: FakeSocket;
+  socket: FakeSocket;
 }
 
 /**
@@ -27,34 +27,32 @@ interface RenderWithSocketResult extends RenderResult {
  * anything renders — the real one is in `index.html`.
  */
 const renderWithSocket = (
-    ui: ReactElement,
-    {
-        socket = createFakeSocket(),
-        route = '/',
-        path = '*',
-        elsewhere,
-    }: RenderWithSocketOptions = {},
+  ui: ReactElement,
+  {
+    socket = createFakeSocket(),
+    route = '/',
+    path = '*',
+    elsewhere,
+  }: RenderWithSocketOptions = {},
 ): RenderWithSocketResult => {
-    if (!document.getElementById('app')) {
-        const appRoot = document.createElement('div');
-        appRoot.id = 'app';
-        document.body.appendChild(appRoot);
-    }
+  if (!document.getElementById('app')) {
+    const appRoot = document.createElement('div');
+    appRoot.id = 'app';
+    document.body.appendChild(appRoot);
+  }
 
-    const result = render(
-        <SocketContext.Provider
-            value={{ socket: socket as unknown as Socket }}
-        >
-            <MemoryRouter initialEntries={[route]}>
-                <Routes>
-                    <Route path={path} element={ui} />
-                    {elsewhere && <Route path="*" element={elsewhere} />}
-                </Routes>
-            </MemoryRouter>
-        </SocketContext.Provider>,
-    );
+  const result = render(
+    <SocketContext.Provider value={{ socket: socket as unknown as Socket }}>
+      <MemoryRouter initialEntries={[route]}>
+        <Routes>
+          <Route path={path} element={ui} />
+          {elsewhere && <Route path="*" element={elsewhere} />}
+        </Routes>
+      </MemoryRouter>
+    </SocketContext.Provider>,
+  );
 
-    return { ...result, socket };
+  return { ...result, socket };
 };
 
 export { renderWithSocket };

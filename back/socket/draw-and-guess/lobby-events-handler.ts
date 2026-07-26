@@ -1,98 +1,95 @@
 import type { Server, Socket } from 'socket.io';
 import type {
-    DrawAndGuessDetailRoomInfo,
-    OwnerInfo,
-    RoomCreateRequestBody,
+  DrawAndGuessDetailRoomInfo,
+  OwnerInfo,
+  RoomCreateRequestBody,
 } from '../../models/types.js';
 import {
-    getDrawAndGuessLobbyRoomInfo,
-    generateRoomId,
-    getRoomStatus,
+  getDrawAndGuessLobbyRoomInfo,
+  generateRoomId,
+  getRoomStatus,
 } from '../../libs/utils.js';
 import { parseArgs, roomCreateRequest } from '../../libs/validation.js';
 
 const lobbyEventsHandler = (
-    io: Server,
-    socket: Socket,
-    drawAndGuessDetailRoomInfoList: Record<string, DrawAndGuessDetailRoomInfo>,
+  io: Server,
+  socket: Socket,
+  drawAndGuessDetailRoomInfoList: Record<string, DrawAndGuessDetailRoomInfo>,
 ) => {
-    socket.on('clientJoinDrawAndGuessLobby', () => {
-        const drawAndGuessLobbySimplifiedRoomList = Object.values(
-            drawAndGuessDetailRoomInfoList,
-        ).map(getDrawAndGuessLobbyRoomInfo);
+  socket.on('clientJoinDrawAndGuessLobby', () => {
+    const drawAndGuessLobbySimplifiedRoomList = Object.values(
+      drawAndGuessDetailRoomInfoList,
+    ).map(getDrawAndGuessLobbyRoomInfo);
 
-        // Notify the current client that they joined the lobby and send the room list
-        socket.emit(
-            'updateDrawAndGuessLobbyRoomList',
-            drawAndGuessLobbySimplifiedRoomList,
-        );
-    });
-
-    socket.on(
-        'createDrawAndGuessRoomRequest',
-        (request: RoomCreateRequestBody) => {
-            const validated = parseArgs(
-                roomCreateRequest,
-                request,
-                'createDrawAndGuessRoomRequest',
-            );
-            if (!validated) return;
-
-            const { roomName, ownerUsername, maxPlayers, rounds, password } =
-                validated;
-            const roomId = generateRoomId();
-            const owner: OwnerInfo = {
-                username: ownerUsername,
-                socketId: socket.id,
-            };
-
-            // Creating an new empty room
-            const newDrawAndGuessRoom: DrawAndGuessDetailRoomInfo = {
-                roomId,
-                roomName,
-                owner,
-                status: getRoomStatus(0, maxPlayers),
-                currentPlayerCount: 0,
-                maxPlayers,
-                rounds,
-                password,
-                playerList: {},
-                currentDrawer: '',
-                currentWord: '',
-                currentWordHint: '',
-                currentRound: 0,
-                isGameStarted: false,
-                isWordSelectingPhase: false,
-                isDrawingPhase: false,
-                isReviewingPhase: false,
-                drawerQueue: new Set(),
-                wordCategory: '',
-                wordChoices: [],
-                phaseEndsAt: 0,
-            };
-
-            drawAndGuessDetailRoomInfoList[roomId] = newDrawAndGuessRoom;
-
-            const drawAndGuessLobbySimplifiedRoomList = Object.values(
-                drawAndGuessDetailRoomInfoList,
-            ).map(getDrawAndGuessLobbyRoomInfo);
-
-            // Notify the current client that the room has been created. The
-            // password is deliberately not echoed back — the creator already
-            // has it, and every value that crosses the socket is one more
-            // place it can leak from.
-            socket.emit(
-                'createDrawAndGuessRoomSuccess',
-                newDrawAndGuessRoom.roomId,
-            );
-
-            // Notify all clients in the lobby that a new room has been created
-            io.emit(
-                'updateDrawAndGuessLobbyRoomList',
-                drawAndGuessLobbySimplifiedRoomList,
-            );
-        },
+    // Notify the current client that they joined the lobby and send the room list
+    socket.emit(
+      'updateDrawAndGuessLobbyRoomList',
+      drawAndGuessLobbySimplifiedRoomList,
     );
+  });
+
+  socket.on(
+    'createDrawAndGuessRoomRequest',
+    (request: RoomCreateRequestBody) => {
+      const validated = parseArgs(
+        roomCreateRequest,
+        request,
+        'createDrawAndGuessRoomRequest',
+      );
+      if (!validated) return;
+
+      const { roomName, ownerUsername, maxPlayers, rounds, password } =
+        validated;
+      const roomId = generateRoomId();
+      const owner: OwnerInfo = {
+        username: ownerUsername,
+        socketId: socket.id,
+      };
+
+      // Creating an new empty room
+      const newDrawAndGuessRoom: DrawAndGuessDetailRoomInfo = {
+        roomId,
+        roomName,
+        owner,
+        status: getRoomStatus(0, maxPlayers),
+        currentPlayerCount: 0,
+        maxPlayers,
+        rounds,
+        password,
+        playerList: {},
+        currentDrawer: '',
+        currentWord: '',
+        currentWordHint: '',
+        currentRound: 0,
+        isGameStarted: false,
+        isWordSelectingPhase: false,
+        isDrawingPhase: false,
+        isReviewingPhase: false,
+        drawerQueue: new Set(),
+        wordCategory: '',
+        wordChoices: [],
+        phaseEndsAt: 0,
+      };
+
+      drawAndGuessDetailRoomInfoList[roomId] = newDrawAndGuessRoom;
+
+      const drawAndGuessLobbySimplifiedRoomList = Object.values(
+        drawAndGuessDetailRoomInfoList,
+      ).map(getDrawAndGuessLobbyRoomInfo);
+
+      // Notify the current client that the room has been created. The
+      // password is deliberately not echoed back — the creator already
+      // has it, and every value that crosses the socket is one more
+      // place it can leak from.
+      socket.emit('createDrawAndGuessRoomSuccess', newDrawAndGuessRoom.roomId);
+
+      // Notify all clients in the lobby that a new room has been created
+      io.emit(
+        'updateDrawAndGuessLobbyRoomList',
+        drawAndGuessLobbySimplifiedRoomList,
+      );
+    },
+  );
 };
 
 export { lobbyEventsHandler };

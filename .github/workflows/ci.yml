@@ -40,6 +40,11 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      # Checked rather than trusted: without this, the config is only a
+      # suggestion and the style drifts back apart one editor at a time.
+      - name: Format
+        run: npm run format:check
+
       # The backend suite binds ephemeral ports and drives real socket.io
       # clients, so it needs no services — but it is timing-sensitive, and a
       # loaded runner is exactly where that shows up.
