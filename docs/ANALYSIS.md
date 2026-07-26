@@ -25,7 +25,6 @@ happens over Socket.io. Server state lives in two plain objects owned by
 
 ```ts
 const rooms: Record<string, DrawAndGuessDetailRoomInfo> = {};
-const socketInRooms: Record<string, Set<string>> = {};
 ```
 
 Restarting the server drops every room. For a hobby project that's a perfectly
@@ -46,7 +45,9 @@ module-level, so importing anything meant taking port 3000.
 | `game-events-handler.ts`              | Socket glue over the engine                |
 | `chat-events-handler.ts`              | Chat messages and guess checking           |
 | `whiteboard-canvas-events-handler.ts` | Relay draw / undo / clear events           |
-| `../client-disconnect-handler.ts`     | Cleanup on disconnect                      |
+| `membership.ts`                       | Seats, departures and the reconnect grace  |
+| `../player-session-handler.ts`        | The identity handshake                     |
+| `../client-disconnect-handler.ts`     | Hands a dropped socket to `membership.ts`  |
 
 **The server is authoritative.** This is the main structural change from the
 original design, and it is worth stating plainly because everything else follows
@@ -69,10 +70,22 @@ from it:
   convenience for honest clients; the server re-checks who may guess, who may
   pick a word, and who may speak in a room.
 
-**Identity is still the socket id.** Players are keyed by `socket.id`, so a
-refresh or a brief network drop makes you a brand-new player. There are no
-accounts; the username lives in `sessionStorage`. Server-authoritative timing is
-the prerequisite for fixing that, and it is now in place.
+**Identity outlives the connection.** Rooms are keyed by a server-issued player
+id, not by `socket.id`, which changes on every reload. Each id is paired with a
+secret token that only its owner receives — without one, any player could take
+any other player's seat, because every id in a room is broadcast to everyone in
+it. The client keeps both in `sessionStorage`: per tab, and surviving a reload,
+which is exactly the lifetime a seat should have.
+
+There are still no accounts. This is a way to be the same player across a
+refresh, not a way to be the same person across a visit.
+
+**A dropped connection is not a departure.** The seat, the score, ownership and
+the place in the round are held for thirty seconds
+([`membership.ts`](../back/socket/draw-and-guess/membership.ts)) in case the
+player comes back. Leaving deliberately still takes effect immediately — that
+distinction is the only difference between the two paths, which used to be
+separate near-identical copies of the same sequence.
 
 ---
 
@@ -104,6 +117,9 @@ driving scripted socket.io clients through the same flows.
 - **Departures**: player removed, ownership transferred, empty rooms deleted. If
   the player who left was drawing, the turn is skipped; if the room drops below
   two players mid-game, the game ends rather than stalling.
+- **Reconnection**: a reload keeps your seat, your score, the crown and your
+  place in the round. Others see you marked away rather than gone. The turn does
+  not wait for you, though — see §3.1.
 
 ### Word bank
 
@@ -325,8 +341,22 @@ two-player room holds the URL and rejoins while the other player observes the
 departure and the return. Eight component tests cover the guard, four of which
 fail against the previous implementation.
 
-**Points do not survive the reload** — the rejoining socket is a new player as
-far as the server is concerned. Keeping them is reconnection proper, below.
+**Points did not survive the reload** at this point — the rejoining socket was
+a new player as far as the server was concerned. That is fixed below.
+
+#### 🟠 A reload made you a different person
+
+Identity was the socket id, which changes on every reload. So refreshing did
+not just cost you the page: the room removed one player and admitted a stranger
+with no score, no crown and no place in the round.
+
+**Fixed** by issuing a player id, keying room state by it, and holding a dropped
+player's seat for a grace period rather than treating every disconnect as a
+departure. See §4.
+
+_Verified:_ in a browser, guessed for 100 points, refreshed, and returned to the
+same URL, the same player id, 100 points and the crown; the other player in the
+room saw the drop and the return and was never told anybody had left.
 
 ### 3.2 Still open
 
@@ -410,15 +440,16 @@ far as the server is concerned. Keeping them is reconnection proper, below.
 The server owns the game clock, so phase lengths are server-side settings.
 Shorten them to play a whole game through in seconds while developing:
 
-| Variable              | Default | Purpose                                 |
-| --------------------- | ------- | --------------------------------------- |
-| `WORD_SELECT_SECONDS` | `15`    | How long the drawer has to pick a word  |
-| `DRAWING_SECONDS`     | `90`    | Length of the drawing phase             |
-| `REVIEW_SECONDS`      | `10`    | How long the word is shown after a turn |
+| Variable                  | Default | Purpose                                    |
+| ------------------------- | ------- | ------------------------------------------ |
+| `WORD_SELECT_SECONDS`     | `15`    | How long the drawer has to pick a word     |
+| `DRAWING_SECONDS`         | `90`    | Length of the drawing phase                |
+| `REVIEW_SECONDS`          | `10`    | How long the word is shown after a turn    |
+| `RECONNECT_GRACE_SECONDS` | `30`    | How long a dropped player keeps their seat |
 
-The test suite does not use these — it passes durations to
-`createDrawAndGuessGameEngine()` directly, so a suite's timing cannot be changed
-out from under it by an environment variable.
+The test suite does not use these — it passes durations straight to
+`createIconIoServer()`, so a suite's timing cannot be changed out from under it
+by an environment variable.
 
 ---
 
@@ -452,16 +483,16 @@ createInitialState, handlers }`. Draw & Guess becomes the first consumer.
 Several of these got substantially cheaper in this pass, because the two things
 they all depended on — a server-owned clock and a replayable drawing — now exist.
 
-| Feature                                          | Notes                                                                                                                                                                                                                                                               |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **End the turn early when everyone has guessed** | The engine already tracks `receivedPointsThisTurn` and owns the timer. Count the players who have scored against the players who are not drawing, and call the phase over. Perhaps twenty lines now.                                                                |
-| **Reconnection**                                 | The blocker was client-authoritative timing; that is gone. Issue a persistent player id, keep the seat alive for ~30s, and re-send the room snapshot on return — the mechanism for that already exists as `requestDrawAndGuessRoomState`. Biggest UX win available. |
-| **Late-joiner canvas sync**                      | The drawing is a stroke list now. Keep it on the server too and send it with the room snapshot.                                                                                                                                                                     |
-| **Progressive letter hints**                     | Reveal a letter at 60s and 30s. The engine holds the word and the clock, so this is a scheduled callback plus an emit.                                                                                                                                              |
-| **Time-weighted scoring**                        | Award points on remaining time instead of a flat 100. `getRemainingPhaseMs()` already gives you the number.                                                                                                                                                         |
-| **Close-guess feedback**                         | "Sam is close!" on Levenshtein distance 1–2. Cheap and fun, and the guess now runs server-side where you'd put it.                                                                                                                                                  |
-| **Custom word lists**                            | Per-room word packs; the word bank is already a plain record.                                                                                                                                                                                                       |
-| **Round summary screen**                         | Show per-turn point deltas during the review phase.                                                                                                                                                                                                                 |
+| Feature                                          | Notes                                                                                                                                                                                                |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **End the turn early when everyone has guessed** | The engine already tracks `receivedPointsThisTurn` and owns the timer. Count the players who have scored against the players who are not drawing, and call the phase over. Perhaps twenty lines now. |
+| ~~**Reconnection**~~ — done                      | Player ids, a signed resume, and a thirty-second seat hold. See §4.                                                                                                                                  |
+| **Late-joiner canvas sync**                      | The drawing is a stroke list now. Keep it on the server too and send it with the room snapshot.                                                                                                      |
+| **Progressive letter hints**                     | Reveal a letter at 60s and 30s. The engine holds the word and the clock, so this is a scheduled callback plus an emit.                                                                               |
+| **Time-weighted scoring**                        | Award points on remaining time instead of a flat 100. `getRemainingPhaseMs()` already gives you the number.                                                                                          |
+| **Close-guess feedback**                         | "Sam is close!" on Levenshtein distance 1–2. Cheap and fun, and the guess now runs server-side where you'd put it.                                                                                   |
+| **Custom word lists**                            | Per-room word packs; the word bank is already a plain record.                                                                                                                                        |
+| **Round summary screen**                         | Show per-turn point deltas during the review phase.                                                                                                                                                  |
 
 ### Infrastructure worth having
 
@@ -506,16 +537,13 @@ previous list has come off the front. What remains:
 2. **End the turn early when everyone has guessed.** Small, and the single
    biggest improvement to how the game actually feels to play. The engine
    already tracks `receivedPointsThisTurn` and owns the timer.
-3. **Reconnection.** Partly started: a refresh now rejoins the room, but as a
-   new player with no points, because identity is the socket id. Real
-   reconnection means a player id that outlives a socket — issue one, hold the
-   seat for ~30s, and restore points and drawer state on return. A weekend, and
-   the biggest UX win available.
-4. **Late-joiner canvas sync.** Cheap once the stroke list lives server-side.
-5. **Progressive hints and time-weighted scoring.** An evening each, and the
+3. **Late-joiner canvas sync.** Cheap once the stroke list lives server-side,
+   and now the most valuable next step for how the game feels: it is also what
+   would let a reloading drawer keep their turn rather than lose it.
+4. **Progressive hints and time-weighted scoring.** An evening each, and the
    engine gives you everything both need.
-6. **Rate limiting.** The last unbounded thing a client controls. Payload sizes
+5. **Rate limiting.** The last unbounded thing a client controls. Payload sizes
    are checked; how often they arrive is not.
-7. _Then_ consider a second game — on top of an extracted room layer.
+6. _Then_ consider a second game — on top of an extracted room layer.
 
-Items 1–2 and 6 are each an evening. Items 3–4 are a weekend apiece.
+Items 1–2 and 5 are each an evening. Item 3 is a weekend.
