@@ -2,7 +2,9 @@ import type { Server } from 'socket.io';
 import type { DrawAndGuessDetailRoomInfo } from '../../models/types.js';
 import type { CustomError, ErrorType } from '../../models/error.js';
 import {
-  convertStrToUnderscores,
+  buildWordHint,
+  revealablePositions,
+  getRandomInt,
   getDrawAndGuessLobbyRoomInfo,
   getDrawAndGuessRoomState,
   getRandomCategory,
@@ -32,6 +34,15 @@ const SYSTEM = '📢 System';
  * reloading but leaving.
  */
 const DEFAULT_DRAWER_HOLD_SECONDS = 10;
+
+/**
+ * The hint gets easier as the clock runs down: two reveals, evenly spaced
+ * through the drawing phase, uncovering up to a third of the letters between
+ * them. A third is enough to rescue a stalled room without handing over a
+ * short word — "Pear" gives up one letter, never two.
+ */
+const HINT_REVEAL_COUNT = 2;
+const MAX_REVEALED_FRACTION = 1 / 3;
 
 const roomError = (message: string, errorType: ErrorType): CustomError => {
   const error = new Error(message) as CustomError;
@@ -65,6 +76,8 @@ const createDrawAndGuessGameEngine = (
   const phaseTimers = new Map<string, NodeJS.Timeout>();
   /** How long a room is still waiting for a drawer who dropped, keyed by room. */
   const drawerHoldTimers = new Map<string, NodeJS.Timeout>();
+  /** Pending letter reveals for the turn in progress, keyed by room. */
+  const hintTimers = new Map<string, NodeJS.Timeout[]>();
   const drawerHoldInSeconds =
     phaseDurationsInSeconds.drawerHold ?? DEFAULT_DRAWER_HOLD_SECONDS;
 
@@ -95,6 +108,68 @@ const createDrawAndGuessGameEngine = (
       clearTimeout(pending);
       drawerHoldTimers.delete(roomId);
     }
+  };
+
+  const clearHintTimers = (roomId: string) => {
+    for (const timer of hintTimers.get(roomId) ?? []) clearTimeout(timer);
+    hintTimers.delete(roomId);
+  };
+
+  /**
+   * Uncovers letters of the word as the drawing phase runs down.
+   *
+   * The positions are drawn at random up front and then revealed in that order,
+   * so a reveal cannot land on a letter that is already showing, and each step
+   * genuinely tells the room something it did not know.
+   */
+  const scheduleHintReveals = (room: DrawAndGuessDetailRoomInfo) => {
+    clearHintTimers(room.roomId);
+
+    const positions = revealablePositions(room.currentWord);
+    const totalToReveal = Math.floor(positions.length * MAX_REVEALED_FRACTION);
+    if (totalToReveal === 0) return;
+
+    // Fisher-Yates, so every letter is equally likely to be the one given away.
+    const order = [...positions];
+    for (let index = order.length - 1; index > 0; index--) {
+      const swapWith = getRandomInt(0, index + 1);
+      [order[index], order[swapWith]] = [order[swapWith], order[index]];
+    }
+
+    const word = room.currentWord;
+    const revealed = new Set<number>();
+    const timers: NodeJS.Timeout[] = [];
+
+    for (let step = 1; step <= HINT_REVEAL_COUNT; step++) {
+      const revealedByNow = Math.round(
+        (totalToReveal * step) / HINT_REVEAL_COUNT,
+      );
+      if (revealedByNow <= revealed.size) continue;
+
+      const upTo = revealedByNow;
+      const delayInSeconds =
+        (phaseDurationsInSeconds.drawing * step) / (HINT_REVEAL_COUNT + 1);
+
+      timers.push(
+        setTimeout(() => {
+          const current = rooms[room.roomId];
+          // The turn may have ended early — everybody guessed, the drawer
+          // dropped — and the next one is not this one's word to hint at.
+          if (!current) return;
+          if (!current.isDrawingPhase) return;
+          if (current.currentWord !== word) return;
+
+          for (const position of order.slice(0, upTo)) revealed.add(position);
+          current.currentWordHint = buildWordHint(word, revealed);
+
+          io.to(current.roomId).emit('wordHintRevealed', {
+            currentWordHint: current.currentWordHint,
+          });
+        }, delayInSeconds * 1000),
+      );
+    }
+
+    hintTimers.set(room.roomId, timers);
   };
 
   const schedulePhaseEnd = (
@@ -257,7 +332,7 @@ const createDrawAndGuessGameEngine = (
     word: string,
   ) => {
     room.currentWord = word;
-    room.currentWordHint = convertStrToUnderscores(word);
+    room.currentWordHint = buildWordHint(word);
     room.isWordSelectingPhase = false;
     room.isDrawingPhase = true;
     room.wordChoices = []; // Empty the word choices once one is picked
@@ -281,9 +356,13 @@ const createDrawAndGuessGameEngine = (
     schedulePhaseEnd(room.roomId, phaseDurationsInSeconds.drawing, () =>
       beginReviewingPhase(room),
     );
+    scheduleHintReveals(room);
   };
 
   const beginReviewingPhase = (room: DrawAndGuessDetailRoomInfo) => {
+    // Nothing left to hint at: the next event reveals the word itself.
+    clearHintTimers(room.roomId);
+
     room.isDrawingPhase = false;
     room.isReviewingPhase = true;
     room.phaseEndsAt = Date.now() + phaseDurationsInSeconds.reviewing * 1000;
@@ -303,6 +382,7 @@ const createDrawAndGuessGameEngine = (
   const endTurn = (room: DrawAndGuessDetailRoomInfo) => {
     clearPhaseTimer(room.roomId);
     clearDrawerHold(room.roomId);
+    clearHintTimers(room.roomId);
 
     room.isWordSelectingPhase = false;
     room.isDrawingPhase = false;
@@ -337,6 +417,7 @@ const createDrawAndGuessGameEngine = (
   const endGame = (room: DrawAndGuessDetailRoomInfo) => {
     clearPhaseTimer(room.roomId);
     clearDrawerHold(room.roomId);
+    clearHintTimers(room.roomId);
 
     room.currentRound = 0;
     room.isGameStarted = false;
@@ -506,6 +587,7 @@ const createDrawAndGuessGameEngine = (
   const disposeRoom = (roomId: string) => {
     clearPhaseTimer(roomId);
     clearDrawerHold(roomId);
+    clearHintTimers(roomId);
   };
 
   /**

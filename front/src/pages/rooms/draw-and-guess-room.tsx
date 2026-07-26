@@ -214,6 +214,15 @@ const DrawAndGuessRoom = () => {
       },
     );
 
+    // The hint gets easier as the drawing clock runs down: the server
+    // uncovers letters on its own schedule and says what it uncovered.
+    socket.on('wordHintRevealed', (data: { currentWordHint: string }) => {
+      setCurrentRoomInfo((prevRoomInfo) => ({
+        ...prevRoomInfo,
+        currentWordHint: data.currentWordHint,
+      }));
+    });
+
     // ONLY drawer of the current round will receive this event
     socket.on('drawingPhaseStartedForDrawer', (word: string) => {
       setCurrentRoomInfo((prevRoomInfo) => ({
@@ -293,6 +302,7 @@ const DrawAndGuessRoom = () => {
       socket.off('drawerReceiveWordChoices');
       socket.off('drawingPhaseStarted');
       socket.off('drawingPhaseStartedForDrawer');
+      socket.off('wordHintRevealed');
       socket.off('playersReceivedPointsFromCorrectGuess');
       socket.off('reviewingPhaseStarted');
       socket.off('reviewingPhaseEnded');

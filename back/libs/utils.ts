@@ -133,8 +133,30 @@ const getRandomElementFromSet = (set: Set<string>): string | undefined => {
   return [...set][randomIndex];
 };
 
-const convertStrToUnderscores = (str: string): string => {
-  return str.replace(/\S/g, '_');
+/**
+ * The row of underscores everyone but the drawer sees, with `revealed`
+ * character positions filled in.
+ *
+ * Spacing is kept as it is in the word, so "Ice Cream" hints as "___ _____"
+ * and a two-word answer looks like one.
+ */
+const buildWordHint = (
+  word: string,
+  revealed?: ReadonlySet<number>,
+): string => {
+  return [...word]
+    .map((character, index) => {
+      if (/\s/.test(character)) return character;
+      return revealed?.has(index) ? character : '_';
+    })
+    .join('');
+};
+
+/** The positions in a word that a hint could reveal — everything but spaces. */
+const revealablePositions = (word: string): number[] => {
+  return [...word].flatMap((character, index) =>
+    /\s/.test(character) ? [] : [index],
+  );
 };
 
 const resetPoints = (
@@ -179,7 +201,8 @@ export {
   getRandomCategory,
   getRandomChoicesFromList,
   getRandomElementFromSet,
-  convertStrToUnderscores,
+  buildWordHint,
+  revealablePositions,
   resetPoints,
   resetReceivedPointsThisTurn,
 };
