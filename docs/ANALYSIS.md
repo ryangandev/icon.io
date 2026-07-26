@@ -20,17 +20,21 @@ front/  React SPA ──── socket.io ────► back/  Express + Socket
 ```
 
 **There is no database and no HTTP API.** Everything except serving static files
-happens over Socket.io. Server state lives in two module-level objects in
-[`back/server.ts`](../back/server.ts):
+happens over Socket.io. Server state lives in two plain objects owned by
+[`back/app.ts`](../back/app.ts):
 
 ```ts
-let drawAndGuessDetailRoomInfoList: Record<string, DrawAndGuessDetailRoomInfo> =
-  {};
-let socketInRooms: Record<string, Set<string>> = {};
+const rooms: Record<string, DrawAndGuessDetailRoomInfo> = {};
+const socketInRooms: Record<string, Set<string>> = {};
 ```
 
 Restarting the server drops every room. For a hobby project that's a perfectly
 reasonable trade — it just needs to be a conscious one.
+
+`createIconIoServer()` builds a fully wired server without starting it, and
+[`back/server.ts`](../back/server.ts) is now just the entry point that binds a
+port. That split is what makes the server testable: these objects used to be
+module-level, so importing anything meant taking port 3000.
 
 **Handler layout** (`back/socket/draw-and-guess/`):
 
@@ -119,10 +123,13 @@ Animals, League Of Legends, Electronics, Sports, Food.
 
 ## 3. Bugs
 
-**Every 🔴, 🟠 and 🟡 issue in the previous revision of this document has been
-fixed**, each as its own commit, each verified against a running server rather
-than by reading the diff. They are kept below with what the fix was, because the
-reasoning is more useful than a changelog line. What is still open is in §3.2.
+**Every 🔴, 🟠 and 🟡 issue this document has ever listed is now fixed**, each as
+its own commit, each verified against a running server rather than by reading
+the diff. They are kept below with what the fix was, because the reasoning is
+more useful than a changelog line. What is still open is in §3.2.
+
+All ten of the fixes below are now covered by the committed suite, verified by
+reverting each one in turn and confirming the suite catches it.
 
 ### 3.1 Fixed
 
@@ -293,18 +300,37 @@ _Verified:_ a socket that never joined announcing a departure leaves the player
 count, owner and chat untouched and produces no error; leaving twice removes
 exactly one player.
 
+#### 🟠 A refresh or a deep link bounced you to the Gamehub
+
+[`require-socket.tsx`](../front/src/components/require-socket.tsx) redirected to
+`/Gamehub` whenever `socket.connected` was false at first render — which it
+always is on a fresh page load, because the socket is opened by the Gamehub page
+and neither a pasted URL nor a refresh goes through it. The guard meant to catch
+a lost connection was in practice catching normal navigation, so every deep link
+and every refresh bounced.
+
+**Fixed** by having the guard open the connection itself and render a connecting
+state while it does. It still redirects, but only on real failure: socket.io
+exhausting its retries, or ten seconds with no connection. A connection dropped
+mid-game now waits for socket.io's own retry instead of throwing the player out
+of the room.
+
+Reaching the room page was necessary but not sufficient. A reloaded page has a
+socket id the room has never seen, so it arrived as a spectator — on screen,
+absent from the player list, unable to chat, guess or be dealt a turn. The room
+snapshot already says who is in the room, so a client that finds itself missing
+now asks to join, and a rejection (a locked room, whose password it no longer
+has) sends it back to the lobby with the reason.
+
+_Verified:_ in a browser, a deep link to the lobby lands, and a refresh inside a
+two-player room holds the URL and rejoins while the other player observes the
+departure and the return. Eight component tests cover the guard, four of which
+fail against the previous implementation.
+
+**Points do not survive the reload** — the rejoining socket is a new player as
+far as the server is concerned. Keeping them is reconnection proper, below.
+
 ### 3.2 Still open
-
-#### 🟠 A refresh or a deep link bounces you to the Gamehub
-
-[`require-socket.tsx`](../front/src/components/require-socket.tsx) redirects to
-`/Gamehub` when `socket.connected` is false at first render — which it always is
-on a fresh page load, because the connection has not been established yet. So
-pasting a room URL, or refreshing while in a room, never lands where you meant.
-
-**Fix:** render a "connecting…" state instead of redirecting, and only redirect
-once the connection has actually failed. This was found while testing the fixes
-above; it is a real UX bug and small to fix.
 
 #### 🟢 Smaller things
 
@@ -313,8 +339,9 @@ above; it is a real UX bug and small to fix.
 - The word hint never progressively reveals letters.
 - `validate-auth.tsx` calls `window.location.reload()` after setting a username.
 - Filename typo: `password-prmopt-modal.tsx`.
-- Still zero tests in the repo. The integration suites written for this pass ran
-  against a live server and are not committed — see §5.
+- Canvas rendering is the one thing the suite does not cover: jsdom has no 2D
+  context. The relay protocol around it is covered, and the drawing itself was
+  verified in two browsers when it landed.
 
 ### 3.3 Fixed during the earlier modernization pass
 
@@ -342,7 +369,10 @@ above; it is a real UX bug and small to fix.
 | TypeScript       | 4.9                                   | **7.0**                   |
 | Express          | 4.19                                  | **5.2**                   |
 | Socket.io        | 4.7                                   | **4.8**                   |
-| Lint             | CRA built-in (eslint 8)               | **oxlint**                |
+| Lint             | CRA built-in (eslint 8)               | **oxlint**, both packages |
+| Tests            | none                                  | **113** (Vitest)          |
+| CI               | none                                  | **GitHub Actions**        |
+| Formatting       | script, no config                     | **Prettier, 2-space**     |
 | Node             | 18 types                              | **20+**, `@types/node` 26 |
 | Frontend install | ~1,500 packages                       | **106**                   |
 | Backend install  | ~800 packages                         | **129**                   |
@@ -360,13 +390,15 @@ above; it is a real UX bug and small to fix.
   `react-router@8.3.0` is above the affected range, and since v7 the `-dom`
   package is just a re-export shim, so importing the core directly is both the
   fix and the modern idiom.
-- **oxlint instead of ESLint.** `typescript-eslint` hard-refuses TypeScript 7
-  (it errors out on load; support is tracked for TS ≥ 7.1 in
-  typescript-eslint#10940), and the suggested workaround needs a TypeScript 6.0
-  that is still only a beta. oxlint parses TS/TSX natively in Rust with no
-  TypeScript API dependency, so it sidesteps the conflict entirely. **If you'd
-  rather be back on ESLint, that's the trade to revisit** once typescript-eslint
-  ships TS 7 support.
+- **oxlint instead of ESLint — settled.** `typescript-eslint` hard-refuses
+  TypeScript 7 (it errors out on load; support is tracked for TS ≥ 7.1 in
+  typescript-eslint#10940). As of 8.65.0 it still declares
+  `typescript: >=4.8.4 <6.1.0`, so the choice is unchanged: pin TypeScript back
+  to 5.9 to use it, or keep oxlint. **Keeping oxlint.** Giving up the Go
+  compiler for a linter is a bad trade, `tsc --strict` already rejects the type
+  errors the type-aware rules would catch, and switching back is a config file —
+  the rules are ESLint's, under the same names. Worth revisiting when
+  typescript-eslint ships TS 7 support, not before.
 - **Dropped 12 unused dependencies**: `argon2`, `axios` (both sides),
   `cookie-parser`, `zod`, `jest`, `ts-jest`, `ts-node`, `web-vitals`,
   `react-icons`, and all three `@testing-library/*` packages. None were imported
@@ -385,6 +417,10 @@ Shorten them to play a whole game through in seconds while developing:
 | `WORD_SELECT_SECONDS` | `15`    | How long the drawer has to pick a word  |
 | `DRAWING_SECONDS`     | `90`    | Length of the drawing phase             |
 | `REVIEW_SECONDS`      | `10`    | How long the word is shown after a turn |
+
+The test suite does not use these — it passes durations to
+`createDrawAndGuessGameEngine()` directly, so a suite's timing cannot be changed
+out from under it by an environment variable.
 
 ---
 
@@ -431,47 +467,57 @@ they all depended on — a server-owned clock and a replayable drawing — now e
 
 ### Infrastructure worth having
 
-- **Tests.** Still none in the repo, and this is now the most valuable gap. Every
-  fix in §3.1 was verified by an integration script that drove real socket.io
-  clients against a running server — full game flow, drawer departure, malformed
-  payloads, guess cheating, join timing, canvas relay. Those scripts were
-  throwaway; committing their successors as a Vitest suite would turn a one-off
-  verification into a regression net. `back/libs/utils.ts` and the scoring logic
-  are pure and unit-testable; the engine is best tested exactly as it was here,
-  by talking to it over a socket.
-- **CI.** A GitHub Action running `typecheck` + `lint` + `build` on both
-  packages. Dependabot is already active on this repo; CI would tell you whether
-  its PRs are safe to merge.
-- **A Prettier config.** `front/package.json` has a `format` script but the repo
-  has no config file, so running it would reformat every file away from the
-  4-space, single-quote style the code is actually written in.
+- **Tests — done.** 113 of them: 83 backend, 30 frontend. The backend suite runs
+  real socket.io clients against a real server, because that is where the
+  interesting behaviour lives; each suite binds its own ephemeral port, so no
+  suite can see a room another left behind. `createIconIoServer()` exists for
+  this — building the server at module scope meant importing it was the same
+  thing as taking a port. Phase durations are a parameter of the engine rather
+  than a module constant, so a whole game runs in milliseconds.
+
+  Checked by reverting each fix in §3.1 in turn: all ten reverted fixes are
+  caught. That includes the two subtle enough to have been worth writing the
+  tests for — `.catch('')` on the password schema turning a rejected password
+  into an unlocked room, and a blanked `currentWord` where an omitted one was
+  needed.
+
+- **CI — done.** [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) runs
+  lint, typecheck, format, test and build on every pull request. Dependabot is
+  already active here, so CI now says whether its PRs are safe to merge.
+- **One linter, one formatter — done.** Both are root-level commands over both
+  packages. Linting had only ever covered `front/`; extending it to the backend
+  immediately found two real errors in a test helper.
 - **A shared `docker-compose`** or an npm workspace root, so `npm run dev`
-  starts both halves. Right now it's two terminals.
+  starts both halves. Right now it's two terminals. (The root `package.json`
+  added in this pass is deliberately not a workspace — it carries the shared
+  tooling only, and the two applications keep their own dependencies.)
 
 ---
 
 ## 6. Suggested order of work
 
-Items 2–6 of the previous list are done. What remains, reordered around what is
-now true:
+Tests, CI and the deep-link redirect are done, so what was items 1 and 3 of the
+previous list has come off the front. What remains:
 
-1. **Tests, then CI.** This moved to the front. Nine behavioural fixes just
-   landed and nothing in the repo would catch a regression in any of them. Start
-   with the integration shape used to verify them — real clients against a real
-   server — because that is where the interesting behaviour lives. Then a GitHub
-   Action running `typecheck` + `lint` + `build` on both packages.
-2. **Shared types package.** `front/src/models/types.ts` and
+1. **Shared types package.** `front/src/models/types.ts` and
    `back/models/types.ts` are near-identical copies that must be edited in
-   lockstep, and this pass added fields to both. A `shared/` directory referenced
-   by both tsconfigs removes a whole class of drift bugs.
-3. **Fix the deep-link/refresh redirect** (§3.2). Small, and it is the most
-   visible remaining rough edge.
-4. **End the turn early when everyone has guessed.** Small, and the single
-   biggest improvement to how the game actually feels to play.
-5. **Reconnection.** Now unblocked. A weekend.
-6. **Late-joiner canvas sync.** Cheap once the stroke list lives server-side.
-7. **Progressive hints and time-weighted scoring.** An evening each, and the
+   lockstep, and the last two passes added fields to both. A `shared/` directory
+   referenced by both tsconfigs removes a whole class of drift bugs. Now the
+   most valuable structural change left, and CI will catch it if the extraction
+   goes wrong.
+2. **End the turn early when everyone has guessed.** Small, and the single
+   biggest improvement to how the game actually feels to play. The engine
+   already tracks `receivedPointsThisTurn` and owns the timer.
+3. **Reconnection.** Partly started: a refresh now rejoins the room, but as a
+   new player with no points, because identity is the socket id. Real
+   reconnection means a player id that outlives a socket — issue one, hold the
+   seat for ~30s, and restore points and drawer state on return. A weekend, and
+   the biggest UX win available.
+4. **Late-joiner canvas sync.** Cheap once the stroke list lives server-side.
+5. **Progressive hints and time-weighted scoring.** An evening each, and the
    engine gives you everything both need.
-8. _Then_ consider a second game — on top of an extracted room layer.
+6. **Rate limiting.** The last unbounded thing a client controls. Payload sizes
+   are checked; how often they arrive is not.
+7. _Then_ consider a second game — on top of an extracted room layer.
 
-Items 1–4 are each an evening. Items 5–6 are a weekend apiece.
+Items 1–2 and 6 are each an evening. Items 3–4 are a weekend apiece.
