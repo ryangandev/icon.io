@@ -7,6 +7,8 @@ import type { Socket } from 'socket.io-client';
 
 interface RenderWithSocketOptions {
   socket?: FakeSocket;
+  /** Who the server says we are; room state is keyed by this. */
+  playerId?: string;
   /** Initial URL, so a test can arrive the way a deep link would. */
   route?: string;
   /** The route pattern the element is mounted at, when it reads params. */
@@ -30,6 +32,7 @@ const renderWithSocket = (
   ui: ReactElement,
   {
     socket = createFakeSocket(),
+    playerId = 'player-under-test',
     route = '/',
     path = '*',
     elsewhere,
@@ -42,7 +45,9 @@ const renderWithSocket = (
   }
 
   const result = render(
-    <SocketContext.Provider value={{ socket: socket as unknown as Socket }}>
+    <SocketContext.Provider
+      value={{ socket: socket as unknown as Socket, playerId }}
+    >
       <MemoryRouter initialEntries={[route]}>
         <Routes>
           <Route path={path} element={ui} />

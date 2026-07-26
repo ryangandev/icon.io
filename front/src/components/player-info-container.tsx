@@ -19,10 +19,15 @@ const PlayerInfoContainer = ({
   ranking,
   isDrawingPhase,
 }: PlayerInfoContainerProps) => {
-  const { username, points } = playerInfo;
+  const { username, points, isConnected } = playerInfo;
 
   return (
-    <div className="draw-and-guess-room-player-info-container">
+    <div
+      className={
+        'draw-and-guess-room-player-info-container' +
+        (isConnected ? '' : ' is-away')
+      }
+    >
       <div className="draw-and-guess-room-player-info-container-left">
         <span className="draw-and-guess-room-player-info-ranking">
           #{ranking}
@@ -37,6 +42,8 @@ const PlayerInfoContainer = ({
         </span>
       </div>
       <div className="draw-and-guess-room-player-info-container-right">
+        {/* Away rather than gone: the seat and the score are being held. */}
+        {!isConnected && <span title="Reconnecting…">📴</span>}
         {isCurrentPlayerDrawer && (
           <span className={isDrawingPhase ? 'oscillate-emoji' : ''}>🖌️</span>
         )}

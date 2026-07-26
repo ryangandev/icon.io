@@ -1,5 +1,6 @@
 import type { Socket } from 'socket.io';
 import type { DrawAndGuessGameEngine } from './game-engine.js';
+import type { PlayerSessionRegistry } from '../../libs/player-session.js';
 import {
   parseArgs,
   roomIdOnly,
@@ -15,6 +16,7 @@ import {
 const GameEventsHandler = (
   socket: Socket,
   gameEngine: DrawAndGuessGameEngine,
+  sessions: PlayerSessionRegistry,
 ) => {
   socket.on('startDrawAndGuessGame', (...rawArgs: unknown[]) => {
     const validated = parseArgs(roomIdOnly, rawArgs, 'startDrawAndGuessGame');
@@ -42,7 +44,10 @@ const GameEventsHandler = (
     if (!validated) return;
     const [roomId, word] = validated;
 
-    gameEngine.selectWord(roomId, socket.id, word);
+    const playerId = sessions.playerIdFor(socket.id);
+    if (!playerId) return;
+
+    gameEngine.selectWord(roomId, playerId, word);
   });
 };
 

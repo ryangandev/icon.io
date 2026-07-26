@@ -36,6 +36,19 @@ const roomCreateRequest = z.object({
   password: password,
 });
 
+/**
+ * A returning client's claim to an existing identity. Both halves are exactly
+ * the shape the server issued, so anything else is rejected before it reaches
+ * the token comparison — and a rejected claim just gets a new identity, never
+ * an error saying which half was wrong.
+ */
+const resumeSessionRequest = z.tuple([
+  z.object({
+    playerId: z.string().uuid(),
+    token: z.string().regex(/^[0-9a-f]{64}$/),
+  }),
+]);
+
 const joinRoomRequest = z.tuple([roomId, username, password]);
 const leaveRoomRequest = z.tuple([roomId, username]);
 const roomIdOnly = z.tuple([roomId]);
@@ -91,6 +104,7 @@ const parseArgs = <T>(
 
 export {
   parseArgs,
+  resumeSessionRequest,
   roomCreateRequest,
   joinRoomRequest,
   leaveRoomRequest,

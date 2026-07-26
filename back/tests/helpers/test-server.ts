@@ -17,11 +17,32 @@ const FAST_PHASES: PhaseDurationsInSeconds = {
   reviewing: 0.2,
 };
 
+interface PlayerIdentity {
+  playerId: string;
+  token: string;
+}
+
+/**
+ * A connected client that has already identified itself. `playerId` is what the
+ * server keys rooms by, so it is what assertions about seats and scores use —
+ * `socket.id` no longer appears in room state at all.
+ */
+interface TestClient extends Socket {
+  playerId: string;
+  token: string;
+}
+
 interface TestServer {
   url: string;
   server: IconIoServer;
-  /** Opens a client and resolves once it has connected. */
-  connect: () => Promise<Socket>;
+  /** Opens a client, connects it, and completes the identity handshake. */
+  connect: (identity?: PlayerIdentity) => Promise<TestClient>;
+  /**
+   * What a browser refresh does: drop the connection and open a new one
+   * presenting the same identity. The returned client is a different socket
+   * claiming to be the same player.
+   */
+  reload: (client: TestClient) => Promise<TestClient>;
   /** Closes every client this harness opened, then the server. */
   teardown: () => Promise<void>;
 }
@@ -34,10 +55,12 @@ interface TestServer {
  */
 const startTestServer = async (
   phaseDurations: PhaseDurationsInSeconds = FAST_PHASES,
+  graceInSeconds = 0.6,
 ): Promise<TestServer> => {
   const server = createIconIoServer({
     serveClient: false,
     phaseDurations,
+    graceInSeconds,
   });
 
   await new Promise<void>((resolve) => {
@@ -48,23 +71,39 @@ const startTestServer = async (
   const url = `http://127.0.0.1:${port}`;
   const clients: Socket[] = [];
 
-  const connect = (): Promise<Socket> =>
+  const connect = (identity?: PlayerIdentity): Promise<TestClient> =>
     new Promise((resolve, reject) => {
       const client = createClient(url, {
         transports: ['websocket'],
         forceNew: true,
-      });
+      }) as TestClient;
       clients.push(client);
-      client.on('connect', () => resolve(client));
       client.on('connect_error', reject);
+
+      client.on('connect', () => {
+        // Every real client identifies before doing anything else; the server
+        // reads the player id off the connection, never off a payload.
+        client.once('playerIdentity', (issued: PlayerIdentity) => {
+          client.playerId = issued.playerId;
+          client.token = issued.token;
+          resolve(client);
+        });
+        client.emit('identifyPlayer', identity ?? null);
+      });
     });
+
+  const reload = async (client: TestClient): Promise<TestClient> => {
+    const identity = { playerId: client.playerId, token: client.token };
+    client.close();
+    return connect(identity);
+  };
 
   const teardown = async (): Promise<void> => {
     for (const client of clients) client.close();
     await server.close();
   };
 
-  return { url, server, connect, teardown };
+  return { url, server, connect, reload, teardown };
 };
 
 /**
@@ -169,4 +208,4 @@ export {
   joinRoom,
   lobbyView,
 };
-export type { TestServer, DrawAndGuessRoomState };
+export type { TestServer, TestClient, PlayerIdentity, DrawAndGuessRoomState };

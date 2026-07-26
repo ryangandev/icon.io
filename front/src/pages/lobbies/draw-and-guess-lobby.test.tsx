@@ -9,7 +9,7 @@ import { renderWithSocket } from '../../tests/render';
 const makeRoom = (overrides: Partial<RoomInfo> = {}): RoomInfo => ({
   roomId: 'room-open',
   roomName: 'Open Room',
-  owner: { username: 'Ada', socketId: 'socket-ada' },
+  owner: { username: 'Ada', playerId: 'player-ada' },
   status: 'Open',
   currentPlayerCount: 1,
   maxPlayers: 4,

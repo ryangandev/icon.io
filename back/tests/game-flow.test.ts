@@ -236,7 +236,12 @@ describe('the game engine', () => {
    * The reason the clock had to move to the server at all. The drawer's tab
    * owned the phase timer, so closing it left everyone else waiting forever.
    */
-  it('skips to the next turn when the drawer leaves', async () => {
+  /*
+   * The seat waits for a dropped player; the turn does not. A drawer who is not
+   * there cannot draw, and holding the room still for the whole grace period
+   * would cost everyone else more than it saves the one who dropped.
+   */
+  it('skips to the next turn as soon as the drawer drops', async () => {
     const harness3 = await startTestServer();
     try {
       const [alice, bob, carol] = await Promise.all([
@@ -250,9 +255,9 @@ describe('the game engine', () => {
       await joinRoom(carol, roomId, 'Carol');
 
       const clients = new Map([
-        [alice.id, alice],
-        [bob.id, bob],
-        [carol.id, carol],
+        [alice.playerId, alice],
+        [bob.playerId, bob],
+        [carol.playerId, carol],
       ]);
 
       const firstTurn = waitFor<{ currentDrawer: string }>(
@@ -262,16 +267,16 @@ describe('the game engine', () => {
       alice.emit('startDrawAndGuessGame', roomId);
       const { currentDrawer } = await firstTurn;
 
-      const witness = currentDrawer === alice.id ? bob : alice;
+      const witness = currentDrawer === alice.playerId ? bob : alice;
       const turnEnded = waitFor(witness, 'reviewingPhaseEnded');
       const messages = collect<[string, string]>(witness, 'receiveMessage');
 
       clients.get(currentDrawer)!.close();
 
       await turnEnded;
-      expect(messages.some(([, text]) => text.includes('drawer left'))).toBe(
-        true,
-      );
+      expect(
+        messages.some(([, text]) => text.includes('drawer lost connection')),
+      ).toBe(true);
       expect(harness3.server.rooms[roomId]?.isGameStarted).toBe(true);
     } finally {
       await harness3.teardown();
@@ -305,7 +310,8 @@ describe('the game engine', () => {
 
     alice.close();
     bob.close();
-    await settle(600);
+    // Long enough for both seats to expire and the empty room to be collected.
+    await settle(1200);
 
     expect(harness.server.rooms[roomId]).toBeUndefined();
   });

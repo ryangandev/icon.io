@@ -17,6 +17,7 @@ import {
   phaseDurationsInSeconds as defaultPhaseDurations,
   type PhaseDurationsInSeconds,
 } from '../../libs/game-clock.js';
+import type { PlayerSessionRegistry } from '../../libs/player-session.js';
 import { wordBank } from '../../libs/word-bank.js';
 
 const MIN_PLAYERS_TO_START = 2;
@@ -49,9 +50,23 @@ const roomError = (message: string, errorType: ErrorType): CustomError => {
 const createDrawAndGuessGameEngine = (
   io: Server,
   rooms: Record<string, DrawAndGuessDetailRoomInfo>,
+  sessions: PlayerSessionRegistry,
   phaseDurationsInSeconds: PhaseDurationsInSeconds = defaultPhaseDurations,
 ) => {
   const phaseTimers = new Map<string, NodeJS.Timeout>();
+
+  /**
+   * Sends to whichever socket a player is currently using. Room state is keyed
+   * by player id now; socket.io still addresses sockets.
+   */
+  const emitToPlayer = (
+    playerId: string,
+    event: string,
+    ...args: unknown[]
+  ) => {
+    const socketId = sessions.socketIdFor(playerId);
+    if (socketId) io.to(socketId).emit(event, ...args);
+  };
 
   const clearPhaseTimer = (roomId: string) => {
     const pending = phaseTimers.get(roomId);
@@ -150,7 +165,16 @@ const createDrawAndGuessGameEngine = (
     io.to(room.roomId).emit('drawerClear');
     room.playerList = resetReceivedPointsThisTurn(room.playerList);
 
-    const newDrawer = getRandomElementFromSet(room.drawerQueue);
+    // Only somebody actually present can take a turn. A player inside their
+    // reconnect grace period still holds a seat, but handing them the pencil
+    // would stall the room until they either returned or timed out.
+    const presentInQueue = new Set(
+      [...room.drawerQueue].filter(
+        (playerId) => room.playerList[playerId]?.isConnected,
+      ),
+    );
+
+    const newDrawer = getRandomElementFromSet(presentInQueue);
     if (!newDrawer || room.wordCategory === '') {
       endGame(room);
       return;
@@ -178,8 +202,9 @@ const createDrawAndGuessGameEngine = (
       phaseEndsInMs: getRemainingPhaseMs(room),
     });
 
-    // Only the drawer learns what the choices are.
-    io.to(newDrawer).emit('drawerReceiveWordChoices', room.wordChoices);
+    // Only the drawer learns what the choices are, and only over the socket
+    // their identity is currently attached to.
+    emitToPlayer(newDrawer, 'drawerReceiveWordChoices', room.wordChoices);
 
     // Falling back to the first choice used to be the drawer's browser's
     // job, which meant it never happened if they had closed the tab.
@@ -217,7 +242,7 @@ const createDrawAndGuessGameEngine = (
     });
 
     // Only the drawer is told the word itself.
-    io.to(room.currentDrawer).emit('drawingPhaseStartedForDrawer', word);
+    emitToPlayer(room.currentDrawer, 'drawingPhaseStartedForDrawer', word);
 
     schedulePhaseEnd(room.roomId, phaseDurationsInSeconds.drawing, () =>
       beginReviewingPhase(room),
@@ -309,11 +334,11 @@ const createDrawAndGuessGameEngine = (
    */
   const handlePlayerDeparture = (
     room: DrawAndGuessDetailRoomInfo,
-    socketId: string,
+    playerId: string,
   ) => {
     // Leaving a stale id in the queue would hand a turn to a player who is
     // no longer there, and nobody would ever draw it.
-    room.drawerQueue.delete(socketId);
+    room.drawerQueue.delete(playerId);
 
     if (!room.isGameStarted) return;
 
@@ -326,13 +351,37 @@ const createDrawAndGuessGameEngine = (
       return;
     }
 
-    if (room.currentDrawer === socketId) {
+    if (room.currentDrawer === playerId) {
       announce(
         room.roomId,
         'The drawer left the room. Skipping to the next turn.',
       );
       endTurn(room);
     }
+  };
+
+  /**
+   * The drawer's connection dropped, but they keep their seat.
+   *
+   * The turn does not wait for them. A drawer who is not there cannot draw, and
+   * holding a whole room still for the length of the reconnect grace would cost
+   * everyone else far more than it saves the one player — especially as the
+   * canvas is not yet synced server-side, so even a fast return would find a
+   * blank board. They keep their score and their place in the room; they lose
+   * this turn.
+   */
+  const skipTurnOfAbsentDrawer = (
+    room: DrawAndGuessDetailRoomInfo,
+    playerId: string,
+  ) => {
+    if (!room.isGameStarted) return;
+    if (room.currentDrawer !== playerId) return;
+
+    announce(
+      room.roomId,
+      'The drawer lost connection. Skipping to the next turn.',
+    );
+    endTurn(room);
   };
 
   /** Drops a room's pending timer when the room itself is deleted. */
@@ -345,10 +394,10 @@ const createDrawAndGuessGameEngine = (
    * to be the current drawer, in their own selecting phase, choosing one of
    * the words they were actually offered.
    */
-  const selectWord = (roomId: string, socketId: string, word: string) => {
+  const selectWord = (roomId: string, playerId: string, word: string) => {
     const room = rooms[roomId];
     if (!room) return;
-    if (room.currentDrawer !== socketId) return;
+    if (room.currentDrawer !== playerId) return;
     if (!room.isWordSelectingPhase) return;
     if (!room.wordChoices.includes(word)) return;
 
@@ -360,6 +409,7 @@ const createDrawAndGuessGameEngine = (
     startGame,
     selectWord,
     handlePlayerDeparture,
+    skipTurnOfAbsentDrawer,
     disposeRoom,
   };
 };

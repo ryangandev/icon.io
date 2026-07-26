@@ -1,5 +1,6 @@
 import type { Server, Socket } from 'socket.io';
 import type { DrawAndGuessDetailRoomInfo } from '../../models/types.js';
+import type { PlayerSessionRegistry } from '../../libs/player-session.js';
 import { chatRequest, parseArgs } from '../../libs/validation.js';
 
 const POINTS_FOR_GUESSER = 100;
@@ -9,6 +10,7 @@ const ChatEventsHandler = (
   io: Server,
   socket: Socket,
   drawAndGuessDetailRoomInfoList: Record<string, DrawAndGuessDetailRoomInfo>,
+  sessions: PlayerSessionRegistry,
 ) => {
   socket.on('sendMessage', (...rawArgs: unknown[]) => {
     const validated = parseArgs(chatRequest, rawArgs, 'sendMessage');
@@ -16,7 +18,9 @@ const ChatEventsHandler = (
     const [roomId, username, message] = validated;
 
     // Only players in the room may talk in it.
-    if (!drawAndGuessDetailRoomInfoList[roomId]?.playerList[socket.id]) {
+    const playerId = sessions.playerIdFor(socket.id);
+    if (!playerId) return;
+    if (!drawAndGuessDetailRoomInfoList[roomId]?.playerList[playerId]) {
       return;
     }
 
@@ -31,7 +35,10 @@ const ChatEventsHandler = (
     const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
     if (!currentRoom) return;
 
-    const currentPlayer = currentRoom.playerList[socket.id];
+    const playerId = sessions.playerIdFor(socket.id);
+    if (!playerId) return;
+
+    const currentPlayer = currentRoom.playerList[playerId];
     const currentDrawer = currentRoom.playerList[currentRoom.currentDrawer];
 
     /*
@@ -44,7 +51,7 @@ const ChatEventsHandler = (
      */
     if (!currentPlayer) return; // not in this room
     if (!currentRoom.isDrawingPhase) return; // nothing to guess yet
-    if (currentRoom.currentDrawer === socket.id) return; // knows the answer
+    if (currentRoom.currentDrawer === playerId) return; // knows the answer
     if (currentPlayer.receivedPointsThisTurn) return; // already scored
     if (currentRoom.currentWord === '') return;
 

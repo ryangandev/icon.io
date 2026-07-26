@@ -21,7 +21,7 @@ import useCountdownTimer from '../../hooks/useCountDownTimer';
 import { sortPlayerListByPoints } from '../../libs/utils';
 
 const DrawAndGuessRoom = () => {
-  const { socket } = useSocket();
+  const { socket, playerId } = useSocket();
   const navigate = useNavigate();
   const { roomId } = useParams();
   const username = sessionStorage.getItem('username');
@@ -38,13 +38,13 @@ const DrawAndGuessRoom = () => {
   // goes through it. Asking once is enough; a second snapshot must not send
   // another request while the first is still in flight.
   const hasAskedToJoinRef = useRef(false);
-  const isDrawer = currentRoomInfo.currentDrawer === socket.id;
-  const isRoomOwner = currentRoomInfo.owner.socketId === socket.id;
+  const isDrawer = currentRoomInfo.currentDrawer === playerId;
+  const isRoomOwner = currentRoomInfo.owner.playerId === playerId;
   const currentDrawerUsername =
     currentRoomInfo.playerList[currentRoomInfo.currentDrawer]?.username;
-  // socket.id is undefined until the socket has connected, so guard the lookup.
-  const receivedPointsThisTurn = socket.id
-    ? (currentRoomInfo.playerList[socket.id]?.receivedPointsThisTurn ?? false)
+  // Empty until the identity handshake completes, so guard the lookup.
+  const receivedPointsThisTurn = playerId
+    ? (currentRoomInfo.playerList[playerId]?.receivedPointsThisTurn ?? false)
     : false;
 
   // The clock lives on the server. Only one phase runs at a time, so the room
@@ -81,8 +81,8 @@ const DrawAndGuessRoom = () => {
         // guess or be dealt a turn.
         if (
           !hasAskedToJoinRef.current &&
-          socket.id &&
-          !currentRoomInfo.playerList[socket.id]
+          playerId &&
+          !currentRoomInfo.playerList[playerId]
         ) {
           hasAskedToJoinRef.current = true;
           socket.emit(
@@ -332,16 +332,16 @@ const DrawAndGuessRoom = () => {
         {/* Player Info Section */}
         <div className="draw-and-guess-room-body-left">
           {sortPlayerListByPoints(currentRoomInfo.playerList).map(
-            ([socketId, playerInfo], index) => (
+            ([listedPlayerId, playerInfo], index) => (
               <PlayerInfoContainer
-                key={socketId}
+                key={listedPlayerId}
                 playerInfo={playerInfo}
-                isClient={socketId === socket.id}
+                isClient={listedPlayerId === playerId}
                 isCurrentPlayerRoomOwner={
-                  socketId === currentRoomInfo.owner.socketId
+                  listedPlayerId === currentRoomInfo.owner.playerId
                 }
                 isCurrentPlayerDrawer={
-                  socketId === currentRoomInfo.currentDrawer
+                  listedPlayerId === currentRoomInfo.currentDrawer
                 }
                 ranking={index + 1}
                 isDrawingPhase={currentRoomInfo.isDrawingPhase}
