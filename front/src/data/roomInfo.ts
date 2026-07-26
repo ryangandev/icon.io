@@ -24,6 +24,7 @@ const roomInfoInitialObject: DrawAndGuessDetailRoomInfo = {
     drawerQueue: [],
     wordCategory: '',
     wordChoices: [],
+    phaseEndsInMs: 0,
 };
 
 export { roomInfoInitialObject };

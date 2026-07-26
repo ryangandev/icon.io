@@ -60,6 +60,7 @@ const lobbyEventsHandler = (
                 drawerQueue: new Set(),
                 wordCategory: '',
                 wordChoices: [],
+                phaseEndsAt: 0,
             };
 
             drawAndGuessDetailRoomInfoList[roomId] = newDrawAndGuessRoom;

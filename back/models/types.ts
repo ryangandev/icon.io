@@ -45,6 +45,7 @@ interface DrawAndGuessDetailRoomInfo extends RoomInfo {
     drawerQueue: Set<string>; // queue of socket ids
     wordCategory: WordCategory | ''; // '' when no game is in progress
     wordChoices: string[];
+    phaseEndsAt: number; // epoch ms the current phase ends; 0 when idle
 }
 
 /**
@@ -77,6 +78,9 @@ interface DrawAndGuessRoomState extends LobbyRoomInfo {
     isReviewingPhase: boolean;
     drawerQueue: string[]; // a Set does not survive JSON serialization
     wordCategory: WordCategory | '';
+    // Time left in the current phase, relative rather than absolute so that a
+    // client whose clock disagrees with the server's still counts down right.
+    phaseEndsInMs: number;
     // Drawer-private while the word is in play; omitted rather than blanked so
     // that merging this snapshot never clobbers the drawer's own copy.
     currentWord?: string;

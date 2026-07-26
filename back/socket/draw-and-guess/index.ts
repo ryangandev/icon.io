@@ -1,4 +1,5 @@
 export * from './chat-events-handler.js';
+export * from './game-engine.js';
 export * from './game-events-handler.js';
 export * from './lobby-events-handler.js';
 export * from './room-events-handler.js';

@@ -44,6 +44,9 @@ interface DrawAndGuessDetailRoomInfo extends RoomInfo {
     drawerQueue: string[]; // socket ids still to draw this round
     wordCategory: string;
     wordChoices: string[];
+    // How long the server says is left in the current phase, at the moment it
+    // sent this snapshot. 0 when no phase is running.
+    phaseEndsInMs: number;
 }
 
 export type {

@@ -9,12 +9,14 @@ import {
     getRoomStatus,
 } from '../../libs/utils.js';
 import type { CustomError } from '../../models/error.js';
+import type { DrawAndGuessGameEngine } from './game-engine.js';
 
 const roomEventsHandler = (
     io: Server,
     socket: Socket,
     drawAndGuessDetailRoomInfoList: Record<string, DrawAndGuessDetailRoomInfo>,
     socketInRooms: Record<string, Set<string>>,
+    gameEngine: DrawAndGuessGameEngine,
 ) => {
     socket.on(
         'clientJoinDrawAndGuessRoomRequest',
@@ -129,6 +131,7 @@ const roomEventsHandler = (
 
                 // If the room is empty, delete the room
                 if (currentRoom.currentPlayerCount === 0) {
+                    gameEngine.disposeRoom(roomId);
                     delete drawAndGuessDetailRoomInfoList[roomId];
                 } else {
                     // If the leaving client is the owner, transfer ownership to the next client
@@ -166,10 +169,6 @@ const roomEventsHandler = (
                 socket.leave(roomId);
                 socketInRooms[socket.id].delete(roomId);
 
-                const drawAndGuessLobbySimplifiedRoomList = Object.values(
-                    drawAndGuessDetailRoomInfoList,
-                ).map(getDrawAndGuessLobbyRoomInfo);
-
                 // Notify all clients in the room that a client has left
                 io.to(roomId).emit(
                     'clientLeaveDrawAndGuessRoomSuccess',
@@ -185,10 +184,20 @@ const roomEventsHandler = (
                     );
                 }
 
-                // Notify all clients in the lobby that a client has left a room
+                // A departure can strand a turn — the drawer may have been the
+                // one who left, or the room may have dropped below two players.
+                if (drawAndGuessDetailRoomInfoList[roomId]) {
+                    gameEngine.handlePlayerDeparture(currentRoom, socket.id);
+                }
+
+                // Notify all clients in the lobby that a client has left a room.
+                // Built after the departure is handled, so an ended game is
+                // reflected as 'Open' rather than a stale 'In Progress'.
                 io.emit(
                     'updateDrawAndGuessLobbyRoomList',
-                    drawAndGuessLobbySimplifiedRoomList,
+                    Object.values(drawAndGuessDetailRoomInfoList).map(
+                        getDrawAndGuessLobbyRoomInfo,
+                    ),
                 );
             } catch (error: any) {
                 console.error(error);

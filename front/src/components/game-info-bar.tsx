@@ -6,8 +6,6 @@ import {
     SettingOutlined,
 } from '@ant-design/icons';
 import { formatTimeInMinutesAndSeconds } from '../libs/utils';
-import { timer } from '../data/timer';
-import useCountdownTimer from '../hooks/useCountDownTimer';
 
 interface GameInfoBarProps {
     isGameStarted: boolean;
@@ -20,9 +18,8 @@ interface GameInfoBarProps {
     currentWordHint: string;
     receivedPointsThisTurn: boolean;
     handleOnLeave: () => void;
-    startTimeRef: React.MutableRefObject<number | null>;
-    drawingPhaseTimer: number;
-    setDrawingPhaseTimer: React.Dispatch<React.SetStateAction<number>>;
+    /** Seconds left in whichever phase the server currently has running. */
+    secondsRemaining: number;
 }
 
 const GameInfoBar = ({
@@ -36,18 +33,8 @@ const GameInfoBar = ({
     currentWordHint,
     receivedPointsThisTurn,
     handleOnLeave,
-    startTimeRef,
-    drawingPhaseTimer,
-    setDrawingPhaseTimer,
+    secondsRemaining,
 }: GameInfoBarProps) => {
-    useCountdownTimer(
-        isDrawingPhase,
-        drawingPhaseTimer,
-        setDrawingPhaseTimer,
-        startTimeRef,
-        timer.drawingPhaseTimer,
-    );
-
     return (
         <div className="game-info-container">
             <div className="game-info-container-left">
@@ -59,7 +46,7 @@ const GameInfoBar = ({
                         fontSize: 24,
                     }}
                 >
-                    {formatTimeInMinutesAndSeconds(drawingPhaseTimer)}
+                    {formatTimeInMinutesAndSeconds(secondsRemaining)}
                 </span>
             </div>
             <div className="game-info-container-center">

@@ -80,6 +80,7 @@ const getDrawAndGuessRoomState = (
         isReviewingPhase: room.isReviewingPhase,
         drawerQueue: [...room.drawerQueue],
         wordCategory: room.wordCategory,
+        phaseEndsInMs: getRemainingPhaseMs(room),
     };
 
     if (!isWordInPlay) {
@@ -88,6 +89,15 @@ const getDrawAndGuessRoomState = (
     }
 
     return roomState;
+};
+
+/**
+ * Time left in the room's current phase. Sent to clients as a duration rather
+ * than an absolute timestamp so that a client with a skewed clock still counts
+ * down correctly — it anchors this against its own `Date.now()`.
+ */
+const getRemainingPhaseMs = (room: DrawAndGuessDetailRoomInfo): number => {
+    return Math.max(0, room.phaseEndsAt - Date.now());
 };
 
 const getRandomCategory = (
@@ -162,6 +172,7 @@ export {
     getRoomStatus,
     getDrawAndGuessLobbyRoomInfo,
     getDrawAndGuessRoomState,
+    getRemainingPhaseMs,
     getRandomCategory,
     getRandomChoicesFromList,
     getRandomElementFromSet,

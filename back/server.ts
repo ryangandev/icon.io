@@ -8,6 +8,7 @@ import type { DrawAndGuessDetailRoomInfo } from './models/types.js';
 import {
     ChatEventsHandler,
     GameEventsHandler,
+    createDrawAndGuessGameEngine,
     lobbyEventsHandler,
     roomEventsHandler,
     whiteboardCanvasEventHandler,
@@ -36,6 +37,13 @@ let drawAndGuessDetailRoomInfoList: Record<string, DrawAndGuessDetailRoomInfo> =
     {};
 let socketInRooms: Record<string, Set<string>> = {};
 
+// Created once for the process, not once per connection: it owns the phase
+// timers for every room, so there can only be one of it.
+const drawAndGuessGameEngine = createDrawAndGuessGameEngine(
+    io,
+    drawAndGuessDetailRoomInfoList,
+);
+
 io.on('connection', (socket) => {
     console.log('a user is connected: ' + socket.id);
 
@@ -54,6 +62,7 @@ io.on('connection', (socket) => {
         socket,
         drawAndGuessDetailRoomInfoList,
         socketInRooms,
+        drawAndGuessGameEngine,
     );
 
     // handles draw and guess lobby and room events
@@ -63,10 +72,11 @@ io.on('connection', (socket) => {
         socket,
         drawAndGuessDetailRoomInfoList,
         socketInRooms,
+        drawAndGuessGameEngine,
     );
     whiteboardCanvasEventHandler(socket);
     ChatEventsHandler(io, socket, drawAndGuessDetailRoomInfoList);
-    GameEventsHandler(io, socket, drawAndGuessDetailRoomInfoList);
+    GameEventsHandler(socket, drawAndGuessGameEngine);
 });
 
 if (process.env.NODE_ENV === 'production') {

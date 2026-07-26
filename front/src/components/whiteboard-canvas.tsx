@@ -4,8 +4,6 @@ import { useSocket } from '../hooks/useSocket';
 import '../styles/components/whiteboard-canvas.css';
 import WhiteBoardToolBar from './whiteboard-toolbar';
 import { Button, Space, Typography } from 'antd';
-import { timer } from '../data/timer';
-import useCountdownTimer from '../hooks/useCountDownTimer';
 
 interface BrushOptions {
     color: string;
@@ -34,12 +32,8 @@ interface WhiteBoardCanvasProps {
     isDrawingPhase: boolean;
     isReviewingPhase: boolean;
     wordChoices: string[];
-    wordSelectPhaseStartTimeRef: React.MutableRefObject<number | null>;
-    wordSelectPhaseTimer: number;
-    setWordSelectPhaseTimer: React.Dispatch<React.SetStateAction<number>>;
-    reviewingPhaseStartTimeRef: React.MutableRefObject<number | null>;
-    reviewingPhaseTimer: number;
-    setReviewingPhaseTimer: React.Dispatch<React.SetStateAction<number>>;
+    /** Seconds left in whichever phase the server currently has running. */
+    secondsRemaining: number;
     isRoomOwner: boolean;
     handleStartGame: () => void;
     currentDrawer: string;
@@ -54,12 +48,7 @@ const WhiteBoardCanvas = ({
     isDrawingPhase,
     isReviewingPhase,
     wordChoices = [],
-    wordSelectPhaseStartTimeRef,
-    wordSelectPhaseTimer,
-    setWordSelectPhaseTimer,
-    reviewingPhaseStartTimeRef,
-    reviewingPhaseTimer,
-    setReviewingPhaseTimer,
+    secondsRemaining,
     isRoomOwner,
     handleStartGame,
     currentDrawer,
@@ -155,22 +144,6 @@ const WhiteBoardCanvas = ({
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket, context, previousStatesRef]); // ignore saveCanvasState() function in the dependency array
-
-    useCountdownTimer(
-        isWordSelectingPhase,
-        wordSelectPhaseTimer,
-        setWordSelectPhaseTimer,
-        wordSelectPhaseStartTimeRef,
-        timer.wordSelectPhaseTimer,
-    );
-
-    useCountdownTimer(
-        isReviewingPhase,
-        reviewingPhaseTimer,
-        setReviewingPhaseTimer,
-        reviewingPhaseStartTimeRef,
-        timer.reviewingPhaseTimer,
-    );
 
     const handleColorChange = (color: string) => {
         setBrushOptions({
@@ -344,7 +317,7 @@ const WhiteBoardCanvas = ({
                         ))}
                     </Space>
                     <Typography.Title level={2}>
-                        {wordSelectPhaseTimer}
+                        {secondsRemaining}
                     </Typography.Title>
                 </div>
             )}
@@ -354,7 +327,7 @@ const WhiteBoardCanvas = ({
                         Waiting for {currentDrawer} to select a word...
                     </Typography.Title>
                     <Typography.Title level={2}>
-                        {wordSelectPhaseTimer}
+                        {secondsRemaining}
                     </Typography.Title>
                 </div>
             )}
@@ -373,7 +346,7 @@ const WhiteBoardCanvas = ({
                         The word was: <b>{currentWord}</b>
                     </Typography.Title>
                     <Typography.Title level={2}>
-                        {reviewingPhaseTimer}
+                        {secondsRemaining}
                     </Typography.Title>
                 </div>
             )}

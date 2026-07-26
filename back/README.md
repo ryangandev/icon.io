@@ -71,6 +71,15 @@
 | `CORS_ORIGIN` | `http://localhost:3001` | Allowed origin for Socket.io in development          |
 | `NODE_ENV`    | –                       | `production` serves the built SPA from `build/public` |
 
+The server owns the game clock, so the phase lengths are server-side settings.
+Shorten them to play through a whole game quickly while developing:
+
+| Variable               | Default | Purpose                                    |
+| ---------------------- | ------- | ------------------------------------------ |
+| `WORD_SELECT_SECONDS`  | `15`    | How long the drawer has to pick a word     |
+| `DRAWING_SECONDS`      | `90`    | Length of the drawing phase                |
+| `REVIEW_SECONDS`       | `10`    | How long the word is shown after a turn    |
+
 ## 🛠️ Set Up - Deployment
 
 -   If you want to deploy the application, the setup is a bit different. Refer to the [Root README](https://github.com/ryangandev/icon.io/blob/main/README.md)

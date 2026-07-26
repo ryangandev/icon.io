@@ -5,12 +5,14 @@ import {
     getDrawAndGuessRoomState,
     getRoomStatus,
 } from '../libs/utils.js';
+import type { DrawAndGuessGameEngine } from './draw-and-guess/game-engine.js';
 
 const clientDepartureOnDisconnectHandler = (
     io: Server,
     socket: Socket,
     drawAndGuessDetailRoomInfoList: Record<string, DrawAndGuessDetailRoomInfo>,
     socketInRooms: Record<string, Set<string>>,
+    gameEngine: DrawAndGuessGameEngine,
 ) => {
     socket.on('disconnect', () => {
         try {
@@ -28,6 +30,7 @@ const clientDepartureOnDisconnectHandler = (
 
                     // If the room is empty, delete the room
                     if (currentRoom.currentPlayerCount === 0) {
+                        gameEngine.disposeRoom(roomId);
                         delete drawAndGuessDetailRoomInfoList[roomId];
                     } else {
                         // If the leaving client is the owner, transfer ownership to the next client
@@ -51,20 +54,29 @@ const clientDepartureOnDisconnectHandler = (
                         );
                     }
 
-                    const drawAndGuessLobbySimplifiedRoomList = Object.values(
-                        drawAndGuessDetailRoomInfoList,
-                    ).map(getDrawAndGuessLobbyRoomInfo);
-
-                    // Notify all clients in the lobby that a client has left a room
-                    io.emit(
-                        'updateDrawAndGuessLobbyRoomList',
-                        drawAndGuessLobbySimplifiedRoomList,
-                    );
-
                     // Notify all clients in the room that a client has left
                     io.to(roomId).emit(
                         'clientLeaveDrawAndGuessRoomSuccess',
                         getDrawAndGuessRoomState(currentRoom),
+                    );
+
+                    // A dropped connection strands the turn just as surely as
+                    // an explicit leave does — this is the case the room used
+                    // to hang on, because the phase clock lived in the tab that
+                    // just went away.
+                    if (drawAndGuessDetailRoomInfoList[roomId]) {
+                        gameEngine.handlePlayerDeparture(
+                            currentRoom,
+                            socket.id,
+                        );
+                    }
+
+                    // Notify all clients in the lobby that a client has left a room
+                    io.emit(
+                        'updateDrawAndGuessLobbyRoomList',
+                        Object.values(drawAndGuessDetailRoomInfoList).map(
+                            getDrawAndGuessLobbyRoomInfo,
+                        ),
                     );
                 }
             });

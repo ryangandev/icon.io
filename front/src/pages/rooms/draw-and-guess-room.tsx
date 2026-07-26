@@ -17,8 +17,8 @@ import type { CustomError } from '../../models/error';
 import toast from 'react-hot-toast';
 import { roomInfoInitialObject } from '../../data/roomInfo';
 import useScreenSize from '../../hooks/useScreenSize';
-import { timer } from '../../data/timer';
-import { setupTimeoutForPhase, sortPlayerListByPoints } from '../../libs/utils';
+import useCountdownTimer from '../../hooks/useCountDownTimer';
+import { sortPlayerListByPoints } from '../../libs/utils';
 
 const DrawAndGuessRoom = () => {
     const { socket } = useSocket();
@@ -42,21 +42,17 @@ const DrawAndGuessRoom = () => {
           false)
         : false;
 
-    // Timer attributes
-    const [wordSelectPhaseTimer, setWordSelectPhaseTimer] = useState<number>(0);
-    const [drawingPhaseTimer, setDrawingPhaseTimer] = useState<number>(0);
-    const [reviewingPhaseTimer, setReviewingPhaseTimer] = useState<number>(0);
-    // Use ref to store timeout id to avoid stale closure during useEffect
-    const wordSelectingPhaseTimeoutId = useRef<NodeJS.Timeout | null>(null);
-    const drawingPhaseTimeoutId = useRef<NodeJS.Timeout | null>(null);
-    const reviewingPhaseTimeoutId = useRef<NodeJS.Timeout | null>(null);
-    // The refs below are for storing the start time of each phase to apply date based solution to setTimeout and setInterval
-    const wordSelectingPhaseIntervalStartTimeRef = useRef<number | null>(null);
-    const drawingPhaseIntervalStartTimeRef = useRef<number | null>(null);
-    const reviewingPhaseIntervalStartTimeRef = useRef<number | null>(null);
-    const wordSelectingPhaseTimeoutStartTimeRef = useRef<number | null>(null);
-    const drawingPhaseTimeoutStartTimeRef = useRef<number | null>(null);
-    const reviewingPhaseTimeoutStartTimeRef = useRef<number | null>(null);
+    // The clock lives on the server. Only one phase runs at a time, so the room
+    // needs a single deadline: each phase event says how long is left, and we
+    // anchor that against this client's own clock.
+    const [phaseDeadline, setPhaseDeadline] = useState<number>(0);
+    const secondsRemaining = useCountdownTimer(phaseDeadline);
+
+    const anchorPhaseDeadline = (phaseEndsInMs: number | undefined) => {
+        setPhaseDeadline(
+            phaseEndsInMs && phaseEndsInMs > 0 ? Date.now() + phaseEndsInMs : 0,
+        );
+    };
 
     useEffect(() => {
         currentRoomInfoRef.current = currentRoomInfo;
@@ -70,6 +66,9 @@ const DrawAndGuessRoom = () => {
                     ...prevRoomInfo,
                     ...currentRoomInfo,
                 }));
+                // Room snapshots carry the live phase clock, so joining or
+                // watching someone leave re-syncs the countdown.
+                anchorPhaseDeadline(currentRoomInfo.phaseEndsInMs);
             },
         );
 
@@ -80,6 +79,7 @@ const DrawAndGuessRoom = () => {
                     ...prevRoomInfo,
                     ...currentRoomInfo,
                 }));
+                anchorPhaseDeadline(currentRoomInfo.phaseEndsInMs);
             },
         );
 
@@ -129,6 +129,7 @@ const DrawAndGuessRoom = () => {
                 currentDrawer: string;
                 drawerQueue: string[];
                 isWordSelectingPhase: boolean;
+                phaseEndsInMs: number;
             }) => {
                 setCurrentRoomInfo((prevRoomInfo) => ({
                     ...prevRoomInfo,
@@ -136,32 +137,20 @@ const DrawAndGuessRoom = () => {
                     currentDrawer: data.currentDrawer,
                     drawerQueue: data.drawerQueue,
                     isWordSelectingPhase: data.isWordSelectingPhase,
+                    currentWord: '',
                 }));
-                setWordSelectPhaseTimer(timer.wordSelectPhaseTimer);
+                anchorPhaseDeadline(data.phaseEndsInMs);
             },
         );
 
-        // ONLY drawer of the current round will receive this event
-        socket.on('drawerReceiveWordChoices', (wordChoices) => {
+        // ONLY drawer of the current round will receive this event.
+        // If they never pick, the server falls back to the first choice — that
+        // deadline used to live here, in the drawer's own browser.
+        socket.on('drawerReceiveWordChoices', (wordChoices: string[]) => {
             setCurrentRoomInfo((prevRoomInfo) => ({
                 ...prevRoomInfo,
                 wordChoices: wordChoices,
             }));
-
-            setupTimeoutForPhase(
-                wordSelectingPhaseTimeoutId,
-                wordSelectingPhaseTimeoutStartTimeRef,
-                timer.wordSelectPhaseTimer,
-                () => {
-                    if (currentRoomInfoRef.current.currentWord === '') {
-                        socket.emit(
-                            'drawerSelectWordFinished',
-                            currentRoomInfoRef.current.roomId,
-                            wordChoices[0],
-                        );
-                    }
-                },
-            );
         });
 
         socket.on(
@@ -171,6 +160,7 @@ const DrawAndGuessRoom = () => {
                 isWordSelectingPhase: boolean;
                 isDrawingPhase: boolean;
                 wordChoices: string[];
+                phaseEndsInMs: number;
             }) => {
                 setCurrentRoomInfo((prevRoomInfo) => ({
                     ...prevRoomInfo,
@@ -179,8 +169,7 @@ const DrawAndGuessRoom = () => {
                     isDrawingPhase: data.isDrawingPhase,
                     wordChoices: data.wordChoices,
                 }));
-                setWordSelectPhaseTimer(0);
-                setDrawingPhaseTimer(timer.drawingPhaseTimer);
+                anchorPhaseDeadline(data.phaseEndsInMs);
             },
         );
 
@@ -190,18 +179,6 @@ const DrawAndGuessRoom = () => {
                 ...prevRoomInfo,
                 currentWord: word,
             }));
-
-            setupTimeoutForPhase(
-                drawingPhaseTimeoutId,
-                drawingPhaseTimeoutStartTimeRef,
-                timer.drawingPhaseTimer,
-                () => {
-                    socket.emit(
-                        'drawingPhaseTimerEnded',
-                        currentRoomInfoRef.current.roomId,
-                    );
-                },
-            );
         });
 
         socket.on(
@@ -220,6 +197,7 @@ const DrawAndGuessRoom = () => {
                 isDrawingPhase: boolean;
                 isReviewingPhase: boolean;
                 currentWord: string;
+                phaseEndsInMs: number;
             }) => {
                 setCurrentRoomInfo((prevRoomInfo) => ({
                     ...prevRoomInfo,
@@ -227,30 +205,15 @@ const DrawAndGuessRoom = () => {
                     isReviewingPhase: data.isReviewingPhase,
                     currentWord: data.currentWord,
                 }));
-                setDrawingPhaseTimer(0);
-                setReviewingPhaseTimer(timer.reviewingPhaseTimer);
-
-                // Only the drawer will continue to emit the below event
-                if (currentRoomInfoRef.current.currentDrawer !== socket.id)
-                    return;
-
-                setupTimeoutForPhase(
-                    reviewingPhaseTimeoutId,
-                    reviewingPhaseTimeoutStartTimeRef,
-                    timer.reviewingPhaseTimer,
-                    () => {
-                        socket.emit(
-                            'reviewingPhaseTimerEnded',
-                            currentRoomInfoRef.current.roomId,
-                        );
-                    },
-                );
+                anchorPhaseDeadline(data.phaseEndsInMs);
             },
         );
 
         socket.on(
             'reviewingPhaseEnded',
             (data: {
+                isWordSelectingPhase: boolean;
+                isDrawingPhase: boolean;
                 isReviewingPhase: boolean;
                 currentDrawer: string;
                 currentWord: string;
@@ -258,12 +221,15 @@ const DrawAndGuessRoom = () => {
             }) => {
                 setCurrentRoomInfo((prevRoomInfo) => ({
                     ...prevRoomInfo,
+                    isWordSelectingPhase: data.isWordSelectingPhase,
+                    isDrawingPhase: data.isDrawingPhase,
                     isReviewingPhase: data.isReviewingPhase,
                     currentDrawer: data.currentDrawer,
                     currentWord: data.currentWord,
                     currentWordHint: data.currentWordHint,
+                    wordChoices: [],
                 }));
-                setReviewingPhaseTimer(0);
+                anchorPhaseDeadline(0);
             },
         );
 
@@ -274,15 +240,9 @@ const DrawAndGuessRoom = () => {
                     ...prevRoomInfo,
                     ...currentRoomInfo,
                 }));
+                anchorPhaseDeadline(0);
             },
         );
-
-        // Capture the ref objects so the cleanup closure reads them safely.
-        const phaseTimeoutRefs = [
-            wordSelectingPhaseTimeoutId,
-            drawingPhaseTimeoutId,
-            reviewingPhaseTimeoutId,
-        ];
 
         return () => {
             socket.off('clientJoinDrawAndGuessRoomSuccess');
@@ -298,15 +258,6 @@ const DrawAndGuessRoom = () => {
             socket.off('reviewingPhaseStarted');
             socket.off('reviewingPhaseEnded');
             socket.off('endDrawAndGuessGame');
-
-            // Clear every phase timeout, including the reviewing phase, which
-            // was previously left pending and fired after leaving the room.
-            for (const timeoutRef of phaseTimeoutRefs) {
-                if (timeoutRef.current) {
-                    clearTimeout(timeoutRef.current);
-                    timeoutRef.current = null;
-                }
-            }
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket]);
@@ -406,9 +357,7 @@ const DrawAndGuessRoom = () => {
                         currentWordHint={currentRoomInfo.currentWordHint}
                         receivedPointsThisTurn={receivedPointsThisTurn}
                         handleOnLeave={handleOnLeave}
-                        startTimeRef={drawingPhaseIntervalStartTimeRef}
-                        drawingPhaseTimer={drawingPhaseTimer}
-                        setDrawingPhaseTimer={setDrawingPhaseTimer}
+                        secondsRemaining={secondsRemaining}
                     />
 
                     <div className="draw-and-guess-room-body">
@@ -425,18 +374,7 @@ const DrawAndGuessRoom = () => {
                                     currentRoomInfo.isReviewingPhase
                                 }
                                 wordChoices={currentRoomInfo.wordChoices}
-                                wordSelectPhaseStartTimeRef={
-                                    wordSelectingPhaseIntervalStartTimeRef
-                                }
-                                wordSelectPhaseTimer={wordSelectPhaseTimer}
-                                setWordSelectPhaseTimer={
-                                    setWordSelectPhaseTimer
-                                }
-                                reviewingPhaseStartTimeRef={
-                                    reviewingPhaseIntervalStartTimeRef
-                                }
-                                reviewingPhaseTimer={reviewingPhaseTimer}
-                                setReviewingPhaseTimer={setReviewingPhaseTimer}
+                                secondsRemaining={secondsRemaining}
                                 isRoomOwner={isRoomOwner}
                                 handleStartGame={handleStartGame}
                                 currentDrawer={currentDrawerUsername}
