@@ -47,6 +47,42 @@ interface DrawAndGuessDetailRoomInfo extends RoomInfo {
     wordChoices: string[];
 }
 
+/**
+ * The types above are the server's private state. The two below are the only
+ * shapes that may be sent to a client — anything emitted to a socket has to go
+ * through `getDrawAndGuessLobbyRoomInfo` or `getDrawAndGuessRoomState` so that
+ * secrets (`password`, and the word while it is still being guessed) cannot
+ * leak by accidentally emitting an internal object wholesale.
+ */
+
+interface LobbyRoomInfo {
+    roomId: string;
+    roomName: string;
+    owner: OwnerInfo;
+    status: RoomStatus;
+    currentPlayerCount: number;
+    maxPlayers: number;
+    rounds: number;
+    hasPassword: boolean;
+}
+
+interface DrawAndGuessRoomState extends LobbyRoomInfo {
+    playerList: Record<string, PlayerInfo>;
+    currentDrawer: string;
+    currentWordHint: string;
+    currentRound: number;
+    isGameStarted: boolean;
+    isWordSelectingPhase: boolean;
+    isDrawingPhase: boolean;
+    isReviewingPhase: boolean;
+    drawerQueue: string[]; // a Set does not survive JSON serialization
+    wordCategory: WordCategory | '';
+    // Drawer-private while the word is in play; omitted rather than blanked so
+    // that merging this snapshot never clobbers the drawer's own copy.
+    currentWord?: string;
+    wordChoices?: string[];
+}
+
 export type {
     RoomStatus,
     PlayerInfo,
@@ -54,4 +90,6 @@ export type {
     RoomCreateRequestBody,
     RoomInfo,
     DrawAndGuessDetailRoomInfo,
+    LobbyRoomInfo,
+    DrawAndGuessRoomState,
 };

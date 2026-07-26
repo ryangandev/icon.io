@@ -5,6 +5,7 @@ import type {
 } from '../../models/types.js';
 import {
     getDrawAndGuessLobbyRoomInfo,
+    getDrawAndGuessRoomState,
     getRoomStatus,
 } from '../../libs/utils.js';
 import type { CustomError } from '../../models/error.js';
@@ -83,7 +84,7 @@ const roomEventsHandler = (
                     // Notify all clients in the room that a new client has joined
                     io.to(roomId).emit(
                         'clientJoinDrawAndGuessRoomSuccess',
-                        currentRoom,
+                        getDrawAndGuessRoomState(currentRoom),
                     );
 
                     io.to(roomId).emit(
@@ -172,7 +173,7 @@ const roomEventsHandler = (
                 // Notify all clients in the room that a client has left
                 io.to(roomId).emit(
                     'clientLeaveDrawAndGuessRoomSuccess',
-                    currentRoom,
+                    getDrawAndGuessRoomState(currentRoom),
                 );
 
                 // Only notify if the leaving client is not the owner, because the ownership transfer was notified above

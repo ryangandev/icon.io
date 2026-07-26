@@ -1,8 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import type {
     DrawAndGuessDetailRoomInfo,
+    DrawAndGuessRoomState,
+    LobbyRoomInfo,
     PlayerInfo,
-    RoomInfo,
     RoomStatus,
 } from '../models/types.js';
 import type { WordBank, WordCategory } from './word-bank.js';
@@ -29,9 +30,15 @@ const getRoomStatus = (
     return currentSize === maxSize ? 'Full' : 'Open';
 };
 
+/**
+ * Builds the room summary shown in the lobby. This payload is broadcast to
+ * every connected client, so it carries `hasPassword` rather than the password
+ * itself — the frontend only ever used the field as a boolean to pick a lock
+ * icon, while the raw value was readable by anyone who opened the lobby.
+ */
 const getDrawAndGuessLobbyRoomInfo = (
     drawAndGuessDetailRoomInfo: DrawAndGuessDetailRoomInfo,
-): RoomInfo => {
+): LobbyRoomInfo => {
     return {
         roomId: drawAndGuessDetailRoomInfo.roomId,
         roomName: drawAndGuessDetailRoomInfo.roomName,
@@ -40,8 +47,47 @@ const getDrawAndGuessLobbyRoomInfo = (
         currentPlayerCount: drawAndGuessDetailRoomInfo.currentPlayerCount,
         maxPlayers: drawAndGuessDetailRoomInfo.maxPlayers,
         rounds: drawAndGuessDetailRoomInfo.rounds,
-        password: drawAndGuessDetailRoomInfo.password,
+        hasPassword: drawAndGuessDetailRoomInfo.password !== '',
     };
+};
+
+/**
+ * Builds the full room snapshot broadcast to the players inside a room.
+ * Emitting the internal room object directly leaked the password, and — during
+ * the drawing phase — the very word everyone else is supposed to be guessing.
+ *
+ * `currentWord` and `wordChoices` are drawer-private while the word is in play,
+ * so they are omitted from the broadcast rather than blanked: the client merges
+ * this snapshot over its existing state, and an omitted key leaves the drawer's
+ * own copy intact. Both are delivered to the drawer alone, by
+ * `drawerReceiveWordChoices` and `drawingPhaseStartedForDrawer`, and revealed to
+ * the whole room by `reviewingPhaseStarted`.
+ */
+const getDrawAndGuessRoomState = (
+    room: DrawAndGuessDetailRoomInfo,
+): DrawAndGuessRoomState => {
+    const isWordInPlay = room.isWordSelectingPhase || room.isDrawingPhase;
+
+    const roomState: DrawAndGuessRoomState = {
+        ...getDrawAndGuessLobbyRoomInfo(room),
+        playerList: room.playerList,
+        currentDrawer: room.currentDrawer,
+        currentWordHint: room.currentWordHint,
+        currentRound: room.currentRound,
+        isGameStarted: room.isGameStarted,
+        isWordSelectingPhase: room.isWordSelectingPhase,
+        isDrawingPhase: room.isDrawingPhase,
+        isReviewingPhase: room.isReviewingPhase,
+        drawerQueue: [...room.drawerQueue],
+        wordCategory: room.wordCategory,
+    };
+
+    if (!isWordInPlay) {
+        roomState.currentWord = room.currentWord;
+        roomState.wordChoices = room.wordChoices;
+    }
+
+    return roomState;
 };
 
 const getRandomCategory = (
@@ -115,6 +161,7 @@ export {
     getRandomInt,
     getRoomStatus,
     getDrawAndGuessLobbyRoomInfo,
+    getDrawAndGuessRoomState,
     getRandomCategory,
     getRandomChoicesFromList,
     getRandomElementFromSet,

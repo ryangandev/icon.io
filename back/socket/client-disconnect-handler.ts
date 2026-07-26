@@ -1,6 +1,10 @@
 import type { Server, Socket } from 'socket.io';
 import type { DrawAndGuessDetailRoomInfo, OwnerInfo } from '../models/types.js';
-import { getDrawAndGuessLobbyRoomInfo, getRoomStatus } from '../libs/utils.js';
+import {
+    getDrawAndGuessLobbyRoomInfo,
+    getDrawAndGuessRoomState,
+    getRoomStatus,
+} from '../libs/utils.js';
 
 const clientDepartureOnDisconnectHandler = (
     io: Server,
@@ -60,7 +64,7 @@ const clientDepartureOnDisconnectHandler = (
                     // Notify all clients in the room that a client has left
                     io.to(roomId).emit(
                         'clientLeaveDrawAndGuessRoomSuccess',
-                        currentRoom,
+                        getDrawAndGuessRoomState(currentRoom),
                     );
                 }
             });

@@ -117,7 +117,7 @@ const DrawAndGuessRoom = () => {
                 setCurrentRoomInfo((prevRoomInfo) => ({
                     ...prevRoomInfo,
                     currentRound: data.currentRound,
-                    drawerQueue: new Set(data.drawerQueue),
+                    drawerQueue: data.drawerQueue,
                 }));
             },
         );
@@ -134,7 +134,7 @@ const DrawAndGuessRoom = () => {
                     ...prevRoomInfo,
                     playerList: data.playerList,
                     currentDrawer: data.currentDrawer,
-                    drawerQueue: new Set(data.drawerQueue),
+                    drawerQueue: data.drawerQueue,
                     isWordSelectingPhase: data.isWordSelectingPhase,
                 }));
                 setWordSelectPhaseTimer(timer.wordSelectPhaseTimer);

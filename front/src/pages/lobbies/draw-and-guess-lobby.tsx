@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button, Space, Typography, Table } from 'antd';
 import {
     RollbackOutlined,
@@ -25,6 +25,9 @@ const DrawAndGuessLobby = () => {
     const [createRoomRequestLoading, setcreateRoomRequestLoading] =
         useState(false);
     const [passwordPromptOpen, setPasswordPromptOpen] = useState(false);
+    // The password we just submitted, kept locally so the server never has to
+    // echo it back to us in order for us to join the room we created.
+    const createdRoomPasswordRef = useRef('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -34,18 +37,16 @@ const DrawAndGuessLobby = () => {
             setRoomList(rooms);
         });
 
-        socket.on(
-            'createDrawAndGuessRoomSuccess',
-            (roomId: string, password: string) => {
-                setcreateRoomRequestLoading(false);
-                socket.emit(
-                    'clientJoinDrawAndGuessRoomRequest',
-                    roomId,
-                    username,
-                    password,
-                );
-            },
-        );
+        socket.on('createDrawAndGuessRoomSuccess', (roomId: string) => {
+            setcreateRoomRequestLoading(false);
+            socket.emit(
+                'clientJoinDrawAndGuessRoomRequest',
+                roomId,
+                username,
+                createdRoomPasswordRef.current,
+            );
+            createdRoomPasswordRef.current = '';
+        });
 
         socket.on(
             'approveClientJoinDrawAndGuessRoomRequest',
@@ -76,6 +77,8 @@ const DrawAndGuessLobby = () => {
     }, [socket, username, navigate]);
 
     const onCreate = (drawAndGuessRoomCreateRequest: RoomCreateRequestBody) => {
+        createdRoomPasswordRef.current =
+            drawAndGuessRoomCreateRequest.password ?? '';
         socket.emit(
             'createDrawAndGuessRoomRequest',
             drawAndGuessRoomCreateRequest,
@@ -85,7 +88,7 @@ const DrawAndGuessLobby = () => {
 
     const onJoinRoom = (record: RoomInfo) => {
         if (record.status === 'Open') {
-            if (record.password) {
+            if (record.hasPassword) {
                 setPasswordPromptOpen(true);
             } else {
                 socket.emit(
@@ -157,7 +160,7 @@ const DrawAndGuessLobby = () => {
             width: 125,
             render: (_, record: RoomInfo) => (
                 <>
-                    {record.password ? (
+                    {record.hasPassword ? (
                         <LockOutlined
                             style={{ fontSize: '16px', color: 'red' }}
                         />
@@ -178,7 +181,7 @@ const DrawAndGuessLobby = () => {
                 <>
                     <Button
                         type="primary"
-                        danger={record.password !== ''}
+                        danger={record.hasPassword}
                         onClick={() => {
                             onJoinRoom(record);
                         }}

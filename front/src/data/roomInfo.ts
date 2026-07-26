@@ -11,7 +11,7 @@ const roomInfoInitialObject: DrawAndGuessDetailRoomInfo = {
     currentPlayerCount: 0,
     maxPlayers: 0,
     rounds: 0,
-    password: '',
+    hasPassword: false,
     playerList: {},
     currentDrawer: '', // current drawer's socket id
     currentWord: '',
@@ -21,7 +21,7 @@ const roomInfoInitialObject: DrawAndGuessDetailRoomInfo = {
     isWordSelectingPhase: false,
     isDrawingPhase: false,
     isReviewingPhase: false,
-    drawerQueue: new Set(),
+    drawerQueue: [],
     wordCategory: '',
     wordChoices: [],
 };

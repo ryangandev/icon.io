@@ -3,6 +3,7 @@ import type { DrawAndGuessDetailRoomInfo } from '../../models/types.js';
 import type { CustomError } from '../../models/error.js';
 import {
     getDrawAndGuessLobbyRoomInfo,
+    getDrawAndGuessRoomState,
     getRandomCategory,
     getRandomChoicesFromList,
     getRoomStatus,
@@ -52,7 +53,11 @@ const GameEventsHandler = (
             );
             currentRoom.wordCategory = randomCategory.name;
 
-            console.log('startDrawAndGuessGame', currentRoom);
+            // Logged without the room object, which carries the password
+            console.log(
+                `Game started in room ${roomId} with category "${currentRoom.wordCategory}".`,
+            );
+
             // Update the clients about room info
             io.to(roomId).emit('startDrawAndGuessGameSuccess', {
                 playerList: currentRoom.playerList,
@@ -179,7 +184,10 @@ const GameEventsHandler = (
                 currentRoom.wordCategory = '';
 
                 // Update the clients about room info
-                io.to(roomId).emit('endDrawAndGuessGame', currentRoom);
+                io.to(roomId).emit(
+                    'endDrawAndGuessGame',
+                    getDrawAndGuessRoomState(currentRoom),
+                );
 
                 // Announce all clients in the room that game has ended
                 io.to(roomId).emit(

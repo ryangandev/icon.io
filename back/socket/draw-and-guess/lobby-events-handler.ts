@@ -68,11 +68,13 @@ const lobbyEventsHandler = (
                 drawAndGuessDetailRoomInfoList,
             ).map(getDrawAndGuessLobbyRoomInfo);
 
-            // Notify the current client that the room has been created
+            // Notify the current client that the room has been created. The
+            // password is deliberately not echoed back — the creator already
+            // has it, and every value that crosses the socket is one more
+            // place it can leak from.
             socket.emit(
                 'createDrawAndGuessRoomSuccess',
                 newDrawAndGuessRoom.roomId,
-                password,
             );
 
             // Notify all clients in the lobby that a new room has been created

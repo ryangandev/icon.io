@@ -27,7 +27,8 @@ interface RoomInfo {
     currentPlayerCount: number;
     maxPlayers: number;
     rounds: number;
-    password: string;
+    // The server never sends the password itself — only whether one is set.
+    hasPassword: boolean;
 }
 
 interface DrawAndGuessDetailRoomInfo extends RoomInfo {
@@ -40,7 +41,7 @@ interface DrawAndGuessDetailRoomInfo extends RoomInfo {
     isWordSelectingPhase: boolean;
     isDrawingPhase: boolean;
     isReviewingPhase: boolean;
-    drawerQueue: Set<string>; // queue of socket ids
+    drawerQueue: string[]; // socket ids still to draw this round
     wordCategory: string;
     wordChoices: string[];
 }
