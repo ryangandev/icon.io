@@ -1,6 +1,6 @@
-import { useState, FC, useEffect } from 'react';
+import { useState, type FC, useEffect } from 'react';
 import { Button, Input, Typography } from 'antd';
-import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { type NavigateFunction, useNavigate } from 'react-router';
 import icon from '../assets/Game-Icon.png';
 import '../styles/pages/landing-page.css';
 import toast from 'react-hot-toast';

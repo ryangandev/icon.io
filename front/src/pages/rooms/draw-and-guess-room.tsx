@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useEffect, useRef, useState } from 'react';
 import WhiteBoardCanvas from '../../components/whiteboard-canvas';
 import ChatWindow from '../../components/chat-window';
@@ -7,13 +7,13 @@ import GameInfoBar from '../../components/game-info-bar';
 import { Modal } from 'antd';
 import '../../styles/pages/rooms/draw-and-guess-room.css';
 import { useSocket } from '../../hooks/useSocket';
-import {
+import type {
     DrawAndGuessDetailRoomInfo,
     PlayerInfo,
     RoomStatus,
 } from '../../models/types';
 import GameInfoBoard from '../../components/game-info-board';
-import { CustomError } from '../../models/error';
+import type { CustomError } from '../../models/error';
 import toast from 'react-hot-toast';
 import { roomInfoInitialObject } from '../../data/roomInfo';
 import useScreenSize from '../../hooks/useScreenSize';
@@ -36,8 +36,11 @@ const DrawAndGuessRoom = () => {
     const isRoomOwner = currentRoomInfo.owner.socketId === socket.id;
     const currentDrawerUsername =
         currentRoomInfo.playerList[currentRoomInfo.currentDrawer]?.username;
-    const receivedPointsThisTurn =
-        currentRoomInfo.playerList[socket.id]?.receivedPointsThisTurn;
+    // socket.id is undefined until the socket has connected, so guard the lookup.
+    const receivedPointsThisTurn = socket.id
+        ? (currentRoomInfo.playerList[socket.id]?.receivedPointsThisTurn ??
+          false)
+        : false;
 
     // Timer attributes
     const [wordSelectPhaseTimer, setWordSelectPhaseTimer] = useState<number>(0);
@@ -274,6 +277,13 @@ const DrawAndGuessRoom = () => {
             },
         );
 
+        // Capture the ref objects so the cleanup closure reads them safely.
+        const phaseTimeoutRefs = [
+            wordSelectingPhaseTimeoutId,
+            drawingPhaseTimeoutId,
+            reviewingPhaseTimeoutId,
+        ];
+
         return () => {
             socket.off('clientJoinDrawAndGuessRoomSuccess');
             socket.off('clientLeaveDrawAndGuessRoomSuccess');
@@ -289,11 +299,13 @@ const DrawAndGuessRoom = () => {
             socket.off('reviewingPhaseEnded');
             socket.off('endDrawAndGuessGame');
 
-            if (wordSelectingPhaseTimeoutId.current) {
-                clearTimeout(wordSelectingPhaseTimeoutId.current);
-            }
-            if (drawingPhaseTimeoutId.current) {
-                clearTimeout(drawingPhaseTimeoutId.current);
+            // Clear every phase timeout, including the reviewing phase, which
+            // was previously left pending and fired after leaving the room.
+            for (const timeoutRef of phaseTimeoutRefs) {
+                if (timeoutRef.current) {
+                    clearTimeout(timeoutRef.current);
+                    timeoutRef.current = null;
+                }
             }
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps

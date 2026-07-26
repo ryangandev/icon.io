@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import toast from 'react-hot-toast';
 import '../styles/components/game-select-container.css';
 

@@ -1,6 +1,6 @@
 import '../styles/components/player-info-container.css';
 import '../assets/animations/oscillate.css';
-import { PlayerInfo } from '../models/types';
+import type { PlayerInfo } from '../models/types';
 
 interface PlayerInfoContainerProps {
     playerInfo: PlayerInfo;

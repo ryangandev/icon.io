@@ -1,4 +1,4 @@
-import { DrawAndGuessDetailRoomInfo } from '../models/types';
+import type { DrawAndGuessDetailRoomInfo } from '../models/types';
 
 const roomInfoInitialObject: DrawAndGuessDetailRoomInfo = {
     roomId: '',

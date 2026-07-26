@@ -1,6 +1,6 @@
 // import { useEffect } from 'react';
 // import toast from 'react-hot-toast';
-// import { Navigate, Outlet, useNavigate } from 'react-router-dom';
+// import { Navigate, Outlet, useNavigate } from 'react-router';
 
 // const ValidateAuth = () => {
 //     const username = sessionStorage.getItem('username');
@@ -20,8 +20,8 @@
 // export default ValidateAuth;
 
 import { useState, useEffect, useRef } from 'react';
-import { Modal, Input, InputRef } from 'antd';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Modal, Input, type InputRef } from 'antd';
+import { Outlet, useNavigate } from 'react-router';
 import toast from 'react-hot-toast';
 
 const ValidateAuth = () => {

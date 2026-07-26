@@ -1,4 +1,4 @@
-import { PlayerInfo, RoomStatus } from '../models/types';
+import type { PlayerInfo, RoomStatus } from '../models/types';
 
 const imageDataToDataURL = (imageData: ImageData): string => {
     const canvas = document.createElement('canvas');

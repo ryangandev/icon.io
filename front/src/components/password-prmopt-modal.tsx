@@ -32,7 +32,7 @@ const PasswordPromptModal = ({
             onOk={handleSubmit}
             width={350}
             getContainer={document.getElementById('app')!} // Manually telling the modal dialog to render within root DOM https://github.com/ant-design/ant-design/issues/8668#issuecomment-1706599509
-            destroyOnClose={true} // Destroy modal on close ensure that autoFocus eveytime the modal is opened
+            destroyOnHidden={true} // Destroy modal on close ensure that autoFocus eveytime the modal is opened
         >
             <Input.Password
                 name="password"

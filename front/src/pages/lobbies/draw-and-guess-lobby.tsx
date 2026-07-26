@@ -7,12 +7,12 @@ import {
     PlusCircleOutlined,
 } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import icon from '../../assets/Game-Icon.png';
 import RoomCreateForm from '../../components/room-create-form';
 import '../../styles/pages/lobbies/draw-and-guess-lobby.css';
 import { useSocket } from '../../hooks/useSocket';
-import { RoomCreateRequestBody, RoomInfo } from '../../models/types';
+import type { RoomCreateRequestBody, RoomInfo } from '../../models/types';
 import toast from 'react-hot-toast';
 import PasswordPromptModal from '../../components/password-prmopt-modal';
 import { statusColors } from '../../libs/utils';
@@ -264,7 +264,7 @@ const DrawAndGuessLobby = () => {
                     bordered
                     rowKey={(record) => record.roomId}
                     scroll={{ y: 400 }} // table max height
-                    rowClassName={(record, index) =>
+                    rowClassName={(_record, index) =>
                         index % 2 === 0 ? 'row-even' : 'row-odd'
                     }
                 />

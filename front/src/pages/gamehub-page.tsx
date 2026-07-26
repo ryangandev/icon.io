@@ -1,6 +1,6 @@
-import { FC, useEffect } from 'react';
+import { type FC, useEffect } from 'react';
 import { Button, Space, Typography } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router';
 import GameSelect from '../components/game-select-container';
 import '../styles/pages/gamehub-page.css';
 import toast from 'react-hot-toast';
@@ -91,7 +91,7 @@ const GamehubPage: FC = () => {
                         wrap={true}
                         align="center"
                     >
-                        {GameData.map((game, index) => (
+                        {GameData.map((game) => (
                             <Link key={game.title} to={game.navigateTo}>
                                 <GameSelect
                                     gameTitle={game.title}

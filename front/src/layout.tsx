@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router';
 import AppLogo from './components/app-logo';
 import { Toaster } from 'react-hot-toast';
 

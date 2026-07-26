@@ -1,5 +1,5 @@
 import { statusColors } from '../libs/utils';
-import { RoomStatus } from '../models/types';
+import type { RoomStatus } from '../models/types';
 import '../styles/components/game-info-board.css';
 
 interface GameInfoBoardProps {

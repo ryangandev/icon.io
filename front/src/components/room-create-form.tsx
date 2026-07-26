@@ -1,7 +1,7 @@
 import { Input, Modal, Select, Typography } from 'antd';
 import '../styles/pages/lobbies/draw-and-guess-lobby.css';
 import { Form } from 'antd';
-import { RoomCreateRequestBody } from '../models/types';
+import type { RoomCreateRequestBody } from '../models/types';
 
 interface RoomCreateFormProps {
     open: boolean;
@@ -60,7 +60,7 @@ const RoomCreateForm = ({
             confirmLoading={confirmLoading}
             width={550}
             getContainer={document.getElementById('app')!} // Manually telling the modal dialog to render within root DOM
-            destroyOnClose={true} // Destroy modal on close ensure that autoFocus eveytime the modal is opened
+            destroyOnHidden={true} // Destroy modal on close ensure that autoFocus eveytime the modal is opened
         >
             <Form
                 form={form}
