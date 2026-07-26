@@ -12,22 +12,32 @@ import icon from '../../assets/Game-Icon.png';
 import RoomCreateForm from '../../components/room-create-form';
 import '../../styles/pages/lobbies/draw-and-guess-lobby.css';
 import { useSocket } from '../../hooks/useSocket';
-import type { RoomCreateRequestBody, RoomInfo } from '../../models/types';
+import type { LobbyRoomInfo, RoomCreateRequestBody } from '../../models/types';
 import toast from 'react-hot-toast';
-import PasswordPromptModal from '../../components/password-prmopt-modal';
+import PasswordPromptModal from '../../components/password-prompt-modal';
 import { statusColors } from '../../libs/utils';
+
+/**
+ * antd calls this with the rows it is currently showing, so the count comes
+ * from the table rather than from a variable captured out of the render.
+ */
+const renderTotalRooms = (rooms: readonly LobbyRoomInfo[]) => (
+  <div className="draw-and-guess-lobby-info-table-footer">
+    Total Rooms: {rooms.length}
+  </div>
+);
 
 const DrawAndGuessLobby = () => {
   const { socket } = useSocket();
   const username = sessionStorage.getItem('username');
-  const [roomList, setRoomList] = useState<RoomInfo[]>([]);
+  const [roomList, setRoomList] = useState<LobbyRoomInfo[]>([]);
   const [formOpen, setFormOpen] = useState(false);
   const [createRoomRequestLoading, setcreateRoomRequestLoading] =
     useState(false);
   // The locked room waiting on a password, or null when nothing is pending.
   // This used to be a bare boolean driving one modal per table row, so
   // clicking Join opened every locked room's modal at once.
-  const [pendingRoom, setPendingRoom] = useState<RoomInfo | null>(null);
+  const [pendingRoom, setPendingRoom] = useState<LobbyRoomInfo | null>(null);
   // The password we just submitted, kept locally so the server never has to
   // echo it back to us in order for us to join the room we created.
   const createdRoomPasswordRef = useRef('');
@@ -36,7 +46,7 @@ const DrawAndGuessLobby = () => {
   useEffect(() => {
     socket.emit('clientJoinDrawAndGuessLobby');
 
-    socket.on('updateDrawAndGuessLobbyRoomList', (rooms: RoomInfo[]) => {
+    socket.on('updateDrawAndGuessLobbyRoomList', (rooms: LobbyRoomInfo[]) => {
       setRoomList(rooms);
     });
 
@@ -52,19 +62,11 @@ const DrawAndGuessLobby = () => {
     });
 
     socket.on('approveClientJoinDrawAndGuessRoomRequest', (roomId: string) => {
-      console.log(
-        'approveClientJoinDrawAndGuessRoomRequest event received! Room ID is: ',
-        roomId,
-      );
       toast.success('Joining room...');
       navigate(`/Gamehub/DrawAndGuess/Room/${roomId}`);
     });
 
     socket.on('rejectClientJoinDrawAndGuessRoomRequest', (data) => {
-      console.log(
-        'rejectClientJoinDrawAndGuessRoomRequest event received! Error message is: ',
-        data.message,
-      );
       toast.error(data.message);
     });
 
@@ -83,7 +85,7 @@ const DrawAndGuessLobby = () => {
     setFormOpen(false);
   };
 
-  const onJoinRoom = (record: RoomInfo) => {
+  const onJoinRoom = (record: LobbyRoomInfo) => {
     if (record.status === 'Open') {
       if (record.hasPassword) {
         setPendingRoom(record);
@@ -111,7 +113,7 @@ const DrawAndGuessLobby = () => {
     setPendingRoom(null);
   };
 
-  const columns: ColumnsType<RoomInfo> = [
+  const columns: ColumnsType<LobbyRoomInfo> = [
     {
       title: 'Room Name',
       dataIndex: 'roomName',
@@ -122,7 +124,7 @@ const DrawAndGuessLobby = () => {
       title: 'Owner',
       key: 'owner',
       width: 175,
-      render: (_, record: RoomInfo) => (
+      render: (_, record: LobbyRoomInfo) => (
         <Typography.Text>{record.owner.username}</Typography.Text>
       ),
     },
@@ -131,7 +133,7 @@ const DrawAndGuessLobby = () => {
       key: 'status',
       align: 'center',
       width: 125,
-      render: (_, record: RoomInfo) => (
+      render: (_, record: LobbyRoomInfo) => (
         <Typography.Text style={{ color: statusColors[record.status] }}>
           {record.status}
         </Typography.Text>
@@ -149,7 +151,7 @@ const DrawAndGuessLobby = () => {
       key: 'seats',
       align: 'center',
       width: 125,
-      render: (_, record: RoomInfo) =>
+      render: (_, record: LobbyRoomInfo) =>
         `${record.currentPlayerCount} / ${record.maxPlayers}`,
     },
     {
@@ -158,7 +160,7 @@ const DrawAndGuessLobby = () => {
       key: 'roomType',
       align: 'center',
       width: 125,
-      render: (_, record: RoomInfo) => (
+      render: (_, record: LobbyRoomInfo) => (
         <>
           {record.hasPassword ? (
             <LockOutlined style={{ fontSize: '16px', color: 'red' }} />
@@ -173,7 +175,7 @@ const DrawAndGuessLobby = () => {
       key: 'action',
       align: 'center',
       width: 100,
-      render: (_, record: RoomInfo) => (
+      render: (_, record: LobbyRoomInfo) => (
         <Button
           type="primary"
           danger={record.hasPassword}
@@ -242,11 +244,7 @@ const DrawAndGuessLobby = () => {
           className="draw-and-guess-lobby-info-table"
           columns={columns}
           dataSource={roomList}
-          footer={() => (
-            <div className="draw-and-guess-lobby-info-table-footer">
-              Total Rooms: {roomList.length}
-            </div>
-          )}
+          footer={renderTotalRooms}
           pagination={false}
           bordered
           rowKey={(record) => record.roomId}

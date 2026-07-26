@@ -5,7 +5,7 @@ import {
   getDrawAndGuessRoomState,
   getRoomStatus,
 } from '../../libs/utils.js';
-import type { CustomError } from '../../models/error.js';
+import { asRoomError, type CustomError } from '../../models/error.js';
 import type { PlayerSessionRegistry } from '../../libs/player-session.js';
 import type { RoomMembership } from './membership.js';
 import {
@@ -111,14 +111,10 @@ const roomEventsHandler = (
           username + ' has joined the room.',
         );
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
       // Notify the current client that there was an error
-      socket.emit('roomError', {
-        status: true,
-        message: error.message,
-        errorType: error.errorType,
-      });
+      socket.emit('roomError', asRoomError(error));
     }
   });
 
@@ -127,6 +123,11 @@ const roomEventsHandler = (
    * The join broadcast above races the joining client's own navigation — it
    * cannot have subscribed yet — so rather than guessing how long that takes,
    * the client says when it is ready.
+   *
+   * Answered only for players who hold a seat. The payload carries no secrets,
+   * but a locked room's player list is not something a stranger should be able
+   * to pull with a room id off the lobby broadcast. A client that arrives
+   * without a seat — a pasted link — is told so, and asks to join.
    */
   socket.on('requestDrawAndGuessRoomState', (...rawArgs: unknown[]) => {
     const validated = parseArgs(
@@ -147,10 +148,37 @@ const roomEventsHandler = (
       return;
     }
 
+    const playerId = sessions.playerIdFor(socket.id);
+    if (!playerId || !currentRoom.playerList[playerId]) {
+      socket.emit('roomError', {
+        status: true,
+        message: 'You are not in this room.',
+        errorType: 'notRoomMember',
+      });
+      return;
+    }
+
     socket.emit(
       'clientJoinDrawAndGuessRoomSuccess',
       getDrawAndGuessRoomState(currentRoom),
     );
+
+    // Whatever has been drawn so far, to this socket alone. A joiner, a player
+    // returning from a reload and a drawer resuming their own turn all arrive
+    // through here, and all three used to find a blank board.
+    socket.emit('syncWhiteboardCanvas', currentRoom.canvas.strokes);
+
+    // The word is drawer-private, so the snapshot omits it while it is in
+    // play. A drawer who reloads lost their copy of it along with the page,
+    // and cannot draw a word they can no longer see — so send it again, to
+    // them alone, at the one moment their listeners are known to be live.
+    if (currentRoom.currentDrawer === playerId) {
+      if (currentRoom.isWordSelectingPhase) {
+        socket.emit('drawerReceiveWordChoices', currentRoom.wordChoices);
+      } else if (currentRoom.isDrawingPhase) {
+        socket.emit('drawingPhaseStartedForDrawer', currentRoom.currentWord);
+      }
+    }
   });
 
   socket.on('clientLeaveDrawAndGuessRoom', (...rawArgs: unknown[]) => {

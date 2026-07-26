@@ -1,10 +1,15 @@
 import { randomUUID } from 'node:crypto';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import type { DrawAndGuessRoomState, PlayerInfo } from '../models/types.js';
+import type {
+  CanvasStroke,
+  DrawAndGuessRoomState,
+  PlayerInfo,
+} from '../models/types.js';
 import {
   collect,
   createRoom,
   joinRoom,
+  playToDrawingPhase,
   settle,
   startTestServer,
   waitFor,
@@ -111,44 +116,6 @@ describe('reconnecting to a room', () => {
     await harness.teardown();
   });
 
-  /** Seats two players and plays to the drawing phase, reporting the word. */
-  const playToDrawingPhase = async () => {
-    const alice = await harness.connect();
-    const bob = await harness.connect();
-    const roomId = await createRoom(alice, {
-      ownerUsername: 'Alice',
-      rounds: 1,
-    });
-    await joinRoom(alice, roomId, 'Alice');
-    await joinRoom(bob, roomId, 'Bob');
-
-    let drawerId: string | undefined;
-    let word: string | undefined;
-    const learn = (id: string) => (received: string) => {
-      drawerId = id;
-      word = received;
-    };
-    alice.once('drawingPhaseStartedForDrawer', learn(alice.playerId));
-    bob.once('drawingPhaseStartedForDrawer', learn(bob.playerId));
-
-    const drawing = waitFor(alice, 'drawingPhaseStarted', 5000);
-    alice.emit('startDrawAndGuessGame', roomId);
-    await drawing;
-    await settle(50);
-
-    const guesser = drawerId === alice.playerId ? bob : alice;
-
-    return {
-      roomId,
-      alice,
-      bob,
-      guesser,
-      guesserName: guesser === alice ? 'Alice' : 'Bob',
-      drawerId: drawerId!,
-      word: word!,
-    };
-  };
-
   /*
    * The bug this all exists for. A reload used to make you a different person,
    * so the room removed one player and admitted a stranger with no score.
@@ -162,7 +129,8 @@ describe('reconnecting to a room', () => {
       reviewing: 0.2,
     });
 
-    const { roomId, guesser, guesserName, word } = await playToDrawingPhase();
+    const { roomId, guesser, guesserName, word } =
+      await playToDrawingPhase(harness);
 
     const scored = waitFor<Record<string, PlayerInfo>>(
       guesser,
@@ -172,14 +140,15 @@ describe('reconnecting to a room', () => {
     await scored;
 
     const before = harness.server.rooms[roomId]!.playerList[guesser.playerId];
-    expect(before?.points).toBe(100);
+    const scoreBefore = before!.points;
+    expect(scoreBefore).toBeGreaterThan(0);
 
     const returned = await harness.reload(guesser);
     await settle(200);
 
     const after = harness.server.rooms[roomId]!.playerList[returned.playerId];
     expect(returned.playerId).toBe(guesser.playerId);
-    expect(after?.points).toBe(100);
+    expect(after?.points).toBe(scoreBefore);
     expect(after?.isConnected).toBe(true);
     expect(harness.server.rooms[roomId]?.currentPlayerCount).toBe(2);
   });
@@ -288,13 +257,12 @@ describe('reconnecting to a room', () => {
   });
 
   /*
-   * A drawer who reloads does not get their turn back. The turn is skipped the
-   * moment they drop — see below — and resuming it would be hollow anyway: the
-   * canvas is not stored server-side yet, so they would return to a blank board
-   * with less time on the clock. Worth revisiting once strokes live on the
-   * server; until then, losing the turn is the honest outcome.
+   * A drawer who reloads used to lose their turn, and had to: the canvas lived
+   * only in the clients' memory, so they would have come back to a blank board
+   * with nothing worth resuming. The drawing is on the server now, so the turn
+   * waits — briefly — and they pick up where they left off, word and all.
    */
-  it('does not put a reloaded drawer back in charge of a finished turn', async () => {
+  it('gives a reloaded drawer their turn, their word and their drawing back', async () => {
     await harness.teardown();
     harness = await startTestServer({
       wordSelecting: 0.2,
@@ -302,26 +270,74 @@ describe('reconnecting to a room', () => {
       reviewing: 0.2,
     });
 
-    const { alice, bob, drawerId } = await playToDrawingPhase();
-    const drawer = alice.playerId === drawerId ? alice : bob;
+    const { roomId, drawer, word } = await playToDrawingPhase(harness);
+    drawer.emit('startDrawing', roomId, { x: 4, y: 4 }, '#123456', 8);
+    drawer.emit('continueDrawing', roomId, { x: 40, y: 40 }, '#123456', 8);
+    await settle(50);
 
     const returned = await harness.reload(drawer);
-    const wordAgain = collect(returned, 'drawingPhaseStartedForDrawer');
-    await settle(300);
+    const wordAgain = waitFor<string>(
+      returned,
+      'drawingPhaseStartedForDrawer',
+      2000,
+    );
+    const canvasAgain = waitFor<CanvasStroke[]>(
+      returned,
+      'syncWhiteboardCanvas',
+      2000,
+    );
+    returned.emit('requestDrawAndGuessRoomState', roomId);
 
-    expect(wordAgain).toEqual([]);
-    expect(
-      harness.server.rooms[Object.keys(harness.server.rooms)[0]!]
-        ?.currentDrawer,
-    ).not.toBe(drawerId);
+    expect(await wordAgain).toBe(word);
+    expect(await canvasAgain).toEqual([
+      {
+        color: '#123456',
+        size: 8,
+        points: [
+          { x: 4, y: 4 },
+          { x: 40, y: 40 },
+        ],
+      },
+    ]);
+    expect(harness.server.rooms[roomId]?.currentDrawer).toBe(drawer.playerId);
+    expect(harness.server.rooms[roomId]?.isDrawingPhase).toBe(true);
   });
 
   /*
-   * The seat waits for a dropped player; the turn does not. A drawer who is not
-   * there cannot draw, and stalling the room for the whole grace period would
-   * cost everyone else more than it saves the one who dropped.
+   * The hold is short. A room whose drawer has actually gone should not be left
+   * staring at a frozen canvas for the whole reconnect grace.
    */
-  it('skips the turn of a drawer who drops, but keeps their score', async () => {
+  it('gives up on a drawer who does not come back inside the hold', async () => {
+    await harness.teardown();
+    harness = await startTestServer({
+      wordSelecting: 0.2,
+      drawing: 5,
+      reviewing: 0.2,
+      drawerHold: 0.3,
+    });
+
+    const { roomId, drawer, guesser } = await playToDrawingPhase(harness);
+
+    const turnEnded = waitFor(guesser, 'reviewingPhaseEnded', 3000);
+    const messages = collect<[string, string]>(guesser, 'receiveMessage');
+    drawer.close();
+
+    await turnEnded;
+    expect(
+      messages.some(([, text]) => text.includes('did not come back')),
+    ).toBe(true);
+    // The seat is still theirs; only the turn is gone.
+    expect(
+      harness.server.rooms[roomId]?.playerList[drawer.playerId],
+    ).toBeDefined();
+  });
+
+  /*
+   * Nothing has been invested in a turn whose word has not been chosen yet, and
+   * an absent drawer will not be choosing one — so that case is still skipped
+   * on the spot rather than held.
+   */
+  it('skips the turn of a drawer who drops before choosing a word', async () => {
     await harness.teardown();
     harness = await startTestServer({
       wordSelecting: 0.2,

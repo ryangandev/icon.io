@@ -8,12 +8,14 @@ import { Modal } from 'antd';
 import '../../styles/pages/rooms/draw-and-guess-room.css';
 import { useSocket } from '../../hooks/useSocket';
 import type {
-  DrawAndGuessDetailRoomInfo,
+  DrawAndGuessRoomState,
+  DrawAndGuessRoomView,
   PlayerInfo,
   RoomStatus,
+  WordCategory,
 } from '../../models/types';
 import GameInfoBoard from '../../components/game-info-board';
-import type { CustomError } from '../../models/error';
+import type { RoomErrorPayload } from '../../models/error';
 import toast from 'react-hot-toast';
 import { roomInfoInitialObject } from '../../data/roomInfo';
 import useScreenSize from '../../hooks/useScreenSize';
@@ -30,8 +32,9 @@ const DrawAndGuessRoom = () => {
   const isSmallerScreen = currentScreenWidth < 1200;
 
   // Room info attributes
-  const [currentRoomInfo, setCurrentRoomInfo] =
-    useState<DrawAndGuessDetailRoomInfo>(roomInfoInitialObject);
+  const [currentRoomInfo, setCurrentRoomInfo] = useState<DrawAndGuessRoomView>(
+    roomInfoInitialObject,
+  );
   const currentRoomInfoRef = useRef(currentRoomInfo); // Use ref to store currentRoomInfo to avoid stale closure during useEffect
   // A refresh or a pasted link reaches this page with a socket that has never
   // joined the room — the lobby does the joining, and neither of those routes
@@ -64,32 +67,29 @@ const DrawAndGuessRoom = () => {
   }, [currentRoomInfo]);
 
   useEffect(() => {
+    // Reaching a room some way other than the lobby — a pasted link, a
+    // bookmark — means this socket holds no seat in it. Ask for one rather
+    // than sitting here as a spectator who cannot chat, guess or be dealt a
+    // turn. A locked room answers with a rejection, handled below.
+    const askForASeat = (targetRoomId: string) => {
+      if (hasAskedToJoinRef.current) return;
+      hasAskedToJoinRef.current = true;
+      socket.emit('clientJoinDrawAndGuessRoomRequest', targetRoomId, username);
+    };
+
     socket.on(
       'clientJoinDrawAndGuessRoomSuccess',
-      (currentRoomInfo: DrawAndGuessDetailRoomInfo) => {
+      (roomState: DrawAndGuessRoomState) => {
         setCurrentRoomInfo((prevRoomInfo) => ({
           ...prevRoomInfo,
-          ...currentRoomInfo,
+          ...roomState,
         }));
         // Room snapshots carry the live phase clock, so joining or
         // watching someone leave re-syncs the countdown.
-        anchorPhaseDeadline(currentRoomInfo.phaseEndsInMs);
+        anchorPhaseDeadline(roomState.phaseEndsInMs);
 
-        // Arriving without being in the player list means this socket
-        // reached the room some way other than the lobby. Ask to join
-        // rather than sitting here as a spectator who cannot chat,
-        // guess or be dealt a turn.
-        if (
-          !hasAskedToJoinRef.current &&
-          playerId &&
-          !currentRoomInfo.playerList[playerId]
-        ) {
-          hasAskedToJoinRef.current = true;
-          socket.emit(
-            'clientJoinDrawAndGuessRoomRequest',
-            currentRoomInfo.roomId,
-            username,
-          );
+        if (playerId && !roomState.playerList[playerId]) {
+          askForASeat(roomState.roomId);
         }
       },
     );
@@ -107,21 +107,29 @@ const DrawAndGuessRoom = () => {
 
     socket.on(
       'clientLeaveDrawAndGuessRoomSuccess',
-      (currentRoomInfo: DrawAndGuessDetailRoomInfo) => {
+      (roomState: DrawAndGuessRoomState) => {
         setCurrentRoomInfo((prevRoomInfo) => ({
           ...prevRoomInfo,
-          ...currentRoomInfo,
+          ...roomState,
         }));
-        anchorPhaseDeadline(currentRoomInfo.phaseEndsInMs);
+        anchorPhaseDeadline(roomState.phaseEndsInMs);
       },
     );
 
-    socket.on('roomError', (roomError: CustomError) => {
-      console.log('roomError received: ', roomError);
+    socket.on('roomError', (roomError: RoomErrorPayload) => {
       if (roomError.errorType === 'roomNotExist') {
         setRoomDoesNotExist(true);
       }
-      if (roomError.errorType === 'notEnoughPlayers') {
+      // Not a failure: the state request is answered only for players who
+      // hold a seat, and this is how a client that arrived by link finds
+      // out it needs to ask for one.
+      if (roomError.errorType === 'notRoomMember' && roomId) {
+        askForASeat(roomId);
+      }
+      if (
+        roomError.errorType === 'notEnoughPlayers' ||
+        roomError.errorType === 'notRoomOwner'
+      ) {
         toast.error(roomError.message);
       }
     });
@@ -132,7 +140,7 @@ const DrawAndGuessRoom = () => {
         playerList: Record<string, PlayerInfo>;
         isGameStarted: boolean;
         status: RoomStatus;
-        wordCategory: string;
+        wordCategory: WordCategory;
       }) => {
         setCurrentRoomInfo((prevRoomInfo) => ({
           ...prevRoomInfo,
@@ -206,6 +214,15 @@ const DrawAndGuessRoom = () => {
       },
     );
 
+    // The hint gets easier as the drawing clock runs down: the server
+    // uncovers letters on its own schedule and says what it uncovered.
+    socket.on('wordHintRevealed', (data: { currentWordHint: string }) => {
+      setCurrentRoomInfo((prevRoomInfo) => ({
+        ...prevRoomInfo,
+        currentWordHint: data.currentWordHint,
+      }));
+    });
+
     // ONLY drawer of the current round will receive this event
     socket.on('drawingPhaseStartedForDrawer', (word: string) => {
       setCurrentRoomInfo((prevRoomInfo) => ({
@@ -266,16 +283,13 @@ const DrawAndGuessRoom = () => {
       },
     );
 
-    socket.on(
-      'endDrawAndGuessGame',
-      (currentRoomInfo: DrawAndGuessDetailRoomInfo) => {
-        setCurrentRoomInfo((prevRoomInfo) => ({
-          ...prevRoomInfo,
-          ...currentRoomInfo,
-        }));
-        anchorPhaseDeadline(0);
-      },
-    );
+    socket.on('endDrawAndGuessGame', (roomState: DrawAndGuessRoomState) => {
+      setCurrentRoomInfo((prevRoomInfo) => ({
+        ...prevRoomInfo,
+        ...roomState,
+      }));
+      anchorPhaseDeadline(0);
+    });
 
     return () => {
       socket.off('clientJoinDrawAndGuessRoomSuccess');
@@ -288,6 +302,7 @@ const DrawAndGuessRoom = () => {
       socket.off('drawerReceiveWordChoices');
       socket.off('drawingPhaseStarted');
       socket.off('drawingPhaseStartedForDrawer');
+      socket.off('wordHintRevealed');
       socket.off('playersReceivedPointsFromCorrectGuess');
       socket.off('reviewingPhaseStarted');
       socket.off('reviewingPhaseEnded');
@@ -300,10 +315,23 @@ const DrawAndGuessRoom = () => {
   // them: by the time the server hears this, we are ready for the reply.
   // The join broadcast is sent while this page is still navigating, so
   // asking once mounted is what makes arriving in a room deterministic.
+  //
+  // Asked again on every reconnect. socket.io reopens a dropped connection by
+  // itself, without reloading the page, and the reply is what carries the
+  // drawing and — for the drawer — the word: both are sent to one socket, and
+  // the socket that received them is gone.
   useEffect(() => {
-    if (roomId) {
+    if (!roomId) return;
+
+    const askForState = () =>
       socket.emit('requestDrawAndGuessRoomState', roomId);
-    }
+
+    socket.on('connect', askForState);
+    if (socket.connected) askForState();
+
+    return () => {
+      socket.off('connect', askForState);
+    };
   }, [socket, roomId]);
 
   useEffect(() => {

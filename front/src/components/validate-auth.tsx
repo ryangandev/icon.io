@@ -1,76 +1,54 @@
-// import { useEffect } from 'react';
-// import toast from 'react-hot-toast';
-// import { Navigate, Outlet, useNavigate } from 'react-router';
-
-// const ValidateAuth = () => {
-//     const username = sessionStorage.getItem('username');
-//     const navigate = useNavigate();
-
-//     useEffect(() => {
-//         if (!username) {
-//             setTimeout(() => {
-//                 toast.error('You have to enter a username before playing!');
-//             }, 50);
-//         }
-//     }, [navigate, username]);
-
-//     return username ? <Outlet /> : <Navigate to="/Landing" replace />;
-// };
-
-// export default ValidateAuth;
-
-import { useState, useEffect, useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Modal, Input, type InputRef } from 'antd';
 import { Outlet, useNavigate } from 'react-router';
 import toast from 'react-hot-toast';
 
+const USERNAME_MAX = 18; // matches the server's validation
+
+/**
+ * The gate every page below `/Gamehub` sits behind: you need a name to play.
+ *
+ * It used to render the page underneath immediately and then call
+ * `window.location.reload()` once a name was entered, to make everything that
+ * reads `sessionStorage` notice — which threw away the whole SPA, taking the
+ * open socket and the identity handshake with it, and left a deep link into a
+ * room half-joined under a name the server had rejected as empty.
+ *
+ * A gate that actually gates needs none of that. Nothing below mounts until
+ * there is a name to mount it with, so nothing has to be told the name arrived.
+ */
 const ValidateAuth = () => {
-  const [username, setUsername] = useState<string | null>(
+  const [username, setUsername] = useState<string | null>(() =>
     sessionStorage.getItem('username'),
   );
+  const [draft, setDraft] = useState(username ?? '');
   const [inputStatus, setInputStatus] = useState<'' | 'error' | undefined>();
-  const [open, setOpen] = useState(!username);
   const navigate = useNavigate();
   const inputRef = useRef<InputRef>(null);
 
   const handleOk = () => {
-    if (username && username.trim() !== '') {
-      sessionStorage.setItem('username', username);
-      setOpen(false);
-      window.location.reload(); // Reload page to detect username change in session storage
-    } else {
+    const chosen = draft.trim();
+
+    if (chosen === '') {
       toast.error('Username cannot be empty!');
       setInputStatus('error');
-      setUsername('');
+      setDraft('');
+      return;
     }
+
+    sessionStorage.setItem('username', chosen);
+    setUsername(chosen);
   };
 
   const handleCancel = () => {
-    setOpen(false);
     toast.error('You have to enter a username before playing!');
     navigate('/Landing', { replace: true });
   };
 
-  useEffect(() => {
-    console.log('username is: ', username);
-    if (!username) {
-      setOpen(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Only run on first render
-
-  // Fix autoFocus not working on antd Input component within Modal
-  // https://stackoverflow.com/questions/63408937/react-autofocus-on-input-field-inside-modal
-  useEffect(() => {
-    if (inputRef && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, []);
-
   return (
     <>
       <Modal
-        open={open}
+        open={!username}
         title="Enter Username"
         okText="Submit"
         cancelText="Cancel"
@@ -82,13 +60,13 @@ const ValidateAuth = () => {
           ref={inputRef}
           name="username"
           placeholder="Enter your username"
-          value={username || ''}
-          onChange={(e) => {
-            setUsername(e.target.value);
+          value={draft}
+          onChange={(event) => {
+            setDraft(event.target.value);
             setInputStatus(undefined);
           }}
           showCount
-          maxLength={18}
+          maxLength={USERNAME_MAX}
           required
           status={inputStatus}
           autoFocus
@@ -99,7 +77,7 @@ const ValidateAuth = () => {
           }}
         />
       </Modal>
-      <Outlet />
+      {username && <Outlet />}
     </>
   );
 };

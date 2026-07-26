@@ -21,6 +21,10 @@ import {
   type PlayerSessionRegistry,
 } from './libs/player-session.js';
 import { createRoomMembership } from './socket/draw-and-guess/membership.js';
+import { createRateLimiter } from './libs/rate-limit.js';
+
+/** At most one "you are being throttled" line per socket per this long. */
+const THROTTLE_LOG_INTERVAL_MS = 5000;
 
 interface CreateIconIoServerOptions {
   /** Defaults to `process.env.CORS_ORIGIN`, then the Vite dev server. */
@@ -98,6 +102,29 @@ const createIconIoServer = (
   io.on('connection', (socket) => {
     console.log('a user is connected: ' + socket.id);
 
+    // Before anything else looks at a packet: how often may this socket speak?
+    // Every handler below checks the *shape* of what it is sent; this is what
+    // bounds how much of it arrives. A dropped packet is simply never handed
+    // on — the same silent drop an invalid payload gets, for the same reason.
+    const rateLimiter = createRateLimiter();
+    let lastThrottleWarningMs = 0;
+
+    socket.use(([eventName], next) => {
+      if (rateLimiter.allow(String(eventName))) {
+        next();
+        return;
+      }
+
+      // Logging every dropped packet would be its own flood.
+      const nowMs = Date.now();
+      if (nowMs - lastThrottleWarningMs > THROTTLE_LOG_INTERVAL_MS) {
+        lastThrottleWarningMs = nowMs;
+        console.warn(
+          `Throttling ${socket.id}: too many "${String(eventName)}" events.`,
+        );
+      }
+    });
+
     // Identity first: every handler below reads the player id off the
     // connection, so nothing can happen until the client has identified.
     playerSessionHandler(socket, sessions, membership.handleResume);
@@ -107,8 +134,8 @@ const createIconIoServer = (
     // handles draw and guess lobby and room events
     lobbyEventsHandler(io, socket, rooms, sessions);
     roomEventsHandler(io, socket, rooms, sessions, membership);
-    whiteboardCanvasEventHandler(socket);
-    ChatEventsHandler(io, socket, rooms, sessions);
+    whiteboardCanvasEventHandler(socket, rooms, sessions);
+    ChatEventsHandler(io, socket, rooms, sessions, drawAndGuessGameEngine);
     GameEventsHandler(socket, drawAndGuessGameEngine, sessions);
   });
 

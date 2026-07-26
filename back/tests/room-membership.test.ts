@@ -116,31 +116,48 @@ describe('joining and leaving a room', () => {
 
   /*
    * A client that arrives at a room without a seat — a pasted link, say — is
-   * not in the player list, and that absence is what tells the room page to
-   * ask to join rather than sit there as a spectator.
+   * told so rather than handed the room's state. The payload holds no secrets,
+   * but a locked room's player list is not something a stranger should be able
+   * to pull with a room id off the lobby broadcast, and every id in that
+   * broadcast is public.
    */
-  it('lets a seatless client see it is absent, then join', async () => {
+  it('refuses the room state to a client that holds no seat', async () => {
     const holder = await harness.connect();
     const roomId = await createRoom(holder, { ownerUsername: 'Holder' });
     await joinRoom(holder, roomId, 'Holder');
 
     const arriving = await harness.connect();
+    const leaked = collect(arriving, 'clientJoinDrawAndGuessRoomSuccess');
+    const error = waitFor<{ errorType: string }>(arriving, 'roomError');
+    arriving.emit('requestDrawAndGuessRoomState', roomId);
+
+    expect((await error).errorType).toBe('notRoomMember');
+    await settle();
+    expect(leaked).toEqual([]);
+  });
+
+  /*
+   * ...and that refusal is the room page's cue to ask for a seat, which is how
+   * a pasted link still gets you into an open room.
+   */
+  it('lets a refused client join, and then see the state', async () => {
+    const holder = await harness.connect();
+    const roomId = await createRoom(holder, { ownerUsername: 'Holder' });
+    await joinRoom(holder, roomId, 'Holder');
+
+    const arriving = await harness.connect();
+    await joinRoom(arriving, roomId, 'Arrived');
+    await settle();
+
     const snapshot = waitFor<DrawAndGuessRoomState>(
       arriving,
       'clientJoinDrawAndGuessRoomSuccess',
     );
     arriving.emit('requestDrawAndGuessRoomState', roomId);
 
-    const before = await snapshot;
-    expect(before.playerList[arriving.playerId]).toBeUndefined();
-    expect(before.currentPlayerCount).toBe(1);
-
-    await joinRoom(arriving, roomId, 'Arrived');
-    await settle();
-
-    const room = harness.server.rooms[roomId];
-    expect(room?.playerList[arriving.playerId]?.username).toBe('Arrived');
-    expect(room?.currentPlayerCount).toBe(2);
+    const state = await snapshot;
+    expect(state.playerList[arriving.playerId]?.username).toBe('Arrived');
+    expect(state.currentPlayerCount).toBe(2);
   });
 
   it('reports a state request for a room that has gone away', async () => {

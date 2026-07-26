@@ -41,22 +41,19 @@ const ChatWindow = ({
   }, [messages]);
 
   useEffect(() => {
-    socket.on('receiveMessage', (username: string, message: string) => {
+    socket.on('receiveMessage', (from: string, message: string) => {
       setMessages((prevMessages) => [
         ...prevMessages,
-        { username: username, message: message },
+        { username: from, message },
       ]);
     });
 
-    socket.on(
-      'correctGuessAnnouncement',
-      (username: string, message: string) => {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { username: username, message: message, color: '#d4f1d4' },
-        ]);
-      },
-    );
+    socket.on('correctGuessAnnouncement', (from: string, message: string) => {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { username: from, message, color: '#d4f1d4' },
+      ]);
+    });
 
     return () => {
       socket.off('receiveMessage');

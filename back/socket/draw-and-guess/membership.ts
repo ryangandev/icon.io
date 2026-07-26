@@ -14,6 +14,18 @@ import type { DrawAndGuessGameEngine } from './game-engine.js';
 
 const SYSTEM = '📢 System';
 
+/** Pending seat expiries are keyed by the pair, not by either half. */
+const graceKey = (roomId: string, playerId: string) => `${roomId}:${playerId}`;
+
+const recount = (room: DrawAndGuessDetailRoomInfo) => {
+  room.currentPlayerCount = Object.keys(room.playerList).length;
+  room.status = getRoomStatus(
+    room.currentPlayerCount,
+    room.maxPlayers,
+    room.isGameStarted,
+  );
+};
+
 /**
  * Who is in a room, and for how long after they stop answering.
  *
@@ -37,9 +49,6 @@ const createRoomMembership = (
 ) => {
   /** Pending seat expiries, keyed `roomId:playerId`. */
   const graceTimers = new Map<string, NodeJS.Timeout>();
-
-  const graceKey = (roomId: string, playerId: string) =>
-    `${roomId}:${playerId}`;
 
   const cancelGrace = (roomId: string, playerId: string) => {
     const key = graceKey(roomId, playerId);
@@ -77,15 +86,6 @@ const createRoomMembership = (
     io.emit(
       'updateDrawAndGuessLobbyRoomList',
       Object.values(rooms).map(getDrawAndGuessLobbyRoomInfo),
-    );
-  };
-
-  const recount = (room: DrawAndGuessDetailRoomInfo) => {
-    room.currentPlayerCount = Object.keys(room.playerList).length;
-    room.status = getRoomStatus(
-      room.currentPlayerCount,
-      room.maxPlayers,
-      room.isGameStarted,
     );
   };
 
@@ -188,8 +188,9 @@ const createRoomMembership = (
       );
       announce(room.roomId, `${player.username} lost connection.`);
 
-      // The seat waits for them; the turn does not.
-      gameEngine.skipTurnOfAbsentDrawer(room, playerId);
+      // The seat waits for them. So, briefly, does their turn — the drawing is
+      // kept server-side now, so there is something to come back to.
+      gameEngine.handleDrawerDisconnect(room, playerId);
 
       const key = graceKey(room.roomId, playerId);
       graceTimers.set(
@@ -235,6 +236,9 @@ const createRoomMembership = (
         getDrawAndGuessRoomState(room),
       );
       announce(room.roomId, `${player.username} reconnected.`);
+
+      // If the room was holding a turn open for them, it can stop.
+      gameEngine.handleDrawerReturn(room, playerId);
     }
 
     emitLobby();

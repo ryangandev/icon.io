@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
-  convertStrToUnderscores,
+  buildWordHint,
+  revealablePositions,
   getDrawAndGuessLobbyRoomInfo,
   getDrawAndGuessRoomState,
   getRandomChoicesFromList,
@@ -11,6 +12,7 @@ import {
   resetReceivedPointsThisTurn,
 } from '../libs/utils.js';
 import type { DrawAndGuessDetailRoomInfo } from '../models/types.js';
+import { createRoomCanvas } from '../socket/draw-and-guess/canvas.js';
 
 const makeRoom = (
   overrides: Partial<DrawAndGuessDetailRoomInfo> = {},
@@ -43,6 +45,7 @@ const makeRoom = (
   wordCategory: '',
   wordChoices: [],
   phaseEndsAt: 0,
+  canvas: createRoomCanvas(),
   ...overrides,
 });
 
@@ -175,9 +178,17 @@ describe('getRandomElementFromSet', () => {
   });
 });
 
-describe('convertStrToUnderscores', () => {
+describe('buildWordHint', () => {
   it('hides every visible character but keeps the spacing', () => {
-    expect(convertStrToUnderscores('ice cream')).toBe('___ _____');
+    expect(buildWordHint('ice cream')).toBe('___ _____');
+  });
+
+  it('fills in the positions the clock has given away', () => {
+    expect(buildWordHint('ice cream', new Set([0, 4]))).toBe('i__ c____');
+  });
+
+  it('offers every position but the spaces for revealing', () => {
+    expect(revealablePositions('ice cream')).toEqual([0, 1, 2, 4, 5, 6, 7, 8]);
   });
 });
 

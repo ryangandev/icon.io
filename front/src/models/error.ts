@@ -1,8 +1,1 @@
-type ErrorType =
-  'roomNotExist' | 'roomNotOpen' | 'incorrectPassword' | 'notEnoughPlayers';
-
-interface CustomError extends Error {
-  errorType: ErrorType;
-}
-
-export type { CustomError };
+export type { ErrorType, RoomErrorPayload } from '../../../shared/wire-types';

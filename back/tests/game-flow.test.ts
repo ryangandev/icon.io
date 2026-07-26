@@ -5,6 +5,7 @@ import {
   collect,
   createRoom,
   joinRoom,
+  playToDrawingPhase,
   settle,
   startTestServer,
   waitFor,
@@ -14,6 +15,10 @@ import {
 interface Phase {
   phaseEndsInMs: number;
 }
+
+/** How many of a hint's letters are showing rather than still hidden. */
+const shown = (hint: string) =>
+  [...hint].filter((char) => char !== '_' && char.trim() !== '').length;
 
 /**
  * A room with two players in it, plus a way to find out which of them the
@@ -93,6 +98,35 @@ describe('the game engine', () => {
     owner.emit('startDrawAndGuessGame', roomId);
 
     expect((await error).errorType).toBe('notEnoughPlayers');
+    expect(harness.server.rooms[roomId]?.isGameStarted).toBe(false);
+  });
+
+  /*
+   * The Start button is owner-only in the UI and, until now, nowhere else: any
+   * connected client could start any room's game with a room id off the lobby
+   * broadcast — including a room it had never joined.
+   */
+  it('refuses to start a game for anybody but the room owner', async () => {
+    const { bob, roomId } = await seatTwoPlayers(harness);
+
+    const error = waitFor<{ errorType: string }>(bob, 'roomError');
+    bob.emit('startDrawAndGuessGame', roomId);
+
+    expect((await error).errorType).toBe('notRoomOwner');
+    expect(harness.server.rooms[roomId]?.isGameStarted).toBe(false);
+  });
+
+  it('refuses to start a game for a client that is not even in the room', async () => {
+    const { alice, roomId } = await seatTwoPlayers(harness);
+    const outsider = await harness.connect();
+
+    const started = collect(alice, 'startDrawAndGuessGameSuccess');
+    const error = waitFor<{ errorType: string }>(outsider, 'roomError');
+    outsider.emit('startDrawAndGuessGame', roomId);
+
+    expect((await error).errorType).toBe('notRoomOwner');
+    await settle();
+    expect(started).toEqual([]);
     expect(harness.server.rooms[roomId]?.isGameStarted).toBe(false);
   });
 
@@ -206,6 +240,87 @@ describe('the game engine', () => {
 
     // ...and the turn ends without any client asking it to.
     await waitFor(alice, 'reviewingPhaseEnded');
+  });
+
+  /*
+   * The hint used to be the same row of underscores for the whole phase. It
+   * now gives up to a third of the letters away as the clock runs down, which
+   * is what rescues a room that has stalled on a hard word.
+   */
+  it('uncovers letters of the word as the drawing clock runs down', async () => {
+    const harnessWithHints = await startTestServer({
+      wordSelecting: 0.2,
+      drawing: 1.5,
+      reviewing: 0.2,
+    });
+    try {
+      const { guesser, word } = await playToDrawingPhase(harnessWithHints);
+      const hints = collect<{ currentWordHint: string }>(
+        guesser,
+        'wordHintRevealed',
+      );
+
+      // Long enough for both reveals — at a third and two thirds of the phase.
+      await settle(1300);
+
+      // The shortest word in the bank is three letters, so every word gets at
+      // least one letter given away.
+      expect(hints.length).toBeGreaterThan(0);
+
+      const letterCount = [...word].filter((char) => char.trim() !== '').length;
+
+      let previouslyShown = 0;
+      for (const { currentWordHint } of hints) {
+        expect(currentWordHint).toHaveLength(word.length);
+        // Every character is either still hidden or the word's own.
+        for (const [index, char] of [...currentWordHint].entries()) {
+          expect(char === '_' || char === word[index]).toBe(true);
+        }
+        // It only ever gets easier, and never gives the whole word away.
+        expect(shown(currentWordHint)).toBeGreaterThanOrEqual(previouslyShown);
+        previouslyShown = shown(currentWordHint);
+      }
+
+      expect(previouslyShown).toBeGreaterThan(0);
+      expect(previouslyShown).toBe(Math.floor(letterCount / 3));
+
+      // Every reveal tells the room something it did not know. A word with one
+      // letter to give away gives it away once, not twice.
+      expect(hints.length).toBe(Math.min(2, Math.floor(letterCount / 3)));
+      expect(new Set(hints.map((hint) => hint.currentWordHint)).size).toBe(
+        hints.length,
+      );
+    } finally {
+      await harnessWithHints.teardown();
+    }
+  });
+
+  /*
+   * A reveal scheduled for a turn that ended early must not go off during the
+   * reveal that replaced it — the word is on screen by then, and a hint
+   * arriving after it is at best noise.
+   */
+  it('stops hinting once the turn is over', async () => {
+    const harnessWithHints = await startTestServer({
+      wordSelecting: 0.2,
+      drawing: 1.2, // reveals would be due at 0.4s and 0.8s
+      reviewing: 2, // ...which land inside this, if they were still pending
+    });
+    try {
+      const { roomId, guesser, guesserName, word } =
+        await playToDrawingPhase(harnessWithHints);
+
+      const hints = collect(guesser, 'wordHintRevealed');
+      // The only guesser guesses, so the phase ends before any reveal is due.
+      guesser.emit('takingAGuess', roomId, guesserName, word);
+      await waitFor(guesser, 'reviewingPhaseStarted', 1000);
+
+      await settle(1000);
+
+      expect(hints).toEqual([]);
+    } finally {
+      await harnessWithHints.teardown();
+    }
   });
 
   it('plays every player once per round, then ends the game', async () => {

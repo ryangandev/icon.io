@@ -1,61 +1,65 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import type { Socket } from 'socket.io-client';
 import type { PlayerInfo } from '../models/types.js';
 import {
   collect,
   createRoom,
   joinRoom,
+  playToDrawingPhase,
   settle,
   startTestServer,
   waitFor,
+  type TestClient,
   type TestServer,
 } from './helpers/test-server.js';
 
 /**
- * Starts a game and plays it as far as the drawing phase, reporting who is
- * drawing, who is guessing, and what the word is.
- *
+ * Three players in a drawing phase: one drawing and two still guessing, which
+ * is the smallest room where "everybody has guessed" is not the same event as
+ * "somebody has guessed".
+ */
+const playToDrawingPhaseWithThree = async (harness: TestServer) => {
+  const names = ['Alice', 'Bob', 'Carol'];
+  const [alice, bob, carol] = await Promise.all([
+    harness.connect(),
+    harness.connect(),
+    harness.connect(),
+  ]);
+  const clients = [alice!, bob!, carol!];
+
+  const roomId = await createRoom(alice!, { ownerUsername: 'Alice' });
+  for (const [index, client] of clients.entries()) {
+    await joinRoom(client, roomId, names[index]!);
+  }
+
+  let drawer: TestClient | undefined;
+  let word: string | undefined;
+  for (const client of clients) {
+    client.once('drawingPhaseStartedForDrawer', (received: string) => {
+      drawer = client;
+      word = received;
+    });
+  }
+
+  const drawing = waitFor(alice!, 'drawingPhaseStarted', 5000);
+  alice!.emit('startDrawAndGuessGame', roomId);
+  await drawing;
+  await settle(50);
+
+  return {
+    roomId,
+    drawer: drawer!,
+    guessers: clients.filter((client) => client !== drawer),
+    guesserName: (client: TestClient) => names[clients.indexOf(client)]!,
+    word: word!,
+  };
+};
+
+/*
  * Every check below is about what the *server* permits. The UI already disables
  * the guess box for the drawer and for anyone who has scored, and only routes a
  * message during the drawing phase — but none of that binds a modified client,
  * and until this pass none of it was checked on arrival.
  */
-const playToDrawingPhase = async (harness: TestServer) => {
-  const alice = await harness.connect();
-  const bob = await harness.connect();
-
-  const roomId = await createRoom(alice, { ownerUsername: 'Alice', rounds: 1 });
-  await joinRoom(alice, roomId, 'Alice');
-  await joinRoom(bob, roomId, 'Bob');
-
-  let drawer: Socket | undefined;
-  let word: string | undefined;
-  const learn = (socket: Socket) => (received: string) => {
-    drawer = socket;
-    word = received;
-  };
-  alice.once('drawingPhaseStartedForDrawer', learn(alice));
-  bob.once('drawingPhaseStartedForDrawer', learn(bob));
-
-  const drawing = waitFor(alice, 'drawingPhaseStarted', 5000);
-  alice.emit('startDrawAndGuessGame', roomId);
-  await drawing;
-  await settle(50);
-
-  const guesser = drawer === alice ? bob : alice;
-
-  return {
-    roomId,
-    alice,
-    bob,
-    drawer: drawer!,
-    drawerName: drawer === alice ? 'Alice' : 'Bob',
-    guesser,
-    guesserName: guesser === alice ? 'Alice' : 'Bob',
-    word: word!,
-  };
-};
-
 describe('guess authority', () => {
   let harness: TestServer;
 
@@ -92,10 +96,15 @@ describe('guess authority', () => {
     );
 
     const players = await scored;
-    const scores = Object.values(players).map((player) => player.points);
-    // The guesser takes 100 and the drawer 40.
-    expect(scores).toEqual(expect.arrayContaining([100, 40]));
+    const scores = Object.values(players)
+      .map((player) => player.points)
+      .toSorted((a, b) => b - a);
+    // Guessed at once, so near the top of the range: the guesser takes the
+    // floor plus almost the whole bonus, and the drawer two fifths of that.
+    expect(scores[0]).toBeGreaterThan(140);
+    expect(scores[1]).toBe(Math.round(scores[0]! * 0.4));
     expect((await announced)[1]).toContain(guesserName);
+    expect((await announced)[1]).toContain(`+${scores[0]}`);
   });
 
   it('does not leak the word by echoing a wrong guess back as a hint', async () => {
@@ -125,6 +134,40 @@ describe('guess authority', () => {
     ).toBe(true);
   });
 
+  /*
+   * A flat 100 made a turn pass/fail rather than a race: the same score for
+   * getting it in three seconds and for getting it in the last one.
+   */
+  it('pays a fast guess more than a slow one', async () => {
+    const early = await playToDrawingPhase(harness);
+    const earlyScored = waitFor<Record<string, PlayerInfo>>(
+      early.drawer,
+      'playersReceivedPointsFromCorrectGuess',
+    );
+    early.guesser.emit(
+      'takingAGuess',
+      early.roomId,
+      early.guesserName,
+      early.word,
+    );
+    const earlyPoints = (await earlyScored)[early.guesser.playerId]!.points;
+
+    const late = await playToDrawingPhase(harness);
+    // Most of the five-second phase spent staring at the canvas.
+    await settle(3500);
+    const lateScored = waitFor<Record<string, PlayerInfo>>(
+      late.drawer,
+      'playersReceivedPointsFromCorrectGuess',
+    );
+    late.guesser.emit('takingAGuess', late.roomId, late.guesserName, late.word);
+    const latePoints = (await lateScored)[late.guesser.playerId]!.points;
+
+    expect(earlyPoints).toBeGreaterThan(latePoints);
+    // ...but getting there at all is still worth something.
+    expect(latePoints).toBeGreaterThanOrEqual(50);
+    expect(earlyPoints).toBeLessThanOrEqual(150);
+  });
+
   it('refuses to let one player score twice in a turn', async () => {
     const { roomId, guesser, guesserName, drawer, word } =
       await playToDrawingPhase(harness);
@@ -145,7 +188,7 @@ describe('guess authority', () => {
           (player) => player.points,
         ),
       ),
-    ).toBe(100);
+    ).toBeLessThanOrEqual(150);
   });
 
   it('refuses a guess from somebody who is not in the room', async () => {
@@ -194,6 +237,76 @@ describe('guess authority', () => {
     await settle();
 
     expect(scored).toEqual([]);
+  });
+
+  /*
+   * The rest of a drawing phase whose word everyone has guessed is dead time:
+   * the drawer has nothing left to draw for, and every guesser is watching a
+   * countdown for a word they already know.
+   */
+  it('ends the turn as soon as everybody has guessed', async () => {
+    const { roomId, guesser, guesserName, drawer, word } =
+      await playToDrawingPhase(harness);
+
+    const reveal = waitFor<{ currentWord: string }>(
+      drawer,
+      'reviewingPhaseStarted',
+      1000, // far inside the five-second drawing phase
+    );
+    const messages = collect<[string, string]>(drawer, 'receiveMessage');
+    guesser.emit('takingAGuess', roomId, guesserName, word);
+
+    expect((await reveal).currentWord).toBe(word);
+    expect(
+      messages.some(([, text]) => text.includes('Everybody guessed')),
+    ).toBe(true);
+  });
+
+  it('waits for the players who have not guessed yet', async () => {
+    const { roomId, drawer, guessers, guesserName, word } =
+      await playToDrawingPhaseWithThree(harness);
+
+    const ended = collect(drawer, 'reviewingPhaseStarted');
+    guessers[0].emit('takingAGuess', roomId, guesserName(guessers[0]), word);
+    await settle(300);
+
+    // One of the two has guessed; the other is still trying.
+    expect(ended).toEqual([]);
+
+    const reveal = waitFor<{ currentWord: string }>(
+      drawer,
+      'reviewingPhaseStarted',
+      1000,
+    );
+    guessers[1].emit('takingAGuess', roomId, guesserName(guessers[1]), word);
+
+    expect((await reveal).currentWord).toBe(word);
+  });
+
+  /*
+   * A player inside their reconnect grace still holds a seat but cannot guess,
+   * so waiting for them would cost the room the whole rest of the phase.
+   */
+  it('does not wait for a player who is away', async () => {
+    const { roomId, drawer, guessers, guesserName, word } =
+      await playToDrawingPhaseWithThree(harness);
+
+    guessers[1].close();
+    await settle(100);
+    // Still seated, just away — and so still in the room's player list.
+    expect(
+      harness.server.rooms[roomId]?.playerList[guessers[1].playerId]
+        ?.isConnected,
+    ).toBe(false);
+
+    const reveal = waitFor<{ currentWord: string }>(
+      drawer,
+      'reviewingPhaseStarted',
+      1000,
+    );
+    guessers[0].emit('takingAGuess', roomId, guesserName(guessers[0]), word);
+
+    expect((await reveal).currentWord).toBe(word);
   });
 
   it('passes ordinary room chat through to everyone else', async () => {

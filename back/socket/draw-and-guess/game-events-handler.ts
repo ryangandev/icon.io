@@ -6,6 +6,7 @@ import {
   roomIdOnly,
   selectWordRequest,
 } from '../../libs/validation.js';
+import { asRoomError } from '../../models/error.js';
 
 /**
  * Socket glue only. Every phase transition is driven by the engine's own clock;
@@ -23,15 +24,14 @@ const GameEventsHandler = (
     if (!validated) return;
     const [roomId] = validated;
 
+    const playerId = sessions.playerIdFor(socket.id);
+    if (!playerId) return;
+
     try {
-      gameEngine.startGame(roomId);
-    } catch (error: any) {
+      gameEngine.startGame(roomId, playerId);
+    } catch (error) {
       console.log(error);
-      socket.emit('roomError', {
-        status: true,
-        message: error.message,
-        errorType: error.errorType,
-      });
+      socket.emit('roomError', asRoomError(error));
     }
   });
 

@@ -11,6 +11,7 @@ import {
 } from '../../libs/utils.js';
 import type { PlayerSessionRegistry } from '../../libs/player-session.js';
 import { parseArgs, roomCreateRequest } from '../../libs/validation.js';
+import { createRoomCanvas } from './canvas.js';
 
 const lobbyEventsHandler = (
   io: Server,
@@ -74,6 +75,7 @@ const lobbyEventsHandler = (
         wordCategory: '',
         wordChoices: [],
         phaseEndsAt: 0,
+        canvas: createRoomCanvas(),
       };
 
       drawAndGuessDetailRoomInfoList[roomId] = newDrawAndGuessRoom;

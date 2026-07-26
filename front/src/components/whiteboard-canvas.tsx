@@ -26,6 +26,9 @@ interface Coordinate {
  * undo. Every client receives the same draw events and so builds the same
  * stroke list, which makes undo a matter of dropping the last entry and
  * repainting.
+ *
+ * The server keeps the same list from the same events, and hands it to anyone
+ * who arrives mid-turn — see `syncWhiteboardCanvas` below.
  */
 interface Stroke {
   color: string;
@@ -171,11 +174,24 @@ const WhiteBoardCanvas = ({
       repaint(context, strokesRef.current);
     };
 
+    /**
+     * Whatever has been drawn in this room so far, sent by the server when
+     * this client asks for the room's state — on arriving, and on coming back
+     * from a reload. Stored whether or not the 2D context exists yet: the
+     * request goes out as this component mounts, and the effect below paints
+     * it as soon as there is something to paint on.
+     */
+    const canvasSyncHandler = (strokes: Stroke[]) => {
+      strokesRef.current = strokes;
+      if (context) repaint(context, strokesRef.current);
+    };
+
     socket.on('drawerStartDrawing', drawerStartDrawingHandler);
     socket.on('drawerContinueDrawing', drawerContinueDrawingHandler);
     socket.on('drawerStopDrawing', drawerStopDrawingHandler);
     socket.on('drawerUndo', drawerUndoHandler);
     socket.on('drawerClear', drawerClearHandler);
+    socket.on('syncWhiteboardCanvas', canvasSyncHandler);
 
     // Cleanup the event listener
     return () => {
@@ -184,9 +200,17 @@ const WhiteBoardCanvas = ({
       socket.off('drawerStopDrawing', drawerStopDrawingHandler);
       socket.off('drawerUndo', drawerUndoHandler);
       socket.off('drawerClear', drawerClearHandler);
+      socket.off('syncWhiteboardCanvas', canvasSyncHandler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, context]);
+
+  // A drawing that arrived before the canvas had a context — the room asks the
+  // server for its state as this component mounts, so that is the normal case
+  // rather than an edge one.
+  useEffect(() => {
+    if (context) repaint(context, strokesRef.current);
+  }, [context]);
 
   const handleColorChange = (color: string) => {
     setBrushOptions({
