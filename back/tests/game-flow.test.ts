@@ -283,6 +283,13 @@ describe('the game engine', () => {
 
       expect(previouslyShown).toBeGreaterThan(0);
       expect(previouslyShown).toBe(Math.floor(letterCount / 3));
+
+      // Every reveal tells the room something it did not know. A word with one
+      // letter to give away gives it away once, not twice.
+      expect(hints.length).toBe(Math.min(2, Math.floor(letterCount / 3)));
+      expect(new Set(hints.map((hint) => hint.currentWordHint)).size).toBe(
+        hints.length,
+      );
     } finally {
       await harnessWithHints.teardown();
     }

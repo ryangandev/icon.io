@@ -156,11 +156,18 @@ const createDrawAndGuessGameEngine = (
     const revealed = new Set<number>();
     const timers: NodeJS.Timeout[] = [];
 
+    // Counted here rather than off `revealed`, which is empty until the first
+    // timer fires: a three-letter word has one letter to give away, and both
+    // steps would otherwise be scheduled to reveal that same letter — the
+    // second one an emit that changes nothing.
+    let scheduledSoFar = 0;
+
     for (let step = 1; step <= HINT_REVEAL_COUNT; step++) {
       const revealedByNow = Math.round(
         (totalToReveal * step) / HINT_REVEAL_COUNT,
       );
-      if (revealedByNow <= revealed.size) continue;
+      if (revealedByNow <= scheduledSoFar) continue;
+      scheduledSoFar = revealedByNow;
 
       const upTo = revealedByNow;
       const delayInSeconds =
