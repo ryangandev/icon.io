@@ -114,8 +114,6 @@ Animals, League Of Legends, Electronics, Sports, Food.
 
 - **Minesweeper** — the Gamehub tile links to `/Gamehub/Minesweeper/Lobby`, which
   has no route and lands on the 404 page. Art assets exist; nothing else does.
-- **`back/archived/`** — four files from the pre-rewrite version. Nothing imports
-  them; they're now excluded from the build. Safe to delete.
 - The old `ValidateAuth` implementation is left commented out at the top of
   [`front/src/components/validate-auth.tsx`](../front/src/components/validate-auth.tsx).
 
