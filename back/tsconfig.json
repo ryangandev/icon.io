@@ -1,24 +1,27 @@
 {
-    "include": ["**/*"],
-    "exclude": ["node_modules", "build"],
+    "include": ["**/*.ts"],
+    "exclude": ["node_modules", "build", "archived"],
     "compilerOptions": {
         "outDir": "build",
         "rootDir": "./",
 
-        // enable top-level await and import/export syntax
-        "target": "es2017",
-        "moduleResolution": "node16",
-        "module": "es2022",
+        // Node 20+ ESM: top-level await, import/export, .js specifiers
+        "target": "es2022",
+        "lib": ["es2023"],
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
 
-        // enable type checking
+        // type checking
         "strict": true,
-        "noImplicitAny": false,
+        "noImplicitAny": true,
+        "noUncheckedIndexedAccess": false,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
 
-
-        // to make jest happy
         "esModuleInterop": true,
-
-        // to allow json importing
-        "resolveJsonModule": true
+        "verbatimModuleSyntax": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true
     }
 }

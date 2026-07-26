@@ -1,6 +1,6 @@
-import { Server, Socket } from 'socket.io';
-import { DrawAndGuessDetailRoomInfo } from '../../models/types.js';
-import { CustomError } from '../../models/error.js';
+import type { Server, Socket } from 'socket.io';
+import type { DrawAndGuessDetailRoomInfo } from '../../models/types.js';
+import type { CustomError } from '../../models/error.js';
 import {
     getDrawAndGuessLobbyRoomInfo,
     getRandomCategory,
@@ -43,7 +43,6 @@ const GameEventsHandler = (
 
             // Select a random category from the word bank
             const randomCategory = getRandomCategory(wordBank);
-            const randomCategoryName = Object.keys(randomCategory)[0];
 
             currentRoom.isGameStarted = true;
             currentRoom.status = getRoomStatus(
@@ -51,7 +50,7 @@ const GameEventsHandler = (
                 currentRoom.maxPlayers,
                 currentRoom.isGameStarted,
             );
-            currentRoom.wordCategory = randomCategoryName;
+            currentRoom.wordCategory = randomCategory.name;
 
             console.log('startDrawAndGuessGame', currentRoom);
             // Update the clients about room info
@@ -227,6 +226,8 @@ const GameEventsHandler = (
 
         // Select a new drawer from the drawer queue
         const newDrawer = getRandomElementFromSet(currentRoom.drawerQueue);
+        if (!newDrawer || currentRoom.wordCategory === '') return;
+
         const randomChoicesFromCategory = getRandomChoicesFromList(
             wordBank[currentRoom.wordCategory],
             3,

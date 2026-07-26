@@ -1,5 +1,5 @@
-import { Server, Socket } from 'socket.io';
-import { DrawAndGuessDetailRoomInfo } from '../../models/types.js';
+import type { Server, Socket } from 'socket.io';
+import type { DrawAndGuessDetailRoomInfo } from '../../models/types.js';
 
 const ChatEventsHandler = (
     io: Server,

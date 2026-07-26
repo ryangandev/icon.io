@@ -1,10 +1,13 @@
-import { Server, Socket } from 'socket.io';
-import { DrawAndGuessDetailRoomInfo, OwnerInfo } from '../../models/types.js';
+import type { Server, Socket } from 'socket.io';
+import type {
+    DrawAndGuessDetailRoomInfo,
+    OwnerInfo,
+} from '../../models/types.js';
 import {
     getDrawAndGuessLobbyRoomInfo,
     getRoomStatus,
 } from '../../libs/utils.js';
-import { CustomError } from '../../models/error.js';
+import type { CustomError } from '../../models/error.js';
 
 const roomEventsHandler = (
     io: Server,

@@ -1,3 +1,5 @@
+import type { WordCategory } from '../libs/word-bank.js';
+
 type RoomStatus = 'Open' | 'Full' | 'In Progress';
 
 interface PlayerInfo {
@@ -41,7 +43,7 @@ interface DrawAndGuessDetailRoomInfo extends RoomInfo {
     isDrawingPhase: boolean;
     isReviewingPhase: boolean;
     drawerQueue: Set<string>; // queue of socket ids
-    wordCategory: string;
+    wordCategory: WordCategory | ''; // '' when no game is in progress
     wordChoices: string[];
 }
 

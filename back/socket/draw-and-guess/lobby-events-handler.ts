@@ -1,5 +1,5 @@
-import { Server, Socket } from 'socket.io';
-import {
+import type { Server, Socket } from 'socket.io';
+import type {
     DrawAndGuessDetailRoomInfo,
     OwnerInfo,
     RoomCreateRequestBody,

@@ -1,14 +1,14 @@
-import { v4 as uuidv4 } from 'uuid';
-import {
+import { randomUUID } from 'node:crypto';
+import type {
     DrawAndGuessDetailRoomInfo,
     PlayerInfo,
     RoomInfo,
     RoomStatus,
 } from '../models/types.js';
-import { WordBank } from './word-bank.js';
+import type { WordBank, WordCategory } from './word-bank.js';
 
 const generateRoomId = (): string => {
-    return uuidv4();
+    return randomUUID();
 };
 
 const getRandomInt = (min: number, max: number) => {
@@ -44,14 +44,14 @@ const getDrawAndGuessLobbyRoomInfo = (
     };
 };
 
-const getRandomCategory = (wordBank: WordBank): Record<string, string[]> => {
-    const categoryList = Object.keys(wordBank);
+const getRandomCategory = (
+    wordBank: WordBank,
+): { name: WordCategory; words: string[] } => {
+    const categoryList = Object.keys(wordBank) as WordCategory[];
     const randomCategoryIndex = getRandomInt(0, categoryList.length);
-    const randomCategory = categoryList[randomCategoryIndex];
+    const name = categoryList[randomCategoryIndex]!;
 
-    return {
-        [randomCategory]: wordBank[randomCategory],
-    };
+    return { name, words: wordBank[name] };
 };
 
 const getRandomChoicesFromList = (
@@ -67,16 +67,11 @@ const getRandomChoicesFromList = (
     return [...selectedIndexes].map((index) => wordList[index]);
 };
 
-const getRandomElementFromSet = (set: Set<string>): string => {
+const getRandomElementFromSet = (set: Set<string>): string | undefined => {
+    if (set.size === 0) return undefined;
+
     const randomIndex = getRandomInt(0, set.size);
-    const iterator = set.values();
-    let result = iterator.next();
-
-    for (let i = 0; i < randomIndex; i++) {
-        result = iterator.next();
-    }
-
-    return result.value;
+    return [...set][randomIndex];
 };
 
 const convertStrToUnderscores = (str: string): string => {

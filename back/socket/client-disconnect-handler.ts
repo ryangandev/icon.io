@@ -1,5 +1,5 @@
-import { Server, Socket } from 'socket.io';
-import { DrawAndGuessDetailRoomInfo, OwnerInfo } from '../models/types.js';
+import type { Server, Socket } from 'socket.io';
+import type { DrawAndGuessDetailRoomInfo, OwnerInfo } from '../models/types.js';
 import { getDrawAndGuessLobbyRoomInfo, getRoomStatus } from '../libs/utils.js';
 
 const clientDepartureOnDisconnectHandler = (

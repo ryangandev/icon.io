@@ -1,10 +1,10 @@
-import express, { Request, Response } from 'express';
-import { createServer } from 'http';
+import express, { type Request, type Response } from 'express';
+import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import cors from 'cors';
-import * as url from 'url';
-import path from 'path';
-import { DrawAndGuessDetailRoomInfo } from './models/types.js';
+import * as url from 'node:url';
+import path from 'node:path';
+import type { DrawAndGuessDetailRoomInfo } from './models/types.js';
 import {
     ChatEventsHandler,
     GameEventsHandler,
@@ -71,12 +71,14 @@ io.on('connection', (socket) => {
 
 if (process.env.NODE_ENV === 'production') {
     console.log('Running in production mode.');
-    app.get('/*', (req: Request, res: Response) => {
+    // Express 5 / path-to-regexp v8: a bare '*' is no longer a valid path.
+    // Wildcards must be named — '/{*splat}' matches the root as well as any subpath.
+    app.get('/{*splat}', (_req: Request, res: Response) => {
         res.sendFile('index.html', { root: publicStaticFolder });
     });
 } else {
     console.log('Running in development mode.');
-    app.get('/*', (req: Request, res: Response) => {
+    app.get('/{*splat}', (_req: Request, res: Response) => {
         res.send(
             `Hello, welcome to the Icon.io development server! 🚀\n` +
                 `In development mode, the frontend server also needs to be started.\n` +
