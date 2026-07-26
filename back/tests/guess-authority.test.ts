@@ -8,8 +8,51 @@ import {
   settle,
   startTestServer,
   waitFor,
+  type TestClient,
   type TestServer,
 } from './helpers/test-server.js';
+
+/**
+ * Three players in a drawing phase: one drawing and two still guessing, which
+ * is the smallest room where "everybody has guessed" is not the same event as
+ * "somebody has guessed".
+ */
+const playToDrawingPhaseWithThree = async (harness: TestServer) => {
+  const names = ['Alice', 'Bob', 'Carol'];
+  const [alice, bob, carol] = await Promise.all([
+    harness.connect(),
+    harness.connect(),
+    harness.connect(),
+  ]);
+  const clients = [alice!, bob!, carol!];
+
+  const roomId = await createRoom(alice!, { ownerUsername: 'Alice' });
+  for (const [index, client] of clients.entries()) {
+    await joinRoom(client, roomId, names[index]!);
+  }
+
+  let drawer: TestClient | undefined;
+  let word: string | undefined;
+  for (const client of clients) {
+    client.once('drawingPhaseStartedForDrawer', (received: string) => {
+      drawer = client;
+      word = received;
+    });
+  }
+
+  const drawing = waitFor(alice!, 'drawingPhaseStarted', 5000);
+  alice!.emit('startDrawAndGuessGame', roomId);
+  await drawing;
+  await settle(50);
+
+  return {
+    roomId,
+    drawer: drawer!,
+    guessers: clients.filter((client) => client !== drawer),
+    guesserName: (client: TestClient) => names[clients.indexOf(client)]!,
+    word: word!,
+  };
+};
 
 /*
  * Every check below is about what the *server* permits. The UI already disables
@@ -155,6 +198,76 @@ describe('guess authority', () => {
     await settle();
 
     expect(scored).toEqual([]);
+  });
+
+  /*
+   * The rest of a drawing phase whose word everyone has guessed is dead time:
+   * the drawer has nothing left to draw for, and every guesser is watching a
+   * countdown for a word they already know.
+   */
+  it('ends the turn as soon as everybody has guessed', async () => {
+    const { roomId, guesser, guesserName, drawer, word } =
+      await playToDrawingPhase(harness);
+
+    const reveal = waitFor<{ currentWord: string }>(
+      drawer,
+      'reviewingPhaseStarted',
+      1000, // far inside the five-second drawing phase
+    );
+    const messages = collect<[string, string]>(drawer, 'receiveMessage');
+    guesser.emit('takingAGuess', roomId, guesserName, word);
+
+    expect((await reveal).currentWord).toBe(word);
+    expect(
+      messages.some(([, text]) => text.includes('Everybody guessed')),
+    ).toBe(true);
+  });
+
+  it('waits for the players who have not guessed yet', async () => {
+    const { roomId, drawer, guessers, guesserName, word } =
+      await playToDrawingPhaseWithThree(harness);
+
+    const ended = collect(drawer, 'reviewingPhaseStarted');
+    guessers[0].emit('takingAGuess', roomId, guesserName(guessers[0]), word);
+    await settle(300);
+
+    // One of the two has guessed; the other is still trying.
+    expect(ended).toEqual([]);
+
+    const reveal = waitFor<{ currentWord: string }>(
+      drawer,
+      'reviewingPhaseStarted',
+      1000,
+    );
+    guessers[1].emit('takingAGuess', roomId, guesserName(guessers[1]), word);
+
+    expect((await reveal).currentWord).toBe(word);
+  });
+
+  /*
+   * A player inside their reconnect grace still holds a seat but cannot guess,
+   * so waiting for them would cost the room the whole rest of the phase.
+   */
+  it('does not wait for a player who is away', async () => {
+    const { roomId, drawer, guessers, guesserName, word } =
+      await playToDrawingPhaseWithThree(harness);
+
+    guessers[1].close();
+    await settle(100);
+    // Still seated, just away — and so still in the room's player list.
+    expect(
+      harness.server.rooms[roomId]?.playerList[guessers[1].playerId]
+        ?.isConnected,
+    ).toBe(false);
+
+    const reveal = waitFor<{ currentWord: string }>(
+      drawer,
+      'reviewingPhaseStarted',
+      1000,
+    );
+    guessers[0].emit('takingAGuess', roomId, guesserName(guessers[0]), word);
+
+    expect((await reveal).currentWord).toBe(word);
   });
 
   it('passes ordinary room chat through to everyone else', async () => {

@@ -397,6 +397,31 @@ const createDrawAndGuessGameEngine = (
   };
 
   /**
+   * A guess has just been scored. If it was the last one anybody could make,
+   * the turn is over.
+   *
+   * The rest of a drawing phase whose word everyone has already guessed is
+   * dead time: the drawer has nothing left to draw for and every guesser is
+   * watching a countdown for a word they know. Players who are inside their
+   * reconnect grace do not hold it open — they cannot guess while they are
+   * away, so waiting for them would cost the room the whole phase.
+   */
+  const handleCorrectGuess = (room: DrawAndGuessDetailRoomInfo) => {
+    if (!room.isDrawingPhase) return;
+
+    const stillGuessing = Object.entries(room.playerList).filter(
+      ([playerId, player]) =>
+        playerId !== room.currentDrawer &&
+        player.isConnected &&
+        !player.receivedPointsThisTurn,
+    );
+    if (stillGuessing.length > 0) return;
+
+    announce(room.roomId, 'Everybody guessed the word!');
+    beginReviewingPhase(room);
+  };
+
+  /**
    * The drawer's connection dropped, but they keep their seat.
    *
    * This used to end the turn on the spot, and it had to: the canvas lived only
@@ -502,6 +527,7 @@ const createDrawAndGuessGameEngine = (
   return {
     startGame,
     selectWord,
+    handleCorrectGuess,
     handlePlayerDeparture,
     handleDrawerDisconnect,
     handleDrawerReturn,

@@ -2,6 +2,7 @@ import type { Server, Socket } from 'socket.io';
 import type { DrawAndGuessDetailRoomInfo } from '../../models/types.js';
 import type { PlayerSessionRegistry } from '../../libs/player-session.js';
 import { chatRequest, parseArgs } from '../../libs/validation.js';
+import type { DrawAndGuessGameEngine } from './game-engine.js';
 
 const POINTS_FOR_GUESSER = 100;
 const POINTS_FOR_DRAWER = 40;
@@ -11,6 +12,7 @@ const ChatEventsHandler = (
   socket: Socket,
   drawAndGuessDetailRoomInfoList: Record<string, DrawAndGuessDetailRoomInfo>,
   sessions: PlayerSessionRegistry,
+  gameEngine: DrawAndGuessGameEngine,
 ) => {
   socket.on('sendMessage', (...rawArgs: unknown[]) => {
     const validated = parseArgs(chatRequest, rawArgs, 'sendMessage');
@@ -74,6 +76,11 @@ const ChatEventsHandler = (
         'playersReceivedPointsFromCorrectGuess',
         currentRoom.playerList,
       );
+
+      // The engine decides what a scored guess means for the turn: if that
+      // was the last player who could still guess, there is nothing left to
+      // draw for and the phase ends here rather than running its clock out.
+      gameEngine.handleCorrectGuess(currentRoom);
     } else {
       // A wrong guess is just chat. Echoing it back to the sender keeps
       // their own message in their log alongside everyone else's.
