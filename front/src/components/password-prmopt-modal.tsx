@@ -3,12 +3,14 @@ import { useState } from 'react';
 
 interface PasswordPromptModalProps {
     open: boolean;
+    roomName: string;
     onCancel: () => void;
     onPasswordSubmit: (password: string) => void;
 }
 
 const PasswordPromptModal = ({
     open,
+    roomName,
     onCancel,
     onPasswordSubmit,
 }: PasswordPromptModalProps) => {
@@ -22,7 +24,11 @@ const PasswordPromptModal = ({
     return (
         <Modal
             open={open}
-            title="Enter Room Password"
+            // Naming the room matters now that a single modal serves the whole
+            // table rather than one being rendered per row.
+            title={
+                roomName ? `Password for "${roomName}"` : 'Enter Room Password'
+            }
             okText="Join"
             cancelText="Cancel"
             onCancel={() => {

@@ -24,7 +24,10 @@ const DrawAndGuessLobby = () => {
     const [formOpen, setFormOpen] = useState(false);
     const [createRoomRequestLoading, setcreateRoomRequestLoading] =
         useState(false);
-    const [passwordPromptOpen, setPasswordPromptOpen] = useState(false);
+    // The locked room waiting on a password, or null when nothing is pending.
+    // This used to be a bare boolean driving one modal per table row, so
+    // clicking Join opened every locked room's modal at once.
+    const [pendingRoom, setPendingRoom] = useState<RoomInfo | null>(null);
     // The password we just submitted, kept locally so the server never has to
     // echo it back to us in order for us to join the room we created.
     const createdRoomPasswordRef = useRef('');
@@ -89,7 +92,7 @@ const DrawAndGuessLobby = () => {
     const onJoinRoom = (record: RoomInfo) => {
         if (record.status === 'Open') {
             if (record.hasPassword) {
-                setPasswordPromptOpen(true);
+                setPendingRoom(record);
             } else {
                 socket.emit(
                     'clientJoinDrawAndGuessRoomRequest',
@@ -102,13 +105,16 @@ const DrawAndGuessLobby = () => {
         }
     };
 
-    const onPasswordSubmit = (record: RoomInfo, password: string) => {
+    const onPasswordSubmit = (password: string) => {
+        if (!pendingRoom) return;
+
         socket.emit(
             'clientJoinDrawAndGuessRoomRequest',
-            record.roomId,
+            pendingRoom.roomId,
             username,
             password,
         );
+        setPendingRoom(null);
     };
 
     const columns: ColumnsType<RoomInfo> = [
@@ -178,28 +184,19 @@ const DrawAndGuessLobby = () => {
             align: 'center',
             width: 100,
             render: (_, record: RoomInfo) => (
-                <>
-                    <Button
-                        type="primary"
-                        danger={record.hasPassword}
-                        onClick={() => {
-                            onJoinRoom(record);
-                        }}
-                        disabled={
-                            record.status !== 'Open' ||
-                            record.currentPlayerCount >= record.maxPlayers
-                        }
-                    >
-                        Join
-                    </Button>
-                    <PasswordPromptModal
-                        open={passwordPromptOpen}
-                        onCancel={() => setPasswordPromptOpen(false)}
-                        onPasswordSubmit={(passwordEntered) =>
-                            onPasswordSubmit(record, passwordEntered)
-                        }
-                    />
-                </>
+                <Button
+                    type="primary"
+                    danger={record.hasPassword}
+                    onClick={() => {
+                        onJoinRoom(record);
+                    }}
+                    disabled={
+                        record.status !== 'Open' ||
+                        record.currentPlayerCount >= record.maxPlayers
+                    }
+                >
+                    Join
+                </Button>
             ),
         },
     ];
@@ -270,6 +267,16 @@ const DrawAndGuessLobby = () => {
                     rowClassName={(_record, index) =>
                         index % 2 === 0 ? 'row-even' : 'row-odd'
                     }
+                />
+
+                {/* One modal for the whole table, keyed so each room gets a
+                    fresh, empty password field. */}
+                <PasswordPromptModal
+                    key={pendingRoom?.roomId}
+                    open={pendingRoom !== null}
+                    roomName={pendingRoom?.roomName ?? ''}
+                    onCancel={() => setPendingRoom(null)}
+                    onPasswordSubmit={onPasswordSubmit}
                 />
             </div>
         </div>
