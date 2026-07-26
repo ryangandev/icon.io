@@ -17,6 +17,12 @@ interface Coordinate {
     y: number;
 }
 
+// The canvas bitmap is a fixed size that every client shares, so a stroke lands
+// in the same place for everyone. How large it is *displayed* now varies with
+// the window, which is why mouse positions have to be scaled into this space.
+const CANVAS_WIDTH = 798;
+const CANVAS_HEIGHT = 598;
+
 const brushSizes: { [key: string]: number } = {
     '1': 4,
     '2': 10,
@@ -207,14 +213,24 @@ const WhiteBoardCanvas = ({
         }
     };
 
-    // Get mouse coordinates relative to canvas, otherwise it will be relative to the window
+    // Mouse coordinates relative to the canvas — otherwise they would be
+    // relative to the window — and scaled into the canvas's own bitmap space.
+    // The element is no longer always displayed at its bitmap size, and every
+    // client replays these coordinates onto a canvas of its own size, so the
+    // scaling is what keeps a stroke in the same place for everybody.
     const getRelativeMouseCoords = (
         event: React.MouseEvent<HTMLCanvasElement>,
     ): Coordinate => {
-        const canvasBounds = canvasRef.current!.getBoundingClientRect();
+        const canvas = canvasRef.current!;
+        const canvasBounds = canvas.getBoundingClientRect();
+
         return {
-            x: event.clientX - canvasBounds.left,
-            y: event.clientY - canvasBounds.top,
+            x:
+                ((event.clientX - canvasBounds.left) * canvas.width) /
+                canvasBounds.width,
+            y:
+                ((event.clientY - canvasBounds.top) * canvas.height) /
+                canvasBounds.height,
         };
     };
 
@@ -261,76 +277,9 @@ const WhiteBoardCanvas = ({
 
     return (
         <div className="whiteboard-canvas-container">
-            <canvas
-                ref={canvasRef}
-                width={798}
-                height={598}
-                className="whiteboard-canvas"
-                onMouseDown={startDrawing}
-                onMouseMove={continueDrawing}
-                onMouseUp={stopDrawing}
-                onMouseOut={stopDrawing}
-                style={{
-                    cursor: isDrawer ? 'default' : 'not-allowed',
-                }}
-            />
-            {!isGameStarted && !isRoomOwner && (
-                <div className="whiteboard-canvas-overlay">
-                    Waiting for the owner to start the game...
-                </div>
-            )}
-            {!isGameStarted && isRoomOwner && (
-                <div className="whiteboard-canvas-overlay">
-                    Waiting for other players to join...
-                    <Button
-                        onClick={handleStartGame}
-                        size="large"
-                        className="startBtn"
-                    >
-                        START
-                    </Button>
-                </div>
-            )}
-            {isGameStarted && isWordSelectingPhase && isDrawer && (
-                <div className="whiteboard-canvas-overlay">
-                    <Typography.Title level={3}>
-                        Select a word to draw:
-                    </Typography.Title>
-                    <Space direction="horizontal">
-                        {wordChoices.map((word, index) => (
-                            <Button
-                                key={index}
-                                size="large"
-                                onClick={() => {
-                                    socket.emit(
-                                        'drawerSelectWordFinished',
-                                        roomId,
-                                        word,
-                                    );
-                                }}
-                                style={{
-                                    fontWeight: 600,
-                                }}
-                            >
-                                {word}
-                            </Button>
-                        ))}
-                    </Space>
-                    <Typography.Title level={2}>
-                        {secondsRemaining}
-                    </Typography.Title>
-                </div>
-            )}
-            {isGameStarted && isWordSelectingPhase && !isDrawer && (
-                <div className="whiteboard-canvas-overlay">
-                    <Typography.Title level={3}>
-                        Waiting for {currentDrawer} to select a word...
-                    </Typography.Title>
-                    <Typography.Title level={2}>
-                        {secondsRemaining}
-                    </Typography.Title>
-                </div>
-            )}
+            {/* The toolbar sits above the canvas: below it, at 720p, it landed
+                past the bottom of the window and the drawer had to scroll to
+                reach their own colours and brushes. */}
             {isGameStarted && isDrawer && (
                 <WhiteBoardToolBar
                     brushSizes={brushSizes}
@@ -340,16 +289,88 @@ const WhiteBoardCanvas = ({
                     handleUndo={handleUndo}
                 />
             )}
-            {isGameStarted && isReviewingPhase && (
-                <div className="whiteboard-canvas-overlay">
-                    <Typography.Title level={3}>
-                        The word was: <b>{currentWord}</b>
-                    </Typography.Title>
-                    <Typography.Title level={2}>
-                        {secondsRemaining}
-                    </Typography.Title>
-                </div>
-            )}
+            <div className="whiteboard-canvas-stage">
+                <canvas
+                    ref={canvasRef}
+                    width={CANVAS_WIDTH}
+                    height={CANVAS_HEIGHT}
+                    className="whiteboard-canvas"
+                    onMouseDown={startDrawing}
+                    onMouseMove={continueDrawing}
+                    onMouseUp={stopDrawing}
+                    onMouseOut={stopDrawing}
+                    style={{
+                        cursor: isDrawer ? 'default' : 'not-allowed',
+                    }}
+                />
+                {!isGameStarted && !isRoomOwner && (
+                    <div className="whiteboard-canvas-overlay">
+                        Waiting for the owner to start the game...
+                    </div>
+                )}
+                {!isGameStarted && isRoomOwner && (
+                    <div className="whiteboard-canvas-overlay">
+                        Waiting for other players to join...
+                        <Button
+                            onClick={handleStartGame}
+                            size="large"
+                            className="startBtn"
+                        >
+                            START
+                        </Button>
+                    </div>
+                )}
+                {isGameStarted && isWordSelectingPhase && isDrawer && (
+                    <div className="whiteboard-canvas-overlay">
+                        <Typography.Title level={3}>
+                            Select a word to draw:
+                        </Typography.Title>
+                        <Space direction="horizontal">
+                            {wordChoices.map((word, index) => (
+                                <Button
+                                    key={index}
+                                    size="large"
+                                    onClick={() => {
+                                        socket.emit(
+                                            'drawerSelectWordFinished',
+                                            roomId,
+                                            word,
+                                        );
+                                    }}
+                                    style={{
+                                        fontWeight: 600,
+                                    }}
+                                >
+                                    {word}
+                                </Button>
+                            ))}
+                        </Space>
+                        <Typography.Title level={2}>
+                            {secondsRemaining}
+                        </Typography.Title>
+                    </div>
+                )}
+                {isGameStarted && isWordSelectingPhase && !isDrawer && (
+                    <div className="whiteboard-canvas-overlay">
+                        <Typography.Title level={3}>
+                            Waiting for {currentDrawer} to select a word...
+                        </Typography.Title>
+                        <Typography.Title level={2}>
+                            {secondsRemaining}
+                        </Typography.Title>
+                    </div>
+                )}
+                {isGameStarted && isReviewingPhase && (
+                    <div className="whiteboard-canvas-overlay">
+                        <Typography.Title level={3}>
+                            The word was: <b>{currentWord}</b>
+                        </Typography.Title>
+                        <Typography.Title level={2}>
+                            {secondsRemaining}
+                        </Typography.Title>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
