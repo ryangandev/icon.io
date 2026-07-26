@@ -140,14 +140,15 @@ describe('reconnecting to a room', () => {
     await scored;
 
     const before = harness.server.rooms[roomId]!.playerList[guesser.playerId];
-    expect(before?.points).toBe(100);
+    const scoreBefore = before!.points;
+    expect(scoreBefore).toBeGreaterThan(0);
 
     const returned = await harness.reload(guesser);
     await settle(200);
 
     const after = harness.server.rooms[roomId]!.playerList[returned.playerId];
     expect(returned.playerId).toBe(guesser.playerId);
-    expect(after?.points).toBe(100);
+    expect(after?.points).toBe(scoreBefore);
     expect(after?.isConnected).toBe(true);
     expect(harness.server.rooms[roomId]?.currentPlayerCount).toBe(2);
   });

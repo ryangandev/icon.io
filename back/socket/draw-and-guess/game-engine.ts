@@ -44,6 +44,22 @@ const DEFAULT_DRAWER_HOLD_SECONDS = 10;
 const HINT_REVEAL_COUNT = 2;
 const MAX_REVEALED_FRACTION = 1 / 3;
 
+/**
+ * A guess is worth what is left on the clock.
+ *
+ * Everyone used to score a flat 100 whether they got it in three seconds or in
+ * the last one, which made a turn a pass/fail rather than a race. The floor is
+ * for getting there at all; the bonus is for getting there first. The two add
+ * up to an average of about the old 100, so scores across the two schemes are
+ * still comparable.
+ *
+ * The drawer takes a cut of whatever the guesser earned, keeping the old 100/40
+ * ratio — a drawing people get quickly is a better drawing.
+ */
+const GUESS_POINTS_FLOOR = 50;
+const GUESS_POINTS_MAX_BONUS = 100;
+const DRAWER_SHARE_OF_GUESS = 0.4;
+
 const roomError = (message: string, errorType: ErrorType): CustomError => {
   const error = new Error(message) as CustomError;
   error.errorType = errorType;
@@ -478,6 +494,26 @@ const createDrawAndGuessGameEngine = (
   };
 
   /**
+   * What a correct guess is worth at this moment, to the guesser and to the
+   * drawer. Lives here because the engine is what knows both halves: how long
+   * the phase is, and how much of it is left.
+   */
+  const pointsForCorrectGuess = (
+    room: DrawAndGuessDetailRoomInfo,
+  ): { guesser: number; drawer: number } => {
+    const phaseInMs = phaseDurationsInSeconds.drawing * 1000;
+    const fractionLeft =
+      phaseInMs > 0
+        ? Math.min(1, Math.max(0, getRemainingPhaseMs(room) / phaseInMs))
+        : 0;
+
+    const guesser =
+      GUESS_POINTS_FLOOR + Math.round(GUESS_POINTS_MAX_BONUS * fractionLeft);
+
+    return { guesser, drawer: Math.round(guesser * DRAWER_SHARE_OF_GUESS) };
+  };
+
+  /**
    * A guess has just been scored. If it was the last one anybody could make,
    * the turn is over.
    *
@@ -609,6 +645,7 @@ const createDrawAndGuessGameEngine = (
   return {
     startGame,
     selectWord,
+    pointsForCorrectGuess,
     handleCorrectGuess,
     handlePlayerDeparture,
     handleDrawerDisconnect,

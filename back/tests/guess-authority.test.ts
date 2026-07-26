@@ -96,10 +96,15 @@ describe('guess authority', () => {
     );
 
     const players = await scored;
-    const scores = Object.values(players).map((player) => player.points);
-    // The guesser takes 100 and the drawer 40.
-    expect(scores).toEqual(expect.arrayContaining([100, 40]));
+    const scores = Object.values(players)
+      .map((player) => player.points)
+      .sort((a, b) => b - a);
+    // Guessed at once, so near the top of the range: the guesser takes the
+    // floor plus almost the whole bonus, and the drawer two fifths of that.
+    expect(scores[0]).toBeGreaterThan(140);
+    expect(scores[1]).toBe(Math.round(scores[0]! * 0.4));
     expect((await announced)[1]).toContain(guesserName);
+    expect((await announced)[1]).toContain(`+${scores[0]}`);
   });
 
   it('does not leak the word by echoing a wrong guess back as a hint', async () => {
@@ -129,6 +134,40 @@ describe('guess authority', () => {
     ).toBe(true);
   });
 
+  /*
+   * A flat 100 made a turn pass/fail rather than a race: the same score for
+   * getting it in three seconds and for getting it in the last one.
+   */
+  it('pays a fast guess more than a slow one', async () => {
+    const early = await playToDrawingPhase(harness);
+    const earlyScored = waitFor<Record<string, PlayerInfo>>(
+      early.drawer,
+      'playersReceivedPointsFromCorrectGuess',
+    );
+    early.guesser.emit(
+      'takingAGuess',
+      early.roomId,
+      early.guesserName,
+      early.word,
+    );
+    const earlyPoints = (await earlyScored)[early.guesser.playerId]!.points;
+
+    const late = await playToDrawingPhase(harness);
+    // Most of the five-second phase spent staring at the canvas.
+    await settle(3500);
+    const lateScored = waitFor<Record<string, PlayerInfo>>(
+      late.drawer,
+      'playersReceivedPointsFromCorrectGuess',
+    );
+    late.guesser.emit('takingAGuess', late.roomId, late.guesserName, late.word);
+    const latePoints = (await lateScored)[late.guesser.playerId]!.points;
+
+    expect(earlyPoints).toBeGreaterThan(latePoints);
+    // ...but getting there at all is still worth something.
+    expect(latePoints).toBeGreaterThanOrEqual(50);
+    expect(earlyPoints).toBeLessThanOrEqual(150);
+  });
+
   it('refuses to let one player score twice in a turn', async () => {
     const { roomId, guesser, guesserName, drawer, word } =
       await playToDrawingPhase(harness);
@@ -149,7 +188,7 @@ describe('guess authority', () => {
           (player) => player.points,
         ),
       ),
-    ).toBe(100);
+    ).toBeLessThanOrEqual(150);
   });
 
   it('refuses a guess from somebody who is not in the room', async () => {

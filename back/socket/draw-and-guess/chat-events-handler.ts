@@ -4,9 +4,6 @@ import type { PlayerSessionRegistry } from '../../libs/player-session.js';
 import { chatRequest, parseArgs } from '../../libs/validation.js';
 import type { DrawAndGuessGameEngine } from './game-engine.js';
 
-const POINTS_FOR_GUESSER = 100;
-const POINTS_FOR_DRAWER = 40;
-
 const ChatEventsHandler = (
   io: Server,
   socket: Socket,
@@ -62,14 +59,18 @@ const ChatEventsHandler = (
       currentRoom.currentWord.toLowerCase().trim();
 
     if (isCorrect && currentDrawer) {
-      currentDrawer.points += POINTS_FOR_DRAWER;
-      currentPlayer.points += POINTS_FOR_GUESSER;
+      // What a guess is worth depends on how much of the phase is left, which
+      // is the engine's business — it owns the clock.
+      const award = gameEngine.pointsForCorrectGuess(currentRoom);
+
+      currentDrawer.points += award.drawer;
+      currentPlayer.points += award.guesser;
       currentPlayer.receivedPointsThisTurn = true;
 
       io.to(roomId).emit(
         'correctGuessAnnouncement',
         '📢 System',
-        username + ' guessed the correct word!',
+        `${username} guessed the correct word! (+${award.guesser})`,
       );
 
       io.to(roomId).emit(
