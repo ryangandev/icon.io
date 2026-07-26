@@ -1,66 +1,29 @@
-type RoomStatus = 'Open' | 'Full' | 'In Progress';
-
-interface PlayerInfo {
-  username: string;
-  points: number;
-  receivedPointsThisTurn: boolean;
-  /** False while the player is disconnected but still holding their seat. */
-  isConnected: boolean;
-}
-
-interface OwnerInfo {
-  username: string;
-  playerId: string;
-}
-
-interface RoomCreateRequestBody {
-  roomName: string;
-  ownerUsername: string;
-  rounds: number;
-  maxPlayers: number;
-  password: string;
-}
-
-interface RoomInfo {
-  roomId: string;
-  roomName: string;
-  owner: OwnerInfo;
-  status: RoomStatus;
-  currentPlayerCount: number;
-  maxPlayers: number;
-  rounds: number;
-  // The server never sends the password itself — only whether one is set.
-  hasPassword: boolean;
-}
+import type { DrawAndGuessRoomState } from '../../../shared/wire-types';
 
 /**
- * Keyed by player id, not socket id. A socket id changes on every reload; a
- * player id is issued by the server and survives one, which is what lets a
- * seat and a score outlive a refresh.
+ * What the room page holds.
+ *
+ * The server's snapshot leaves out the two drawer-private fields while a word
+ * is in play — omitted rather than blanked, so that merging a snapshot never
+ * clobbers the drawer's own copy of the word. They arrive on their own events,
+ * and this page always has *a* value for them, even if it is an empty one, so
+ * every component downstream can take them as given.
  */
-interface DrawAndGuessDetailRoomInfo extends RoomInfo {
-  playerList: Record<string, PlayerInfo>;
-  currentDrawer: string; // current drawer's player id
+type DrawAndGuessRoomView = DrawAndGuessRoomState & {
   currentWord: string;
-  currentWordHint: string;
-  currentRound: number;
-  isGameStarted: boolean;
-  isWordSelectingPhase: boolean;
-  isDrawingPhase: boolean;
-  isReviewingPhase: boolean;
-  drawerQueue: string[]; // player ids still to draw this round
-  wordCategory: string;
   wordChoices: string[];
-  // How long the server says is left in the current phase, at the moment it
-  // sent this snapshot. 0 when no phase is running.
-  phaseEndsInMs: number;
-}
+};
 
 export type {
   RoomStatus,
+  WordCategory,
   PlayerInfo,
   OwnerInfo,
   RoomCreateRequestBody,
-  RoomInfo,
-  DrawAndGuessDetailRoomInfo,
-};
+  Coordinate,
+  CanvasStroke,
+  LobbyRoomInfo,
+  DrawAndGuessRoomState,
+} from '../../../shared/wire-types';
+
+export type { DrawAndGuessRoomView };

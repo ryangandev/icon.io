@@ -2,11 +2,11 @@ import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it } from 'vitest';
 import DrawAndGuessLobby from './draw-and-guess-lobby';
-import type { RoomInfo } from '../../models/types';
+import type { LobbyRoomInfo } from '../../models/types';
 import { createFakeSocket } from '../../tests/fake-socket';
 import { renderWithSocket } from '../../tests/render';
 
-const makeRoom = (overrides: Partial<RoomInfo> = {}): RoomInfo => ({
+const makeRoom = (overrides: Partial<LobbyRoomInfo> = {}): LobbyRoomInfo => ({
   roomId: 'room-open',
   roomName: 'Open Room',
   owner: { username: 'Ada', playerId: 'player-ada' },
@@ -18,7 +18,7 @@ const makeRoom = (overrides: Partial<RoomInfo> = {}): RoomInfo => ({
   ...overrides,
 });
 
-const ROOMS: RoomInfo[] = [
+const ROOMS: LobbyRoomInfo[] = [
   makeRoom(),
   makeRoom({
     roomId: 'room-locked-a',

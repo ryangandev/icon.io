@@ -1,10 +1,7 @@
-type WordCategory =
-  | 'Fruits'
-  | 'Animals'
-  | 'League Of Legends'
-  | 'Electronics'
-  | 'Sports'
-  | 'Food';
+// The category names are part of the wire contract — a room snapshot carries
+// the one in play — so they are declared there, and this record has to cover
+// exactly them.
+import type { WordCategory } from '../../shared/wire-types.js';
 
 type WordBank = Record<WordCategory, string[]>;
 
@@ -204,4 +201,5 @@ const wordBank: WordBank = {
 };
 
 export { wordBank };
-export type { WordCategory, WordBank };
+export type { WordCategory } from '../../shared/wire-types.js';
+export type { WordBank };

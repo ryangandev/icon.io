@@ -8,12 +8,14 @@ import { Modal } from 'antd';
 import '../../styles/pages/rooms/draw-and-guess-room.css';
 import { useSocket } from '../../hooks/useSocket';
 import type {
-  DrawAndGuessDetailRoomInfo,
+  DrawAndGuessRoomState,
+  DrawAndGuessRoomView,
   PlayerInfo,
   RoomStatus,
+  WordCategory,
 } from '../../models/types';
 import GameInfoBoard from '../../components/game-info-board';
-import type { CustomError } from '../../models/error';
+import type { RoomErrorPayload } from '../../models/error';
 import toast from 'react-hot-toast';
 import { roomInfoInitialObject } from '../../data/roomInfo';
 import useScreenSize from '../../hooks/useScreenSize';
@@ -30,8 +32,9 @@ const DrawAndGuessRoom = () => {
   const isSmallerScreen = currentScreenWidth < 1200;
 
   // Room info attributes
-  const [currentRoomInfo, setCurrentRoomInfo] =
-    useState<DrawAndGuessDetailRoomInfo>(roomInfoInitialObject);
+  const [currentRoomInfo, setCurrentRoomInfo] = useState<DrawAndGuessRoomView>(
+    roomInfoInitialObject,
+  );
   const currentRoomInfoRef = useRef(currentRoomInfo); // Use ref to store currentRoomInfo to avoid stale closure during useEffect
   // A refresh or a pasted link reaches this page with a socket that has never
   // joined the room — the lobby does the joining, and neither of those routes
@@ -76,17 +79,17 @@ const DrawAndGuessRoom = () => {
 
     socket.on(
       'clientJoinDrawAndGuessRoomSuccess',
-      (currentRoomInfo: DrawAndGuessDetailRoomInfo) => {
+      (roomState: DrawAndGuessRoomState) => {
         setCurrentRoomInfo((prevRoomInfo) => ({
           ...prevRoomInfo,
-          ...currentRoomInfo,
+          ...roomState,
         }));
         // Room snapshots carry the live phase clock, so joining or
         // watching someone leave re-syncs the countdown.
-        anchorPhaseDeadline(currentRoomInfo.phaseEndsInMs);
+        anchorPhaseDeadline(roomState.phaseEndsInMs);
 
-        if (playerId && !currentRoomInfo.playerList[playerId]) {
-          askForASeat(currentRoomInfo.roomId);
+        if (playerId && !roomState.playerList[playerId]) {
+          askForASeat(roomState.roomId);
         }
       },
     );
@@ -104,16 +107,16 @@ const DrawAndGuessRoom = () => {
 
     socket.on(
       'clientLeaveDrawAndGuessRoomSuccess',
-      (currentRoomInfo: DrawAndGuessDetailRoomInfo) => {
+      (roomState: DrawAndGuessRoomState) => {
         setCurrentRoomInfo((prevRoomInfo) => ({
           ...prevRoomInfo,
-          ...currentRoomInfo,
+          ...roomState,
         }));
-        anchorPhaseDeadline(currentRoomInfo.phaseEndsInMs);
+        anchorPhaseDeadline(roomState.phaseEndsInMs);
       },
     );
 
-    socket.on('roomError', (roomError: CustomError) => {
+    socket.on('roomError', (roomError: RoomErrorPayload) => {
       if (roomError.errorType === 'roomNotExist') {
         setRoomDoesNotExist(true);
       }
@@ -137,7 +140,7 @@ const DrawAndGuessRoom = () => {
         playerList: Record<string, PlayerInfo>;
         isGameStarted: boolean;
         status: RoomStatus;
-        wordCategory: string;
+        wordCategory: WordCategory;
       }) => {
         setCurrentRoomInfo((prevRoomInfo) => ({
           ...prevRoomInfo,
@@ -271,16 +274,13 @@ const DrawAndGuessRoom = () => {
       },
     );
 
-    socket.on(
-      'endDrawAndGuessGame',
-      (currentRoomInfo: DrawAndGuessDetailRoomInfo) => {
-        setCurrentRoomInfo((prevRoomInfo) => ({
-          ...prevRoomInfo,
-          ...currentRoomInfo,
-        }));
-        anchorPhaseDeadline(0);
-      },
-    );
+    socket.on('endDrawAndGuessGame', (roomState: DrawAndGuessRoomState) => {
+      setCurrentRoomInfo((prevRoomInfo) => ({
+        ...prevRoomInfo,
+        ...roomState,
+      }));
+      anchorPhaseDeadline(0);
+    });
 
     return () => {
       socket.off('clientJoinDrawAndGuessRoomSuccess');

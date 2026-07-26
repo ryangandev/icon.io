@@ -1,31 +1,20 @@
-import type { WordCategory } from '../libs/word-bank.js';
+import type {
+  CanvasStroke,
+  OwnerInfo,
+  PlayerInfo,
+  RoomStatus,
+  WordCategory,
+} from '../../shared/wire-types.js';
 
-type RoomStatus = 'Open' | 'Full' | 'In Progress';
-
-interface PlayerInfo {
-  username: string;
-  points: number;
-  receivedPointsThisTurn: boolean;
-  /**
-   * False while the player is disconnected but still holding their seat. The
-   * room keeps them for a grace period so that a refresh — which takes about a
-   * second — does not cost them their score or their place in the round.
-   */
-  isConnected: boolean;
-}
-
-interface OwnerInfo {
-  username: string;
-  playerId: string;
-}
-
-interface RoomCreateRequestBody {
-  roomName: string;
-  ownerUsername: string;
-  maxPlayers: number;
-  rounds: number;
-  password: string;
-}
+/**
+ * Server-private state.
+ *
+ * Everything a client can see is defined once, in `shared/wire-types.d.ts`, and
+ * re-exported at the bottom of this file so that the rest of the backend can go
+ * on importing its types from one place. What is left here is what never leaves
+ * the process: the room password, the word while it is being guessed, and the
+ * drawing in the mutable form the relay maintains it in.
+ */
 
 interface RoomInfo {
   roomId: string;
@@ -38,22 +27,10 @@ interface RoomInfo {
   password: string;
 }
 
-interface Coordinate {
-  x: number;
-  y: number;
-}
-
-/** One continuous line, from mouse-down to mouse-up. */
-interface CanvasStroke {
-  color: string;
-  size: number;
-  points: Coordinate[];
-}
-
 /**
- * The room's drawing, in the same replayable form every client holds it in.
- * `pointCount` is a running total so the size cap is an O(1) check rather than
- * a walk of the whole drawing on every point.
+ * The room's drawing. `pointCount` is a running total so the size cap is an
+ * O(1) check rather than a walk of the whole drawing on every point; the wire
+ * only ever sees `strokes`.
  */
 interface RoomCanvas {
   strokes: CanvasStroke[];
@@ -86,54 +63,21 @@ interface DrawAndGuessDetailRoomInfo extends RoomInfo {
 }
 
 /**
- * The types above are the server's private state. The two below are the only
- * shapes that may be sent to a client — anything emitted to a socket has to go
- * through `getDrawAndGuessLobbyRoomInfo` or `getDrawAndGuessRoomState` so that
- * secrets (`password`, and the word while it is still being guessed) cannot
- * leak by accidentally emitting an internal object wholesale.
+ * The wire contract. `getDrawAndGuessLobbyRoomInfo` and
+ * `getDrawAndGuessRoomState` in `libs/utils.ts` are the only way the internal
+ * types above become these, which is what keeps a password or a live word from
+ * leaking by someone emitting a room object wholesale.
  */
-
-interface LobbyRoomInfo {
-  roomId: string;
-  roomName: string;
-  owner: OwnerInfo;
-  status: RoomStatus;
-  currentPlayerCount: number;
-  maxPlayers: number;
-  rounds: number;
-  hasPassword: boolean;
-}
-
-interface DrawAndGuessRoomState extends LobbyRoomInfo {
-  playerList: Record<string, PlayerInfo>;
-  currentDrawer: string;
-  currentWordHint: string;
-  currentRound: number;
-  isGameStarted: boolean;
-  isWordSelectingPhase: boolean;
-  isDrawingPhase: boolean;
-  isReviewingPhase: boolean;
-  drawerQueue: string[]; // a Set does not survive JSON serialization
-  wordCategory: WordCategory | '';
-  // Time left in the current phase, relative rather than absolute so that a
-  // client whose clock disagrees with the server's still counts down right.
-  phaseEndsInMs: number;
-  // Drawer-private while the word is in play; omitted rather than blanked so
-  // that merging this snapshot never clobbers the drawer's own copy.
-  currentWord?: string;
-  wordChoices?: string[];
-}
-
 export type {
   RoomStatus,
+  WordCategory,
   PlayerInfo,
   OwnerInfo,
   RoomCreateRequestBody,
-  RoomInfo,
   Coordinate,
   CanvasStroke,
-  RoomCanvas,
-  DrawAndGuessDetailRoomInfo,
   LobbyRoomInfo,
   DrawAndGuessRoomState,
-};
+} from '../../shared/wire-types.js';
+
+export type { RoomInfo, RoomCanvas, DrawAndGuessDetailRoomInfo };
