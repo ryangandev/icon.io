@@ -9,6 +9,7 @@ import {
     generateRoomId,
     getRoomStatus,
 } from '../../libs/utils.js';
+import { parseArgs, roomCreateRequest } from '../../libs/validation.js';
 
 const lobbyEventsHandler = (
     io: Server,
@@ -30,8 +31,15 @@ const lobbyEventsHandler = (
     socket.on(
         'createDrawAndGuessRoomRequest',
         (request: RoomCreateRequestBody) => {
+            const validated = parseArgs(
+                roomCreateRequest,
+                request,
+                'createDrawAndGuessRoomRequest',
+            );
+            if (!validated) return;
+
             const { roomName, ownerUsername, maxPlayers, rounds, password } =
-                request;
+                validated;
             const roomId = generateRoomId();
             const owner: OwnerInfo = {
                 username: ownerUsername,

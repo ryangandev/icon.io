@@ -10,6 +10,11 @@ import {
 } from '../../libs/utils.js';
 import type { CustomError } from '../../models/error.js';
 import type { DrawAndGuessGameEngine } from './game-engine.js';
+import {
+    joinRoomRequest,
+    leaveRoomRequest,
+    parseArgs,
+} from '../../libs/validation.js';
 
 const roomEventsHandler = (
     io: Server,
@@ -20,7 +25,16 @@ const roomEventsHandler = (
 ) => {
     socket.on(
         'clientJoinDrawAndGuessRoomRequest',
-        (roomId: string, username: string, password: string) => {
+        (...rawArgs: unknown[]) => {
+            const validated = parseArgs(
+                joinRoomRequest,
+                // The password is optional on the wire for unlocked rooms.
+                [rawArgs[0], rawArgs[1], rawArgs[2] ?? ''],
+                'clientJoinDrawAndGuessRoomRequest',
+            );
+            if (!validated) return;
+            const [roomId, username, password] = validated;
+
             try {
                 if (!drawAndGuessDetailRoomInfoList[roomId]) {
                     const err: CustomError = new Error(
@@ -109,8 +123,15 @@ const roomEventsHandler = (
 
     socket.on(
         'clientLeaveDrawAndGuessRoom',
-        (roomId: string, username: string) => {
-            // TODO: add a boolean parameter for an edge case when the client leaves the room when the game is in progress
+        (...rawArgs: unknown[]) => {
+            const validated = parseArgs(
+                leaveRoomRequest,
+                rawArgs,
+                'clientLeaveDrawAndGuessRoom',
+            );
+            if (!validated) return;
+            const [roomId, username] = validated;
+
             try {
                 if (!drawAndGuessDetailRoomInfoList[roomId]) {
                     const err: CustomError = new Error(

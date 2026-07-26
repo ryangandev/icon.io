@@ -114,9 +114,12 @@ const getRandomChoicesFromList = (
     wordList: string[],
     numberOfChoices: number,
 ): string[] => {
+    // Asking for more distinct choices than the list can supply would spin
+    // forever, taking the whole server with it.
+    const target = Math.min(numberOfChoices, wordList.length);
     const selectedIndexes = new Set<number>();
 
-    while (selectedIndexes.size < numberOfChoices) {
+    while (selectedIndexes.size < target) {
         selectedIndexes.add(getRandomInt(0, wordList.length));
     }
 
