@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { imageDataToDataURL, dataURLToImageData } from '../libs/utils';
 import { useSocket } from '../hooks/useSocket';
 import '../styles/components/whiteboard-canvas.css';
 import WhiteBoardToolBar from './whiteboard-toolbar';
@@ -16,6 +15,48 @@ interface Coordinate {
     x: number;
     y: number;
 }
+
+/**
+ * One continuous line, from mouse-down to mouse-up.
+ *
+ * The drawing is kept as a list of these rather than as canvas bitmaps. Undo
+ * used to snapshot the whole canvas into an ImageData — 798 x 598 x 4 bytes,
+ * about 1.9MB each, retained for the whole turn — and then ship the previous
+ * state to everyone else as a PNG data URL, on the order of 100KB to 1MB per
+ * undo. Every client receives the same draw events and so builds the same
+ * stroke list, which makes undo a matter of dropping the last entry and
+ * repainting.
+ */
+interface Stroke {
+    color: string;
+    size: number;
+    points: Coordinate[];
+}
+
+const repaint = (ctx: CanvasRenderingContext2D, strokes: Stroke[]) => {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    for (const stroke of strokes) {
+        const [first, ...rest] = stroke.points;
+        if (!first) continue;
+
+        ctx.beginPath();
+        ctx.strokeStyle = stroke.color;
+        ctx.lineWidth = stroke.size;
+        ctx.lineCap = 'round';
+        ctx.moveTo(first.x, first.y);
+
+        if (rest.length === 0) {
+            // A click without a drag is a dot; lineTo needs somewhere to go.
+            ctx.lineTo(first.x + 0.01, first.y);
+        } else {
+            for (const point of rest) ctx.lineTo(point.x, point.y);
+        }
+
+        ctx.stroke();
+        ctx.closePath();
+    }
+};
 
 // The canvas bitmap is a fixed size that every client shares, so a stroke lands
 // in the same place for everyone. How large it is *displayed* now varies with
@@ -72,7 +113,8 @@ const WhiteBoardCanvas = ({
         brush: '1',
     });
     const [isDrawing, setIsDrawing] = useState(false);
-    const previousStatesRef = useRef<ImageData[]>([]);
+    // The whole drawing, identical on every client in the room.
+    const strokesRef = useRef<Stroke[]>([]);
 
     useEffect(() => {
         if (canvasRef.current) {
@@ -83,12 +125,19 @@ const WhiteBoardCanvas = ({
             }
         }
 
-        const drawerStartDrawingHandler = (coords: Coordinate) => {
-            if (context) {
-                saveCanvasState();
-                context.beginPath();
-                context.moveTo(coords.x, coords.y);
-            }
+        const drawerStartDrawingHandler = (
+            coords: Coordinate,
+            color: string,
+            size: number,
+        ) => {
+            if (!context) return;
+
+            strokesRef.current.push({ color, size, points: [coords] });
+            context.beginPath();
+            context.strokeStyle = color;
+            context.lineWidth = size;
+            context.lineCap = 'round';
+            context.moveTo(coords.x, coords.y);
         };
 
         const drawerContinueDrawingHandler = (
@@ -96,42 +145,32 @@ const WhiteBoardCanvas = ({
             color: string,
             size: number,
         ) => {
-            if (context) {
-                context.lineTo(coords.x, coords.y);
-                context.strokeStyle = color;
-                context.lineWidth = size;
-                context.lineCap = 'round';
-                context.stroke();
-            }
+            if (!context) return;
+
+            strokesRef.current.at(-1)?.points.push(coords);
+            context.lineTo(coords.x, coords.y);
+            context.strokeStyle = color;
+            context.lineWidth = size;
+            context.lineCap = 'round';
+            context.stroke();
         };
 
         const drawerStopDrawingHandler = () => {
-            if (context) {
-                context.closePath();
-            }
+            context?.closePath();
         };
 
-        const drawerUndoHandler = async (lastStateDataURL: string) => {
-            if (context && lastStateDataURL) {
-                const lastState = await dataURLToImageData(lastStateDataURL);
-                context.putImageData(lastState, 0, 0);
-                previousStatesRef.current = previousStatesRef.current.slice(
-                    0,
-                    previousStatesRef.current.length - 1,
-                );
-            }
+        const drawerUndoHandler = () => {
+            if (!context) return;
+
+            strokesRef.current.pop();
+            repaint(context, strokesRef.current);
         };
 
         const drawerClearHandler = () => {
-            if (context) {
-                context.clearRect(
-                    0,
-                    0,
-                    context.canvas.width,
-                    context.canvas.height,
-                );
-                previousStatesRef.current = [];
-            }
+            if (!context) return;
+
+            strokesRef.current = [];
+            repaint(context, strokesRef.current);
         };
 
         socket.on('drawerStartDrawing', drawerStartDrawingHandler);
@@ -149,7 +188,7 @@ const WhiteBoardCanvas = ({
             socket.off('drawerClear', drawerClearHandler);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [socket, context, previousStatesRef]); // ignore saveCanvasState() function in the dependency array
+    }, [socket, context]);
 
     const handleColorChange = (color: string) => {
         setBrushOptions({
@@ -167,50 +206,22 @@ const WhiteBoardCanvas = ({
     };
 
     const handleUndo = () => {
-        if (context) {
-            const prevStates = previousStatesRef.current;
-            if (prevStates.length > 0) {
-                const lastState = prevStates[prevStates.length - 1];
-                context.putImageData(lastState, 0, 0);
-                previousStatesRef.current = prevStates.slice(
-                    0,
-                    prevStates.length - 1,
-                );
+        if (!context || strokesRef.current.length === 0) return;
 
-                const lastStateDataURL = imageDataToDataURL(lastState);
-                socket.emit('undo', roomId, lastStateDataURL);
-            }
-        }
+        strokesRef.current.pop();
+        repaint(context, strokesRef.current);
+
+        // Everyone holds the same stroke list, so the instruction is enough.
+        socket.emit('undo', roomId);
     };
 
     const handleClearCanvas = () => {
-        if (context) {
-            context.clearRect(
-                0,
-                0,
-                context.canvas.width,
-                context.canvas.height,
-            );
-            previousStatesRef.current = [];
+        if (!context) return;
 
-            socket.emit('clear', roomId);
-        }
-    };
+        strokesRef.current = [];
+        repaint(context, strokesRef.current);
 
-    // Save the current canvas state to the previousStates array
-    const saveCanvasState = () => {
-        if (context) {
-            const canvasState = context.getImageData(
-                0,
-                0,
-                context.canvas.width,
-                context.canvas.height,
-            );
-            previousStatesRef.current = [
-                ...previousStatesRef.current,
-                canvasState,
-            ];
-        }
+        socket.emit('clear', roomId);
     };
 
     // Mouse coordinates relative to the canvas — otherwise they would be
@@ -237,13 +248,17 @@ const WhiteBoardCanvas = ({
     const startDrawing = (event: React.MouseEvent<HTMLCanvasElement>) => {
         if (!isDrawer || !isDrawingPhase) return;
 
-        saveCanvasState();
         const coords: Coordinate = getRelativeMouseCoords(event);
+        const { color, size } = brushOptions;
+
+        strokesRef.current.push({ color, size, points: [coords] });
         setIsDrawing(true);
         context?.beginPath();
         context?.moveTo(coords.x, coords.y);
 
-        socket.emit('startDrawing', roomId, coords);
+        // Colour and size travel with the first point so that a stroke is fully
+        // described from the start and can be replayed without extra events.
+        socket.emit('startDrawing', roomId, coords, color, size);
     };
 
     const continueDrawing = (event: React.MouseEvent<HTMLCanvasElement>) => {
@@ -251,6 +266,8 @@ const WhiteBoardCanvas = ({
         if (!isDrawing) return;
 
         const coords: Coordinate = getRelativeMouseCoords(event);
+        strokesRef.current.at(-1)?.points.push(coords);
+
         context!.lineTo(coords.x, coords.y);
         context!.strokeStyle = brushOptions.color;
         context!.lineWidth = brushOptions.size;

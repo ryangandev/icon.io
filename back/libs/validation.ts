@@ -47,16 +47,17 @@ const coordinate = z.object({
     x: z.number().finite().min(-10).max(1000),
     y: z.number().finite().min(-10).max(1000),
 });
-const startDrawingRequest = z.tuple([roomId, coordinate]);
-// Undo currently ships a whole-canvas PNG as a data URL, so the bound has to be
-// large enough to be useless as a limit — which is the point: this payload is
-// the wrong shape, not merely the wrong size.
-const undoRequest = z.tuple([roomId, z.string().max(4_000_000)]);
+const brushColor = z.string().regex(/^#[0-9a-fA-F]{3,8}$/);
+const brushSize = z.number().finite().min(1).max(100);
+
+// A stroke is described in full from its first point, so any client can replay
+// it without waiting to learn the colour from a later event.
+const startDrawingRequest = z.tuple([roomId, coordinate, brushColor, brushSize]);
 const continueDrawingRequest = z.tuple([
     roomId,
     coordinate,
-    z.string().regex(/^#[0-9a-fA-F]{3,8}$/),
-    z.number().finite().min(1).max(100),
+    brushColor,
+    brushSize,
 ]);
 
 /**
@@ -93,5 +94,4 @@ export {
     chatRequest,
     startDrawingRequest,
     continueDrawingRequest,
-    undoRequest,
 };

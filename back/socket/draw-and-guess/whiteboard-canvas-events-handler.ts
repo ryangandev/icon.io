@@ -4,16 +4,21 @@ import {
     parseArgs,
     roomIdOnly,
     startDrawingRequest,
-    undoRequest,
 } from '../../libs/validation.js';
 
 const whiteboardCanvasEventHandler = (socket: Socket) => {
     socket.on('startDrawing', (...rawArgs: unknown[]) => {
-        const validated = parseArgs(startDrawingRequest, rawArgs, 'startDrawing');
+        const validated = parseArgs(
+            startDrawingRequest,
+            rawArgs,
+            'startDrawing',
+        );
         if (!validated) return;
-        const [roomId, coords] = validated;
+        const [roomId, coords, color, size] = validated;
 
-        socket.broadcast.to(roomId).emit('drawerStartDrawing', coords);
+        socket.broadcast
+            .to(roomId)
+            .emit('drawerStartDrawing', coords, color, size);
     });
 
     socket.on('continueDrawing', (...rawArgs: unknown[]) => {
@@ -37,12 +42,14 @@ const whiteboardCanvasEventHandler = (socket: Socket) => {
         socket.broadcast.to(validated[0]).emit('drawerStopDrawing');
     });
 
+    // Undo used to carry a full-canvas PNG as a data URL — on the order of
+    // 100KB to 1MB, per undo. Every client keeps the same stroke list, so
+    // "drop the last stroke" is all that needs to cross the wire.
     socket.on('undo', (...rawArgs: unknown[]) => {
-        const validated = parseArgs(undoRequest, rawArgs, 'undo');
+        const validated = parseArgs(roomIdOnly, rawArgs, 'undo');
         if (!validated) return;
-        const [roomId, lastStateDataURL] = validated;
 
-        socket.broadcast.to(roomId).emit('drawerUndo', lastStateDataURL);
+        socket.broadcast.to(validated[0]).emit('drawerUndo');
     });
 
     socket.on('clear', (...rawArgs: unknown[]) => {
