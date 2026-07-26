@@ -107,7 +107,7 @@ const createIconIoServer = (
     // handles draw and guess lobby and room events
     lobbyEventsHandler(io, socket, rooms, sessions);
     roomEventsHandler(io, socket, rooms, sessions, membership);
-    whiteboardCanvasEventHandler(socket);
+    whiteboardCanvasEventHandler(socket, rooms, sessions);
     ChatEventsHandler(io, socket, rooms, sessions);
     GameEventsHandler(socket, drawAndGuessGameEngine, sessions);
   });

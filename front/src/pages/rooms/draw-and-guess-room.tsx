@@ -64,6 +64,16 @@ const DrawAndGuessRoom = () => {
   }, [currentRoomInfo]);
 
   useEffect(() => {
+    // Reaching a room some way other than the lobby — a pasted link, a
+    // bookmark — means this socket holds no seat in it. Ask for one rather
+    // than sitting here as a spectator who cannot chat, guess or be dealt a
+    // turn. A locked room answers with a rejection, handled below.
+    const askForASeat = (targetRoomId: string) => {
+      if (hasAskedToJoinRef.current) return;
+      hasAskedToJoinRef.current = true;
+      socket.emit('clientJoinDrawAndGuessRoomRequest', targetRoomId, username);
+    };
+
     socket.on(
       'clientJoinDrawAndGuessRoomSuccess',
       (currentRoomInfo: DrawAndGuessDetailRoomInfo) => {
@@ -75,21 +85,8 @@ const DrawAndGuessRoom = () => {
         // watching someone leave re-syncs the countdown.
         anchorPhaseDeadline(currentRoomInfo.phaseEndsInMs);
 
-        // Arriving without being in the player list means this socket
-        // reached the room some way other than the lobby. Ask to join
-        // rather than sitting here as a spectator who cannot chat,
-        // guess or be dealt a turn.
-        if (
-          !hasAskedToJoinRef.current &&
-          playerId &&
-          !currentRoomInfo.playerList[playerId]
-        ) {
-          hasAskedToJoinRef.current = true;
-          socket.emit(
-            'clientJoinDrawAndGuessRoomRequest',
-            currentRoomInfo.roomId,
-            username,
-          );
+        if (playerId && !currentRoomInfo.playerList[playerId]) {
+          askForASeat(currentRoomInfo.roomId);
         }
       },
     );
@@ -117,11 +114,19 @@ const DrawAndGuessRoom = () => {
     );
 
     socket.on('roomError', (roomError: CustomError) => {
-      console.log('roomError received: ', roomError);
       if (roomError.errorType === 'roomNotExist') {
         setRoomDoesNotExist(true);
       }
-      if (roomError.errorType === 'notEnoughPlayers') {
+      // Not a failure: the state request is answered only for players who
+      // hold a seat, and this is how a client that arrived by link finds
+      // out it needs to ask for one.
+      if (roomError.errorType === 'notRoomMember' && roomId) {
+        askForASeat(roomId);
+      }
+      if (
+        roomError.errorType === 'notEnoughPlayers' ||
+        roomError.errorType === 'notRoomOwner'
+      ) {
         toast.error(roomError.message);
       }
     });

@@ -185,6 +185,50 @@ const joinRoom = async (
   await approved;
 };
 
+/**
+ * Seats two players and plays as far as the drawing phase, reporting who the
+ * server picked to draw, who is left guessing, and what the word is.
+ *
+ * The drawer is chosen at random, so no test may assume it is a particular
+ * client — and since the canvas and the guess path are both only open to the
+ * drawer, most tests of either need this first.
+ */
+const playToDrawingPhase = async (harness: TestServer) => {
+  const alice = await harness.connect();
+  const bob = await harness.connect();
+
+  const roomId = await createRoom(alice, { ownerUsername: 'Alice', rounds: 1 });
+  await joinRoom(alice, roomId, 'Alice');
+  await joinRoom(bob, roomId, 'Bob');
+
+  let drawer: TestClient | undefined;
+  let word: string | undefined;
+  const learn = (socket: TestClient) => (received: string) => {
+    drawer = socket;
+    word = received;
+  };
+  alice.once('drawingPhaseStartedForDrawer', learn(alice));
+  bob.once('drawingPhaseStartedForDrawer', learn(bob));
+
+  const drawing = waitFor(alice, 'drawingPhaseStarted', 5000);
+  alice.emit('startDrawAndGuessGame', roomId);
+  await drawing;
+  await settle(50);
+
+  const guesser = drawer === alice ? bob : alice;
+
+  return {
+    roomId,
+    alice,
+    bob,
+    drawer: drawer!,
+    drawerName: drawer === alice ? 'Alice' : 'Bob',
+    guesser,
+    guesserName: guesser === alice ? 'Alice' : 'Bob',
+    word: word!,
+  };
+};
+
 /** The lobby's view of a single room, as any connected client would see it. */
 const lobbyView = async (
   socket: Socket,
@@ -206,6 +250,7 @@ export {
   settle,
   createRoom,
   joinRoom,
+  playToDrawingPhase,
   lobbyView,
 };
 export type { TestServer, TestClient, PlayerIdentity, DrawAndGuessRoomState };

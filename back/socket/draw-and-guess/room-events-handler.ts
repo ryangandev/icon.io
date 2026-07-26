@@ -127,6 +127,11 @@ const roomEventsHandler = (
    * The join broadcast above races the joining client's own navigation — it
    * cannot have subscribed yet — so rather than guessing how long that takes,
    * the client says when it is ready.
+   *
+   * Answered only for players who hold a seat. The payload carries no secrets,
+   * but a locked room's player list is not something a stranger should be able
+   * to pull with a room id off the lobby broadcast. A client that arrives
+   * without a seat — a pasted link — is told so, and asks to join.
    */
   socket.on('requestDrawAndGuessRoomState', (...rawArgs: unknown[]) => {
     const validated = parseArgs(
@@ -143,6 +148,16 @@ const roomEventsHandler = (
         status: true,
         message: 'Room does not exist.',
         errorType: 'roomNotExist',
+      });
+      return;
+    }
+
+    const playerId = sessions.playerIdFor(socket.id);
+    if (!playerId || !currentRoom.playerList[playerId]) {
+      socket.emit('roomError', {
+        status: true,
+        message: 'You are not in this room.',
+        errorType: 'notRoomMember',
       });
       return;
     }

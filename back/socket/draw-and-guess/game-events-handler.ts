@@ -23,8 +23,11 @@ const GameEventsHandler = (
     if (!validated) return;
     const [roomId] = validated;
 
+    const playerId = sessions.playerIdFor(socket.id);
+    if (!playerId) return;
+
     try {
-      gameEngine.startGame(roomId);
+      gameEngine.startGame(roomId, playerId);
     } catch (error: any) {
       console.log(error);
       socket.emit('roomError', {

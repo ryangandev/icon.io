@@ -96,6 +96,35 @@ describe('the game engine', () => {
     expect(harness.server.rooms[roomId]?.isGameStarted).toBe(false);
   });
 
+  /*
+   * The Start button is owner-only in the UI and, until now, nowhere else: any
+   * connected client could start any room's game with a room id off the lobby
+   * broadcast — including a room it had never joined.
+   */
+  it('refuses to start a game for anybody but the room owner', async () => {
+    const { bob, roomId } = await seatTwoPlayers(harness);
+
+    const error = waitFor<{ errorType: string }>(bob, 'roomError');
+    bob.emit('startDrawAndGuessGame', roomId);
+
+    expect((await error).errorType).toBe('notRoomOwner');
+    expect(harness.server.rooms[roomId]?.isGameStarted).toBe(false);
+  });
+
+  it('refuses to start a game for a client that is not even in the room', async () => {
+    const { alice, roomId } = await seatTwoPlayers(harness);
+    const outsider = await harness.connect();
+
+    const started = collect(alice, 'startDrawAndGuessGameSuccess');
+    const error = waitFor<{ errorType: string }>(outsider, 'roomError');
+    outsider.emit('startDrawAndGuessGame', roomId);
+
+    expect((await error).errorType).toBe('notRoomOwner');
+    await settle();
+    expect(started).toEqual([]);
+    expect(harness.server.rooms[roomId]?.isGameStarted).toBe(false);
+  });
+
   it('refuses to start a game that is already running', async () => {
     const { alice, roomId } = await seatTwoPlayers(harness);
     alice.emit('startDrawAndGuessGame', roomId);

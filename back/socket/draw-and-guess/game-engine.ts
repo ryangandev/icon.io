@@ -103,11 +103,21 @@ const createDrawAndGuessGameEngine = (
     io.to(roomId).emit('receiveMessage', SYSTEM, message);
   };
 
-  const startGame = (roomId: string) => {
+  const startGame = (roomId: string, playerId: string) => {
     const room = rooms[roomId];
 
     if (!room) {
       throw roomError('Room does not exist.', 'roomNotExist');
+    }
+    // The Start button has always been owner-only in the UI and nowhere else,
+    // so any connected client could start any room's game with a room id off
+    // the lobby broadcast. Checked before anything else about the room is
+    // reported, so a stranger learns nothing from the reply either.
+    if (room.owner.playerId !== playerId) {
+      throw roomError(
+        'Only the room owner can start the game.',
+        'notRoomOwner',
+      );
     }
     if (room.isGameStarted) {
       throw roomError('The game has already started.', 'gameAlreadyStarted');
