@@ -14,6 +14,7 @@ import {
     joinRoomRequest,
     leaveRoomRequest,
     parseArgs,
+    roomIdOnly,
 } from '../../libs/validation.js';
 
 const roomEventsHandler = (
@@ -96,19 +97,23 @@ const roomEventsHandler = (
                     drawAndGuessLobbySimplifiedRoomList,
                 );
 
-                setTimeout(() => {
-                    // Notify all clients in the room that a new client has joined
-                    io.to(roomId).emit(
-                        'clientJoinDrawAndGuessRoomSuccess',
-                        getDrawAndGuessRoomState(currentRoom),
-                    );
+                // These used to be delayed by 250ms "to ensure that the client
+                // has joined the room". socket.join() above is synchronous on a
+                // single node, so by this line the socket is already a member
+                // and the delay bought nothing — it only meant that on a slow
+                // connection the room state arrived after the client had
+                // already rendered, and that a client which left within those
+                // 250ms was still announced as joining.
+                io.to(roomId).emit(
+                    'clientJoinDrawAndGuessRoomSuccess',
+                    getDrawAndGuessRoomState(currentRoom),
+                );
 
-                    io.to(roomId).emit(
-                        'receiveMessage',
-                        '📢 System',
-                        username + ' has joined the room.',
-                    );
-                }, 250); // Delay to ensure that the client has joined the room
+                io.to(roomId).emit(
+                    'receiveMessage',
+                    '📢 System',
+                    username + ' has joined the room.',
+                );
             } catch (error: any) {
                 console.error(error);
                 // Notify the current client that there was an error
@@ -120,6 +125,37 @@ const roomEventsHandler = (
             }
         },
     );
+
+    /**
+     * Asked for by the room page once it has mounted and its listeners are
+     * live. The join broadcast above races the joining client's own
+     * navigation — it cannot have subscribed yet — so rather than guessing how
+     * long that takes, the client says when it is ready.
+     */
+    socket.on('requestDrawAndGuessRoomState', (...rawArgs: unknown[]) => {
+        const validated = parseArgs(
+            roomIdOnly,
+            rawArgs,
+            'requestDrawAndGuessRoomState',
+        );
+        if (!validated) return;
+        const [roomId] = validated;
+
+        const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
+        if (!currentRoom) {
+            socket.emit('roomError', {
+                status: true,
+                message: 'Room does not exist.',
+                errorType: 'roomNotExist',
+            });
+            return;
+        }
+
+        socket.emit(
+            'clientJoinDrawAndGuessRoomSuccess',
+            getDrawAndGuessRoomState(currentRoom),
+        );
+    });
 
     socket.on(
         'clientLeaveDrawAndGuessRoom',

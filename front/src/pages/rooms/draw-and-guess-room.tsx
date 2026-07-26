@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useEffect, useRef, useState } from 'react';
 import WhiteBoardCanvas from '../../components/whiteboard-canvas';
 import ChatWindow from '../../components/chat-window';
@@ -23,6 +23,7 @@ import { sortPlayerListByPoints } from '../../libs/utils';
 const DrawAndGuessRoom = () => {
     const { socket } = useSocket();
     const navigate = useNavigate();
+    const { roomId } = useParams();
     const username = sessionStorage.getItem('username');
     const [roomDoesNotExist, setRoomDoesNotExist] = useState<boolean>(false);
     const { currentScreenWidth } = useScreenSize();
@@ -261,6 +262,16 @@ const DrawAndGuessRoom = () => {
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket]);
+
+    // Declared after the effect that registers the listeners, so it runs after
+    // them: by the time the server hears this, we are ready for the reply.
+    // The join broadcast is sent while this page is still navigating, so
+    // asking once mounted is what makes arriving in a room deterministic.
+    useEffect(() => {
+        if (roomId) {
+            socket.emit('requestDrawAndGuessRoomState', roomId);
+        }
+    }, [socket, roomId]);
 
     useEffect(() => {
         return () => {
