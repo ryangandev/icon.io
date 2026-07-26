@@ -202,6 +202,10 @@ describe('guess authority', () => {
     const roomId = await createRoom(alice);
     await joinRoom(alice, roomId, 'Alice');
     await joinRoom(bob, roomId, 'Bob');
+    // `joinRoom` resolves on the approval, which the server sends before it
+    // announces the arrival to the room. Without settling first, the next
+    // `receiveMessage` Bob sees can be his own "has joined" notice.
+    await settle();
 
     const heard = waitFor<[string, string]>(bob, 'receiveMessage');
     alice.emit('sendMessage', roomId, 'Alice', 'hello room');
