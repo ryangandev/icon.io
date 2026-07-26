@@ -10,17 +10,39 @@
 
 Icon.io is an evolved version of my original project, [**Icon**](https://github.com/ryangandev/icon.io/tree/old-version), initially built as my final project for a Web Development class in a team of three at Drexel University. This refined version retains the same core technologies as the original, while incorporating bug fixes and adhering to best practices.
 
+## 🧱 Stack
+
+| Layer    | Tech                                                        |
+| -------- | ----------------------------------------------------------- |
+| Frontend | React 19 · TypeScript 7 · Vite 8 · Ant Design 6 · Socket.io |
+| Backend  | Node.js 20+ · TypeScript 7 · Express 5 · Socket.io          |
+
+See [`docs/ANALYSIS.md`](docs/ANALYSIS.md) for a feature inventory, known issues, and the roadmap.
+
+## ✅ Checks
+
+The two applications keep their own dependencies, but linting, type-checking, tests and the build all run from the repository root:
+
+```zsh
+npm ci && npm run install:all
+npm run verify
+```
+
+`verify` is lint → typecheck → test → build, which is exactly what CI runs on every pull request. The individual steps are `npm run lint`, `npm run typecheck`, `npm test` and `npm run build`.
+
+Linting and formatting are root-level commands with one shared config each — [`.oxlintrc.json`](.oxlintrc.json) and [`.prettierrc.json`](.prettierrc.json) — covering both packages. `npm run format` rewrites; CI runs `npm run format:check`.
+
 ## 🛠️ How To Run - Development
 
 Icon.io is built using React for the frontend and Node.js for the backend, each located within its respective directory: `front` and `back`. To run the app in development, follow the instructions provided below.
 
 ### Frontend
 
--   For frontend setup, follow the instructions in the [Front README](https://github.com/ryangandev/icon.io/blob/main/front/README.md).
+- For frontend setup, follow the instructions in the [Front README](https://github.com/ryangandev/icon.io/blob/main/front/README.md).
 
 ### Backend
 
--   For backend setup, follow the instructions in the [Back README](https://github.com/ryangandev/icon.io/blob/main/back/README.md).
+- For backend setup, follow the instructions in the [Back README](https://github.com/ryangandev/icon.io/blob/main/back/README.md).
 
 ## 🛠️ How To Run - Deployment
 
@@ -55,30 +77,30 @@ npm run build:deploy
 
 This command will generate a combined build in a folder named `build` within the `back` directory:
 
--   The React frontend will be located in `build/public`.
--   These frontend assets will be served as static files by the backend.
+- The React frontend will be located in `build/public`.
+- These frontend assets will be served as static files by the backend.
 
 ### 3. Starting the Application
 
 There are two options to start your application:
 
--   **Using PM2** (recommended for background running):
+- **Using PM2** (recommended for background running):
 
-    If you have PM2 installed:
+  If you have PM2 installed:
 
-    ```zsh
-    npm run start:deploy
-    ```
+  ```zsh
+  npm run start:deploy
+  ```
 
-    This will start the application on port 3000 and keep it running in the background.
+  This will start the application on port 3000 and keep it running in the background.
 
--   **Without PM2**:
+- **Without PM2**:
 
-    If you don't have PM2 or prefer not to use it:
+  If you don't have PM2 or prefer not to use it:
 
-    ```zsh
-    npm run start:prod
-    ```
+  ```zsh
+  npm run start:prod
+  ```
 
 ### 4. Accessing the Application
 

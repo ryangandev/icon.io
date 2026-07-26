@@ -1,0 +1,172 @@
+import type { AddressInfo } from 'node:net';
+import { io as createClient, type Socket } from 'socket.io-client';
+import { createIconIoServer, type IconIoServer } from '../../app.js';
+import type { PhaseDurationsInSeconds } from '../../libs/game-clock.js';
+import type {
+  DrawAndGuessRoomState,
+  LobbyRoomInfo,
+} from '../../models/types.js';
+
+/**
+ * Phases short enough that a full game runs inside a test, but long enough that
+ * a loaded machine does not tick past one before the assertions for it run.
+ */
+const FAST_PHASES: PhaseDurationsInSeconds = {
+  wordSelecting: 0.3,
+  drawing: 0.4,
+  reviewing: 0.2,
+};
+
+interface TestServer {
+  url: string;
+  server: IconIoServer;
+  /** Opens a client and resolves once it has connected. */
+  connect: () => Promise<Socket>;
+  /** Closes every client this harness opened, then the server. */
+  teardown: () => Promise<void>;
+}
+
+/**
+ * Boots a real server on an ephemeral port. Every suite gets its own, so a room
+ * left behind by one test can never be seen by another — the throwaway scripts
+ * this suite replaces all shared one long-lived server on a fixed port, and
+ * leaked state between them was a recurring source of false failures.
+ */
+const startTestServer = async (
+  phaseDurations: PhaseDurationsInSeconds = FAST_PHASES,
+): Promise<TestServer> => {
+  const server = createIconIoServer({
+    serveClient: false,
+    phaseDurations,
+  });
+
+  await new Promise<void>((resolve) => {
+    server.httpServer.listen(0, '127.0.0.1', () => resolve());
+  });
+
+  const { port } = server.httpServer.address() as AddressInfo;
+  const url = `http://127.0.0.1:${port}`;
+  const clients: Socket[] = [];
+
+  const connect = (): Promise<Socket> =>
+    new Promise((resolve, reject) => {
+      const client = createClient(url, {
+        transports: ['websocket'],
+        forceNew: true,
+      });
+      clients.push(client);
+      client.on('connect', () => resolve(client));
+      client.on('connect_error', reject);
+    });
+
+  const teardown = async (): Promise<void> => {
+    for (const client of clients) client.close();
+    await server.close();
+  };
+
+  return { url, server, connect, teardown };
+};
+
+/**
+ * Resolves with the next `event`, rejecting if it never arrives.
+ *
+ * A single-argument emit resolves with that argument; a multi-argument one —
+ * `receiveMessage` sends a username and a message — resolves with the arguments
+ * as an array, so nothing the server sends is silently dropped.
+ */
+const waitFor = <T = unknown>(
+  socket: Socket,
+  event: string,
+  timeoutMs = 3000,
+): Promise<T> =>
+  new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      socket.off(event, onEvent);
+      reject(new Error(`Timed out waiting for "${event}"`));
+    }, timeoutMs);
+
+    const onEvent = (...args: unknown[]) => {
+      clearTimeout(timer);
+      socket.off(event, onEvent);
+      resolve((args.length === 1 ? args[0] : args) as T);
+    };
+
+    socket.on(event, onEvent);
+  });
+
+/**
+ * Records every payload of `event` for later assertion. Used where a test needs
+ * to prove something did *not* happen, which no amount of waiting can show.
+ */
+const collect = <T = unknown[]>(socket: Socket, event: string): T[] => {
+  const received: T[] = [];
+  socket.on(event, (...args: unknown[]) => {
+    received.push((args.length === 1 ? args[0] : args) as T);
+  });
+  return received;
+};
+
+/** Long enough for an emit to have made a full round trip if it was going to. */
+const settle = (ms = 150): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
+interface CreateRoomOptions {
+  roomName?: string;
+  ownerUsername?: string;
+  maxPlayers?: number;
+  rounds?: number;
+  password?: string;
+}
+
+/** Creates a room and returns its id, without joining it. */
+const createRoom = async (
+  socket: Socket,
+  options: CreateRoomOptions = {},
+): Promise<string> => {
+  const created = waitFor<string>(socket, 'createDrawAndGuessRoomSuccess');
+  socket.emit('createDrawAndGuessRoomRequest', {
+    roomName: options.roomName ?? 'Test Room',
+    ownerUsername: options.ownerUsername ?? 'Owner',
+    maxPlayers: options.maxPlayers ?? 4,
+    rounds: options.rounds ?? 1,
+    password: options.password ?? '',
+  });
+  return created;
+};
+
+/** Joins a room and resolves once the server has approved the request. */
+const joinRoom = async (
+  socket: Socket,
+  roomId: string,
+  username: string,
+  password = '',
+): Promise<void> => {
+  const approved = waitFor(socket, 'approveClientJoinDrawAndGuessRoomRequest');
+  socket.emit('clientJoinDrawAndGuessRoomRequest', roomId, username, password);
+  await approved;
+};
+
+/** The lobby's view of a single room, as any connected client would see it. */
+const lobbyView = async (
+  socket: Socket,
+  roomId: string,
+): Promise<LobbyRoomInfo | undefined> => {
+  const list = waitFor<LobbyRoomInfo[]>(
+    socket,
+    'updateDrawAndGuessLobbyRoomList',
+  );
+  socket.emit('clientJoinDrawAndGuessLobby');
+  return (await list).find((room) => room.roomId === roomId);
+};
+
+export {
+  FAST_PHASES,
+  startTestServer,
+  waitFor,
+  collect,
+  settle,
+  createRoom,
+  joinRoom,
+  lobbyView,
+};
+export type { TestServer, DrawAndGuessRoomState };

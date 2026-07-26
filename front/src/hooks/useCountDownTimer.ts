@@ -1,33 +1,38 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-const useCountdownTimer = (
-    isActivePhase: boolean,
-    timerValue: number,
-    setTimerValue: (val: number) => void,
-    phaseStartTimeRef: React.MutableRefObject<number | null>,
-    timerMaxValue: number,
-) => {
-    useEffect(() => {
-        let intervalId: NodeJS.Timeout | number;
+const secondsUntil = (deadline: number): number =>
+  deadline === 0 ? 0 : Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
 
-        if (isActivePhase && timerValue === timerMaxValue) {
-            phaseStartTimeRef.current = Date.now();
-        }
+/**
+ * Counts down to a deadline issued by the server.
+ *
+ * The server sends how many milliseconds are left in the phase rather than the
+ * wall-clock time it ends, and the room anchors that against its own clock — so
+ * a client whose clock disagrees with the server's still counts down correctly,
+ * and every phase change re-syncs instead of accumulating drift.
+ *
+ * Ticking faster than once a second costs nothing and means a tab that was
+ * throttled in the background shows the right number the moment it is visible
+ * again, rather than resuming from wherever it was frozen.
+ */
+const useCountdownTimer = (deadline: number): number => {
+  const [secondsRemaining, setSecondsRemaining] = useState(() =>
+    secondsUntil(deadline),
+  );
 
-        if (isActivePhase && timerValue > 0) {
-            intervalId = setInterval(() => {
-                const elapsed = Date.now() - (phaseStartTimeRef.current || 0); // Calculate the time passed since the start of the phase
-                const remainingTime =
-                    timerMaxValue - Math.floor(elapsed / 1000); // Calculate the remaining time
-                setTimerValue(Math.max(0, remainingTime)); // Ensure it doesn't go below 0
-            }, 1000);
-        }
+  useEffect(() => {
+    setSecondsRemaining(secondsUntil(deadline));
 
-        return () => {
-            clearInterval(intervalId);
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isActivePhase]); // Refs don't need to be included because they don't cause re-render when they change, and their current value is always accessible; setTimerValue doesn't need to be included because it's a function and it doesn't change; timerMaxValue doesn't need to be included because it's a constant; timerValue should be removed so the hook doesn't rerun every second
+    if (deadline === 0) return;
+
+    const intervalId = setInterval(() => {
+      setSecondsRemaining(secondsUntil(deadline));
+    }, 250);
+
+    return () => clearInterval(intervalId);
+  }, [deadline]);
+
+  return secondsRemaining;
 };
 
 export default useCountdownTimer;

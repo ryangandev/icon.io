@@ -1,35 +1,57 @@
-import { Socket } from 'socket.io';
-
-interface Coordinate {
-    x: number;
-    y: number;
-}
+import type { Socket } from 'socket.io';
+import {
+  continueDrawingRequest,
+  parseArgs,
+  roomIdOnly,
+  startDrawingRequest,
+} from '../../libs/validation.js';
 
 const whiteboardCanvasEventHandler = (socket: Socket) => {
-    socket.on('startDrawing', (roomId: string, coords: Coordinate) => {
-        socket.broadcast.to(roomId).emit('drawerStartDrawing', coords);
-    });
+  socket.on('startDrawing', (...rawArgs: unknown[]) => {
+    const validated = parseArgs(startDrawingRequest, rawArgs, 'startDrawing');
+    if (!validated) return;
+    const [roomId, coords, color, size] = validated;
 
-    socket.on(
-        'continueDrawing',
-        (roomId: string, coords: Coordinate, color: string, size: number) => {
-            socket.broadcast
-                .to(roomId)
-                .emit('drawerContinueDrawing', coords, color, size);
-        },
+    socket.broadcast.to(roomId).emit('drawerStartDrawing', coords, color, size);
+  });
+
+  socket.on('continueDrawing', (...rawArgs: unknown[]) => {
+    const validated = parseArgs(
+      continueDrawingRequest,
+      rawArgs,
+      'continueDrawing',
     );
+    if (!validated) return;
+    const [roomId, coords, color, size] = validated;
 
-    socket.on('stopDrawing', (roomId: string) => {
-        socket.broadcast.to(roomId).emit('drawerStopDrawing');
-    });
+    socket.broadcast
+      .to(roomId)
+      .emit('drawerContinueDrawing', coords, color, size);
+  });
 
-    socket.on('undo', (roomId: string, lastStateDataURL) => {
-        socket.broadcast.to(roomId).emit('drawerUndo', lastStateDataURL);
-    });
+  socket.on('stopDrawing', (...rawArgs: unknown[]) => {
+    const validated = parseArgs(roomIdOnly, rawArgs, 'stopDrawing');
+    if (!validated) return;
 
-    socket.on('clear', (roomId: string) => {
-        socket.broadcast.to(roomId).emit('drawerClear');
-    });
+    socket.broadcast.to(validated[0]).emit('drawerStopDrawing');
+  });
+
+  // Undo used to carry a full-canvas PNG as a data URL — on the order of
+  // 100KB to 1MB, per undo. Every client keeps the same stroke list, so
+  // "drop the last stroke" is all that needs to cross the wire.
+  socket.on('undo', (...rawArgs: unknown[]) => {
+    const validated = parseArgs(roomIdOnly, rawArgs, 'undo');
+    if (!validated) return;
+
+    socket.broadcast.to(validated[0]).emit('drawerUndo');
+  });
+
+  socket.on('clear', (...rawArgs: unknown[]) => {
+    const validated = parseArgs(roomIdOnly, rawArgs, 'clear');
+    if (!validated) return;
+
+    socket.broadcast.to(validated[0]).emit('drawerClear');
+  });
 };
 
 export { whiteboardCanvasEventHandler };

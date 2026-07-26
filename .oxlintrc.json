@@ -1,0 +1,38 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "unicorn", "oxc", "vitest"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "env": {
+    "es2024": true
+  },
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "typescript/no-explicit-any": "warn"
+  },
+  "ignorePatterns": ["**/node_modules", "**/build", "**/dist", "back/archived"],
+  "overrides": [
+    {
+      "files": ["back/**/*.ts"],
+      "env": { "node": true },
+      "rules": {
+        "no-underscore-dangle": [
+          "warn",
+          { "allow": ["__dirname", "__filename"] }
+        ]
+      }
+    },
+    {
+      "files": ["front/**/*.{ts,tsx}"],
+      "env": { "browser": true }
+    },
+    {
+      "files": ["**/*.test.{ts,tsx}", "**/tests/**/*.{ts,tsx}"],
+      "rules": {
+        "typescript/no-non-null-assertion": "off"
+      }
+    }
+  ]
+}

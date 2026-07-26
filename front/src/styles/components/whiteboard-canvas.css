@@ -1,35 +1,47 @@
 .whiteboard-canvas-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 800px;
-    gap: var(--component-gap);
+  display: flex;
+  flex-direction: column;
+  width: 800px;
+  gap: var(--component-gap);
+}
+
+/*
+ * The drawing area sizes itself to what is left of the window rather than
+ * being a hardcoded 600px. At 720p the fixed height pushed the toolbar to
+ * y=726 — past the bottom of the viewport — so the drawer had to scroll away
+ * from their own canvas to reach a colour, a brush, undo or clear.
+ *
+ * 190px covers the room's top padding, the game info bar, the toolbar and the
+ * gaps between them. The min-height keeps the canvas usable on a very short
+ * window, letting the page scroll rather than collapsing the canvas to nothing.
+ */
+.whiteboard-canvas-stage {
+  position: relative;
+  width: 100%;
+  height: min(600px, calc(100vh - 190px));
+  min-height: 320px;
 }
 
 .whiteboard-canvas {
-    position: relative;
-    display: block;
-    width: 100%;
-    height: 600px;
-    box-sizing: border-box;
-    border: var(--component-border);
-    background-color: var(--component-background-color);
-    border-radius: var(--component-border-radius);
+  display: block;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: var(--component-border);
+  background-color: var(--component-background-color);
+  border-radius: var(--component-border-radius);
 }
 
 .whiteboard-canvas-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 600px;
-    background-color: rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: var(--component-gap);
-    font-size: 24px;
-    font-weight: bold;
-    border-radius: var(--component-border-radius);
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--component-gap);
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: var(--component-border-radius);
 }

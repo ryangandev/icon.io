@@ -1,87 +1,87 @@
 .draw-and-guess-room-layout {
-    display: flex;
-    flex-direction: column;
-    max-width: 1312px;
-    width: 100%;
-    gap: var(--component-gap);
-    padding-top: 70px;
-    --component-background-color: #ffffff;
-    --component-border-radius: 8px;
-    --component-border: 1px solid #00000020;
-    --component-gap: 6px;
+  display: flex;
+  flex-direction: column;
+  max-width: 1312px;
+  width: 100%;
+  gap: var(--component-gap);
+  padding-top: 70px;
+  --component-background-color: #ffffff;
+  --component-border-radius: 8px;
+  --component-border: 1px solid #00000020;
+  --component-gap: 6px;
 }
 
 .draw-and-guess-room-body {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: flex-start;
-    gap: var(--component-gap);
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: var(--component-gap);
 }
 
 .draw-and-guess-room-body-left {
-    order: -1;
-    display: flex;
-    flex-direction: column;
-    min-width: 220px;
-    width: 220px;
-    box-sizing: border-box;
-    border: var(--component-border);
-    border-radius: var(--component-border-radius);
-    overflow: hidden;
+  order: -1;
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+  width: 220px;
+  box-sizing: border-box;
+  border: var(--component-border);
+  border-radius: var(--component-border-radius);
+  overflow: hidden;
 }
 
 .draw-and-guess-room-body-center {
-    display: flex;
-    flex-direction: column;
-    width: 800px;
-    box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 800px;
+  box-sizing: border-box;
 }
 
 .draw-and-guess-room-body-right {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 280px;
-    width: 100%;
-    box-sizing: border-box;
-    gap: var(--component-gap);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 280px;
+  width: 100%;
+  box-sizing: border-box;
+  gap: var(--component-gap);
 }
 
 .side-by-side-wrapper-when-smaller-screen {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: var(--component-gap);
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--component-gap);
 }
 
 .startBtn {
-    width: 150px;
-    background-color: #fff9d0;
-    font-weight: 600;
-    margin-top: 10px;
+  width: 150px;
+  background-color: #fff9d0;
+  font-weight: 600;
+  margin-top: 10px;
 }
 
 .startBtn:hover {
-    background-color: wheat;
+  background-color: wheat;
 }
 
 .startBtn:active {
-    filter: brightness(0.9);
+  filter: brightness(0.9);
 }
 
 @media (max-width: 1200px) {
-    .draw-and-guess-room-layout {
-        max-width: 800px;
-    }
+  .draw-and-guess-room-layout {
+    max-width: 800px;
+  }
 
-    .draw-and-guess-room-body {
-        flex-direction: column;
-    }
+  .draw-and-guess-room-body {
+    flex-direction: column;
+  }
 
-    .draw-and-guess-room-body-right {
-        flex-direction: row;
-        min-width: 574px;
-        align-items: flex-start;
-    }
+  .draw-and-guess-room-body-right {
+    flex-direction: row;
+    min-width: 574px;
+    align-items: flex-start;
+  }
 }
