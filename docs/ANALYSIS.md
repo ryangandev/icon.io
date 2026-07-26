@@ -114,8 +114,11 @@ Types only, imported with `import type`, so nothing resolves at runtime.
 
 ### Working end to end
 
-Verified by playing full two-player games against a production build, and by
-driving scripted socket.io clients through the same flows.
+Verified by playing full two-player games in a browser against a running
+server, and by driving scripted socket.io clients through the same flows. The
+browser is not a formality: the redundant second hint fixed in
+[#24](https://github.com/ryangandev/icon.io/pull/24) was found by watching a
+game, not by reading a diff.
 
 - **Landing → username** stored in `sessionStorage`, gated by `ValidateAuth`.
 - **Gamehub** with a game picker.
@@ -141,8 +144,9 @@ driving scripted socket.io clients through the same flows.
   and neither can anyone who has already scored — enforced server-side, not
   just in the UI.
 - **Departures**: player removed, ownership transferred, empty rooms deleted. If
-  the player who left was drawing, the turn is skipped; if the room drops below
-  two players mid-game, the game ends rather than stalling.
+  the player who _left_ was drawing, the turn is skipped at once; if their
+  connection merely dropped, it waits for them — see below. Either way, a room
+  that falls below two players mid-game ends rather than stalling.
 - **Reconnection**: a reload keeps your seat, your score, the crown and your
   place in the round, and — if you were drawing — your turn, your word and your
   drawing. Others see you marked away rather than gone.
@@ -201,11 +205,12 @@ every reloading drawer their turn.
 
 The reasoning behind each of these is in its commit message and in the pull
 request it landed in ([#22](https://github.com/ryangandev/icon.io/pull/22),
-[#23](https://github.com/ryangandev/icon.io/pull/23)). Every one is covered by
+[#23](https://github.com/ryangandev/icon.io/pull/23),
+[#24](https://github.com/ryangandev/icon.io/pull/24)). Every one is covered by
 the committed suite: the ten from the bug-fix pass were checked by reverting
 each in turn and confirming the suite catches it, reconnection has 19 tests of
 its own, and the three authority holes below were each confirmed to fail their
-new test with the check removed.
+seven new tests with the checks removed.
 
 | Was                                                           | Now                                                                                               |
 | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
@@ -331,6 +336,23 @@ twice, extract the generic part:
 4. **Per-game module** — each game registers `{ id, minPlayers, maxPlayers,
 createInitialState, handlers }`. Draw & Guess becomes the first consumer.
 
+The line to cut along is clearer than it was, because the enhancement pass made
+`game-engine.ts` unmistakably _Draw & Guess's_: it now owns letter reveals,
+time-weighted scoring and a drawer hold, none of which mean anything to
+Minesweeper. What is generic is everything in `membership.ts` — seats,
+ownership, the reconnect grace, deleting an empty room — plus the identity
+handshake, the rate limiter, and the room/lobby half of `room-events-handler.ts`
+and `lobby-events-handler.ts`. What is not is the whole turn state machine, the
+canvas, and the guess path.
+
+The one thing worth deciding up front rather than discovering: **a generic room
+layer must be able to hand a game its own timers and its own per-player state
+without knowing what either is.** Draw & Guess keeps four kinds of timer (phase,
+drawer hold, letter reveals, seat expiry) and three per-player fields that only
+it cares about. Do the extraction and the second game together — an abstraction
+with one consumer is a guess, and the second consumer is what tells you whether
+the guess was right.
+
 ### Feature ideas
 
 The four the last pass listed as cheap were cheap, and are done — a
@@ -389,9 +411,8 @@ What that leaves, in the order it is worth doing:
    `Room<TGameState>`, namespaced events, and a per-game module — with
    Minesweeper as the second consumer. Draw & Guess is the reference
    implementation and every piece of it that is _not_ about drawing (seats,
-   ownership, the reconnect grace, the lobby) is what wants extracting. Do the
-   extraction and the new game together: an abstraction with one consumer is a
-   guess, and the second consumer is what tells you whether the guess was right.
+   ownership, the reconnect grace, the lobby) is what wants extracting. §5 says
+   where the line falls and what the layer has to be able to hand a game.
 2. **Spectators, or letting a latecomer in for the next round.** The first thing
    a second visitor to a running room tries, and the canvas being server state
    now makes it mostly a UI decision.
