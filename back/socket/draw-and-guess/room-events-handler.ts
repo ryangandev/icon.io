@@ -178,6 +178,14 @@ const roomEventsHandler = (
                 }
 
                 const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
+
+                // Leaving a room you were never in used to run the whole
+                // departure anyway: the player count was recomputed, ownership
+                // could be handed on, and the room was told somebody had left.
+                // Checked before anything is mutated, so a stray or repeated
+                // leave is simply ignored.
+                if (!currentRoom.playerList[socket.id]) return;
+
                 const isLeavingClientOwner =
                     currentRoom.owner.socketId === socket.id;
 
@@ -224,7 +232,10 @@ const roomEventsHandler = (
                 }
 
                 socket.leave(roomId);
-                socketInRooms[socket.id].delete(roomId);
+                // A socket with no entry here threw, and did so only after the
+                // room had already been mutated — leaving the room short a
+                // player while the client was told the leave had failed.
+                socketInRooms[socket.id]?.delete(roomId);
 
                 // Notify all clients in the room that a client has left
                 io.to(roomId).emit(
