@@ -13,7 +13,10 @@ import {
     resetPoints,
     resetReceivedPointsThisTurn,
 } from '../../libs/utils.js';
-import { phaseDurationsInSeconds } from '../../libs/game-clock.js';
+import {
+    phaseDurationsInSeconds as defaultPhaseDurations,
+    type PhaseDurationsInSeconds,
+} from '../../libs/game-clock.js';
 import { wordBank } from '../../libs/word-bank.js';
 
 const MIN_PLAYERS_TO_START = 2;
@@ -38,10 +41,15 @@ const roomError = (message: string, errorType: ErrorType): CustomError => {
  *
  * One engine is created per server process and shared by all connections, so
  * the timer registry below is genuinely per-room rather than per-socket.
+ *
+ * The phase durations are a parameter rather than a module-level constant so a
+ * test can drive a whole game in milliseconds. Production passes nothing and
+ * gets the env-configured defaults.
  */
 const createDrawAndGuessGameEngine = (
     io: Server,
     rooms: Record<string, DrawAndGuessDetailRoomInfo>,
+    phaseDurationsInSeconds: PhaseDurationsInSeconds = defaultPhaseDurations,
 ) => {
     const phaseTimers = new Map<string, NodeJS.Timeout>();
 

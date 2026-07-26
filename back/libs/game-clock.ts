@@ -21,10 +21,17 @@ const readSecondsFromEnv = (name: string, fallbackSeconds: number): number => {
     return parsed;
 };
 
-const phaseDurationsInSeconds = {
+interface PhaseDurationsInSeconds {
+    wordSelecting: number;
+    drawing: number;
+    reviewing: number;
+}
+
+const phaseDurationsInSeconds: PhaseDurationsInSeconds = {
     wordSelecting: readSecondsFromEnv('WORD_SELECT_SECONDS', 15),
     drawing: readSecondsFromEnv('DRAWING_SECONDS', 90),
     reviewing: readSecondsFromEnv('REVIEW_SECONDS', 10),
 };
 
 export { phaseDurationsInSeconds };
+export type { PhaseDurationsInSeconds };
