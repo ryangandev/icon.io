@@ -98,7 +98,7 @@ describe('guess authority', () => {
     const players = await scored;
     const scores = Object.values(players)
       .map((player) => player.points)
-      .sort((a, b) => b - a);
+      .toSorted((a, b) => b - a);
     // Guessed at once, so near the top of the range: the guesser takes the
     // floor plus almost the whole bonus, and the drawer two fifths of that.
     expect(scores[0]).toBeGreaterThan(140);

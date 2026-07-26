@@ -5,7 +5,7 @@ import {
   getDrawAndGuessRoomState,
   getRoomStatus,
 } from '../../libs/utils.js';
-import type { CustomError } from '../../models/error.js';
+import { asRoomError, type CustomError } from '../../models/error.js';
 import type { PlayerSessionRegistry } from '../../libs/player-session.js';
 import type { RoomMembership } from './membership.js';
 import {
@@ -111,14 +111,10 @@ const roomEventsHandler = (
           username + ' has joined the room.',
         );
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
       // Notify the current client that there was an error
-      socket.emit('roomError', {
-        status: true,
-        message: error.message,
-        errorType: error.errorType,
-      });
+      socket.emit('roomError', asRoomError(error));
     }
   });
 

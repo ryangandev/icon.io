@@ -16,6 +16,10 @@ interface Phase {
   phaseEndsInMs: number;
 }
 
+/** How many of a hint's letters are showing rather than still hidden. */
+const shown = (hint: string) =>
+  [...hint].filter((char) => char !== '_' && char.trim() !== '').length;
+
 /**
  * A room with two players in it, plus a way to find out which of them the
  * server picked to draw. The drawer is chosen at random, so no test may assume
@@ -263,8 +267,6 @@ describe('the game engine', () => {
       // least one letter given away.
       expect(hints.length).toBeGreaterThan(0);
 
-      const shown = (hint: string) =>
-        [...hint].filter((char) => char !== '_' && char.trim() !== '').length;
       const letterCount = [...word].filter((char) => char.trim() !== '').length;
 
       let previouslyShown = 0;

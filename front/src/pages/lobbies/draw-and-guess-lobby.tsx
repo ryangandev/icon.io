@@ -14,8 +14,18 @@ import '../../styles/pages/lobbies/draw-and-guess-lobby.css';
 import { useSocket } from '../../hooks/useSocket';
 import type { LobbyRoomInfo, RoomCreateRequestBody } from '../../models/types';
 import toast from 'react-hot-toast';
-import PasswordPromptModal from '../../components/password-prmopt-modal';
+import PasswordPromptModal from '../../components/password-prompt-modal';
 import { statusColors } from '../../libs/utils';
+
+/**
+ * antd calls this with the rows it is currently showing, so the count comes
+ * from the table rather than from a variable captured out of the render.
+ */
+const renderTotalRooms = (rooms: readonly LobbyRoomInfo[]) => (
+  <div className="draw-and-guess-lobby-info-table-footer">
+    Total Rooms: {rooms.length}
+  </div>
+);
 
 const DrawAndGuessLobby = () => {
   const { socket } = useSocket();
@@ -52,19 +62,11 @@ const DrawAndGuessLobby = () => {
     });
 
     socket.on('approveClientJoinDrawAndGuessRoomRequest', (roomId: string) => {
-      console.log(
-        'approveClientJoinDrawAndGuessRoomRequest event received! Room ID is: ',
-        roomId,
-      );
       toast.success('Joining room...');
       navigate(`/Gamehub/DrawAndGuess/Room/${roomId}`);
     });
 
     socket.on('rejectClientJoinDrawAndGuessRoomRequest', (data) => {
-      console.log(
-        'rejectClientJoinDrawAndGuessRoomRequest event received! Error message is: ',
-        data.message,
-      );
       toast.error(data.message);
     });
 
@@ -242,11 +244,7 @@ const DrawAndGuessLobby = () => {
           className="draw-and-guess-lobby-info-table"
           columns={columns}
           dataSource={roomList}
-          footer={() => (
-            <div className="draw-and-guess-lobby-info-table-footer">
-              Total Rooms: {roomList.length}
-            </div>
-          )}
+          footer={renderTotalRooms}
           pagination={false}
           bordered
           rowKey={(record) => record.roomId}

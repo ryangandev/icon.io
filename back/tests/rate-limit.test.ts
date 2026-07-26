@@ -12,18 +12,18 @@ import {
   type TestServer,
 } from './helpers/test-server.js';
 
-describe('the rate limiter', () => {
-  /** A clock the test moves by hand, so no real seconds are spent waiting. */
-  const fakeClock = () => {
-    let currentMs = 0;
-    return {
-      now: () => currentMs,
-      advance: (ms: number) => {
-        currentMs += ms;
-      },
-    };
+/** A clock the test moves by hand, so no real seconds are spent waiting. */
+const fakeClock = () => {
+  let currentMs = 0;
+  return {
+    now: () => currentMs,
+    advance: (ms: number) => {
+      currentMs += ms;
+    },
   };
+};
 
+describe('the rate limiter', () => {
   it('lets a whole burst through at once', () => {
     const limiter = createRateLimiter(() => 0);
 

@@ -13,26 +13,17 @@ const GamehubPage: FC = () => {
   const { socket } = useSocket();
 
   useEffect(() => {
-    console.log('A user is entering, username is: ', username);
     if (!username) return;
 
-    if (socket.connected) {
-      console.log('Socket is currently connected');
-    } else {
-      console.log('Socket is not connected, trying to connect...');
-      try {
-        socket.connect();
-        socket.on('connect', () => {
-          toast.success(`Welcome, ${username}!`);
-          console.log('Socket successfully connected!');
-        });
-      } catch (err) {
-        console.log('Error connecting socket: ', err);
-      }
+    if (!socket.connected) {
+      socket.connect();
+      socket.on('connect', () => {
+        toast.success(`Welcome, ${username}!`);
+      });
     }
 
     socket.on('connect_error', (error) => {
-      console.log('Connection Error:', error);
+      console.error('Could not reach the server:', error);
       sessionStorage.removeItem('username');
       socket.disconnect();
       navigate('/Landing');
@@ -48,9 +39,7 @@ const GamehubPage: FC = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem('username');
-    console.log('Logging out, disconnecting socket...');
     socket.disconnect();
-    console.log('Socket disconnected is: ', socket.disconnected);
     navigate('/Landing');
     toast.success('Logged out successfully!');
   };
@@ -88,16 +77,29 @@ const GamehubPage: FC = () => {
             wrap={true}
             align="center"
           >
-            {GameData.map((game) => (
-              <Link key={game.title} to={game.navigateTo}>
+            {GameData.map((game) => {
+              const tile = (
                 <GameSelect
+                  key={game.title}
                   gameTitle={game.title}
                   color={game.thumbnailBgColor}
                   img={game.thumbnailImg}
                   isAvailable={game.isAvailable}
                 />
-              </Link>
-            ))}
+              );
+
+              // A game with nowhere to go is not a link. Minesweeper's tile
+              // used to be wrapped in one pointing at a route that does not
+              // exist: the click was swallowed by the tile itself, but a
+              // middle-click, a ⌘-click or the keyboard all went to the 404.
+              if (!game.isAvailable) return tile;
+
+              return (
+                <Link key={game.title} to={game.navigateTo}>
+                  {tile}
+                </Link>
+              );
+            })}
           </Space>
         </div>
       )}
