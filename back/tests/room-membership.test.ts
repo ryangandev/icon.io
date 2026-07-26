@@ -114,6 +114,36 @@ describe('joining and leaving a room', () => {
         expect((await state).currentPlayerCount).toBe(2);
     });
 
+    /*
+     * What a refresh does. The reloaded page arrives with a brand-new socket
+     * that has never joined, so the snapshot it asks for does not list it —
+     * that absence is the signal to rejoin, rather than sit in the room as a
+     * spectator who cannot chat, guess or be dealt a turn.
+     */
+    it('lets a reloaded client see it is absent, then rejoin', async () => {
+        const holder = await harness.connect();
+        const roomId = await createRoom(holder, { ownerUsername: 'Holder' });
+        await joinRoom(holder, roomId, 'Holder');
+
+        const reloaded = await harness.connect();
+        const snapshot = waitFor<DrawAndGuessRoomState>(
+            reloaded,
+            'clientJoinDrawAndGuessRoomSuccess',
+        );
+        reloaded.emit('requestDrawAndGuessRoomState', roomId);
+
+        const before = await snapshot;
+        expect(before.playerList[reloaded.id!]).toBeUndefined();
+        expect(before.currentPlayerCount).toBe(1);
+
+        await joinRoom(reloaded, roomId, 'Refreshed');
+        await settle();
+
+        const room = harness.server.rooms[roomId];
+        expect(room?.playerList[reloaded.id!]?.username).toBe('Refreshed');
+        expect(room?.currentPlayerCount).toBe(2);
+    });
+
     it('reports a state request for a room that has gone away', async () => {
         const client = await harness.connect();
         const error = waitFor<{ errorType: string }>(client, 'roomError');

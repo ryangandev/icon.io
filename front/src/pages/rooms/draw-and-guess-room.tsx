@@ -33,6 +33,11 @@ const DrawAndGuessRoom = () => {
     const [currentRoomInfo, setCurrentRoomInfo] =
         useState<DrawAndGuessDetailRoomInfo>(roomInfoInitialObject);
     const currentRoomInfoRef = useRef(currentRoomInfo); // Use ref to store currentRoomInfo to avoid stale closure during useEffect
+    // A refresh or a pasted link reaches this page with a socket that has never
+    // joined the room — the lobby does the joining, and neither of those routes
+    // goes through it. Asking once is enough; a second snapshot must not send
+    // another request while the first is still in flight.
+    const hasAskedToJoinRef = useRef(false);
     const isDrawer = currentRoomInfo.currentDrawer === socket.id;
     const isRoomOwner = currentRoomInfo.owner.socketId === socket.id;
     const currentDrawerUsername =
@@ -70,6 +75,34 @@ const DrawAndGuessRoom = () => {
                 // Room snapshots carry the live phase clock, so joining or
                 // watching someone leave re-syncs the countdown.
                 anchorPhaseDeadline(currentRoomInfo.phaseEndsInMs);
+
+                // Arriving without being in the player list means this socket
+                // reached the room some way other than the lobby. Ask to join
+                // rather than sitting here as a spectator who cannot chat,
+                // guess or be dealt a turn.
+                if (
+                    !hasAskedToJoinRef.current &&
+                    socket.id &&
+                    !currentRoomInfo.playerList[socket.id]
+                ) {
+                    hasAskedToJoinRef.current = true;
+                    socket.emit(
+                        'clientJoinDrawAndGuessRoomRequest',
+                        currentRoomInfo.roomId,
+                        username,
+                    );
+                }
+            },
+        );
+
+        // Only reachable by the rejoin above: the lobby handles its own
+        // rejections. A locked room cannot be rejoined without the password,
+        // and the lobby is where that gets asked for.
+        socket.on(
+            'rejectClientJoinDrawAndGuessRoomRequest',
+            (data: { message: string }) => {
+                toast.error(data.message);
+                navigate('/Gamehub/DrawAndGuess/Lobby', { replace: true });
             },
         );
 
@@ -247,6 +280,7 @@ const DrawAndGuessRoom = () => {
 
         return () => {
             socket.off('clientJoinDrawAndGuessRoomSuccess');
+            socket.off('rejectClientJoinDrawAndGuessRoomRequest');
             socket.off('clientLeaveDrawAndGuessRoomSuccess');
             socket.off('roomError');
             socket.off('startDrawAndGuessGameSuccess');

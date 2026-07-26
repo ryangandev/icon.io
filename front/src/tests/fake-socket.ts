@@ -17,7 +17,10 @@ interface FakeSocket {
     emit: (event: string, ...args: unknown[]) => FakeSocket;
     connect: () => void;
     disconnect: () => void;
-    io: { on: (event: string, listener: Listener) => void };
+    io: {
+        on: (event: string, listener: Listener) => void;
+        off: (event: string, listener?: Listener) => void;
+    };
     /** Delivers a server event to whatever the component subscribed with. */
     serverEmits: (event: string, ...args: unknown[]) => void;
     /** Every event the component sent, in order. */
@@ -68,9 +71,10 @@ const createFakeSocket = ({
             return socket;
         },
 
-        connect: vi.fn<() => void>(() => {
-            socket.connected = true;
-        }),
+        // The real `connect()` starts a handshake; it does not make the socket
+        // connected. Only the `connect` event does, which is why `serverEmits`
+        // below is what flips the flag.
+        connect: vi.fn<() => void>(),
 
         disconnect: vi.fn<() => void>(() => {
             socket.connected = false;
@@ -78,9 +82,24 @@ const createFakeSocket = ({
 
         io: {
             on: (event, fn) => addListener(managerListeners, event, fn),
+            off: (event, fn) => {
+                if (!fn) {
+                    managerListeners.delete(event);
+                    return;
+                }
+                managerListeners.set(
+                    event,
+                    (managerListeners.get(event) ?? []).filter(
+                        (listener) => listener !== fn,
+                    ),
+                );
+            },
         },
 
         serverEmits: (event, ...args) => {
+            if (event === 'connect') socket.connected = true;
+            if (event === 'disconnect') socket.connected = false;
+
             for (const listener of [
                 ...(listeners.get(event) ?? []),
                 ...(managerListeners.get(event) ?? []),
