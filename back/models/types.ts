@@ -6,11 +6,17 @@ interface PlayerInfo {
   username: string;
   points: number;
   receivedPointsThisTurn: boolean;
+  /**
+   * False while the player is disconnected but still holding their seat. The
+   * room keeps them for a grace period so that a refresh — which takes about a
+   * second — does not cost them their score or their place in the round.
+   */
+  isConnected: boolean;
 }
 
 interface OwnerInfo {
   username: string;
-  socketId: string;
+  playerId: string;
 }
 
 interface RoomCreateRequestBody {
@@ -32,9 +38,14 @@ interface RoomInfo {
   password: string;
 }
 
+/**
+ * Everything below is keyed by player id rather than socket id. A socket id
+ * changes on every reload; a player id does not, which is what lets a seat, a
+ * score and a turn survive a refresh. See `libs/player-session.ts`.
+ */
 interface DrawAndGuessDetailRoomInfo extends RoomInfo {
   playerList: Record<string, PlayerInfo>;
-  currentDrawer: string; // current drawer's socket id
+  currentDrawer: string; // current drawer's player id
   currentWord: string;
   currentWordHint: string;
   currentRound: number;
@@ -42,7 +53,7 @@ interface DrawAndGuessDetailRoomInfo extends RoomInfo {
   isWordSelectingPhase: boolean;
   isDrawingPhase: boolean;
   isReviewingPhase: boolean;
-  drawerQueue: Set<string>; // queue of socket ids
+  drawerQueue: Set<string>; // player ids still to draw this round
   wordCategory: WordCategory | ''; // '' when no game is in progress
   wordChoices: string[];
   phaseEndsAt: number; // epoch ms the current phase ends; 0 when idle

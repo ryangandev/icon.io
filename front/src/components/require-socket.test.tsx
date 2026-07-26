@@ -16,7 +16,9 @@ const ROOM_URL = '/Gamehub/DrawAndGuess/Room/room-1';
  */
 const renderGuarded = (socket: FakeSocket, route = ROOM_URL) =>
   render(
-    <SocketContext.Provider value={{ socket: socket as unknown as Socket }}>
+    <SocketContext.Provider
+      value={{ socket: socket as unknown as Socket, playerId: 'player-1' }}
+    >
       <MemoryRouter initialEntries={[route]}>
         <Routes>
           <Route element={<RequireSocket />}>

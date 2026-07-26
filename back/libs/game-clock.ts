@@ -33,5 +33,19 @@ const phaseDurationsInSeconds: PhaseDurationsInSeconds = {
   reviewing: readSecondsFromEnv('REVIEW_SECONDS', 10),
 };
 
-export { phaseDurationsInSeconds };
+/**
+ * How long a disconnected player keeps their seat, their score and their place
+ * in the round before the room gives up on them.
+ *
+ * Long enough to cover a refresh, a tab restore or a brief network blip; short
+ * enough that a room is not held up by somebody who has actually gone. A player
+ * who leaves deliberately is removed at once — this is only for connections
+ * that drop.
+ */
+const reconnectGraceInSeconds = readSecondsFromEnv(
+  'RECONNECT_GRACE_SECONDS',
+  30,
+);
+
+export { phaseDurationsInSeconds, reconnectGraceInSeconds };
 export type { PhaseDurationsInSeconds };

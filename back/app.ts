@@ -15,6 +15,12 @@ import {
   whiteboardCanvasEventHandler,
 } from './socket/draw-and-guess/index.js';
 import { clientDepartureOnDisconnectHandler } from './socket/client-disconnect-handler.js';
+import { playerSessionHandler } from './socket/player-session-handler.js';
+import {
+  createPlayerSessionRegistry,
+  type PlayerSessionRegistry,
+} from './libs/player-session.js';
+import { createRoomMembership } from './socket/draw-and-guess/membership.js';
 
 interface CreateIconIoServerOptions {
   /** Defaults to `process.env.CORS_ORIGIN`, then the Vite dev server. */
@@ -23,6 +29,8 @@ interface CreateIconIoServerOptions {
   serveClient?: boolean;
   /** Shortened by the test suite so a full game runs in milliseconds. */
   phaseDurations?: PhaseDurationsInSeconds;
+  /** How long a dropped player keeps their seat. Shortened by tests. */
+  graceInSeconds?: number;
 }
 
 interface IconIoServer {
@@ -30,6 +38,8 @@ interface IconIoServer {
   io: Server;
   /** The live room registry, exposed so tests can assert on server state. */
   rooms: Record<string, DrawAndGuessDetailRoomInfo>;
+  /** Exposed so tests can assert on identities outliving their sockets. */
+  sessions: PlayerSessionRegistry;
   close: () => Promise<void>;
 }
 
@@ -48,6 +58,7 @@ const createIconIoServer = (
     corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:3001',
     serveClient = process.env.NODE_ENV === 'production',
     phaseDurations,
+    graceInSeconds,
   } = options;
 
   const app = express();
@@ -66,34 +77,39 @@ const createIconIoServer = (
   });
 
   const rooms: Record<string, DrawAndGuessDetailRoomInfo> = {};
-  const socketInRooms: Record<string, Set<string>> = {};
 
-  // Created once for the server, not once per connection: it owns the phase
-  // timers for every room, so there can only be one of it.
+  // All three are created once for the server rather than per connection: they
+  // own timers and identities that outlive any single socket.
+  const sessions = createPlayerSessionRegistry();
   const drawAndGuessGameEngine = createDrawAndGuessGameEngine(
     io,
     rooms,
+    sessions,
     phaseDurations,
+  );
+  const membership = createRoomMembership(
+    io,
+    rooms,
+    sessions,
+    drawAndGuessGameEngine,
+    graceInSeconds,
   );
 
   io.on('connection', (socket) => {
     console.log('a user is connected: ' + socket.id);
 
-    // handles disconnecting client
-    clientDepartureOnDisconnectHandler(
-      io,
-      socket,
-      rooms,
-      socketInRooms,
-      drawAndGuessGameEngine,
-    );
+    // Identity first: every handler below reads the player id off the
+    // connection, so nothing can happen until the client has identified.
+    playerSessionHandler(socket, sessions, membership.handleResume);
+
+    clientDepartureOnDisconnectHandler(socket, membership);
 
     // handles draw and guess lobby and room events
-    lobbyEventsHandler(io, socket, rooms);
-    roomEventsHandler(io, socket, rooms, socketInRooms, drawAndGuessGameEngine);
+    lobbyEventsHandler(io, socket, rooms, sessions);
+    roomEventsHandler(io, socket, rooms, sessions, membership);
     whiteboardCanvasEventHandler(socket);
-    ChatEventsHandler(io, socket, rooms);
-    GameEventsHandler(socket, drawAndGuessGameEngine);
+    ChatEventsHandler(io, socket, rooms, sessions);
+    GameEventsHandler(socket, drawAndGuessGameEngine, sessions);
   });
 
   if (serveClient) {
@@ -124,6 +140,7 @@ const createIconIoServer = (
     for (const roomId of Object.keys(rooms)) {
       drawAndGuessGameEngine.disposeRoom(roomId);
     }
+    membership.dispose();
     await io.close();
     await new Promise<void>((resolve) => {
       if (!httpServer.listening) {
@@ -134,7 +151,7 @@ const createIconIoServer = (
     });
   };
 
-  return { httpServer, io, rooms, close };
+  return { httpServer, io, rooms, sessions, close };
 };
 
 export { createIconIoServer };

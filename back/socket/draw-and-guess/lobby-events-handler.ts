@@ -9,12 +9,14 @@ import {
   generateRoomId,
   getRoomStatus,
 } from '../../libs/utils.js';
+import type { PlayerSessionRegistry } from '../../libs/player-session.js';
 import { parseArgs, roomCreateRequest } from '../../libs/validation.js';
 
 const lobbyEventsHandler = (
   io: Server,
   socket: Socket,
   drawAndGuessDetailRoomInfoList: Record<string, DrawAndGuessDetailRoomInfo>,
+  sessions: PlayerSessionRegistry,
 ) => {
   socket.on('clientJoinDrawAndGuessLobby', () => {
     const drawAndGuessLobbySimplifiedRoomList = Object.values(
@@ -40,10 +42,13 @@ const lobbyEventsHandler = (
 
       const { roomName, ownerUsername, maxPlayers, rounds, password } =
         validated;
+      const ownerPlayerId = sessions.playerIdFor(socket.id);
+      if (!ownerPlayerId) return;
+
       const roomId = generateRoomId();
       const owner: OwnerInfo = {
         username: ownerUsername,
-        socketId: socket.id,
+        playerId: ownerPlayerId,
       };
 
       // Creating an new empty room

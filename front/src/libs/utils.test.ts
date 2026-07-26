@@ -24,6 +24,7 @@ const player = (username: string, points: number): PlayerInfo => ({
   username,
   points,
   receivedPointsThisTurn: false,
+  isConnected: true,
 });
 
 describe('sortPlayerListByPoints', () => {

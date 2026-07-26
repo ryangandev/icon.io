@@ -115,32 +115,31 @@ describe('joining and leaving a room', () => {
   });
 
   /*
-   * What a refresh does. The reloaded page arrives with a brand-new socket
-   * that has never joined, so the snapshot it asks for does not list it —
-   * that absence is the signal to rejoin, rather than sit in the room as a
-   * spectator who cannot chat, guess or be dealt a turn.
+   * A client that arrives at a room without a seat — a pasted link, say — is
+   * not in the player list, and that absence is what tells the room page to
+   * ask to join rather than sit there as a spectator.
    */
-  it('lets a reloaded client see it is absent, then rejoin', async () => {
+  it('lets a seatless client see it is absent, then join', async () => {
     const holder = await harness.connect();
     const roomId = await createRoom(holder, { ownerUsername: 'Holder' });
     await joinRoom(holder, roomId, 'Holder');
 
-    const reloaded = await harness.connect();
+    const arriving = await harness.connect();
     const snapshot = waitFor<DrawAndGuessRoomState>(
-      reloaded,
+      arriving,
       'clientJoinDrawAndGuessRoomSuccess',
     );
-    reloaded.emit('requestDrawAndGuessRoomState', roomId);
+    arriving.emit('requestDrawAndGuessRoomState', roomId);
 
     const before = await snapshot;
-    expect(before.playerList[reloaded.id!]).toBeUndefined();
+    expect(before.playerList[arriving.playerId]).toBeUndefined();
     expect(before.currentPlayerCount).toBe(1);
 
-    await joinRoom(reloaded, roomId, 'Refreshed');
+    await joinRoom(arriving, roomId, 'Arrived');
     await settle();
 
     const room = harness.server.rooms[roomId];
-    expect(room?.playerList[reloaded.id!]?.username).toBe('Refreshed');
+    expect(room?.playerList[arriving.playerId]?.username).toBe('Arrived');
     expect(room?.currentPlayerCount).toBe(2);
   });
 
@@ -180,13 +179,22 @@ describe('joining and leaving a room', () => {
     expect(harness.server.rooms[roomId]).toBeUndefined();
   });
 
-  it('cleans up a room when its last player drops the connection', async () => {
+  it('holds the room briefly when its last player drops, then cleans up', async () => {
     const owner = await harness.connect();
     const roomId = await createRoom(owner);
     await joinRoom(owner, roomId, 'Only');
 
     owner.close();
-    await settle(300);
+    await settle(200);
+
+    // Still there: a dropped connection might be a reload, and deleting the
+    // room immediately is what used to make refreshing into one impossible.
+    expect(harness.server.rooms[roomId]).toBeDefined();
+    expect(
+      harness.server.rooms[roomId]?.playerList[owner.playerId]?.isConnected,
+    ).toBe(false);
+
+    await settle(700);
 
     expect(harness.server.rooms[roomId]).toBeUndefined();
   });

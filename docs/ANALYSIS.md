@@ -1,7 +1,7 @@
 # Icon.io — Project Analysis
 
 _Written 2026-07-25 after the dependency modernization pass; updated 2026-07-26
-after the bug-fix pass._
+after the bug-fix and reconnection passes._
 
 This is a snapshot of what the project does today, what's broken, and what it
 would take to grow it into an ongoing hobby project. Roughly 5,000 lines of
@@ -25,7 +25,6 @@ happens over Socket.io. Server state lives in two plain objects owned by
 
 ```ts
 const rooms: Record<string, DrawAndGuessDetailRoomInfo> = {};
-const socketInRooms: Record<string, Set<string>> = {};
 ```
 
 Restarting the server drops every room. For a hobby project that's a perfectly
@@ -46,7 +45,9 @@ module-level, so importing anything meant taking port 3000.
 | `game-events-handler.ts`              | Socket glue over the engine                |
 | `chat-events-handler.ts`              | Chat messages and guess checking           |
 | `whiteboard-canvas-events-handler.ts` | Relay draw / undo / clear events           |
-| `../client-disconnect-handler.ts`     | Cleanup on disconnect                      |
+| `membership.ts`                       | Seats, departures and the reconnect grace  |
+| `../player-session-handler.ts`        | The identity handshake                     |
+| `../client-disconnect-handler.ts`     | Hands a dropped socket to `membership.ts`  |
 
 **The server is authoritative.** This is the main structural change from the
 original design, and it is worth stating plainly because everything else follows
@@ -65,14 +66,25 @@ from it:
   being guessed — cannot leak by someone emitting a room object by accident.
 - **Every inbound event is validated** ([`back/libs/validation.ts`](../back/libs/validation.ts))
   before it reaches game state.
-- **The UI's rules are enforced, not assumed.** Disabling an input is a
-  convenience for honest clients; the server re-checks who may guess, who may
-  pick a word, and who may speak in a room.
+- **The UI's rules are enforced, not assumed** — with two exceptions the canvas
+  and the start button still have, see §3.1.
 
-**Identity is still the socket id.** Players are keyed by `socket.id`, so a
-refresh or a brief network drop makes you a brand-new player. There are no
-accounts; the username lives in `sessionStorage`. Server-authoritative timing is
-the prerequisite for fixing that, and it is now in place.
+**Identity outlives the connection.** Rooms are keyed by a server-issued player
+id, not by `socket.id`, which changes on every reload. Each id is paired with a
+secret token that only its owner receives — without one, any player could take
+any other player's seat, because every id in a room is broadcast to everyone in
+it. The client keeps both in `sessionStorage`: per tab, and surviving a reload,
+which is exactly the lifetime a seat should have.
+
+There are still no accounts. This is a way to be the same player across a
+refresh, not a way to be the same person across a visit.
+
+**A dropped connection is not a departure.** The seat, the score, ownership and
+the place in the round are held for thirty seconds
+([`membership.ts`](../back/socket/draw-and-guess/membership.ts)) in case the
+player comes back. Leaving deliberately still takes effect immediately — that
+distinction is the only difference between the two paths, which used to be
+separate near-identical copies of the same sequence.
 
 ---
 
@@ -104,6 +116,9 @@ driving scripted socket.io clients through the same flows.
 - **Departures**: player removed, ownership transferred, empty rooms deleted. If
   the player who left was drawing, the turn is skipped; if the room drops below
   two players mid-game, the game ends rather than stalling.
+- **Reconnection**: a reload keeps your seat, your score, the crown and your
+  place in the round. Others see you marked away rather than gone. The turn does
+  not wait for you, though — see §3.1.
 
 ### Word bank
 
@@ -114,8 +129,6 @@ Animals, League Of Legends, Electronics, Sports, Food.
 
 - **Minesweeper** — the Gamehub tile links to `/Gamehub/Minesweeper/Lobby`, which
   has no route and lands on the 404 page. Art assets exist; nothing else does.
-- **`back/archived/`** — four files from the pre-rewrite version. Nothing imports
-  them; they're now excluded from the build. Safe to delete.
 - The old `ValidateAuth` implementation is left commented out at the top of
   [`front/src/components/validate-auth.tsx`](../front/src/components/validate-auth.tsx).
 
@@ -123,238 +136,122 @@ Animals, League Of Legends, Electronics, Sports, Food.
 
 ## 3. Bugs
 
-**Every 🔴, 🟠 and 🟡 issue this document has ever listed is now fixed**, each as
-its own commit, each verified against a running server rather than by reading
-the diff. They are kept below with what the fix was, because the reasoning is
-more useful than a changelog line. What is still open is in §3.2.
+Everything this document has ever listed as 🔴, 🟠 or 🟡 is fixed, each as its
+own commit, each verified against a running server rather than by reading the
+diff — see §3.2 for the index. §3.1 is what is still open, including three
+issues found on 2026-07-26 that were not on any earlier list.
 
-All ten of the fixes below are now covered by the committed suite, verified by
-reverting each one in turn and confirming the suite catches it.
+### 3.1 Open
 
-### 3.1 Fixed
+#### 🟠 Nobody checks who is drawing
 
-#### 🔴 Room passwords were broadcast in plaintext to everyone
+[`whiteboard-canvas-events-handler.ts`](../back/socket/draw-and-guess/whiteboard-canvas-events-handler.ts)
+relays `startDrawing`, `continueDrawing`, `stopDrawing`, `undo` and `clear` to
+whatever room id it is handed. It validates the payload's _shape_ and nothing
+else: not that the sender is in the room, not that the sender is the drawer, not
+that a drawing phase is running. It is the one handler that never received the
+membership check the guess path got.
 
-`getDrawAndGuessLobbyRoomInfo()` copied the `password` field into the lobby room
-list, and that list is `io.emit`-ed to every connected client. Any client that
-opened the lobby received every room's password:
+Room ids are not secret — the lobby list is `io.emit`-ed to every connected
+client, and it carries `roomId` for every room. So any client that opens the
+lobby learns the id of every room, including locked ones.
 
-```json
-{
-  "roomName": "Secret Room",
-  "status": "Open",
-  "password": "hunter2-SUPERSECRET"
-}
-```
+_Verified_ with a throwaway probe: a client that never joined a room and never
+had its password drew a stroke on it, undid the drawer's last stroke, and
+cleared the canvas — all three reached the owner. `clear` is the worst of them:
+one emit wipes a stranger's drawing mid-turn, and it costs the attacker nothing.
 
-The frontend only ever used the field as a boolean, to pick a 🔒 or 🔓 icon.
+The fix is the shape already used by `chat-events-handler.ts`: resolve the
+player id from the socket, check they hold a seat in that room, and for the
+draw events check they are `room.currentDrawer` during `isDrawingPhase`. The
+handler currently takes only `socket`, so it needs `rooms` and `sessions`
+passed in from `app.ts`.
 
-The same class of bug applied to the room payloads: join, leave and game-end all
-emitted the internal room object wholesale, so `password` went to everyone in
-the room — and so did `currentWord`, the word the others are supposed to be
-guessing, on every leave event during a turn.
+#### 🟠 Nobody checks who starts the game
 
-**Fixed** by introducing explicit wire types and routing every emit through a
-builder. The lobby summary carries `hasPassword: boolean`; the room snapshot
-drops `password` and omits `currentWord`/`wordChoices` while the word is in play.
-They are _omitted_ rather than blanked, so the client's merge does not clobber
-the drawer's own copy. The server also no longer echoes the password back to the
-room's creator, and no longer logs the room object.
+`startGame(roomId)` in [`game-engine.ts`](../back/socket/draw-and-guess/game-engine.ts)
+checks that the room exists, that a game is not already running, and that there
+are enough players — but not who asked. Any connected client can start any
+room's game with a room id off the lobby broadcast. The Start button is
+owner-only in the UI and nowhere else.
 
-_Verified:_ a snooper joining the lobby receives no password field, sees
-`hasPassword: true`, and is rejected when it guesses a room id and tries a wrong
-password.
+Same fix, one line: compare `sessions.playerIdFor(socket.id)` against
+`room.owner.playerId`. `selectWord` next to it already does exactly this against
+`room.currentDrawer`, so the pattern is in the file.
 
-#### 🔴 Game timing was client-authoritative — the room hung if the drawer left
+#### 🟠 Arriving mid-turn shows you a blank canvas
 
-`drawingPhaseTimerEnded` and `reviewingPhaseTimerEnded` were emitted by the
-**drawer's browser**. If the drawer closed their tab mid-turn, nobody advanced
-the phase and the room was stuck until everyone gave up. The same design let a
-modified client end its own drawing phase early, or never.
+The drawing lives only in each client's memory. The server relays stroke events
+and keeps none of them, so anyone who arrives after a stroke was drawn — a
+joiner, or a player coming back from a reload — sees an empty board until the
+drawer happens to draw again.
 
-**Fixed** by extracting [`game-engine.ts`](../back/socket/draw-and-guess/game-engine.ts),
-which owns one `setTimeout` per room and drives every transition itself. See §1.
-Three distinct ways a room could hang are handled: the drawer leaving, a
-departed player still sitting in `drawerQueue` and being dealt a turn nobody
-draws, and a game dropping below two players.
+This is also the reason a reloading drawer loses their turn rather than resuming
+it: `skipTurnOfAbsentDrawer` moves on immediately, because a returning drawer
+would find their own drawing gone. Storing the stroke list server-side and
+sending it with the room snapshot fixes the joiner, the reconnecting watcher and
+the reconnecting drawer in one change. The undo rewrite already put the drawing
+in a replayable form for exactly this.
 
-On the client this collapsed three timers, three timeout refs and six start-time
-refs into one deadline and one hook.
+#### 🟢 A non-member can read a private room's player list
 
-_Verified:_ three headless multi-client runs, none of which emit any phase
-event — a full game plays to completion and reopens the room; killing the
-drawer's connection mid-turn advances to the next turn and does not deal them
-another; dropping to one player ends the game.
-
-#### 🟠 The password prompt rendered once per table row
-
-`<PasswordPromptModal>` was rendered inside the `Action` column's `render()`, so
-the table produced one modal per room, all driven by a single shared boolean.
-Clicking Join on any locked room opened every locked room's modal at once,
-stacked, and whichever landed on top received the submission.
-
-**Fixed** by hoisting one modal out of the table and tracking
-`pendingRoom: RoomInfo | null`. It is keyed by room id so each prompt opens
-empty, and its title names the room.
-
-_Verified in a browser:_ clicking Join on a locked room produces exactly one
-modal, titled `Password for "Alice's Room"`; a wrong password is rejected; the
-right one joins; reopening shows an empty field.
-
-#### 🟠 Nothing a client sent was validated
-
-`createDrawAndGuessRoomRequest` trusted its payload wholesale, so `maxPlayers`,
-`rounds`, `roomName` and `password` went straight into game state. Chat messages
-were unbounded on the wire despite the input capping them at 40 characters, and
-every room-scoped event took whatever string it was handed as a room id.
-
-**Fixed** with zod schemas covering all inbound events, bounded to mirror what
-the UI already enforces. Invalid events are dropped and logged rather than
-answered.
-
-Two things this turned up. The first attempt used `.catch('')` for the optional
-password, which substitutes the default on failure — so an over-long password
-created a room the requester believed was locked and that was actually open.
-And `getRandomChoicesFromList()` loops until it has N _distinct_ indexes, so a
-word-bank category with fewer than three entries would have spun forever.
-
-_Verified:_ ten malformed room requests, a burst of room-scoped events with a
-non-UUID room id, and a 50KB chat message — nothing created, nothing relayed,
-connection still up, legitimate requests unaffected.
-
-#### 🟠 The drawing toolbar sat below the fold at 720p
-
-In a 1280×720 viewport the canvas ran y=120–720 and the toolbar landed at
-**y=726**. The drawer had to scroll away from their own canvas to reach a
-colour, a brush, undo or clear.
-
-**Fixed** by moving the toolbar above the canvas and sizing the drawing area to
-what is left of the window. Because the canvas is no longer displayed at its
-bitmap size, mouse positions are now scaled into bitmap space — the two sizes
-previously happened to agree to within a couple of pixels, and any change would
-have silently skewed every stroke.
-
-_Verified in a 1280×720 viewport with a game in progress:_ toolbar at y=131–182,
-canvas ending at y=718, page 11px taller than the viewport rather than 68px.
-Dragging puts ink at bitmap x=93–497 against an expected 95–494 — the difference
-being exactly the 2px brush radius.
-
-#### 🟡 Undo shipped a full-canvas PNG, per undo
-
-`handleUndo` serialized the previous canvas state to a data URL and emitted it —
-100 KB to 1 MB each — while `previousStatesRef` accumulated raw `ImageData`
-objects at 798 × 598 × 4 ≈ **1.9 MB each**, unbounded, for the whole turn.
-
-**Fixed** by keeping the drawing as a stroke list. Every client receives the same
-draw events, so every client builds the same list, and undo becomes "drop the
-last entry and repaint". Colour and size now travel with a stroke's first point
-so it is fully described from the start. This also leaves the drawing in a
-replayable form, which is what late-joiner sync needs.
-
-_Verified:_ undo relays with a 2-byte payload; an undo carrying a data URL is
-rejected rather than forwarded. In two real browsers sharing a room, after two
-strokes both canvases hold identical ink (4641 pixels, same bands), and after one
-undo the watcher repaints to exactly the surviving stroke.
-
-#### 🟡 A 250 ms `setTimeout` papered over a join race
-
-The join broadcast was wrapped in `setTimeout(..., 250)` "to ensure that the
-client has joined the room". `socket.join()` is synchronous on a single node, so
-the socket was already a member — what the delay actually covered is that the
-joining client is still navigating and has not subscribed yet. That made it a
-guess about how long React takes to mount.
-
-**Fixed** by broadcasting immediately and having the room page ask for state once
-it has mounted and its listeners are live. The page now reads the room id from
-the route rather than waiting to be told it.
-
-_Verified:_ over 25 consecutive joins, state arrived every time, worst case 1 ms
-after asking.
-
-#### 🟡 Guess authority was client-side only
-
-`takingAGuess` awarded points without checking anything. A modified client could
-award itself 100 points by guessing the word it was drawing, or guess during the
-reveal phase when the answer is on screen.
-
-**Fixed** by checking what the UI was merely displaying: sender is in the room,
-the drawing phase is running, the sender is not the drawer, and they have not
-already scored. `sendMessage` got the membership check too — any socket knowing
-a room id could post into a room it had never joined.
-
-_Verified:_ an outsider posting into a room, a guess before the game starts, the
-drawer guessing their own word, and one player guessing correctly five times —
-none scored. A genuine guesser still scores, case-insensitively.
-
-#### 🟡 `socketInRooms[socket.id]` could be undefined
-
-`socketInRooms[socket.id].delete(roomId)` threw when the socket had no entry.
-Inside a `try/catch` it degraded to a spurious `roomError` — but the room had
-already been mutated, so the client was told its leave had failed while the room
-had in fact lost a player and possibly changed owner.
-
-**Fixed** by guarding the lookup and checking membership before anything is
-mutated.
-
-_Verified:_ a socket that never joined announcing a departure leaves the player
-count, owner and chat untouched and produces no error; leaving twice removes
-exactly one player.
-
-#### 🟠 A refresh or a deep link bounced you to the Gamehub
-
-[`require-socket.tsx`](../front/src/components/require-socket.tsx) redirected to
-`/Gamehub` whenever `socket.connected` was false at first render — which it
-always is on a fresh page load, because the socket is opened by the Gamehub page
-and neither a pasted URL nor a refresh goes through it. The guard meant to catch
-a lost connection was in practice catching normal navigation, so every deep link
-and every refresh bounced.
-
-**Fixed** by having the guard open the connection itself and render a connecting
-state while it does. It still redirects, but only on real failure: socket.io
-exhausting its retries, or ten seconds with no connection. A connection dropped
-mid-game now waits for socket.io's own retry instead of throwing the player out
-of the room.
-
-Reaching the room page was necessary but not sufficient. A reloaded page has a
-socket id the room has never seen, so it arrived as a spectator — on screen,
-absent from the player list, unable to chat, guess or be dealt a turn. The room
-snapshot already says who is in the room, so a client that finds itself missing
-now asks to join, and a rejection (a locked room, whose password it no longer
-has) sends it back to the lobby with the reason.
-
-_Verified:_ in a browser, a deep link to the lobby lands, and a refresh inside a
-two-player room holds the URL and rejoins while the other player observes the
-departure and the return. Eight component tests cover the guard, four of which
-fail against the previous implementation.
-
-**Points do not survive the reload** — the rejoining socket is a new player as
-far as the server is concerned. Keeping them is reconnection proper, below.
-
-### 3.2 Still open
+`requestDrawAndGuessRoomState` answers any connected client. The payload holds
+no secrets — no password, no live word — but a locked room's player list is not
+something a stranger should be able to pull. The membership check above covers
+this too.
 
 #### 🟢 Smaller things
 
-- No rate limiting on any socket event. Payloads are bounded now, but their
-  frequency is not.
-- The word hint never progressively reveals letters.
-- `validate-auth.tsx` calls `window.location.reload()` after setting a username.
-- Filename typo: `password-prmopt-modal.tsx`.
-- Canvas rendering is the one thing the suite does not cover: jsdom has no 2D
+- **No rate limiting on any socket event.** Payloads are bounded now; their
+  frequency is not. A client can emit `startDrawing` in a loop.
+- **The word hint never progressively reveals letters** — it is the same row of
+  underscores for the whole 90 seconds.
+- **`validate-auth.tsx` calls `window.location.reload()`** after setting a
+  username, which throws away the SPA. It also still has a `console.log` and 20
+  lines of the previous implementation commented out at the top of the file.
+- **The Minesweeper tile links to a route that does not exist** and lands on the
+  404 page.
+- **Filename typo**: `password-prmopt-modal.tsx`.
+- **11 lint warnings**, none of them wrong exactly: three `no-shadow` in the room
+  page, two `no-explicit-any` on caught errors, `no-unstable-nested-components`
+  in the lobby table, and `Array#sort` mutating in `front/src/libs/utils.ts`.
+  That last one is the only one that could bite.
+- **Canvas rendering is the one thing the suite does not cover**: jsdom has no 2D
   context. The relay protocol around it is covered, and the drawing itself was
   verified in two browsers when it landed.
+- **`front/src/models/types.ts` and `back/models/types.ts` are near-identical
+  copies** that must be edited in lockstep. Not a bug yet; a bug generator.
 
-### 3.3 Fixed during the earlier modernization pass
+### 3.2 Fixed
 
-- `reviewingPhaseTimeoutId` was never cleared on unmount, so the reviewing-phase
-  timer fired after you left the room. (The refs it lived in are gone entirely
-  now.)
-- `currentRoomInfo.playerList[socket.id]` indexed with a possibly `undefined` id.
-- `getRandomElementFromSet` could return `undefined` and was typed `string`.
-- `wordCategory` was typed `string` and used to index a `WordCategory`-keyed
-  record — invisible because `noImplicitAny` was off.
-- `app.get('/*')` — invalid in Express 5, now `'/{*splat}'`.
-- `back/build/` was committed to git; now ignored and untracked.
-- `@ant-design/icons` was imported but never declared as a dependency.
+The reasoning behind each of these is in its commit message and in the pull
+request it landed in ([#22](https://github.com/ryangandev/icon.io/pull/22),
+[#23](https://github.com/ryangandev/icon.io/pull/23)). Every one is covered by
+the committed suite: the ten from the bug-fix pass were checked by reverting
+each in turn and confirming the suite catches it, and reconnection has 19 tests
+of its own.
+
+| Was                                                        | Now                                                                                               |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| 🔴 Room passwords broadcast in plaintext to every client   | Wire types: the lobby carries `hasPassword`, the room snapshot drops the password                 |
+| 🔴 The live word leaked in every leave event during a turn | `currentWord`/`wordChoices` are _omitted_, not blanked, so the drawer's own copy survives a merge |
+| 🔴 Phase timing came from the drawer's browser             | `game-engine.ts` owns one `setTimeout` per room and drives every transition                       |
+| 🟠 The password prompt rendered once per table row         | One modal hoisted out of the table, keyed by room id                                              |
+| 🟠 Nothing a client sent was validated                     | zod schemas over every inbound event; invalid events dropped and logged                           |
+| 🟠 The drawing toolbar sat below the fold at 720p          | Toolbar above the canvas; mouse positions scaled into bitmap space                                |
+| 🟠 A refresh or a deep link bounced you to the Gamehub     | The guard opens the connection instead of redirecting; it redirects only on real failure          |
+| 🟠 A reload made you a different person                    | Server-issued player id + token, and a thirty-second seat hold                                    |
+| 🟡 Undo shipped a full-canvas PNG, per undo                | A stroke list every client replays; undo is "drop the last entry"                                 |
+| 🟡 A 250 ms `setTimeout` papered over a join race          | The room page asks for state once its listeners are live                                          |
+| 🟡 Guess authority was client-side only                    | Sender is checked for membership, phase, not-the-drawer, and not-already-scored                   |
+| 🟡 `socketInRooms[socket.id]` could be undefined           | Guarded, and membership checked before anything is mutated                                        |
+
+Fixed earlier, during the modernization pass: a reviewing-phase timer that fired
+after you left the room; `playerList[socket.id]` indexed with a possibly
+`undefined` id; `getRandomElementFromSet` returning `undefined` while typed
+`string`; `wordCategory` typed `string` and used as a `WordCategory` key;
+`app.get('/*')`, invalid in Express 5; `back/build/` committed to git; and
+`@ant-design/icons` imported but never declared.
 
 ---
 
@@ -370,7 +267,7 @@ far as the server is concerned. Keeping them is reconnection proper, below.
 | Express          | 4.19                                  | **5.2**                   |
 | Socket.io        | 4.7                                   | **4.8**                   |
 | Lint             | CRA built-in (eslint 8)               | **oxlint**, both packages |
-| Tests            | none                                  | **113** (Vitest)          |
+| Tests            | none                                  | **132** (Vitest)          |
 | CI               | none                                  | **GitHub Actions**        |
 | Formatting       | script, no config                     | **Prettier, 2-space**     |
 | Node             | 18 types                              | **20+**, `@types/node` 26 |
@@ -403,24 +300,25 @@ far as the server is concerned. Keeping them is reconnection proper, below.
   `cookie-parser`, `zod`, `jest`, `ts-jest`, `ts-node`, `web-vitals`,
   `react-icons`, and all three `@testing-library/*` packages. None were imported
   anywhere. `uuid` was replaced by the built-in `crypto.randomUUID()`.
-  (`zod` has since come back, and is now actually used — see §3.1.)
+  (`zod` has since come back, and is now actually used — see §3.2.)
 - **Stricter TypeScript.** `noImplicitAny` was off; turning it on surfaced four
   real type holes. `verbatimModuleSyntax` and `noUnusedLocals` are now on too.
 
-### New server settings
+### Server settings
 
 The server owns the game clock, so phase lengths are server-side settings.
 Shorten them to play a whole game through in seconds while developing:
 
-| Variable              | Default | Purpose                                 |
-| --------------------- | ------- | --------------------------------------- |
-| `WORD_SELECT_SECONDS` | `15`    | How long the drawer has to pick a word  |
-| `DRAWING_SECONDS`     | `90`    | Length of the drawing phase             |
-| `REVIEW_SECONDS`      | `10`    | How long the word is shown after a turn |
+| Variable                  | Default | Purpose                                    |
+| ------------------------- | ------- | ------------------------------------------ |
+| `WORD_SELECT_SECONDS`     | `15`    | How long the drawer has to pick a word     |
+| `DRAWING_SECONDS`         | `90`    | Length of the drawing phase                |
+| `REVIEW_SECONDS`          | `10`    | How long the word is shown after a turn    |
+| `RECONNECT_GRACE_SECONDS` | `30`    | How long a dropped player keeps their seat |
 
-The test suite does not use these — it passes durations to
-`createDrawAndGuessGameEngine()` directly, so a suite's timing cannot be changed
-out from under it by an environment variable.
+The test suite does not use these — it passes durations straight to
+`createIconIoServer()`, so a suite's timing cannot be changed out from under it
+by an environment variable.
 
 ---
 
@@ -437,50 +335,40 @@ hardcoded into event names (`startDrawAndGuessGame`,
 To add Minesweeper as-is you'd copy the whole vertical slice. Before doing that
 twice, extract the generic part:
 
-1. **Generic room layer** — `Room<TGameState>` with create / join / leave /
+1. **Shared types package.** Do this first — it's an hour's work and pays for
+   itself immediately. A `shared/` directory referenced by both tsconfigs
+   removes a whole class of drift bugs.
+2. **Generic room layer** — `Room<TGameState>` with create / join / leave /
    ownership / disconnect, which is identical for every game.
-2. **Namespaced events** — `room:join` / `room:leave` with a `gameType`
+3. **Namespaced events** — `room:join` / `room:leave` with a `gameType`
    discriminator, instead of `clientJoinDrawAndGuessRoomRequest`.
-3. **Per-game module** — each game registers `{ id, minPlayers, maxPlayers,
+4. **Per-game module** — each game registers `{ id, minPlayers, maxPlayers,
 createInitialState, handlers }`. Draw & Guess becomes the first consumer.
-4. **Shared types package.** `front/src/models/types.ts` and
-   `back/models/types.ts` are currently **byte-identical copies** that must be
-   edited in lockstep. A `shared/` directory referenced by both tsconfigs
-   removes a whole class of drift bugs. Do this first — it's an hour's work and
-   pays for itself immediately.
 
-### Highest-value features
+### Feature ideas
 
 Several of these got substantially cheaper in this pass, because the two things
 they all depended on — a server-owned clock and a replayable drawing — now exist.
 
-| Feature                                          | Notes                                                                                                                                                                                                                                                               |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **End the turn early when everyone has guessed** | The engine already tracks `receivedPointsThisTurn` and owns the timer. Count the players who have scored against the players who are not drawing, and call the phase over. Perhaps twenty lines now.                                                                |
-| **Reconnection**                                 | The blocker was client-authoritative timing; that is gone. Issue a persistent player id, keep the seat alive for ~30s, and re-send the room snapshot on return — the mechanism for that already exists as `requestDrawAndGuessRoomState`. Biggest UX win available. |
-| **Late-joiner canvas sync**                      | The drawing is a stroke list now. Keep it on the server too and send it with the room snapshot.                                                                                                                                                                     |
-| **Progressive letter hints**                     | Reveal a letter at 60s and 30s. The engine holds the word and the clock, so this is a scheduled callback plus an emit.                                                                                                                                              |
-| **Time-weighted scoring**                        | Award points on remaining time instead of a flat 100. `getRemainingPhaseMs()` already gives you the number.                                                                                                                                                         |
-| **Close-guess feedback**                         | "Sam is close!" on Levenshtein distance 1–2. Cheap and fun, and the guess now runs server-side where you'd put it.                                                                                                                                                  |
-| **Custom word lists**                            | Per-room word packs; the word bank is already a plain record.                                                                                                                                                                                                       |
-| **Round summary screen**                         | Show per-turn point deltas during the review phase.                                                                                                                                                                                                                 |
+| Feature                                          | Notes                                                                                                                                                                                                |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **End the turn early when everyone has guessed** | The engine already tracks `receivedPointsThisTurn` and owns the timer. Count the players who have scored against the players who are not drawing, and call the phase over. Perhaps twenty lines now. |
+| **Late-joiner canvas sync**                      | The drawing is a stroke list now. Keep it on the server too and send it with the room snapshot. Also fixes §3.1's blank-canvas bug.                                                                  |
+| **Progressive letter hints**                     | Reveal a letter at 60s and 30s. The engine holds the word and the clock, so this is a scheduled callback plus an emit.                                                                               |
+| **Time-weighted scoring**                        | Award points on remaining time instead of a flat 100. `getRemainingPhaseMs()` already gives you the number.                                                                                          |
+| **Close-guess feedback**                         | "Sam is close!" on Levenshtein distance 1–2. Cheap and fun, and the guess now runs server-side where you'd put it.                                                                                   |
+| **Custom word lists**                            | Per-room word packs; the word bank is already a plain record.                                                                                                                                        |
+| **Round summary screen**                         | Show per-turn point deltas during the review phase.                                                                                                                                                  |
 
-### Infrastructure worth having
+### Infrastructure
 
-- **Tests — done.** 113 of them: 83 backend, 30 frontend. The backend suite runs
-  real socket.io clients against a real server, because that is where the
-  interesting behaviour lives; each suite binds its own ephemeral port, so no
-  suite can see a room another left behind. `createIconIoServer()` exists for
-  this — building the server at module scope meant importing it was the same
-  thing as taking a port. Phase durations are a parameter of the engine rather
-  than a module constant, so a whole game runs in milliseconds.
-
-  Checked by reverting each fix in §3.1 in turn: all ten reverted fixes are
-  caught. That includes the two subtle enough to have been worth writing the
-  tests for — `.catch('')` on the password schema turning a rejected password
-  into an unlocked room, and a blanked `currentWord` where an omitted one was
-  needed.
-
+- **Tests — done.** 132 of them: 102 backend across 8 files, 30 frontend across 4. The backend suite runs real socket.io clients against a real server, because
+  that is where the interesting behaviour lives; each suite binds its own
+  ephemeral port, so no suite can see a room another left behind.
+  `createIconIoServer()` exists for this — building the server at module scope
+  meant importing it was the same thing as taking a port. Phase durations are a
+  parameter of the engine rather than a module constant, so a whole game runs in
+  milliseconds.
 - **CI — done.** [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) runs
   lint, typecheck, format, test and build on every pull request. Dependabot is
   already active here, so CI now says whether its PRs are safe to merge.
@@ -496,28 +384,25 @@ they all depended on — a server-owned clock and a replayable drawing — now e
 
 ## 6. Suggested order of work
 
-Tests, CI and the deep-link redirect are done, so what was items 1 and 3 of the
-previous list has come off the front. What remains:
-
-1. **Shared types package.** `front/src/models/types.ts` and
-   `back/models/types.ts` are near-identical copies that must be edited in
-   lockstep, and the last two passes added fields to both. A `shared/` directory
-   referenced by both tsconfigs removes a whole class of drift bugs. Now the
-   most valuable structural change left, and CI will catch it if the extraction
-   goes wrong.
-2. **End the turn early when everyone has guessed.** Small, and the single
-   biggest improvement to how the game actually feels to play. The engine
-   already tracks `receivedPointsThisTurn` and owns the timer.
-3. **Reconnection.** Partly started: a refresh now rejoins the room, but as a
-   new player with no points, because identity is the socket id. Real
-   reconnection means a player id that outlives a socket — issue one, hold the
-   seat for ~30s, and restore points and drawer state on return. A weekend, and
-   the biggest UX win available.
-4. **Late-joiner canvas sync.** Cheap once the stroke list lives server-side.
-5. **Progressive hints and time-weighted scoring.** An evening each, and the
-   engine gives you everything both need.
+1. **Check who is drawing, and who starts the game.** §3.1's first two items.
+   Both are a handful of lines against a pattern already in the codebase, and
+   they close the last gap between what the UI enforces and what the server
+   does. Half an evening, and the regression tests are easy — a client that
+   never joined, emitting into a room.
+2. **Store the stroke list server-side.** Fixes the blank canvas for joiners and
+   for reconnecting players, and is what would let a reloading drawer keep their
+   turn instead of losing it. A weekend, and the single biggest improvement to
+   how the game feels to a player who arrives mid-turn.
+3. **Shared types package.** `front/src/models/types.ts` and
+   `back/models/types.ts` are near-identical copies edited in lockstep, and the
+   last three passes each added fields to both. The most valuable structural
+   change left, and CI will catch it if the extraction goes wrong. An hour.
+4. **End the turn early when everyone has guessed.** Small, and the biggest
+   improvement to the game's pacing. The engine already has both halves.
+5. **Progressive hints and time-weighted scoring.** An evening each.
 6. **Rate limiting.** The last unbounded thing a client controls. Payload sizes
    are checked; how often they arrive is not.
-7. _Then_ consider a second game — on top of an extracted room layer.
-
-Items 1–2 and 6 are each an evening. Items 3–4 are a weekend apiece.
+7. **Housekeeping**, whenever it's convenient: the dead Minesweeper link, the
+   `password-prmopt-modal.tsx` typo, the commented-out `ValidateAuth`, the
+   `window.location.reload()`, and the eleven lint warnings.
+8. _Then_ consider a second game — on top of an extracted room layer.

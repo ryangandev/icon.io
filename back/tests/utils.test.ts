@@ -17,17 +17,18 @@ const makeRoom = (
 ): DrawAndGuessDetailRoomInfo => ({
   roomId: 'room-1',
   roomName: 'Room One',
-  owner: { username: 'Owner', socketId: 'socket-owner' },
+  owner: { username: 'Owner', playerId: 'player-owner' },
   status: 'Open',
   currentPlayerCount: 2,
   maxPlayers: 4,
   rounds: 2,
   password: '',
   playerList: {
-    'socket-owner': {
+    'player-owner': {
       username: 'Owner',
       points: 0,
       receivedPointsThisTurn: false,
+      isConnected: true,
     },
   },
   currentDrawer: '',
@@ -182,8 +183,18 @@ describe('convertStrToUnderscores', () => {
 
 describe('point resets', () => {
   const playerList = {
-    a: { username: 'A', points: 300, receivedPointsThisTurn: true },
-    b: { username: 'B', points: 100, receivedPointsThisTurn: true },
+    a: {
+      username: 'A',
+      points: 300,
+      receivedPointsThisTurn: true,
+      isConnected: true,
+    },
+    b: {
+      username: 'B',
+      points: 100,
+      receivedPointsThisTurn: true,
+      isConnected: true,
+    },
   };
 
   it('resetPoints zeroes the scores without touching the names', () => {
