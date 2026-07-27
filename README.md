@@ -6,7 +6,7 @@
 
 ## 🚀 About
 
-[**Icon.io**](https://icon.ryiscrispy.com/) is a web-based, online multiplayer gaming platform developed using React and Node.js with TypeScript. It currently hosts Draw & Guess, which you can enjoy with your friends, and plans are underway to add more games soon! Check it out [here](https://icon.ryiscrispy.com/)!
+[**Icon.io**](https://icon.ryiscrispy.com/) is a web-based, online multiplayer gaming platform developed using React and Node.js with TypeScript. It currently hosts Draw & Guess and Minesweeper, which you can enjoy with your friends, and more games are on the way! Check it out [here](https://icon.ryiscrispy.com/)!
 
 Icon.io is an evolved version of my original project, [**Icon**](https://github.com/ryangandev/icon.io/tree/old-version), initially built as my final project for a Web Development class in a team of three at Drexel University. This refined version retains the same core technologies as the original, while incorporating bug fixes and adhering to best practices.
 
@@ -19,10 +19,10 @@ Icon.io is an evolved version of my original project, [**Icon**](https://github.
 
 ## 🎮 Games
 
-| Game                                   | Players | Status                                  |
-| -------------------------------------- | ------- | --------------------------------------- |
-| [Draw & Guess](docs/DRAW-AND-GUESS.md) | 2–8     | Playable                                |
-| Minesweeper                            | —       | Next up; the room layer is ready for it |
+| Game                                   | Players | What it is                                                      |
+| -------------------------------------- | ------- | --------------------------------------------------------------- |
+| [Draw & Guess](docs/DRAW-AND-GUESS.md) | 2–8     | One player draws a word, everyone else races to type it         |
+| [Minesweeper](docs/MINESWEEPER.md)     | 2–8     | A shared minefield; each pick pays exactly how dangerous it was |
 
 Each game is a module on a shared room layer that owns seats, ownership, the
 reconnect grace and the lobby. See [`docs/ANALYSIS.md`](docs/ANALYSIS.md) for the

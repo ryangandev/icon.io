@@ -16,10 +16,10 @@ const GameData = [
   },
   {
     title: 'Minesweeper',
-    navigateTo: '',
+    navigateTo: '/Gamehub/Minesweeper/Lobby',
     thumbnailImg: minesweeper,
     thumbnailBgColor: '#A7A6BA',
-    isAvailable: false,
+    isAvailable: true,
   },
 ];
 

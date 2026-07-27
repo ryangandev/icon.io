@@ -374,16 +374,17 @@ const DrawAndGuessRoom = () => {
         {/* Game Info & Chat Window Section */}
         <div className="draw-and-guess-room-body-right">
           <GameInfoBoard
-            name={currentRoomInfo.roomName}
-            owner={currentRoomInfo.owner.username}
-            status={currentRoomInfo.status}
-            players={
-              currentRoomInfo.currentPlayerCount +
-              '/' +
-              currentRoomInfo.maxPlayers
-            }
-            rounds={currentRoomInfo.rounds}
-            wordCategory={currentRoomInfo.wordCategory}
+            items={[
+              { label: 'Name', value: currentRoomInfo.roomName },
+              { label: 'Owner', value: currentRoomInfo.owner.username },
+              { label: 'Status', value: currentRoomInfo.status },
+              {
+                label: 'Players',
+                value: `${currentRoomInfo.currentPlayerCount}/${currentRoomInfo.maxPlayers}`,
+              },
+              { label: 'MaxRounds', value: currentRoomInfo.rounds },
+              { label: 'Category', value: currentRoomInfo.wordCategory },
+            ]}
           />
           <ChatWindow
             username={username}
@@ -410,18 +411,42 @@ const DrawAndGuessRoom = () => {
       ) : (
         <div className="draw-and-guess-room-layout">
           <GameInfoBar
-            isGameStarted={currentRoomInfo.isGameStarted}
-            isWordSelectingPhase={currentRoomInfo.isWordSelectingPhase}
-            isDrawingPhase={currentRoomInfo.isDrawingPhase}
-            isDrawer={isDrawer}
             currentRound={currentRoomInfo.currentRound}
-            currentDrawer={currentDrawerUsername}
-            currentWord={currentRoomInfo.currentWord}
-            currentWordHint={currentRoomInfo.currentWordHint}
-            receivedPointsThisTurn={receivedPointsThisTurn}
             handleOnLeave={handleOnLeave}
             secondsRemaining={secondsRemaining}
-          />
+          >
+            {!currentRoomInfo.isGameStarted && (
+              <span className="game-info-status">Waiting for players...</span>
+            )}
+            {currentRoomInfo.isWordSelectingPhase && (
+              <span className="game-info-status">
+                <span style={{ fontWeight: 800 }}>{currentDrawerUsername}</span>{' '}
+                is selecting a word
+              </span>
+            )}
+            {currentRoomInfo.isDrawingPhase && isDrawer && (
+              <>
+                <span className="game-info-action-indicator">Draw</span>
+                <span className="game-info-current-word">
+                  {currentRoomInfo.currentWord}
+                </span>
+              </>
+            )}
+            {currentRoomInfo.isDrawingPhase &&
+              !isDrawer &&
+              (receivedPointsThisTurn ? (
+                <span className="game-info-status">
+                  ✅ You Guessed the Correct Word!
+                </span>
+              ) : (
+                <>
+                  <span className="game-info-action-indicator">Guess</span>
+                  <span className="game-info-current-word game-info-hint ">
+                    {currentRoomInfo.currentWordHint}
+                  </span>
+                </>
+              ))}
+          </GameInfoBar>
 
           <div className="draw-and-guess-room-body">
             <div className="draw-and-guess-room-body-center">

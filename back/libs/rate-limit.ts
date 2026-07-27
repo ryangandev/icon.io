@@ -59,6 +59,8 @@ const BUCKET_FOR_EVENT: Record<string, BucketName> = {
   'room:sync': 'room',
   'game:start': 'room',
   'dg:select-word': 'room',
+  // One pick per player per round, and the engine ignores the rest.
+  'ms:pick': 'room',
 };
 
 /**

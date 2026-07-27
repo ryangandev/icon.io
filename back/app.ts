@@ -4,7 +4,10 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import * as url from 'node:url';
 import path from 'node:path';
-import type { PhaseDurationsInSeconds } from './libs/game-clock.js';
+import type {
+  MinesweeperDurationsInSeconds,
+  PhaseDurationsInSeconds,
+} from './libs/game-clock.js';
 import { createRoomRegistry } from './libs/rooms/registry.js';
 import { createRoomMembership } from './libs/rooms/membership.js';
 import { lobbyEventsHandler } from './libs/rooms/lobby-events.js';
@@ -12,6 +15,7 @@ import { roomEventsHandler } from './libs/rooms/room-events.js';
 import { chatEventsHandler } from './libs/rooms/chat-events.js';
 import type { Room } from './libs/rooms/types.js';
 import { createDrawAndGuessModule } from './socket/draw-and-guess/index.js';
+import { createMinesweeperModule } from './socket/minesweeper/index.js';
 import { clientDepartureOnDisconnectHandler } from './socket/client-disconnect-handler.js';
 import { playerSessionHandler } from './socket/player-session-handler.js';
 import {
@@ -30,6 +34,8 @@ interface CreateIconIoServerOptions {
   serveClient?: boolean;
   /** Shortened by the test suite so a full game runs in milliseconds. */
   phaseDurations?: PhaseDurationsInSeconds;
+  /** Minesweeper's round window and reveal pause. Shortened by tests. */
+  minesweeperDurations?: MinesweeperDurationsInSeconds;
   /** How long a dropped player keeps their seat. Shortened by tests. */
   graceInSeconds?: number;
 }
@@ -63,6 +69,7 @@ const createIconIoServer = (
     corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:3001',
     serveClient = process.env.NODE_ENV === 'production',
     phaseDurations,
+    minesweeperDurations,
     graceInSeconds,
   } = options;
 
@@ -90,6 +97,9 @@ const createIconIoServer = (
   // then reached only through the registry — the room layer below never names
   // one, and adding the second took this line and nothing else here.
   registry.register(createDrawAndGuessModule(registry.context, phaseDurations));
+  registry.register(
+    createMinesweeperModule(registry.context, minesweeperDurations),
+  );
 
   const membership = createRoomMembership(
     io,

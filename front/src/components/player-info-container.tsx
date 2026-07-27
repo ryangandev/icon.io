@@ -6,9 +6,16 @@ interface PlayerInfoContainerProps {
   playerInfo: PlayerInfo;
   isClient: boolean;
   isCurrentPlayerRoomOwner: boolean;
+  /** Whatever "it is this player's moment" means to the game showing this. */
   isCurrentPlayerDrawer: boolean;
   ranking: number;
+  /** Animates the active icon while something is actually happening. */
   isDrawingPhase: boolean;
+  /**
+   * The badge for an active player. A pencil for whoever is drawing; a padlock
+   * for whoever has locked a Minesweeper pick in.
+   */
+  activeIcon?: string;
 }
 
 const PlayerInfoContainer = ({
@@ -18,6 +25,7 @@ const PlayerInfoContainer = ({
   isCurrentPlayerDrawer,
   ranking,
   isDrawingPhase,
+  activeIcon = '🖌️',
 }: PlayerInfoContainerProps) => {
   const { username, points, isConnected } = playerInfo;
 
@@ -45,7 +53,9 @@ const PlayerInfoContainer = ({
         {/* Away rather than gone: the seat and the score are being held. */}
         {!isConnected && <span title="Reconnecting…">📴</span>}
         {isCurrentPlayerDrawer && (
-          <span className={isDrawingPhase ? 'oscillate-emoji' : ''}>🖌️</span>
+          <span className={isDrawingPhase ? 'oscillate-emoji' : ''}>
+            {activeIcon}
+          </span>
         )}
       </div>
       {isCurrentPlayerRoomOwner && (

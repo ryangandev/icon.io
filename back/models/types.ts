@@ -74,6 +74,12 @@ export type {
   DrawAndGuessLobbyRoomInfo,
   DrawAndGuessRoomState,
   DrawAndGuessSettings,
+  MinesweeperDifficulty,
+  MinesweeperSettings,
+  MinesweeperCellView,
+  MinesweeperPickResult,
+  MinesweeperLobbyRoomInfo,
+  MinesweeperRoomState,
 } from '../../shared/wire-types.js';
 
 export type { RoomCanvas, DrawAndGuessState };

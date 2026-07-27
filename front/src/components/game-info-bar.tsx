@@ -8,32 +8,23 @@ import {
 import { formatTimeInMinutesAndSeconds } from '../libs/utils';
 
 interface GameInfoBarProps {
-  isGameStarted: boolean;
-  isWordSelectingPhase: boolean;
-  isDrawingPhase: boolean;
-  isDrawer: boolean;
-  currentRound: number;
-  currentDrawer: string;
-  currentWord: string;
-  currentWordHint: string;
-  receivedPointsThisTurn: boolean;
-  handleOnLeave: () => void;
   /** Seconds left in whichever phase the server currently has running. */
   secondsRemaining: number;
+  currentRound: number;
+  handleOnLeave: () => void;
+  /**
+   * Whatever the game wants to say in the middle — a word hint, a round
+   * summary. The clock, the round counter and the leave button are the same
+   * for everyone; the sentence between them never is.
+   */
+  children?: React.ReactNode;
 }
 
 const GameInfoBar = ({
-  isGameStarted,
-  isWordSelectingPhase,
-  isDrawingPhase,
-  isDrawer,
-  currentRound,
-  currentDrawer,
-  currentWord,
-  currentWordHint,
-  receivedPointsThisTurn,
-  handleOnLeave,
   secondsRemaining,
+  currentRound,
+  handleOnLeave,
+  children,
 }: GameInfoBarProps) => {
   return (
     <div className="game-info-container">
@@ -49,39 +40,8 @@ const GameInfoBar = ({
           {formatTimeInMinutesAndSeconds(secondsRemaining)}
         </span>
       </div>
-      <div className="game-info-container-center">
-        {!isGameStarted && (
-          <span className="game-info-status">Waiting for players...</span>
-        )}
-        {isWordSelectingPhase && (
-          <span className="game-info-status">
-            <span style={{ fontWeight: 800 }}>{currentDrawer}</span> is
-            selecting a word
-          </span>
-        )}
-        {isDrawingPhase && isDrawer && (
-          <>
-            <span className="game-info-action-indicator">Draw</span>
-            <span className="game-info-current-word">{currentWord}</span>
-          </>
-        )}
-        {isDrawingPhase && !isDrawer && (
-          <>
-            {receivedPointsThisTurn ? (
-              <span className="game-info-status">
-                ✅ You Guessed the Correct Word!
-              </span>
-            ) : (
-              <>
-                <span className="game-info-action-indicator">Guess</span>
-                <span className="game-info-current-word game-info-hint ">
-                  {currentWordHint}
-                </span>
-              </>
-            )}
-          </>
-        )}
-      </div>
+
+      <div className="game-info-container-center">{children}</div>
 
       <div className="game-info-container-right">
         <span className="game-info-status">Round: {currentRound}</span>
