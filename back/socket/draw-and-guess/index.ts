@@ -1,6 +1,10 @@
-export * from './chat-events-handler.js';
-export * from './game-engine.js';
-export * from './game-events-handler.js';
-export * from './lobby-events-handler.js';
-export * from './room-events-handler.js';
-export * from './whiteboard-canvas-events-handler.js';
+export { createDrawAndGuessModule } from './module.js';
+export { createState, toLobbyInfo, toRoomState } from './state.js';
+export {
+  createDrawAndGuessGameEngine,
+  MIN_PLAYERS_TO_START,
+} from './game-engine.js';
+export type {
+  DrawAndGuessGameEngine,
+  DrawAndGuessRoom,
+} from './game-engine.js';

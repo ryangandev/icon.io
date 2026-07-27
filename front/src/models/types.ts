@@ -1,7 +1,7 @@
 import type { DrawAndGuessRoomState } from '../../../shared/wire-types';
 
 /**
- * What the room page holds.
+ * What the Draw & Guess room page holds.
  *
  * The server's snapshot leaves out the two drawer-private fields while a word
  * is in play — omitted rather than blanked, so that merging a snapshot never
@@ -15,6 +15,7 @@ type DrawAndGuessRoomView = DrawAndGuessRoomState & {
 };
 
 export type {
+  GameType,
   RoomStatus,
   WordCategory,
   PlayerInfo,
@@ -23,7 +24,10 @@ export type {
   Coordinate,
   CanvasStroke,
   LobbyRoomInfo,
+  RoomState,
+  DrawAndGuessLobbyRoomInfo,
   DrawAndGuessRoomState,
+  DrawAndGuessSettings,
 } from '../../../shared/wire-types';
 
 export type { DrawAndGuessRoomView };

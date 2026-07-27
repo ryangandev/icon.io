@@ -9,6 +9,7 @@ import {
   settle,
   startTestServer,
   waitFor,
+  waitUntil,
   type TestServer,
 } from './helpers/test-server.js';
 
@@ -29,9 +30,12 @@ describe('joining and leaving a room', () => {
     await joinRoom(owner, roomId, 'Ada');
 
     const guest = await harness.connect();
-    const roomUpdate = waitFor<DrawAndGuessRoomState>(
+    // The owner's own join snapshot may still be in flight, and it now shares
+    // an event name with this one.
+    const roomUpdate = waitUntil<DrawAndGuessRoomState>(
       owner,
-      'clientJoinDrawAndGuessRoomSuccess',
+      'room:state',
+      (state) => state.currentPlayerCount === 2,
     );
     await joinRoom(guest, roomId, 'Grace');
 
@@ -47,11 +51,8 @@ describe('joining and leaving a room', () => {
     const roomId = await createRoom(owner, { password: 'open-sesame' });
 
     const guest = await harness.connect();
-    const rejection = waitFor<{ message: string }>(
-      guest,
-      'rejectClientJoinDrawAndGuessRoomRequest',
-    );
-    guest.emit('clientJoinDrawAndGuessRoomRequest', roomId, 'Guest', 'wrong');
+    const rejection = waitFor<{ message: string }>(guest, 'room:join:denied');
+    guest.emit('room:join', roomId, 'Guest', 'wrong');
     expect((await rejection).message).toMatch(/password/i);
 
     await expect(
@@ -61,13 +62,8 @@ describe('joining and leaving a room', () => {
 
   it('reports a room that does not exist rather than inventing one', async () => {
     const client = await harness.connect();
-    const error = waitFor<{ errorType: string }>(client, 'roomError');
-    client.emit(
-      'clientJoinDrawAndGuessRoomRequest',
-      randomUUID(),
-      'Nobody',
-      '',
-    );
+    const error = waitFor<{ errorType: string }>(client, 'room:error');
+    client.emit('room:join', randomUUID(), 'Nobody', '');
 
     expect((await error).errorType).toBe('roomNotExist');
   });
@@ -83,8 +79,8 @@ describe('joining and leaving a room', () => {
     expect((await lobbyView(owner, roomId))?.status).toBe('Full');
 
     const third = await harness.connect();
-    const error = waitFor<{ errorType: string }>(third, 'roomError');
-    third.emit('clientJoinDrawAndGuessRoomRequest', roomId, 'Three', '');
+    const error = waitFor<{ errorType: string }>(third, 'room:error');
+    third.emit('room:join', roomId, 'Three', '');
 
     expect((await error).errorType).toBe('roomNotOpen');
   });
@@ -101,15 +97,12 @@ describe('joining and leaving a room', () => {
 
     // A client that subscribes only *after* joining still gets the state.
     const latecomer = await harness.connect();
-    latecomer.emit('clientJoinDrawAndGuessRoomRequest', roomId, 'Late', '');
-    await waitFor(latecomer, 'approveClientJoinDrawAndGuessRoomRequest');
+    latecomer.emit('room:join', roomId, 'Late', '');
+    await waitFor(latecomer, 'room:joined');
     await settle();
 
-    const state = waitFor<DrawAndGuessRoomState>(
-      latecomer,
-      'clientJoinDrawAndGuessRoomSuccess',
-    );
-    latecomer.emit('requestDrawAndGuessRoomState', roomId);
+    const state = waitFor<DrawAndGuessRoomState>(latecomer, 'room:state');
+    latecomer.emit('room:sync', roomId);
 
     expect((await state).currentPlayerCount).toBe(2);
   });
@@ -127,9 +120,9 @@ describe('joining and leaving a room', () => {
     await joinRoom(holder, roomId, 'Holder');
 
     const arriving = await harness.connect();
-    const leaked = collect(arriving, 'clientJoinDrawAndGuessRoomSuccess');
-    const error = waitFor<{ errorType: string }>(arriving, 'roomError');
-    arriving.emit('requestDrawAndGuessRoomState', roomId);
+    const leaked = collect(arriving, 'room:state');
+    const error = waitFor<{ errorType: string }>(arriving, 'room:error');
+    arriving.emit('room:sync', roomId);
 
     expect((await error).errorType).toBe('notRoomMember');
     await settle();
@@ -149,11 +142,8 @@ describe('joining and leaving a room', () => {
     await joinRoom(arriving, roomId, 'Arrived');
     await settle();
 
-    const snapshot = waitFor<DrawAndGuessRoomState>(
-      arriving,
-      'clientJoinDrawAndGuessRoomSuccess',
-    );
-    arriving.emit('requestDrawAndGuessRoomState', roomId);
+    const snapshot = waitFor<DrawAndGuessRoomState>(arriving, 'room:state');
+    arriving.emit('room:sync', roomId);
 
     const state = await snapshot;
     expect(state.playerList[arriving.playerId]?.username).toBe('Arrived');
@@ -162,8 +152,8 @@ describe('joining and leaving a room', () => {
 
   it('reports a state request for a room that has gone away', async () => {
     const client = await harness.connect();
-    const error = waitFor<{ errorType: string }>(client, 'roomError');
-    client.emit('requestDrawAndGuessRoomState', randomUUID());
+    const error = waitFor<{ errorType: string }>(client, 'room:error');
+    client.emit('room:sync', randomUUID());
 
     expect((await error).errorType).toBe('roomNotExist');
   });
@@ -176,11 +166,15 @@ describe('joining and leaving a room', () => {
     const guest = await harness.connect();
     await joinRoom(guest, roomId, 'Grace');
 
-    const departure = waitFor<DrawAndGuessRoomState>(
+    // The snapshot that no longer seats Ada, rather than whichever one arrives
+    // next: joining and leaving both broadcast `room:state`, so Grace's own
+    // join snapshot — in which Ada is still the owner — can still be in flight.
+    const departure = waitUntil<DrawAndGuessRoomState>(
       guest,
-      'clientLeaveDrawAndGuessRoomSuccess',
+      'room:state',
+      (state) => !state.playerList[owner.playerId],
     );
-    owner.emit('clientLeaveDrawAndGuessRoom', roomId, 'Ada');
+    owner.emit('room:leave', roomId, 'Ada');
 
     expect((await departure).owner.username).toBe('Grace');
   });
@@ -190,7 +184,7 @@ describe('joining and leaving a room', () => {
     const roomId = await createRoom(owner);
     await joinRoom(owner, roomId, 'Only');
 
-    owner.emit('clientLeaveDrawAndGuessRoom', roomId, 'Only');
+    owner.emit('room:leave', roomId, 'Only');
     await settle();
 
     expect(harness.server.rooms[roomId]).toBeUndefined();
@@ -231,12 +225,12 @@ describe('joining and leaving a room', () => {
       const guest = await harness.connect();
       await joinRoom(guest, roomId, 'Grace');
 
-      const errors = collect(owner, 'roomError');
-      const messages = collect<[string, string]>(owner, 'receiveMessage');
+      const errors = collect(owner, 'room:error');
+      const messages = collect<[string, string]>(owner, 'chat:message');
 
       const stranger = await harness.connect();
-      const strangerErrors = collect(stranger, 'roomError');
-      stranger.emit('clientLeaveDrawAndGuessRoom', roomId, 'Stranger');
+      const strangerErrors = collect(stranger, 'room:error');
+      stranger.emit('room:leave', roomId, 'Stranger');
       await settle();
 
       expect(harness.server.rooms[roomId]?.currentPlayerCount).toBe(2);
@@ -256,9 +250,9 @@ describe('joining and leaving a room', () => {
       const guest = await harness.connect();
       await joinRoom(guest, roomId, 'Grace');
 
-      guest.emit('clientLeaveDrawAndGuessRoom', roomId, 'Grace');
+      guest.emit('room:leave', roomId, 'Grace');
       await settle();
-      guest.emit('clientLeaveDrawAndGuessRoom', roomId, 'Grace');
+      guest.emit('room:leave', roomId, 'Grace');
       await settle();
 
       expect(harness.server.rooms[roomId]?.currentPlayerCount).toBe(1);

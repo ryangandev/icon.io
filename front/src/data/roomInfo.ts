@@ -1,6 +1,7 @@
 import type { DrawAndGuessRoomView } from '../models/types';
 
 const roomInfoInitialObject: DrawAndGuessRoomView = {
+  gameType: 'draw-and-guess',
   roomId: '',
   roomName: '',
   owner: {
@@ -22,6 +23,7 @@ const roomInfoInitialObject: DrawAndGuessRoomView = {
   isDrawingPhase: false,
   isReviewingPhase: false,
   drawerQueue: [],
+  scoredThisTurn: [],
   wordCategory: '',
   wordChoices: [],
   phaseEndsInMs: 0,

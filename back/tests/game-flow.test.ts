@@ -6,6 +6,7 @@ import {
   createRoom,
   joinRoom,
   playToDrawingPhase,
+  serverRoom,
   settle,
   startTestServer,
   waitFor,
@@ -49,16 +50,16 @@ const seatTwoPlayers = async (harness: TestServer) => {
       choicesFor.set(socket, choices);
     const aliceHandler = onChoices(alice);
     const bobHandler = onChoices(bob);
-    alice.on('drawerReceiveWordChoices', aliceHandler);
-    bob.on('drawerReceiveWordChoices', bobHandler);
+    alice.on('dg:word-choices', aliceHandler);
+    bob.on('dg:word-choices', bobHandler);
 
     const started = await waitFor<
       Phase & { currentDrawer: string; drawerQueue: string[] }
-    >(alice, 'wordSelectingPhaseStarted');
+    >(alice, 'dg:phase:word-select');
     await settle(50);
 
-    alice.off('drawerReceiveWordChoices', aliceHandler);
-    bob.off('drawerReceiveWordChoices', bobHandler);
+    alice.off('dg:word-choices', aliceHandler);
+    bob.off('dg:word-choices', bobHandler);
 
     const [drawer, choices] = [...choicesFor.entries()][0] ?? [];
     const guesser = drawer === alice ? bob : alice;
@@ -94,8 +95,8 @@ describe('the game engine', () => {
     const roomId = await createRoom(owner);
     await joinRoom(owner, roomId, 'Alone');
 
-    const error = waitFor<{ errorType: string }>(owner, 'roomError');
-    owner.emit('startDrawAndGuessGame', roomId);
+    const error = waitFor<{ errorType: string }>(owner, 'room:error');
+    owner.emit('game:start', roomId);
 
     expect((await error).errorType).toBe('notEnoughPlayers');
     expect(harness.server.rooms[roomId]?.isGameStarted).toBe(false);
@@ -109,8 +110,8 @@ describe('the game engine', () => {
   it('refuses to start a game for anybody but the room owner', async () => {
     const { bob, roomId } = await seatTwoPlayers(harness);
 
-    const error = waitFor<{ errorType: string }>(bob, 'roomError');
-    bob.emit('startDrawAndGuessGame', roomId);
+    const error = waitFor<{ errorType: string }>(bob, 'room:error');
+    bob.emit('game:start', roomId);
 
     expect((await error).errorType).toBe('notRoomOwner');
     expect(harness.server.rooms[roomId]?.isGameStarted).toBe(false);
@@ -120,9 +121,9 @@ describe('the game engine', () => {
     const { alice, roomId } = await seatTwoPlayers(harness);
     const outsider = await harness.connect();
 
-    const started = collect(alice, 'startDrawAndGuessGameSuccess');
-    const error = waitFor<{ errorType: string }>(outsider, 'roomError');
-    outsider.emit('startDrawAndGuessGame', roomId);
+    const started = collect(alice, 'dg:game:started');
+    const error = waitFor<{ errorType: string }>(outsider, 'room:error');
+    outsider.emit('game:start', roomId);
 
     expect((await error).errorType).toBe('notRoomOwner');
     await settle();
@@ -132,11 +133,11 @@ describe('the game engine', () => {
 
   it('refuses to start a game that is already running', async () => {
     const { alice, roomId } = await seatTwoPlayers(harness);
-    alice.emit('startDrawAndGuessGame', roomId);
-    await waitFor(alice, 'startDrawAndGuessGameSuccess');
+    alice.emit('game:start', roomId);
+    await waitFor(alice, 'dg:game:started');
 
-    const error = waitFor<{ errorType: string }>(alice, 'roomError');
-    alice.emit('startDrawAndGuessGame', roomId);
+    const error = waitFor<{ errorType: string }>(alice, 'room:error');
+    alice.emit('game:start', roomId);
 
     expect((await error).errorType).toBe('gameAlreadyStarted');
   });
@@ -144,7 +145,7 @@ describe('the game engine', () => {
   it('opens with a word-selecting phase and a countdown', async () => {
     const { alice, roomId, awaitTurn } = await seatTwoPlayers(harness);
     const turn = awaitTurn();
-    alice.emit('startDrawAndGuessGame', roomId);
+    alice.emit('game:start', roomId);
 
     const { started, choices, offeredChoicesCount } = await turn;
 
@@ -159,14 +160,14 @@ describe('the game engine', () => {
   it('sends the word to the drawer alone, and a hint to everyone else', async () => {
     const { alice, roomId, awaitTurn } = await seatTwoPlayers(harness);
     const turn = awaitTurn();
-    alice.emit('startDrawAndGuessGame', roomId);
+    alice.emit('game:start', roomId);
     const { drawer, guesser, choices } = await turn;
 
-    const guesserSaw = collect(guesser, 'drawingPhaseStarted');
-    const drawerWord = waitFor<string>(drawer, 'drawingPhaseStartedForDrawer');
-    const drawerPrivate = collect(guesser, 'drawingPhaseStartedForDrawer');
+    const guesserSaw = collect(guesser, 'dg:phase:drawing');
+    const drawerWord = waitFor<string>(drawer, 'dg:word');
+    const drawerPrivate = collect(guesser, 'dg:word');
 
-    drawer.emit('drawerSelectWordFinished', roomId, choices[0]);
+    drawer.emit('dg:select-word', roomId, choices[0]);
 
     expect(await drawerWord).toBe(choices[0]);
     await settle();
@@ -182,26 +183,26 @@ describe('the game engine', () => {
   it('ignores a word the drawer was not offered', async () => {
     const { alice, roomId, awaitTurn } = await seatTwoPlayers(harness);
     const turn = awaitTurn();
-    alice.emit('startDrawAndGuessGame', roomId);
+    alice.emit('game:start', roomId);
     const { drawer } = await turn;
 
-    drawer.emit('drawerSelectWordFinished', roomId, 'not-a-choice');
+    drawer.emit('dg:select-word', roomId, 'not-a-choice');
     await settle(50);
 
-    expect(harness.server.rooms[roomId]?.isDrawingPhase).toBe(false);
-    expect(harness.server.rooms[roomId]?.isWordSelectingPhase).toBe(true);
+    expect(serverRoom(harness, roomId).game.isDrawingPhase).toBe(false);
+    expect(serverRoom(harness, roomId).game.isWordSelectingPhase).toBe(true);
   });
 
   it('ignores a word chosen by somebody who is not the drawer', async () => {
     const { alice, roomId, awaitTurn } = await seatTwoPlayers(harness);
     const turn = awaitTurn();
-    alice.emit('startDrawAndGuessGame', roomId);
+    alice.emit('game:start', roomId);
     const { guesser, choices } = await turn;
 
-    guesser.emit('drawerSelectWordFinished', roomId, choices[0]);
+    guesser.emit('dg:select-word', roomId, choices[0]);
     await settle();
 
-    expect(harness.server.rooms[roomId]?.isDrawingPhase).toBe(false);
+    expect(serverRoom(harness, roomId).game.isDrawingPhase).toBe(false);
   });
 
   /*
@@ -211,11 +212,11 @@ describe('the game engine', () => {
   it('picks a word itself when the drawer never chooses one', async () => {
     const { alice, roomId, awaitTurn } = await seatTwoPlayers(harness);
     const turn = awaitTurn();
-    alice.emit('startDrawAndGuessGame', roomId);
+    alice.emit('game:start', roomId);
     const { drawer, choices } = await turn;
 
-    const drawing = waitFor<Phase>(alice, 'drawingPhaseStarted');
-    const word = waitFor<string>(drawer, 'drawingPhaseStartedForDrawer');
+    const drawing = waitFor<Phase>(alice, 'dg:phase:drawing');
+    const word = waitFor<string>(drawer, 'dg:word');
 
     // Nobody chooses. The server's own clock has to move the phase on.
     expect((await drawing).phaseEndsInMs).toBeGreaterThan(0);
@@ -225,21 +226,21 @@ describe('the game engine', () => {
   it('runs a whole turn on its own clock, ending with the word revealed', async () => {
     const { alice, roomId, awaitTurn } = await seatTwoPlayers(harness);
     const turn = awaitTurn();
-    alice.emit('startDrawAndGuessGame', roomId);
+    alice.emit('game:start', roomId);
     const { drawer, choices } = await turn;
 
     const reviewing = waitFor<Phase & { currentWord: string }>(
       alice,
-      'reviewingPhaseStarted',
+      'dg:phase:review',
     );
-    drawer.emit('drawerSelectWordFinished', roomId, choices[0]);
+    drawer.emit('dg:select-word', roomId, choices[0]);
 
     const reveal = await reviewing;
     expect(reveal.currentWord).toBe(choices[0]);
     expect(reveal.phaseEndsInMs).toBeGreaterThan(0);
 
     // ...and the turn ends without any client asking it to.
-    await waitFor(alice, 'reviewingPhaseEnded');
+    await waitFor(alice, 'dg:phase:idle');
   });
 
   /*
@@ -255,10 +256,7 @@ describe('the game engine', () => {
     });
     try {
       const { guesser, word } = await playToDrawingPhase(harnessWithHints);
-      const hints = collect<{ currentWordHint: string }>(
-        guesser,
-        'wordHintRevealed',
-      );
+      const hints = collect<{ currentWordHint: string }>(guesser, 'dg:hint');
 
       // Long enough for both reveals — at a third and two thirds of the phase.
       await settle(1300);
@@ -310,10 +308,10 @@ describe('the game engine', () => {
       const { roomId, guesser, guesserName, word } =
         await playToDrawingPhase(harnessWithHints);
 
-      const hints = collect(guesser, 'wordHintRevealed');
+      const hints = collect(guesser, 'dg:hint');
       // The only guesser guesses, so the phase ends before any reveal is due.
-      guesser.emit('takingAGuess', roomId, guesserName, word);
-      await waitFor(guesser, 'reviewingPhaseStarted', 1000);
+      guesser.emit('dg:guess', roomId, guesserName, word);
+      await waitFor(guesser, 'dg:phase:review', 1000);
 
       await settle(1000);
 
@@ -326,17 +324,13 @@ describe('the game engine', () => {
   it('plays every player once per round, then ends the game', async () => {
     const { alice, roomId, awaitTurn } = await seatTwoPlayers(harness);
     const turn = awaitTurn();
-    const ended = waitFor<DrawAndGuessRoomState>(
-      alice,
-      'endDrawAndGuessGame',
-      9000,
-    );
+    const ended = waitFor<DrawAndGuessRoomState>(alice, 'dg:game:ended', 9000);
     const drawers = collect<{ currentDrawer: string }>(
       alice,
-      'wordSelectingPhaseStarted',
+      'dg:phase:word-select',
     );
 
-    alice.emit('startDrawAndGuessGame', roomId);
+    alice.emit('game:start', roomId);
     await turn;
 
     const finalState = await ended;
@@ -377,14 +371,14 @@ describe('the game engine', () => {
 
       const firstTurn = waitFor<{ currentDrawer: string }>(
         alice,
-        'wordSelectingPhaseStarted',
+        'dg:phase:word-select',
       );
-      alice.emit('startDrawAndGuessGame', roomId);
+      alice.emit('game:start', roomId);
       const { currentDrawer } = await firstTurn;
 
       const witness = currentDrawer === alice.playerId ? bob : alice;
-      const turnEnded = waitFor(witness, 'reviewingPhaseEnded');
-      const messages = collect<[string, string]>(witness, 'receiveMessage');
+      const turnEnded = waitFor(witness, 'dg:phase:idle');
+      const messages = collect<[string, string]>(witness, 'chat:message');
 
       clients.get(currentDrawer)!.close();
 
@@ -401,10 +395,10 @@ describe('the game engine', () => {
   it('ends the game when too few players are left to continue', async () => {
     const { alice, bob, roomId, awaitTurn } = await seatTwoPlayers(harness);
     const turn = awaitTurn();
-    alice.emit('startDrawAndGuessGame', roomId);
+    alice.emit('game:start', roomId);
     await turn;
 
-    const ended = waitFor<DrawAndGuessRoomState>(alice, 'endDrawAndGuessGame');
+    const ended = waitFor<DrawAndGuessRoomState>(alice, 'dg:game:ended');
     bob.close();
 
     const finalState = await ended;
@@ -420,7 +414,7 @@ describe('the game engine', () => {
   it('drops a pending phase timer when the room is deleted mid-turn', async () => {
     const { alice, bob, roomId, awaitTurn } = await seatTwoPlayers(harness);
     const turn = awaitTurn();
-    alice.emit('startDrawAndGuessGame', roomId);
+    alice.emit('game:start', roomId);
     await turn;
 
     alice.close();

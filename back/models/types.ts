@@ -1,10 +1,4 @@
-import type {
-  CanvasStroke,
-  OwnerInfo,
-  PlayerInfo,
-  RoomStatus,
-  WordCategory,
-} from '../../shared/wire-types.js';
+import type { CanvasStroke, WordCategory } from '../../shared/wire-types.js';
 
 /**
  * Server-private state.
@@ -12,20 +6,16 @@ import type {
  * Everything a client can see is defined once, in `shared/wire-types.d.ts`, and
  * re-exported at the bottom of this file so that the rest of the backend can go
  * on importing its types from one place. What is left here is what never leaves
- * the process: the room password, the word while it is being guessed, and the
- * drawing in the mutable form the relay maintains it in.
+ * the process: the word while it is being guessed, and the drawing in the
+ * mutable form the relay maintains it in.
+ *
+ * The room itself is no longer described here. `RoomInfo` and
+ * `DrawAndGuessDetailRoomInfo` were one type that mixed the two — a room's name,
+ * seats and password alongside a drawer queue and a canvas — which is precisely
+ * the seam the extraction cut along. What is generic is `Room<TGameState>` in
+ * `libs/rooms/types.ts`; what is Draw & Guess's is `DrawAndGuessState` below,
+ * and it hangs off `room.game`.
  */
-
-interface RoomInfo {
-  roomId: string;
-  roomName: string;
-  owner: OwnerInfo;
-  status: RoomStatus;
-  currentPlayerCount: number;
-  maxPlayers: number;
-  rounds: number;
-  password: string;
-}
 
 /**
  * The room's drawing. `pointCount` is a running total so the size cap is an
@@ -38,24 +28,27 @@ interface RoomCanvas {
 }
 
 /**
- * Everything below is keyed by player id rather than socket id. A socket id
- * changes on every reload; a player id does not, which is what lets a seat, a
- * score and a turn survive a refresh. See `libs/player-session.ts`.
+ * Everything Draw & Guess knows that no other game would.
+ *
+ * `scoredThisTurn` used to be a `receivedPointsThisTurn` boolean on `PlayerInfo`
+ * — the shared, every-game shape — which meant the room layer carried a field
+ * that only means something inside a drawing phase. Per-player facts a game
+ * cares about live in the game's own state, keyed by the same player id.
  */
-interface DrawAndGuessDetailRoomInfo extends RoomInfo {
-  playerList: Record<string, PlayerInfo>;
+interface DrawAndGuessState {
+  rounds: number;
   currentDrawer: string; // current drawer's player id
   currentWord: string;
   currentWordHint: string;
   currentRound: number;
-  isGameStarted: boolean;
   isWordSelectingPhase: boolean;
   isDrawingPhase: boolean;
   isReviewingPhase: boolean;
   drawerQueue: Set<string>; // player ids still to draw this round
   wordCategory: WordCategory | ''; // '' when no game is in progress
   wordChoices: string[];
-  phaseEndsAt: number; // epoch ms the current phase ends; 0 when idle
+  /** Player ids that have already scored this turn, and so cannot guess again. */
+  scoredThisTurn: Set<string>;
   // Sent to arrivals on its own rather than with the room snapshot: a snapshot
   // goes out every time anyone joins or leaves, and the drawing is the largest
   // thing in the room.
@@ -63,12 +56,12 @@ interface DrawAndGuessDetailRoomInfo extends RoomInfo {
 }
 
 /**
- * The wire contract. `getDrawAndGuessLobbyRoomInfo` and
- * `getDrawAndGuessRoomState` in `libs/utils.ts` are the only way the internal
- * types above become these, which is what keeps a password or a live word from
- * leaking by someone emitting a room object wholesale.
+ * The wire contract. A module's `toLobbyInfo` and `toRoomState` are the only way
+ * the internal types above become these, which is what keeps a password or a
+ * live word from leaking by someone emitting a room object wholesale.
  */
 export type {
+  GameType,
   RoomStatus,
   WordCategory,
   PlayerInfo,
@@ -77,7 +70,10 @@ export type {
   Coordinate,
   CanvasStroke,
   LobbyRoomInfo,
+  RoomState,
+  DrawAndGuessLobbyRoomInfo,
   DrawAndGuessRoomState,
+  DrawAndGuessSettings,
 } from '../../shared/wire-types.js';
 
-export type { RoomInfo, RoomCanvas, DrawAndGuessDetailRoomInfo };
+export type { RoomCanvas, DrawAndGuessState };

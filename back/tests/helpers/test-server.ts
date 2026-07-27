@@ -3,9 +3,12 @@ import { io as createClient, type Socket } from 'socket.io-client';
 import { createIconIoServer, type IconIoServer } from '../../app.js';
 import type { PhaseDurationsInSeconds } from '../../libs/game-clock.js';
 import type {
+  DrawAndGuessLobbyRoomInfo,
   DrawAndGuessRoomState,
-  LobbyRoomInfo,
+  DrawAndGuessState,
+  PlayerInfo,
 } from '../../models/types.js';
+import type { Room } from '../../libs/rooms/types.js';
 
 /**
  * Phases short enough that a full game runs inside a test, but long enough that
@@ -20,6 +23,16 @@ const FAST_PHASES: PhaseDurationsInSeconds = {
 interface PlayerIdentity {
   playerId: string;
   token: string;
+}
+
+/**
+ * What `dg:scores` carries after a correct guess. It used to be the player list
+ * on its own; who has already scored is now the game's own state rather than a
+ * flag on every `PlayerInfo`, so it travels alongside.
+ */
+interface ScoresPayload {
+  playerList: Record<string, PlayerInfo>;
+  scoredThisTurn: string[];
 }
 
 /**
@@ -134,6 +147,39 @@ const waitFor = <T = unknown>(
   });
 
 /**
+ * Resolves with the first `event` whose payload satisfies `predicate`.
+ *
+ * `room:state` is one event now where it used to be three — a join, a leave and
+ * a re-sync all carry the same snapshot, which is the point of the room layer
+ * but does mean "the next snapshot" is no longer the same thing as "the
+ * snapshot caused by what I just did". A test that cares which one it got says
+ * so here rather than racing the one before it.
+ */
+const waitUntil = <T = unknown>(
+  socket: Socket,
+  event: string,
+  predicate: (payload: T) => boolean,
+  timeoutMs = 3000,
+): Promise<T> =>
+  new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      socket.off(event, onEvent);
+      reject(new Error(`Timed out waiting for a matching "${event}"`));
+    }, timeoutMs);
+
+    const onEvent = (...args: unknown[]) => {
+      const payload = (args.length === 1 ? args[0] : args) as T;
+      if (!predicate(payload)) return;
+
+      clearTimeout(timer);
+      socket.off(event, onEvent);
+      resolve(payload);
+    };
+
+    socket.on(event, onEvent);
+  });
+
+/**
  * Records every payload of `event` for later assertion. Used where a test needs
  * to prove something did *not* happen, which no amount of waiting can show.
  */
@@ -157,18 +203,25 @@ interface CreateRoomOptions {
   password?: string;
 }
 
-/** Creates a room and returns its id, without joining it. */
+/**
+ * Creates a Draw & Guess room and returns its id, without joining it.
+ *
+ * The request is the room layer's envelope with the game's own half in
+ * `settings` — `rounds` used to be a top-level field, back when there was only
+ * one game for it to belong to.
+ */
 const createRoom = async (
   socket: Socket,
   options: CreateRoomOptions = {},
 ): Promise<string> => {
-  const created = waitFor<string>(socket, 'createDrawAndGuessRoomSuccess');
-  socket.emit('createDrawAndGuessRoomRequest', {
+  const created = waitFor<string>(socket, 'room:created');
+  socket.emit('room:create', {
+    gameType: 'draw-and-guess',
     roomName: options.roomName ?? 'Test Room',
     ownerUsername: options.ownerUsername ?? 'Owner',
     maxPlayers: options.maxPlayers ?? 4,
-    rounds: options.rounds ?? 1,
     password: options.password ?? '',
+    settings: { rounds: options.rounds ?? 1 },
   });
   return created;
 };
@@ -180,8 +233,8 @@ const joinRoom = async (
   username: string,
   password = '',
 ): Promise<void> => {
-  const approved = waitFor(socket, 'approveClientJoinDrawAndGuessRoomRequest');
-  socket.emit('clientJoinDrawAndGuessRoomRequest', roomId, username, password);
+  const approved = waitFor(socket, 'room:joined');
+  socket.emit('room:join', roomId, username, password);
   await approved;
 };
 
@@ -207,11 +260,11 @@ const playToDrawingPhase = async (harness: TestServer) => {
     drawer = socket;
     word = received;
   };
-  alice.once('drawingPhaseStartedForDrawer', learn(alice));
-  bob.once('drawingPhaseStartedForDrawer', learn(bob));
+  alice.once('dg:word', learn(alice));
+  bob.once('dg:word', learn(bob));
 
-  const drawing = waitFor(alice, 'drawingPhaseStarted', 5000);
-  alice.emit('startDrawAndGuessGame', roomId);
+  const drawing = waitFor(alice, 'dg:phase:drawing', 5000);
+  alice.emit('game:start', roomId);
   await drawing;
   await settle(50);
 
@@ -229,28 +282,51 @@ const playToDrawingPhase = async (harness: TestServer) => {
   };
 };
 
-/** The lobby's view of a single room, as any connected client would see it. */
+/**
+ * The lobby's view of a single room, as any subscriber would see it.
+ *
+ * Subscribing is what asks for the list now: a lobby is a socket.io room per
+ * game rather than an `io.emit` to everyone, so a client that has not asked
+ * for Draw & Guess's rooms is never sent them.
+ */
 const lobbyView = async (
   socket: Socket,
   roomId: string,
-): Promise<LobbyRoomInfo | undefined> => {
-  const list = waitFor<LobbyRoomInfo[]>(
+): Promise<DrawAndGuessLobbyRoomInfo | undefined> => {
+  const list = waitFor<[string, DrawAndGuessLobbyRoomInfo[]]>(
     socket,
-    'updateDrawAndGuessLobbyRoomList',
+    'lobby:rooms',
   );
-  socket.emit('clientJoinDrawAndGuessLobby');
-  return (await list).find((room) => room.roomId === roomId);
+  socket.emit('lobby:subscribe', 'draw-and-guess');
+  const [, rooms] = await list;
+  return rooms.find((room) => room.roomId === roomId);
 };
+
+/** The server's own copy of a room, typed as the Draw & Guess room it is. */
+const serverRoom = (
+  harness: TestServer,
+  roomId: string,
+): Room<DrawAndGuessState> =>
+  harness.server.rooms[roomId] as Room<DrawAndGuessState>;
 
 export {
   FAST_PHASES,
   startTestServer,
   waitFor,
+  waitUntil,
   collect,
   settle,
   createRoom,
   joinRoom,
   playToDrawingPhase,
   lobbyView,
+  serverRoom,
 };
-export type { TestServer, TestClient, PlayerIdentity, DrawAndGuessRoomState };
+export type {
+  TestServer,
+  TestClient,
+  PlayerIdentity,
+  ScoresPayload,
+  DrawAndGuessRoomState,
+  DrawAndGuessLobbyRoomInfo,
+};

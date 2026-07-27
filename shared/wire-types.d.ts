@@ -18,9 +18,19 @@
  * time, so nothing is resolved at runtime, no bundler alias is needed, and the
  * backend's build output keeps its shape — a `.ts` here would land outside
  * `rootDir` and break `tsc -p tsconfig.build.json`. The cost is that a shared
- * *value* — an event-name constant, say — cannot live here. If one ever needs
- * to, this becomes a real package.
+ * *value* cannot live here, which is why the event names below are a union of
+ * string literals rather than a frozen object of constants: a type still makes
+ * one side's typo fail the other side's build, and it costs no build config.
  */
+
+/**
+ * Which game a room is playing.
+ *
+ * Every room-layer payload carries this, because one lobby subscription, one
+ * join and one departure now have to say which game they mean. It is also the
+ * key the server's module registry is keyed by.
+ */
+type GameType = 'draw-and-guess' | 'minesweeper';
 
 type RoomStatus = 'Open' | 'Full' | 'In Progress';
 
@@ -33,10 +43,17 @@ type WordCategory =
   | 'Sports'
   | 'Food';
 
+/**
+ * What every game knows about a player, and nothing more.
+ *
+ * `receivedPointsThisTurn` used to live here, which made the shared shape carry
+ * a field that means nothing outside a Draw & Guess turn. Per-game facts about
+ * a player belong to the game — Draw & Guess reports the same information as
+ * `scoredThisTurn` on its own room state.
+ */
 interface PlayerInfo {
   username: string;
   points: number;
-  receivedPointsThisTurn: boolean;
   /**
    * False while the player is disconnected but still holding their seat. The
    * room keeps them for a grace period so that a refresh — which takes about a
@@ -50,12 +67,17 @@ interface OwnerInfo {
   playerId: string;
 }
 
+/**
+ * The half of a create request every game shares. The other half — rounds,
+ * board size — is `settings`, which only the game's own module can read.
+ */
 interface RoomCreateRequestBody {
+  gameType: GameType;
   roomName: string;
   ownerUsername: string;
   maxPlayers: number;
-  rounds: number;
   password: string;
+  settings: unknown;
 }
 
 interface Coordinate {
@@ -71,40 +93,66 @@ interface CanvasStroke {
 }
 
 /**
- * The room summary shown in the lobby. Broadcast to every connected client, so
- * it carries `hasPassword` rather than the password itself.
+ * The room summary shown in a lobby. Broadcast to everyone subscribed to that
+ * game's lobby, so it carries `hasPassword` rather than the password itself.
+ *
+ * Games extend this with whatever their lobby table needs a column for. A
+ * stringly-typed `settings` blob would have saved the two interfaces below and
+ * cost the lobby its types.
  */
 interface LobbyRoomInfo {
+  gameType: GameType;
   roomId: string;
   roomName: string;
   owner: OwnerInfo;
   status: RoomStatus;
   currentPlayerCount: number;
   maxPlayers: number;
-  rounds: number;
   hasPassword: boolean;
 }
 
-/** The full snapshot sent to the players inside a room. */
-interface DrawAndGuessRoomState extends LobbyRoomInfo {
+/**
+ * The full snapshot sent to the players inside a room — the generic half. Every
+ * game has players, a start, and a clock; everything else is the game's own.
+ */
+interface RoomState extends LobbyRoomInfo {
   playerList: Record<string, PlayerInfo>;
+  isGameStarted: boolean;
+  /**
+   * Time left in the current phase, relative rather than absolute so that a
+   * client whose clock disagrees with the server's still counts down right.
+   */
+  phaseEndsInMs: number;
+}
+
+interface DrawAndGuessLobbyRoomInfo extends LobbyRoomInfo {
+  gameType: 'draw-and-guess';
+  rounds: number;
+}
+
+interface DrawAndGuessRoomState extends RoomState {
+  gameType: 'draw-and-guess';
+  rounds: number;
   /** The current drawer's player id, not their name. */
   currentDrawer: string;
   currentWordHint: string;
   currentRound: number;
-  isGameStarted: boolean;
   isWordSelectingPhase: boolean;
   isDrawingPhase: boolean;
   isReviewingPhase: boolean;
   drawerQueue: string[]; // a Set does not survive JSON serialization
+  /** Player ids that have already scored this turn, and so cannot guess again. */
+  scoredThisTurn: string[];
   wordCategory: WordCategory | ''; // '' when no game is in progress
-  // Time left in the current phase, relative rather than absolute so that a
-  // client whose clock disagrees with the server's still counts down right.
-  phaseEndsInMs: number;
   // Drawer-private while the word is in play; omitted rather than blanked so
   // that merging this snapshot never clobbers the drawer's own copy.
   currentWord?: string;
   wordChoices?: string[];
+}
+
+/** What a Draw & Guess room is created with. */
+interface DrawAndGuessSettings {
+  rounds: number;
 }
 
 type ErrorType =
@@ -118,14 +166,80 @@ type ErrorType =
   // without a seat, and its cue to ask for one.
   | 'notRoomMember';
 
-/** What a `roomError` event actually carries. */
+/** What a `room:error` event actually carries. */
 interface RoomErrorPayload {
   status: boolean;
   message: string;
   errorType: ErrorType;
 }
 
+/**
+ * Every event name, in one place.
+ *
+ * The old names spelled their game into themselves —
+ * `clientJoinDrawAndGuessRoomRequest`, `updateDrawAndGuessLobbyRoomList` — so
+ * adding a second game meant either a second near-identical set or a second
+ * game answering to the first one's name. What is generic is now namespaced by
+ * concern (`room:`, `lobby:`, `chat:`) and what belongs to a game is prefixed
+ * with that game's short tag (`dg:`).
+ *
+ * These are types, not constants, for the reason at the top of this file. Both
+ * halves route their emits and listeners through helpers typed on these unions,
+ * so a name that exists on only one side does not compile on either.
+ */
+type ClientToServerEvent =
+  // Identity, before anything else.
+  | 'identifyPlayer'
+  // The generic room layer.
+  | 'lobby:subscribe'
+  | 'lobby:unsubscribe'
+  | 'room:create'
+  | 'room:join'
+  | 'room:leave'
+  | 'room:sync'
+  | 'game:start'
+  | 'chat:send'
+  // Draw & Guess.
+  | 'dg:guess'
+  | 'dg:select-word'
+  | 'dg:draw:start'
+  | 'dg:draw:move'
+  | 'dg:draw:end'
+  | 'dg:draw:undo'
+  | 'dg:draw:clear';
+
+type ServerToClientEvent =
+  | 'playerIdentity'
+  // The generic room layer.
+  | 'lobby:rooms'
+  | 'room:created'
+  | 'room:joined'
+  | 'room:join:denied'
+  | 'room:state'
+  | 'room:error'
+  | 'chat:message'
+  // Draw & Guess.
+  | 'dg:game:started'
+  | 'dg:game:ended'
+  | 'dg:round'
+  | 'dg:phase:word-select'
+  | 'dg:phase:drawing'
+  | 'dg:phase:review'
+  | 'dg:phase:idle'
+  | 'dg:word-choices'
+  | 'dg:word'
+  | 'dg:hint'
+  | 'dg:scores'
+  | 'dg:guess:correct'
+  | 'dg:canvas:sync'
+  | 'dg:canvas:start'
+  | 'dg:canvas:move'
+  | 'dg:canvas:end'
+  | 'dg:canvas:undo'
+  | 'dg:canvas:clear';
+
 export type {
+  GameType,
   RoomStatus,
   WordCategory,
   PlayerInfo,
@@ -134,7 +248,12 @@ export type {
   Coordinate,
   CanvasStroke,
   LobbyRoomInfo,
+  RoomState,
+  DrawAndGuessLobbyRoomInfo,
   DrawAndGuessRoomState,
+  DrawAndGuessSettings,
   ErrorType,
   RoomErrorPayload,
+  ClientToServerEvent,
+  ServerToClientEvent,
 };

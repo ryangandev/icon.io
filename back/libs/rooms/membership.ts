@@ -1,23 +1,16 @@
 import type { Server } from 'socket.io';
-import type {
-  DrawAndGuessDetailRoomInfo,
-  OwnerInfo,
-} from '../../models/types.js';
-import {
-  getDrawAndGuessLobbyRoomInfo,
-  getDrawAndGuessRoomState,
-  getRoomStatus,
-} from '../../libs/utils.js';
-import { reconnectGraceInSeconds } from '../../libs/game-clock.js';
-import type { PlayerSessionRegistry } from '../../libs/player-session.js';
-import type { DrawAndGuessGameEngine } from './game-engine.js';
-
-const SYSTEM = '📢 System';
+import type { OwnerInfo } from '../../../shared/wire-types.js';
+import { getRoomStatus } from '../utils.js';
+import { reconnectGraceInSeconds } from '../game-clock.js';
+import type { PlayerSessionRegistry } from '../player-session.js';
+import type { RoomRegistry } from './registry.js';
+import type { Room } from './types.js';
+import { emitToRoom } from './emit.js';
 
 /** Pending seat expiries are keyed by the pair, not by either half. */
 const graceKey = (roomId: string, playerId: string) => `${roomId}:${playerId}`;
 
-const recount = (room: DrawAndGuessDetailRoomInfo) => {
+const recount = (room: Room) => {
   room.currentPlayerCount = Object.keys(room.playerList).length;
   room.status = getRoomStatus(
     room.currentPlayerCount,
@@ -39,12 +32,17 @@ const recount = (room: DrawAndGuessDetailRoomInfo) => {
  * - **Disconnecting might not be.** A reload takes about a second and looks
  *   exactly like leaving forever. The seat, the score and the place in the
  *   round are held for `reconnectGraceInSeconds` in case the player comes back.
+ *
+ * None of that has anything to do with what is being played, which is why this
+ * moved out of `socket/draw-and-guess/` unchanged in behaviour. What used to be
+ * three direct calls into the Draw & Guess engine — a stranded turn, a drawer
+ * who dropped, a drawer who came back — are three calls on whatever module owns
+ * the room.
  */
 const createRoomMembership = (
   io: Server,
-  rooms: Record<string, DrawAndGuessDetailRoomInfo>,
+  registry: RoomRegistry,
   sessions: PlayerSessionRegistry,
-  gameEngine: DrawAndGuessGameEngine,
   graceInSeconds: number = reconnectGraceInSeconds,
 ) => {
   /** Pending seat expiries, keyed `roomId:playerId`. */
@@ -72,46 +70,36 @@ const createRoomMembership = (
       setTimeout(() => {
         graceTimers.delete(key);
         if (sessions.isOnline(playerId)) return;
-        if (roomsHeldBy(playerId).length > 0) return;
+        if (registry.roomsHeldBy(playerId).length > 0) return;
         sessions.forget(playerId);
       }, graceInSeconds * 1000),
     );
   };
 
-  const announce = (roomId: string, message: string) => {
-    io.to(roomId).emit('receiveMessage', SYSTEM, message);
+  /** The room snapshot, built by whichever game the room belongs to. */
+  const emitRoomState = (room: Room) => {
+    const module = registry.moduleOf(room);
+    if (!module) return;
+    emitToRoom(io, room.roomId, 'room:state', module.toRoomState(room));
   };
-
-  const emitLobby = () => {
-    io.emit(
-      'updateDrawAndGuessLobbyRoomList',
-      Object.values(rooms).map(getDrawAndGuessLobbyRoomInfo),
-    );
-  };
-
-  /** Rooms this player holds a seat in, connected or not. */
-  const roomsHeldBy = (playerId: string): DrawAndGuessDetailRoomInfo[] =>
-    Object.values(rooms).filter((room) => room.playerList[playerId]);
 
   /**
-   * Removes the seat for good and lets the engine deal with a stranded turn.
+   * Removes the seat for good and lets the game deal with a stranded turn.
    * Shared by an explicit leave and by a grace period running out.
    */
-  const releaseSeat = (
-    room: DrawAndGuessDetailRoomInfo,
-    playerId: string,
-    username: string,
-  ) => {
+  const releaseSeat = (room: Room, playerId: string, username: string) => {
     const roomId = room.roomId;
+    const gameType = room.gameType;
+    const module = registry.moduleOf(room);
     const wasOwner = room.owner.playerId === playerId;
 
     delete room.playerList[playerId];
     recount(room);
 
     if (room.currentPlayerCount === 0) {
-      gameEngine.disposeRoom(roomId);
-      delete rooms[roomId];
-      emitLobby();
+      module?.disposeRoom(roomId);
+      delete registry.all[roomId];
+      registry.lookup.emitLobby(gameType);
       return;
     }
 
@@ -122,31 +110,29 @@ const createRoomMembership = (
         playerId: nextOwnerId,
       };
       room.owner = nextOwner;
-      announce(
+      registry.lookup.announce(
         roomId,
         `Previous owner ${username} has left the room. ${nextOwner.username} is now the owner.`,
       );
     } else {
-      announce(roomId, `${username} has left the room.`);
+      registry.lookup.announce(roomId, `${username} has left the room.`);
     }
 
-    io.to(roomId).emit(
-      'clientLeaveDrawAndGuessRoomSuccess',
-      getDrawAndGuessRoomState(room),
-    );
+    emitRoomState(room);
 
-    // A departure can strand a turn — the drawer may have been the one who
-    // left, or the room may have dropped below two players.
-    gameEngine.handlePlayerDeparture(room, playerId);
+    // A departure can strand a turn — the player may have been the one whose
+    // move the room was waiting on, or the room may have dropped below the
+    // game's minimum.
+    module?.onDeparture(room, playerId);
 
     // Built after the departure is handled, so an ended game shows as 'Open'
     // rather than a stale 'In Progress'.
-    emitLobby();
+    registry.lookup.emitLobby(gameType);
   };
 
   /** Somebody clicked Leave. No grace: they meant it. */
   const leave = (roomId: string, playerId: string, username: string) => {
-    const room = rooms[roomId];
+    const room = registry.lookup.get(roomId);
     if (!room) return;
     // Leaving a room you were never in used to run the whole departure anyway.
     if (!room.playerList[playerId]) return;
@@ -168,7 +154,7 @@ const createRoomMembership = (
     const playerId = sessions.detach(socketId);
     if (!playerId) return;
 
-    const held = roomsHeldBy(playerId);
+    const held = registry.roomsHeldBy(playerId);
     if (held.length === 0) {
       // Not in a room, so there is no seat to hold — but the identity still
       // outlives the connection for the same grace period. Forgetting it here
@@ -178,19 +164,22 @@ const createRoomMembership = (
       return;
     }
 
+    const touchedGames = new Set(held.map((room) => room.gameType));
+
     for (const room of held) {
       const player = room.playerList[playerId];
       player.isConnected = false;
 
-      io.to(room.roomId).emit(
-        'clientLeaveDrawAndGuessRoomSuccess',
-        getDrawAndGuessRoomState(room),
+      emitRoomState(room);
+      registry.lookup.announce(
+        room.roomId,
+        `${player.username} lost connection.`,
       );
-      announce(room.roomId, `${player.username} lost connection.`);
 
-      // The seat waits for them. So, briefly, does their turn — the drawing is
-      // kept server-side now, so there is something to come back to.
-      gameEngine.handleDrawerDisconnect(room, playerId);
+      // The seat waits for them. So, briefly, may their turn — that decision
+      // belongs to the game, which is the only thing that knows whether there
+      // is anything worth coming back to.
+      registry.moduleOf(room)?.onDisconnect(room, playerId);
 
       const key = graceKey(room.roomId, playerId);
       graceTimers.set(
@@ -200,9 +189,9 @@ const createRoomMembership = (
 
           // The room may be gone, and the player may have come back or left
           // properly, in the time we spent waiting.
-          const current = rooms[room.roomId];
+          const current = registry.lookup.get(room.roomId);
           const seat = current?.playerList[playerId];
-          if (!seat || seat.isConnected) return;
+          if (!current || !seat || seat.isConnected) return;
 
           releaseSeat(current, playerId, seat.username);
           scheduleSessionExpiry(playerId);
@@ -210,7 +199,7 @@ const createRoomMembership = (
       );
     }
 
-    emitLobby();
+    for (const gameType of touchedGames) registry.lookup.emitLobby(gameType);
   };
 
   /**
@@ -224,24 +213,24 @@ const createRoomMembership = (
     if (!socketId) return;
     const socket = io.sockets.sockets.get(socketId);
 
-    for (const room of roomsHeldBy(playerId)) {
+    const held = registry.roomsHeldBy(playerId);
+    const touchedGames = new Set(held.map((room) => room.gameType));
+
+    for (const room of held) {
       cancelGrace(room.roomId, playerId);
 
       const player = room.playerList[playerId];
       player.isConnected = true;
       socket?.join(room.roomId);
 
-      io.to(room.roomId).emit(
-        'clientJoinDrawAndGuessRoomSuccess',
-        getDrawAndGuessRoomState(room),
-      );
-      announce(room.roomId, `${player.username} reconnected.`);
+      emitRoomState(room);
+      registry.lookup.announce(room.roomId, `${player.username} reconnected.`);
 
       // If the room was holding a turn open for them, it can stop.
-      gameEngine.handleDrawerReturn(room, playerId);
+      registry.moduleOf(room)?.onReturn(room, playerId);
     }
 
-    emitLobby();
+    for (const gameType of touchedGames) registry.lookup.emitLobby(gameType);
   };
 
   /** Clears every pending timer, so a closing server does not stay alive. */

@@ -1,6 +1,7 @@
 import type { Socket } from 'socket.io';
 import type { PlayerSessionRegistry } from '../libs/player-session.js';
 import { parseArgs, resumeSessionRequest } from '../libs/validation.js';
+import { emitToSocket, onClientEvent } from '../libs/rooms/emit.js';
 
 /**
  * The first thing a client says after connecting: either "I am nobody yet" or
@@ -15,7 +16,7 @@ const playerSessionHandler = (
   sessions: PlayerSessionRegistry,
   onResume: (playerId: string) => void,
 ) => {
-  socket.on('identifyPlayer', (...rawArgs: unknown[]) => {
+  onClientEvent(socket, 'identifyPlayer', (...rawArgs: unknown[]) => {
     // An absent claim is normal — a first visit has nothing to present.
     const claim =
       rawArgs.length === 0 || rawArgs[0] == null
@@ -31,7 +32,7 @@ const playerSessionHandler = (
     // simply become a new player.
     const session = resumed ?? sessions.issue(socket.id);
 
-    socket.emit('playerIdentity', {
+    emitToSocket(socket, 'playerIdentity', {
       playerId: session.playerId,
       token: session.token,
     });

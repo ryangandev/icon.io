@@ -1,18 +1,17 @@
 import { randomUUID } from 'node:crypto';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import type {
-  CanvasStroke,
-  DrawAndGuessRoomState,
-  PlayerInfo,
-} from '../models/types.js';
+import type { CanvasStroke, DrawAndGuessRoomState } from '../models/types.js';
 import {
   collect,
   createRoom,
   joinRoom,
   playToDrawingPhase,
+  serverRoom,
   settle,
   startTestServer,
   waitFor,
+  type ScoresPayload,
+  waitUntil,
   type TestServer,
 } from './helpers/test-server.js';
 
@@ -132,11 +131,8 @@ describe('reconnecting to a room', () => {
     const { roomId, guesser, guesserName, word } =
       await playToDrawingPhase(harness);
 
-    const scored = waitFor<Record<string, PlayerInfo>>(
-      guesser,
-      'playersReceivedPointsFromCorrectGuess',
-    );
-    guesser.emit('takingAGuess', roomId, guesserName, word);
+    const scored = waitFor<ScoresPayload>(guesser, 'dg:scores');
+    guesser.emit('dg:guess', roomId, guesserName, word);
     await scored;
 
     const before = harness.server.rooms[roomId]!.playerList[guesser.playerId];
@@ -160,9 +156,12 @@ describe('reconnecting to a room', () => {
     await joinRoom(alice, roomId, 'Alice');
     await joinRoom(bob, roomId, 'Bob');
 
-    const seen = waitFor<DrawAndGuessRoomState>(
+    // The snapshot that says Bob is away, rather than whichever one arrives
+    // next: joining and disconnecting both broadcast `room:state` now.
+    const seen = waitUntil<DrawAndGuessRoomState>(
       alice,
-      'clientLeaveDrawAndGuessRoomSuccess',
+      'room:state',
+      (state) => state.playerList[bob.playerId]?.isConnected === false,
     );
     bob.close();
 
@@ -229,7 +228,7 @@ describe('reconnecting to a room', () => {
     await joinRoom(alice, roomId, 'Alice');
     await joinRoom(bob, roomId, 'Bob');
 
-    bob.emit('clientLeaveDrawAndGuessRoom', roomId, 'Bob');
+    bob.emit('room:leave', roomId, 'Bob');
     await settle(200);
 
     const room = harness.server.rooms[roomId];
@@ -245,7 +244,7 @@ describe('reconnecting to a room', () => {
     await joinRoom(bob, roomId, 'Bob');
     await settle();
 
-    const messages = collect<[string, string]>(alice, 'receiveMessage');
+    const messages = collect<[string, string]>(alice, 'chat:message');
     await harness.reload(bob);
     await settle(200);
 
@@ -271,22 +270,18 @@ describe('reconnecting to a room', () => {
     });
 
     const { roomId, drawer, word } = await playToDrawingPhase(harness);
-    drawer.emit('startDrawing', roomId, { x: 4, y: 4 }, '#123456', 8);
-    drawer.emit('continueDrawing', roomId, { x: 40, y: 40 }, '#123456', 8);
+    drawer.emit('dg:draw:start', roomId, { x: 4, y: 4 }, '#123456', 8);
+    drawer.emit('dg:draw:move', roomId, { x: 40, y: 40 }, '#123456', 8);
     await settle(50);
 
     const returned = await harness.reload(drawer);
-    const wordAgain = waitFor<string>(
-      returned,
-      'drawingPhaseStartedForDrawer',
-      2000,
-    );
+    const wordAgain = waitFor<string>(returned, 'dg:word', 2000);
     const canvasAgain = waitFor<CanvasStroke[]>(
       returned,
-      'syncWhiteboardCanvas',
+      'dg:canvas:sync',
       2000,
     );
-    returned.emit('requestDrawAndGuessRoomState', roomId);
+    returned.emit('room:sync', roomId);
 
     expect(await wordAgain).toBe(word);
     expect(await canvasAgain).toEqual([
@@ -299,8 +294,10 @@ describe('reconnecting to a room', () => {
         ],
       },
     ]);
-    expect(harness.server.rooms[roomId]?.currentDrawer).toBe(drawer.playerId);
-    expect(harness.server.rooms[roomId]?.isDrawingPhase).toBe(true);
+    expect(serverRoom(harness, roomId).game.currentDrawer).toBe(
+      drawer.playerId,
+    );
+    expect(serverRoom(harness, roomId).game.isDrawingPhase).toBe(true);
   });
 
   /*
@@ -318,8 +315,8 @@ describe('reconnecting to a room', () => {
 
     const { roomId, drawer, guesser } = await playToDrawingPhase(harness);
 
-    const turnEnded = waitFor(guesser, 'reviewingPhaseEnded', 3000);
-    const messages = collect<[string, string]>(guesser, 'receiveMessage');
+    const turnEnded = waitFor(guesser, 'dg:phase:idle', 3000);
+    const messages = collect<[string, string]>(guesser, 'chat:message');
     drawer.close();
 
     await turnEnded;
@@ -361,15 +358,15 @@ describe('reconnecting to a room', () => {
 
     const firstTurn = waitFor<{ currentDrawer: string }>(
       alice,
-      'wordSelectingPhaseStarted',
+      'dg:phase:word-select',
     );
-    alice.emit('startDrawAndGuessGame', roomId);
+    alice.emit('game:start', roomId);
     const { currentDrawer } = await firstTurn;
 
     const drawer = byId.get(currentDrawer)!;
     const witness = drawer === alice ? bob : alice;
 
-    const turnEnded = waitFor(witness, 'reviewingPhaseEnded');
+    const turnEnded = waitFor(witness, 'dg:phase:idle');
     drawer.close();
     await turnEnded;
 
@@ -391,15 +388,15 @@ describe('reconnecting to a room', () => {
 
     const drawers = collect<{ currentDrawer: string }>(
       alice,
-      'wordSelectingPhaseStarted',
+      'dg:phase:word-select',
     );
 
     // Carol drops before the game starts and never comes back.
     carol.close();
     await settle(100);
 
-    alice.emit('startDrawAndGuessGame', roomId);
-    await waitFor(alice, 'endDrawAndGuessGame', 9000);
+    alice.emit('game:start', roomId);
+    await waitFor(alice, 'dg:game:ended', 9000);
 
     expect(drawers.map((turn) => turn.currentDrawer)).not.toContain(
       carol.playerId,
@@ -416,8 +413,8 @@ describe('reconnecting to a room', () => {
     const returned = await harness.reload(bob);
     await settle(200);
 
-    const heard = waitFor<[string, string]>(alice, 'receiveMessage');
-    returned.emit('sendMessage', roomId, 'Bob', 'back again');
+    const heard = waitFor<[string, string]>(alice, 'chat:message');
+    returned.emit('chat:send', roomId, 'Bob', 'back again');
 
     expect(await heard).toEqual(['Bob', 'back again']);
   });
@@ -434,7 +431,7 @@ describe('reconnecting to a room', () => {
       playerId: alice.playerId,
       token: '0'.repeat(64),
     });
-    impostor.emit('sendMessage', roomId, 'Alice', 'I am Alice');
+    impostor.emit('chat:send', roomId, 'Alice', 'I am Alice');
     await settle();
 
     expect(impostor.playerId).not.toBe(alice.playerId);

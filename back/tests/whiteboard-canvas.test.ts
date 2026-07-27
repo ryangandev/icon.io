@@ -20,8 +20,8 @@ const canvasSeenOnArrival = (
   client: Socket,
   roomId: string,
 ): Promise<CanvasStroke[]> => {
-  const synced = waitFor<CanvasStroke[]>(client, 'syncWhiteboardCanvas');
-  client.emit('requestDrawAndGuessRoomState', roomId);
+  const synced = waitFor<CanvasStroke[]>(client, 'dg:canvas:sync');
+  client.emit('room:sync', roomId);
   return synced;
 };
 
@@ -44,17 +44,17 @@ describe('the whiteboard relay', () => {
   it('relays a stroke to the rest of the room, colour and size included', async () => {
     const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
 
-    const started = waitFor<unknown[]>(guesser, 'drawerStartDrawing');
-    drawer.emit('startDrawing', roomId, DOT, RED, 8);
+    const started = waitFor<unknown[]>(guesser, 'dg:canvas:start');
+    drawer.emit('dg:draw:start', roomId, DOT, RED, 8);
     expect(await started).toEqual([DOT, RED, 8]);
 
-    const continued = waitFor<unknown[]>(guesser, 'drawerContinueDrawing');
-    drawer.emit('continueDrawing', roomId, { x: 30, y: 40 }, RED, 8);
+    const continued = waitFor<unknown[]>(guesser, 'dg:canvas:move');
+    drawer.emit('dg:draw:move', roomId, { x: 30, y: 40 }, RED, 8);
     expect(await continued).toEqual([{ x: 30, y: 40 }, RED, 8]);
 
     // Carries no payload — the stroke is already fully described.
-    const stopped = waitFor(guesser, 'drawerStopDrawing');
-    drawer.emit('stopDrawing', roomId);
+    const stopped = waitFor(guesser, 'dg:canvas:end');
+    drawer.emit('dg:draw:end', roomId);
     await expect(stopped).resolves.toEqual([]);
   });
 
@@ -66,8 +66,8 @@ describe('the whiteboard relay', () => {
   it('describes a stroke fully from its first point', async () => {
     const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
 
-    const started = waitFor<unknown[]>(guesser, 'drawerStartDrawing');
-    drawer.emit('startDrawing', roomId, { x: 1, y: 1 }, '#00ff00', 24);
+    const started = waitFor<unknown[]>(guesser, 'dg:canvas:start');
+    drawer.emit('dg:draw:start', roomId, { x: 1, y: 1 }, '#00ff00', 24);
 
     const [, color, size] = await started;
     expect(color).toBe('#00ff00');
@@ -82,8 +82,8 @@ describe('the whiteboard relay', () => {
   it('sends an undo with no payload at all', async () => {
     const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
 
-    const undone = collect(guesser, 'drawerUndo');
-    drawer.emit('undo', roomId);
+    const undone = collect(guesser, 'dg:canvas:undo');
+    drawer.emit('dg:draw:undo', roomId);
     await settle();
 
     expect(undone).toEqual([[]]);
@@ -92,17 +92,17 @@ describe('the whiteboard relay', () => {
   it('relays a clear', async () => {
     const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
 
-    const cleared = waitFor(guesser, 'drawerClear');
-    drawer.emit('clear', roomId);
+    const cleared = waitFor(guesser, 'dg:canvas:clear');
+    drawer.emit('dg:draw:clear', roomId);
     await expect(cleared).resolves.toEqual([]);
   });
 
   it('does not echo a stroke back to the client that drew it', async () => {
     const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
 
-    const echoed = collect(drawer, 'drawerStartDrawing');
-    const relayed = collect(guesser, 'drawerStartDrawing');
-    drawer.emit('startDrawing', roomId, { x: 5, y: 5 }, RED, 4);
+    const echoed = collect(drawer, 'dg:canvas:start');
+    const relayed = collect(guesser, 'dg:canvas:start');
+    drawer.emit('dg:draw:start', roomId, { x: 5, y: 5 }, RED, 4);
     await settle();
 
     expect(echoed).toEqual([]);
@@ -112,13 +112,13 @@ describe('the whiteboard relay', () => {
   it('drops a stroke that could not have come from the canvas', async () => {
     const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
 
-    const relayed = collect(guesser, 'drawerStartDrawing');
+    const relayed = collect(guesser, 'dg:canvas:start');
 
-    drawer.emit('startDrawing', roomId, { x: 1e9, y: 1e9 }, RED, 8);
-    drawer.emit('startDrawing', roomId, { x: 1, y: 1 }, 'red', 8);
-    drawer.emit('startDrawing', roomId, { x: 1, y: 1 }, RED, 1e6);
-    drawer.emit('startDrawing', roomId, { x: 1, y: 1 }, RED);
-    drawer.emit('startDrawing', roomId);
+    drawer.emit('dg:draw:start', roomId, { x: 1e9, y: 1e9 }, RED, 8);
+    drawer.emit('dg:draw:start', roomId, { x: 1, y: 1 }, 'red', 8);
+    drawer.emit('dg:draw:start', roomId, { x: 1, y: 1 }, RED, 1e6);
+    drawer.emit('dg:draw:start', roomId, { x: 1, y: 1 }, RED);
+    drawer.emit('dg:draw:start', roomId);
     await settle();
 
     expect(relayed).toEqual([]);
@@ -128,8 +128,8 @@ describe('the whiteboard relay', () => {
   it('drops a stroke aimed at something that is not a room id', async () => {
     const { drawer, guesser } = await playToDrawingPhase(harness);
 
-    const relayed = collect(guesser, 'drawerStartDrawing');
-    drawer.emit('startDrawing', '../../admin', { x: 1, y: 1 }, RED, 8);
+    const relayed = collect(guesser, 'dg:canvas:start');
+    drawer.emit('dg:draw:start', '../../admin', { x: 1, y: 1 }, RED, 8);
     await settle();
 
     expect(relayed).toEqual([]);
@@ -164,10 +164,10 @@ describe('the stored drawing', () => {
   it('hands the drawing so far to a player arriving mid-turn', async () => {
     const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
 
-    drawer.emit('startDrawing', roomId, { x: 1, y: 2 }, RED, 4);
-    drawer.emit('continueDrawing', roomId, { x: 3, y: 4 }, RED, 4);
-    drawer.emit('stopDrawing', roomId);
-    drawer.emit('startDrawing', roomId, { x: 9, y: 9 }, '#0000ff', 10);
+    drawer.emit('dg:draw:start', roomId, { x: 1, y: 2 }, RED, 4);
+    drawer.emit('dg:draw:move', roomId, { x: 3, y: 4 }, RED, 4);
+    drawer.emit('dg:draw:end', roomId);
+    drawer.emit('dg:draw:start', roomId, { x: 9, y: 9 }, '#0000ff', 10);
     await settle();
 
     expect(await canvasSeenOnArrival(guesser, roomId)).toEqual([
@@ -186,16 +186,16 @@ describe('the stored drawing', () => {
   it('drops the last stroke on undo, and all of them on clear', async () => {
     const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
 
-    drawer.emit('startDrawing', roomId, { x: 1, y: 1 }, RED, 4);
-    drawer.emit('startDrawing', roomId, { x: 2, y: 2 }, RED, 4);
-    drawer.emit('undo', roomId);
+    drawer.emit('dg:draw:start', roomId, { x: 1, y: 1 }, RED, 4);
+    drawer.emit('dg:draw:start', roomId, { x: 2, y: 2 }, RED, 4);
+    drawer.emit('dg:draw:undo', roomId);
     await settle();
 
     expect(await canvasSeenOnArrival(guesser, roomId)).toEqual([
       { color: RED, size: 4, points: [{ x: 1, y: 1 }] },
     ]);
 
-    drawer.emit('clear', roomId);
+    drawer.emit('dg:draw:clear', roomId);
     await settle();
 
     expect(await canvasSeenOnArrival(guesser, roomId)).toEqual([]);
@@ -204,12 +204,12 @@ describe('the stored drawing', () => {
   it('starts every turn with a blank canvas', async () => {
     const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
 
-    drawer.emit('startDrawing', roomId, { x: 1, y: 1 }, RED, 4);
+    drawer.emit('dg:draw:start', roomId, { x: 1, y: 1 }, RED, 4);
     await settle();
     expect(await canvasSeenOnArrival(guesser, roomId)).toHaveLength(1);
 
     // Wait out this turn; the next one clears the board for everybody.
-    await waitFor(guesser, 'drawingPhaseStarted', 9000);
+    await waitFor(guesser, 'dg:phase:drawing', 9000);
 
     expect(await canvasSeenOnArrival(guesser, roomId)).toEqual([]);
   });
@@ -222,11 +222,11 @@ describe('the stored drawing', () => {
     const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
     const outsider = await harness.connect();
 
-    outsider.emit('startDrawing', roomId, { x: 1, y: 1 }, RED, 4);
-    guesser.emit('startDrawing', roomId, { x: 2, y: 2 }, RED, 4);
+    outsider.emit('dg:draw:start', roomId, { x: 1, y: 1 }, RED, 4);
+    guesser.emit('dg:draw:start', roomId, { x: 2, y: 2 }, RED, 4);
     // A continue with no stroke of its own to extend cannot have come from a
     // canvas, and replaying it would draw from wherever the last path ended.
-    drawer.emit('continueDrawing', roomId, { x: 3, y: 3 }, RED, 4);
+    drawer.emit('dg:draw:move', roomId, { x: 3, y: 3 }, RED, 4);
     await settle();
 
     expect(await canvasSeenOnArrival(guesser, roomId)).toEqual([]);
@@ -258,11 +258,11 @@ describe('canvas authority', () => {
   });
 
   const everyCanvasEvent = [
-    'drawerStartDrawing',
-    'drawerContinueDrawing',
-    'drawerStopDrawing',
-    'drawerUndo',
-    'drawerClear',
+    'dg:canvas:start',
+    'dg:canvas:move',
+    'dg:canvas:end',
+    'dg:canvas:undo',
+    'dg:canvas:clear',
   ];
 
   /** Fires all five canvas events at a room and reports what got through. */
@@ -273,11 +273,11 @@ describe('canvas authority', () => {
   ) => {
     const seen = everyCanvasEvent.map((event) => collect(witness, event));
 
-    client.emit('startDrawing', roomId, DOT, RED, 8);
-    client.emit('continueDrawing', roomId, { x: 11, y: 21 }, RED, 8);
-    client.emit('stopDrawing', roomId);
-    client.emit('undo', roomId);
-    client.emit('clear', roomId);
+    client.emit('dg:draw:start', roomId, DOT, RED, 8);
+    client.emit('dg:draw:move', roomId, { x: 11, y: 21 }, RED, 8);
+    client.emit('dg:draw:end', roomId);
+    client.emit('dg:draw:undo', roomId);
+    client.emit('dg:draw:clear', roomId);
     await settle();
 
     return seen.flat();
@@ -300,7 +300,7 @@ describe('canvas authority', () => {
     const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
 
     // The reveal is not a drawing phase, and neither is anything after it.
-    await waitFor(drawer, 'reviewingPhaseStarted', 9000);
+    await waitFor(drawer, 'dg:phase:review', 9000);
 
     expect(await stormTheCanvas(drawer, guesser, roomId)).toEqual([]);
   });

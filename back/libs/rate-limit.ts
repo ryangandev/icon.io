@@ -3,9 +3,9 @@
  *
  * Every inbound event has had its *shape* checked since the validation pass —
  * a room name cannot be a megabyte long, a coordinate cannot be a billion — but
- * nothing bounded how many of them arrived. A client could emit `startDrawing`
- * in a loop, or `createDrawAndGuessRoomRequest` a thousand times a second, and
- * the only limit was its own bandwidth. This is the other half of that check.
+ * nothing bounded how many of them arrived. A client could emit `dg:draw:start`
+ * in a loop, or `room:create` a thousand times a second, and the only limit was
+ * its own bandwidth. This is the other half of that check.
  *
  * One bucket per kind of event rather than one for the whole socket, because
  * the kinds are nothing like each other: a drawing phase is a stream of
@@ -40,24 +40,25 @@ const RULES: Record<BucketName, BucketRule> = {
 };
 
 const BUCKET_FOR_EVENT: Record<string, BucketName> = {
-  startDrawing: 'drawing',
-  continueDrawing: 'drawing',
-  stopDrawing: 'drawing',
+  'dg:draw:start': 'drawing',
+  'dg:draw:move': 'drawing',
+  'dg:draw:end': 'drawing',
 
-  undo: 'canvasCommand',
-  clear: 'canvasCommand',
+  'dg:draw:undo': 'canvasCommand',
+  'dg:draw:clear': 'canvasCommand',
 
-  sendMessage: 'chat',
-  takingAGuess: 'chat',
+  'chat:send': 'chat',
+  'dg:guess': 'chat',
 
   identifyPlayer: 'room',
-  clientJoinDrawAndGuessLobby: 'room',
-  createDrawAndGuessRoomRequest: 'room',
-  clientJoinDrawAndGuessRoomRequest: 'room',
-  clientLeaveDrawAndGuessRoom: 'room',
-  requestDrawAndGuessRoomState: 'room',
-  startDrawAndGuessGame: 'room',
-  drawerSelectWordFinished: 'room',
+  'lobby:subscribe': 'room',
+  'lobby:unsubscribe': 'room',
+  'room:create': 'room',
+  'room:join': 'room',
+  'room:leave': 'room',
+  'room:sync': 'room',
+  'game:start': 'room',
+  'dg:select-word': 'room',
 };
 
 /**

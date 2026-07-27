@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSocket } from '../hooks/useSocket';
+import { emit, off, on } from '../libs/socket-events';
 import '../styles/components/whiteboard-canvas.css';
 import WhiteBoardToolBar from './whiteboard-toolbar';
 import { Button, Space, Typography } from 'antd';
@@ -186,21 +187,21 @@ const WhiteBoardCanvas = ({
       if (context) repaint(context, strokesRef.current);
     };
 
-    socket.on('drawerStartDrawing', drawerStartDrawingHandler);
-    socket.on('drawerContinueDrawing', drawerContinueDrawingHandler);
-    socket.on('drawerStopDrawing', drawerStopDrawingHandler);
-    socket.on('drawerUndo', drawerUndoHandler);
-    socket.on('drawerClear', drawerClearHandler);
-    socket.on('syncWhiteboardCanvas', canvasSyncHandler);
+    on(socket, 'dg:canvas:start', drawerStartDrawingHandler);
+    on(socket, 'dg:canvas:move', drawerContinueDrawingHandler);
+    on(socket, 'dg:canvas:end', drawerStopDrawingHandler);
+    on(socket, 'dg:canvas:undo', drawerUndoHandler);
+    on(socket, 'dg:canvas:clear', drawerClearHandler);
+    on(socket, 'dg:canvas:sync', canvasSyncHandler);
 
     // Cleanup the event listener
     return () => {
-      socket.off('drawerStartDrawing', drawerStartDrawingHandler);
-      socket.off('drawerContinueDrawing', drawerContinueDrawingHandler);
-      socket.off('drawerStopDrawing', drawerStopDrawingHandler);
-      socket.off('drawerUndo', drawerUndoHandler);
-      socket.off('drawerClear', drawerClearHandler);
-      socket.off('syncWhiteboardCanvas', canvasSyncHandler);
+      off(socket, 'dg:canvas:start', drawerStartDrawingHandler);
+      off(socket, 'dg:canvas:move', drawerContinueDrawingHandler);
+      off(socket, 'dg:canvas:end', drawerStopDrawingHandler);
+      off(socket, 'dg:canvas:undo', drawerUndoHandler);
+      off(socket, 'dg:canvas:clear', drawerClearHandler);
+      off(socket, 'dg:canvas:sync', canvasSyncHandler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, context]);
@@ -234,7 +235,7 @@ const WhiteBoardCanvas = ({
     repaint(context, strokesRef.current);
 
     // Everyone holds the same stroke list, so the instruction is enough.
-    socket.emit('undo', roomId);
+    emit(socket, 'dg:draw:undo', roomId);
   };
 
   const handleClearCanvas = () => {
@@ -243,7 +244,7 @@ const WhiteBoardCanvas = ({
     strokesRef.current = [];
     repaint(context, strokesRef.current);
 
-    socket.emit('clear', roomId);
+    emit(socket, 'dg:draw:clear', roomId);
   };
 
   // Mouse coordinates relative to the canvas — otherwise they would be
@@ -280,7 +281,7 @@ const WhiteBoardCanvas = ({
 
     // Colour and size travel with the first point so that a stroke is fully
     // described from the start and can be replayed without extra events.
-    socket.emit('startDrawing', roomId, coords, color, size);
+    emit(socket, 'dg:draw:start', roomId, coords, color, size);
   };
 
   const continueDrawing = (event: React.MouseEvent<HTMLCanvasElement>) => {
@@ -296,8 +297,9 @@ const WhiteBoardCanvas = ({
     context!.lineCap = 'round';
     context!.stroke();
 
-    socket.emit(
-      'continueDrawing',
+    emit(
+      socket,
+      'dg:draw:move',
       roomId,
       coords,
       brushOptions.color,
@@ -311,7 +313,7 @@ const WhiteBoardCanvas = ({
     setIsDrawing(false);
     context?.closePath();
 
-    socket.emit('stopDrawing', roomId);
+    emit(socket, 'dg:draw:end', roomId);
   };
 
   return (
@@ -366,7 +368,7 @@ const WhiteBoardCanvas = ({
                   key={index}
                   size="large"
                   onClick={() => {
-                    socket.emit('drawerSelectWordFinished', roomId, word);
+                    emit(socket, 'dg:select-word', roomId, word);
                   }}
                   style={{
                     fontWeight: 600,

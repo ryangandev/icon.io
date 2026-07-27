@@ -2,11 +2,14 @@ import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it } from 'vitest';
 import DrawAndGuessLobby from './draw-and-guess-lobby';
-import type { LobbyRoomInfo } from '../../models/types';
+import type { DrawAndGuessLobbyRoomInfo } from '../../models/types';
 import { createFakeSocket } from '../../tests/fake-socket';
 import { renderWithSocket } from '../../tests/render';
 
-const makeRoom = (overrides: Partial<LobbyRoomInfo> = {}): LobbyRoomInfo => ({
+const makeRoom = (
+  overrides: Partial<DrawAndGuessLobbyRoomInfo> = {},
+): DrawAndGuessLobbyRoomInfo => ({
+  gameType: 'draw-and-guess',
   roomId: 'room-open',
   roomName: 'Open Room',
   owner: { username: 'Ada', playerId: 'player-ada' },
@@ -18,7 +21,7 @@ const makeRoom = (overrides: Partial<LobbyRoomInfo> = {}): LobbyRoomInfo => ({
   ...overrides,
 });
 
-const ROOMS: LobbyRoomInfo[] = [
+const ROOMS: DrawAndGuessLobbyRoomInfo[] = [
   makeRoom(),
   makeRoom({
     roomId: 'room-locked-a',
@@ -37,7 +40,7 @@ const renderLobby = () => {
   const view = renderWithSocket(<DrawAndGuessLobby />, { socket });
 
   act(() => {
-    socket.serverEmits('updateDrawAndGuessLobbyRoomList', ROOMS);
+    socket.serverEmits('lobby:rooms', 'draw-and-guess', ROOMS);
   });
 
   return { ...view, socket };
@@ -54,10 +57,27 @@ describe('the Draw & Guess lobby', () => {
     sessionStorage.setItem('username', 'Tester');
   });
 
-  it('asks the server for the room list on mount', () => {
+  it('subscribes to its own game’s lobby on mount', () => {
     const { socket } = renderLobby();
 
-    expect(socket.sentArgs('clientJoinDrawAndGuessLobby')).toHaveLength(1);
+    // A lobby is a socket.io room per game now, so the subscription doubles
+    // as the request for the list — and a Minesweeper room can never land in
+    // this table by accident.
+    expect(socket.sentArgs('lobby:subscribe')).toEqual([['draw-and-guess']]);
+  });
+
+  it('ignores a room list meant for a different game', () => {
+    const socket = createFakeSocket();
+    renderWithSocket(<DrawAndGuessLobby />, { socket });
+
+    act(() => {
+      socket.serverEmits('lobby:rooms', 'minesweeper', [
+        makeRoom({ roomId: 'not-ours', roomName: 'Minefield' }),
+      ]);
+    });
+
+    expect(screen.queryByText('Minefield')).not.toBeInTheDocument();
+    expect(screen.getByText('Total Rooms: 0')).toBeInTheDocument();
   });
 
   it('lists every room the server sent', () => {
@@ -76,9 +96,7 @@ describe('the Draw & Guess lobby', () => {
     await user.click(joinButtonFor('Open Room'));
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-    expect(socket.sentArgs('clientJoinDrawAndGuessRoomRequest')).toEqual([
-      ['room-open', 'Tester'],
-    ]);
+    expect(socket.sentArgs('room:join')).toEqual([['room-open', 'Tester']]);
   });
 
   /*
@@ -111,7 +129,7 @@ describe('the Draw & Guess lobby', () => {
     await user.type(within(dialog).getByPlaceholderText('Password'), 'hunter2');
     await user.click(within(dialog).getByRole('button', { name: 'Join' }));
 
-    expect(socket.sentArgs('clientJoinDrawAndGuessRoomRequest')).toEqual([
+    expect(socket.sentArgs('room:join')).toEqual([
       ['room-locked-b', 'Tester', 'hunter2'],
     ]);
   });
@@ -156,7 +174,7 @@ describe('the Draw & Guess lobby', () => {
     renderWithSocket(<DrawAndGuessLobby />, { socket });
 
     act(() => {
-      socket.serverEmits('updateDrawAndGuessLobbyRoomList', [
+      socket.serverEmits('lobby:rooms', 'draw-and-guess', [
         makeRoom({
           roomId: 'room-busy',
           roomName: 'In Progress Room',
@@ -178,12 +196,28 @@ describe('the Draw & Guess lobby', () => {
     });
 
     act(() => {
-      socket.serverEmits(
-        'approveClientJoinDrawAndGuessRoomRequest',
-        'room-open',
-      );
+      socket.serverEmits('room:joined', 'room-open');
     });
 
     expect(await screen.findByText('room page')).toBeInTheDocument();
+  });
+
+  it('sends a create request the room layer can route', async () => {
+    const user = userEvent.setup();
+    const { socket } = renderLobby();
+
+    await user.click(screen.getByRole('button', { name: /Create Room/ }));
+    await user.click(await screen.findByRole('button', { name: 'Create' }));
+
+    await waitFor(() => expect(socket.sentArgs('room:create')).toHaveLength(1));
+
+    // The envelope is the room layer's; `settings` is the only part handed to
+    // the game, and Draw & Guess's half of it is the round count.
+    const [request] = socket.sentArgs('room:create')[0] as [
+      Record<string, unknown>,
+    ];
+    expect(request.gameType).toBe('draw-and-guess');
+    expect(request.maxPlayers).toBe(8);
+    expect(request.settings).toEqual({ rounds: 2 });
   });
 });

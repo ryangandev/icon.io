@@ -4,23 +4,20 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import * as url from 'node:url';
 import path from 'node:path';
-import type { DrawAndGuessDetailRoomInfo } from './models/types.js';
 import type { PhaseDurationsInSeconds } from './libs/game-clock.js';
-import {
-  ChatEventsHandler,
-  GameEventsHandler,
-  createDrawAndGuessGameEngine,
-  lobbyEventsHandler,
-  roomEventsHandler,
-  whiteboardCanvasEventHandler,
-} from './socket/draw-and-guess/index.js';
+import { createRoomRegistry } from './libs/rooms/registry.js';
+import { createRoomMembership } from './libs/rooms/membership.js';
+import { lobbyEventsHandler } from './libs/rooms/lobby-events.js';
+import { roomEventsHandler } from './libs/rooms/room-events.js';
+import { chatEventsHandler } from './libs/rooms/chat-events.js';
+import type { Room } from './libs/rooms/types.js';
+import { createDrawAndGuessModule } from './socket/draw-and-guess/index.js';
 import { clientDepartureOnDisconnectHandler } from './socket/client-disconnect-handler.js';
 import { playerSessionHandler } from './socket/player-session-handler.js';
 import {
   createPlayerSessionRegistry,
   type PlayerSessionRegistry,
 } from './libs/player-session.js';
-import { createRoomMembership } from './socket/draw-and-guess/membership.js';
 import { createRateLimiter } from './libs/rate-limit.js';
 
 /** At most one "you are being throttled" line per socket per this long. */
@@ -41,7 +38,7 @@ interface IconIoServer {
   httpServer: HttpServer;
   io: Server;
   /** The live room registry, exposed so tests can assert on server state. */
-  rooms: Record<string, DrawAndGuessDetailRoomInfo>;
+  rooms: Record<string, Room>;
   /** Exposed so tests can assert on identities outliving their sockets. */
   sessions: PlayerSessionRegistry;
   close: () => Promise<void>;
@@ -52,8 +49,12 @@ interface IconIoServer {
  *
  * This used to all happen at module scope in `server.ts`, which meant importing
  * the server was the same thing as binding a port — so the only way to exercise
- * any of it was to spawn a process and talk to a fixed port. Everything below is
- * unchanged in behaviour; it is just reachable now.
+ * any of it was to spawn a process and talk to a fixed port.
+ *
+ * The connection block below is now three generic handlers plus a loop over
+ * whatever games are registered. It used to be five, every one of them named
+ * after Draw & Guess and handed the single `drawAndGuessDetailRoomInfoList`
+ * that was the server's entire idea of state.
  */
 const createIconIoServer = (
   options: CreateIconIoServerOptions = {},
@@ -80,22 +81,20 @@ const createIconIoServer = (
     },
   });
 
-  const rooms: Record<string, DrawAndGuessDetailRoomInfo> = {};
-
-  // All three are created once for the server rather than per connection: they
-  // own timers and identities that outlive any single socket.
+  // All of these are created once for the server rather than per connection:
+  // they own timers and identities that outlive any single socket.
   const sessions = createPlayerSessionRegistry();
-  const drawAndGuessGameEngine = createDrawAndGuessGameEngine(
-    io,
-    rooms,
-    sessions,
-    phaseDurations,
-  );
+  const registry = createRoomRegistry(io, sessions);
+
+  // Every game the server knows how to run. A module is registered once and
+  // then reached only through the registry — the room layer below never names
+  // one, and adding the second took this line and nothing else here.
+  registry.register(createDrawAndGuessModule(registry.context, phaseDurations));
+
   const membership = createRoomMembership(
     io,
-    rooms,
+    registry,
     sessions,
-    drawAndGuessGameEngine,
     graceInSeconds,
   );
 
@@ -128,15 +127,18 @@ const createIconIoServer = (
     // Identity first: every handler below reads the player id off the
     // connection, so nothing can happen until the client has identified.
     playerSessionHandler(socket, sessions, membership.handleResume);
-
     clientDepartureOnDisconnectHandler(socket, membership);
 
-    // handles draw and guess lobby and room events
-    lobbyEventsHandler(io, socket, rooms, sessions);
-    roomEventsHandler(io, socket, rooms, sessions, membership);
-    whiteboardCanvasEventHandler(socket, rooms, sessions);
-    ChatEventsHandler(io, socket, rooms, sessions, drawAndGuessGameEngine);
-    GameEventsHandler(socket, drawAndGuessGameEngine, sessions);
+    // The room layer: lobbies, seats, ownership, chat. None of it knows which
+    // game it is running.
+    lobbyEventsHandler(socket, registry, sessions);
+    roomEventsHandler(io, socket, registry, sessions, membership);
+    chatEventsHandler(socket, registry, sessions);
+
+    // And then each game's own events.
+    for (const gameType of registry.registeredTypes()) {
+      registry.moduleFor(gameType)?.registerHandlers(socket);
+    }
   });
 
   if (serveClient) {
@@ -164,9 +166,7 @@ const createIconIoServer = (
    * created them.
    */
   const close = async (): Promise<void> => {
-    for (const roomId of Object.keys(rooms)) {
-      drawAndGuessGameEngine.disposeRoom(roomId);
-    }
+    registry.dispose();
     membership.dispose();
     await io.close();
     await new Promise<void>((resolve) => {
@@ -178,7 +178,7 @@ const createIconIoServer = (
     });
   };
 
-  return { httpServer, io, rooms, sessions, close };
+  return { httpServer, io, rooms: registry.all, sessions, close };
 };
 
 export { createIconIoServer };

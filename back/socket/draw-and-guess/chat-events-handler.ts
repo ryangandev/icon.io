@@ -1,44 +1,45 @@
-import type { Server, Socket } from 'socket.io';
-import type { DrawAndGuessDetailRoomInfo } from '../../models/types.js';
-import type { PlayerSessionRegistry } from '../../libs/player-session.js';
-import { chatRequest, parseArgs } from '../../libs/validation.js';
+import type { Socket } from 'socket.io';
+import type { DrawAndGuessState } from '../../models/types.js';
+import type { GameContext } from '../../libs/rooms/types.js';
+import {
+  broadcastToRoom,
+  emitToRoom,
+  emitToSocket,
+  onClientEvent,
+} from '../../libs/rooms/emit.js';
+import { parseArgs } from '../../libs/validation.js';
+import { guessRequest } from './validation.js';
 import type { DrawAndGuessGameEngine } from './game-engine.js';
 
-const ChatEventsHandler = (
-  io: Server,
+/**
+ * The guess channel.
+ *
+ * It shares an input box with chat, which is why it used to share a handler
+ * with it. It is not chat: a guess is checked against the live word, scored on
+ * the clock, refused to the drawer and to anyone who has already got it, and it
+ * can end the turn. Plain messages go through the room layer's `chat:send`.
+ */
+const guessEventsHandler = (
   socket: Socket,
-  drawAndGuessDetailRoomInfoList: Record<string, DrawAndGuessDetailRoomInfo>,
-  sessions: PlayerSessionRegistry,
+  ctx: GameContext,
   gameEngine: DrawAndGuessGameEngine,
 ) => {
-  socket.on('sendMessage', (...rawArgs: unknown[]) => {
-    const validated = parseArgs(chatRequest, rawArgs, 'sendMessage');
+  const { io, sessions } = ctx;
+
+  onClientEvent(socket, 'dg:guess', (...rawArgs: unknown[]) => {
+    const validated = parseArgs(guessRequest, rawArgs, 'dg:guess');
     if (!validated) return;
     const [roomId, username, message] = validated;
 
-    // Only players in the room may talk in it.
-    const playerId = sessions.playerIdFor(socket.id);
-    if (!playerId) return;
-    if (!drawAndGuessDetailRoomInfoList[roomId]?.playerList[playerId]) {
-      return;
-    }
-
-    socket.broadcast.to(roomId).emit('receiveMessage', username, message);
-  });
-
-  socket.on('takingAGuess', (...rawArgs: unknown[]) => {
-    const validated = parseArgs(chatRequest, rawArgs, 'takingAGuess');
-    if (!validated) return;
-    const [roomId, username, message] = validated;
-
-    const currentRoom = drawAndGuessDetailRoomInfoList[roomId];
-    if (!currentRoom) return;
+    const room = ctx.rooms.ofType<DrawAndGuessState>(roomId, 'draw-and-guess');
+    if (!room) return;
 
     const playerId = sessions.playerIdFor(socket.id);
     if (!playerId) return;
 
-    const currentPlayer = currentRoom.playerList[playerId];
-    const currentDrawer = currentRoom.playerList[currentRoom.currentDrawer];
+    const game = room.game;
+    const currentPlayer = room.playerList[playerId];
+    const currentDrawer = room.playerList[game.currentDrawer];
 
     /*
      * None of this was checked before. The UI disables the input for the
@@ -49,47 +50,47 @@ const ChatEventsHandler = (
      * on screen for everyone to read.
      */
     if (!currentPlayer) return; // not in this room
-    if (!currentRoom.isDrawingPhase) return; // nothing to guess yet
-    if (currentRoom.currentDrawer === playerId) return; // knows the answer
-    if (currentPlayer.receivedPointsThisTurn) return; // already scored
-    if (currentRoom.currentWord === '') return;
+    if (!game.isDrawingPhase) return; // nothing to guess yet
+    if (game.currentDrawer === playerId) return; // knows the answer
+    if (game.scoredThisTurn.has(playerId)) return; // already scored
+    if (game.currentWord === '') return;
 
     const isCorrect =
-      message.toLowerCase().trim() ===
-      currentRoom.currentWord.toLowerCase().trim();
+      message.toLowerCase().trim() === game.currentWord.toLowerCase().trim();
 
     if (isCorrect && currentDrawer) {
       // What a guess is worth depends on how much of the phase is left, which
       // is the engine's business — it owns the clock.
-      const award = gameEngine.pointsForCorrectGuess(currentRoom);
+      const award = gameEngine.pointsForCorrectGuess(room);
 
       currentDrawer.points += award.drawer;
       currentPlayer.points += award.guesser;
-      currentPlayer.receivedPointsThisTurn = true;
+      game.scoredThisTurn.add(playerId);
 
-      io.to(roomId).emit(
-        'correctGuessAnnouncement',
+      emitToRoom(
+        io,
+        roomId,
+        'dg:guess:correct',
         '📢 System',
         `${username} guessed the correct word! (+${award.guesser})`,
       );
 
-      io.to(roomId).emit(
-        'playersReceivedPointsFromCorrectGuess',
-        currentRoom.playerList,
-      );
+      emitToRoom(io, roomId, 'dg:scores', {
+        playerList: room.playerList,
+        scoredThisTurn: [...game.scoredThisTurn],
+      });
 
       // The engine decides what a scored guess means for the turn: if that
       // was the last player who could still guess, there is nothing left to
       // draw for and the phase ends here rather than running its clock out.
-      gameEngine.handleCorrectGuess(currentRoom);
+      gameEngine.handleCorrectGuess(room);
     } else {
       // A wrong guess is just chat. Echoing it back to the sender keeps
       // their own message in their log alongside everyone else's.
-      socket.broadcast.to(roomId).emit('receiveMessage', username, message);
-
-      io.to(socket.id).emit('receiveMessage', username + ' (You)', message);
+      broadcastToRoom(socket, roomId, 'chat:message', username, message);
+      emitToSocket(socket, 'chat:message', `${username} (You)`, message);
     }
   });
 };
 
-export { ChatEventsHandler };
+export { guessEventsHandler };

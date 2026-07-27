@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { RULES, createRateLimiter } from '../libs/rate-limit.js';
-import type { PlayerInfo } from '../models/types.js';
 import {
   collect,
   createRoom,
@@ -9,6 +8,7 @@ import {
   settle,
   startTestServer,
   waitFor,
+  type ScoresPayload,
   type TestServer,
 } from './helpers/test-server.js';
 
@@ -28,26 +28,26 @@ describe('the rate limiter', () => {
     const limiter = createRateLimiter(() => 0);
 
     for (let i = 0; i < RULES.chat.burst; i++) {
-      expect(limiter.allow('sendMessage')).toBe(true);
+      expect(limiter.allow('chat:send')).toBe(true);
     }
-    expect(limiter.allow('sendMessage')).toBe(false);
+    expect(limiter.allow('chat:send')).toBe(false);
   });
 
   it('refills at the sustained rate', () => {
     const clock = fakeClock();
     const limiter = createRateLimiter(clock.now);
-    for (let i = 0; i < RULES.chat.burst; i++) limiter.allow('sendMessage');
+    for (let i = 0; i < RULES.chat.burst; i++) limiter.allow('chat:send');
 
     // Not yet.
     clock.advance(100);
-    expect(limiter.allow('sendMessage')).toBe(false);
+    expect(limiter.allow('chat:send')).toBe(false);
 
     // A second's worth of tokens is `ratePerSecond` of them.
     clock.advance(1000);
     for (let i = 0; i < RULES.chat.ratePerSecond; i++) {
-      expect(limiter.allow('sendMessage')).toBe(true);
+      expect(limiter.allow('chat:send')).toBe(true);
     }
-    expect(limiter.allow('sendMessage')).toBe(false);
+    expect(limiter.allow('chat:send')).toBe(false);
   });
 
   it('never banks more than one burst', () => {
@@ -57,9 +57,9 @@ describe('the rate limiter', () => {
     // An hour of silence does not buy an hour of shouting.
     clock.advance(3_600_000);
     for (let i = 0; i < RULES.chat.burst; i++) {
-      expect(limiter.allow('sendMessage')).toBe(true);
+      expect(limiter.allow('chat:send')).toBe(true);
     }
-    expect(limiter.allow('sendMessage')).toBe(false);
+    expect(limiter.allow('chat:send')).toBe(false);
   });
 
   /*
@@ -70,12 +70,12 @@ describe('the rate limiter', () => {
   it('spends each kind of event from its own budget', () => {
     const limiter = createRateLimiter(() => 0);
 
-    for (let i = 0; i < RULES.chat.burst; i++) limiter.allow('sendMessage');
-    expect(limiter.allow('sendMessage')).toBe(false);
+    for (let i = 0; i < RULES.chat.burst; i++) limiter.allow('chat:send');
+    expect(limiter.allow('chat:send')).toBe(false);
 
-    expect(limiter.allow('startDrawing')).toBe(true);
-    expect(limiter.allow('clientJoinDrawAndGuessLobby')).toBe(true);
-    expect(limiter.allow('undo')).toBe(true);
+    expect(limiter.allow('dg:draw:start')).toBe(true);
+    expect(limiter.allow('lobby:subscribe')).toBe(true);
+    expect(limiter.allow('dg:draw:undo')).toBe(true);
   });
 
   it('gives an unknown event a budget too', () => {
@@ -95,7 +95,7 @@ describe('the rate limiter', () => {
     // 144Hz display, dragging without pause.
     for (let second = 0; second < 10; second++) {
       for (let point = 0; point < 144; point++) {
-        expect(limiter.allow('continueDrawing')).toBe(true);
+        expect(limiter.allow('dg:draw:move')).toBe(true);
         clock.advance(1000 / 144);
       }
     }
@@ -120,8 +120,8 @@ describe('a throttled socket', () => {
   it('stops relaying a canvas command emitted in a loop', async () => {
     const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
 
-    const relayed = collect(guesser, 'drawerClear');
-    for (let i = 0; i < 200; i++) drawer.emit('clear', roomId);
+    const relayed = collect(guesser, 'dg:canvas:clear');
+    for (let i = 0; i < 200; i++) drawer.emit('dg:draw:clear', roomId);
     await settle(300);
 
     expect(relayed.length).toBeGreaterThan(0);
@@ -135,16 +135,15 @@ describe('a throttled socket', () => {
     const { drawer, guesser, guesserName, roomId, word } =
       await playToDrawingPhase(harness);
 
-    for (let i = 0; i < 200; i++) drawer.emit('clear', roomId);
+    for (let i = 0; i < 200; i++) drawer.emit('dg:draw:clear', roomId);
 
     // The guess path has its own budget and has spent none of it.
-    const scored = waitFor<Record<string, PlayerInfo>>(
-      drawer,
-      'playersReceivedPointsFromCorrectGuess',
-    );
-    guesser.emit('takingAGuess', roomId, guesserName, word);
+    const scored = waitFor<ScoresPayload>(drawer, 'dg:scores');
+    guesser.emit('dg:guess', roomId, guesserName, word);
 
-    expect((await scored)[guesser.playerId]?.points).toBeGreaterThan(0);
+    expect((await scored).playerList[guesser.playerId]?.points).toBeGreaterThan(
+      0,
+    );
   });
 
   it('does not stop an ordinary game from being played', async () => {
@@ -154,8 +153,8 @@ describe('a throttled socket', () => {
     await joinRoom(owner, roomId, 'Owner');
     await joinRoom(guest, roomId, 'Guest');
 
-    const started = waitFor(owner, 'startDrawAndGuessGameSuccess');
-    owner.emit('startDrawAndGuessGame', roomId);
+    const started = waitFor(owner, 'dg:game:started');
+    owner.emit('game:start', roomId);
     await started;
 
     expect(harness.server.rooms[roomId]?.isGameStarted).toBe(true);

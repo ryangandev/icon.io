@@ -1,36 +1,41 @@
 import { Input, Modal, Select, Typography } from 'antd';
 import '../styles/pages/lobbies/draw-and-guess-lobby.css';
 import { Form } from 'antd';
-import type { RoomCreateRequestBody } from '../models/types';
+import type { GameType, RoomCreateRequestBody } from '../models/types';
 
 interface RoomCreateFormProps {
+  /** Which game the room will play. Goes on the request; also picks the module. */
+  gameType: GameType;
   open: boolean;
   confirmLoading: boolean;
   setConfirmLoading: (confirmLoading: boolean) => void;
   onCancel: () => void;
   onCreate: (requestBody: RoomCreateRequestBody) => void;
+  /**
+   * The game's own fields, rendered between the seat count and the owner.
+   * Whatever they are named, their values become the request's `settings` —
+   * which is the only part of a create request the server hands to a module.
+   */
+  children?: React.ReactNode;
+  /** Initial values for those fields. */
+  settingsDefaults?: Record<string, unknown>;
 }
 
 const { Option } = Select;
 
 const RoomCreateForm = ({
+  gameType,
   open,
   onCancel,
   onCreate,
   confirmLoading,
   setConfirmLoading,
+  children,
+  settingsDefaults = {},
 }: RoomCreateFormProps) => {
   const [form] = Form.useForm();
   const username = sessionStorage.getItem('username');
-  const defaultRoomCreateRequest: RoomCreateRequestBody = {
-    roomName: username! + "'s Room",
-    ownerUsername: username!,
-    rounds: 2,
-    maxPlayers: 8,
-    password: '',
-  };
   const maxPlayersOptions = [2, 3, 4, 5, 6, 7, 8];
-  const maxRoundsOptions = [1, 2, 3, 4];
 
   return (
     <Modal
@@ -50,9 +55,26 @@ const RoomCreateForm = ({
         setConfirmLoading(true);
         form
           .validateFields()
-          .then((createRoomRequest: RoomCreateRequestBody) => {
+          .then((values: Record<string, unknown>) => {
             form.resetFields();
-            onCreate(createRoomRequest);
+
+            // Everything the room layer does not name is the game's.
+            const {
+              roomName,
+              ownerUsername,
+              maxPlayers,
+              password,
+              ...settings
+            } = values;
+
+            onCreate({
+              gameType,
+              roomName: roomName as string,
+              ownerUsername: ownerUsername as string,
+              maxPlayers: maxPlayers as number,
+              password: (password as string) ?? '',
+              settings,
+            });
           })
           .catch((info) => {
             console.log('Validate Failed:', info);
@@ -73,11 +95,11 @@ const RoomCreateForm = ({
         }}
         name="roomCreateFormModal"
         initialValues={{
-          roomName: defaultRoomCreateRequest.roomName,
-          ownerUsername: defaultRoomCreateRequest.ownerUsername,
-          maxPlayers: defaultRoomCreateRequest.maxPlayers,
-          rounds: defaultRoomCreateRequest.rounds,
-          password: defaultRoomCreateRequest.password,
+          roomName: username + "'s Room",
+          ownerUsername: username,
+          maxPlayers: 8,
+          password: '',
+          ...settingsDefaults,
         }}
       >
         <Form.Item
@@ -118,24 +140,7 @@ const RoomCreateForm = ({
           </Select>
         </Form.Item>
 
-        <Form.Item
-          name="rounds"
-          label="Rounds"
-          rules={[
-            {
-              required: true,
-              message: 'Select is required!',
-            },
-          ]}
-        >
-          <Select>
-            {maxRoundsOptions.map((round) => (
-              <Option key={round} value={round}>
-                {round}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
+        {children}
 
         <Form.Item
           name="ownerUsername"

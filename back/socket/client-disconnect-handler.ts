@@ -1,5 +1,5 @@
 import type { Socket } from 'socket.io';
-import type { RoomMembership } from './draw-and-guess/membership.js';
+import type { RoomMembership } from '../libs/rooms/membership.js';
 
 /**
  * A dropped connection is no longer a departure.

@@ -1,5 +1,4 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import type { PlayerInfo } from '../models/types.js';
 import {
   collect,
   createRoom,
@@ -8,6 +7,7 @@ import {
   settle,
   startTestServer,
   waitFor,
+  type ScoresPayload,
   type TestClient,
   type TestServer,
 } from './helpers/test-server.js';
@@ -34,14 +34,14 @@ const playToDrawingPhaseWithThree = async (harness: TestServer) => {
   let drawer: TestClient | undefined;
   let word: string | undefined;
   for (const client of clients) {
-    client.once('drawingPhaseStartedForDrawer', (received: string) => {
+    client.once('dg:word', (received: string) => {
       drawer = client;
       word = received;
     });
   }
 
-  const drawing = waitFor(alice!, 'drawingPhaseStarted', 5000);
-  alice!.emit('startDrawAndGuessGame', roomId);
+  const drawing = waitFor(alice!, 'dg:phase:drawing', 5000);
+  alice!.emit('game:start', roomId);
   await drawing;
   await settle(50);
 
@@ -80,22 +80,11 @@ describe('guess authority', () => {
     const { roomId, guesser, guesserName, drawer, word } =
       await playToDrawingPhase(harness);
 
-    const scored = waitFor<Record<string, PlayerInfo>>(
-      drawer,
-      'playersReceivedPointsFromCorrectGuess',
-    );
-    const announced = waitFor<[string, string]>(
-      drawer,
-      'correctGuessAnnouncement',
-    );
-    guesser.emit(
-      'takingAGuess',
-      roomId,
-      guesserName,
-      ` ${word.toUpperCase()} `,
-    );
+    const scored = waitFor<ScoresPayload>(drawer, 'dg:scores');
+    const announced = waitFor<[string, string]>(drawer, 'dg:guess:correct');
+    guesser.emit('dg:guess', roomId, guesserName, ` ${word.toUpperCase()} `);
 
-    const players = await scored;
+    const players = (await scored).playerList;
     const scores = Object.values(players)
       .map((player) => player.points)
       .toSorted((a, b) => b - a);
@@ -111,8 +100,8 @@ describe('guess authority', () => {
     const { roomId, guesser, guesserName, drawer } =
       await playToDrawingPhase(harness);
 
-    const drawerHeard = collect<[string, string]>(drawer, 'receiveMessage');
-    guesser.emit('takingAGuess', roomId, guesserName, 'definitely wrong');
+    const drawerHeard = collect<[string, string]>(drawer, 'chat:message');
+    guesser.emit('dg:guess', roomId, guesserName, 'definitely wrong');
     await settle();
 
     expect(drawerHeard).toContainEqual([guesserName, 'definitely wrong']);
@@ -122,8 +111,8 @@ describe('guess authority', () => {
     const { roomId, drawer, drawerName, word, guesser } =
       await playToDrawingPhase(harness);
 
-    const scored = collect(guesser, 'playersReceivedPointsFromCorrectGuess');
-    drawer.emit('takingAGuess', roomId, drawerName, word);
+    const scored = collect(guesser, 'dg:scores');
+    drawer.emit('dg:guess', roomId, drawerName, word);
     await settle();
 
     expect(scored).toEqual([]);
@@ -140,27 +129,18 @@ describe('guess authority', () => {
    */
   it('pays a fast guess more than a slow one', async () => {
     const early = await playToDrawingPhase(harness);
-    const earlyScored = waitFor<Record<string, PlayerInfo>>(
-      early.drawer,
-      'playersReceivedPointsFromCorrectGuess',
-    );
-    early.guesser.emit(
-      'takingAGuess',
-      early.roomId,
-      early.guesserName,
-      early.word,
-    );
-    const earlyPoints = (await earlyScored)[early.guesser.playerId]!.points;
+    const earlyScored = waitFor<ScoresPayload>(early.drawer, 'dg:scores');
+    early.guesser.emit('dg:guess', early.roomId, early.guesserName, early.word);
+    const earlyPoints = (await earlyScored).playerList[early.guesser.playerId]!
+      .points;
 
     const late = await playToDrawingPhase(harness);
     // Most of the five-second phase spent staring at the canvas.
     await settle(3500);
-    const lateScored = waitFor<Record<string, PlayerInfo>>(
-      late.drawer,
-      'playersReceivedPointsFromCorrectGuess',
-    );
-    late.guesser.emit('takingAGuess', late.roomId, late.guesserName, late.word);
-    const latePoints = (await lateScored)[late.guesser.playerId]!.points;
+    const lateScored = waitFor<ScoresPayload>(late.drawer, 'dg:scores');
+    late.guesser.emit('dg:guess', late.roomId, late.guesserName, late.word);
+    const latePoints = (await lateScored).playerList[late.guesser.playerId]!
+      .points;
 
     expect(earlyPoints).toBeGreaterThan(latePoints);
     // ...but getting there at all is still worth something.
@@ -172,12 +152,9 @@ describe('guess authority', () => {
     const { roomId, guesser, guesserName, drawer, word } =
       await playToDrawingPhase(harness);
 
-    const scored = collect<Record<string, PlayerInfo>>(
-      drawer,
-      'playersReceivedPointsFromCorrectGuess',
-    );
+    const scored = collect<ScoresPayload>(drawer, 'dg:scores');
     for (let i = 0; i < 5; i++) {
-      guesser.emit('takingAGuess', roomId, guesserName, word);
+      guesser.emit('dg:guess', roomId, guesserName, word);
     }
     await settle(300);
 
@@ -195,10 +172,10 @@ describe('guess authority', () => {
     const { roomId, word, drawer } = await playToDrawingPhase(harness);
     const outsider = await harness.connect();
 
-    const scored = collect(drawer, 'playersReceivedPointsFromCorrectGuess');
-    const heard = collect(drawer, 'receiveMessage');
-    outsider.emit('takingAGuess', roomId, 'Outsider', word);
-    outsider.emit('sendMessage', roomId, 'Outsider', 'let me in');
+    const scored = collect(drawer, 'dg:scores');
+    const heard = collect(drawer, 'chat:message');
+    outsider.emit('dg:guess', roomId, 'Outsider', word);
+    outsider.emit('chat:send', roomId, 'Outsider', 'let me in');
     await settle();
 
     expect(scored).toEqual([]);
@@ -216,24 +193,24 @@ describe('guess authority', () => {
     await joinRoom(alice, roomId, 'Alice');
     await joinRoom(bob, roomId, 'Bob');
 
-    const scored = collect(alice, 'playersReceivedPointsFromCorrectGuess');
+    const scored = collect(alice, 'dg:scores');
 
     // Before the game has started at all.
-    bob.emit('takingAGuess', roomId, 'Bob', 'anything');
+    bob.emit('dg:guess', roomId, 'Bob', 'anything');
     await settle();
     expect(scored).toEqual([]);
 
     // ...and during the reveal, when everyone can read the word.
     const reveal = waitFor<{ currentWord: string }>(
       alice,
-      'reviewingPhaseStarted',
+      'dg:phase:review',
       9000,
     );
-    alice.emit('startDrawAndGuessGame', roomId);
+    alice.emit('game:start', roomId);
     const { currentWord } = await reveal;
 
-    bob.emit('takingAGuess', roomId, 'Bob', currentWord);
-    alice.emit('takingAGuess', roomId, 'Alice', currentWord);
+    bob.emit('dg:guess', roomId, 'Bob', currentWord);
+    alice.emit('dg:guess', roomId, 'Alice', currentWord);
     await settle();
 
     expect(scored).toEqual([]);
@@ -250,11 +227,11 @@ describe('guess authority', () => {
 
     const reveal = waitFor<{ currentWord: string }>(
       drawer,
-      'reviewingPhaseStarted',
+      'dg:phase:review',
       1000, // far inside the five-second drawing phase
     );
-    const messages = collect<[string, string]>(drawer, 'receiveMessage');
-    guesser.emit('takingAGuess', roomId, guesserName, word);
+    const messages = collect<[string, string]>(drawer, 'chat:message');
+    guesser.emit('dg:guess', roomId, guesserName, word);
 
     expect((await reveal).currentWord).toBe(word);
     expect(
@@ -266,8 +243,8 @@ describe('guess authority', () => {
     const { roomId, drawer, guessers, guesserName, word } =
       await playToDrawingPhaseWithThree(harness);
 
-    const ended = collect(drawer, 'reviewingPhaseStarted');
-    guessers[0].emit('takingAGuess', roomId, guesserName(guessers[0]), word);
+    const ended = collect(drawer, 'dg:phase:review');
+    guessers[0].emit('dg:guess', roomId, guesserName(guessers[0]), word);
     await settle(300);
 
     // One of the two has guessed; the other is still trying.
@@ -275,10 +252,10 @@ describe('guess authority', () => {
 
     const reveal = waitFor<{ currentWord: string }>(
       drawer,
-      'reviewingPhaseStarted',
+      'dg:phase:review',
       1000,
     );
-    guessers[1].emit('takingAGuess', roomId, guesserName(guessers[1]), word);
+    guessers[1].emit('dg:guess', roomId, guesserName(guessers[1]), word);
 
     expect((await reveal).currentWord).toBe(word);
   });
@@ -301,10 +278,10 @@ describe('guess authority', () => {
 
     const reveal = waitFor<{ currentWord: string }>(
       drawer,
-      'reviewingPhaseStarted',
+      'dg:phase:review',
       1000,
     );
-    guessers[0].emit('takingAGuess', roomId, guesserName(guessers[0]), word);
+    guessers[0].emit('dg:guess', roomId, guesserName(guessers[0]), word);
 
     expect((await reveal).currentWord).toBe(word);
   });
@@ -320,8 +297,8 @@ describe('guess authority', () => {
     // `receiveMessage` Bob sees can be his own "has joined" notice.
     await settle();
 
-    const heard = waitFor<[string, string]>(bob, 'receiveMessage');
-    alice.emit('sendMessage', roomId, 'Alice', 'hello room');
+    const heard = waitFor<[string, string]>(bob, 'chat:message');
+    alice.emit('chat:send', roomId, 'Alice', 'hello room');
 
     expect(await heard).toEqual(['Alice', 'hello room']);
   });

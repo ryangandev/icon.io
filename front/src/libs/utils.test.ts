@@ -23,7 +23,6 @@ describe('formatTimeInMinutesAndSeconds', () => {
 const player = (username: string, points: number): PlayerInfo => ({
   username,
   points,
-  receivedPointsThisTurn: false,
   isConnected: true,
 });
 
@@ -42,10 +41,10 @@ describe('sortPlayerListByPoints', () => {
     ]);
   });
 
-  it('keeps the socket id alongside each player', () => {
-    const sorted = sortPlayerListByPoints({ 'socket-1': player('Ada', 10) });
+  it('keeps the player id alongside each player', () => {
+    const sorted = sortPlayerListByPoints({ 'player-1': player('Ada', 10) });
 
-    expect(sorted[0][0]).toBe('socket-1');
+    expect(sorted[0][0]).toBe('player-1');
   });
 
   it('handles an empty room', () => {

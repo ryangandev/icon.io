@@ -3,6 +3,7 @@ import { Input } from 'antd';
 import { EnterOutlined } from '@ant-design/icons';
 import { useEffect, useRef, useState } from 'react';
 import { useSocket } from '../hooks/useSocket';
+import { emit, off, on } from '../libs/socket-events';
 
 interface ChatWindowProps {
   username: string | null;
@@ -41,14 +42,14 @@ const ChatWindow = ({
   }, [messages]);
 
   useEffect(() => {
-    socket.on('receiveMessage', (from: string, message: string) => {
+    on(socket, 'chat:message', (from: string, message: string) => {
       setMessages((prevMessages) => [
         ...prevMessages,
         { username: from, message },
       ]);
     });
 
-    socket.on('correctGuessAnnouncement', (from: string, message: string) => {
+    on(socket, 'dg:guess:correct', (from: string, message: string) => {
       setMessages((prevMessages) => [
         ...prevMessages,
         { username: from, message, color: '#d4f1d4' },
@@ -56,8 +57,8 @@ const ChatWindow = ({
     });
 
     return () => {
-      socket.off('receiveMessage');
-      socket.off('correctGuessAnnouncement');
+      off(socket, 'chat:message');
+      off(socket, 'dg:guess:correct');
     };
   }, [socket]);
 
@@ -79,9 +80,9 @@ const ChatWindow = ({
         },
       ]);
 
-      socket.emit('sendMessage', roomId, username, inputMessage);
+      emit(socket, 'chat:send', roomId, username, inputMessage);
     } else if (isDrawingPhase) {
-      socket.emit('takingAGuess', roomId, username, inputMessage);
+      emit(socket, 'dg:guess', roomId, username, inputMessage);
     }
 
     setInputMessage('');

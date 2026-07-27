@@ -2,20 +2,25 @@ import { randomUUID } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import {
   chatRequest,
+  gameTypeOnly,
   joinRoomRequest,
   roomCreateRequest,
   roomIdOnly,
-  startDrawingRequest,
 } from '../libs/validation.js';
+import {
+  roundsSetting,
+  startDrawingRequest,
+} from '../socket/draw-and-guess/validation.js';
 
 const validRoomId = randomUUID();
 
 const validCreateRequest = {
+  gameType: 'draw-and-guess',
   roomName: 'A Room',
   ownerUsername: 'Owner',
   maxPlayers: 4,
-  rounds: 2,
   password: '',
+  settings: { rounds: 2 },
 };
 
 describe('roomCreateRequest', () => {
@@ -25,14 +30,39 @@ describe('roomCreateRequest', () => {
 
   it('treats an absent password as an unlocked room', () => {
     const result = roomCreateRequest.safeParse({
+      gameType: 'draw-and-guess',
       roomName: 'A Room',
       ownerUsername: 'Owner',
       maxPlayers: 4,
-      rounds: 2,
+      settings: { rounds: 2 },
     });
 
     expect(result.success).toBe(true);
     expect(result.data?.password).toBe('');
+  });
+
+  it('rejects a game the server does not run', () => {
+    for (const gameType of ['chess', '', null, 42]) {
+      expect(
+        roomCreateRequest.safeParse({ ...validCreateRequest, gameType })
+          .success,
+      ).toBe(false);
+    }
+  });
+
+  /*
+   * The envelope deliberately does not look inside `settings`: only the game's
+   * own module knows what belongs there, and it is handed the raw value to
+   * accept or reject. A room whose settings are refused is never created.
+   */
+  it('passes settings through untouched, whatever they are', () => {
+    const result = roomCreateRequest.safeParse({
+      ...validCreateRequest,
+      settings: { anything: ['at', 'all'] },
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.data?.settings).toEqual({ anything: ['at', 'all'] });
   });
 
   /*
@@ -59,16 +89,6 @@ describe('roomCreateRequest', () => {
           .success,
       ).toBe(false);
     }
-  });
-
-  it('bounds the round count', () => {
-    expect(
-      roomCreateRequest.safeParse({ ...validCreateRequest, rounds: 0 }).success,
-    ).toBe(false);
-    expect(
-      roomCreateRequest.safeParse({ ...validCreateRequest, rounds: 99 })
-        .success,
-    ).toBe(false);
   });
 
   it('rejects a room name longer than the input allows', () => {
@@ -98,6 +118,28 @@ describe('roomCreateRequest', () => {
     ).toBe(false);
     expect(roomCreateRequest.safeParse(null).success).toBe(false);
     expect(roomCreateRequest.safeParse('a string').success).toBe(false);
+  });
+});
+
+describe('roundsSetting', () => {
+  it('bounds the round count', () => {
+    expect(roundsSetting.safeParse({ rounds: 2 }).success).toBe(true);
+    expect(roundsSetting.safeParse({ rounds: 0 }).success).toBe(false);
+    expect(roundsSetting.safeParse({ rounds: 99 }).success).toBe(false);
+    expect(roundsSetting.safeParse({}).success).toBe(false);
+    expect(roundsSetting.safeParse({ rounds: '2' }).success).toBe(false);
+  });
+});
+
+describe('gameTypeOnly', () => {
+  it('accepts each game the server runs', () => {
+    expect(gameTypeOnly.safeParse(['draw-and-guess']).success).toBe(true);
+  });
+
+  it('rejects a lobby subscription for a game that does not exist', () => {
+    for (const candidate of ['', 'DrawAndGuess', 'chess', null]) {
+      expect(gameTypeOnly.safeParse([candidate]).success).toBe(false);
+    }
   });
 });
 

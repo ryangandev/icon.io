@@ -1,31 +1,30 @@
-import type { Server } from 'socket.io';
-import type { DrawAndGuessDetailRoomInfo } from '../../models/types.js';
+import type { DrawAndGuessState } from '../../models/types.js';
 import type { CustomError, ErrorType } from '../../models/error.js';
+import type { GameContext, Room } from '../../libs/rooms/types.js';
+import { emitToPlayer, emitToRoom } from '../../libs/rooms/emit.js';
+import {
+  getRandomInt,
+  getRandomElementFromSet,
+  getRemainingPhaseMs,
+  getRoomStatus,
+  resetPoints,
+} from '../../libs/utils.js';
 import {
   buildWordHint,
-  revealablePositions,
-  getRandomInt,
-  getDrawAndGuessLobbyRoomInfo,
-  getDrawAndGuessRoomState,
   getRandomCategory,
   getRandomChoicesFromList,
-  getRandomElementFromSet,
-  getRoomStatus,
-  getRemainingPhaseMs,
-  resetPoints,
-  resetReceivedPointsThisTurn,
-} from '../../libs/utils.js';
+  revealablePositions,
+} from './words.js';
 import {
   phaseDurationsInSeconds as defaultPhaseDurations,
   type PhaseDurationsInSeconds,
 } from '../../libs/game-clock.js';
-import type { PlayerSessionRegistry } from '../../libs/player-session.js';
 import { wordBank } from '../../libs/word-bank.js';
 import { clearCanvas } from './canvas.js';
+import { toRoomState } from './state.js';
 
 const MIN_PLAYERS_TO_START = 2;
 const WORD_CHOICE_COUNT = 3;
-const SYSTEM = '📢 System';
 
 /**
  * How long a turn waits for a drawer whose connection dropped mid-drawing,
@@ -66,6 +65,8 @@ const roomError = (message: string, errorType: ErrorType): CustomError => {
   return error;
 };
 
+type DrawAndGuessRoom = Room<DrawAndGuessState>;
+
 /**
  * Owns the turn state machine for Draw & Guess.
  *
@@ -77,18 +78,19 @@ const roomError = (message: string, errorType: ErrorType): CustomError => {
  * countdown from that; nothing they send can advance a phase.
  *
  * One engine is created per server process and shared by all connections, so
- * the timer registry below is genuinely per-room rather than per-socket.
+ * the timer registries below are genuinely per-room rather than per-socket.
+ * They are also *this game's*: the room layer owns exactly one kind of timer,
+ * the seat expiry, and knows nothing about these three.
  *
  * The phase durations are a parameter rather than a module-level constant so a
  * test can drive a whole game in milliseconds. Production passes nothing and
  * gets the env-configured defaults.
  */
 const createDrawAndGuessGameEngine = (
-  io: Server,
-  rooms: Record<string, DrawAndGuessDetailRoomInfo>,
-  sessions: PlayerSessionRegistry,
+  ctx: GameContext,
   phaseDurationsInSeconds: PhaseDurationsInSeconds = defaultPhaseDurations,
 ) => {
+  const { io, sessions } = ctx;
   const phaseTimers = new Map<string, NodeJS.Timeout>();
   /** How long a room is still waiting for a drawer who dropped, keyed by room. */
   const drawerHoldTimers = new Map<string, NodeJS.Timeout>();
@@ -97,18 +99,13 @@ const createDrawAndGuessGameEngine = (
   const drawerHoldInSeconds =
     phaseDurationsInSeconds.drawerHold ?? DEFAULT_DRAWER_HOLD_SECONDS;
 
-  /**
-   * Sends to whichever socket a player is currently using. Room state is keyed
-   * by player id now; socket.io still addresses sockets.
-   */
-  const emitToPlayer = (
-    playerId: string,
-    event: string,
-    ...args: unknown[]
-  ) => {
-    const socketId = sessions.socketIdFor(playerId);
-    if (socketId) io.to(socketId).emit(event, ...args);
-  };
+  const roomOf = (roomId: string): DrawAndGuessRoom | undefined =>
+    ctx.rooms.ofType<DrawAndGuessState>(roomId, 'draw-and-guess');
+
+  const announce = (roomId: string, message: string) =>
+    ctx.rooms.announce(roomId, message);
+
+  const emitLobbyRoomList = () => ctx.rooms.emitLobby('draw-and-guess');
 
   const clearPhaseTimer = (roomId: string) => {
     const pending = phaseTimers.get(roomId);
@@ -138,10 +135,10 @@ const createDrawAndGuessGameEngine = (
    * so a reveal cannot land on a letter that is already showing, and each step
    * genuinely tells the room something it did not know.
    */
-  const scheduleHintReveals = (room: DrawAndGuessDetailRoomInfo) => {
+  const scheduleHintReveals = (room: DrawAndGuessRoom) => {
     clearHintTimers(room.roomId);
 
-    const positions = revealablePositions(room.currentWord);
+    const positions = revealablePositions(room.game.currentWord);
     const totalToReveal = Math.floor(positions.length * MAX_REVEALED_FRACTION);
     if (totalToReveal === 0) return;
 
@@ -152,7 +149,7 @@ const createDrawAndGuessGameEngine = (
       [order[index], order[swapWith]] = [order[swapWith], order[index]];
     }
 
-    const word = room.currentWord;
+    const word = room.game.currentWord;
     const revealed = new Set<number>();
     const timers: NodeJS.Timeout[] = [];
 
@@ -175,18 +172,18 @@ const createDrawAndGuessGameEngine = (
 
       timers.push(
         setTimeout(() => {
-          const current = rooms[room.roomId];
+          const current = roomOf(room.roomId);
           // The turn may have ended early — everybody guessed, the drawer
           // dropped — and the next one is not this one's word to hint at.
           if (!current) return;
-          if (!current.isDrawingPhase) return;
-          if (current.currentWord !== word) return;
+          if (!current.game.isDrawingPhase) return;
+          if (current.game.currentWord !== word) return;
 
           for (const position of order.slice(0, upTo)) revealed.add(position);
-          current.currentWordHint = buildWordHint(word, revealed);
+          current.game.currentWordHint = buildWordHint(word, revealed);
 
-          io.to(current.roomId).emit('wordHintRevealed', {
-            currentWordHint: current.currentWordHint,
+          emitToRoom(io, current.roomId, 'dg:hint', {
+            currentWordHint: current.game.currentWordHint,
           });
         }, delayInSeconds * 1000),
       );
@@ -206,28 +203,12 @@ const createDrawAndGuessGameEngine = (
       setTimeout(() => {
         phaseTimers.delete(roomId);
         // The room may have been emptied and deleted while we waited.
-        if (rooms[roomId]) onPhaseEnd();
+        if (roomOf(roomId)) onPhaseEnd();
       }, durationInSeconds * 1000),
     );
   };
 
-  const emitLobbyRoomList = () => {
-    io.emit(
-      'updateDrawAndGuessLobbyRoomList',
-      Object.values(rooms).map(getDrawAndGuessLobbyRoomInfo),
-    );
-  };
-
-  const announce = (roomId: string, message: string) => {
-    io.to(roomId).emit('receiveMessage', SYSTEM, message);
-  };
-
-  const startGame = (roomId: string, playerId: string) => {
-    const room = rooms[roomId];
-
-    if (!room) {
-      throw roomError('Room does not exist.', 'roomNotExist');
-    }
+  const startGame = (room: DrawAndGuessRoom, playerId: string) => {
     // The Start button has always been owner-only in the UI and nowhere else,
     // so any connected client could start any room's game with a room id off
     // the lobby broadcast. Checked before anything else about the room is
@@ -249,99 +230,106 @@ const createDrawAndGuessGameEngine = (
     }
 
     room.playerList = resetPoints(room.playerList);
-    room.currentRound = 0;
+    room.game.currentRound = 0;
     room.isGameStarted = true;
     room.status = getRoomStatus(
       room.currentPlayerCount,
       room.maxPlayers,
       room.isGameStarted,
     );
-    room.wordCategory = getRandomCategory(wordBank).name;
+    room.game.wordCategory = getRandomCategory(wordBank).name;
 
     // Logged without the room object, which carries the password
     console.log(
-      `Game started in room ${roomId} with category "${room.wordCategory}".`,
+      `Game started in room ${room.roomId} with category "${room.game.wordCategory}".`,
     );
 
-    io.to(roomId).emit('startDrawAndGuessGameSuccess', {
+    emitToRoom(io, room.roomId, 'dg:game:started', {
       playerList: room.playerList,
       isGameStarted: room.isGameStarted,
       status: room.status,
-      wordCategory: room.wordCategory,
+      wordCategory: room.game.wordCategory,
     });
     announce(
-      roomId,
-      `Game has started! The word category for this game is "${room.wordCategory}"!`,
+      room.roomId,
+      `Game has started! The word category for this game is "${room.game.wordCategory}"!`,
     );
     emitLobbyRoomList();
 
     startNewRound(room);
   };
 
-  const startNewRound = (room: DrawAndGuessDetailRoomInfo) => {
-    room.currentRound += 1;
-    room.drawerQueue = new Set(Object.keys(room.playerList));
+  const startNewRound = (room: DrawAndGuessRoom) => {
+    room.game.currentRound += 1;
+    room.game.drawerQueue = new Set(Object.keys(room.playerList));
 
-    io.to(room.roomId).emit('startNewRoundSuccess', {
-      currentRound: room.currentRound,
-      drawerQueue: [...room.drawerQueue],
+    emitToRoom(io, room.roomId, 'dg:round', {
+      currentRound: room.game.currentRound,
+      drawerQueue: [...room.game.drawerQueue],
     });
 
     startNewDrawerTurn(room);
   };
 
-  const startNewDrawerTurn = (room: DrawAndGuessDetailRoomInfo) => {
+  const startNewDrawerTurn = (room: DrawAndGuessRoom) => {
     // The server's copy of the drawing is wiped exactly where every client
     // wipes theirs, which is what keeps the two the same thing.
-    clearCanvas(room.canvas);
-    io.to(room.roomId).emit('drawerClear');
-    room.playerList = resetReceivedPointsThisTurn(room.playerList);
+    clearCanvas(room.game.canvas);
+    emitToRoom(io, room.roomId, 'dg:canvas:clear');
+    room.game.scoredThisTurn.clear();
 
     // Only somebody actually present can take a turn. A player inside their
     // reconnect grace period still holds a seat, but handing them the pencil
     // would stall the room until they either returned or timed out.
     const presentInQueue = new Set(
-      [...room.drawerQueue].filter(
+      [...room.game.drawerQueue].filter(
         (playerId) => room.playerList[playerId]?.isConnected,
       ),
     );
 
     const newDrawer = getRandomElementFromSet(presentInQueue);
-    if (!newDrawer || room.wordCategory === '') {
+    if (!newDrawer || room.game.wordCategory === '') {
       endGame(room);
       return;
     }
 
-    room.currentDrawer = newDrawer;
-    room.drawerQueue.delete(newDrawer);
-    room.currentWord = '';
-    room.currentWordHint = '';
-    room.isWordSelectingPhase = true;
-    room.isDrawingPhase = false;
-    room.isReviewingPhase = false;
-    room.wordChoices = getRandomChoicesFromList(
-      wordBank[room.wordCategory],
+    room.game.currentDrawer = newDrawer;
+    room.game.drawerQueue.delete(newDrawer);
+    room.game.currentWord = '';
+    room.game.currentWordHint = '';
+    room.game.isWordSelectingPhase = true;
+    room.game.isDrawingPhase = false;
+    room.game.isReviewingPhase = false;
+    room.game.wordChoices = getRandomChoicesFromList(
+      wordBank[room.game.wordCategory],
       WORD_CHOICE_COUNT,
     );
     room.phaseEndsAt =
       Date.now() + phaseDurationsInSeconds.wordSelecting * 1000;
 
-    io.to(room.roomId).emit('wordSelectingPhaseStarted', {
+    emitToRoom(io, room.roomId, 'dg:phase:word-select', {
       playerList: room.playerList,
-      currentDrawer: room.currentDrawer,
-      drawerQueue: [...room.drawerQueue],
-      isWordSelectingPhase: room.isWordSelectingPhase,
+      currentDrawer: room.game.currentDrawer,
+      drawerQueue: [...room.game.drawerQueue],
+      scoredThisTurn: [...room.game.scoredThisTurn],
+      isWordSelectingPhase: room.game.isWordSelectingPhase,
       phaseEndsInMs: getRemainingPhaseMs(room),
     });
 
     // Only the drawer learns what the choices are, and only over the socket
     // their identity is currently attached to.
-    emitToPlayer(newDrawer, 'drawerReceiveWordChoices', room.wordChoices);
+    emitToPlayer(
+      io,
+      sessions,
+      newDrawer,
+      'dg:word-choices',
+      room.game.wordChoices,
+    );
 
     // Falling back to the first choice used to be the drawer's browser's
     // job, which meant it never happened if they had closed the tab.
     schedulePhaseEnd(room.roomId, phaseDurationsInSeconds.wordSelecting, () => {
-      const fallbackWord = room.wordChoices[0];
+      const fallbackWord = room.game.wordChoices[0];
       if (fallbackWord === undefined) {
         endTurn(room);
         return;
@@ -350,31 +338,28 @@ const createDrawAndGuessGameEngine = (
     });
   };
 
-  const beginDrawingPhase = (
-    room: DrawAndGuessDetailRoomInfo,
-    word: string,
-  ) => {
-    room.currentWord = word;
-    room.currentWordHint = buildWordHint(word);
-    room.isWordSelectingPhase = false;
-    room.isDrawingPhase = true;
-    room.wordChoices = []; // Empty the word choices once one is picked
+  const beginDrawingPhase = (room: DrawAndGuessRoom, word: string) => {
+    room.game.currentWord = word;
+    room.game.currentWordHint = buildWordHint(word);
+    room.game.isWordSelectingPhase = false;
+    room.game.isDrawingPhase = true;
+    room.game.wordChoices = []; // Empty the word choices once one is picked
     room.phaseEndsAt = Date.now() + phaseDurationsInSeconds.drawing * 1000;
 
     console.log(
-      `In room ${room.roomId}, drawer ${room.currentDrawer} is drawing "${word}".`,
+      `In room ${room.roomId}, drawer ${room.game.currentDrawer} is drawing "${word}".`,
     );
 
-    io.to(room.roomId).emit('drawingPhaseStarted', {
-      currentWordHint: room.currentWordHint,
-      isWordSelectingPhase: room.isWordSelectingPhase,
-      isDrawingPhase: room.isDrawingPhase,
-      wordChoices: room.wordChoices,
+    emitToRoom(io, room.roomId, 'dg:phase:drawing', {
+      currentWordHint: room.game.currentWordHint,
+      isWordSelectingPhase: room.game.isWordSelectingPhase,
+      isDrawingPhase: room.game.isDrawingPhase,
+      wordChoices: room.game.wordChoices,
       phaseEndsInMs: getRemainingPhaseMs(room),
     });
 
     // Only the drawer is told the word itself.
-    emitToPlayer(room.currentDrawer, 'drawingPhaseStartedForDrawer', word);
+    emitToPlayer(io, sessions, room.game.currentDrawer, 'dg:word', word);
 
     schedulePhaseEnd(room.roomId, phaseDurationsInSeconds.drawing, () =>
       beginReviewingPhase(room),
@@ -382,18 +367,18 @@ const createDrawAndGuessGameEngine = (
     scheduleHintReveals(room);
   };
 
-  const beginReviewingPhase = (room: DrawAndGuessDetailRoomInfo) => {
+  const beginReviewingPhase = (room: DrawAndGuessRoom) => {
     // Nothing left to hint at: the next event reveals the word itself.
     clearHintTimers(room.roomId);
 
-    room.isDrawingPhase = false;
-    room.isReviewingPhase = true;
+    room.game.isDrawingPhase = false;
+    room.game.isReviewingPhase = true;
     room.phaseEndsAt = Date.now() + phaseDurationsInSeconds.reviewing * 1000;
 
-    io.to(room.roomId).emit('reviewingPhaseStarted', {
-      isDrawingPhase: room.isDrawingPhase,
-      isReviewingPhase: room.isReviewingPhase,
-      currentWord: room.currentWord,
+    emitToRoom(io, room.roomId, 'dg:phase:review', {
+      isDrawingPhase: room.game.isDrawingPhase,
+      isReviewingPhase: room.game.isReviewingPhase,
+      currentWord: room.game.currentWord,
       phaseEndsInMs: getRemainingPhaseMs(room),
     });
 
@@ -402,57 +387,58 @@ const createDrawAndGuessGameEngine = (
     );
   };
 
-  const endTurn = (room: DrawAndGuessDetailRoomInfo) => {
+  const endTurn = (room: DrawAndGuessRoom) => {
     clearPhaseTimer(room.roomId);
     clearDrawerHold(room.roomId);
     clearHintTimers(room.roomId);
 
-    room.isWordSelectingPhase = false;
-    room.isDrawingPhase = false;
-    room.isReviewingPhase = false;
-    room.currentDrawer = '';
-    room.currentWord = '';
-    room.currentWordHint = '';
-    room.wordChoices = [];
+    room.game.isWordSelectingPhase = false;
+    room.game.isDrawingPhase = false;
+    room.game.isReviewingPhase = false;
+    room.game.currentDrawer = '';
+    room.game.currentWord = '';
+    room.game.currentWordHint = '';
+    room.game.wordChoices = [];
     room.phaseEndsAt = 0;
 
-    io.to(room.roomId).emit('reviewingPhaseEnded', {
-      isWordSelectingPhase: room.isWordSelectingPhase,
-      isDrawingPhase: room.isDrawingPhase,
-      isReviewingPhase: room.isReviewingPhase,
-      currentDrawer: room.currentDrawer,
-      currentWord: room.currentWord,
-      currentWordHint: room.currentWordHint,
+    emitToRoom(io, room.roomId, 'dg:phase:idle', {
+      isWordSelectingPhase: room.game.isWordSelectingPhase,
+      isDrawingPhase: room.game.isDrawingPhase,
+      isReviewingPhase: room.game.isReviewingPhase,
+      currentDrawer: room.game.currentDrawer,
+      currentWord: room.game.currentWord,
+      currentWordHint: room.game.currentWordHint,
     });
 
     // A departure may have ended the game while this turn was running.
     if (!room.isGameStarted) return;
 
-    if (room.drawerQueue.size > 0) {
+    if (room.game.drawerQueue.size > 0) {
       startNewDrawerTurn(room);
-    } else if (room.currentRound < room.rounds) {
+    } else if (room.game.currentRound < room.game.rounds) {
       startNewRound(room);
     } else {
       endGame(room);
     }
   };
 
-  const endGame = (room: DrawAndGuessDetailRoomInfo) => {
+  const endGame = (room: DrawAndGuessRoom) => {
     clearPhaseTimer(room.roomId);
     clearDrawerHold(room.roomId);
     clearHintTimers(room.roomId);
 
-    room.currentRound = 0;
+    room.game.currentRound = 0;
     room.isGameStarted = false;
-    room.isWordSelectingPhase = false;
-    room.isDrawingPhase = false;
-    room.isReviewingPhase = false;
-    room.currentDrawer = '';
-    room.currentWord = '';
-    room.currentWordHint = '';
-    room.wordChoices = [];
-    room.drawerQueue.clear();
-    room.wordCategory = '';
+    room.game.isWordSelectingPhase = false;
+    room.game.isDrawingPhase = false;
+    room.game.isReviewingPhase = false;
+    room.game.currentDrawer = '';
+    room.game.currentWord = '';
+    room.game.currentWordHint = '';
+    room.game.wordChoices = [];
+    room.game.drawerQueue.clear();
+    room.game.scoredThisTurn.clear();
+    room.game.wordCategory = '';
     room.phaseEndsAt = 0;
     room.status = getRoomStatus(
       room.currentPlayerCount,
@@ -460,10 +446,7 @@ const createDrawAndGuessGameEngine = (
       room.isGameStarted,
     );
 
-    io.to(room.roomId).emit(
-      'endDrawAndGuessGame',
-      getDrawAndGuessRoomState(room),
-    );
+    emitToRoom(io, room.roomId, 'dg:game:ended', toRoomState(room));
     announce(room.roomId, 'Game has ended!');
     emitLobbyRoomList();
   };
@@ -472,13 +455,11 @@ const createDrawAndGuessGameEngine = (
    * Called after a player has been removed from `playerList`, by either the
    * explicit leave handler or the disconnect handler.
    */
-  const handlePlayerDeparture = (
-    room: DrawAndGuessDetailRoomInfo,
-    playerId: string,
-  ) => {
+  const handlePlayerDeparture = (room: DrawAndGuessRoom, playerId: string) => {
     // Leaving a stale id in the queue would hand a turn to a player who is
     // no longer there, and nobody would ever draw it.
-    room.drawerQueue.delete(playerId);
+    room.game.drawerQueue.delete(playerId);
+    room.game.scoredThisTurn.delete(playerId);
 
     if (!room.isGameStarted) return;
 
@@ -491,7 +472,7 @@ const createDrawAndGuessGameEngine = (
       return;
     }
 
-    if (room.currentDrawer === playerId) {
+    if (room.game.currentDrawer === playerId) {
       announce(
         room.roomId,
         'The drawer left the room. Skipping to the next turn.',
@@ -506,7 +487,7 @@ const createDrawAndGuessGameEngine = (
    * the phase is, and how much of it is left.
    */
   const pointsForCorrectGuess = (
-    room: DrawAndGuessDetailRoomInfo,
+    room: DrawAndGuessRoom,
   ): { guesser: number; drawer: number } => {
     const phaseInMs = phaseDurationsInSeconds.drawing * 1000;
     const fractionLeft =
@@ -530,14 +511,14 @@ const createDrawAndGuessGameEngine = (
    * reconnect grace do not hold it open — they cannot guess while they are
    * away, so waiting for them would cost the room the whole phase.
    */
-  const handleCorrectGuess = (room: DrawAndGuessDetailRoomInfo) => {
-    if (!room.isDrawingPhase) return;
+  const handleCorrectGuess = (room: DrawAndGuessRoom) => {
+    if (!room.game.isDrawingPhase) return;
 
     const stillGuessing = Object.entries(room.playerList).filter(
       ([playerId, player]) =>
-        playerId !== room.currentDrawer &&
+        playerId !== room.game.currentDrawer &&
         player.isConnected &&
-        !player.receivedPointsThisTurn,
+        !room.game.scoredThisTurn.has(playerId),
     );
     if (stillGuessing.length > 0) return;
 
@@ -561,14 +542,11 @@ const createDrawAndGuessGameEngine = (
    * `drawerHoldInSeconds` — long enough for a refresh, short enough that a room
    * whose drawer has actually gone is not left staring at a frozen canvas.
    */
-  const handleDrawerDisconnect = (
-    room: DrawAndGuessDetailRoomInfo,
-    playerId: string,
-  ) => {
+  const handleDrawerDisconnect = (room: DrawAndGuessRoom, playerId: string) => {
     if (!room.isGameStarted) return;
-    if (room.currentDrawer !== playerId) return;
+    if (room.game.currentDrawer !== playerId) return;
 
-    if (room.isWordSelectingPhase) {
+    if (room.game.isWordSelectingPhase) {
       announce(
         room.roomId,
         'The drawer lost connection. Skipping to the next turn.',
@@ -578,7 +556,7 @@ const createDrawAndGuessGameEngine = (
     }
 
     // The reveal needs nobody in particular; it runs itself out.
-    if (!room.isDrawingPhase) return;
+    if (!room.game.isDrawingPhase) return;
 
     // Never outlast the phase it is holding open.
     const holdInSeconds = Math.min(
@@ -594,9 +572,9 @@ const createDrawAndGuessGameEngine = (
 
         // They may have come back, left properly, or had the turn end under
         // them in the time we spent waiting.
-        const current = rooms[room.roomId];
+        const current = roomOf(room.roomId);
         if (!current) return;
-        if (current.currentDrawer !== playerId) return;
+        if (current.game.currentDrawer !== playerId) return;
         if (current.playerList[playerId]?.isConnected) return;
 
         announce(
@@ -613,13 +591,10 @@ const createDrawAndGuessGameEngine = (
    *
    * What only the drawer knows — the word, the canvas — is not re-sent here:
    * this runs during the identity handshake, before the room page has mounted
-   * and subscribed. The page asks for it, in `room-events-handler.ts`.
+   * and subscribed. The page asks for it, over `room:sync`.
    */
-  const handleDrawerReturn = (
-    room: DrawAndGuessDetailRoomInfo,
-    playerId: string,
-  ) => {
-    if (room.currentDrawer !== playerId) return;
+  const handleDrawerReturn = (room: DrawAndGuessRoom, playerId: string) => {
+    if (room.game.currentDrawer !== playerId) return;
     if (!drawerHoldTimers.has(room.roomId)) return;
 
     clearDrawerHold(room.roomId);
@@ -633,17 +608,28 @@ const createDrawAndGuessGameEngine = (
     clearHintTimers(roomId);
   };
 
+  /** Drops every room's timers, for a server that is closing. */
+  const dispose = () => {
+    for (const roomId of new Set([
+      ...phaseTimers.keys(),
+      ...drawerHoldTimers.keys(),
+      ...hintTimers.keys(),
+    ])) {
+      disposeRoom(roomId);
+    }
+  };
+
   /**
    * The drawer's own word choice. Verified rather than trusted: the sender has
    * to be the current drawer, in their own selecting phase, choosing one of
    * the words they were actually offered.
    */
   const selectWord = (roomId: string, playerId: string, word: string) => {
-    const room = rooms[roomId];
+    const room = roomOf(roomId);
     if (!room) return;
-    if (room.currentDrawer !== playerId) return;
-    if (!room.isWordSelectingPhase) return;
-    if (!room.wordChoices.includes(word)) return;
+    if (room.game.currentDrawer !== playerId) return;
+    if (!room.game.isWordSelectingPhase) return;
+    if (!room.game.wordChoices.includes(word)) return;
 
     clearPhaseTimer(roomId);
     beginDrawingPhase(room, word);
@@ -658,10 +644,11 @@ const createDrawAndGuessGameEngine = (
     handleDrawerDisconnect,
     handleDrawerReturn,
     disposeRoom,
+    dispose,
   };
 };
 
 type DrawAndGuessGameEngine = ReturnType<typeof createDrawAndGuessGameEngine>;
 
-export { createDrawAndGuessGameEngine };
-export type { DrawAndGuessGameEngine };
+export { createDrawAndGuessGameEngine, MIN_PLAYERS_TO_START };
+export type { DrawAndGuessGameEngine, DrawAndGuessRoom };

@@ -21,6 +21,7 @@ import { roomInfoInitialObject } from '../../data/roomInfo';
 import useScreenSize from '../../hooks/useScreenSize';
 import useCountdownTimer from '../../hooks/useCountDownTimer';
 import { sortPlayerListByPoints } from '../../libs/utils';
+import { emit, off, on } from '../../libs/socket-events';
 
 const DrawAndGuessRoom = () => {
   const { socket, playerId } = useSocket();
@@ -47,7 +48,7 @@ const DrawAndGuessRoom = () => {
     currentRoomInfo.playerList[currentRoomInfo.currentDrawer]?.username;
   // Empty until the identity handshake completes, so guard the lookup.
   const receivedPointsThisTurn = playerId
-    ? (currentRoomInfo.playerList[playerId]?.receivedPointsThisTurn ?? false)
+    ? currentRoomInfo.scoredThisTurn.includes(playerId)
     : false;
 
   // The clock lives on the server. Only one phase runs at a time, so the room
@@ -74,49 +75,34 @@ const DrawAndGuessRoom = () => {
     const askForASeat = (targetRoomId: string) => {
       if (hasAskedToJoinRef.current) return;
       hasAskedToJoinRef.current = true;
-      socket.emit('clientJoinDrawAndGuessRoomRequest', targetRoomId, username);
+      emit(socket, 'room:join', targetRoomId, username);
     };
 
-    socket.on(
-      'clientJoinDrawAndGuessRoomSuccess',
-      (roomState: DrawAndGuessRoomState) => {
-        setCurrentRoomInfo((prevRoomInfo) => ({
-          ...prevRoomInfo,
-          ...roomState,
-        }));
-        // Room snapshots carry the live phase clock, so joining or
-        // watching someone leave re-syncs the countdown.
-        anchorPhaseDeadline(roomState.phaseEndsInMs);
+    // Joining, leaving and re-syncing all deliver the same snapshot, and used
+    // to do it under three different names.
+    on(socket, 'room:state', (roomState: DrawAndGuessRoomState) => {
+      setCurrentRoomInfo((prevRoomInfo) => ({
+        ...prevRoomInfo,
+        ...roomState,
+      }));
+      // Room snapshots carry the live phase clock, so joining or
+      // watching someone leave re-syncs the countdown.
+      anchorPhaseDeadline(roomState.phaseEndsInMs);
 
-        if (playerId && !roomState.playerList[playerId]) {
-          askForASeat(roomState.roomId);
-        }
-      },
-    );
+      if (playerId && !roomState.playerList[playerId]) {
+        askForASeat(roomState.roomId);
+      }
+    });
 
     // Only reachable by the rejoin above: the lobby handles its own
     // rejections. A locked room cannot be rejoined without the password,
     // and the lobby is where that gets asked for.
-    socket.on(
-      'rejectClientJoinDrawAndGuessRoomRequest',
-      (data: { message: string }) => {
-        toast.error(data.message);
-        navigate('/Gamehub/DrawAndGuess/Lobby', { replace: true });
-      },
-    );
+    on(socket, 'room:join:denied', (data: { message: string }) => {
+      toast.error(data.message);
+      navigate('/Gamehub/DrawAndGuess/Lobby', { replace: true });
+    });
 
-    socket.on(
-      'clientLeaveDrawAndGuessRoomSuccess',
-      (roomState: DrawAndGuessRoomState) => {
-        setCurrentRoomInfo((prevRoomInfo) => ({
-          ...prevRoomInfo,
-          ...roomState,
-        }));
-        anchorPhaseDeadline(roomState.phaseEndsInMs);
-      },
-    );
-
-    socket.on('roomError', (roomError: RoomErrorPayload) => {
+    on(socket, 'room:error', (roomError: RoomErrorPayload) => {
       if (roomError.errorType === 'roomNotExist') {
         setRoomDoesNotExist(true);
       }
@@ -134,8 +120,9 @@ const DrawAndGuessRoom = () => {
       }
     });
 
-    socket.on(
-      'startDrawAndGuessGameSuccess',
+    on(
+      socket,
+      'dg:game:started',
       (data: {
         playerList: Record<string, PlayerInfo>;
         isGameStarted: boolean;
@@ -152,8 +139,9 @@ const DrawAndGuessRoom = () => {
       },
     );
 
-    socket.on(
-      'startNewRoundSuccess',
+    on(
+      socket,
+      'dg:round',
       (data: { currentRound: number; drawerQueue: string[] }) => {
         setCurrentRoomInfo((prevRoomInfo) => ({
           ...prevRoomInfo,
@@ -163,12 +151,14 @@ const DrawAndGuessRoom = () => {
       },
     );
 
-    socket.on(
-      'wordSelectingPhaseStarted',
+    on(
+      socket,
+      'dg:phase:word-select',
       (data: {
         playerList: Record<string, PlayerInfo>;
         currentDrawer: string;
         drawerQueue: string[];
+        scoredThisTurn: string[];
         isWordSelectingPhase: boolean;
         phaseEndsInMs: number;
       }) => {
@@ -177,6 +167,7 @@ const DrawAndGuessRoom = () => {
           playerList: data.playerList,
           currentDrawer: data.currentDrawer,
           drawerQueue: data.drawerQueue,
+          scoredThisTurn: data.scoredThisTurn,
           isWordSelectingPhase: data.isWordSelectingPhase,
           currentWord: '',
         }));
@@ -187,15 +178,16 @@ const DrawAndGuessRoom = () => {
     // ONLY drawer of the current round will receive this event.
     // If they never pick, the server falls back to the first choice — that
     // deadline used to live here, in the drawer's own browser.
-    socket.on('drawerReceiveWordChoices', (wordChoices: string[]) => {
+    on(socket, 'dg:word-choices', (wordChoices: string[]) => {
       setCurrentRoomInfo((prevRoomInfo) => ({
         ...prevRoomInfo,
         wordChoices: wordChoices,
       }));
     });
 
-    socket.on(
-      'drawingPhaseStarted',
+    on(
+      socket,
+      'dg:phase:drawing',
       (data: {
         currentWordHint: string;
         isWordSelectingPhase: boolean;
@@ -216,7 +208,7 @@ const DrawAndGuessRoom = () => {
 
     // The hint gets easier as the drawing clock runs down: the server
     // uncovers letters on its own schedule and says what it uncovered.
-    socket.on('wordHintRevealed', (data: { currentWordHint: string }) => {
+    on(socket, 'dg:hint', (data: { currentWordHint: string }) => {
       setCurrentRoomInfo((prevRoomInfo) => ({
         ...prevRoomInfo,
         currentWordHint: data.currentWordHint,
@@ -224,25 +216,31 @@ const DrawAndGuessRoom = () => {
     });
 
     // ONLY drawer of the current round will receive this event
-    socket.on('drawingPhaseStartedForDrawer', (word: string) => {
+    on(socket, 'dg:word', (word: string) => {
       setCurrentRoomInfo((prevRoomInfo) => ({
         ...prevRoomInfo,
         currentWord: word,
       }));
     });
 
-    socket.on(
-      'playersReceivedPointsFromCorrectGuess',
-      (updatedPlayerList: Record<string, PlayerInfo>) => {
+    on(
+      socket,
+      'dg:scores',
+      (data: {
+        playerList: Record<string, PlayerInfo>;
+        scoredThisTurn: string[];
+      }) => {
         setCurrentRoomInfo((prevRoomInfo) => ({
           ...prevRoomInfo,
-          playerList: updatedPlayerList,
+          playerList: data.playerList,
+          scoredThisTurn: data.scoredThisTurn,
         }));
       },
     );
 
-    socket.on(
-      'reviewingPhaseStarted',
+    on(
+      socket,
+      'dg:phase:review',
       (data: {
         isDrawingPhase: boolean;
         isReviewingPhase: boolean;
@@ -259,8 +257,9 @@ const DrawAndGuessRoom = () => {
       },
     );
 
-    socket.on(
-      'reviewingPhaseEnded',
+    on(
+      socket,
+      'dg:phase:idle',
       (data: {
         isWordSelectingPhase: boolean;
         isDrawingPhase: boolean;
@@ -283,7 +282,7 @@ const DrawAndGuessRoom = () => {
       },
     );
 
-    socket.on('endDrawAndGuessGame', (roomState: DrawAndGuessRoomState) => {
+    on(socket, 'dg:game:ended', (roomState: DrawAndGuessRoomState) => {
       setCurrentRoomInfo((prevRoomInfo) => ({
         ...prevRoomInfo,
         ...roomState,
@@ -292,21 +291,20 @@ const DrawAndGuessRoom = () => {
     });
 
     return () => {
-      socket.off('clientJoinDrawAndGuessRoomSuccess');
-      socket.off('rejectClientJoinDrawAndGuessRoomRequest');
-      socket.off('clientLeaveDrawAndGuessRoomSuccess');
-      socket.off('roomError');
-      socket.off('startDrawAndGuessGameSuccess');
-      socket.off('startNewRoundSuccess');
-      socket.off('wordSelectingPhaseStarted');
-      socket.off('drawerReceiveWordChoices');
-      socket.off('drawingPhaseStarted');
-      socket.off('drawingPhaseStartedForDrawer');
-      socket.off('wordHintRevealed');
-      socket.off('playersReceivedPointsFromCorrectGuess');
-      socket.off('reviewingPhaseStarted');
-      socket.off('reviewingPhaseEnded');
-      socket.off('endDrawAndGuessGame');
+      off(socket, 'room:state');
+      off(socket, 'room:join:denied');
+      off(socket, 'room:error');
+      off(socket, 'dg:game:started');
+      off(socket, 'dg:round');
+      off(socket, 'dg:phase:word-select');
+      off(socket, 'dg:word-choices');
+      off(socket, 'dg:phase:drawing');
+      off(socket, 'dg:word');
+      off(socket, 'dg:hint');
+      off(socket, 'dg:scores');
+      off(socket, 'dg:phase:review');
+      off(socket, 'dg:phase:idle');
+      off(socket, 'dg:game:ended');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
@@ -323,8 +321,7 @@ const DrawAndGuessRoom = () => {
   useEffect(() => {
     if (!roomId) return;
 
-    const askForState = () =>
-      socket.emit('requestDrawAndGuessRoomState', roomId);
+    const askForState = () => emit(socket, 'room:sync', roomId);
 
     socket.on('connect', askForState);
     if (socket.connected) askForState();
@@ -337,11 +334,7 @@ const DrawAndGuessRoom = () => {
   useEffect(() => {
     return () => {
       if (currentRoomInfoRef.current.roomId !== '') {
-        socket.emit(
-          'clientLeaveDrawAndGuessRoom',
-          currentRoomInfoRef.current.roomId,
-          username,
-        );
+        emit(socket, 'room:leave', currentRoomInfoRef.current.roomId, username);
       }
     };
   }, [socket, username]);
@@ -351,7 +344,7 @@ const DrawAndGuessRoom = () => {
   };
 
   const handleStartGame = () => {
-    socket.emit('startDrawAndGuessGame', currentRoomInfo.roomId);
+    emit(socket, 'game:start', currentRoomInfo.roomId);
   };
 
   const renderLeftAndRightBodyContent = () => {
