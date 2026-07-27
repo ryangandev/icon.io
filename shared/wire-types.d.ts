@@ -155,6 +155,67 @@ interface DrawAndGuessSettings {
   rounds: number;
 }
 
+type MinesweeperDifficulty = 'Small' | 'Medium' | 'Large';
+
+/** What a Minesweeper room is created with. */
+interface MinesweeperSettings {
+  difficulty: MinesweeperDifficulty;
+}
+
+/**
+ * One cell, as everybody is allowed to see it:
+ *
+ * - `-1` hidden
+ * - `0`–`8` revealed, with that many mines among its eight neighbours
+ * - `9` a mine somebody hit, now common knowledge
+ *
+ * A number per cell rather than an object, because the whole board goes out
+ * every round and a 16×30 board is 480 of them.
+ */
+type MinesweeperCellView = number;
+
+/** What one player's pick was worth, and what it risked. */
+interface MinesweeperPickResult {
+  playerId: string;
+  username: string;
+  /** Row-major index into the board. */
+  index: number;
+  /**
+   * The cell's mine probability immediately before the round, computed from
+   * public information alone — which is why it can be shown to everyone
+   * afterwards without giving anything away.
+   */
+  risk: number;
+  hitMine: boolean;
+  points: number;
+  /** How many players picked this same cell, including this one. */
+  sharedWith: number;
+  /** True when the clock ran out and the server picked the safest cell. */
+  autoPlayed: boolean;
+}
+
+interface MinesweeperLobbyRoomInfo extends LobbyRoomInfo {
+  gameType: 'minesweeper';
+  difficulty: MinesweeperDifficulty;
+}
+
+interface MinesweeperRoomState extends RoomState {
+  gameType: 'minesweeper';
+  difficulty: MinesweeperDifficulty;
+  width: number;
+  height: number;
+  totalMines: number;
+  /** Row-major, `width * height` entries. Never the hidden layout. */
+  board: MinesweeperCellView[];
+  round: number;
+  /** Player ids that have locked a pick in this round — never which cell. */
+  lockedIn: string[];
+  /** How many mines have been hit, so a client can show mines remaining. */
+  minesFound: number;
+  /** What the previous round resolved to; empty before the first one ends. */
+  lastRound: MinesweeperPickResult[];
+}
+
 type ErrorType =
   | 'roomNotExist'
   | 'roomNotOpen'
@@ -206,7 +267,9 @@ type ClientToServerEvent =
   | 'dg:draw:move'
   | 'dg:draw:end'
   | 'dg:draw:undo'
-  | 'dg:draw:clear';
+  | 'dg:draw:clear'
+  // Minesweeper.
+  | 'ms:pick';
 
 type ServerToClientEvent =
   | 'playerIdentity'
@@ -236,7 +299,13 @@ type ServerToClientEvent =
   | 'dg:canvas:move'
   | 'dg:canvas:end'
   | 'dg:canvas:undo'
-  | 'dg:canvas:clear';
+  | 'dg:canvas:clear'
+  // Minesweeper.
+  | 'ms:game:started'
+  | 'ms:game:ended'
+  | 'ms:round'
+  | 'ms:locked'
+  | 'ms:resolve';
 
 export type {
   GameType,
@@ -252,6 +321,12 @@ export type {
   DrawAndGuessLobbyRoomInfo,
   DrawAndGuessRoomState,
   DrawAndGuessSettings,
+  MinesweeperDifficulty,
+  MinesweeperSettings,
+  MinesweeperCellView,
+  MinesweeperPickResult,
+  MinesweeperLobbyRoomInfo,
+  MinesweeperRoomState,
   ErrorType,
   RoomErrorPayload,
   ClientToServerEvent,

@@ -1,0 +1,94 @@
+.minesweeper-board-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 8px;
+  overflow: auto;
+}
+
+.minesweeper-board {
+  display: grid;
+  gap: 2px;
+  padding: 6px;
+  background-color: #c8c2b4;
+  border-radius: 6px;
+  /* The grid keeps square cells at whatever width the board happens to be, so
+     a 9x9 and a 30x16 both sit in the same space without stretching. */
+  width: fit-content;
+  max-width: 100%;
+}
+
+.minesweeper-cell {
+  width: clamp(18px, 2.2vw, 32px);
+  aspect-ratio: 1;
+  padding: 0;
+  border: none;
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: clamp(11px, 1.3vw, 17px);
+  font-weight: 700;
+  line-height: 1;
+  background-color: #ece7dc;
+  color: #4a4a4a;
+  cursor: default;
+  transition:
+    transform 0.08s ease,
+    background-color 0.15s ease;
+}
+
+.minesweeper-cell.is-covered {
+  background-color: #9aa0a6;
+  box-shadow:
+    inset -2px -2px 0 rgba(0, 0, 0, 0.16),
+    inset 2px 2px 0 rgba(255, 255, 255, 0.35);
+}
+
+.minesweeper-cell.is-pickable {
+  cursor: pointer;
+}
+
+.minesweeper-cell.is-pickable:hover {
+  background-color: #b5bbc1;
+  transform: scale(1.08);
+}
+
+/* Your own committed pick, so you can see what you chose while you wait. */
+.minesweeper-cell.is-my-pick {
+  background-color: #4a90d9;
+  box-shadow: 0 0 0 2px #1c5aa8;
+}
+
+.minesweeper-cell.is-mine {
+  background-color: #e57373;
+}
+
+/* Where the room went last round. */
+.minesweeper-cell.was-safe {
+  outline: 2px solid #2ecc71;
+  outline-offset: -2px;
+}
+
+.minesweeper-cell.was-hit {
+  outline: 2px solid #c0392b;
+  outline-offset: -2px;
+}
+
+.minesweeper-board-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background-color: rgba(230, 230, 230, 0.94);
+  border-radius: 6px;
+  text-align: center;
+}
+
+.minesweeper-board-overlay .startBtn {
+  font-weight: 700;
+  background-color: #fdf6d8;
+}

@@ -1,11 +1,17 @@
 import type { AddressInfo } from 'node:net';
 import { io as createClient, type Socket } from 'socket.io-client';
 import { createIconIoServer, type IconIoServer } from '../../app.js';
-import type { PhaseDurationsInSeconds } from '../../libs/game-clock.js';
+import type {
+  MinesweeperDurationsInSeconds,
+  PhaseDurationsInSeconds,
+} from '../../libs/game-clock.js';
+import type { MinesweeperState } from '../../socket/minesweeper/index.js';
 import type {
   DrawAndGuessLobbyRoomInfo,
   DrawAndGuessRoomState,
   DrawAndGuessState,
+  GameType,
+  LobbyRoomInfo,
   PlayerInfo,
 } from '../../models/types.js';
 import type { Room } from '../../libs/rooms/types.js';
@@ -18,6 +24,15 @@ const FAST_PHASES: PhaseDurationsInSeconds = {
   wordSelecting: 0.3,
   drawing: 0.4,
   reviewing: 0.2,
+};
+
+/**
+ * A round window long enough that a test can pick inside it deliberately, and a
+ * reveal short enough that a game of many rounds still finishes in a test.
+ */
+const FAST_MINESWEEPER: MinesweeperDurationsInSeconds = {
+  round: 0.6,
+  reveal: 0.1,
 };
 
 interface PlayerIdentity {
@@ -69,10 +84,12 @@ interface TestServer {
 const startTestServer = async (
   phaseDurations: PhaseDurationsInSeconds = FAST_PHASES,
   graceInSeconds = 0.6,
+  minesweeperDurations: MinesweeperDurationsInSeconds = FAST_MINESWEEPER,
 ): Promise<TestServer> => {
   const server = createIconIoServer({
     serveClient: false,
     phaseDurations,
+    minesweeperDurations,
     graceInSeconds,
   });
 
@@ -292,12 +309,14 @@ const playToDrawingPhase = async (harness: TestServer) => {
 const lobbyView = async (
   socket: Socket,
   roomId: string,
-): Promise<DrawAndGuessLobbyRoomInfo | undefined> => {
-  const list = waitFor<[string, DrawAndGuessLobbyRoomInfo[]]>(
+  gameType: GameType = 'draw-and-guess',
+): Promise<LobbyRoomInfo | undefined> => {
+  const list = waitUntil<[string, LobbyRoomInfo[]]>(
     socket,
     'lobby:rooms',
+    ([forGame]) => forGame === gameType,
   );
-  socket.emit('lobby:subscribe', 'draw-and-guess');
+  socket.emit('lobby:subscribe', gameType);
   const [, rooms] = await list;
   return rooms.find((room) => room.roomId === roomId);
 };
@@ -309,8 +328,67 @@ const serverRoom = (
 ): Room<DrawAndGuessState> =>
   harness.server.rooms[roomId] as Room<DrawAndGuessState>;
 
+/**
+ * The same, for Minesweeper. Tests reach through to the hidden layout on
+ * purpose: knowing where the mines are is the only way to assert on what a pick
+ * *should* have paid, and it is exactly what a client can never see.
+ */
+const minesweeperRoom = (
+  harness: TestServer,
+  roomId: string,
+): Room<MinesweeperState> =>
+  harness.server.rooms[roomId] as Room<MinesweeperState>;
+
+interface CreateMinesweeperRoomOptions {
+  roomName?: string;
+  ownerUsername?: string;
+  maxPlayers?: number;
+  difficulty?: 'Small' | 'Medium' | 'Large';
+  password?: string;
+}
+
+/** Creates a Minesweeper room and returns its id, without joining it. */
+const createMinesweeperRoom = async (
+  socket: Socket,
+  options: CreateMinesweeperRoomOptions = {},
+): Promise<string> => {
+  const created = waitFor<string>(socket, 'room:created');
+  socket.emit('room:create', {
+    gameType: 'minesweeper',
+    roomName: options.roomName ?? 'Minefield',
+    ownerUsername: options.ownerUsername ?? 'Owner',
+    maxPlayers: options.maxPlayers ?? 4,
+    password: options.password ?? '',
+    settings: { difficulty: options.difficulty ?? 'Small' },
+  });
+  return created;
+};
+
+/** Seats two players in a Minesweeper room and starts the first round. */
+const playToFirstRound = async (harness: TestServer) => {
+  const alice = await harness.connect();
+  const bob = await harness.connect();
+
+  const roomId = await createMinesweeperRoom(alice, {
+    ownerUsername: 'Alice',
+  });
+  await joinRoom(alice, roomId, 'Alice');
+  await joinRoom(bob, roomId, 'Bob');
+
+  const round = waitFor<{ round: number; board: number[] }>(
+    alice,
+    'ms:round',
+    5000,
+  );
+  alice.emit('game:start', roomId);
+  const first = await round;
+
+  return { roomId, alice, bob, first };
+};
+
 export {
   FAST_PHASES,
+  FAST_MINESWEEPER,
   startTestServer,
   waitFor,
   waitUntil,
@@ -321,6 +399,9 @@ export {
   playToDrawingPhase,
   lobbyView,
   serverRoom,
+  createMinesweeperRoom,
+  minesweeperRoom,
+  playToFirstRound,
 };
 export type {
   TestServer,

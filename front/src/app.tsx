@@ -4,6 +4,8 @@ import Landing from './pages/landing-page';
 import Gamehub from './pages/gamehub-page';
 import DrawAndGuessLobby from './pages/lobbies/draw-and-guess-lobby';
 import DrawAndGuessRoom from './pages/rooms/draw-and-guess-room';
+import MinesweeperLobby from './pages/lobbies/minesweeper-lobby';
+import MinesweeperRoom from './pages/rooms/minesweeper-room';
 import NotFound from './pages/not-found-page';
 import { SocketProvider } from './providers/socket-provider';
 import ValidateAuth from './components/validate-auth';
@@ -29,6 +31,14 @@ export default function App() {
                 <Route
                   path="/Gamehub/DrawAndGuess/Room/:roomId"
                   element={<DrawAndGuessRoom />}
+                />
+                <Route
+                  path="/Gamehub/Minesweeper/Lobby"
+                  element={<MinesweeperLobby />}
+                />
+                <Route
+                  path="/Gamehub/Minesweeper/Room/:roomId"
+                  element={<MinesweeperRoom />}
                 />
               </Route>
             </Route>

@@ -41,6 +41,26 @@ const phaseDurationsInSeconds: PhaseDurationsInSeconds = {
 };
 
 /**
+ * Minesweeper's clock. Two durations rather than three phases, because a round
+ * is one window in which everybody picks at once.
+ */
+interface MinesweeperDurationsInSeconds {
+  /** How long everybody has to choose a cell. */
+  round: number;
+  /**
+   * How long the outcome stays up before the next round opens. Without it the
+   * board would change under the results and nobody would read what their pick
+   * had actually risked.
+   */
+  reveal: number;
+}
+
+const minesweeperDurationsInSeconds: MinesweeperDurationsInSeconds = {
+  round: readSecondsFromEnv('MINESWEEPER_ROUND_SECONDS', 15),
+  reveal: readSecondsFromEnv('MINESWEEPER_REVEAL_SECONDS', 4),
+};
+
+/**
  * How long a disconnected player keeps their seat, their score and their place
  * in the round before the room gives up on them.
  *
@@ -54,5 +74,9 @@ const reconnectGraceInSeconds = readSecondsFromEnv(
   30,
 );
 
-export { phaseDurationsInSeconds, reconnectGraceInSeconds };
-export type { PhaseDurationsInSeconds };
+export {
+  phaseDurationsInSeconds,
+  minesweeperDurationsInSeconds,
+  reconnectGraceInSeconds,
+};
+export type { PhaseDurationsInSeconds, MinesweeperDurationsInSeconds };
