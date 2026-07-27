@@ -1,7 +1,7 @@
 # Icon.io — Project Analysis
 
 _Written 2026-07-25 after the dependency modernization pass; updated 2026-07-26
-after the bug-fix, reconnection, enhancement and room-layer passes._
+after the bug-fix, reconnection, enhancement, room-layer and Minesweeper passes._
 
 Per-game rules and how to play them live in their own documents:
 [`DRAW-AND-GUESS.md`](DRAW-AND-GUESS.md) and
@@ -394,6 +394,9 @@ Shorten them to play a whole game through in seconds while developing:
 | `RECONNECT_GRACE_SECONDS` | `30`    | How long a dropped player keeps their seat     |
 | `DRAWER_HOLD_SECONDS`     | `10`    | How long a turn waits for a drawer who dropped |
 
+Minesweeper's own two are in [`MINESWEEPER.md`](MINESWEEPER.md):
+`MINESWEEPER_ROUND_SECONDS` and `MINESWEEPER_REVEAL_SECONDS`.
+
 The test suite does not use these — it passes durations straight to
 `createIconIoServer()`, so a suite's timing cannot be changed out from under it
 by an environment variable.
@@ -413,9 +416,11 @@ All four steps this section used to list are done:
    cost: a name that exists on only one side does not compile on either.
 2. ~~**Generic room layer.**~~ `Room<TGameState>` in `back/libs/rooms/`.
 3. ~~**Namespaced events.**~~ `room:` / `lobby:` / `chat:` for the layer, `dg:`
-   for Draw & Guess, with `gameType` on every room payload.
-4. ~~**Per-game module.**~~ `GameModule` in `libs/rooms/types.ts`. Draw & Guess is
-   the first consumer, in `socket/draw-and-guess/module.ts`.
+   for Draw & Guess and `ms:` for Minesweeper, with `gameType` on every room
+   payload.
+4. ~~**Per-game module.**~~ `GameModule` in `libs/rooms/types.ts`, with two
+   consumers: `socket/draw-and-guess/module.ts` and
+   `socket/minesweeper/module.ts`.
 
 **What adding a game now takes**, end to end:
 
@@ -443,9 +448,10 @@ had to change its meaning, only the event name it waits for.
 
 The one thing this section previously said was worth deciding up front — **a
 generic room layer must be able to hand a game its own timers and its own
-per-player state without knowing what either is** — is answered in §1. The answer
-survived contact with one consumer; whether it survives the second is what
-Minesweeper will say.
+per-player state without knowing what either is** — is answered in §1. It has now
+survived contact with a second consumer that disagrees with the first about
+almost everything: Minesweeper was added without editing a line of
+`libs/rooms/`. See §6.
 
 ### Feature ideas
 
