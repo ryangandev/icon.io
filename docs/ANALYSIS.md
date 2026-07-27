@@ -4,7 +4,8 @@ _Written 2026-07-25 after the dependency modernization pass; updated 2026-07-26
 after the bug-fix, reconnection, enhancement and room-layer passes._
 
 Per-game rules and how to play them live in their own documents:
-[`DRAW-AND-GUESS.md`](DRAW-AND-GUESS.md). This one is about the codebase.
+[`DRAW-AND-GUESS.md`](DRAW-AND-GUESS.md) and
+[`MINESWEEPER.md`](MINESWEEPER.md). This one is about the codebase.
 
 This is a snapshot of what the project does today, what's broken, and what it
 would take to grow it into an ongoing hobby project. Roughly 5,000 lines of
@@ -69,8 +70,20 @@ The line the extraction had to get right, and the answer it landed on:
 | `chat-events.ts`  | Talking in a room                                 |
 | `emit.ts`         | Typed emit and listener helpers                   |
 
-**Draw & Guess** (`back/socket/draw-and-guess/`) — see
-[`DRAW-AND-GUESS.md`](DRAW-AND-GUESS.md) for the file table and the rules.
+**The games**: `back/socket/draw-and-guess/` and `back/socket/minesweeper/`. See
+[`DRAW-AND-GUESS.md`](DRAW-AND-GUESS.md) and [`MINESWEEPER.md`](MINESWEEPER.md)
+for their file tables and their rules.
+
+The two modules together are what makes the layer above an abstraction rather
+than Draw & Guess wearing a hat, and they are usefully different:
+
+|                   | Draw & Guess                       | Minesweeper                     |
+| ----------------- | ---------------------------------- | ------------------------------- |
+| Timers of its own | Three (phase, drawer hold, hints)  | One (the round window)          |
+| Turn structure    | One player at a time, in a rota    | Everybody at once, per round    |
+| Per-player state  | Who has scored this turn           | None beyond the shared score    |
+| `syncTo`          | Canvas, plus the drawer's own word | Empty — the snapshot has it all |
+| Private state     | The word, until the reveal         | The mine layout, forever        |
 
 **Neither** (`back/socket/`): `player-session-handler.ts` is the identity
 handshake, and `client-disconnect-handler.ts` hands a dropped socket to
@@ -200,12 +213,22 @@ game, not by reading a diff.
 6 categories in [`back/libs/word-bank.ts`](../back/libs/word-bank.ts): Fruits,
 Animals, League Of Legends, Electronics, Sports, Food.
 
+### Minesweeper
+
+The second game, and the second consumer of the room layer. Simultaneous rounds
+on a shared minefield, scored by **exactly how dangerous each pick was** —
+computed as the true posterior from the public board, so it is verifiable and the
+server cannot score you on whether you were lucky. Hitting a mine costs points
+and ends nothing. Rules in [`MINESWEEPER.md`](MINESWEEPER.md).
+
+Verified by playing a full two-player game in a browser: the scores on screen
+match the curves exactly — a mine at 15% risk cost 105, a mine the solver had
+_proved_ was a mine cost 20, and a timed-out player was auto-played onto a cell
+the solver had proved was safe, for 0.
+
 ### Stubs and dead code
 
-- **Minesweeper** — art assets and a Gamehub tile exist, and `GameType` names it
-  so the room layer has a second value to be generic over; nothing else does. The
-  tile does not link anywhere, and `room:create` refuses a game with no module
-  registered. It is the next piece of work.
+None.
 
 ---
 
@@ -321,7 +344,7 @@ after you left the room; `playerList[socket.id]` indexed with a possibly
 | Express          | 4.19                                  | **5.2**                   |
 | Socket.io        | 4.7                                   | **4.8**                   |
 | Lint             | CRA built-in (eslint 8)               | **oxlint**, both packages |
-| Tests            | none                                  | **184** (Vitest)          |
+| Tests            | none                                  | **233** (Vitest)          |
 | CI               | none                                  | **GitHub Actions**        |
 | Formatting       | script, no config                     | **Prettier, 2-space**     |
 | Node             | 18 types                              | **20+**, `@types/node` 26 |
@@ -443,7 +466,7 @@ canvas to whoever arrives, progressive letter hints, and time-weighted scoring.
 
 ### Infrastructure
 
-- **Tests — done.** 184 of them: 148 backend across 11 files, 36 frontend across 5. The backend suite runs real socket.io clients against a real server, because
+- **Tests — done.** 233 of them: 197 backend across 14 files, 36 frontend across 5. The backend suite runs real socket.io clients against a real server, because
   that is where the interesting behaviour lives; each suite binds its own
   ephemeral port, so no suite can see a room another left behind.
   `createIconIoServer()` exists for this — building the server at module scope
@@ -482,11 +505,16 @@ suite as the proof nothing moved.
 
 What that leaves, in the order it is worth doing:
 
-1. **Minesweeper.** The layer exists and has one consumer, which means the
-   abstraction is still a guess: an interface with a single implementation is
-   just that implementation with extra steps. The second consumer is what says
-   whether the split in §1 was drawn in the right place — and the useful outcome
-   is as much "here is where `libs/rooms/` had to change" as it is a second game.
+1. ~~**Minesweeper.**~~ Done, and it answered the question it was there to ask.
+   The room layer needed **no changes at all** to take a second consumer: not one
+   line of `libs/rooms/` was touched adding it, and the two games disagree about
+   almost everything a game can disagree about — turn structure, timer count,
+   private state, whether an arriving player needs anything the snapshot does not
+   carry. The two places the seam was visible are worth recording, because both
+   were shared components rather than the layer itself: `GameInfoBoard` took six
+   named props, one of them `wordCategory`, and now takes rows; `GameInfoBar`
+   hardcoded the drawing phases in its middle, and now takes children. Neither is
+   a room-layer concern, and both were one small refactor each.
 2. **Spectators, or letting a latecomer in for the next round.** The first thing
    a second visitor to a running room tries, and the canvas being server state
    now makes it mostly a UI decision.
