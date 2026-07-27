@@ -12,28 +12,45 @@ const GamehubPage: FC = () => {
   const navigate = useNavigate();
   const { socket } = useSocket();
 
+  /*
+   * The cleanup here used to be `socket.off('connect')` — with no handler, which
+   * removes *every* `connect` listener on the socket, not just this page's. Two
+   * of them matter: `SocketProvider` listens for `connect` to send the identity
+   * handshake, and `RequireSocket` listens for it to stop showing a spinner.
+   *
+   * This effect re-runs whenever `navigate` changes identity, and the provider's
+   * does not, so the handshake listener was wiped and never restored. The socket
+   * connected, `identifyPlayer` was never sent, the server had no player id for
+   * it, and every event that reads one off the connection — creating a room,
+   * joining one, starting a game — was silently dropped. Logging in and clicking
+   * through to a lobby left you unable to do anything there; only a hard reload,
+   * which remounts the provider, got an identity.
+   *
+   * Named handlers, removed by reference.
+   */
   useEffect(() => {
     if (!username) return;
 
-    if (!socket.connected) {
-      socket.connect();
-      socket.on('connect', () => {
-        toast.success(`Welcome, ${username}!`);
-      });
-    }
+    const handleConnect = () => {
+      toast.success(`Welcome, ${username}!`);
+    };
 
-    socket.on('connect_error', (error) => {
+    const handleConnectError = (error: Error) => {
       console.error('Could not reach the server:', error);
       sessionStorage.removeItem('username');
       socket.disconnect();
       navigate('/Landing');
       toast.error('Connection error. Please try again later.');
-    });
+    };
+
+    socket.on('connect', handleConnect);
+    socket.on('connect_error', handleConnectError);
+
+    if (!socket.connected) socket.connect();
 
     return () => {
-      // Clean up listeners
-      socket.off('connect');
-      socket.off('connect_error');
+      socket.off('connect', handleConnect);
+      socket.off('connect_error', handleConnectError);
     };
   }, [navigate, username, socket]);
 
