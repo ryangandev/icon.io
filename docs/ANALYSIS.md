@@ -1,7 +1,10 @@
 # Icon.io — Project Analysis
 
 _Written 2026-07-25 after the dependency modernization pass; updated 2026-07-26
-after the bug-fix, reconnection and enhancement passes._
+after the bug-fix, reconnection, enhancement and room-layer passes._
+
+Per-game rules and how to play them live in their own documents:
+[`DRAW-AND-GUESS.md`](DRAW-AND-GUESS.md). This one is about the codebase.
 
 This is a snapshot of what the project does today, what's broken, and what it
 would take to grow it into an ongoing hobby project. Roughly 5,000 lines of
@@ -14,17 +17,17 @@ TypeScript across `front/` (React SPA) and `back/` (Express + Socket.io).
 ```
 front/  React SPA ──── socket.io ────► back/  Express + Socket.io
                                             │
-                                            ├── game engine (owns the clock)
-                                            └── all game state in memory
-                                                (two plain objects)
+                                            ├── room layer (seats, lobbies, chat)
+                                            │     └── game modules (own their clocks)
+                                            └── all state in memory, one registry
 ```
 
 **There is no database and no HTTP API.** Everything except serving static files
-happens over Socket.io. Server state lives in two plain objects owned by
-[`back/app.ts`](../back/app.ts):
+happens over Socket.io. Server state is one flat registry of rooms, of every
+game, owned by [`back/libs/rooms/registry.ts`](../back/libs/rooms/registry.ts):
 
 ```ts
-const rooms: Record<string, DrawAndGuessDetailRoomInfo> = {};
+const all: Record<string, Room> = {};
 ```
 
 Restarting the server drops every room. For a hobby project that's a perfectly
@@ -35,20 +38,57 @@ reasonable trade — it just needs to be a conscious one.
 port. That split is what makes the server testable: these objects used to be
 module-level, so importing anything meant taking port 3000.
 
-**Handler layout** (`back/socket/draw-and-guess/`):
+### The room layer, and what sits on it
 
-| File                                  | Responsibility                                  |
-| ------------------------------------- | ----------------------------------------------- |
-| `game-engine.ts`                      | The turn state machine and the phase clock      |
-| `lobby-events-handler.ts`             | List rooms, create room                         |
-| `room-events-handler.ts`              | Join / leave, ownership transfer                |
-| `game-events-handler.ts`              | Socket glue over the engine                     |
-| `chat-events-handler.ts`              | Chat messages and guess checking                |
-| `whiteboard-canvas-events-handler.ts` | Relay draw / undo / clear events                |
-| `canvas.ts`                           | The room's drawing, as a replayable stroke list |
-| `membership.ts`                       | Seats, departures and the reconnect grace       |
-| `../player-session-handler.ts`        | The identity handshake                          |
-| `../client-disconnect-handler.ts`     | Hands a dropped socket to `membership.ts`       |
+A room is `Room<TGameState>`: a name, an owner, a password, seats keyed by player
+id, one clock, and a `game` field the room layer never looks inside. Each game
+registers a **module** — nine members, listed in
+[`libs/rooms/types.ts`](../back/libs/rooms/types.ts) — and the room layer reaches
+it only through those.
+
+The line the extraction had to get right, and the answer it landed on:
+
+- **Timers.** The room layer owns exactly one kind, the seat expiry that holds a
+  disconnected player's place. Every other timer belongs to a module, which keeps
+  its own registry and is told to empty it by `disposeRoom`. Draw & Guess keeps
+  three kinds; a second game need not keep the same number, or any.
+- **Per-player state.** `PlayerInfo` carries what every game has — a name, a
+  score, whether they are still connected. Anything else lives in the module's own
+  state, keyed by the same player id. Draw & Guess's `receivedPointsThisTurn` used
+  to be a field on the shared shape; it is `scoredThisTurn` inside the game now.
+
+**Generic** (`back/libs/rooms/`):
+
+| File              | Responsibility                                    |
+| ----------------- | ------------------------------------------------- |
+| `types.ts`        | `Room<TGameState>` and the `GameModule` interface |
+| `registry.ts`     | Every room, and which module speaks for each      |
+| `membership.ts`   | Seats, departures and the reconnect grace         |
+| `lobby-events.ts` | List rooms, create room                           |
+| `room-events.ts`  | Join / leave / re-sync / start                    |
+| `chat-events.ts`  | Talking in a room                                 |
+| `emit.ts`         | Typed emit and listener helpers                   |
+
+**Draw & Guess** (`back/socket/draw-and-guess/`) — see
+[`DRAW-AND-GUESS.md`](DRAW-AND-GUESS.md) for the file table and the rules.
+
+**Neither** (`back/socket/`): `player-session-handler.ts` is the identity
+handshake, and `client-disconnect-handler.ts` hands a dropped socket to
+`membership.ts`.
+
+**Event names are namespaced by concern, not by game.** `room:join`,
+`lobby:rooms`, `chat:send` and `game:start` belong to the layer; `dg:guess`,
+`dg:phase:drawing` and `dg:canvas:sync` belong to Draw & Guess. The old names
+spelled their game into themselves — `clientJoinDrawAndGuessRoomRequest` — so a
+second game meant either a second near-identical set or one game answering to the
+other's name. Every name is declared once, as a union in
+[`shared/wire-types.d.ts`](../shared/wire-types.d.ts), and both halves route
+their emits and listeners through helpers typed on it: a renamed event that is
+only renamed on one side stops compiling rather than silently not arriving.
+
+**A lobby is a socket.io room per game.** The list used to go to every connected
+socket; now a client that has not subscribed to Draw & Guess is never sent its
+rooms.
 
 **The server is authoritative.** This is the main structural change from the
 original design, and it is worth stating plainly because everything else follows
@@ -61,10 +101,10 @@ from it:
 - **Time is sent as a remaining duration, not a timestamp**, so a client whose
   clock disagrees with the server's still counts down correctly. Every phase
   event and every room snapshot re-syncs it.
-- **Nothing internal is emitted directly.** Two wire types, `LobbyRoomInfo` and
-  `DrawAndGuessRoomState`, are built by `back/libs/utils.ts`, and they are what
-  a client sees. Secrets — the room password, and the word while it is still
-  being guessed — cannot leak by someone emitting a room object by accident.
+- **Nothing internal is emitted directly.** A module's `toLobbyInfo` and
+  `toRoomState` are the only way a room becomes something a client sees. Secrets
+  — the room password, and the word while it is still being guessed — cannot leak
+  by someone emitting a room object by accident.
 - **Every inbound event is validated** ([`back/libs/validation.ts`](../back/libs/validation.ts))
   before it reaches game state, and **rate-limited**
   ([`back/libs/rate-limit.ts`](../back/libs/rate-limit.ts)) before that — one
@@ -91,7 +131,7 @@ refresh, not a way to be the same person across a visit.
 
 **A dropped connection is not a departure.** The seat, the score, ownership and
 the place in the round are held for thirty seconds
-([`membership.ts`](../back/socket/draw-and-guess/membership.ts)) in case the
+([`membership.ts`](../back/libs/rooms/membership.ts)) in case the
 player comes back. Leaving deliberately still takes effect immediately — that
 distinction is the only difference between the two paths, which used to be
 separate near-identical copies of the same sequence.
@@ -107,6 +147,10 @@ packages. The two `models/types.ts` files used to be near-identical copies
 edited in lockstep, and had already drifted — the client declared `currentWord`
 as required where the server omits it, and its `ErrorType` was a member behind.
 Types only, imported with `import type`, so nothing resolves at runtime.
+
+`LobbyRoomInfo` and `RoomState` are the generic halves, and each game extends
+them — `DrawAndGuessLobbyRoomInfo` adds `rounds`. A stringly-typed `settings`
+blob would have saved two interfaces and cost the lobby table its types.
 
 ---
 
@@ -158,9 +202,10 @@ Animals, League Of Legends, Electronics, Sports, Food.
 
 ### Stubs and dead code
 
-- **Minesweeper** — art assets and a Gamehub tile exist; nothing else does. The
-  tile no longer links anywhere, having previously pointed at a route that does
-  not exist.
+- **Minesweeper** — art assets and a Gamehub tile exist, and `GameType` names it
+  so the room layer has a second value to be generic over; nothing else does. The
+  tile does not link anywhere, and `room:create` refuses a game with no module
+  registered. It is the next piece of work.
 
 ---
 
@@ -235,6 +280,25 @@ seven new tests with the checks removed.
 | 🟡 Setting a username reloaded the whole SPA                  | The gate holds the page back until there is a name, so nothing needs telling the name arrived     |
 | 🟡 The Minesweeper tile linked to a route that does not exist | A game with nowhere to go is not rendered as a link                                               |
 | 🟡 Two hand-maintained copies of every wire type              | `shared/wire-types.d.ts`, imported by both packages                                               |
+| 🔴 Logging in left the socket with no identity                | The Gamehub removes only its own `connect` listener, not everyone's                               |
+
+That last one is worth its own paragraph, because it was live on `main` and the
+suite could not have caught it. `gamehub-page.tsx` cleaned up with
+`socket.off('connect')` — no handler, which removes _every_ `connect` listener on
+the socket rather than its own. Two of them matter: `SocketProvider` listens for
+`connect` to send the identity handshake, and `RequireSocket` listens for it to
+stop showing a spinner. The Gamehub's effect re-runs whenever `navigate` changes
+identity and the provider's does not, so the handshake listener was wiped and
+never restored: the socket connected, `identifyPlayer` was never sent, the server
+had no player id for the connection, and every event that reads one off it —
+creating a room, joining one, starting a game — was silently dropped. Logging in
+and clicking through to a lobby left you unable to do anything there. Only a hard
+reload, which remounts the provider, got you an identity, which is why every
+scripted client and every test passed: they all identify explicitly.
+
+It was found by playing the game in a browser, which is the second time that has
+been the only way to find something — the first was the redundant hint in
+[#24](https://github.com/ryangandev/icon.io/pull/24).
 
 Fixed earlier, during the modernization pass: a reviewing-phase timer that fired
 after you left the room; `playerList[socket.id]` indexed with a possibly
@@ -257,7 +321,7 @@ after you left the room; `playerList[socket.id]` indexed with a possibly
 | Express          | 4.19                                  | **5.2**                   |
 | Socket.io        | 4.7                                   | **4.8**                   |
 | Lint             | CRA built-in (eslint 8)               | **oxlint**, both packages |
-| Tests            | none                                  | **171** (Vitest)          |
+| Tests            | none                                  | **184** (Vitest)          |
 | CI               | none                                  | **GitHub Actions**        |
 | Formatting       | script, no config                     | **Prettier, 2-space**     |
 | Node             | 18 types                              | **20+**, `@types/node` 26 |
@@ -317,41 +381,48 @@ by an environment variable.
 
 ### Adding a game
 
-The codebase is _shaped_ for multiple games — routes, assets, and the Gamehub
-picker all anticipate it — but nothing is abstracted yet. Draw & Guess logic is
-hardcoded into event names (`startDrawAndGuessGame`,
-`updateDrawAndGuessLobbyRoomList`) and into the single
-`drawAndGuessDetailRoomInfoList` object.
+All four steps this section used to list are done:
 
-To add Minesweeper as-is you'd copy the whole vertical slice. Before doing that
-twice, extract the generic part:
+1. ~~**Shared types package.**~~ `shared/wire-types.d.ts`, imported by both
+   packages. It is types only — a shared _value_ would need it to become a real
+   package, which is why the event names are a union of string literals rather
+   than a frozen object of constants. That buys the same protection at zero build
+   cost: a name that exists on only one side does not compile on either.
+2. ~~**Generic room layer.**~~ `Room<TGameState>` in `back/libs/rooms/`.
+3. ~~**Namespaced events.**~~ `room:` / `lobby:` / `chat:` for the layer, `dg:`
+   for Draw & Guess, with `gameType` on every room payload.
+4. ~~**Per-game module.**~~ `GameModule` in `libs/rooms/types.ts`. Draw & Guess is
+   the first consumer, in `socket/draw-and-guess/module.ts`.
 
-1. ~~**Shared types package.**~~ Done: `shared/wire-types.d.ts`, imported by
-   both packages. It is types only — a shared _value_, an event-name constant
-   say, would need this to become a real package.
-2. **Generic room layer** — `Room<TGameState>` with create / join / leave /
-   ownership / disconnect, which is identical for every game.
-3. **Namespaced events** — `room:join` / `room:leave` with a `gameType`
-   discriminator, instead of `clientJoinDrawAndGuessRoomRequest`.
-4. **Per-game module** — each game registers `{ id, minPlayers, maxPlayers,
-createInitialState, handlers }`. Draw & Guess becomes the first consumer.
+**What adding a game now takes**, end to end:
 
-The line to cut along is clearer than it was, because the enhancement pass made
-`game-engine.ts` unmistakably _Draw & Guess's_: it now owns letter reveals,
-time-weighted scoring and a drawer hold, none of which mean anything to
-Minesweeper. What is generic is everything in `membership.ts` — seats,
-ownership, the reconnect grace, deleting an empty room — plus the identity
-handshake, the rate limiter, and the room/lobby half of `room-events-handler.ts`
-and `lobby-events-handler.ts`. What is not is the whole turn state machine, the
-canvas, and the guess path.
+- One `createXModule(ctx, …)` returning a `GameModule`, and one line in
+  `app.ts` to register it.
+- A member added to `GameType`, plus that game's own room state, lobby info and
+  settings interfaces in the shared contract, and its event names in the two
+  unions.
+- A lobby page and a room page. The lobby is a copy of Draw & Guess's with a
+  different `GAME_TYPE` and different columns; `RoomCreateForm` takes the
+  game-specific fields as children and puts whatever they are named into
+  `settings`, which is the only part of a create request the server hands to a
+  module.
 
-The one thing worth deciding up front rather than discovering: **a generic room
-layer must be able to hand a game its own timers and its own per-player state
-without knowing what either is.** Draw & Guess keeps four kinds of timer (phase,
-drawer hold, letter reveals, seat expiry) and three per-player fields that only
-it cares about. Do the extraction and the second game together — an abstraction
-with one consumer is a guess, and the second consumer is what tells you whether
-the guess was right.
+Nothing in `libs/rooms/` should need editing, and if it does, that is the
+abstraction being wrong rather than the game being unusual — worth noticing
+rather than working around.
+
+**What the extraction did _not_ change** is worth stating too, because it is the
+evidence that it was behaviour-preserving: every one of Draw & Guess's rules,
+timings and payload contents. The suite went from 137 backend tests to 148, and
+the new eleven are all about the layer (per-game lobbies, settings validation,
+refusing an unregistered game); not one existing assertion about the game itself
+had to change its meaning, only the event name it waits for.
+
+The one thing this section previously said was worth deciding up front — **a
+generic room layer must be able to hand a game its own timers and its own
+per-player state without knowing what either is** — is answered in §1. The answer
+survived contact with one consumer; whether it survives the second is what
+Minesweeper will say.
 
 ### Feature ideas
 
@@ -372,7 +443,7 @@ canvas to whoever arrives, progressive letter hints, and time-weighted scoring.
 
 ### Infrastructure
 
-- **Tests — done.** 171 of them: 137 backend across 10 files, 34 frontend across 5. The backend suite runs real socket.io clients against a real server, because
+- **Tests — done.** 184 of them: 148 backend across 11 files, 36 frontend across 5. The backend suite runs real socket.io clients against a real server, because
   that is where the interesting behaviour lives; each suite binds its own
   ephemeral port, so no suite can see a room another left behind.
   `createIconIoServer()` exists for this — building the server at module scope
@@ -405,14 +476,17 @@ The list this section carried is done — all seven items, one commit each:
 6. ~~Rate limiting.~~
 7. ~~Housekeeping.~~ Zero lint warnings, from eleven.
 
+The room-layer half of item 1 below is done too — a generic `Room<TGameState>`,
+namespaced events and a per-game module, with Draw & Guess ported onto it and its
+suite as the proof nothing moved.
+
 What that leaves, in the order it is worth doing:
 
-1. **A second game, on an extracted room layer.** Steps 2–4 of §5 — a generic
-   `Room<TGameState>`, namespaced events, and a per-game module — with
-   Minesweeper as the second consumer. Draw & Guess is the reference
-   implementation and every piece of it that is _not_ about drawing (seats,
-   ownership, the reconnect grace, the lobby) is what wants extracting. §5 says
-   where the line falls and what the layer has to be able to hand a game.
+1. **Minesweeper.** The layer exists and has one consumer, which means the
+   abstraction is still a guess: an interface with a single implementation is
+   just that implementation with extra steps. The second consumer is what says
+   whether the split in §1 was drawn in the right place — and the useful outcome
+   is as much "here is where `libs/rooms/` had to change" as it is a second game.
 2. **Spectators, or letting a latecomer in for the next round.** The first thing
    a second visitor to a running room tries, and the canvas being server state
    now makes it mostly a UI decision.

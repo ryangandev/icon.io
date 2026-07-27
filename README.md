@@ -17,7 +17,16 @@ Icon.io is an evolved version of my original project, [**Icon**](https://github.
 | Frontend | React 19 · TypeScript 7 · Vite 8 · Ant Design 6 · Socket.io |
 | Backend  | Node.js 20+ · TypeScript 7 · Express 5 · Socket.io          |
 
-See [`docs/ANALYSIS.md`](docs/ANALYSIS.md) for a feature inventory, known issues, and the roadmap.
+## 🎮 Games
+
+| Game                                   | Players | Status                                  |
+| -------------------------------------- | ------- | --------------------------------------- |
+| [Draw & Guess](docs/DRAW-AND-GUESS.md) | 2–8     | Playable                                |
+| Minesweeper                            | —       | Next up; the room layer is ready for it |
+
+Each game is a module on a shared room layer that owns seats, ownership, the
+reconnect grace and the lobby. See [`docs/ANALYSIS.md`](docs/ANALYSIS.md) for the
+architecture, a feature inventory, known issues, and the roadmap.
 
 ## ✅ Checks
 
