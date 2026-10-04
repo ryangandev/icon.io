@@ -30,6 +30,11 @@ test('two players pick until the board is done', async ({ player }) => {
     await expect(maya.getByText('Pick a cell')).toBeHidden();
   }
 
+  // The winner is celebrated with a burst of confetti that clears itself.
+  const confetti = maya.locator('canvas[aria-hidden]');
+  await expect(confetti).toBeVisible();
+  await expect(confetti).toHaveCount(0, { timeout: 10_000 });
+
   await expect(
     maya.getByRole('list', { name: 'Standings' }).getByRole('listitem'),
   ).toHaveCount(2);

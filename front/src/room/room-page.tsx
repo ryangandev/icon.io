@@ -16,6 +16,7 @@ import { Stage } from '../shell/stage';
 import { StatusLine } from '../shell/status-line';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import { LobbyHeading, lobbyHeading } from '../pages/lobby';
+import { Confetti } from './confetti';
 import { InviteDialog, LeaveDialog } from './dialogs';
 import { RoomContext, type Room } from './room-context';
 
@@ -239,6 +240,17 @@ function SeatedRoom({
   const [inviting, setInviting] = useState(false);
   const [starting, setStarting] = useState(false);
 
+  // A game that ends while the room is open is celebrated; a finished game
+  // found on arrival or after a refresh is not. Each one gets its own burst.
+  const [wasPlaying, setWasPlaying] = useState(state.isGameStarted);
+  const [celebrations, setCelebrations] = useState(0);
+  if (state.isGameStarted !== wasPlaying) {
+    setWasPlaying(state.isGameStarted);
+    if (!state.isGameStarted && state.lastGame && !state.lastGame.endedEarly) {
+      setCelebrations((count) => count + 1);
+    }
+  }
+
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
       currentLocation.pathname !== nextLocation.pathname,
@@ -318,6 +330,7 @@ function SeatedRoom({
           <MinesweeperRoom />
         )}
       </Page>
+      {celebrations > 0 && <Confetti key={celebrations} />}
       <InviteDialog
         open={inviting}
         onOpenChange={setInviting}

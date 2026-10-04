@@ -23,6 +23,9 @@ const pick = {
   autoPlayed: false,
 };
 
+/** The celebration's canvas; the room has no other. */
+const confetti = () => document.querySelector('canvas[aria-hidden]');
+
 describe('a Minesweeper room', () => {
   it('lets the host start once two players are in', async () => {
     const user = userEvent.setup();
@@ -128,5 +131,25 @@ describe('a Minesweeper room', () => {
     update({ ...picking, round: 2, lastRound: [pick] });
     expect(screen.getByText('Pick a cell')).toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: /results/ })).toBeNull();
+  });
+
+  it('celebrates a game that ends while the room is open', async () => {
+    const ended = minesweeperState({
+      lastGame: {
+        endedEarly: false,
+        standings: [{ playerId: ME, username: 'Ryan', points: 120 }],
+        difficulty: 'Small',
+        rounds: 6,
+      },
+    });
+    const { update } = await renderSeated(ended);
+    expect(confetti()).toBeNull();
+
+    update(picking);
+    update(ended);
+    expect(
+      screen.getByRole('heading', { name: 'Ryan wins with 120 points.' }),
+    ).toBeInTheDocument();
+    expect(confetti()).not.toBeNull();
   });
 });
