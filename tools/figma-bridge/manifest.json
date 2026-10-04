@@ -1,0 +1,14 @@
+{
+  "name": "Zumpo bridge",
+  "id": "zumpo-bridge-local",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["none"],
+    "devAllowedDomains": ["http://localhost:7799"],
+    "reasoning": "Talks only to the bridge server on this machine, which queues the scripts this plugin runs."
+  }
+}

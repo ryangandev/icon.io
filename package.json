@@ -14,7 +14,10 @@
     "build": "npm --prefix back run build:deploy",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "verify": "npm run lint && npm run typecheck && npm run format:check && npm test && npm run build"
+    "verify": "npm run lint && npm run typecheck && npm run format:check && npm test && npm run build",
+    "design:import": "node tools/figma-export/import.mjs",
+    "figma:bridge": "node tools/figma-bridge/server.mjs",
+    "figma:run": "node tools/figma-bridge/run.mjs"
   },
   "devDependencies": {
     "oxlint": "^1.75.0",

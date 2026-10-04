@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      body {
+        margin: 0;
+        padding: 16px;
+        font:
+          12px/1.5 Inter,
+          system-ui,
+          sans-serif;
+        color: var(--figma-color-text, #222);
+        background: var(--figma-color-bg, #fff);
+      }
+      h1 {
+        margin: 0 0 4px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      p {
+        margin: 0 0 12px;
+        color: var(--figma-color-text-secondary, #666);
+      }
+      label {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      .actions {
+        display: flex;
+        gap: 8px;
+      }
+      button {
+        padding: 6px 12px;
+        font: inherit;
+        font-weight: 600;
+        border-radius: 6px;
+        border: 1px solid var(--figma-color-border, #ccc);
+        background: var(--figma-color-bg, #fff);
+        color: inherit;
+        cursor: pointer;
+      }
+      button.primary {
+        border-color: transparent;
+        background: var(--figma-color-bg-brand, #0d99ff);
+        color: var(--figma-color-text-onbrand, #fff);
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+      #status {
+        margin: 12px 0 8px;
+        font-weight: 600;
+      }
+      #log {
+        height: 300px;
+        overflow: auto;
+        padding: 8px;
+        border-radius: 6px;
+        background: var(--figma-color-bg-secondary, #f5f5f5);
+        font:
+          11px/1.45 ui-monospace,
+          Menlo,
+          monospace;
+        white-space: pre-wrap;
+      }
+      .warn {
+        color: var(--figma-color-text-warning, #b86200);
+      }
+      .error {
+        color: var(--figma-color-text-danger, #d00);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Zumpo design export</h1>
+    <p>
+      Read-only. Exports tokens, Shared pieces, every flow screen and every
+      vector drawing as one zip.
+    </p>
+    <label>
+      <input id="previews" type="checkbox" checked />
+      Include PNG previews (flows 1x, components 2x)
+    </label>
+    <div class="actions">
+      <button id="run" class="primary">Export</button>
+      <button id="again" disabled>Download again</button>
+    </div>
+    <div id="status">Ready.</div>
+    <div id="log"></div>
+
+    <script>
+      const files = [];
+      let zipUrl = null;
+      let zipName = 'zumpo-figma-export.zip';
+
+      const $ = (id) => document.getElementById(id);
+      const log = (text, cls) => {
+        const line = document.createElement('div');
+        if (cls) line.className = cls;
+        line.textContent = text;
+        $('log').appendChild(line);
+        $('log').scrollTop = $('log').scrollHeight;
+      };
+
+      $('run').onclick = () => {
+        files.length = 0;
+        $('log').textContent = '';
+        $('run').disabled = true;
+        $('again').disabled = true;
+        $('status').textContent = 'Exporting…';
+        parent.postMessage(
+          { pluginMessage: { type: 'run', previews: $('previews').checked } },
+          '*',
+        );
+      };
+
+      $('again').onclick = () => download();
+
+      window.onmessage = async (event) => {
+        const msg = event.data && event.data.pluginMessage;
+        if (!msg) return;
+        if (msg.type === 'progress') {
+          $('status').textContent = msg.text;
+          log(msg.text);
+        } else if (msg.type === 'file') {
+          files.push(msg);
+        } else if (msg.type === 'warning') {
+          log('warning: ' + msg.text, 'warn');
+        } else if (msg.type === 'error') {
+          $('status').textContent = 'Failed. Nothing was changed.';
+          log(msg.message + (msg.stack ? '\n' + msg.stack : ''), 'error');
+          $('run').disabled = false;
+        } else if (msg.type === 'done') {
+          $('status').textContent = 'Zipping ' + files.length + ' files…';
+          // Local time, so the name matches the clock on the machine that saved it.
+          const now = new Date();
+          const two = (n) => String(n).padStart(2, '0');
+          const stamp =
+            now.getFullYear() +
+            two(now.getMonth() + 1) +
+            two(now.getDate()) +
+            '-' +
+            two(now.getHours()) +
+            two(now.getMinutes());
+          zipName = msg.fileName.replace('.zip', '-' + stamp + '.zip');
+          const blob = await buildZip(files);
+          if (zipUrl) URL.revokeObjectURL(zipUrl);
+          zipUrl = URL.createObjectURL(blob);
+          log('summary: ' + JSON.stringify(msg.summary));
+          for (const w of msg.warnings) log('warning: ' + w, 'warn');
+          $('status').textContent =
+            zipName + ' · ' + (blob.size / 1024 / 1024).toFixed(1) + ' MB';
+          $('run').disabled = false;
+          $('again').disabled = false;
+          download();
+        }
+      };
+
+      function download() {
+        if (!zipUrl) return;
+        const a = document.createElement('a');
+        a.href = zipUrl;
+        a.download = zipName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
+
+      // ---- a minimal zip writer: deflate where the browser can, store otherwise
+
+      const CRC_TABLE = (() => {
+        const t = new Uint32Array(256);
+        for (let n = 0; n < 256; n++) {
+          let c = n;
+          for (let k = 0; k < 8; k++)
+            c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+          t[n] = c >>> 0;
+        }
+        return t;
+      })();
+
+      function crc32(bytes) {
+        let c = 0xffffffff;
+        for (let i = 0; i < bytes.length; i++) {
+          c = CRC_TABLE[(c ^ bytes[i]) & 0xff] ^ (c >>> 8);
+        }
+        return (c ^ 0xffffffff) >>> 0;
+      }
+
+      async function deflateRaw(bytes) {
+        if (typeof CompressionStream === 'undefined') return null;
+        try {
+          const stream = new Blob([bytes])
+            .stream()
+            .pipeThrough(new CompressionStream('deflate-raw'));
+          return new Uint8Array(await new Response(stream).arrayBuffer());
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function dosDateTime(d) {
+        const time =
+          (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1);
+        const date =
+          ((d.getFullYear() - 1980) << 9) |
+          ((d.getMonth() + 1) << 5) |
+          d.getDate();
+        return { time, date };
+      }
+
+      async function buildZip(entries) {
+        const encoder = new TextEncoder();
+        const { time, date } = dosDateTime(new Date());
+        const parts = [];
+        const central = [];
+        let offset = 0;
+
+        for (const entry of entries) {
+          const name = encoder.encode(entry.path);
+          const data =
+            typeof entry.data === 'string'
+              ? encoder.encode(entry.data)
+              : new Uint8Array(entry.data);
+          const crc = crc32(data);
+          const packed = entry.path.endsWith('.png')
+            ? null
+            : await deflateRaw(data);
+          const useDeflate = packed && packed.length < data.length;
+          const body = useDeflate ? packed : data;
+          const method = useDeflate ? 8 : 0;
+
+          const local = new DataView(new ArrayBuffer(30));
+          local.setUint32(0, 0x04034b50, true);
+          local.setUint16(4, 20, true);
+          local.setUint16(6, 0x0800, true);
+          local.setUint16(8, method, true);
+          local.setUint16(10, time, true);
+          local.setUint16(12, date, true);
+          local.setUint32(14, crc, true);
+          local.setUint32(18, body.length, true);
+          local.setUint32(22, data.length, true);
+          local.setUint16(26, name.length, true);
+          local.setUint16(28, 0, true);
+          parts.push(local.buffer, name, body);
+
+          const dir = new DataView(new ArrayBuffer(46));
+          dir.setUint32(0, 0x02014b50, true);
+          dir.setUint16(4, 20, true);
+          dir.setUint16(6, 20, true);
+          dir.setUint16(8, 0x0800, true);
+          dir.setUint16(10, method, true);
+          dir.setUint16(12, time, true);
+          dir.setUint16(14, date, true);
+          dir.setUint32(16, crc, true);
+          dir.setUint32(20, body.length, true);
+          dir.setUint32(24, data.length, true);
+          dir.setUint16(28, name.length, true);
+          dir.setUint32(42, offset, true);
+          central.push(dir.buffer, name);
+
+          offset += 30 + name.length + body.length;
+        }
+
+        const centralSize = central.reduce((n, p) => n + p.byteLength, 0);
+        const end = new DataView(new ArrayBuffer(22));
+        end.setUint32(0, 0x06054b50, true);
+        end.setUint16(8, entries.length, true);
+        end.setUint16(10, entries.length, true);
+        end.setUint32(12, centralSize, true);
+        end.setUint32(16, offset, true);
+        return new Blob(parts.concat(central, [end.buffer]), {
+          type: 'application/zip',
+        });
+      }
+    </script>
+  </body>
+</html>
