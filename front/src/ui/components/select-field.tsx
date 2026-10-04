@@ -76,7 +76,10 @@ export function SelectField<Value extends string | number>({
                   <Select.Item
                     key={option.value}
                     value={option.value}
-                    className={styles.option}
+                    className={cx(
+                      styles.option,
+                      option.detail && styles.withDetail,
+                    )}
                   >
                     <span className={styles.text}>
                       <Select.ItemText className={styles.optionLabel}>

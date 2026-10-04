@@ -73,6 +73,11 @@
   user-select: none;
 }
 
+/* Two lines of text: Figma tightens the padding to keep the option 56 high. */
+.withDetail {
+  padding-block: 8px;
+}
+
 .option[data-highlighted] {
   background: var(--zumpo-cream);
 }
