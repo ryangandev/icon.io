@@ -5,14 +5,15 @@
 }
 
 /* Figma's chat hugs its messages, up to about a dozen of them; a room keeps a
-   hundred, so beyond that the log scrolls rather than stretching the page. */
+   hundred, so beyond that the log scrolls rather than stretching the page.
+   At 358 px a full chat ends level with the 1440 px canvas beside it. */
 .log {
   display: flex;
   flex: 1;
   flex-direction: column;
   gap: var(--zumpo-space-12);
   min-height: 0;
-  max-height: 360px;
+  max-height: 358px;
   margin: 0;
   padding: 0;
   overflow-y: auto;
