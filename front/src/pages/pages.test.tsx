@@ -95,6 +95,29 @@ describe('making a room', () => {
 });
 
 describe('on a phone', () => {
+  it('keeps one way in on the front door', async () => {
+    onPhone();
+    await renderApp('/');
+    expect(screen.getByText('A little play')).toBeInTheDocument();
+    expect(
+      screen.getByText('Good games for good company.'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'Let’s play' }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Browse games' })).toBeNull();
+    expect(screen.queryByText(/Grab a friend/)).toBeNull();
+  });
+
+  it('greets the player above the games', async () => {
+    onPhone();
+    await renderApp('/games', { name: 'Maya' });
+    expect(screen.getByText('Hey, Maya')).toBeInTheDocument();
+    expect(
+      screen.getByText('Good games for good company.'),
+    ).toBeInTheDocument();
+  });
+
   it('asks for a name straight on the page', async () => {
     onPhone();
     await renderApp('/name', { name: '' });
