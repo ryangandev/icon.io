@@ -18,7 +18,8 @@ export interface TurnBarProps {
   main: string;
   /** Beside the main line, such as the letter count. */
   meta?: string;
-  countdown: CountdownProps;
+  /** Hidden while nothing is timed, such as everyone locked in before a reveal. */
+  countdown?: CountdownProps;
   className?: string;
 }
 
@@ -44,7 +45,7 @@ export function TurnBar({
           <span className={cx(styles.main, styles[kind])}>{main}</span>
           {meta && <span className={styles.meta}>{meta}</span>}
         </p>
-        <Countdown {...countdown} className={styles.clock} />
+        {countdown && <Countdown {...countdown} className={styles.clock} />}
       </section>
     </div>
   );

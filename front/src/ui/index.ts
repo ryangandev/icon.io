@@ -9,6 +9,8 @@ export {
 } from './components/avatar';
 export {
   Button,
+  ButtonLink,
+  type ButtonLinkProps,
   type ButtonProps,
   type ButtonVariant,
 } from './components/button';
@@ -37,7 +39,12 @@ export {
   type BrushSize,
   type DrawingToolbarProps,
 } from './components/drawing-toolbar';
-export { Header, type HeaderLink, type HeaderProps } from './components/header';
+export {
+  Header,
+  type HeaderLink,
+  type HeaderMenu,
+  type HeaderProps,
+} from './components/header';
 export { Icon, type GlyphName, type IconProps } from './components/icon';
 export {
   MineCell,

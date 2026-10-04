@@ -25,6 +25,7 @@ export function MobileTabs<View extends string>({
 }: MobileTabsProps<View>) {
   return (
     <Tabs.Root
+      className={styles.root}
       value={value}
       onValueChange={(next) => onValueChange(next as View)}
     >

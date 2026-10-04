@@ -64,7 +64,7 @@ export function PlayerRow({
           <span className={styles.status}>{status}</span>
         </span>
       </span>
-      <span className={styles.score}>{score}</span>
+      <span className={styles.score}>{score < 0 ? `−${-score}` : score}</span>
     </li>
   );
 }

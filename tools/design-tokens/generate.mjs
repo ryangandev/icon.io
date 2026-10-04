@@ -210,10 +210,71 @@ export type BrushName = (typeof brushes)[number]['name'];
 `;
 }
 
+// A colour variable bound in the export, as the token that carries it.
+function fillOf(token) {
+  const name = token.replace(/^\$Zumpo · UI:color\//, '');
+  return `var(--zumpo-${name})`;
+}
+
+// The turtle sample drawing, the Draw & Guess artwork on the home and games
+// pages, one entry per Stage variant. Each part is a stroked vector or a
+// filled ellipse, placed as in the component.
+function drawingsTs() {
+  const set = read('components/sample-turtle-drawing.json');
+  const stages = set.variants.map(({ props, node }) => {
+    const parts = node.children.map((child) => {
+      if (child.type === 'ELLIPSE') {
+        return `{ ellipse: true, x: ${round(child.x)}, y: ${round(child.y)}, w: ${round(child.w)}, h: ${round(child.h)}, fill: '${fillOf(child.fills[0])}' }`;
+      }
+      if (child.type !== 'VECTOR' || !child.svg) {
+        throw new Error(`Turtle part ${child.name} is a ${child.type}`);
+      }
+      const svg = fs.readFileSync(path.join(design, child.svg), 'utf8');
+      const width = Number(svg.match(/<svg[^>]* width="([\d.]+)"/)[1]);
+      const height = Number(svg.match(/<svg[^>]* height="([\d.]+)"/)[1]);
+      const paths = [...svg.matchAll(/<path ([^>]*)\/>/g)];
+      if (paths.length !== 1) {
+        throw new Error(`${child.svg} has ${paths.length} paths, expected 1`);
+      }
+      const attrs = Object.fromEntries(
+        [...paths[0][1].matchAll(/([\w-]+)="([^"]*)"/g)].map((m) => [
+          m[1],
+          m[2],
+        ]),
+      );
+      return `{ d: '${attrs.d}', x: ${round(child.x - (width - child.w) / 2)}, y: ${round(child.y - (height - child.h) / 2)}, stroke: '${lowerHex(attrs.stroke)}', width: ${Number(attrs['stroke-width'])} }`;
+    });
+    return `  ${props.Stage}: [\n${parts.map((part) => `    ${part},`).join('\n')}\n  ],`;
+  });
+  const { w, h } = set.variants[0].node;
+  return `// ${NOTICE}
+
+export type DrawingPart =
+  | {
+      /** Path data in the vector's own box, at (x, y) in the drawing. */
+      d: string;
+      x: number;
+      y: number;
+      stroke: string;
+      width: number;
+    }
+  | { ellipse: true; x: number; y: number; w: number; h: number; fill: string };
+
+/** The sample drawing's box, in canvas pixels. */
+export const TURTLE_SIZE = { width: ${w}, height: ${h} } as const;
+
+/** Sample / Turtle drawing, stage by stage. */
+export const turtle = {
+${stages.join('\n')}
+} as const satisfies Record<string, readonly DrawingPart[]>;
+`;
+}
+
 const outputs = {
   'tokens.css': tokensCss(),
   'glyphs.ts': glyphsTs(),
   'brushes.ts': brushesTs(),
+  'drawings.ts': drawingsTs(),
 };
 
 const check = process.argv.includes('--check');

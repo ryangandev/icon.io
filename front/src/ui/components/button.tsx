@@ -1,5 +1,6 @@
 import { Button as BaseButton } from '@base-ui/react/button';
 import type { ComponentProps, ReactNode } from 'react';
+import { Link, type LinkProps } from 'react-router';
 import { cx } from '../cx';
 import { Icon, type GlyphName } from './icon';
 import styles from './button.module.css';
@@ -52,5 +53,24 @@ export function Button({
       {icon && <Icon glyph={icon} size={20} />}
       <span className={styles.label}>{children}</span>
     </BaseButton>
+  );
+}
+
+export interface ButtonLinkProps extends Omit<
+  ButtonProps,
+  'render' | 'nativeButton' | 'type'
+> {
+  to: LinkProps['to'];
+  replace?: boolean;
+}
+
+/** A Button that navigates: a link, styled and sized as a Button. */
+export function ButtonLink({ to, replace, ...rest }: ButtonLinkProps) {
+  return (
+    <Button
+      {...rest}
+      render={<Link to={to} replace={replace} />}
+      nativeButton={false}
+    />
   );
 }
