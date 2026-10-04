@@ -1,0 +1,286 @@
+{
+  "format": 1,
+  "code": "MO02",
+  "title": "Name gate",
+  "id": "9:10098",
+  "section": "04 / Mobile / 390px flow adaptations",
+  "reviewNotes": [
+    "MO02 · 390px / responsive redesign"
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "9:10098",
+    "name": "MO02 / Name gate",
+    "x": 530,
+    "y": 150,
+    "w": 390,
+    "h": 612,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        "$Zumpo · UI:space/20",
+        "$Zumpo · UI:space/20",
+        32,
+        "$Zumpo · UI:space/20"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "FRAME",
+        "id": "9:10099",
+        "name": "Mobile navigation",
+        "w": 350,
+        "h": 44,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "9:10100",
+            "name": "Zumpo/Wordmark",
+            "w": 140,
+            "h": 44,
+            "wSize": "hug",
+            "component": "Zumpo/Wordmark",
+            "componentId": "4:36"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "9:10103",
+            "name": "Player / YO",
+            "visible": false,
+            "w": 32,
+            "h": 32,
+            "component": "Zumpo/Avatar",
+            "componentId": "4:34",
+            "props": {
+              "Initials": "YO"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "fills": [
+                  "$Zumpo · UI:color/blue"
+                ],
+                "height": 32,
+                "width": 32
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:10106",
+        "name": "Page heading",
+        "w": 350,
+        "h": 167,
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/12",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "9:10107",
+            "name": "Status / COME ON IN",
+            "w": 87,
+            "h": 34,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/sand"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "pad": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:10108",
+                "w": 71,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "COME ON IN",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:10109",
+            "w": 350,
+            "h": 84,
+            "hSize": "hug",
+            "text": "What should we call you?",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:10110",
+            "w": 350,
+            "h": 25,
+            "hSize": "hug",
+            "text": "A little step before the fun.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:10111",
+        "name": "Zumpo/Input",
+        "w": 350,
+        "h": 115,
+        "hSize": "hug",
+        "component": "Zumpo/Input",
+        "variant": {
+          "State": "Focus"
+        },
+        "componentId": "9:210",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 115,
+            "width": 350
+          },
+          {
+            "path": "Choose a name people will see.",
+            "characters": "Up to 18 characters. No signup."
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:10116",
+        "name": "Action / Let’s play",
+        "w": 105,
+        "h": 48,
+        "wSize": "hug",
+        "component": "Zumpo/Button",
+        "variant": {
+          "Style": "Primary",
+          "State": "Default"
+        },
+        "componentId": "4:15",
+        "overrides": [
+          {
+            "path": ".",
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "9:10122",
+                    "toName": "MO03 / Games hub",
+                    "transition": "dissolve"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "reactions": [
+          {
+            "on": "on_click",
+            "do": [
+              {
+                "nav": "navigate",
+                "to": "9:10122",
+                "toName": "MO03 / Games hub",
+                "transition": "dissolve"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:10118",
+        "name": "Action / Cancel",
+        "w": 88,
+        "h": 48,
+        "wSize": "hug",
+        "component": "Zumpo/Button",
+        "variant": {
+          "Style": "Quiet",
+          "State": "Default"
+        },
+        "componentId": "4:21",
+        "props": {
+          "Label": "Cancel"
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 48,
+            "width": 88
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:10120",
+        "name": "Footer",
+        "w": 350,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:10121",
+            "w": 350,
+            "h": 18,
+            "hSize": "hug",
+            "text": "A little play. Good company.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    ]
+  }
+}

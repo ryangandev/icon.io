@@ -1,0 +1,520 @@
+{
+  "format": 1,
+  "name": "Zumpo/Button",
+  "id": "4:24",
+  "type": "COMPONENT_SET",
+  "key": "b7b8977fbcea2806ba40d516e012f7ca00a7fae1",
+  "description": "Zumpo actions. Primary starts play; secondary creates a room; quiet keeps secondary controls calm.",
+  "properties": {
+    "Label": {
+      "type": "text",
+      "default": "Let’s play"
+    },
+    "Style": {
+      "type": "variant",
+      "default": "Primary",
+      "options": [
+        "Primary",
+        "Secondary",
+        "Quiet"
+      ]
+    },
+    "State": {
+      "type": "variant",
+      "default": "Default",
+      "options": [
+        "Default",
+        "Hover",
+        "Disabled"
+      ]
+    }
+  },
+  "defaultVariant": "Style=Primary, State=Default",
+  "variants": [
+    {
+      "name": "Style=Primary, State=Default",
+      "id": "4:15",
+      "props": {
+        "Style": "Primary",
+        "State": "Default"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:15",
+        "name": "Style=Primary, State=Default",
+        "x": 0,
+        "y": 0,
+        "w": 105,
+        "h": 48,
+        "wSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/coral"
+        ],
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "4:25",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Primary, State=Hover",
+      "id": "4:16",
+      "props": {
+        "Style": "Primary",
+        "State": "Hover"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:16",
+        "name": "Style=Primary, State=Hover",
+        "x": 196,
+        "y": 0,
+        "w": 109,
+        "h": 48,
+        "wSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/coral"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "4:26",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Primary, State=Disabled",
+      "id": "4:17",
+      "props": {
+        "Style": "Primary",
+        "State": "Disabled"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:17",
+        "name": "Style=Primary, State=Disabled",
+        "x": 392,
+        "y": 0,
+        "w": 105,
+        "h": 48,
+        "wSize": "hug",
+        "opacity": 0.45,
+        "fills": [
+          "$Zumpo · UI:color/coral"
+        ],
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "4:27",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Secondary, State=Default",
+      "id": "4:18",
+      "props": {
+        "Style": "Secondary",
+        "State": "Default"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:18",
+        "name": "Style=Secondary, State=Default",
+        "x": 0,
+        "y": 64,
+        "w": 107,
+        "h": 48,
+        "wSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "4:28",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Secondary, State=Hover",
+      "id": "4:19",
+      "props": {
+        "Style": "Secondary",
+        "State": "Hover"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:19",
+        "name": "Style=Secondary, State=Hover",
+        "x": 196,
+        "y": 64,
+        "w": 109,
+        "h": 48,
+        "wSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "4:29",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Secondary, State=Disabled",
+      "id": "4:20",
+      "props": {
+        "Style": "Secondary",
+        "State": "Disabled"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:20",
+        "name": "Style=Secondary, State=Disabled",
+        "x": 392,
+        "y": 64,
+        "w": 107,
+        "h": 48,
+        "wSize": "hug",
+        "opacity": 0.45,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "4:30",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Quiet, State=Default",
+      "id": "4:21",
+      "props": {
+        "Style": "Quiet",
+        "State": "Default"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:21",
+        "name": "Style=Quiet, State=Default",
+        "x": 0,
+        "y": 128,
+        "w": 105,
+        "h": 48,
+        "wSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "4:31",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Quiet, State=Hover",
+      "id": "4:22",
+      "props": {
+        "Style": "Quiet",
+        "State": "Hover"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:22",
+        "name": "Style=Quiet, State=Hover",
+        "x": 196,
+        "y": 128,
+        "w": 109,
+        "h": 48,
+        "wSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "4:32",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Quiet, State=Disabled",
+      "id": "4:23",
+      "props": {
+        "Style": "Quiet",
+        "State": "Disabled"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:23",
+        "name": "Style=Quiet, State=Disabled",
+        "x": 392,
+        "y": 128,
+        "w": 105,
+        "h": 48,
+        "wSize": "hug",
+        "opacity": 0.45,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "4:33",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

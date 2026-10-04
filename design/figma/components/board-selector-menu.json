@@ -1,0 +1,180 @@
+{
+  "format": 1,
+  "name": "Zumpo/Board selector menu",
+  "id": "9:427",
+  "type": "COMPONENT",
+  "key": "ee3e3839af912ea4978079fe98d3e7ec45c32ce2",
+  "description": "Board options. Medium is current default. No difficulty or mine count is user-editable outside these presets.",
+  "node": {
+    "type": "COMPONENT",
+    "id": "9:427",
+    "name": "Zumpo/Board selector menu",
+    "x": 1240,
+    "y": 2190,
+    "w": 400,
+    "h": 224,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/paper"
+    ],
+    "strokes": [
+      "$Zumpo · UI:color/line"
+    ],
+    "strokeAlign": "inside",
+    "radius": "$Zumpo · UI:radius/16",
+    "layout": {
+      "mode": "column",
+      "pad": "$Zumpo · UI:space/12",
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "FRAME",
+        "id": "9:418",
+        "name": "Option / Small",
+        "w": 374,
+        "h": 66,
+        "wSize": "fill",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/4",
+          "pad": "$Zumpo · UI:space/12",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:419",
+            "w": 350,
+            "h": 20,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "Small",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:420",
+            "w": 350,
+            "h": 18,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "9 × 9 · 10 mines",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:421",
+        "name": "Option / Medium",
+        "w": 374,
+        "h": 66,
+        "wSize": "fill",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/4",
+          "pad": "$Zumpo · UI:space/12",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:422",
+            "w": 350,
+            "h": 20,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "Medium",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:423",
+            "w": 350,
+            "h": 18,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "16 × 16 · 40 mines",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:424",
+        "name": "Option / Large",
+        "w": 374,
+        "h": 66,
+        "wSize": "fill",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/4",
+          "pad": "$Zumpo · UI:space/12",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:425",
+            "w": 350,
+            "h": 20,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "Large",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:426",
+            "w": 350,
+            "h": 18,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "30 × 16 · 99 mines",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    ]
+  }
+}

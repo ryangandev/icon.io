@@ -1,0 +1,51 @@
+{
+  "format": 1,
+  "name": "Zumpo/Avatar",
+  "id": "4:34",
+  "type": "COMPONENT",
+  "key": "3bc857aa6e814ef57de23527e00470d700a49c9d",
+  "description": "Player identity, with editable initials.",
+  "properties": {
+    "Initials": {
+      "type": "text",
+      "default": "RG"
+    }
+  },
+  "node": {
+    "type": "COMPONENT",
+    "id": "4:34",
+    "name": "Zumpo/Avatar",
+    "x": 32,
+    "y": 382,
+    "w": 40,
+    "h": 40,
+    "fills": [
+      "$Zumpo · UI:color/lime"
+    ],
+    "radius": "$Zumpo · UI:radius/999",
+    "layout": {
+      "mode": "row",
+      "justify": "center",
+      "align": "center",
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "TEXT",
+        "id": "4:35",
+        "w": 20,
+        "h": 20,
+        "wSize": "hug",
+        "hSize": "hug",
+        "propRefs": {
+          "characters": "Initials"
+        },
+        "text": "RG",
+        "textStyle": "Zumpo/Label",
+        "fills": [
+          "$Zumpo · UI:color/ink"
+        ]
+      }
+    ]
+  }
+}

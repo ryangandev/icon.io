@@ -1,0 +1,513 @@
+{
+  "format": 1,
+  "code": "MO04",
+  "title": "Room list",
+  "id": "9:10156",
+  "section": "04 / Mobile / 390px flow adaptations",
+  "reviewNotes": [
+    "MO04 · 390px / responsive redesign"
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "9:10156",
+    "name": "MO04 / Room list",
+    "x": 1510,
+    "y": 150,
+    "w": 390,
+    "h": 1259,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        "$Zumpo · UI:space/20",
+        "$Zumpo · UI:space/20",
+        32,
+        "$Zumpo · UI:space/20"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "FRAME",
+        "id": "9:10157",
+        "name": "Mobile navigation",
+        "w": 350,
+        "h": 44,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "9:10158",
+            "name": "Zumpo/Wordmark",
+            "w": 140,
+            "h": 44,
+            "wSize": "hug",
+            "component": "Zumpo/Wordmark",
+            "componentId": "4:36"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "9:10161",
+            "name": "Player / YO",
+            "w": 32,
+            "h": 32,
+            "component": "Zumpo/Avatar",
+            "componentId": "4:34",
+            "props": {
+              "Initials": "YO"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "fills": [
+                  "$Zumpo · UI:color/blue"
+                ],
+                "height": 32,
+                "width": 32
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:10164",
+        "name": "Page heading",
+        "w": 350,
+        "h": 125,
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/12",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "9:10165",
+            "name": "Status / PLAY TOGETHER",
+            "w": 109,
+            "h": 34,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/sand"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "pad": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:10166",
+                "w": 93,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "PLAY TOGETHER",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:10167",
+            "w": 350,
+            "h": 42,
+            "hSize": "hug",
+            "text": "Find your room.",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:10168",
+            "w": 350,
+            "h": 25,
+            "hSize": "hug",
+            "text": "Draw & Guess · 4 rooms",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:10169",
+        "name": "Action / Create a room",
+        "w": 138,
+        "h": 48,
+        "wSize": "hug",
+        "component": "Zumpo/Button",
+        "variant": {
+          "Style": "Primary",
+          "State": "Default"
+        },
+        "componentId": "4:15",
+        "props": {
+          "Label": "Create a room"
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 48,
+            "reactions": [],
+            "width": 138
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:10171",
+        "name": "Maya’s room",
+        "w": 350,
+        "h": 201,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/24",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/16",
+          "pad": "$Zumpo · UI:space/32",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:10172",
+            "w": 286,
+            "h": 30,
+            "hSize": "hug",
+            "text": "Maya’s room",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:10173",
+            "w": 286,
+            "h": 25,
+            "hSize": "hug",
+            "text": "Open · 4 / 8",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "9:10174",
+            "name": "Action / Join room",
+            "w": 110,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Secondary",
+              "State": "Default"
+            },
+            "componentId": "4:18",
+            "props": {
+              "Label": "Join room"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "width": 110
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:10176",
+        "name": "Friday doodles",
+        "w": 350,
+        "h": 201,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/24",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/16",
+          "pad": "$Zumpo · UI:space/32",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:10177",
+            "w": 286,
+            "h": 30,
+            "hSize": "hug",
+            "text": "Friday doodles",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:10178",
+            "w": 286,
+            "h": 25,
+            "hSize": "hug",
+            "text": "Private · 3 / 6",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "9:10179",
+            "name": "Action / Join room",
+            "w": 110,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Secondary",
+              "State": "Default"
+            },
+            "componentId": "4:18",
+            "props": {
+              "Label": "Join room"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "width": 110
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:10181",
+        "name": "The full house",
+        "w": 350,
+        "h": 201,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/24",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/16",
+          "pad": "$Zumpo · UI:space/32",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:10182",
+            "w": 286,
+            "h": 30,
+            "hSize": "hug",
+            "text": "The full house",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:10183",
+            "w": 286,
+            "h": 25,
+            "hSize": "hug",
+            "text": "Full · 8 / 8",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "9:10184",
+            "name": "Action / Full",
+            "w": 64,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Primary",
+              "State": "Disabled"
+            },
+            "componentId": "4:17",
+            "props": {
+              "Label": "Full"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "width": 64
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:10186",
+        "name": "Sketch club",
+        "w": 350,
+        "h": 201,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/24",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/16",
+          "pad": "$Zumpo · UI:space/32",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:10187",
+            "w": 286,
+            "h": 30,
+            "hSize": "hug",
+            "text": "Sketch club",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:10188",
+            "w": 286,
+            "h": 25,
+            "hSize": "hug",
+            "text": "Playing · 4 / 8",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "9:10189",
+            "name": "Action / Playing",
+            "w": 90,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Primary",
+              "State": "Disabled"
+            },
+            "componentId": "4:17",
+            "props": {
+              "Label": "Playing"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "width": 90
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:10191",
+        "name": "Footer",
+        "w": 350,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:10192",
+            "w": 350,
+            "h": 18,
+            "hSize": "hug",
+            "text": "A little play. Good company.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    ]
+  }
+}

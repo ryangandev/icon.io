@@ -1,0 +1,589 @@
+{
+  "format": 1,
+  "code": "D01",
+  "title": "Host · waiting for a second player",
+  "id": "9:1271",
+  "section": "02 / Draw & Guess / complete flow",
+  "reviewNotes": [
+    "D01 · Host · waiting for a second player"
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "9:1271",
+    "name": "D01 / Host · waiting for a second player",
+    "x": 1580,
+    "y": 3208,
+    "w": 1440,
+    "h": 1154.41,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        24,
+        "$Zumpo · UI:space/64",
+        32,
+        "$Zumpo · UI:space/64"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "9:1272",
+        "name": "Zumpo/Header",
+        "w": 1312,
+        "h": 104,
+        "component": "Zumpo/Header",
+        "componentId": "4:39",
+        "overrides": [
+          {
+            "path": "Navigation / Zumpo/Avatar",
+            "componentProperties": {
+              "Initials": "MA"
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:1282",
+        "name": "Room heading",
+        "w": 1312,
+        "h": 117,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/24",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "9:1283",
+            "name": "Room identity",
+            "w": 930,
+            "h": 117,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "FRAME",
+                "id": "9:1284",
+                "name": "Room context",
+                "w": 930,
+                "h": 34,
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/12",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "9:1285",
+                    "name": "Status / MAYA’S ROOM",
+                    "w": 97,
+                    "h": 34,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "fills": [
+                      "$Zumpo · UI:color/sand"
+                    ],
+                    "radius": "$Zumpo · UI:radius/999",
+                    "layout": {
+                      "mode": "row",
+                      "gap": "$Zumpo · UI:space/8",
+                      "pad": "$Zumpo · UI:space/8",
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "9:1286",
+                        "w": 81,
+                        "h": 18,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "text": "MAYA’S ROOM",
+                        "textStyle": "Zumpo/Small",
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "9:1287",
+                    "name": "Status / WAITING ROOM",
+                    "w": 105,
+                    "h": 34,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "fills": [
+                      "$Zumpo · UI:color/blue"
+                    ],
+                    "radius": "$Zumpo · UI:radius/999",
+                    "layout": {
+                      "mode": "row",
+                      "gap": "$Zumpo · UI:space/8",
+                      "pad": "$Zumpo · UI:space/8",
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "9:1288",
+                        "w": 89,
+                        "h": 18,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "text": "WAITING ROOM",
+                        "textStyle": "Zumpo/Small",
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "9:1289",
+                "w": 248,
+                "h": 42,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Draw & Guess",
+                "textStyle": "Zumpo/Title",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "9:1290",
+                "w": 930,
+                "h": 25,
+                "hSize": "hug",
+                "text": "A few good guesses go a long way.",
+                "textStyle": "Zumpo/Body",
+                "fills": [
+                  "$Zumpo · UI:color/muted"
+                ],
+                "autoResize": "height"
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "9:1291",
+            "name": "Action / Leave room",
+            "w": 120,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Quiet",
+              "State": "Default"
+            },
+            "componentId": "4:21",
+            "props": {
+              "Label": "Leave room"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "reactions": [
+                  {
+                    "on": "on_click",
+                    "do": [
+                      {
+                        "nav": "navigate",
+                        "to": "9:769",
+                        "toName": "P11 / Leave room confirmation",
+                        "transition": "dissolve"
+                      }
+                    ]
+                  }
+                ],
+                "width": 120
+              }
+            ],
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "9:769",
+                    "toName": "P11 / Leave room confirmation",
+                    "transition": "dissolve"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:1293",
+        "name": "Zumpo/Notice",
+        "w": 1312,
+        "h": 56,
+        "hSize": "hug",
+        "component": "Zumpo/Notice",
+        "variant": {
+          "Tone": "Info"
+        },
+        "componentId": "9:227",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 56,
+            "width": 1312
+          },
+          {
+            "path": "Connection restored. Welcome back!",
+            "characters": "1 / 8 players · Invite a friend to begin."
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:1296",
+        "name": "Game & room",
+        "w": 1312,
+        "h": 707.41,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/24",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "9:1297",
+            "name": "Game stage",
+            "w": 944,
+            "h": 707.41,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/16",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "FRAME",
+                "id": "9:1298",
+                "name": "Whiteboard / alone",
+                "w": 944,
+                "h": 707.41,
+                "fills": [
+                  "$Zumpo · UI:color/white"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside",
+                "radius": "$Zumpo · UI:radius/24",
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "9:1299",
+                    "name": "Phase overlay",
+                    "x": 48,
+                    "y": 215.2,
+                    "w": 848,
+                    "h": 277,
+                    "hSize": "hug",
+                    "fills": [
+                      "$Zumpo · UI:color/paper"
+                    ],
+                    "strokes": [
+                      "$Zumpo · UI:color/line"
+                    ],
+                    "strokeAlign": "inside",
+                    "radius": "$Zumpo · UI:radius/24",
+                    "layout": {
+                      "mode": "column",
+                      "gap": "$Zumpo · UI:space/16",
+                      "pad": "$Zumpo · UI:space/32",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "9:1300",
+                        "w": 784,
+                        "h": 42,
+                        "hSize": "hug",
+                        "text": "A little better with two.",
+                        "textStyle": "Zumpo/Title",
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ],
+                        "autoResize": "height"
+                      },
+                      {
+                        "type": "TEXT",
+                        "id": "9:1301",
+                        "w": 784,
+                        "h": 25,
+                        "hSize": "hug",
+                        "text": "Invite a friend. At least 2 players are needed.",
+                        "textStyle": "Zumpo/Body",
+                        "fills": [
+                          "$Zumpo · UI:color/muted"
+                        ],
+                        "autoResize": "height"
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "9:1302",
+                        "name": "Action / Start game",
+                        "w": 116,
+                        "h": 48,
+                        "wSize": "hug",
+                        "component": "Zumpo/Button",
+                        "variant": {
+                          "Style": "Primary",
+                          "State": "Disabled"
+                        },
+                        "componentId": "4:17",
+                        "props": {
+                          "Label": "Start game"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 48,
+                            "width": 116
+                          }
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "9:16328",
+                        "name": "Action / Invite a friend",
+                        "w": 135,
+                        "h": 48,
+                        "wSize": "hug",
+                        "component": "Zumpo/Button",
+                        "variant": {
+                          "Style": "Primary",
+                          "State": "Default"
+                        },
+                        "componentId": "4:15",
+                        "props": {
+                          "Label": "Invite a friend"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 48,
+                            "reactions": [
+                              {
+                                "on": "on_click",
+                                "do": [
+                                  {
+                                    "nav": "navigate",
+                                    "to": "9:792",
+                                    "toName": "P12 / Invite friends"
+                                  }
+                                ]
+                              }
+                            ],
+                            "width": 135
+                          }
+                        ],
+                        "reactions": [
+                          {
+                            "on": "on_click",
+                            "do": [
+                              {
+                                "nav": "navigate",
+                                "to": "9:792",
+                                "toName": "P12 / Invite friends"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "9:1304",
+            "name": "Room sidebar",
+            "w": 344,
+            "h": 363,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/24",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "9:1305",
+                "name": "Zumpo/Scoreboard",
+                "w": 344,
+                "h": 138,
+                "hSize": "hug",
+                "component": "Zumpo/Scoreboard",
+                "componentId": "9:320",
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 138,
+                    "width": 344
+                  },
+                  {
+                    "path": "Player / Maya · host / Player details / Maya · host",
+                    "characters": "Maya · you"
+                  },
+                  {
+                    "path": "Player / Maya · host / Player details / Drawing now",
+                    "characters": "Ready to play"
+                  },
+                  {
+                    "path": "Player / Maya · host / 460",
+                    "characters": "0"
+                  },
+                  {
+                    "path": "Player / Ryan",
+                    "visible": false
+                  },
+                  {
+                    "path": "Player / Ryan / 320",
+                    "characters": "0"
+                  },
+                  {
+                    "path": "Player / Leo",
+                    "visible": false
+                  },
+                  {
+                    "path": "Player / Leo / 240",
+                    "characters": "0"
+                  },
+                  {
+                    "path": "Player / You",
+                    "visible": false
+                  },
+                  {
+                    "path": "Player / You / Player / YO",
+                    "componentProperties": {
+                      "Initials": "SA"
+                    }
+                  },
+                  {
+                    "path": "Player / You / Player details / You",
+                    "characters": "Sam"
+                  },
+                  {
+                    "path": "Player / You / 180",
+                    "characters": "0"
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "9:1335",
+                "name": "Zumpo/Chat",
+                "w": 344,
+                "h": 201,
+                "hSize": "hug",
+                "component": "Zumpo/Chat",
+                "componentId": "9:334",
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 201,
+                    "width": 344
+                  },
+                  {
+                    "path": "Ryan",
+                    "visible": false
+                  },
+                  {
+                    "path": "Leo",
+                    "visible": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:1348",
+        "name": "Footer",
+        "w": 1312,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:1349",
+            "w": 650,
+            "h": 18,
+            "hSize": "hug",
+            "text": "Good company. One more round.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:1350",
+            "w": 115,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "zumpo. / play a little",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

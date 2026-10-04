@@ -1,0 +1,460 @@
+{
+  "format": 1,
+  "code": "D06",
+  "title": "Drawer · drawing & tools",
+  "id": "9:1675",
+  "section": "02 / Draw & Guess / complete flow",
+  "reviewNotes": [
+    "D06 · Drawer · drawing & tools"
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "9:1675",
+    "name": "D06 / Drawer · drawing & tools",
+    "x": 3120,
+    "y": 4462.41,
+    "w": 1440,
+    "h": 1286.41,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        24,
+        "$Zumpo · UI:space/64",
+        32,
+        "$Zumpo · UI:space/64"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "9:1676",
+        "name": "Zumpo/Header",
+        "w": 1312,
+        "h": 104,
+        "component": "Zumpo/Header",
+        "componentId": "4:39",
+        "overrides": [
+          {
+            "path": "Navigation / Zumpo/Avatar",
+            "componentProperties": {
+              "Initials": "MA"
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:1686",
+        "name": "Room heading",
+        "w": 1312,
+        "h": 117,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/24",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "9:1687",
+            "name": "Room identity",
+            "w": 930,
+            "h": 117,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "FRAME",
+                "id": "9:1688",
+                "name": "Room context",
+                "w": 930,
+                "h": 34,
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/12",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "9:1689",
+                    "name": "Status / MAYA’S ROOM",
+                    "w": 97,
+                    "h": 34,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "fills": [
+                      "$Zumpo · UI:color/sand"
+                    ],
+                    "radius": "$Zumpo · UI:radius/999",
+                    "layout": {
+                      "mode": "row",
+                      "gap": "$Zumpo · UI:space/8",
+                      "pad": "$Zumpo · UI:space/8",
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "9:1690",
+                        "w": 81,
+                        "h": 18,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "text": "MAYA’S ROOM",
+                        "textStyle": "Zumpo/Small",
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "9:1691",
+                    "name": "Status / ROUND 1 / 2",
+                    "w": 83,
+                    "h": 34,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "fills": [
+                      "$Zumpo · UI:color/blue"
+                    ],
+                    "radius": "$Zumpo · UI:radius/999",
+                    "layout": {
+                      "mode": "row",
+                      "gap": "$Zumpo · UI:space/8",
+                      "pad": "$Zumpo · UI:space/8",
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "9:1692",
+                        "w": 67,
+                        "h": 18,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "text": "ROUND 1 / 2",
+                        "textStyle": "Zumpo/Small",
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "9:1693",
+                "w": 248,
+                "h": 42,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Draw & Guess",
+                "textStyle": "Zumpo/Title",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "9:1694",
+                "w": 930,
+                "h": 25,
+                "hSize": "hug",
+                "text": "You draw. Everyone else guesses.",
+                "textStyle": "Zumpo/Body",
+                "fills": [
+                  "$Zumpo · UI:color/muted"
+                ],
+                "autoResize": "height"
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "9:1695",
+            "name": "Action / Leave room",
+            "w": 120,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Quiet",
+              "State": "Default"
+            },
+            "componentId": "4:21",
+            "props": {
+              "Label": "Leave room"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "reactions": [
+                  {
+                    "on": "on_click",
+                    "do": [
+                      {
+                        "nav": "navigate",
+                        "to": "9:769",
+                        "toName": "P11 / Leave room confirmation",
+                        "transition": "dissolve"
+                      }
+                    ]
+                  }
+                ],
+                "width": 120
+              }
+            ],
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "9:769",
+                    "toName": "P11 / Leave room confirmation",
+                    "transition": "dissolve"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:1697",
+        "name": "Zumpo/Notice",
+        "w": 1312,
+        "h": 56,
+        "hSize": "hug",
+        "component": "Zumpo/Notice",
+        "variant": {
+          "Tone": "Info"
+        },
+        "componentId": "9:227",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 56,
+            "width": 1312
+          },
+          {
+            "path": "Connection restored. Welcome back!",
+            "characters": "DRAW: ROCKET · Only you can see the word. · 01:12"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:1700",
+        "name": "Game & room",
+        "w": 1312,
+        "h": 839.41,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/24",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "9:1701",
+            "name": "Game stage",
+            "w": 944,
+            "h": 839.41,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/16",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "9:1702",
+                "name": "Zumpo/Drawing toolbar",
+                "w": 944,
+                "h": 82,
+                "hSize": "hug",
+                "component": "Zumpo/Drawing toolbar",
+                "componentId": "9:355",
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 82,
+                    "width": 944
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "9:1722",
+                "name": "Whiteboard / drawer",
+                "w": 944,
+                "h": 707.41,
+                "fills": [
+                  "$Zumpo · UI:color/white"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside",
+                "radius": "$Zumpo · UI:radius/24",
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "9:1723",
+                    "name": "Editable rocket drawing",
+                    "x": 292,
+                    "y": 188.7,
+                    "w": 360,
+                    "h": 330,
+                    "svg": "svg/editable-rocket-drawing-a28261.svg"
+                  }
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "9:1729",
+                "name": "Colours · four brush sizes · Undo · Clear. Your drawing is shared live",
+                "w": 378,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Colours · four brush sizes · Undo · Clear. Your drawing is shared live.",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/muted"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "9:1730",
+            "name": "Room sidebar",
+            "w": 344,
+            "h": 663,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/24",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "9:1731",
+                "name": "Zumpo/Scoreboard",
+                "w": 344,
+                "h": 312,
+                "hSize": "hug",
+                "component": "Zumpo/Scoreboard",
+                "componentId": "9:320",
+                "overrides": [
+                  {
+                    "path": "Player / Maya · host / Player details / Maya · host",
+                    "characters": "Maya · you"
+                  },
+                  {
+                    "path": "Player / You / Player / YO",
+                    "componentProperties": {
+                      "Initials": "SA"
+                    }
+                  },
+                  {
+                    "path": "Player / You / Player details / You",
+                    "characters": "Sam"
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "9:1761",
+                "name": "Zumpo/Chat",
+                "w": 344,
+                "h": 327,
+                "hSize": "hug",
+                "component": "Zumpo/Chat",
+                "componentId": "9:334",
+                "overrides": [
+                  {
+                    "path": "Chat input / Say something…",
+                    "characters": "You’re drawing this turn."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:1774",
+        "name": "Footer",
+        "w": 1312,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:1775",
+            "w": 650,
+            "h": 18,
+            "hSize": "hug",
+            "text": "Good company. One more round.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:1776",
+            "w": 115,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "zumpo. / play a little",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

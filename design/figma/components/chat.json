@@ -1,0 +1,215 @@
+{
+  "format": 1,
+  "name": "Zumpo/Chat",
+  "id": "9:334",
+  "type": "COMPONENT",
+  "key": "d5ccc7e5daec2bebfff613180e22a64e134afde7",
+  "description": "Room chat. During drawing, guesses share this feed; drawer and successful guessers cannot send.",
+  "node": {
+    "type": "COMPONENT",
+    "id": "9:334",
+    "name": "Zumpo/Chat",
+    "x": 1640,
+    "y": 1320,
+    "w": 344,
+    "h": 327,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/paper"
+    ],
+    "strokes": [
+      "$Zumpo · UI:color/line"
+    ],
+    "strokeAlign": "inside",
+    "radius": "$Zumpo · UI:radius/24",
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/16",
+      "pad": "$Zumpo · UI:space/24",
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "TEXT",
+        "id": "9:322",
+        "w": 294,
+        "h": 30,
+        "wSize": "fill",
+        "hSize": "hug",
+        "text": "Room chat",
+        "textStyle": "Zumpo/Heading",
+        "fills": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "autoResize": "height"
+      },
+      {
+        "type": "FRAME",
+        "id": "9:323",
+        "name": "Ryan",
+        "w": 294,
+        "h": 47,
+        "wSize": "fill",
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/4",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:324",
+            "w": 294,
+            "h": 18,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "Ryan",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:325",
+            "w": 294,
+            "h": 25,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "spaceship?",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:326",
+        "name": "Leo",
+        "w": 294,
+        "h": 47,
+        "wSize": "fill",
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/4",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:327",
+            "w": 294,
+            "h": 18,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "Leo",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:328",
+            "w": 294,
+            "h": 25,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "a very ambitious pencil",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:329",
+        "name": "Room",
+        "w": 294,
+        "h": 47,
+        "wSize": "fill",
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/4",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:330",
+            "w": 294,
+            "h": 18,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "Room",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:331",
+            "w": 294,
+            "h": 25,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "Maya joined the room.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:332",
+        "name": "Chat input",
+        "w": 294,
+        "h": 42,
+        "wSize": "fill",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "radius": "$Zumpo · UI:radius/12",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": "$Zumpo · UI:space/12",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:333",
+            "w": 91,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "Say something…",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

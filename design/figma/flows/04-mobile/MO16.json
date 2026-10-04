@@ -1,0 +1,261 @@
+{
+  "format": 1,
+  "code": "MO16",
+  "title": "Room · chat tab",
+  "id": "9:13517",
+  "section": "04 / Mobile / 390px flow adaptations",
+  "reviewNotes": [
+    "MO16 · 390px / responsive redesign"
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "9:13517",
+    "name": "MO16 / Room · chat tab",
+    "x": 1510,
+    "y": 3727.28,
+    "w": 390,
+    "h": 835,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        "$Zumpo · UI:space/20",
+        "$Zumpo · UI:space/20",
+        32,
+        "$Zumpo · UI:space/20"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "FRAME",
+        "id": "9:13518",
+        "name": "Mobile navigation",
+        "w": 350,
+        "h": 44,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "9:13519",
+            "name": "Zumpo/Wordmark",
+            "w": 140,
+            "h": 44,
+            "wSize": "hug",
+            "component": "Zumpo/Wordmark",
+            "componentId": "4:36"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "9:13522",
+            "name": "Player / YO",
+            "w": 32,
+            "h": 32,
+            "component": "Zumpo/Avatar",
+            "componentId": "4:34",
+            "props": {
+              "Initials": "YO"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "fills": [
+                  "$Zumpo · UI:color/blue"
+                ],
+                "height": 32,
+                "width": 32
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:13525",
+        "name": "Page heading",
+        "w": 350,
+        "h": 125,
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/12",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "9:13526",
+            "name": "Status / MAYA’S ROOM",
+            "w": 97,
+            "h": 34,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/sand"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "pad": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:13527",
+                "w": 81,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "MAYA’S ROOM",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:13528",
+            "w": 350,
+            "h": 42,
+            "hSize": "hug",
+            "text": "Draw & Guess",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:13529",
+            "w": 350,
+            "h": 25,
+            "hSize": "hug",
+            "text": "Round 1 · 4 players",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:13530",
+        "name": "Zumpo/Mobile tabs",
+        "w": 350,
+        "h": 34,
+        "hSize": "hug",
+        "component": "Zumpo/Mobile tabs",
+        "variant": {
+          "View": "Chat"
+        },
+        "componentId": "9:16082",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 34,
+            "width": 350
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:13537",
+        "name": "Zumpo/Chat",
+        "w": 350,
+        "h": 327,
+        "hSize": "hug",
+        "component": "Zumpo/Chat",
+        "componentId": "9:334",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 327,
+            "width": 350
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:13550",
+        "name": "Zumpo/Input",
+        "w": 350,
+        "h": 115,
+        "hSize": "hug",
+        "component": "Zumpo/Input",
+        "variant": {
+          "State": "Focus"
+        },
+        "componentId": "9:210",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 115,
+            "width": 350
+          },
+          {
+            "path": "Your name",
+            "characters": "Your guess"
+          },
+          {
+            "path": "Editable value / Maya",
+            "characters": "spaceship?"
+          },
+          {
+            "path": "Choose a name people will see.",
+            "characters": "Enter to guess · 40 characters max."
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:13555",
+        "name": "Footer",
+        "w": 350,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:13556",
+            "w": 350,
+            "h": 18,
+            "hSize": "hug",
+            "text": "A little play. Good company.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    ]
+  }
+}

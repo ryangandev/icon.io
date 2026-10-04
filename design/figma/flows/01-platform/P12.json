@@ -1,0 +1,309 @@
+{
+  "format": 1,
+  "code": "P12",
+  "title": "Invite friends",
+  "id": "9:792",
+  "section": "01 / Platform & shared flows",
+  "reviewNotes": [
+    "P12 · Proposed share dialog for existing room URL"
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "9:792",
+    "name": "P12 / Invite friends",
+    "x": 4660,
+    "y": 2540.41,
+    "w": 1440,
+    "h": 797,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        24,
+        "$Zumpo · UI:space/64",
+        32,
+        "$Zumpo · UI:space/64"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "9:793",
+        "name": "Zumpo/Header",
+        "w": 1312,
+        "h": 104,
+        "component": "Zumpo/Header",
+        "componentId": "4:39",
+        "overrides": [
+          {
+            "path": "Navigation / Zumpo/Avatar",
+            "componentProperties": {
+              "Initials": "MA"
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:803",
+        "name": "Dialog stage",
+        "w": 1312,
+        "h": 571,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "pad": [
+            56,
+            0
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "9:804",
+            "name": "Good company makes good games.",
+            "w": 560,
+            "h": 459,
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/paper"
+            ],
+            "strokes": [
+              "$Zumpo · UI:color/line"
+            ],
+            "strokeAlign": "inside",
+            "radius": "$Zumpo · UI:radius/24",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/24",
+              "pad": "$Zumpo · UI:space/32",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:805",
+                "w": 496,
+                "h": 30,
+                "hSize": "hug",
+                "text": "Good company makes good games.",
+                "textStyle": "Zumpo/Heading",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "autoResize": "height"
+              },
+              {
+                "type": "TEXT",
+                "id": "9:806",
+                "name": "Share the room link with your friends. A private room still needs its ",
+                "w": 496,
+                "h": 50,
+                "hSize": "hug",
+                "text": "Share the room link with your friends. A private room still needs its password.",
+                "textStyle": "Zumpo/Body",
+                "fills": [
+                  "$Zumpo · UI:color/muted"
+                ],
+                "autoResize": "height"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "9:807",
+                "name": "Zumpo/Input",
+                "w": 496,
+                "h": 113,
+                "hSize": "hug",
+                "component": "Zumpo/Input",
+                "variant": {
+                  "State": "Default"
+                },
+                "componentId": "9:204",
+                "overrides": [
+                  {
+                    "path": "Your name",
+                    "characters": "Room link"
+                  },
+                  {
+                    "path": "Editable value / Maya",
+                    "characters": "zumpo.app/room/HAPPY"
+                  },
+                  {
+                    "path": "Choose a name people will see.",
+                    "characters": "Share this link with your friends."
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "9:812",
+                "name": "Actions",
+                "w": 496,
+                "h": 48,
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/12",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "9:813",
+                    "name": "Action / Copy room link",
+                    "w": 143,
+                    "h": 48,
+                    "wSize": "hug",
+                    "component": "Zumpo/Button",
+                    "variant": {
+                      "Style": "Primary",
+                      "State": "Default"
+                    },
+                    "componentId": "4:15",
+                    "props": {
+                      "Label": "Copy room link"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 48,
+                        "width": 143
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "9:815",
+                    "name": "Action / Done",
+                    "w": 76,
+                    "h": 48,
+                    "wSize": "hug",
+                    "component": "Zumpo/Button",
+                    "variant": {
+                      "Style": "Quiet",
+                      "State": "Default"
+                    },
+                    "componentId": "4:21",
+                    "props": {
+                      "Label": "Done"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 48,
+                        "reactions": [
+                          {
+                            "on": "on_click",
+                            "do": [
+                              {
+                                "nav": "navigate",
+                                "to": "9:1351",
+                                "toName": "D02 / Host · ready to start",
+                                "transition": "dissolve"
+                              }
+                            ]
+                          }
+                        ],
+                        "width": 76
+                      }
+                    ],
+                    "reactions": [
+                      {
+                        "on": "on_click",
+                        "do": [
+                          {
+                            "nav": "navigate",
+                            "to": "9:1351",
+                            "toName": "D02 / Host · ready to start",
+                            "transition": "dissolve"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "9:817",
+                "name": "Zumpo/Notice",
+                "w": 496,
+                "h": 56,
+                "hSize": "hug",
+                "component": "Zumpo/Notice",
+                "variant": {
+                  "Tone": "Success"
+                },
+                "componentId": "9:231",
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 56,
+                    "width": 496
+                  },
+                  {
+                    "path": "Connection restored. Welcome back!",
+                    "characters": "Room link copied."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:820",
+        "name": "Footer",
+        "w": 1312,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:821",
+            "w": 650,
+            "h": 18,
+            "hSize": "hug",
+            "text": "Good company. One more round.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:822",
+            "w": 115,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "zumpo. / play a little",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

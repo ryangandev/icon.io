@@ -1,0 +1,295 @@
+{
+  "format": 1,
+  "code": "MO09",
+  "title": "Guesser · canvas & guess input",
+  "id": "9:10340",
+  "section": "04 / Mobile / 390px flow adaptations",
+  "reviewNotes": [
+    "MO09 · 390px / responsive redesign"
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "9:10340",
+    "name": "MO09 / Guesser · canvas & guess input",
+    "x": 40,
+    "y": 2777,
+    "w": 390,
+    "h": 850.28,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        "$Zumpo · UI:space/20",
+        "$Zumpo · UI:space/20",
+        32,
+        "$Zumpo · UI:space/20"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "FRAME",
+        "id": "9:10341",
+        "name": "Mobile navigation",
+        "w": 350,
+        "h": 44,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "9:10342",
+            "name": "Zumpo/Wordmark",
+            "w": 140,
+            "h": 44,
+            "wSize": "hug",
+            "component": "Zumpo/Wordmark",
+            "componentId": "4:36"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "9:10345",
+            "name": "Player / YO",
+            "w": 32,
+            "h": 32,
+            "component": "Zumpo/Avatar",
+            "componentId": "4:34",
+            "props": {
+              "Initials": "YO"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "fills": [
+                  "$Zumpo · UI:color/blue"
+                ],
+                "height": 32,
+                "width": 32
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:10348",
+        "name": "Page heading",
+        "w": 350,
+        "h": 125,
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/12",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "9:10349",
+            "name": "Status / MAYA’S ROOM",
+            "w": 97,
+            "h": 34,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/sand"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "pad": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:10350",
+                "w": 81,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "MAYA’S ROOM",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:10351",
+            "w": 350,
+            "h": 42,
+            "hSize": "hug",
+            "text": "Draw & Guess",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:10352",
+            "w": 350,
+            "h": 25,
+            "hSize": "hug",
+            "text": "Round 1 · 4 players",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:10353",
+        "name": "Zumpo/Mobile tabs",
+        "w": 350,
+        "h": 34,
+        "hSize": "hug",
+        "component": "Zumpo/Mobile tabs",
+        "variant": {
+          "View": "Board"
+        },
+        "componentId": "9:416",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 34,
+            "width": 350
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:10360",
+        "name": "Zumpo/Notice",
+        "w": 350,
+        "h": 56,
+        "hSize": "hug",
+        "component": "Zumpo/Notice",
+        "variant": {
+          "Tone": "Info"
+        },
+        "componentId": "9:227",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 56,
+            "width": 350
+          },
+          {
+            "path": "Connection restored. Welcome back!",
+            "characters": "GUESS: R _ _ K _ _ · 00:30"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:10363",
+        "name": "Whiteboard / guess",
+        "w": 350,
+        "h": 262.28,
+        "fills": [
+          "$Zumpo · UI:color/white"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/24",
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "9:15802",
+            "name": "Editable rocket drawing",
+            "x": 50,
+            "y": 16.56,
+            "w": 250,
+            "h": 229.17,
+            "svg": "svg/editable-rocket-drawing-8e36af.svg"
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:10370",
+        "name": "Zumpo/Input",
+        "w": 350,
+        "h": 115,
+        "hSize": "hug",
+        "component": "Zumpo/Input",
+        "variant": {
+          "State": "Focus"
+        },
+        "componentId": "9:210",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 115,
+            "width": 350
+          },
+          {
+            "path": "Your name",
+            "characters": "Your guess"
+          },
+          {
+            "path": "Editable value / Maya",
+            "characters": "Try a word…"
+          },
+          {
+            "path": "Choose a name people will see.",
+            "characters": "Enter to guess · up to 40 characters."
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:10375",
+        "name": "Footer",
+        "w": 350,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:10376",
+            "w": 350,
+            "h": 18,
+            "hSize": "hug",
+            "text": "A little play. Good company.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    ]
+  }
+}

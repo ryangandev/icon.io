@@ -1,0 +1,392 @@
+{
+  "format": 1,
+  "name": "Zumpo/Input",
+  "id": "9:223",
+  "type": "COMPONENT_SET",
+  "key": "6c24724774901b35dd5870438dd6e393fe452136",
+  "description": "Paper Pop shared Input. Reuse variants in all game and platform flows.",
+  "properties": {
+    "State": {
+      "type": "variant",
+      "default": "Default",
+      "options": [
+        "Default",
+        "Focus",
+        "Error",
+        "Disabled"
+      ]
+    }
+  },
+  "defaultVariant": "State=Default",
+  "variants": [
+    {
+      "name": "State=Default",
+      "id": "9:204",
+      "props": {
+        "State": "Default"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "9:204",
+        "name": "State=Default",
+        "x": 24,
+        "y": 48,
+        "w": 496,
+        "h": 113,
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/8",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:200",
+            "w": 496,
+            "h": 20,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "Your name",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "FRAME",
+            "id": "9:201",
+            "name": "Editable value",
+            "w": 496,
+            "h": 59,
+            "wSize": "fill",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/paper"
+            ],
+            "strokes": [
+              "$Zumpo · UI:color/line"
+            ],
+            "strokeAlign": "inside",
+            "radius": "$Zumpo · UI:radius/12",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "pad": "$Zumpo · UI:space/16",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:202",
+                "w": 462,
+                "h": 25,
+                "wSize": "fill",
+                "hSize": "hug",
+                "text": "Maya",
+                "textStyle": "Zumpo/Body",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "autoResize": "height"
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:203",
+            "w": 496,
+            "h": 18,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "Choose a name people will see.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Focus",
+      "id": "9:210",
+      "props": {
+        "State": "Focus"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "9:210",
+        "name": "State=Focus",
+        "x": 544,
+        "y": 48,
+        "w": 496,
+        "h": 115,
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/8",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:206",
+            "w": 496,
+            "h": 20,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "Your name",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "FRAME",
+            "id": "9:207",
+            "name": "Editable value",
+            "w": 496,
+            "h": 61,
+            "wSize": "fill",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/paper"
+            ],
+            "strokes": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "strokeWeight": 2,
+            "strokeAlign": "inside",
+            "radius": "$Zumpo · UI:radius/12",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "pad": "$Zumpo · UI:space/16",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:208",
+                "w": 460,
+                "h": 25,
+                "wSize": "fill",
+                "hSize": "hug",
+                "text": "Maya",
+                "textStyle": "Zumpo/Body",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "autoResize": "height"
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:209",
+            "w": 496,
+            "h": 18,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "Choose a name people will see.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Error",
+      "id": "9:216",
+      "props": {
+        "State": "Error"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "9:216",
+        "name": "State=Error",
+        "x": 24,
+        "y": 188,
+        "w": 496,
+        "h": 113,
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/8",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:212",
+            "w": 496,
+            "h": 20,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "Your name",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "FRAME",
+            "id": "9:213",
+            "name": "Editable value",
+            "w": 496,
+            "h": 59,
+            "wSize": "fill",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/paper"
+            ],
+            "strokes": [
+              "$Zumpo · UI:color/coral"
+            ],
+            "strokeAlign": "inside",
+            "radius": "$Zumpo · UI:radius/12",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "pad": "$Zumpo · UI:space/16",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:214",
+                "w": 462,
+                "h": 25,
+                "wSize": "fill",
+                "hSize": "hug",
+                "text": "Maya",
+                "textStyle": "Zumpo/Body",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "autoResize": "height"
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:215",
+            "w": 496,
+            "h": 18,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "Please enter a name.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/coral"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Disabled",
+      "id": "9:222",
+      "props": {
+        "State": "Disabled"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "9:222",
+        "name": "State=Disabled",
+        "x": 544,
+        "y": 188,
+        "w": 496,
+        "h": 113,
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/8",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:218",
+            "w": 496,
+            "h": 20,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "Your name",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "FRAME",
+            "id": "9:219",
+            "name": "Editable value",
+            "w": 496,
+            "h": 59,
+            "wSize": "fill",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/sand"
+            ],
+            "strokes": [
+              "$Zumpo · UI:color/line"
+            ],
+            "strokeAlign": "inside",
+            "radius": "$Zumpo · UI:radius/12",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "pad": "$Zumpo · UI:space/16",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:220",
+                "w": 462,
+                "h": 25,
+                "wSize": "fill",
+                "hSize": "hug",
+                "text": "Maya",
+                "textStyle": "Zumpo/Body",
+                "fills": [
+                  "$Zumpo · UI:color/muted"
+                ],
+                "autoResize": "height"
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:221",
+            "w": 496,
+            "h": 18,
+            "wSize": "fill",
+            "hSize": "hug",
+            "text": "Choose a name people will see.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    }
+  ]
+}

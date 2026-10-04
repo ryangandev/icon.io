@@ -1,0 +1,691 @@
+{
+  "format": 1,
+  "name": "Zumpo/Room row",
+  "id": "9:289",
+  "type": "COMPONENT_SET",
+  "key": "f3a16f34745c7b51712e5c6fcdffef04b8087b18",
+  "description": "Paper Pop shared Room row. Reuse variants in all game and platform flows.",
+  "properties": {
+    "Status": {
+      "type": "variant",
+      "default": "Open",
+      "options": [
+        "Open",
+        "Private",
+        "Full",
+        "Playing"
+      ]
+    }
+  },
+  "defaultVariant": "Status=Open",
+  "variants": [
+    {
+      "name": "Status=Open",
+      "id": "9:252",
+      "props": {
+        "Status": "Open"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "9:252",
+        "name": "Status=Open",
+        "x": 24,
+        "y": 48,
+        "w": 840,
+        "h": 90,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/16",
+          "pad": "$Zumpo · UI:space/20",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "9:242",
+            "name": "Player / MA",
+            "w": 40,
+            "h": 40,
+            "component": "Zumpo/Avatar",
+            "componentId": "4:34",
+            "props": {
+              "Initials": "MA"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "fills": [
+                  "$Zumpo · UI:color/peach"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "9:244",
+            "name": "Room identity",
+            "w": 264,
+            "h": 42,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:245",
+                "w": 86,
+                "h": 20,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Maya’s room",
+                "textStyle": "Zumpo/Label",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "9:246",
+                "w": 91,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Hosted by Maya",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/muted"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "9:247",
+            "name": "Status / Open",
+            "w": 47,
+            "h": 34,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/lime"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "pad": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:248",
+                "w": 31,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Open",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:249",
+            "w": 31,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "4 / 8",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "9:250",
+            "name": "Action / Join room",
+            "w": 110,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Secondary",
+              "State": "Default"
+            },
+            "componentId": "4:18",
+            "props": {
+              "Label": "Join room"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "width": 110
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Status=Private",
+      "id": "9:264",
+      "props": {
+        "Status": "Private"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "9:264",
+        "name": "Status=Private",
+        "x": 888,
+        "y": 48,
+        "w": 840,
+        "h": 90,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/16",
+          "pad": "$Zumpo · UI:space/20",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "9:254",
+            "name": "Player / MA",
+            "w": 40,
+            "h": 40,
+            "component": "Zumpo/Avatar",
+            "componentId": "4:34",
+            "props": {
+              "Initials": "MA"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "fills": [
+                  "$Zumpo · UI:color/peach"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "9:256",
+            "name": "Room identity",
+            "w": 264,
+            "h": 42,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:257",
+                "w": 86,
+                "h": 20,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Maya’s room",
+                "textStyle": "Zumpo/Label",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "9:258",
+                "w": 115,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Password protected",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/muted"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "9:259",
+            "name": "Status / Open · locked",
+            "w": 94,
+            "h": 34,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/sand"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "pad": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:260",
+                "w": 78,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Open · locked",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:261",
+            "w": 31,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "4 / 8",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "9:262",
+            "name": "Action / Join room",
+            "w": 110,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Secondary",
+              "State": "Default"
+            },
+            "componentId": "4:18",
+            "props": {
+              "Label": "Join room"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "width": 110
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Status=Full",
+      "id": "9:276",
+      "props": {
+        "Status": "Full"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "9:276",
+        "name": "Status=Full",
+        "x": 24,
+        "y": 184,
+        "w": 840,
+        "h": 90,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/16",
+          "pad": "$Zumpo · UI:space/20",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "9:266",
+            "name": "Player / MA",
+            "w": 40,
+            "h": 40,
+            "component": "Zumpo/Avatar",
+            "componentId": "4:34",
+            "props": {
+              "Initials": "MA"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "fills": [
+                  "$Zumpo · UI:color/peach"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "9:268",
+            "name": "Room identity",
+            "w": 264,
+            "h": 42,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:269",
+                "w": 86,
+                "h": 20,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Maya’s room",
+                "textStyle": "Zumpo/Label",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "9:270",
+                "w": 91,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Hosted by Maya",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/muted"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "9:271",
+            "name": "Status / Full",
+            "w": 36,
+            "h": 34,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/peach"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "pad": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:272",
+                "w": 20,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Full",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:273",
+            "w": 31,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "8 / 8",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "9:274",
+            "name": "Action / Full",
+            "w": 64,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Primary",
+              "State": "Disabled"
+            },
+            "componentId": "4:17",
+            "props": {
+              "Label": "Full"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "width": 64
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Status=Playing",
+      "id": "9:288",
+      "props": {
+        "Status": "Playing"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "9:288",
+        "name": "Status=Playing",
+        "x": 888,
+        "y": 184,
+        "w": 840,
+        "h": 90,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/16",
+          "pad": "$Zumpo · UI:space/20",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "9:278",
+            "name": "Player / MA",
+            "w": 40,
+            "h": 40,
+            "component": "Zumpo/Avatar",
+            "componentId": "4:34",
+            "props": {
+              "Initials": "MA"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "fills": [
+                  "$Zumpo · UI:color/peach"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "9:280",
+            "name": "Room identity",
+            "w": 264,
+            "h": 42,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:281",
+                "w": 86,
+                "h": 20,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Maya’s room",
+                "textStyle": "Zumpo/Label",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "9:282",
+                "w": 91,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Hosted by Maya",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/muted"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "9:283",
+            "name": "Status / Playing",
+            "w": 57,
+            "h": 34,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/blue"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "pad": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:284",
+                "w": 41,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Playing",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:285",
+            "w": 31,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "4 / 8",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "9:286",
+            "name": "Action / In progress",
+            "w": 116,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Primary",
+              "State": "Disabled"
+            },
+            "componentId": "4:17",
+            "props": {
+              "Label": "In progress"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "width": 116
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

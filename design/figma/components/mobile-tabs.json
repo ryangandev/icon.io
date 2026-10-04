@@ -1,0 +1,411 @@
+{
+  "format": 1,
+  "name": "Zumpo/Mobile tabs",
+  "id": "9:16089",
+  "type": "COMPONENT_SET",
+  "key": "305aebac6b9c948d573b862b514c85c200f115f3",
+  "properties": {
+    "View": {
+      "type": "variant",
+      "default": "Board",
+      "options": [
+        "Board",
+        "Players",
+        "Chat"
+      ]
+    }
+  },
+  "defaultVariant": "View=Board",
+  "variants": [
+    {
+      "name": "View=Board",
+      "id": "9:416",
+      "props": {
+        "View": "Board"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "9:416",
+        "name": "View=Board",
+        "x": 16,
+        "y": 48,
+        "w": 480,
+        "h": 34,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "9:410",
+            "name": "Status / Board",
+            "w": 50,
+            "h": 34,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "pad": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:411",
+                "w": 34,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Board",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/white"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "9:412",
+            "name": "Status / Players · 4",
+            "w": 73,
+            "h": 34,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/paper"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "pad": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:413",
+                "w": 57,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Players · 4",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "9:414",
+            "name": "Status / Chat",
+            "w": 44,
+            "h": 34,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/paper"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "pad": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:415",
+                "w": 28,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Chat",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "View=Players",
+      "id": "9:16075",
+      "props": {
+        "View": "Players"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "9:16075",
+        "name": "View=Players",
+        "x": 496,
+        "y": 48,
+        "w": 480,
+        "h": 34,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "9:16076",
+            "name": "Status / Board",
+            "w": 50,
+            "h": 34,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/paper"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "pad": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:16077",
+                "w": 34,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Board",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "9:16078",
+            "name": "Status / Players · 4",
+            "w": 73,
+            "h": 34,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "pad": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:16079",
+                "w": 57,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Players · 4",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/white"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "9:16080",
+            "name": "Status / Chat",
+            "w": 44,
+            "h": 34,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/paper"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "pad": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:16081",
+                "w": 28,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Chat",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "View=Chat",
+      "id": "9:16082",
+      "props": {
+        "View": "Chat"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "9:16082",
+        "name": "View=Chat",
+        "x": 976,
+        "y": 48,
+        "w": 480,
+        "h": 34,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "9:16083",
+            "name": "Status / Board",
+            "w": 50,
+            "h": 34,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/paper"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "pad": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:16084",
+                "w": 34,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Board",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "9:16085",
+            "name": "Status / Players · 4",
+            "w": 73,
+            "h": 34,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/paper"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "pad": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:16086",
+                "w": 57,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Players · 4",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "9:16087",
+            "name": "Status / Chat",
+            "w": 44,
+            "h": 34,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "pad": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:16088",
+                "w": 28,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Chat",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/white"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
