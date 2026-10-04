@@ -6,13 +6,10 @@ Resolved items are deleted, not archived; history is in git.
 ## Now
 
 Icon.io is being rebranded and redesigned as **Zumpo** on the `rework` branch.
-No application code has changed yet.
-The redesign exists as an editable Figma file of 82 screens and its shared component families (see [design.md](design.md)).
-Claude's first review pass is done and edited into Figma through the [bridge](../tools/figma-bridge/README.md); what changed and what is left to decide is in the [round 1 report](../design/reviews/2026-10-03-round-1.md).
-A snapshot of it is in `design/figma/`.
+The redesign is an editable Figma file of 82 screens and its shared component families (see [design.md](design.md)), with a snapshot in `design/figma/`.
+Ryan approved it in review round two on 2026-10-03, after one fix (icons centred on their line of text); Claude's round 1 changes are in the [round 1 report](../design/reviews/2026-10-03-round-1.md).
 
-The order of work, agreed with Ryan: Figma first, reviewed screen by screen, then implementation.
-Implementation has not been approved yet.
+Implementation is approved and has started with the design system in code.
 
 ## Product direction
 
@@ -26,14 +23,14 @@ Decided by Ryan, and the frame for every design and implementation choice:
 
 ## Waiting on Ryan
 
-- Review round two in Figma, starting from the [round 1 report](../design/reviews/2026-10-03-round-1.md), and answer its open questions.
+- The open questions in the [round 1 report](../design/reviews/2026-10-03-round-1.md#需要你决定) and its copy suggestions, before the pages that show them are rebuilt.
+  Until then the screens are built as drawn.
 
 ## Next
 
-1. Ryan reviews round two; Claude applies the outcome through the bridge and exports again.
-2. Build the design system: tokens generated from the export, then the Shared pieces as code components on headless primitives with Zumpo's own styles, checked against the Figma previews.
+1. Build the design system: tokens generated from the export, then the Shared pieces as code components on headless primitives with Zumpo's own styles, checked against the Figma previews.
    Ant Design goes away ([why](architecture.md#frontend)).
-3. Rebuild the pages on it, platform flow first, then each game, then mobile.
+2. Rebuild the pages on it, platform flow first, then each game, then mobile.
    Fix the known issues below that live in the pages being rebuilt, reproducing each end to end first.
 
 ## Open decisions
