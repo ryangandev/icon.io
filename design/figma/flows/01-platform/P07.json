@@ -14,7 +14,7 @@
     "x": 3120,
     "y": 1310,
     "w": 1440,
-    "h": 1248,
+    "h": 1084,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -34,124 +34,33 @@
     "children": [
       {
         "type": "INSTANCE",
-        "id": "9:631",
-        "name": "Zumpo/Header",
+        "id": "39:21897",
+        "name": "Zumpo/Room bar",
         "w": 1312,
-        "h": 104,
-        "component": "Zumpo/Header",
-        "componentId": "4:39",
+        "h": 48,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Desktop"
+        },
+        "componentId": "39:19276",
+        "props": {
+          "Game": "Draw & Guess"
+        },
         "overrides": [
           {
-            "path": "Navigation / You",
+            "path": "Room identity / Phase",
             "componentProperties": {
-              "Initials": "SA",
-              "Tone": "Sand"
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Round 2 of 2",
+              "Tone": "Blue"
             }
-          }
-        ]
-      },
-      {
-        "type": "FRAME",
-        "id": "9:641",
-        "name": "Page heading",
-        "w": 1312,
-        "h": 84,
-        "hSize": "hug",
-        "layout": {
-          "mode": "column",
-          "gap": "$Zumpo · UI:space/12",
-          "strokesIncluded": true
-        },
-        "children": [
-          {
-            "type": "FRAME",
-            "id": "28:23159",
-            "name": "Room context",
-            "w": 198,
-            "h": 30,
-            "wSize": "hug",
-            "hSize": "hug",
-            "layout": {
-              "mode": "row",
-              "gap": "$Zumpo · UI:space/8",
-              "strokesIncluded": true
-            },
-            "children": [
-              {
-                "type": "INSTANCE",
-                "id": "28:23160",
-                "name": "Tag / Maya's room",
-                "w": 95,
-                "h": 30,
-                "wSize": "hug",
-                "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Sand"
-                },
-                "componentId": "24:6511",
-                "props": {
-                  "Label": "Maya's room"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 30,
-                    "width": 95
-                  }
-                ]
-              },
-              {
-                "type": "INSTANCE",
-                "id": "28:23165",
-                "name": "Tag / Round 2 of 2",
-                "w": 95,
-                "h": 30,
-                "wSize": "hug",
-                "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Blue"
-                },
-                "componentId": "24:6516",
-                "props": {
-                  "Label": "Round 2 of 2"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 30,
-                    "width": 95
-                  }
-                ]
-              }
-            ]
           },
           {
-            "type": "TEXT",
-            "id": "9:644",
-            "w": 1312,
-            "h": 42,
-            "hSize": "hug",
-            "text": "A little pause.",
-            "textStyle": "Zumpo/Title",
-            "fills": [
-              "$Zumpo · UI:color/ink"
-            ],
-            "autoResize": "height"
-          },
-          {
-            "type": "TEXT",
-            "id": "9:645",
-            "visible": false,
-            "w": 1312,
-            "h": 25,
-            "text": "Reconnecting you to Maya’s room.",
-            "textStyle": "Zumpo/Body",
-            "fills": [
-              "$Zumpo · UI:color/muted"
-            ],
-            "autoResize": "height"
+            "path": "Action / Leave room",
+            "visible": false
           }
         ]
       },
