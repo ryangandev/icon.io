@@ -1,4 +1,12 @@
-import { MineCell, NumberCard, PickMarker, Tag } from '../ui';
+import {
+  MineCell,
+  NumberCard,
+  PairsCard,
+  PickMarker,
+  symbolNamed,
+  Tag,
+} from '../ui';
+import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import {
   turtle,
   TURTLE_SIZE,
@@ -15,8 +23,10 @@ export function GameArtwork({ type }: { type: GameType }) {
         <DrawingArtwork />
       ) : type === 'minesweeper' ? (
         <BoardArtwork />
-      ) : (
+      ) : type === 'make-24' ? (
         <HandArtwork />
+      ) : (
+        <PairsArtwork />
       )}
     </div>
   );
@@ -77,6 +87,41 @@ function HandArtwork() {
       <span className={styles.answer}>
         <NumberCard value="24" state="solved" size="compact" />
       </span>
+    </div>
+  );
+}
+
+/** A row of a board mid-game: a pair just found, one matched before. */
+function PairsArtwork() {
+  // The phone card's cards are compact, and it drops the last, as in Figma.
+  const phone = useMediaQuery(PHONE);
+  const size = phone ? 'compact' : 'regular';
+  const star = symbolNamed('Star Orange');
+  const circle = symbolNamed('Circle Coral');
+  return (
+    <div className={styles.pairs}>
+      <PairsCard state={{ kind: 'down' }} size={size} row={0} column={0} />
+      <PairsCard
+        state={{ kind: 'up', symbol: star }}
+        size={size}
+        row={0}
+        column={1}
+      />
+      <PairsCard
+        state={{ kind: 'up', symbol: star }}
+        size={size}
+        row={0}
+        column={2}
+      />
+      <PairsCard
+        state={{ kind: 'matched', symbol: circle }}
+        size={size}
+        row={0}
+        column={3}
+      />
+      {!phone && (
+        <PairsCard state={{ kind: 'down' }} size={size} row={0} column={4} />
+      )}
     </div>
   );
 }

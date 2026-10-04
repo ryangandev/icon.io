@@ -21,7 +21,7 @@ export default function HomePage() {
         subtitle={
           phone
             ? 'Good games for good company.'
-            : 'Draw, guess, and take a little risk. Good games for good company.'
+            : 'Draw, guess, count and remember. On your own, or with good company.'
         }
         hero
       />

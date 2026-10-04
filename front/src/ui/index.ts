@@ -73,7 +73,9 @@ export {
 export {
   PairsSymbol,
   symbolName,
+  symbolNamed,
   type PairsSymbolProps,
+  type SymbolName,
 } from './components/pairs-symbol';
 export {
   PickMarker,

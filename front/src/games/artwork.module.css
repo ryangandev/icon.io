@@ -42,6 +42,12 @@
   display: contents;
 }
 
+.pairs {
+  display: flex;
+  align-items: center;
+  gap: var(--zumpo-space-8);
+}
+
 /* The phone card drops the last cell to fit, and a hand's answer; its cards
    are smaller than any card in play, as in the mobile cards. */
 @media (max-width: 640px) {

@@ -11,6 +11,12 @@ export interface PairsSymbolProps {
 /** "Ring Sky": a symbol's name, its shape and its colour. */
 export const symbolName = (symbol: number) => pairsSymbols[symbol].name;
 
+export type SymbolName = (typeof pairsSymbols)[number]['name'];
+
+/** The symbol a name stands for, for artwork and samples. */
+export const symbolNamed = (name: SymbolName) =>
+  pairsSymbols.findIndex((symbol) => symbol.name === name);
+
 /** Zumpo/Pairs symbol: the face of a Pairs card. */
 export function PairsSymbol({
   symbol,

@@ -5,7 +5,7 @@ export interface GameInfo {
   type: GameType;
   name: string;
   /** The game's surface colour on the home, games and rules pages. */
-  tone: 'peach' | 'blue' | 'lime';
+  tone: 'peach' | 'blue' | 'lime' | 'sand';
   /** One line on the game cards. */
   tagline: string;
   /** A shorter one for a phone's narrower card. */
@@ -119,6 +119,41 @@ On your own, a run is ten hands against one clock. Skip a hand you are stuck on,
         'Use each number once: pick a number, a sign and another number',
         'Stuck? Skip the hand for 30 seconds on the clock',
         'Your best time is kept on this device',
+      ],
+    },
+  },
+  {
+    type: 'pairs',
+    name: 'Pairs',
+    tone: 'sand',
+    tagline: 'Flip two cards. Remember where everything is. Find every pair.',
+    facts: 'Solo or 2–6 players',
+    lobbySummary:
+      'Take turns flipping two cards. Find a pair and it is yours, and you go again. Whoever finds the most pairs wins.',
+    lobbyFacts: [
+      '2–6 players',
+      'Small 4 × 4 or Large 6 × 6 board',
+      '10s to flip two cards',
+      'Everyone sees every card you flip',
+    ],
+    rules: `2–6 players · a Small or Large board
+
+Every card lies face down, and every symbol is on two of them. Players take turns, in an order drawn at the start.
+
+On your turn you have 10 seconds to flip two cards. If they match, the pair is yours and you go again. If not, everyone sees both for 2 seconds, then they flip back and the next player goes.
+
+Run out of time and a card you flipped alone flips back. A player who is away when their turn comes is skipped. When every pair is found, whoever found the most wins.
+
+On your own, clear the board in as few turns as you can; your time breaks a tie. Two cards that do not match flip back after a second. Your best on each board is kept on this device, and Challenge a friend sends them the same deck.`,
+    createDescription:
+      'Take turns flipping two cards. Small is a quick game; Large takes a while.',
+    solo: {
+      summary: 'Flip two cards at a time. Remember where everything is.',
+      facts: [
+        'A Small 4 × 4 or a Large 6 × 6 board',
+        'Two cards that do not match flip back after a second',
+        'Fewer turns is better; your time breaks a tie',
+        'Your best on each board is kept on this device',
       ],
     },
   },
