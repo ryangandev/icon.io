@@ -30,14 +30,14 @@ Decided by Ryan, and the frame for every design and implementation choice:
 - Whether a Minesweeper refresh should hold the round.
   A refresh drops the connection for a moment, and the room does not wait for a disconnected player, so if everyone else has already locked in, the round resolves without the refreshing player's pick.
   That contradicts the rule "A refresh loses nothing" in [minesweeper.md](games/minesweeper.md); the rules are kept as they are until you decide.
-- Whether `Zumpo/Modal` should become the one focused card.
-  It uses the Title style and no screen uses it; the 20+ focused cards (P02-P10, DL04-DL11, ML04-ML10) and the two dialogs are hand-built frames with a Heading title, which code follows.
-  Making Modal match them and swapping the frames for instances would make one change reach every card.
 
 ## Next
 
-Nothing is queued on `rework`: every screen Figma draws matches it in `npm run design:compare`, apart from example content and the deviations in [design.md](design.md#on-purpose).
-The next step is Ryan's review above.
+1. Make the focused card one Shared pieces component in Figma, as Ryan decided on 2026-10-04.
+   The 25 focused cards (P02-P12, DL04-DL11, ML04-ML10) are hand-built frames with the same surface: 560 px wide, 32 px padding, 24 px gaps, a Heading title, a Body description, then fields and actions; the two dialogs add the dialog shadow.
+   `Zumpo/Modal` is the unused draft of it, with a Title-style title.
+   Rename it `Zumpo/Card` to match code's `Card`, give it the Heading title and a place for each card's own fields, and swap every frame for an instance.
+   It needs Figma desktop open with the bridge plugin running and the screen unlocked.
 
 ## Open decisions
 
