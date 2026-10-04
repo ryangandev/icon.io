@@ -746,6 +746,11 @@ class Exporter {
         return null;
       }
     }
+    // Figma's SVG export drifts in the fifth decimal from one session to the
+    // next (4.00001 for 4); three places keep an unchanged drawing unchanged.
+    if (typeof data === 'string') {
+      data = data.replace(/-?\d*\.\d+/g, (n) => String(round(Number(n), 3)));
+    }
     const key = hash(data);
     let entry = this.svgs.get(key);
     if (!entry) {
@@ -851,6 +856,29 @@ class Exporter {
     if (overrides.length) o.overrides = overrides;
   }
 
+  // A slot's content belongs to the instance, not to its component, so it is
+  // written in full under the slot's property. Slots inside a nested
+  // instance hold that instance's own content and are left to it.
+  async slots(node, o, mode) {
+    const slots = {};
+    const stack = node.children ? node.children.slice() : [];
+    while (stack.length) {
+      const d = stack.shift();
+      if (d.type === 'SLOT') {
+        const refs = d.componentPropertyReferences || {};
+        const key = cleanPropName(refs.slotContentId || d.name);
+        const nodes = d.children.slice();
+        const objs = [];
+        for (const child of nodes)
+          objs.push(await this.serialize(child, d, mode));
+        slots[key] = mode.collapse ? this.collapse(nodes, objs) : objs;
+      } else if (d.type !== 'INSTANCE' && d.children) {
+        stack.push(...d.children);
+      }
+    }
+    if (Object.keys(slots).length) o.slots = slots;
+  }
+
   relPath(root, target) {
     const names = [];
     let n = target;
@@ -950,6 +978,7 @@ class Exporter {
 
     if (node.type === 'INSTANCE') {
       await this.instance(node, o);
+      await this.slots(node, o, mode);
     } else if (this.isGraphic(node)) {
       if ('opacity' in node && node.opacity < 0.999) {
         o.opacity = round(node.opacity, 3);
@@ -1675,7 +1704,9 @@ design in Figma, never these files.
   or [top, right, bottom, left]), justify, align, wrap.
 - Instances: component (family name), variant, props (only values that differ
   from the property default), overrides (path inside the instance, "." for the
-  instance itself, and the overridden fields). Children are not repeated.
+  instance itself, and the overridden fields). Children are not repeated,
+  except a slot's content: slots maps each slot property to the children the
+  instance put in it.
 - svg: a vector drawing exported to svg/; its children are not repeated.
 - GRID: many same-kind children folded into rows x cols, the common cell, and
   "special" cells as {r, c, id, ...only the differing fields}. rowFrame is the
