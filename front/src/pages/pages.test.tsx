@@ -35,6 +35,7 @@ describe('choosing a name', () => {
     expect(
       screen.getByText('Enter a name with at least one visible character.'),
     ).toBeInTheDocument();
+    expect(screen.getByLabelText('Your name')).toHaveFocus();
 
     await user.type(screen.getByLabelText('Your name'), ' Ryan ');
     await user.click(screen.getByRole('button', { name: 'Let’s play' }));
@@ -78,6 +79,18 @@ describe('a lobby', () => {
   it('says so when a game does not exist', async () => {
     await renderApp('/games/chess');
     expect(screen.getByText('A little lost?')).toBeInTheDocument();
+  });
+});
+
+describe('making a room', () => {
+  it('asks for a name before it sends anything', async () => {
+    const user = userEvent.setup();
+    const { fake } = await renderApp('/games/minesweeper/new');
+    await user.clear(screen.getByLabelText('Room name'));
+    await user.click(screen.getByRole('button', { name: 'Create room' }));
+    expect(screen.getByText('Give your room a name.')).toBeInTheDocument();
+    expect(screen.getByLabelText('Room name')).toHaveFocus();
+    expect(fake.sentArgs('room:create')).toEqual([]);
   });
 });
 

@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { Button, ButtonLink, TextField } from '../ui';
 import { useSession } from '../net/session';
@@ -29,12 +29,14 @@ export default function NamePage() {
   const [params] = useSearchParams();
   const [value, setValue] = useState(name);
   const [invalid, setInvalid] = useState(false);
+  const field = useRef<HTMLInputElement>(null);
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const trimmed = value.trim();
     if (!trimmed) {
       setInvalid(true);
+      field.current?.focus();
       return;
     }
     setName(trimmed);
@@ -66,6 +68,7 @@ export default function NamePage() {
     >
       <TextField
         label="Your name"
+        ref={field}
         helper={`Up to ${NAME_MAX_LENGTH} characters.${phone ? ' No signup.' : ''}`}
         error={
           invalid

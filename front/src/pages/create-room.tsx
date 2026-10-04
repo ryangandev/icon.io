@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router';
 import type {
   GameType,
@@ -34,6 +34,7 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
     `${name}’s room`.slice(0, ROOM_NAME_MAX_LENGTH),
   );
   const [nameMissing, setNameMissing] = useState(false);
+  const nameField = useRef<HTMLInputElement>(null);
   const [seats, setSeats] = useState(8);
   const [rounds, setRounds] = useState(2);
   const [difficulty, setDifficulty] = useState<MinesweeperDifficulty>('Small');
@@ -47,6 +48,7 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
     const trimmed = roomName.trim();
     if (!trimmed) {
       setNameMissing(true);
+      nameField.current?.focus();
       return;
     }
     const request: RoomCreateRequest = {
@@ -119,6 +121,7 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
       )}
       <TextField
         label="Room name"
+        ref={nameField}
         helper={`Up to ${ROOM_NAME_MAX_LENGTH} characters.`}
         error={nameMissing ? 'Give your room a name.' : undefined}
         value={roomName}
