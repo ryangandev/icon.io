@@ -40,3 +40,40 @@ test('two players pick until the board is done', async ({ player }) => {
   ).toHaveCount(2);
   await expect(maya.getByRole('button', { name: HIDDEN })).toHaveCount(0);
 });
+
+test('a player with no name plays a board on their own', async ({ player }) => {
+  const sam = await player('Sam', { named: false });
+  let sockets = 0;
+  sam.on('websocket', () => sockets++);
+  await sam.goto('/');
+  await sam
+    .getByRole('region', { name: 'Minesweeper' })
+    .getByRole('link', { name: 'Play solo' })
+    .click();
+  await sam.getByRole('radio', { name: /Small/ }).click();
+  await sam.getByRole('button', { name: 'Start' }).click();
+  await expect(sam).toHaveURL(/\/games\/minesweeper\/solo\?board=Small$/);
+
+  // The first click opens an area; a right-click flags.
+  const turn = sam.getByRole('region', { name: 'Turn' });
+  await sam.getByRole('button', { name: /^Row 5, column 5: hidden$/ }).click();
+  await expect(sam.getByRole('gridcell', { name: /: empty$/ })).not.toHaveCount(
+    0,
+  );
+  await sam.getByRole('button', { name: HIDDEN }).first().click({
+    button: 'right',
+  });
+  await expect(turn.getByText('9 mines left')).toBeVisible();
+
+  // Open cells until the board is cleared or a mine goes off.
+  const over = turn
+    .getByText('You hit a mine')
+    .or(sam.getByRole('heading', { name: /^Cleared in / }));
+  while (!(await over.isVisible())) {
+    await sam.getByRole('button', { name: HIDDEN }).last().click();
+  }
+  await expect(
+    sam.getByRole('button', { name: /^(Try|Play) again$/ }).first(),
+  ).toBeVisible();
+  expect(sockets).toBe(0);
+});

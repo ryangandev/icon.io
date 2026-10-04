@@ -1,5 +1,6 @@
 import { GameCard, GameCards } from '../games/game-card';
 import { GAMES, lobbyPath } from '../games/catalog';
+import { countWord } from '../games/plural';
 import { useSession } from '../net/session';
 import { Page } from '../shell/page';
 import { PageHeading } from '../shell/page-heading';
@@ -16,8 +17,8 @@ export default function GamesPage() {
         title="What are we playing?"
         subtitle={
           phone
-            ? 'Good games for good company.'
-            : 'Two little games. Plenty of ways to surprise each other.'
+            ? `${countWord(GAMES.length)} little games, alone or together.`
+            : `${countWord(GAMES.length)} little games. Play on your own, or bring some good company.`
         }
       />
       <GameCards>

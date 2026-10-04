@@ -17,6 +17,8 @@ export interface GameInfo {
   rules: string;
   /** The create-room card's description. */
   createDescription: string;
+  /** A game that can be played on your own, and its rules there. */
+  solo?: { summary: string; facts: readonly string[] };
 }
 
 export const GAMES: readonly GameInfo[] = [
@@ -48,8 +50,8 @@ Faster guesses earn more, from 50 to 150 points, and the drawer gets two fifths 
     type: 'minesweeper',
     name: 'Minesweeper',
     tone: 'blue',
-    tagline: 'A shared board. Hidden picks. A little friendly rivalry.',
-    facts: '2–8 players · simultaneous picks',
+    tagline: 'Clear a board on your own, or share one and pick in secret.',
+    facts: 'Solo or 2–8 players',
     lobbySummary:
       'Everyone picks a hidden cell at the same time. Riskier safe picks score more, and a mine costs points.',
     lobbyFacts: [
@@ -66,9 +68,20 @@ You have 15 seconds to pick, then 4 seconds to see what everyone picked. A safe 
 
 Pick the same safe cell as someone else? You split the reward. Run out of time? The safest cell is picked for you, without the 10-point base.
 
-The board is Small, Medium or Large, chosen when the room is created. The game ends when the board is resolved or fewer than 2 players remain.`,
+The board is Small, Medium or Large, chosen when the room is created. The game ends when the board is resolved or fewer than 2 players remain.
+
+On your own, it is classic Minesweeper: open every safe cell without hitting a mine. Your first click is always safe. Right-click or long-press a cell to flag it, and click a number whose flags are all placed to open the rest around it. Your best time on each board is kept on this device.`,
     createDescription:
       'Pick a board. Small is a quick game; Large takes a while.',
+    solo: {
+      summary: 'Open every safe cell. The numbers count the mines next door.',
+      facts: [
+        'Your first click is always safe',
+        'Right-click or long-press to flag; Flag mode makes a tap flag',
+        'Click a number whose flags are placed to open the rest around it',
+        'Your best time on each board is kept on this device',
+      ],
+    },
   },
 ];
 
@@ -81,6 +94,9 @@ export function gameInfo(type: GameType): GameInfo {
 export function isGameType(value: string | undefined): value is GameType {
   return GAMES.some((game) => game.type === value);
 }
+
+/** A game on your own; it needs no name. */
+export const soloPath = (type: GameType) => `/games/${type}/solo`;
 
 /** The game's room list. */
 export const lobbyPath = (type: GameType) => `/games/${type}`;

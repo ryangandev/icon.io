@@ -106,7 +106,7 @@ describe('on a phone', () => {
       screen.getByRole('link', { name: 'Let’s play' }),
     ).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Browse games' })).toBeNull();
-    expect(screen.queryByText(/Grab a friend/)).toBeNull();
+    expect(screen.queryByText(/Play solo starts at once/)).toBeNull();
   });
 
   it('greets the player above the games', async () => {
@@ -114,7 +114,7 @@ describe('on a phone', () => {
     await renderApp('/games', { name: 'Maya' });
     expect(screen.getByText('Hey, Maya')).toBeInTheDocument();
     expect(
-      screen.getByText('Good games for good company.'),
+      screen.getByText(/little games, alone or together\./),
     ).toBeInTheDocument();
   });
 

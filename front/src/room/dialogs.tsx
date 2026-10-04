@@ -56,21 +56,28 @@ export function RulesDialog({
   open,
   onOpenChange,
   game,
+  solo = false,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   game: GameInfo;
+  /** The rules of the game on your own rather than in a room. */
+  solo?: boolean;
 }) {
+  const rules =
+    solo && game.solo
+      ? game.solo
+      : { summary: game.lobbySummary, facts: game.lobbyFacts };
   return (
     <Dialog
       open={open}
       onOpenChange={onOpenChange}
       title={`How to play ${game.name}`}
-      description={game.lobbySummary}
+      description={rules.summary}
       actions={<DialogClose render={<Button>Back to the game</Button>} />}
     >
       <ul className={styles.facts}>
-        {game.lobbyFacts.map((fact) => (
+        {rules.facts.map((fact) => (
           <li key={fact}>{fact}</li>
         ))}
       </ul>

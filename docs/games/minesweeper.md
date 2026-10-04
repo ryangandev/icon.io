@@ -7,6 +7,7 @@ Hitting a mine costs you points.
 It does not end the game, and it does not end anybody else's.
 
 2–8 players, three board sizes, about 15 seconds a round.
+Or play classic Minesweeper [on your own](#on-your-own), with flags and a clock.
 
 ---
 
@@ -110,7 +111,7 @@ What you see afterwards is what your pick was actually worth.
 | **Medium** | 16 × 16 | 40    | 16%     | 8 minutes  |
 | **Large**  | 30 × 16 | 99    | 21%     | 20 minutes |
 
-Two single-player conventions are deliberately **not** used:
+Two single-player conventions are deliberately **not** used in rooms (a game [on your own](#on-your-own) keeps the first one):
 
 - **No first-click safety.**
   That rule exists so an opening click cannot end the game, and here a mine ends nothing, so the reason for it is gone.
@@ -118,6 +119,31 @@ Two single-player conventions are deliberately **not** used:
 - **No guaranteed-solvable boards.**
   Modern generators promise a board can be cleared without guessing.
   Here guessing _is_ the scoring mechanism, so a board that forces one is working as intended.
+
+## On your own
+
+Classic single-player Minesweeper on the same three boards, with no name, no room and no server: it runs in the browser.
+
+1. Pick a board; the last one you played is picked for you.
+2. Your **first click is always safe**, and so are its eight neighbours, so it always opens an area.
+   The mines are laid only after that click, which is also when the clock starts.
+3. Click a hidden cell to open it; opening a cell with no mines around it opens its neighbours too.
+4. **Right-click or long-press** a hidden cell to plant a flag, and again to take it off.
+   **Reveal / Flag** under the board switches what a plain click or tap does, for phones and trackpads.
+   A flagged cell cannot be opened until its flag is taken off.
+5. Click an opened number whose flags around it add up to that number to open all its other neighbours (a **chord**).
+   If a flag was wrong, that opens a mine.
+6. The turn bar shows the mines left (mines minus flags, which can go below zero) and the run time.
+
+**Opening a mine loses.**
+The mine you hit turns solid red, every other mine shows, flags with no mine under them are crossed out, and Try again starts a new board of the same size.
+
+**Opening every safe cell wins**, whatever is flagged; the mines left are flagged for you.
+The time is shown and kept as the best for that board **on this device** (in `localStorage`) when it beats the last one.
+
+There is no challenge link: the mines depend on where the first click lands, so two people could not play the same board.
+
+The rules are covered by [`game.test.ts`](../../front/src/minesweeper/solo/game.test.ts), and the screens are MS01-MS05 in [the Figma file](../design.md).
 
 ## Rules the server enforces
 

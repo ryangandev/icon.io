@@ -35,13 +35,13 @@ Decided by Ryan, and the frame for every design and implementation choice:
 
 Two new games and solo play, decided by Ryan on 2026-10-04 (see [the proposal](../design/reviews/2026-10-04-new-games-proposal.md)).
 The Figma file has every screen (sections 03, 05 and 06, and the hub in 01 and 04).
-Claude is building them on `rework`, one commit per step, in this order:
+Claude is building them on `rework`, one commit per step.
+Done: every game card offers Play solo where the game has it, and Minesweeper solo is playable (`/games/minesweeper/solo`).
+Still to do, in this order:
 
-1. Give the games hub a Play solo and a Find a room button per game; solo routes need no name.
-2. Make 24: rules in `docs/games/`, the deal and solver, the cards, solo play, then rooms.
-3. Pairs: rules, the cards, solo play, then rooms.
-4. Minesweeper solo: flags, chording, the first reveal always opening an area.
-5. End-to-end tests and the design comparison for every new screen, then check each flow with two players in a browser.
+1. Make 24: rules in `docs/games/`, the deal and solver, the cards, solo play, then rooms.
+2. Pairs: rules, the cards, solo play, then rooms.
+3. End-to-end tests and the design comparison for every new screen, then check each flow with two players in a browser.
 
 ## Open decisions
 

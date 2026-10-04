@@ -39,7 +39,10 @@ export default function HomePage() {
         ))}
       </GameCards>
       {!phone && (
-        <Notice>Grab a friend. Both games start with 2 players.</Notice>
+        <Notice>
+          Play solo starts at once. Rooms start with 2 players, so grab a
+          friend.
+        </Notice>
       )}
     </Page>
   );

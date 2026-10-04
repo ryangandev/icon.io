@@ -109,6 +109,9 @@ The server decides everything a player could gain by lying about.
 - **Nothing internal is emitted directly.** A module's `toLobbyInfo` and `toRoomState` are the only way a room becomes something a client sees, so the room password and the word being guessed cannot leak through an accidental emit.
 - **A snapshot is built per viewer.** `toRoomState(room, viewerId)` leaves out whatever that player may not know (the word for a guesser, another player's pick), and only the registry sends `room:state`, one player at a time.
   A module changes its state and calls `rooms.emitState(room)`; it never emits a snapshot itself, because a room-wide emit would send everybody the same view.
+- **A game on your own is the exception, and runs in the browser.**
+  With nobody else in it there is nothing to gain by lying, so solo play needs no name, opens no socket, and keeps its bests in the device's `localStorage` ([`solo/`](../front/src/solo/)).
+  Its rules are still one copy: anything a room plays too, such as board sizes or a deal, comes from `shared/*.ts`.
 - **Every inbound event is validated** with zod ([`validation.ts`](../back/libs/validation.ts)) before it reaches game state, and **rate-limited** before that ([`rate-limit.ts`](../back/libs/rate-limit.ts)): one token bucket per kind of event, per socket, because a drawing phase is a stream of coordinates and joining a room is a click.
 - **The UI's rules are enforced, not assumed.** Only the drawer may draw, and only while drawing; only the owner may start; only a seat-holder may read a room's state or talk in it; a guess is checked by the game's `handleChat` for phase, not-the-drawer and not-already-scored.
 - **The drawing is server state too.** The stroke list every client builds is built once more on the server, so a player arriving mid-turn gets the board, and undo is "drop the last stroke" rather than a full-canvas image.
@@ -185,13 +188,14 @@ Routes live in [`app.tsx`](../front/src/app.tsx), on a data router so a room can
 | ---------------------------- | ----------------------------------------------------------- |
 | `/`                          | Home                                                        |
 | `/name?next=`                | Choosing a name, then on to `next` (only a path in the app) |
-| `/how-to-play`               | Both games' rules                                           |
+| `/how-to-play`               | Every game's rules                                          |
 | `/games`                     | The games                                                   |
 | `/games/:game`               | A game's lobby                                              |
 | `/games/:game/new`           | Making a room                                               |
+| `/games/:game/solo`          | The game on your own; `?board=` and the like pick the setup |
 | `/games/:game/rooms/:roomId` | A room, and the link a host shares                          |
 
-Everything under `/games` needs a name and sends a player without one to `/name` first, then back.
+Everything under `/games` but a game on your own needs a name and sends a player without one to `/name` first, then back.
 The room URL carries the game so that a page which cannot reach the room (a password, a room that moved on) still knows which game it belongs to; a link with the wrong game in it redirects to the right one.
 
 ### Talking to the server
@@ -237,6 +241,7 @@ It empties the folder rather than deleting it, and `back/tsconfig.json` names it
    Its engine changes state and calls `ctx.rooms.emitState(room)`; its `toRoomState(room, viewerId)` decides what each player sees.
 2. A member added to `GameType`, the game's room state, lobby info and settings interfaces in the shared contract, and its event names in the two unions.
 3. An entry in [`games/catalog.ts`](../front/src/games/catalog.ts), the game's fields in [`create-room.tsx`](../front/src/pages/create-room.tsx), which puts them into `settings` (the only part of a create request the server hands to a module), and a room view rendered by [`room-page.tsx`](../front/src/room/room-page.tsx) inside the shared `RoomLayout`.
+4. For a game that can be played on your own: its `solo` rules in the catalog, a page in [`solo/solo-page.tsx`](../front/src/solo/solo-page.tsx) built on `SoloLayout`, and any rule code a room also runs in `shared/`.
 
 Nothing in `libs/rooms/` should need editing.
 If it does, the abstraction is wrong rather than the game unusual, and that is worth fixing rather than working around.

@@ -17,6 +17,7 @@ import LobbyPage from './pages/lobby';
 import NamePage from './pages/name';
 import NotFoundPage from './pages/not-found';
 import RoomPage from './room/room-page';
+import SoloPage from './solo/solo-page';
 import { RequireName } from './shell/require-name';
 
 // The design system gallery, for development only: the build drops it.
@@ -37,7 +38,7 @@ function Root() {
 function GamePage({
   page: Page,
 }: {
-  page: typeof LobbyPage | typeof CreateRoomPage;
+  page: typeof LobbyPage | typeof CreateRoomPage | typeof SoloPage;
 }) {
   const { game } = useParams();
   if (!isGameType(game)) return <NotFoundPage />;
@@ -57,6 +58,8 @@ export const routes: RouteObject[] = [
       { path: '/', element: <HomePage /> },
       { path: '/name', element: <NamePage /> },
       { path: '/how-to-play', element: <HowToPlayPage /> },
+      // A game on your own needs no name.
+      { path: '/games/:game/solo', element: <GamePage page={SoloPage} /> },
       {
         element: <RequireName />,
         children: [
