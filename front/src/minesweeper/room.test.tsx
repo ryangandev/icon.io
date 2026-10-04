@@ -2,6 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { ME, minesweeperState } from '../tests/fixtures';
+import { onPhone } from '../tests/phone';
 import { renderSeated } from '../tests/seated';
 
 const picking = minesweeperState({
@@ -111,5 +112,21 @@ describe('a Minesweeper room', () => {
         'You and Maya picked the same cell, so you split its reward',
       ),
     ).toBeInTheDocument();
+  });
+
+  it('keeps the last results to the reveal on a phone', async () => {
+    onPhone();
+    const { update } = await renderSeated({
+      ...picking,
+      phase: 'reveal',
+      lastRound: [pick],
+    });
+    expect(
+      screen.getByRole('heading', { name: 'Round 1 results' }),
+    ).toBeInTheDocument();
+
+    update({ ...picking, round: 2, lastRound: [pick] });
+    expect(screen.getByText('Pick a cell')).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /results/ })).toBeNull();
   });
 });

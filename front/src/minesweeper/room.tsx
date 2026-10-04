@@ -10,6 +10,7 @@ import { EndedEarlyPanel, ResultsPanel, WaitingPanel } from '../room/panels';
 import { listNames, rankedPlayers, type Seat } from '../room/players';
 import { useRoomContext, type Room as RoomOf } from '../room/room-context';
 import { RoomLayout, type PlayerLine } from '../room/room-layout';
+import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import { BOARDS } from './boards';
 import { Board } from './board';
 import styles from './room.module.css';
@@ -102,7 +103,11 @@ function Round({ room }: { room: Room }) {
   );
 }
 
-/** The board, with the latest round's results under it. */
+/**
+ * The board, with the latest round's results under it. A phone shows them
+ * only while the round is revealed (MO13), so the next pick (MO11, MO12)
+ * keeps the board alone on screen.
+ */
 function Minefield({
   room,
   showPicks,
@@ -113,7 +118,11 @@ function Minefield({
   onPick?: (index: number) => void;
 }) {
   const { state } = room;
-  const results = state.lastRound.toSorted((a, b) => b.points - a.points);
+  const phone = useMediaQuery(PHONE);
+  const results =
+    phone && state.isGameStarted && state.phase === 'picking'
+      ? []
+      : state.lastRound.toSorted((a, b) => b.points - a.points);
   // The round the results belong to: the one being revealed, the one before
   // the open one, or the last round of a finished game.
   const resultsRound = !state.isGameStarted
