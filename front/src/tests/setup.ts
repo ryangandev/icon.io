@@ -25,3 +25,9 @@ globalThis.ResizeObserver ??= class {
   unobserve() {}
   disconnect() {}
 };
+
+// The router restores the scroll position on every navigation.
+window.scrollTo = () => {};
+
+// jsdom has no 2D canvas; the drawing canvas draws nothing without one.
+HTMLCanvasElement.prototype.getContext = () => null;
