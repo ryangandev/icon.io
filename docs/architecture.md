@@ -165,7 +165,7 @@ The design system lives in [`front/src/ui/`](../front/src/ui/index.ts), one comp
 - **`zumpo.css`** loads the self-hosted fonts and the tokens; the `.zumpo` class scopes the base styles and `.zumpo-page` adds the page canvas.
   Portals (select menus, dialogs, the header menu) carry `.zumpo` themselves, because they render outside the page.
 - **Desktop and Phone variants are container queries**, so a component follows its own width, as Figma's `Layout` variants do, wherever a page puts it.
-  Pages switch layouts at `(max-width: 640px)`, the width Figma's phone screens are drawn for, through `useMediaQuery(PHONE)` where the markup itself differs (tabs instead of columns).
+  Pages switch layouts at `(max-width: 640px)`, the width Figma's phone screens are drawn for, through `useMediaQuery(PHONE)` where the markup itself differs: a room's tabs instead of columns, and `FormPage`, which lays a one-question page's card straight on the page.
 - **States never change size:** hover borders, selection rings and cell outlines are inset shadows, not borders, so nothing shifts and overlays such as the pick marker cover the whole box.
 - **The `/design` gallery** renders every family in the states Figma draws, beside its Figma preview, and measures each specimen against the export.
   It exists only in development (the build drops it), and the Vite dev server serves `design/figma/` at `/__figma` for it.
