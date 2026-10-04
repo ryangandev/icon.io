@@ -189,28 +189,24 @@ export function ResultsPanel({
           return (
             <li key={standing.playerId} className={styles.place}>
               <span className={styles.number}>{standingPlace}</span>
-              <ul className={styles.row}>
-                <PlayerRow
-                  name={standing.username}
-                  initials={initialsOf(standing.username)}
-                  tone={toneOf(standing.username)}
-                  status={
-                    standingPlace === 1
-                      ? 'Winner'
-                      : `${ordinal(standingPlace)} place`
-                  }
-                  score={standing.points}
-                  host={standing.playerId === state.owner.playerId}
-                  you={standing.playerId === playerId}
-                  state={
-                    standingPlace === 1
-                      ? 'highlight'
-                      : seat
-                        ? 'default'
-                        : 'away'
-                  }
-                />
-              </ul>
+              <PlayerRow
+                as="div"
+                className={styles.row}
+                name={standing.username}
+                initials={initialsOf(standing.username)}
+                tone={toneOf(standing.username)}
+                status={
+                  standingPlace === 1
+                    ? 'Winner'
+                    : `${ordinal(standingPlace)} place`
+                }
+                score={standing.points}
+                host={standing.playerId === state.owner.playerId}
+                you={standing.playerId === playerId}
+                state={
+                  standingPlace === 1 ? 'highlight' : seat ? 'default' : 'away'
+                }
+              />
             </li>
           );
         })}

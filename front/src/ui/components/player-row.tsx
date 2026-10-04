@@ -23,6 +23,9 @@ export interface PlayerRowProps {
    * Away: dropped, inside the reconnect grace.
    */
   state?: PlayerRowState;
+  /** A list item by default; a div where the row is not one, as in standings. */
+  as?: 'li' | 'div';
+  className?: string;
 }
 
 /** Zumpo/Player row: one player in a room's list, which is sorted by score. */
@@ -36,9 +39,17 @@ export function PlayerRow({
   host = false,
   you = false,
   state = 'default',
+  as: Row = 'li',
+  className,
 }: PlayerRowProps) {
   return (
-    <li className={cx(styles.row, state !== 'default' && styles[state])}>
+    <Row
+      className={cx(
+        styles.row,
+        state !== 'default' && styles[state],
+        className,
+      )}
+    >
       <Avatar initials={initials} tone={tone} className={styles.avatar} />
       <span className={styles.details}>
         <span className={styles.nameLine}>
@@ -65,6 +76,6 @@ export function PlayerRow({
         </span>
       </span>
       <span className={styles.score}>{score < 0 ? `−${-score}` : score}</span>
-    </li>
+    </Row>
   );
 }
