@@ -10,7 +10,7 @@ const GAP = 3;
  * runs from the middle of one corner to the middle of the next, with a dash
  * centred on it, so the dashes sit symmetrically whatever the cell's size.
  */
-function dashedSides(
+export function dashedSides(
   width: number,
   height: number,
   stroke: number,
