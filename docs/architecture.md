@@ -221,7 +221,8 @@ Phase lengths are server settings because the server owns the clock; each game d
 The test suite passes durations straight to `createIconIoServer()`, so an environment variable cannot change a suite's timing.
 
 Production is one Node process: Vite builds into `back/build/public` and Express serves it, with Socket.IO on the same HTTP server.
-`npm --prefix back run build` wipes `back/build/` including the frontend bundle, so the backend must build first; the root `npm run build` does it in that order.
+`npm --prefix back run build` empties `back/build/` including the frontend bundle, so the backend must build first; the root `npm run build` does it in that order.
+It empties the folder rather than deleting it, and `back/tsconfig.json` names its source folders instead of `**/*.ts`, because TypeScript 7's watcher restarts on any change under a folder it watches: otherwise every e2e or design run restarts a running `npm --prefix back run watch` and loses its rooms.
 
 ## Adding a game
 

@@ -51,7 +51,7 @@
 
 | Script                 | What it does                                                   |
 | ---------------------- | -------------------------------------------------------------- |
-| `npm run build`        | Clean `build/` and compile TypeScript                          |
+| `npm run build`        | Empty `build/` and compile TypeScript                          |
 | `npm run watch`        | Recompile and restart the dev server on change                 |
 | `npm run start:dev`    | Run the compiled server in development mode                    |
 | `npm run build:deploy` | Build the backend, then build the frontend into `build/public` |
@@ -59,7 +59,7 @@
 | `npm run start:deploy` | Run the production server under PM2                            |
 | `npm run typecheck`    | Run `tsc --noEmit`                                             |
 
-> **Build order matters.** `npm run build` wipes `build/`, including the frontend
+> **Build order matters.** `npm run build` empties `build/`, including the frontend
 > bundle in `build/public`. Always build the backend _before_ the frontend -
 > `build:deploy` does this for you.
 
