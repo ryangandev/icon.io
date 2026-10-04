@@ -12,6 +12,11 @@ export interface DialogProps {
   children?: ReactNode;
   /** Buttons, the confirming one first. Wrap a dismissing one in DialogClose. */
   actions: ReactNode;
+  /**
+   * What takes focus on opening; by default the first button. A destructive
+   * confirmation points this at its safe choice, so Enter never destroys.
+   */
+  initialFocus?: BaseDialog.Popup.Props['initialFocus'];
 }
 
 /** A dialog over the screen it comes from (leave, invite), behind an ink scrim. */
@@ -22,13 +27,17 @@ export function Dialog({
   description,
   children,
   actions,
+  initialFocus,
 }: DialogProps) {
   return (
     <BaseDialog.Root open={open} onOpenChange={(next) => onOpenChange(next)}>
       <BaseDialog.Portal>
         <BaseDialog.Backdrop className={cx('zumpo', styles.backdrop)} />
         <BaseDialog.Viewport className={cx('zumpo', styles.viewport)}>
-          <BaseDialog.Popup className={cx(card.card, styles.popup)}>
+          <BaseDialog.Popup
+            className={cx(card.card, styles.popup)}
+            initialFocus={initialFocus}
+          >
             <BaseDialog.Title className={card.title}>{title}</BaseDialog.Title>
             {description != null && (
               <BaseDialog.Description className={card.description}>
