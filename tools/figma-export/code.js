@@ -632,6 +632,20 @@ class Exporter {
       }
       if (node.cornerSmoothing) o.smoothing = round(node.cornerSmoothing);
     }
+    // A ring or a half circle is an ellipse with arc data; without it, either
+    // reads as a plain disc.
+    if (node.type === 'ELLIPSE' && node.arcData) {
+      const { startingAngle, endingAngle, innerRadius } = node.arcData;
+      const whole = Math.abs(endingAngle - startingAngle - 2 * Math.PI) < 1e-6;
+      if (!whole || innerRadius) {
+        const degrees = (radians) => round((radians * 180) / Math.PI, 1);
+        o.arc = {
+          start: degrees(startingAngle),
+          end: degrees(endingAngle),
+          inner: round(innerRadius, 3),
+        };
+      }
+    }
     if ('effects' in node) {
       const effects = await this.effects(node.effects);
       if (effects) o.effects = effects;
@@ -1710,6 +1724,9 @@ design in Figma, never these files.
   except a slot's content: slots maps each slot property to the children the
   instance put in it.
 - svg: a vector drawing exported to svg/; its children are not repeated.
+- arc: an ellipse drawn as part of one, such as a ring or a half circle:
+  start and end in degrees clockwise from three o'clock, and inner the
+  hole's radius as a fraction of the ellipse's (0 for none).
 - GRID: many same-kind children folded into rows x cols, the common cell, and
   "special" cells as {r, c, id, ...only the differing fields}. rowFrame is the
   row container when the grid was drawn as rows.
