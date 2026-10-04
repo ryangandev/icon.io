@@ -67,12 +67,7 @@ export function DrawAndGuessRoom() {
           drawing && !isDrawer && !scored
             ? 'Type your guess…'
             : 'Say something…',
-        lockedReason:
-          isDrawer && state.phase !== 'reveal'
-            ? 'You’re drawing. Chat opens after your turn.'
-            : scored && state.phase === 'drawing'
-              ? 'You got it. Chat opens next turn.'
-              : undefined,
+        lockedReason: chatLock(state, isDrawer, scored),
       }}
       boardInput={drawing && !isDrawer && !scored}
     />
@@ -364,4 +359,20 @@ function turnPointsLine(state: DrawAndGuessRoomState): string {
     })
     .filter(Boolean)
     .join(' · ');
+}
+
+/**
+ * Why the viewer cannot talk: anyone who knows the word while it is in play.
+ * A scorer stays silent through the review too, as the server enforces.
+ */
+function chatLock(
+  state: DrawAndGuessRoomState,
+  isDrawer: boolean,
+  scored: boolean,
+): string | undefined {
+  if (isDrawer && state.phase !== 'reveal') {
+    return 'You’re drawing. Chat opens after your turn.';
+  }
+  if (scored && state.isGameStarted) return 'You got it. Chat opens next turn.';
+  return undefined;
 }

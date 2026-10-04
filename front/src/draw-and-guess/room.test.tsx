@@ -69,4 +69,21 @@ describe('a Draw & Guess room', () => {
     await user.type(input, 'turtle{Enter}');
     expect(fake.sentArgs('chat:send')).toEqual([['r1', 'turtle']]);
   });
+
+  it('keeps a player who scored quiet through the review', async () => {
+    await renderSeated(
+      drawAndGuessState({
+        ...turn,
+        phase: 'reveal',
+        currentDrawer: 'p2',
+        word: 'turtle',
+        scoredThisTurn: [ME],
+        turnPoints: { [ME]: 120, p2: 48 },
+      }),
+    );
+    expect(screen.getByRole('textbox')).toHaveAttribute(
+      'placeholder',
+      'You got it. Chat opens next turn.',
+    );
+  });
 });
