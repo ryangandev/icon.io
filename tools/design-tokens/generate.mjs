@@ -213,7 +213,7 @@ export type BrushName = (typeof brushes)[number]['name'];
 // A colour variable bound in the export, as the token that carries it.
 function fillOf(token) {
   const name = token.replace(/^\$Zumpo · UI:color\//, '');
-  return `var(--zumpo-${name})`;
+  return `var(--zumpo-${name.replaceAll('/', '-')})`;
 }
 
 // The turtle sample drawing, the Draw & Guess artwork on the home and games
@@ -270,11 +270,137 @@ ${stages.join('\n')}
 `;
 }
 
+// Exports made before the exporter kept arc data read every ellipse as a
+// disc. Until the next export carries it, these are the arcs Figma draws,
+// measured from its preview; an export that has arc data wins.
+const ARCS_BEFORE_EXPORT = {
+  Ring: { start: 0, end: 360, inner: 0.5 },
+  Half: { start: 180, end: 360, inner: 0 },
+};
+
+const n = (value) => String(round(value));
+
+// An ellipse in its own w × h box as path data: a disc, a ring, or a slice
+// from `start` to `end` degrees, clockwise from three o'clock as in Figma.
+function ellipsePath(w, h, arc) {
+  const rx = w / 2;
+  const ry = h / 2;
+  const disc = (scale) =>
+    `M${n(rx)} ${n(ry - ry * scale)}` +
+    `A${n(rx * scale)} ${n(ry * scale)} 0 1 1 ${n(rx)} ${n(ry + ry * scale)}` +
+    `A${n(rx * scale)} ${n(ry * scale)} 0 1 1 ${n(rx)} ${n(ry - ry * scale)}Z`;
+  if (!arc) return disc(1);
+  const whole = Math.abs(arc.end - arc.start - 360) < 1e-6;
+  if (whole) return arc.inner ? disc(1) + disc(arc.inner) : disc(1);
+  if (arc.inner) throw new Error('A slice of a ring is not supported');
+  const at = (degrees) => {
+    const radians = (degrees * Math.PI) / 180;
+    return `${n(rx + rx * Math.cos(radians))} ${n(ry + ry * Math.sin(radians))}`;
+  };
+  const large = arc.end - arc.start > 180 ? 1 : 0;
+  return `M${n(rx)} ${n(ry)}L${at(arc.start)}A${n(rx)} ${n(ry)} 0 ${large} 1 ${at(arc.end)}Z`;
+}
+
+function roundedRectPath(w, h, r) {
+  return (
+    `M${n(r)} 0H${n(w - r)}A${n(r)} ${n(r)} 0 0 1 ${n(w)} ${n(r)}` +
+    `V${n(h - r)}A${n(r)} ${n(r)} 0 0 1 ${n(w - r)} ${n(h)}` +
+    `H${n(r)}A${n(r)} ${n(r)} 0 0 1 0 ${n(h - r)}` +
+    `V${n(r)}A${n(r)} ${n(r)} 0 0 1 ${n(r)} 0Z`
+  );
+}
+
+// The Pairs card faces: one filled shape per Symbol variant, as path data
+// placed in the symbol's box, and the brush token that fills it.
+function pairsSymbolsTs() {
+  const set = read('components/pairs-symbol.json');
+  const { collections } = read('tokens/variables.json');
+  const ui = collections.find((c) => c.name === UI_COLLECTION);
+  // A polygon or star exports as an SVG with its colour inlined; it is one
+  // of the brushes.
+  const brushOf = (hex) => {
+    const brush = ui.variables.find(
+      (v) =>
+        v.name.startsWith('color/brush/') &&
+        lowerHex(v.resolved ?? '') === lowerHex(hex),
+    );
+    if (!brush) throw new Error(`${hex} is not a brush colour`);
+    return `var(${cssName(brush)})`;
+  };
+
+  const symbols = set.variants.map(({ props, node }) => {
+    const name = props.Symbol;
+    if (node.children.length !== 1) {
+      throw new Error(`Symbol ${name} has ${node.children.length} shapes`);
+    }
+    const [shape] = node.children;
+    const placed = (d, fill, x = shape.x, y = shape.y) =>
+      `  { name: '${name}', d: '${d}', x: ${n(x)}, y: ${n(y)}, fill: '${fill}' },`;
+    if (shape.type === 'ELLIPSE') {
+      const arc = shape.arc ?? ARCS_BEFORE_EXPORT[name.split(' ')[0]];
+      return placed(ellipsePath(shape.w, shape.h, arc), fillOf(shape.fills[0]));
+    }
+    if (shape.type === 'RECTANGLE') {
+      return placed(
+        roundedRectPath(shape.w, shape.h, shape.radius ?? 0),
+        fillOf(shape.fills[0]),
+      );
+    }
+    if (!shape.svg) throw new Error(`Symbol ${name} is a ${shape.type}`);
+    const svg = fs.readFileSync(path.join(design, shape.svg), 'utf8');
+    const paths = [...svg.matchAll(/<path ([^>]*)\/>/g)];
+    if (paths.length !== 1) {
+      throw new Error(`${shape.svg} has ${paths.length} paths, expected 1`);
+    }
+    const attrs = Object.fromEntries(
+      [...paths[0][1].matchAll(/([\w-]+)="([^"]*)"/g)].map((m) => [m[1], m[2]]),
+    );
+    // Figma centres a polygon or star across its box and stands its first
+    // point on the top edge. The export crops to the points, rounding the
+    // crop out to whole pixels, so the points themselves say where they lie.
+    const xs = [...attrs.d.matchAll(/[ML](-?[\d.]+) |H(-?[\d.]+)/g)].map((m) =>
+      Number(m[1] ?? m[2]),
+    );
+    const left = Math.min(...xs);
+    const right = Math.max(...xs);
+    if (/[^MLHVZ\d.\s-]/.test(attrs.d)) {
+      throw new Error(`${shape.svg} is not made of straight lines`);
+    }
+    return placed(
+      attrs.d,
+      brushOf(attrs.fill),
+      shape.x + (shape.w - (right - left)) / 2 - left,
+      shape.y,
+    );
+  });
+  const { w } = set.variants[0].node;
+  return `// ${NOTICE}
+
+export interface PairsSymbolShape {
+  name: string;
+  /** Path data, filled even-odd, placed at (x, y) in the symbol's box. */
+  d: string;
+  x: number;
+  y: number;
+  fill: string;
+}
+
+/** A symbol's square box, in pixels at its design size. */
+export const PAIRS_SYMBOL_SIZE = ${w};
+
+/** Zumpo/Pairs symbol, in variant order: what a deck of pairs is dealt from. */
+export const pairsSymbols = [
+${symbols.join('\n')}
+] as const satisfies readonly PairsSymbolShape[];
+`;
+}
+
 const outputs = {
   'tokens.css': tokensCss(),
   'glyphs.ts': glyphsTs(),
   'brushes.ts': brushesTs(),
   'drawings.ts': drawingsTs(),
+  'pairs-symbols.ts': pairsSymbolsTs(),
 };
 
 const check = process.argv.includes('--check');
