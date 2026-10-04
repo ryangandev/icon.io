@@ -51,6 +51,8 @@ Decisions from the first review round ([report](../design/reviews/2026-10-03-rou
 - Text on a tinted surface (peach, blue, lime) is ink; muted text is only for cream, paper and sand, where it passes WCAG AA.
 - Keyboard focus is a 2 px ink ring 2 px outside the control, distinct from hover's border.
 - A line of metadata has at most one middle dot.
+- An icon beside text is centred on the text's first line, never top-aligned: a leading icon sits in a slot one line-height tall (`height: 1lh` in code), so a wrapped message keeps it level with line one.
+  Trailing indicators, like the check on a selected option, centre on the whole row.
 
 [taste-skill](https://github.com/Leonxlnx/taste-skill)'s `design-taste-frontend` and `redesign-existing-projects` skills are useful review checklists, not authorities: they target landing pages, and where a rule contradicts the brand direction above (its cream-palette and single-accent rules, for example), the brand wins.
 
