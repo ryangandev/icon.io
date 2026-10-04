@@ -91,7 +91,7 @@ export function RoomLayout({
   );
 
   const chatPanel = (
-    <Chat messageCount={room.chat.length} input={input}>
+    <Chat input={input}>
       {room.chat.map((message) => (
         <ChatMessage
           key={message.id}

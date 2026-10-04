@@ -7,12 +7,12 @@ import { useConnectedSession } from './session';
  * again after a reconnection until the list arrives anew.
  */
 export function useLobby(gameType: GameType): AnyLobbyRoomInfo[] | null {
-  const { socket, status, connectionId } = useConnectedSession();
+  const { socket, connection } = useConnectedSession();
   const [rooms, setRooms] = useState<AnyLobbyRoomInfo[] | null>(null);
-  const online = status === 'online';
 
+  // Each connection subscribes anew.
   useEffect(() => {
-    if (!online) return;
+    if (connection === null) return;
     const onRooms = (type: GameType, list: AnyLobbyRoomInfo[]) => {
       if (type === gameType) setRooms(list);
     };
@@ -24,7 +24,7 @@ export function useLobby(gameType: GameType): AnyLobbyRoomInfo[] | null {
       if (socket.connected) socket.emit('lobby:unsubscribe', gameType);
       setRooms(null);
     };
-  }, [socket, online, connectionId, gameType]);
+  }, [socket, connection, gameType]);
 
   return rooms;
 }

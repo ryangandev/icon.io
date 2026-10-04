@@ -7,21 +7,27 @@ import styles from './chat.module.css';
 export interface ChatProps {
   /** Zumpo/Chat messages, oldest first. */
   children: ReactNode;
-  /** Changes whenever a message arrives, to keep the newest in view. */
-  messageCount: number;
   input: ChatInputProps;
   className?: string;
 }
 
 /** Zumpo/Chat: the room chat, newest last, with the input under it. */
-export function Chat({ children, messageCount, input, className }: ChatProps) {
+export function Chat({ children, input, className }: ChatProps) {
   const log = useRef<HTMLUListElement>(null);
   const headingId = useId();
 
+  // The newest message stays in view: on opening, and as each one arrives.
   useLayoutEffect(() => {
     const element = log.current;
-    if (element) element.scrollTop = element.scrollHeight;
-  }, [messageCount]);
+    if (!element) return;
+    const showNewest = () => {
+      element.scrollTop = element.scrollHeight;
+    };
+    showNewest();
+    const observer = new MutationObserver(showNewest);
+    observer.observe(element, { childList: true });
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section

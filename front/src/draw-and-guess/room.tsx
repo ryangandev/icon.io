@@ -188,10 +188,11 @@ function Turn({ room }: { room: Room }) {
   const [size, setSize] = useState<BrushSize>(DEFAULT_SIZE);
   const roomId = state.roomId;
 
-  // Every turn starts on a blank sheet.
+  // Every turn starts on a blank sheet, as its drawer begins choosing.
+  const choosingTurn = state.phase === 'choosing' ? state.turn : null;
   useEffect(() => {
-    if (state.phase === 'choosing') canvas.clear();
-  }, [state.phase, state.turn, canvas]);
+    if (choosingTurn !== null) canvas.clear();
+  }, [choosingTurn, canvas]);
 
   const canDraw = isDrawer && state.phase === 'drawing' && !reconnecting;
   const brush: Brush | undefined = canDraw

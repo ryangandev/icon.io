@@ -1,4 +1,5 @@
 import { act, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { StrictMode } from 'react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { FakeSocket } from '../tests/fake-socket';
@@ -16,6 +17,17 @@ function Status() {
 
 function Idle() {
   return <p>{useSession().status}</p>;
+}
+
+/** Starts over on a click, as the failure page's Try again does. */
+function Retry() {
+  const { status, connect } = useConnectedSession();
+  return <button onClick={connect}>{status}</button>;
+}
+
+function Naming() {
+  const { name, setName } = useSession();
+  return <button onClick={() => setName('Ryan')}>name: {name}</button>;
 }
 
 function setup(children = <Status />) {
@@ -91,30 +103,20 @@ describe('the session', () => {
   });
 
   it('fails once retries run out, and starts over on request', async () => {
-    let session: ReturnType<typeof useSession> | undefined;
-    function Capture() {
-      session = useConnectedSession();
-      return <p>{session.status}</p>;
-    }
-    const fake = setup(<Capture />);
+    const fake = setup(<Retry />);
     await act(async () => fake.open());
     act(() => fake.drop());
     act(() => fake.giveUp());
     expect(screen.getByText('failed')).toBeInTheDocument();
 
-    act(() => session!.connect());
+    await userEvent.click(screen.getByRole('button'));
     expect(screen.getByText('connecting')).toBeInTheDocument();
     expect(fake.active).toBe(true);
   });
 
-  it('remembers the chosen name for this tab', () => {
-    let session: ReturnType<typeof useSession> | undefined;
-    function Capture() {
-      session = useSession();
-      return <p>name: {session.name}</p>;
-    }
-    setup(<Capture />);
-    act(() => session!.setName('Ryan'));
+  it('remembers the chosen name for this tab', async () => {
+    setup(<Naming />);
+    await userEvent.click(screen.getByRole('button'));
     expect(screen.getByText('name: Ryan')).toBeInTheDocument();
     expect(sessionStorage.getItem('zumpo:name')).toBe('Ryan');
   });

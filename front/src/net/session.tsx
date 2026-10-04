@@ -33,11 +33,11 @@ export interface Session {
   /** How long the server keeps a dropped player's seat. */
   reconnectGraceMs: number;
   /**
-   * Counts connections the server has identified. Anything kept on the server for this connection,
-   * like a lobby subscription or a room's listeners, is set up again when it
-   * changes.
+   * The live connection, numbered from 1 as the server identifies each one;
+   * null while not online. Anything the server keeps per connection, like a
+   * lobby subscription or a room's listeners, is set up again for each.
    */
-  connectionId: number;
+  connection: number | null;
   /** The player's name for this browser session; '' until they choose one. */
   name: string;
   setName: (name: string) => void;
@@ -58,10 +58,17 @@ export function SessionProvider({
   socket: given,
 }: SessionProviderProps) {
   const [socket] = useState(() => given ?? createSocket());
-  const [status, setStatus] = useState<ConnectionStatus>('idle');
+  const [status, setStatusState] = useState<ConnectionStatus>('idle');
+  // Mirrors `status` for `connect`, which must stay stable for the effects
+  // that call it; every change goes through `setStatus` to keep the two equal.
+  const statusRef = useRef<ConnectionStatus>('idle');
+  const setStatus = useCallback((next: ConnectionStatus) => {
+    statusRef.current = next;
+    setStatusState(next);
+  }, []);
   const [playerId, setPlayerId] = useState('');
   const [reconnectGraceMs, setReconnectGraceMs] = useState(0);
-  const [connectionId, setConnectionId] = useState(0);
+  const [identified, setIdentified] = useState(0);
   const [name, setNameState] = useState(readName);
 
   useEffect(() => {
@@ -74,7 +81,7 @@ export function SessionProvider({
       everOnline = true;
       setPlayerId(session.playerId);
       setReconnectGraceMs(session.reconnectGraceMs);
-      setConnectionId((id) => id + 1);
+      setIdentified((count) => count + 1);
       setStatus('online');
     };
 
@@ -104,45 +111,40 @@ export function SessionProvider({
       socket.off('connect_error', onConnectError);
       socket.io.off('reconnect_failed', onReconnectFailed);
     };
-  }, [socket]);
-
-  // Read by `connect`, which must stay stable for the effects that call it.
-  const statusRef = useRef(status);
-  statusRef.current = status;
+  }, [socket, setStatus]);
 
   // Unmounted, the session lets the connection go and starts from idle, so a
   // remount (React's development double mount, for one) connects again.
   useEffect(
     () => () => {
       socket.disconnect();
-      statusRef.current = 'idle';
       setStatus('idle');
     },
-    [socket],
+    [socket, setStatus],
   );
 
   const connect = useCallback(() => {
     const current = statusRef.current;
     if (current !== 'idle' && current !== 'failed') return;
-    statusRef.current = 'connecting';
     setStatus('connecting');
     // After a failure the manager has given up; start it from scratch.
     if (current === 'failed') socket.disconnect();
     socket.connect();
-  }, [socket]);
+  }, [socket, setStatus]);
 
   const setName = useCallback((next: string) => {
     writeName(next);
     setNameState(next);
   }, []);
 
+  const connection = status === 'online' ? identified : null;
   const value = useMemo<Session>(
     () => ({
       socket,
       status,
       playerId,
       reconnectGraceMs,
-      connectionId,
+      connection,
       name,
       setName,
       connect,
@@ -152,7 +154,7 @@ export function SessionProvider({
       status,
       playerId,
       reconnectGraceMs,
-      connectionId,
+      connection,
       name,
       setName,
       connect,

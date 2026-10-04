@@ -193,7 +193,7 @@ The room URL carries the game so that a page which cannot reach the room (a pass
 
 - **`session.tsx`** owns the one socket.
   The first page that needs the server connects it; every handshake presents the stored identity, the session goes online at `session:ready`, and the identity and the chosen name are kept in `sessionStorage` (see [identity](#identity-and-reconnection)).
-  Its status (`connecting`, `online`, `reconnecting`, `failed`) is what pages show, and `connectionId` changes on every `session:ready`, so anything the server keeps per connection is set up again.
+  Its status (`connecting`, `online`, `reconnecting`, `failed`) is what pages show, and `connection` numbers the live connection anew on every `session:ready` (null while offline), so anything the server keeps per connection is set up again by an effect keyed on it.
 - **`use-lobby.ts`** subscribes to one game's rooms while online.
 - **`use-room.ts`** takes a seat: `room:sync` first, then `room:join` when the server says this player has no seat, then the password page if the room has one.
   It keeps the latest snapshot and when it arrived, the chat, and the drawing as a `CanvasStream`, which lives outside React because a stroke grows dozens of times a second.

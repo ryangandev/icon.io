@@ -62,8 +62,7 @@ export interface RoomConnection {
  */
 export function useRoom(roomId: string): RoomConnection {
   const session = useConnectedSession();
-  const { socket, status, connectionId, name } = session;
-  const online = status === 'online';
+  const { socket, status, connection, name } = session;
 
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
   const [problem, setProblem] = useState<RoomStage | null>(null);
@@ -138,7 +137,7 @@ export function useRoom(roomId: string): RoomConnection {
   );
 
   useEffect(() => {
-    if (!online || left.current) return;
+    if (connection === null || left.current) return;
     let current = true;
     const isCurrent = () => current;
 
@@ -228,7 +227,7 @@ export function useRoom(roomId: string): RoomConnection {
       socket.off('dg:canvas:undo', onCanvasUndo);
       socket.off('dg:canvas:clear', onCanvasClear);
     };
-  }, [online, connectionId, socket, roomId, canvas, sync, join, settle]);
+  }, [connection, socket, roomId, canvas, sync, join, settle]);
 
   const submitPassword = useCallback(
     (password: string) => {

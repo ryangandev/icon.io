@@ -394,7 +394,7 @@ export default function Gallery() {
 
       <Family name="Chat" file="chat">
         <Specimen family="chat" width={344}>
-          <Chat messageCount={6} input={{ onSend: noop }}>
+          <Chat input={{ onSend: noop }}>
             <ChatMessage kind="system">
               Game has started! The category is Animals.
             </ChatMessage>

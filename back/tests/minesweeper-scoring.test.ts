@@ -70,15 +70,15 @@ describe('what a mine costs', () => {
   });
 });
 
-describe('the expected value of a pick', () => {
-  /*
-   * Safe play should be optimal and gambling should be what you do when you are
-   * behind: the leader consolidates, the trailer has to swing. That is the whole
-   * comeback structure, and it lives entirely in these two curves.
-   */
-  const expectedValue = (risk: number) =>
-    (1 - risk) * safe(risk) + risk * mine(risk);
+/*
+ * Safe play should be optimal and gambling should be what you do when you are
+ * behind: the leader consolidates, the trailer has to swing. That is the whole
+ * comeback structure, and it lives entirely in these two curves.
+ */
+const expectedValue = (risk: number) =>
+  (1 - risk) * safe(risk) + risk * mine(risk);
 
+describe('the expected value of a pick', () => {
   it('falls as the risk rises', () => {
     const values = [0, 0.1, 0.25, 0.5, 0.75, 0.9].map(expectedValue);
 
