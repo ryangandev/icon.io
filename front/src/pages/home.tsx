@@ -4,10 +4,12 @@ import { GAMES, lobbyPath } from '../games/catalog';
 import { Page } from '../shell/page';
 import { PageHeading } from '../shell/page-heading';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
-import { namePath } from './name';
 import styles from './home.module.css';
 
-/** P01 and MO01: the front door. Every way in goes through the name page. */
+/**
+ * P01 and MO01: the front door. A first visit is asked for a name on the way
+ * in, by the pages that need one.
+ */
 export default function HomePage() {
   // A phone keeps one way in and shorter copy, so the games show sooner.
   const phone = useMediaQuery(PHONE);
@@ -24,20 +26,16 @@ export default function HomePage() {
         hero
       />
       <div className={styles.actions}>
-        <ButtonLink to={namePath('/games')}>Let’s play</ButtonLink>
+        <ButtonLink to={'/games'}>Let’s play</ButtonLink>
         {!phone && (
-          <ButtonLink to={namePath('/games')} variant="secondary">
+          <ButtonLink to={'/games'} variant="secondary">
             Browse games
           </ButtonLink>
         )}
       </div>
       <GameCards>
         {GAMES.map((game) => (
-          <GameCard
-            key={game.type}
-            game={game}
-            to={namePath(lobbyPath(game.type))}
-          />
+          <GameCard key={game.type} game={game} to={lobbyPath(game.type)} />
         ))}
       </GameCards>
       {!phone && (

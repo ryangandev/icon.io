@@ -25,6 +25,45 @@ test('a first visit asks for a name on the way to the games', async ({
   await expect(sam).toHaveURL(/\/games\/minesweeper$/);
 });
 
+test('a named player goes home and straight back into a game', async ({
+  player,
+}) => {
+  const sam = await player('Sam', { named: false });
+  await sam.goto('/');
+  await sam.getByRole('link', { name: 'Let’s play' }).click();
+  await sam.getByRole('textbox', { name: 'Your name' }).fill('Sam');
+  await sam.getByRole('button', { name: 'Let’s play' }).click();
+  await expect(
+    sam.getByRole('heading', { name: 'What are we playing?' }),
+  ).toBeVisible();
+
+  await sam.getByRole('link', { name: 'Zumpo home' }).click();
+  await sam
+    .getByRole('region', { name: 'Draw & Guess' })
+    .getByRole('link', { name: 'Find a room' })
+    .click();
+  await expect(sam).toHaveURL(/\/games\/draw-and-guess$/);
+
+  await sam.getByRole('link', { name: 'Zumpo home' }).click();
+  await sam.getByRole('link', { name: 'Let’s play' }).click();
+  await expect(sam).toHaveURL(/\/games$/);
+});
+
+test('a player changes their name from the header', async ({ player }) => {
+  const sam = await player('Sam');
+  await sam.goto('/games/minesweeper');
+  await sam.getByRole('button', { name: 'Sam: your name' }).click();
+  await sam.getByRole('button', { name: 'Change name' }).click();
+
+  const name = sam.getByRole('textbox', { name: 'Your name' });
+  await expect(name).toHaveValue('Sam');
+  await name.fill('Samira');
+  await sam.getByRole('button', { name: 'Let’s play' }).click();
+  await expect(
+    sam.getByRole('button', { name: 'Samira: your name' }),
+  ).toBeVisible();
+});
+
 test('a friend joins from the invite link', async ({ player }) => {
   const maya = await player('Maya');
   const leo = await player('Leo');

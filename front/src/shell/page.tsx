@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router';
 import { Button, Header } from '../ui';
 import { useSession } from '../net/session';
 import { initialsOf, toneOf } from '../players/avatar';
+import { namePath } from './require-name';
 import styles from './page.module.css';
 
 const LINKS = [
@@ -47,7 +48,7 @@ export function Page({ children }: { children: ReactNode }) {
               variant="secondary"
               icon="edit"
               className={styles.menuAction}
-              onClick={() => navigate('/')}
+              onClick={() => navigate(namePath('/games'))}
             >
               Change name
             </Button>

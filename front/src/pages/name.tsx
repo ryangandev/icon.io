@@ -8,11 +8,6 @@ import { PHONE, useMediaQuery } from '../shell/use-media-query';
 /** The server's limit on a name. */
 export const NAME_MAX_LENGTH = 18;
 
-/** The name page, set to continue to `next` once the player has a name. */
-export function namePath(next: string): string {
-  return `/name?next=${encodeURIComponent(next)}`;
-}
-
 /** Only a path inside this app, so a crafted link cannot send a player away. */
 function safeNext(next: string | null): string {
   return next && next.startsWith('/') && !next.startsWith('//')
