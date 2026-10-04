@@ -13,6 +13,7 @@ Find anything else through [docs/README.md](docs/README.md), and read only the s
 | `npm run verify`                                             | Lint, typecheck, format check, tests, build: what CI runs       |
 | `npm --prefix back run watch` / `npm --prefix front run dev` | Dev servers on 3000 / 3001                                      |
 | `npm run design:import`                                      | Unpack the newest Figma export into `design/figma/`             |
+| `npm run design:export`                                      | Export the Figma file through the bridge and import it          |
 | `npm run figma:run -- script.js`                             | Run a Plugin API script in Figma through the bridge             |
 
 ## Rules that fail silently

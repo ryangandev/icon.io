@@ -26,6 +26,16 @@ npm run design:import
 That takes the newest `zumpo-figma-export*.zip` in `~/Downloads` (or a path you pass after `--`), replaces `design/figma/`, and prints the counts and any warnings.
 Warnings such as "Expected 82 flow frames, found 81" mean the file and the plugin disagree about what exists; check them before using the export.
 
+## Run it through the bridge
+
+With the [Figma bridge](../figma-bridge/README.md) connected, one command exports and imports without opening this plugin:
+
+```bash
+npm run design:export
+```
+
+[via-bridge.mjs](via-bridge.mjs) runs this plugin's own `code.js` through the bridge, minus its plugin-window wiring, zips the files the same way `ui.html` does, and hands the zip to `design:import`.
+
 ## Guarantees
 
 - It never changes the document: the code only reads node properties and calls `exportAsync` and `getStyledTextSegments`.

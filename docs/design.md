@@ -61,6 +61,7 @@ It writes tokens, each Shared pieces family in full detail, one compact JSON per
 `FORMAT.md` inside each export documents the format.
 
 `npm run design:import` unpacks the newest export into `design/figma/`.
+With the bridge running, `npm run design:export` runs the same exporter through it and imports the result in one step.
 The JSON and SVG there are committed, so every agent and every worktree can read the design without Figma access, and a diff between two exports shows exactly what a review round changed.
 `design/figma/previews/` is ignored: PNGs are regenerated on every export and would bloat history.
 Everything in `design/figma/` is generated; change the design in Figma and export again rather than editing it.
