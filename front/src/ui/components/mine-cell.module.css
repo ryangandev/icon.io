@@ -34,12 +34,12 @@
 
 .hidden {
   background: var(--zumpo-blue);
-  box-shadow: inset 0 -2px 0 #282b2524;
+  box-shadow: var(--zumpo-shadow-cell-edge);
 }
 
 .pickable:hover {
   box-shadow:
-    inset 0 -2px 0 #282b2524,
+    var(--zumpo-shadow-cell-edge),
     inset 0 0 0 2px var(--zumpo-ink);
 }
 
