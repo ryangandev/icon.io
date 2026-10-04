@@ -85,8 +85,12 @@
   }
 }
 
-/* The phone list stands alone; the rules are a header link away. */
+/* The phone list stands alone, packed tighter; the rules are a header link away. */
 @media (max-width: 640px) {
+  .list {
+    gap: var(--zumpo-space-12);
+  }
+
   .rules {
     display: none;
   }
