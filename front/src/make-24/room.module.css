@@ -1,0 +1,24 @@
+/* A hand's results under its cards (T08, T09). */
+.results {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  gap: var(--zumpo-space-4);
+}
+
+.resultsTitle {
+  margin: 0;
+  padding-bottom: var(--zumpo-space-8);
+  font: var(--zumpo-text-heading);
+  letter-spacing: var(--zumpo-text-heading-tracking);
+}
+
+.resultList {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

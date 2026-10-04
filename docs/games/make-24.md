@@ -101,6 +101,7 @@ Every change reaches a player as `room:state`, the whole room as that player may
 | `solved`       | Who has solved the open hand, and for how many points; never how          |
 | `mySolve`      | Your own solve of the open hand, with its expression, or `null`           |
 | `lastHand`     | Every player's result for the latest finished hand, with their expression |
+| `lastDeal`     | That hand's cards, still on the table after the game ends                 |
 | `lastSolution` | One way to solve the latest finished hand, for when nobody did            |
 | `lastGame`     | The summary of the last finished game, until the next one starts          |
 

@@ -1,5 +1,6 @@
 import type {
   DrawAndGuessRoomState,
+  Make24RoomState,
   MinesweeperRoomState,
   PlayerInfo,
 } from '../../../shared/wire-types';
@@ -64,6 +65,26 @@ export function drawAndGuessState(
     scoredThisTurn: [],
     turnPoints: {},
     drawerHoldEndsInMs: 0,
+    lastGame: null,
+    ...overrides,
+  };
+}
+
+export function make24State(
+  overrides: Partial<Make24RoomState> = {},
+): Make24RoomState {
+  return {
+    ...room,
+    gameType: 'make-24',
+    hands: 5,
+    phase: 'waiting',
+    hand: 0,
+    deal: [],
+    solved: [],
+    mySolve: null,
+    lastHand: [],
+    lastDeal: [],
+    lastSolution: '',
     lastGame: null,
     ...overrides,
   };

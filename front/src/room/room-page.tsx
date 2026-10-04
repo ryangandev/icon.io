@@ -5,6 +5,7 @@ import { Button, ButtonLink, Card, TextField } from '../ui';
 import { gameInfo, lobbyPath, roomPath } from '../games/catalog';
 import { DrawAndGuessRoom } from '../draw-and-guess/room';
 import { MinesweeperRoom } from '../minesweeper/room';
+import { Make24Room } from '../make-24/room';
 import { useSession } from '../net/session';
 import { REQUEST_TIMEOUT_MS } from '../net/socket';
 import { useLobby } from '../net/use-lobby';
@@ -336,8 +337,10 @@ function SeatedRoom({
     <RoomContext.Provider value={room}>
       {state.gameType === 'draw-and-guess' ? (
         <DrawAndGuessRoom />
-      ) : (
+      ) : state.gameType === 'minesweeper' ? (
         <MinesweeperRoom />
+      ) : (
+        <Make24Room />
       )}
       {celebrations > 0 && <Confetti key={celebrations} />}
       <InviteDialog

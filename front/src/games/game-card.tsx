@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import { ButtonLink, Tag } from '../ui';
 import { cx } from '../ui/cx';
 import { GameArtwork } from './artwork';
@@ -10,6 +11,7 @@ import styles from './game-card.module.css';
  * starts at once; Find a room is the game's room list.
  */
 export function GameCard({ game, to }: { game: GameInfo; to: string }) {
+  const phone = useMediaQuery(PHONE);
   return (
     <section
       className={cx(styles.card, styles[game.tone])}
@@ -18,7 +20,9 @@ export function GameCard({ game, to }: { game: GameInfo; to: string }) {
       <h2 id={`game-${game.type}`} className={styles.name}>
         {game.name}
       </h2>
-      <p className={styles.tagline}>{game.tagline}</p>
+      <p className={styles.tagline}>
+        {(phone && game.phoneTagline) || game.tagline}
+      </p>
       <Tag tone="paper">{game.facts}</Tag>
       <GameArtwork type={game.type} />
       {game.solo ? (

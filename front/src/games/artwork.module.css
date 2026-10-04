@@ -32,9 +32,26 @@
   display: contents;
 }
 
-/* The phone card drops the last cell to fit. */
+.hand {
+  display: flex;
+  align-items: center;
+  gap: var(--zumpo-space-8);
+}
+
+.answer {
+  display: contents;
+}
+
+/* The phone card drops the last cell to fit, and a hand's answer; its cards
+   are smaller than any card in play, as in the mobile cards. */
 @media (max-width: 640px) {
-  .lastCell {
+  .lastCell,
+  .answer {
     display: none;
+  }
+
+  .hand > * {
+    width: 60px;
+    height: 80px;
   }
 }

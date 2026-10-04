@@ -102,6 +102,7 @@ const createMake24GameEngine = (
     game.hand = 0;
     game.solves.clear();
     game.lastHand = [];
+    game.lastDeal = [];
     game.lastSolution = '';
     game.lastGame = null;
     room.playerList = resetPoints(room.playerList);
@@ -214,6 +215,7 @@ const createMake24GameEngine = (
     );
 
     game.lastHand = results.toSorted((a, b) => b.points - a.points);
+    game.lastDeal = currentDeal(game);
     // Every hand is dealt solvable.
     game.lastSolution = formatExpression(solve(currentDeal(game))!);
     game.solves.clear();

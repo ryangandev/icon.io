@@ -372,6 +372,8 @@ interface Make24RoomState extends RoomState {
   mySolve: Make24HandResult | null;
   /** Every player's result for the latest finished hand, best first. */
   lastHand: Make24HandResult[];
+  /** That hand's cards, which stay on the table after the game ends. */
+  lastDeal: number[];
   /** One way to make 24 from the latest finished hand's cards; '' before one. */
   lastSolution: string;
   lastGame: Make24GameSummary | null;

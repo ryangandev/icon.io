@@ -1,4 +1,4 @@
-import { MineCell, PickMarker, Tag } from '../ui';
+import { MineCell, NumberCard, PickMarker, Tag } from '../ui';
 import {
   turtle,
   TURTLE_SIZE,
@@ -11,7 +11,13 @@ import styles from './artwork.module.css';
 export function GameArtwork({ type }: { type: GameType }) {
   return (
     <div className={styles.artwork} aria-hidden="true">
-      {type === 'draw-and-guess' ? <DrawingArtwork /> : <BoardArtwork />}
+      {type === 'draw-and-guess' ? (
+        <DrawingArtwork />
+      ) : type === 'minesweeper' ? (
+        <BoardArtwork />
+      ) : (
+        <HandArtwork />
+      )}
     </div>
   );
 }
@@ -58,6 +64,20 @@ export function TurtleDrawing({ className }: { className?: string }) {
         ),
       )}
     </svg>
+  );
+}
+
+/** A hand, and what it makes. */
+function HandArtwork() {
+  return (
+    <div className={styles.hand}>
+      {[8, 4, 7, 1].map((value) => (
+        <NumberCard key={value} value={String(value)} size="compact" />
+      ))}
+      <span className={styles.answer}>
+        <NumberCard value="24" state="solved" size="compact" />
+      </span>
+    </div>
   );
 }
 

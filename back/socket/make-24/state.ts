@@ -32,6 +32,7 @@ interface Make24State {
    */
   solves: Map<string, Solve>;
   lastHand: Make24HandResult[];
+  lastDeal: number[];
   lastSolution: string;
   lastGame: Make24GameSummary | null;
 }
@@ -43,6 +44,7 @@ const createState = (settings: Make24Settings): Make24State => ({
   deals: [],
   solves: new Map(),
   lastHand: [],
+  lastDeal: [],
   lastSolution: '',
   lastGame: null,
 });
@@ -106,6 +108,7 @@ const toRoomState = (
           }
         : null,
     lastHand: game.lastHand,
+    lastDeal: game.lastDeal,
     lastSolution: game.lastSolution,
     lastGame: game.lastGame,
   };

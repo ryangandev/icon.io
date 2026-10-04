@@ -5,9 +5,11 @@ export interface GameInfo {
   type: GameType;
   name: string;
   /** The game's surface colour on the home, games and rules pages. */
-  tone: 'peach' | 'blue';
+  tone: 'peach' | 'blue' | 'lime';
   /** One line on the game cards. */
   tagline: string;
+  /** A shorter one for a phone's narrower card. */
+  phoneTagline?: string;
   /** The game card's paper tag. */
   facts: string;
   /** The lobby's "How to play" card: a summary, then one fact per line. */
@@ -82,6 +84,31 @@ On your own, it is classic Minesweeper: open every safe cell without hitting a m
         'Your best time on each board is kept on this device',
       ],
     },
+  },
+  {
+    type: 'make-24',
+    name: 'Make 24',
+    tone: 'lime',
+    tagline:
+      'Four numbers. Plus, minus, times, divide. Make 24 before anyone else.',
+    phoneTagline: 'Four numbers. Plus, minus, times, divide. Make 24.',
+    facts: '2–8 players · 5 or 10 hands',
+    lobbySummary:
+      'Everyone gets the same four numbers at once. Use each one once, with plus, minus, times and divide, to make 24. Quicker answers score more.',
+    lobbyFacts: [
+      '2–8 players',
+      '5 or 10 hands',
+      '60s to solve each hand',
+      'Others see that you solved it, never how',
+    ],
+    rules: `2–8 players · 5 or 10 hands
+
+Every hand is four numbers from 1 to 13, and every hand can be solved. Use each number once, with plus, minus, times and divide, to make 24.
+
+Pick a number, a sign, then another number: the two become one new card. Keep going until one card is left. Undo and Start over are free.
+
+Everyone gets the same hand at the same time, with 60 seconds to solve it. Solving it pays 50 points, plus up to 100 more for the time left. Others see that you solved it, never how, and your chat waits until the hand ends.`,
+    createDescription: 'Every hand is 60 seconds. Five hands is a quick game.',
   },
 ];
 

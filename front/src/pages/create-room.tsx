@@ -23,8 +23,12 @@ const ROOM_NAME_MAX_LENGTH = 40;
 const PASSWORD_MAX_LENGTH = 20;
 const SEATS = [2, 3, 4, 5, 6, 7, 8] as const;
 const ROUNDS = [1, 2, 3, 4] as const;
+const HANDS = [5, 10] as const;
 
-/** DL04-DL06, DL10, DL11, ML04-ML06, ML10, MO05: a new room, with its settings. */
+/**
+ * DL04-DL06, DL10, DL11, ML04-ML06, ML10, MO05, T10: a new room, with its
+ * settings.
+ */
 export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   const game = gameInfo(gameType);
   const { socket, status, name } = useConnectedSession();
@@ -38,6 +42,7 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   const [seats, setSeats] = useState(8);
   const [rounds, setRounds] = useState(2);
   const [difficulty, setDifficulty] = useState<MinesweeperDifficulty>('Small');
+  const [hands, setHands] = useState(5);
   const [password, setPassword] = useState('');
   const [pending, setPending] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -57,7 +62,12 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
       username: name,
       maxPlayers: seats,
       password,
-      settings: gameType === 'draw-and-guess' ? { rounds } : { difficulty },
+      settings:
+        gameType === 'draw-and-guess'
+          ? { rounds }
+          : gameType === 'minesweeper'
+            ? { difficulty }
+            : { hands },
     };
     setPending(true);
     setFailed(false);
@@ -155,6 +165,18 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
           value={rounds}
           onValueChange={setRounds}
           name="rounds"
+        />
+      ) : gameType === 'make-24' ? (
+        <SelectField
+          label="Hands"
+          helper="5 or 10 hands, 60 seconds each."
+          options={HANDS.map((count) => ({
+            value: count,
+            label: plural(count, 'hand'),
+          }))}
+          value={hands}
+          onValueChange={setHands}
+          name="hands"
         />
       ) : (
         <SelectField

@@ -123,6 +123,7 @@ describe('a Make 24 room', () => {
       solved: [],
       mySolve: null,
       lastHand: [],
+      lastDeal: [],
       lastSolution: '',
       lastGame: null,
     });
@@ -306,8 +307,9 @@ describe('a Make 24 game', () => {
     });
     expect(over.lastGame).toMatchObject({ endedEarly: false, hands: 5 });
     expect(over.lastGame!.standings).toHaveLength(2);
-    // The last hand's results stay up with the summary.
+    // The last hand's results and cards stay up with the summary.
     expect(over.lastHand).toHaveLength(2);
+    expect(over.lastDeal).toEqual(hand.deal);
   });
 
   it('ends early when too few players are left', async () => {

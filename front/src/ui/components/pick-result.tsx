@@ -18,6 +18,8 @@ export interface PickResultProps {
   initials: string;
   tone: AvatarTone;
   outcome: PickOutcome;
+  /** The outcome tag's own words, such as "Solved" for a safe outcome. */
+  label?: string;
   /**
    * The risk the solver gave the cell before the round, plus "split 2 ways"
    * for a shared cell, joined with " · ". On a narrow row the parts wrap onto
@@ -30,22 +32,24 @@ export interface PickResultProps {
 
 /**
  * Zumpo/Pick result: one player's pick in the round summary under the board.
- * It never names the cell; the board's markers show where.
+ * It never names the cell; the board's markers show where. Make 24 lists a
+ * hand's solves with it too.
  */
 export function PickResult({
   name,
   initials,
   tone,
   outcome,
+  label,
   detail,
   points,
 }: PickResultProps) {
-  const { label, ...tag } = OUTCOMES[outcome];
+  const { label: outcomeLabel, ...tag } = OUTCOMES[outcome];
   return (
     <li className={cx(styles.row, outcome === 'mine' && styles.mine)}>
       <Avatar initials={initials} tone={tone} />
       <span className={styles.name}>{name}</span>
-      <Tag {...tag}>{label}</Tag>
+      <Tag {...tag}>{label ?? outcomeLabel}</Tag>
       <span className={styles.detail}>
         {detail.split(' · ').map((part, index) => (
           <span key={index}>
