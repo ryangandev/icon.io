@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Navigate, useBlocker, useNavigate } from 'react-router';
 import type { GameType } from '../../../shared/wire-types';
 import { Button, ButtonLink, Card, TextField } from '../ui';
@@ -154,6 +154,14 @@ function PasswordPage({
   onSubmit: (password: string) => void;
 }) {
   const [password, setPassword] = useState('');
+  const field = useRef<HTMLInputElement>(null);
+  // The buttons stand aside while the request is in flight; a refusal hands
+  // focus back to the field, the wrong guess selected, ready to retype.
+  useEffect(() => {
+    if (!rejected || pending) return;
+    field.current?.focus();
+    field.current?.select();
+  }, [rejected, pending]);
   // The lobby knows the room's name; a link alone does not.
   const rooms = useLobby(gameType);
   const roomName = rooms?.find((room) => room.roomId === roomId)?.roomName;
@@ -193,6 +201,7 @@ function PasswordPage({
             error={
               rejected ? 'That password didn’t work. Try again.' : undefined
             }
+            ref={field}
             type="password"
             value={password}
             onValueChange={(next: string) => setPassword(next)}

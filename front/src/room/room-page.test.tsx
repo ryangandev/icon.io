@@ -64,9 +64,13 @@ describe('a room page', () => {
     expect(
       await screen.findByText('That password didn’t work. Try again.'),
     ).toBeInTheDocument();
+    // Back in the field with the wrong guess selected, ready to retype.
+    const field = screen.getByLabelText<HTMLInputElement>('Room password');
+    expect(field).toHaveFocus();
+    expect(field.selectionStart).toBe(0);
+    expect(field.selectionEnd).toBe('tortoise'.length);
 
-    await user.clear(screen.getByLabelText('Room password'));
-    await user.type(screen.getByLabelText('Room password'), 'turtle');
+    await user.keyboard('turtle');
     await user.click(screen.getByRole('button', { name: 'Join room' }));
     act(() => fake.serverEmits('room:state', minesweeperState()));
     expect(
