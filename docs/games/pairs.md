@@ -62,6 +62,7 @@ Between games the room is in `waiting`.
 - **A player who is not connected** when their turn comes is skipped.
 
 When the last pair is found the game ends, and the room reopens for a new one.
+The finished board stays on the table under the results until the next game is dealt.
 **The winner is whoever found the most pairs.**
 Players who share the top score share the win, and the results rank a shared score in one place (1, 1, 3).
 
@@ -87,16 +88,16 @@ If the room falls below two players the game ends, and its summary says it ended
 
 Every change reaches a player as `room:state`, the whole room as that player may see it ([the wire contract](../architecture.md#the-wire-contract)).
 
-| Field          | What it is                                                                  |
-| -------------- | --------------------------------------------------------------------------- |
-| `board`        | `Small` or `Large`                                                          |
-| `phase`        | `waiting`, `flipping` or `showing`                                          |
-| `cards`        | Every card in place: down, up or matched, with its symbol only when shown   |
-| `pairsFound`   | How many pairs have been found this game                                    |
-| `turnPlayerId` | Whose turn it is; `null` between games                                      |
-| `nextPlayerId` | Whose turn comes next, skipping anybody not connected; `null` between games |
-| `lastMiss`     | The two cards that just did not match, while they show                      |
-| `lastGame`     | The summary of the last finished game, until the next one starts            |
+| Field          | What it is                                                                                                           |
+| -------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `board`        | `Small` or `Large`                                                                                                   |
+| `phase`        | `waiting`, `flipping` or `showing`                                                                                   |
+| `cards`        | Every card in place: down, up or matched, with its symbol only when shown; between games, the last board as it ended |
+| `pairsFound`   | How many pairs have been found this game                                                                             |
+| `turnPlayerId` | Whose turn it is; `null` between games                                                                               |
+| `nextPlayerId` | Whose turn comes next, skipping anybody not connected; `null` between games                                          |
+| `lastMiss`     | The two cards that just did not match, while they show                                                               |
+| `lastGame`     | The summary of the last finished game, until the next one starts                                                     |
 
 Pairs' one event of its own is `pairs:flip`, with the room and the card's place.
 
@@ -117,6 +118,7 @@ Pairs' one event of its own is `pairs:flip`, with the room and the card's place.
 | [`game-engine.ts`](../../back/socket/pairs/game-engine.ts) | Turns, flips and scores                                |
 | [`state.ts`](../../back/socket/pairs/state.ts)             | The game's state, and the snapshot each player is sent |
 | [`pairs/solo/`](../../front/src/pairs/solo/)               | A game on your own                                     |
+| [`pairs/room.tsx`](../../front/src/pairs/room.tsx)         | A room's screens                                       |
 
 The rules are covered by [`pairs-rules.test.ts`](../../back/tests/pairs-rules.test.ts) and [`pairs-flow.test.ts`](../../back/tests/pairs-flow.test.ts).
 The screens are PR01-PR10 in [the Figma file](../design.md).

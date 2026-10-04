@@ -3,12 +3,17 @@ import { useNavigate } from 'react-router';
 import type {
   GameType,
   MinesweeperDifficulty,
+  PairsBoard,
   RoomCreateRequest,
 } from '../../../shared/wire-types';
 import { Button, ButtonLink, Notice, SelectField, TextField } from '../ui';
 import { gameInfo, lobbyPath, roomPath } from '../games/catalog';
 import { plural } from '../games/plural';
 import { DIFFICULTIES, boardDetail } from '../minesweeper/boards';
+import {
+  BOARDS as PAIRS_BOARDS,
+  boardDetail as pairsBoardDetail,
+} from '../pairs/boards';
 import { useConnectedSession } from '../net/session';
 import { REQUEST_TIMEOUT_MS } from '../net/socket';
 import { ConnectionFailed } from '../shell/connection-failed';
@@ -21,13 +26,12 @@ import { LobbyHeading, lobbyHeading } from './lobby';
 /** The server's limits. */
 const ROOM_NAME_MAX_LENGTH = 40;
 const PASSWORD_MAX_LENGTH = 20;
-const SEATS = [2, 3, 4, 5, 6, 7, 8] as const;
 const ROUNDS = [1, 2, 3, 4] as const;
 const HANDS = [5, 10] as const;
 
 /**
- * DL04-DL06, DL10, DL11, ML04-ML06, ML10, MO05, T10: a new room, with its
- * settings.
+ * DL04-DL06, DL10, DL11, ML04-ML06, ML10, MO05, T10, PR08: a new room, with
+ * its settings.
  */
 export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   const game = gameInfo(gameType);
@@ -39,10 +43,11 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   );
   const [nameMissing, setNameMissing] = useState(false);
   const nameField = useRef<HTMLInputElement>(null);
-  const [seats, setSeats] = useState(8);
+  const [seats, setSeats] = useState(game.maxPlayers);
   const [rounds, setRounds] = useState(2);
   const [difficulty, setDifficulty] = useState<MinesweeperDifficulty>('Small');
   const [hands, setHands] = useState(5);
+  const [pairsBoard, setPairsBoard] = useState<PairsBoard>('Small');
   const [password, setPassword] = useState('');
   const [pending, setPending] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -67,7 +72,9 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
           ? { rounds }
           : gameType === 'minesweeper'
             ? { difficulty }
-            : { hands },
+            : gameType === 'make-24'
+              ? { hands }
+              : { board: pairsBoard },
     };
     setPending(true);
     setFailed(false);
@@ -145,8 +152,8 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
       />
       <SelectField
         label="Seats"
-        helper="Choose 2–8 seats."
-        options={SEATS.map((count) => ({
+        helper={`Choose 2–${game.maxPlayers} seats.`}
+        options={seatCounts(game.maxPlayers).map((count) => ({
           value: count,
           label: plural(count, 'player'),
         }))}
@@ -178,6 +185,19 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
           onValueChange={setHands}
           name="hands"
         />
+      ) : gameType === 'pairs' ? (
+        <SelectField
+          label="Board"
+          helper={pairsBoardDetail(pairsBoard)}
+          options={PAIRS_BOARDS.map((board) => ({
+            value: board,
+            label: board,
+            detail: pairsBoardDetail(board),
+          }))}
+          value={pairsBoard}
+          onValueChange={setPairsBoard}
+          name="board"
+        />
       ) : (
         <SelectField
           label="Board"
@@ -206,3 +226,7 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
     </FormPage>
   );
 }
+
+/** 2, 3, … up to `max`: every room needs two to start. */
+const seatCounts = (max: number) =>
+  Array.from({ length: max - 1 }, (_, index) => index + 2);

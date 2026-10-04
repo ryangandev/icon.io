@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { GameSummary } from '../../../shared/wire-types';
 import { Button, ButtonLink, PlayerRow } from '../ui';
-import { gameInfo, lobbyPath } from '../games/catalog';
+import { gameInfo, lobbyPath, scoreOf } from '../games/catalog';
 import { initialsOf, toneOf } from '../players/avatar';
 import { StatusLine } from '../shell/status-line';
 import { listNames, ordinal, placesOf } from './players';
@@ -174,8 +174,8 @@ export function ResultsPanel({
           {winners.length === 0
             ? 'Game over.'
             : winners.length === 1
-              ? `${winners[0].username} wins with ${winners[0].points} points.`
-              : `${listNames(winners.map((w) => w.username))} tie with ${winners[0].points} points.`}
+              ? `${winners[0].username} wins with ${scoreOf(state.gameType, winners[0].points)}.`
+              : `${listNames(winners.map((w) => w.username))} tie with ${scoreOf(state.gameType, winners[0].points)}.`}
         </h2>
         <p className={styles.body}>
           {detail}

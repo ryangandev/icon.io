@@ -2,6 +2,7 @@ import type {
   DrawAndGuessRoomState,
   Make24RoomState,
   MinesweeperRoomState,
+  PairsRoomState,
   PlayerInfo,
 } from '../../../shared/wire-types';
 
@@ -85,6 +86,25 @@ export function make24State(
     lastHand: [],
     lastDeal: [],
     lastSolution: '',
+    lastGame: null,
+    ...overrides,
+  };
+}
+
+export function pairsState(
+  overrides: Partial<PairsRoomState> = {},
+): PairsRoomState {
+  return {
+    ...room,
+    maxPlayers: 6,
+    gameType: 'pairs',
+    board: 'Small',
+    phase: 'waiting',
+    cards: [],
+    pairsFound: 0,
+    turnPlayerId: null,
+    nextPlayerId: null,
+    lastMiss: [],
     lastGame: null,
     ...overrides,
   };

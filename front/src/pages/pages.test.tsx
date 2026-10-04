@@ -1,4 +1,4 @@
-import { act, screen, within } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import type { MinesweeperLobbyRoomInfo } from '../../../shared/wire-types';
@@ -90,7 +90,33 @@ describe('making a room', () => {
     await user.click(screen.getByRole('button', { name: 'Create room' }));
     expect(screen.getByText('Give your room a name.')).toBeInTheDocument();
     expect(screen.getByLabelText('Room name')).toHaveFocus();
-    expect(fake.sentArgs('room:create')).toEqual([]);
+    expect(fake.requests).not.toContainEqual(
+      expect.objectContaining({ event: 'room:create' }),
+    );
+  });
+
+  it('makes a Pairs room on the board picked, with up to six seats', async () => {
+    const user = userEvent.setup();
+    const { fake } = await renderApp('/games/pairs/new');
+    expect(screen.getByText('Choose 2–6 seats.')).toBeInTheDocument();
+    expect(screen.getByText('4 × 4 · 8 pairs')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('combobox', { name: 'Board' }));
+    await user.click(await screen.findByRole('option', { name: /^Large/ }));
+    await user.click(screen.getByRole('button', { name: 'Create room' }));
+
+    await waitFor(() =>
+      expect(fake.requests).toContainEqual({
+        event: 'room:create',
+        args: [
+          expect.objectContaining({
+            gameType: 'pairs',
+            maxPlayers: 6,
+            settings: { board: 'Large' },
+          }),
+        ],
+      }),
+    );
   });
 });
 

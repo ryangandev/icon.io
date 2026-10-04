@@ -1,4 +1,5 @@
 import type { GameType } from '../../../shared/wire-types';
+import { plural } from './plural';
 
 /** What every page says about a game outside its room. */
 export interface GameInfo {
@@ -12,6 +13,10 @@ export interface GameInfo {
   phoneTagline?: string;
   /** The game card's paper tag. */
   facts: string;
+  /** The most seats a room may have; every game needs two to start. */
+  maxPlayers: number;
+  /** What a score counts, when it is not points. */
+  scoreUnit?: string;
   /** The lobby's "How to play" card: a summary, then one fact per line. */
   lobbySummary: string;
   lobbyFacts: readonly string[];
@@ -30,6 +35,7 @@ export const GAMES: readonly GameInfo[] = [
     tone: 'peach',
     tagline: 'One draws. Everyone else tries to get there first.',
     facts: '2–8 players · 1–4 rounds',
+    maxPlayers: 8,
     lobbySummary:
       'Take turns drawing a word while everyone else races to guess it in the chat. Faster guesses score more.',
     lobbyFacts: [
@@ -54,6 +60,7 @@ Faster guesses earn more, from 50 to 150 points, and the drawer gets two fifths 
     tone: 'blue',
     tagline: 'Clear a board on your own, or share one and pick in secret.',
     facts: 'Solo or 2–8 players',
+    maxPlayers: 8,
     lobbySummary:
       'Everyone picks a hidden cell at the same time. Riskier safe picks score more, and a mine costs points.',
     lobbyFacts: [
@@ -93,6 +100,7 @@ On your own, it is classic Minesweeper: open every safe cell without hitting a m
       'Four numbers. Plus, minus, times, divide. Make 24 before anyone else.',
     phoneTagline: 'Four numbers. Plus, minus, times, divide. Make 24.',
     facts: 'Solo or 2–8 players',
+    maxPlayers: 8,
     lobbySummary:
       'Everyone gets the same four numbers at once. Use each one once, with plus, minus, times and divide, to make 24. Quicker answers score more.',
     lobbyFacts: [
@@ -128,6 +136,8 @@ On your own, a run is ten hands against one clock. Skip a hand you are stuck on,
     tone: 'sand',
     tagline: 'Flip two cards. Remember where everything is. Find every pair.',
     facts: 'Solo or 2–6 players',
+    maxPlayers: 6,
+    scoreUnit: 'pair',
     lobbySummary:
       'Take turns flipping two cards. Find a pair and it is yours, and you go again. Whoever finds the most pairs wins.',
     lobbyFacts: [
@@ -177,3 +187,7 @@ export const lobbyPath = (type: GameType) => `/games/${type}`;
 export const createRoomPath = (type: GameType) => `/games/${type}/new`;
 export const roomPath = (type: GameType, roomId: string) =>
   `/games/${type}/rooms/${roomId}`;
+
+/** "3 points", "1 pair": a score in its game's own unit. */
+export const scoreOf = (gameType: GameType, score: number): string =>
+  plural(score, gameInfo(gameType).scoreUnit ?? 'point');

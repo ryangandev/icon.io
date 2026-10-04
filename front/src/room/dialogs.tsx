@@ -13,14 +13,15 @@ export function LeaveDialog({
   open,
   roomName,
   inGame,
-  points,
+  score,
   onStay,
   onLeave,
 }: {
   open: boolean;
   roomName: string;
   inGame: boolean;
-  points: number;
+  /** "180 points", "3 pairs". */
+  score: string;
   onStay: () => void;
   onLeave: () => void;
 }) {
@@ -34,7 +35,7 @@ export function LeaveDialog({
       title={`Leave ${roomName}?`}
       description={
         inGame
-          ? `The game carries on without you, and your seat and your ${points} points go with you. You can join again while a seat is open.`
+          ? `The game carries on without you, and your seat and your ${score} go with you. You can join again while a seat is open.`
           : 'Your seat goes with you. You can join again while a seat is open.'
       }
       initialFocus={stay}

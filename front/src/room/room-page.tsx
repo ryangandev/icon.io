@@ -2,10 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Navigate, useBlocker, useNavigate, type Location } from 'react-router';
 import type { GameType } from '../../../shared/wire-types';
 import { Button, ButtonLink, Card, TextField } from '../ui';
-import { gameInfo, lobbyPath, roomPath } from '../games/catalog';
+import { gameInfo, lobbyPath, roomPath, scoreOf } from '../games/catalog';
 import { DrawAndGuessRoom } from '../draw-and-guess/room';
 import { MinesweeperRoom } from '../minesweeper/room';
 import { Make24Room } from '../make-24/room';
+import { PairsRoom } from '../pairs/room';
 import { useSession } from '../net/session';
 import { REQUEST_TIMEOUT_MS } from '../net/socket';
 import { useLobby } from '../net/use-lobby';
@@ -339,8 +340,10 @@ function SeatedRoom({
         <DrawAndGuessRoom />
       ) : state.gameType === 'minesweeper' ? (
         <MinesweeperRoom />
-      ) : (
+      ) : state.gameType === 'make-24' ? (
         <Make24Room />
+      ) : (
+        <PairsRoom />
       )}
       {celebrations > 0 && <Confetti key={celebrations} />}
       <InviteDialog
@@ -353,7 +356,7 @@ function SeatedRoom({
         open={blocked && !sure}
         roomName={state.roomName}
         inGame={state.isGameStarted}
-        points={room.me.points}
+        score={scoreOf(state.gameType, room.me.points)}
         onStay={() => blocker.reset?.()}
         onLeave={() => {
           leave();
