@@ -23,6 +23,12 @@ import {
   type PlayerSessionRegistry,
 } from './libs/player-session.js';
 import { createRateLimiter } from './libs/rate-limit.js';
+import { splitAck, type IoServer } from './libs/rooms/emit.js';
+import { invalidRequest } from './models/error.js';
+import type {
+  ClientToServerEvents,
+  ServerToClientEvents,
+} from '../shared/wire-types.js';
 
 /** At most one "you are being throttled" line per socket per this long. */
 const THROTTLE_LOG_INTERVAL_MS = 5000;
@@ -42,7 +48,7 @@ interface CreateIconIoServerOptions {
 
 interface IconIoServer {
   httpServer: HttpServer;
-  io: Server;
+  io: IoServer;
   /** The live room registry, exposed so tests can assert on server state. */
   rooms: Record<string, Room>;
   /** Exposed so tests can assert on identities outliving their sockets. */
@@ -82,11 +88,14 @@ const createIconIoServer = (
   app.use(express.static(publicStaticFolder));
 
   const httpServer = createServer(app);
-  const io = new Server(httpServer, {
-    cors: {
-      origin: corsOrigin,
+  const io: IoServer = new Server<ClientToServerEvents, ServerToClientEvents>(
+    httpServer,
+    {
+      cors: {
+        origin: corsOrigin,
+      },
     },
-  });
+  );
 
   // All of these are created once for the server rather than per connection:
   // they own timers and identities that outlive any single socket.
@@ -113,15 +122,23 @@ const createIconIoServer = (
 
     // Before anything else looks at a packet: how often may this socket speak?
     // Every handler below checks the *shape* of what it is sent; this is what
-    // bounds how much of it arrives. A dropped packet is simply never handed
-    // on — the same silent drop an invalid payload gets, for the same reason.
+    // bounds how much of it arrives. A dropped packet is never handed on. A
+    // request is told so, so that a client waiting on its answer is not left
+    // waiting forever; anything else is dropped silently.
     const rateLimiter = createRateLimiter();
     let lastThrottleWarningMs = 0;
 
-    socket.use(([eventName], next) => {
+    socket.use(([eventName, ...rawArgs], next) => {
       if (rateLimiter.allow(String(eventName))) {
         next();
         return;
+      }
+
+      // The identity handshake is answered with an identity or not at all, so
+      // a throttled one simply goes unanswered.
+      const { ack } = splitAck(rawArgs);
+      if (ack && eventName !== 'session:identify') {
+        ack(invalidRequest('Too many requests. Try again in a moment.'));
       }
 
       // Logging every dropped packet would be its own flood.
@@ -136,13 +153,18 @@ const createIconIoServer = (
 
     // Identity first: every handler below reads the player id off the
     // connection, so nothing can happen until the client has identified.
-    playerSessionHandler(socket, sessions, membership.handleResume);
+    playerSessionHandler(
+      socket,
+      sessions,
+      membership.graceMs,
+      membership.handleResume,
+    );
     clientDepartureOnDisconnectHandler(socket, membership);
 
     // The room layer: lobbies, seats, ownership, chat. None of it knows which
     // game it is running.
     lobbyEventsHandler(socket, registry, sessions);
-    roomEventsHandler(io, socket, registry, sessions, membership);
+    roomEventsHandler(socket, registry, sessions, membership);
     chatEventsHandler(socket, registry, sessions);
 
     // And then each game's own events.

@@ -1,7 +1,6 @@
-import type { Socket } from 'socket.io';
 import type { DrawAndGuessGameEngine } from './game-engine.js';
 import type { GameContext } from '../../libs/rooms/types.js';
-import { onClientEvent } from '../../libs/rooms/emit.js';
+import { onClientEvent, type IoSocket } from '../../libs/rooms/emit.js';
 import { parseArgs } from '../../libs/validation.js';
 import { selectWordRequest } from './validation.js';
 
@@ -15,7 +14,7 @@ import { selectWordRequest } from './validation.js';
  * and the room layer routes it to whichever module owns the room.
  */
 const gameEventsHandler = (
-  socket: Socket,
+  socket: IoSocket,
   ctx: GameContext,
   gameEngine: DrawAndGuessGameEngine,
 ) => {

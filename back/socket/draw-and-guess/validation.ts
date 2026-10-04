@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { roomId, username, trimmedString } from '../../libs/validation.js';
+import { roomId } from '../../libs/validation.js';
 
 /**
  * Draw & Guess's own inbound shapes, built from the same primitives the room
@@ -9,13 +9,11 @@ import { roomId, username, trimmedString } from '../../libs/validation.js';
  */
 
 const WORD_MAX = 64; // longest plausible word-bank entry, with room to spare
-const MESSAGE_MAX = 40; // matches the chat input
 
 const roundsSetting = z.object({
   rounds: z.number().int().min(1).max(4),
 });
 
-const guessRequest = z.tuple([roomId, username, trimmedString(MESSAGE_MAX)]);
 const selectWordRequest = z.tuple([roomId, z.string().min(1).max(WORD_MAX)]);
 
 // The canvas is a fixed 798x598; allow a small margin for rounding at the edges.
@@ -43,7 +41,6 @@ const continueDrawingRequest = z.tuple([
 
 export {
   roundsSetting,
-  guessRequest,
   selectWordRequest,
   startDrawingRequest,
   continueDrawingRequest,

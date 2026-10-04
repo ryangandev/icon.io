@@ -1,82 +1,50 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import type { Socket } from 'socket.io-client';
 import type { DrawAndGuessRoomState } from '../models/types.js';
 import {
-  collect,
+  collectChat,
+  collectStates,
   createRoom,
   joinRoom,
   playToDrawingPhase,
+  request,
+  seatTwoPlayers,
   serverRoom,
   settle,
+  startGame,
   startTestServer,
-  waitFor,
+  syncRoom,
+  waitForChat,
+  waitForDrawState,
+  type TestClient,
   type TestServer,
 } from './helpers/test-server.js';
-
-interface Phase {
-  phaseEndsInMs: number;
-}
 
 /** How many of a hint's letters are showing rather than still hidden. */
 const shown = (hint: string) =>
   [...hint].filter((char) => char !== '_' && char.trim() !== '').length;
 
 /**
- * A room with two players in it, plus a way to find out which of them the
- * server picked to draw. The drawer is chosen at random, so no test may assume
- * it is a particular client.
+ * Starts the game in a two-player room and waits for the first choosing phase,
+ * reporting whose turn it is as each player's own snapshot says.
  */
-const seatTwoPlayers = async (harness: TestServer) => {
-  const alice = await harness.connect();
-  const bob = await harness.connect();
+const startAndAwaitChoosing = async (
+  alice: TestClient,
+  bob: TestClient,
+  roomId: string,
+) => {
+  const aliceView = waitForDrawState(alice, (s) => s.phase === 'choosing');
+  const bobView = waitForDrawState(bob, (s) => s.phase === 'choosing');
+  await startGame(alice, roomId);
+  const views = await Promise.all([aliceView, bobView]);
 
-  const roomId = await createRoom(alice, {
-    roomName: 'Game',
-    ownerUsername: 'Alice',
-    rounds: 1,
-  });
-  await joinRoom(alice, roomId, 'Alice');
-  await joinRoom(bob, roomId, 'Bob');
-
-  const named = new Map<Socket, string>([
-    [alice, 'Alice'],
-    [bob, 'Bob'],
-  ]);
-
-  /** Waits for the word-selecting phase and reports whose turn it is. */
-  const awaitTurn = async () => {
-    const choicesFor = new Map<Socket, string[]>();
-    const onChoices = (socket: Socket) => (choices: string[]) =>
-      choicesFor.set(socket, choices);
-    const aliceHandler = onChoices(alice);
-    const bobHandler = onChoices(bob);
-    alice.on('dg:word-choices', aliceHandler);
-    bob.on('dg:word-choices', bobHandler);
-
-    const started = await waitFor<
-      Phase & { currentDrawer: string; drawerQueue: string[] }
-    >(alice, 'dg:phase:word-select');
-    await settle(50);
-
-    alice.off('dg:word-choices', aliceHandler);
-    bob.off('dg:word-choices', bobHandler);
-
-    const [drawer, choices] = [...choicesFor.entries()][0] ?? [];
-    const guesser = drawer === alice ? bob : alice;
-
-    return {
-      started,
-      drawer: drawer!,
-      drawerName: named.get(drawer!)!,
-      guesser,
-      guesserName: named.get(guesser)!,
-      choices: choices!,
-      /** How many of the two clients were offered word choices. */
-      offeredChoicesCount: choicesFor.size,
-    };
+  const drawerIndex = views[0].currentDrawer === alice.playerId ? 0 : 1;
+  const clients = [alice, bob];
+  return {
+    drawer: clients[drawerIndex]!,
+    guesser: clients[1 - drawerIndex]!,
+    drawerView: views[drawerIndex]!,
+    guesserView: views[1 - drawerIndex]!,
   };
-
-  return { alice, bob, roomId, awaitTurn };
 };
 
 describe('the game engine', () => {
@@ -93,160 +61,196 @@ describe('the game engine', () => {
   it('refuses to start with fewer than two players', async () => {
     const owner = await harness.connect();
     const roomId = await createRoom(owner);
-    await joinRoom(owner, roomId, 'Alone');
 
-    const error = waitFor<{ errorType: string }>(owner, 'room:error');
-    owner.emit('game:start', roomId);
+    const answer = await request(owner, 'game:start', roomId);
 
-    expect((await error).errorType).toBe('notEnoughPlayers');
+    expect(answer).toEqual({
+      ok: false,
+      error: { type: 'notEnoughPlayers', message: expect.any(String) },
+    });
     expect(harness.server.rooms[roomId]?.isGameStarted).toBe(false);
   });
 
   /*
-   * The Start button is owner-only in the UI and, until now, nowhere else: any
-   * connected client could start any room's game with a room id off the lobby
-   * broadcast — including a room it had never joined.
+   * The Start button is owner-only in the UI, and that has to be true on the
+   * server as well: any connected client could otherwise start any room's game
+   * with a room id off the lobby broadcast.
    */
   it('refuses to start a game for anybody but the room owner', async () => {
     const { bob, roomId } = await seatTwoPlayers(harness);
 
-    const error = waitFor<{ errorType: string }>(bob, 'room:error');
-    bob.emit('game:start', roomId);
+    const answer = await request(bob, 'game:start', roomId);
 
-    expect((await error).errorType).toBe('notRoomOwner');
+    expect(answer.error?.type).toBe('notRoomOwner');
     expect(harness.server.rooms[roomId]?.isGameStarted).toBe(false);
   });
 
   it('refuses to start a game for a client that is not even in the room', async () => {
     const { alice, roomId } = await seatTwoPlayers(harness);
     const outsider = await harness.connect();
-
-    const started = collect(alice, 'dg:game:started');
-    const error = waitFor<{ errorType: string }>(outsider, 'room:error');
-    outsider.emit('game:start', roomId);
-
-    expect((await error).errorType).toBe('notRoomOwner');
     await settle();
-    expect(started).toEqual([]);
+
+    const states = collectStates(alice);
+    const answer = await request(outsider, 'game:start', roomId);
+
+    expect(answer.error?.type).toBe('notRoomOwner');
+    await settle();
+    expect(states).toEqual([]);
     expect(harness.server.rooms[roomId]?.isGameStarted).toBe(false);
   });
 
   it('refuses to start a game that is already running', async () => {
     const { alice, roomId } = await seatTwoPlayers(harness);
-    alice.emit('game:start', roomId);
-    await waitFor(alice, 'dg:game:started');
+    await startGame(alice, roomId);
 
-    const error = waitFor<{ errorType: string }>(alice, 'room:error');
-    alice.emit('game:start', roomId);
+    const answer = await request(alice, 'game:start', roomId);
 
-    expect((await error).errorType).toBe('gameAlreadyStarted');
+    expect(answer.error?.type).toBe('gameAlreadyStarted');
   });
 
-  it('opens with a word-selecting phase and a countdown', async () => {
-    const { alice, roomId, awaitTurn } = await seatTwoPlayers(harness);
-    const turn = awaitTurn();
-    alice.emit('game:start', roomId);
+  it('announces the start and the word category', async () => {
+    const { alice, roomId } = await seatTwoPlayers(harness);
+    const announced = waitForChat(alice, (m) => m.text.includes('started'));
+    await startGame(alice, roomId);
 
-    const { started, choices, offeredChoicesCount } = await turn;
+    const message = await announced;
+    expect(message.kind).toBe('system');
+    expect(message.text).toContain(
+      serverRoom(harness, roomId).game.wordCategory,
+    );
+  });
 
-    expect(started.phaseEndsInMs).toBeGreaterThan(0);
-    expect(started.currentDrawer).toBeTruthy();
-    expect(choices).toHaveLength(3);
-    expect(new Set(choices).size).toBe(3);
+  it('opens with a choosing phase and a countdown, the choices for the drawer alone', async () => {
+    const { alice, bob, roomId } = await seatTwoPlayers(harness);
+    const { drawer, drawerView, guesserView } = await startAndAwaitChoosing(
+      alice,
+      bob,
+      roomId,
+    );
+
+    for (const view of [drawerView, guesserView]) {
+      expect(view.phaseEndsInMs).toBeGreaterThan(0);
+      expect(view.currentDrawer).toBe(drawer.playerId);
+      expect(view.currentRound).toBe(1);
+      expect(view.turn).toBe(1);
+      expect(view.hint).toBe('');
+      expect(view.wordCategory).not.toBe('');
+      expect(view).not.toHaveProperty('word');
+    }
+
+    expect(drawerView.wordChoices).toHaveLength(3);
+    expect(new Set(drawerView.wordChoices).size).toBe(3);
     // The choices go to the drawer alone, not to the room.
-    expect(offeredChoicesCount).toBe(1);
+    expect(guesserView).not.toHaveProperty('wordChoices');
+    for (const choice of drawerView.wordChoices!) {
+      expect(JSON.stringify(guesserView)).not.toContain(`"${choice}"`);
+    }
   });
 
   it('sends the word to the drawer alone, and a hint to everyone else', async () => {
-    const { alice, roomId, awaitTurn } = await seatTwoPlayers(harness);
-    const turn = awaitTurn();
-    alice.emit('game:start', roomId);
-    const { drawer, guesser, choices } = await turn;
+    const { alice, bob, roomId } = await seatTwoPlayers(harness);
+    const { drawer, guesser, drawerView } = await startAndAwaitChoosing(
+      alice,
+      bob,
+      roomId,
+    );
+    const word = drawerView.wordChoices![0]!;
 
-    const guesserSaw = collect(guesser, 'dg:phase:drawing');
-    const drawerWord = waitFor<string>(drawer, 'dg:word');
-    const drawerPrivate = collect(guesser, 'dg:word');
+    const drawerSees = waitForDrawState(drawer, (s) => s.phase === 'drawing');
+    const guesserSees = waitForDrawState(guesser, (s) => s.phase === 'drawing');
+    drawer.emit('dg:select-word', roomId, word);
 
-    drawer.emit('dg:select-word', roomId, choices[0]);
+    const [mine, theirs] = await Promise.all([drawerSees, guesserSees]);
 
-    expect(await drawerWord).toBe(choices[0]);
-    await settle();
-
-    expect(drawerPrivate).toEqual([]);
-    expect(JSON.stringify(guesserSaw)).not.toContain(choices[0]);
-    expect(guesserSaw[0]).toMatchObject({
-      isDrawingPhase: true,
-      currentWordHint: '_'.repeat(choices[0]!.replace(/\s/g, '').length),
-    });
+    expect(mine.word).toBe(word);
+    expect(mine.wordAutoPicked).toBe(false);
+    expect(theirs).not.toHaveProperty('word');
+    expect(theirs).not.toHaveProperty('wordChoices');
+    expect(JSON.stringify(theirs)).not.toContain(`"${word}"`);
+    expect(theirs.hint).toBe(buildHiddenHint(word));
+    expect(mine.hint).toBe(theirs.hint);
   });
 
   it('ignores a word the drawer was not offered', async () => {
-    const { alice, roomId, awaitTurn } = await seatTwoPlayers(harness);
-    const turn = awaitTurn();
-    alice.emit('game:start', roomId);
-    const { drawer } = await turn;
+    const { alice, bob, roomId } = await seatTwoPlayers(harness);
+    const { drawer } = await startAndAwaitChoosing(alice, bob, roomId);
 
     drawer.emit('dg:select-word', roomId, 'not-a-choice');
     await settle(50);
 
-    expect(serverRoom(harness, roomId).game.isDrawingPhase).toBe(false);
-    expect(serverRoom(harness, roomId).game.isWordSelectingPhase).toBe(true);
+    expect(serverRoom(harness, roomId).game.phase).toBe('choosing');
   });
 
   it('ignores a word chosen by somebody who is not the drawer', async () => {
-    const { alice, roomId, awaitTurn } = await seatTwoPlayers(harness);
-    const turn = awaitTurn();
-    alice.emit('game:start', roomId);
-    const { guesser, choices } = await turn;
+    const { alice, bob, roomId } = await seatTwoPlayers(harness);
+    const { guesser, drawerView } = await startAndAwaitChoosing(
+      alice,
+      bob,
+      roomId,
+    );
 
-    guesser.emit('dg:select-word', roomId, choices[0]);
+    guesser.emit('dg:select-word', roomId, drawerView.wordChoices![0]!);
     await settle();
 
-    expect(serverRoom(harness, roomId).game.isDrawingPhase).toBe(false);
+    expect(serverRoom(harness, roomId).game.phase).toBe('choosing');
   });
 
   /*
    * The fallback used to be the drawer's browser's job, so it never happened
-   * if they had closed the tab — the room sat in the selecting phase forever.
+   * if they had closed the tab; the room sat in the choosing phase forever.
    */
-  it('picks a word itself when the drawer never chooses one', async () => {
-    const { alice, roomId, awaitTurn } = await seatTwoPlayers(harness);
-    const turn = awaitTurn();
-    alice.emit('game:start', roomId);
-    const { drawer, choices } = await turn;
-
-    const drawing = waitFor<Phase>(alice, 'dg:phase:drawing');
-    const word = waitFor<string>(drawer, 'dg:word');
+  it('picks a word itself when the drawer never chooses one, and says so', async () => {
+    const { alice, bob, roomId } = await seatTwoPlayers(harness);
+    const { drawer, guesser, drawerView } = await startAndAwaitChoosing(
+      alice,
+      bob,
+      roomId,
+    );
 
     // Nobody chooses. The server's own clock has to move the phase on.
-    expect((await drawing).phaseEndsInMs).toBeGreaterThan(0);
-    expect(choices).toContain(await word);
+    const [mine, theirs] = await Promise.all([
+      waitForDrawState(drawer, (s) => s.phase === 'drawing'),
+      waitForDrawState(guesser, (s) => s.phase === 'drawing'),
+    ]);
+
+    expect(mine.phaseEndsInMs).toBeGreaterThan(0);
+    expect(mine.word).toBe(drawerView.wordChoices![0]);
+    expect(mine.wordAutoPicked).toBe(true);
+    expect(theirs.wordAutoPicked).toBe(true);
   });
 
-  it('runs a whole turn on its own clock, ending with the word revealed', async () => {
-    const { alice, roomId, awaitTurn } = await seatTwoPlayers(harness);
-    const turn = awaitTurn();
-    alice.emit('game:start', roomId);
-    const { drawer, choices } = await turn;
-
-    const reviewing = waitFor<Phase & { currentWord: string }>(
+  it('runs a whole turn on its own clock, revealing the word to everybody', async () => {
+    const { alice, bob, roomId } = await seatTwoPlayers(harness);
+    const { drawer, guesser, drawerView } = await startAndAwaitChoosing(
       alice,
-      'dg:phase:review',
+      bob,
+      roomId,
     );
-    drawer.emit('dg:select-word', roomId, choices[0]);
+    const word = drawerView.wordChoices![0]!;
 
-    const reveal = await reviewing;
-    expect(reveal.currentWord).toBe(choices[0]);
-    expect(reveal.phaseEndsInMs).toBeGreaterThan(0);
+    const revealed = Promise.all([
+      waitForDrawState(drawer, (s) => s.phase === 'reveal'),
+      waitForDrawState(guesser, (s) => s.phase === 'reveal'),
+    ]);
+    drawer.emit('dg:select-word', roomId, word);
 
-    // ...and the turn ends without any client asking it to.
-    await waitFor(alice, 'dg:phase:idle');
+    for (const view of await revealed) {
+      expect(view.word).toBe(word);
+      expect(view.phaseEndsInMs).toBeGreaterThan(0);
+    }
+
+    // ...and the next turn starts without any client asking it to.
+    const next = await waitForDrawState(
+      guesser,
+      (s) => s.phase === 'choosing' && s.turn === 2,
+    );
+    expect(next.currentDrawer).toBe(guesser.playerId);
+    expect(next).not.toHaveProperty('word');
   });
 
   /*
-   * The hint used to be the same row of underscores for the whole phase. It
-   * now gives up to a third of the letters away as the clock runs down, which
-   * is what rescues a room that has stalled on a hard word.
+   * The hint gives up to a third of the letters away as the clock runs down,
+   * which is what rescues a room that has stalled on a hard word.
    */
   it('uncovers letters of the word as the drawing clock runs down', async () => {
     const harnessWithHints = await startTestServer({
@@ -256,9 +260,14 @@ describe('the game engine', () => {
     });
     try {
       const { guesser, word } = await playToDrawingPhase(harnessWithHints);
-      const hints = collect<{ currentWordHint: string }>(guesser, 'dg:hint');
+      const hints: string[] = [];
+      guesser.on('room:state', (state) => {
+        const view = state as DrawAndGuessRoomState;
+        if (view.phase !== 'drawing') return;
+        if (hints.at(-1) !== view.hint) hints.push(view.hint);
+      });
 
-      // Long enough for both reveals — at a third and two thirds of the phase.
+      // Long enough for both reveals, at a third and two thirds of the phase.
       await settle(1300);
 
       // The shortest word in the bank is three letters, so every word gets at
@@ -268,26 +277,22 @@ describe('the game engine', () => {
       const letterCount = [...word].filter((char) => char.trim() !== '').length;
 
       let previouslyShown = 0;
-      for (const { currentWordHint } of hints) {
-        expect(currentWordHint).toHaveLength(word.length);
+      for (const hint of hints) {
+        expect(hint).toHaveLength(word.length);
         // Every character is either still hidden or the word's own.
-        for (const [index, char] of [...currentWordHint].entries()) {
+        for (const [index, char] of [...hint].entries()) {
           expect(char === '_' || char === word[index]).toBe(true);
         }
         // It only ever gets easier, and never gives the whole word away.
-        expect(shown(currentWordHint)).toBeGreaterThanOrEqual(previouslyShown);
-        previouslyShown = shown(currentWordHint);
+        expect(shown(hint)).toBeGreaterThanOrEqual(previouslyShown);
+        previouslyShown = shown(hint);
       }
 
-      expect(previouslyShown).toBeGreaterThan(0);
       expect(previouslyShown).toBe(Math.floor(letterCount / 3));
 
       // Every reveal tells the room something it did not know. A word with one
       // letter to give away gives it away once, not twice.
       expect(hints.length).toBe(Math.min(2, Math.floor(letterCount / 3)));
-      expect(new Set(hints.map((hint) => hint.currentWordHint)).size).toBe(
-        hints.length,
-      );
     } finally {
       await harnessWithHints.teardown();
     }
@@ -295,8 +300,7 @@ describe('the game engine', () => {
 
   /*
    * A reveal scheduled for a turn that ended early must not go off during the
-   * reveal that replaced it — the word is on screen by then, and a hint
-   * arriving after it is at best noise.
+   * reveal that replaced it: the word is on screen by then.
    */
   it('stops hinting once the turn is over', async () => {
     const harnessWithHints = await startTestServer({
@@ -305,52 +309,71 @@ describe('the game engine', () => {
       reviewing: 2, // ...which land inside this, if they were still pending
     });
     try {
-      const { roomId, guesser, guesserName, word } =
+      const { roomId, guesser, word } =
         await playToDrawingPhase(harnessWithHints);
 
-      const hints = collect(guesser, 'dg:hint');
       // The only guesser guesses, so the phase ends before any reveal is due.
-      guesser.emit('dg:guess', roomId, guesserName, word);
-      await waitFor(guesser, 'dg:phase:review', 1000);
+      const revealed = waitForDrawState(
+        guesser,
+        (s) => s.phase === 'reveal',
+        1000,
+      );
+      guesser.emit('chat:send', roomId, word);
+      const atReveal = await revealed;
 
+      const later = collectStates(guesser);
       await settle(1000);
 
-      expect(hints).toEqual([]);
+      expect(later.filter((s) => s.hint !== atReveal.hint)).toEqual([]);
+      expect(serverRoom(harnessWithHints, roomId).game.hint).toBe(
+        atReveal.hint,
+      );
     } finally {
       await harnessWithHints.teardown();
     }
   });
 
   it('plays every player once per round, then ends the game', async () => {
-    const { alice, roomId, awaitTurn } = await seatTwoPlayers(harness);
-    const turn = awaitTurn();
-    const ended = waitFor<DrawAndGuessRoomState>(alice, 'dg:game:ended', 9000);
-    const drawers = collect<{ currentDrawer: string }>(
+    const { alice, bob, roomId } = await seatTwoPlayers(harness);
+    const states = collectStates(alice);
+    const ended = waitForDrawState(
       alice,
-      'dg:phase:word-select',
+      (s) => s.lastGame !== null && !s.isGameStarted,
+      9000,
+    );
+    const announced = waitForChat(
+      alice,
+      (m) => m.text === 'Game has ended!',
+      9000,
     );
 
-    alice.emit('game:start', roomId);
-    await turn;
+    await startGame(alice, roomId);
 
     const finalState = await ended;
-    expect(drawers).toHaveLength(2);
-    expect(new Set(drawers.map((d) => d.currentDrawer)).size).toBe(2);
-    expect(finalState.isGameStarted).toBe(false);
-    expect(finalState.status).toBe('Open');
+    const drawers = new Set(
+      states.filter((s) => s.phase === 'choosing').map((s) => s.currentDrawer),
+    );
+    expect(drawers).toEqual(new Set([alice.playerId, bob.playerId]));
+    expect(finalState).toMatchObject({
+      isGameStarted: false,
+      status: 'Open',
+      phase: 'waiting',
+      currentRound: 0,
+      turn: 0,
+      currentDrawer: '',
+      hint: '',
+      phaseEndsInMs: 0,
+    });
+    expect(finalState).not.toHaveProperty('word');
+    expect((await announced).kind).toBe('system');
     expect(harness.server.rooms[roomId]?.phaseEndsAt).toBe(0);
   });
 
   /*
-   * The reason the clock had to move to the server at all. The drawer's tab
-   * owned the phase timer, so closing it left everyone else waiting forever.
+   * The seat waits for a dropped player; a turn that has not got going does
+   * not. A drawer who is not there cannot choose.
    */
-  /*
-   * The seat waits for a dropped player; the turn does not. A drawer who is not
-   * there cannot draw, and holding the room still for the whole grace period
-   * would cost everyone else more than it saves the one who dropped.
-   */
-  it('skips to the next turn as soon as the drawer drops', async () => {
+  it('skips to the next turn as soon as the drawer drops while choosing', async () => {
     const harness3 = await startTestServer();
     try {
       const [alice, bob, carol] = await Promise.all([
@@ -358,8 +381,7 @@ describe('the game engine', () => {
         harness3.connect(),
         harness3.connect(),
       ]);
-      const roomId = await createRoom(alice, { rounds: 1 });
-      await joinRoom(alice, roomId, 'Alice');
+      const roomId = await createRoom(alice, { username: 'Alice', rounds: 1 });
       await joinRoom(bob, roomId, 'Bob');
       await joinRoom(carol, roomId, 'Carol');
 
@@ -369,23 +391,20 @@ describe('the game engine', () => {
         [carol.playerId, carol],
       ]);
 
-      const firstTurn = waitFor<{ currentDrawer: string }>(
-        alice,
-        'dg:phase:word-select',
-      );
-      alice.emit('game:start', roomId);
+      const firstTurn = waitForDrawState(alice, (s) => s.phase === 'choosing');
+      await startGame(alice, roomId);
       const { currentDrawer } = await firstTurn;
 
       const witness = currentDrawer === alice.playerId ? bob : alice;
-      const turnEnded = waitFor(witness, 'dg:phase:idle');
-      const messages = collect<[string, string]>(witness, 'chat:message');
+      const nextTurn = waitForDrawState(witness, (s) => s.turn === 2);
+      const skipped = waitForChat(witness, (m) =>
+        m.text.includes('drawer lost connection'),
+      );
 
       clients.get(currentDrawer)!.close();
 
-      await turnEnded;
-      expect(
-        messages.some(([, text]) => text.includes('drawer lost connection')),
-      ).toBe(true);
+      expect((await nextTurn).currentDrawer).not.toBe(currentDrawer);
+      expect((await skipped).kind).toBe('alert');
       expect(harness3.server.rooms[roomId]?.isGameStarted).toBe(true);
     } finally {
       await harness3.teardown();
@@ -393,18 +412,21 @@ describe('the game engine', () => {
   });
 
   it('ends the game when too few players are left to continue', async () => {
-    const { alice, bob, roomId, awaitTurn } = await seatTwoPlayers(harness);
-    const turn = awaitTurn();
-    alice.emit('game:start', roomId);
-    await turn;
+    const { alice, bob, roomId } = await seatTwoPlayers(harness);
+    await startAndAwaitChoosing(alice, bob, roomId);
 
-    const ended = waitFor<DrawAndGuessRoomState>(alice, 'dg:game:ended');
-    bob.close();
+    const messages = collectChat(alice);
+    const ended = waitForDrawState(alice, (s) => !s.isGameStarted);
+    bob.emit('room:leave', roomId);
 
     const finalState = await ended;
-    expect(finalState.isGameStarted).toBe(false);
     expect(finalState.currentDrawer).toBe('');
+    expect(finalState.phase).toBe('waiting');
+    expect(finalState.lastGame?.endedEarly).toBe(true);
     expect(harness.server.rooms[roomId]?.phaseEndsAt).toBe(0);
+    expect(
+      messages.find((m) => m.text.startsWith('Not enough players')),
+    ).toMatchObject({ kind: 'alert' });
   });
 
   /*
@@ -412,10 +434,8 @@ describe('the game engine', () => {
    * shape of a crash; the engine drops it with the room instead.
    */
   it('drops a pending phase timer when the room is deleted mid-turn', async () => {
-    const { alice, bob, roomId, awaitTurn } = await seatTwoPlayers(harness);
-    const turn = awaitTurn();
-    alice.emit('game:start', roomId);
-    await turn;
+    const { alice, bob, roomId } = await seatTwoPlayers(harness);
+    await startAndAwaitChoosing(alice, bob, roomId);
 
     alice.close();
     bob.close();
@@ -425,3 +445,114 @@ describe('the game engine', () => {
     expect(harness.server.rooms[roomId]).toBeUndefined();
   });
 });
+
+/*
+ * The results screen is drawn from `lastGame`, which outlives the reset that
+ * ends a game so a client arriving afterwards can still show it.
+ */
+describe('the last game', () => {
+  let harness: TestServer;
+
+  beforeEach(async () => {
+    harness = await startTestServer();
+  });
+
+  afterEach(async () => {
+    await harness.teardown();
+  });
+
+  /** Plays a two-player game until bob walks out during the first turn. */
+  const endEarly = async (rounds = 1) => {
+    const { alice, bob, roomId } = await seatTwoPlayers(harness, rounds);
+    const started = waitForDrawState(alice, (s) => s.phase === 'choosing');
+    await startGame(alice, roomId);
+    const { wordCategory } = await started;
+
+    const ended = waitForDrawState(alice, (s) => s.lastGame !== null);
+    bob.emit('room:leave', roomId);
+    const final = await ended;
+    return { alice, roomId, wordCategory, final };
+  };
+
+  it('sums up a game played to the end, best score first', async () => {
+    const { alice, bob, roomId } = await seatTwoPlayers(harness);
+
+    // Whoever is guessing gets the word in as soon as the drawing starts, so
+    // the standings have somebody ahead.
+    for (const client of [alice, bob]) {
+      client.on('room:state', (state) => {
+        const view = state as DrawAndGuessRoomState;
+        if (view.phase !== 'drawing') return;
+        if (view.currentDrawer === client.playerId) return;
+        if (view.scoredThisTurn.includes(client.playerId)) return;
+        const word = serverRoom(harness, roomId)?.game.word;
+        if (word) client.emit('chat:send', roomId, word);
+      });
+    }
+
+    const started = waitForDrawState(alice, (s) => s.phase === 'choosing');
+    const ended = waitForDrawState(alice, (s) => s.lastGame !== null, 9000);
+    await startGame(alice, roomId);
+    const { wordCategory } = await started;
+    const final = await ended;
+
+    const summary = final.lastGame!;
+    expect(summary).toMatchObject({
+      endedEarly: false,
+      wordCategory,
+      rounds: 1,
+      turns: 2,
+    });
+    expect(summary.standings.map((s) => s.playerId).toSorted()).toEqual(
+      [alice.playerId, bob.playerId].toSorted(),
+    );
+    for (let i = 1; i < summary.standings.length; i++) {
+      expect(summary.standings[i - 1]!.points).toBeGreaterThanOrEqual(
+        summary.standings[i]!.points,
+      );
+    }
+    for (const standing of summary.standings) {
+      const seat = final.playerList[standing.playerId]!;
+      expect(standing.points).toBe(seat.points);
+      expect(standing.username).toBe(seat.username);
+    }
+    expect(summary.standings[0]!.points).toBeGreaterThan(0);
+  });
+
+  it('marks a game cut short, counting only what was played', async () => {
+    const { alice, wordCategory, final } = await endEarly(3);
+
+    expect(final.lastGame).toEqual({
+      endedEarly: true,
+      wordCategory,
+      rounds: 1,
+      turns: 1,
+      standings: [{ playerId: alice.playerId, username: 'Alice', points: 0 }],
+    });
+  });
+
+  it('keeps the summary for a player who arrives after the game', async () => {
+    const { roomId, final } = await endEarly();
+
+    const carol = await harness.connect();
+    await joinRoom(carol, roomId, 'Carol');
+    const { state } = await syncRoom(carol, roomId);
+
+    expect((state as DrawAndGuessRoomState).lastGame).toEqual(final.lastGame);
+  });
+
+  it('clears the summary when the next game starts', async () => {
+    const { alice, roomId } = await endEarly();
+
+    const carol = await harness.connect();
+    await joinRoom(carol, roomId, 'Carol');
+    const restarted = waitForDrawState(alice, (s) => s.phase === 'choosing');
+    await startGame(alice, roomId);
+
+    expect((await restarted).lastGame).toBeNull();
+  });
+});
+
+/** The hint at the start of a drawing: every letter hidden, spaces kept. */
+const buildHiddenHint = (word: string) =>
+  [...word].map((char) => (/\s/.test(char) ? char : '_')).join('');

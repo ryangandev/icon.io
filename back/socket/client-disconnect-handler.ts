@@ -1,4 +1,4 @@
-import type { Socket } from 'socket.io';
+import type { IoSocket } from '../libs/rooms/emit.js';
 import type { RoomMembership } from '../libs/rooms/membership.js';
 
 /**
@@ -11,7 +11,7 @@ import type { RoomMembership } from '../libs/rooms/membership.js';
  * decision lives about how long to wait before believing somebody is gone.
  */
 const clientDepartureOnDisconnectHandler = (
-  socket: Socket,
+  socket: IoSocket,
   membership: RoomMembership,
 ) => {
   socket.on('disconnect', () => {

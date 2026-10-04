@@ -1,7 +1,10 @@
-import type { Socket } from 'socket.io';
 import type { DrawAndGuessState } from '../../models/types.js';
 import type { GameContext, Room } from '../../libs/rooms/types.js';
-import { broadcastToRoom, onClientEvent } from '../../libs/rooms/emit.js';
+import {
+  broadcastToRoom,
+  onClientEvent,
+  type IoSocket,
+} from '../../libs/rooms/emit.js';
 import { parseArgs, roomIdOnly } from '../../libs/validation.js';
 import { continueDrawingRequest, startDrawingRequest } from './validation.js';
 import {
@@ -25,7 +28,7 @@ import {
  * The rule enforced here is the one the UI has always shown: the canvas belongs
  * to whoever is drawing on it, and only while they are drawing.
  */
-const whiteboardCanvasEventHandler = (socket: Socket, ctx: GameContext) => {
+const whiteboardCanvasEventHandler = (socket: IoSocket, ctx: GameContext) => {
   /**
    * The room this socket may currently draw in, or null. Returns the room
    * itself because every event below goes on to record itself in that room's
@@ -43,7 +46,7 @@ const whiteboardCanvasEventHandler = (socket: Socket, ctx: GameContext) => {
     if (!room) return null;
     if (!room.playerList[playerId]) return null; // not in this room
     if (room.game.currentDrawer !== playerId) return null; // not their turn
-    if (!room.game.isDrawingPhase) return null; // and not before or after it
+    if (room.game.phase !== 'drawing') return null; // not before or after it
 
     return room;
   };
@@ -57,7 +60,15 @@ const whiteboardCanvasEventHandler = (socket: Socket, ctx: GameContext) => {
     if (!room) return;
     if (!beginStroke(room.game.canvas, color, size, coords)) return;
 
-    broadcastToRoom(socket, roomId, 'dg:canvas:start', coords, color, size);
+    broadcastToRoom(
+      socket,
+      roomId,
+      'dg:canvas:start',
+      roomId,
+      coords,
+      color,
+      size,
+    );
   });
 
   onClientEvent(socket, 'dg:draw:move', (...rawArgs: unknown[]) => {
@@ -73,7 +84,15 @@ const whiteboardCanvasEventHandler = (socket: Socket, ctx: GameContext) => {
     if (!room) return;
     if (!extendStroke(room.game.canvas, coords)) return;
 
-    broadcastToRoom(socket, roomId, 'dg:canvas:move', coords, color, size);
+    broadcastToRoom(
+      socket,
+      roomId,
+      'dg:canvas:move',
+      roomId,
+      coords,
+      color,
+      size,
+    );
   });
 
   onClientEvent(socket, 'dg:draw:end', (...rawArgs: unknown[]) => {
@@ -85,7 +104,7 @@ const whiteboardCanvasEventHandler = (socket: Socket, ctx: GameContext) => {
     // arrives. The event exists so a client can close its path.
     if (!pencilRoomOf(roomId)) return;
 
-    broadcastToRoom(socket, roomId, 'dg:canvas:end');
+    broadcastToRoom(socket, roomId, 'dg:canvas:end', roomId);
   });
 
   // Undo used to carry a full-canvas PNG as a data URL — on the order of
@@ -100,7 +119,7 @@ const whiteboardCanvasEventHandler = (socket: Socket, ctx: GameContext) => {
     if (!room) return;
     undoStroke(room.game.canvas);
 
-    broadcastToRoom(socket, roomId, 'dg:canvas:undo');
+    broadcastToRoom(socket, roomId, 'dg:canvas:undo', roomId);
   });
 
   onClientEvent(socket, 'dg:draw:clear', (...rawArgs: unknown[]) => {
@@ -112,7 +131,7 @@ const whiteboardCanvasEventHandler = (socket: Socket, ctx: GameContext) => {
     if (!room) return;
     clearCanvas(room.game.canvas);
 
-    broadcastToRoom(socket, roomId, 'dg:canvas:clear');
+    broadcastToRoom(socket, roomId, 'dg:canvas:clear', roomId);
   });
 };
 

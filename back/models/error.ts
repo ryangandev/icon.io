@@ -1,34 +1,52 @@
-import type { ErrorType, RoomErrorPayload } from '../../shared/wire-types.js';
+import type { ErrorType, RoomError } from '../../shared/wire-types.js';
 
 /**
- * An error the server throws internally and then reports to one client. The
- * type it is reported *as* — the payload a `roomError` event carries — is
- * `RoomErrorPayload`, next to `ErrorType` in the shared contract.
+ * A request the server refuses, with the reason a client is told.
+ *
+ * Thrown inside a handler (a module's `startGame`, say) and caught by the room
+ * layer, which answers it through the request's acknowledgement as
+ * `{ ok: false, error }`. Thrown rather than returned because the refusal is
+ * usually several calls deep, and every caller in between would otherwise have
+ * to pass it along by hand.
  */
-interface CustomError extends Error {
-  errorType: ErrorType;
+class RequestError extends Error {
+  readonly type: ErrorType;
+
+  constructor(type: ErrorType, message: string) {
+    super(message);
+    this.name = 'RequestError';
+    this.type = type;
+  }
 }
 
-const isCustomError = (error: unknown): error is CustomError =>
-  error instanceof Error &&
-  typeof (error as CustomError).errorType === 'string';
+/** The failing half of a `Result`. */
+interface Failure {
+  ok: false;
+  error: RoomError;
+}
 
-/**
- * Turns whatever was thrown into the payload a client can be told about.
- *
- * A `catch` binding is `unknown`, and it is not always one of ours: a bug in a
- * handler throws a `TypeError` down the same path. That used to reach the
- * client as an errorType of `undefined`, which matches no branch, so the page
- * sat there having been told nothing. Anything unrecognised is reported as
- * `roomNotExist` instead — the join did not happen, so sending them back to the
- * lobby is the recoverable outcome — with a message that gives nothing away.
- */
-const asRoomError = (error: unknown): RoomErrorPayload => ({
-  status: true,
-  message: isCustomError(error) ? error.message : 'Something went wrong.',
-  errorType: isCustomError(error) ? error.errorType : 'roomNotExist',
+const failure = (type: ErrorType, message: string): Failure => ({
+  ok: false,
+  error: { type, message },
 });
 
-export { asRoomError, isCustomError };
-export type { ErrorType, RoomErrorPayload } from '../../shared/wire-types.js';
-export type { CustomError };
+/** What a request that does not fit its schema is answered with. */
+const invalidRequest = (message = 'That request was not valid.'): Failure =>
+  failure('invalidRequest', message);
+
+/**
+ * Turns whatever was thrown into an answer a client can be told about.
+ *
+ * A `catch` binding is `unknown`, and it is not always one of ours: a bug in a
+ * handler throws a `TypeError` down the same path. That is reported as an
+ * invalid request with a message that gives nothing away, rather than with
+ * whatever the error happened to say about the server's insides.
+ */
+const asFailure = (error: unknown): Failure =>
+  error instanceof RequestError
+    ? failure(error.type, error.message)
+    : invalidRequest('Something went wrong.');
+
+export { RequestError, failure, invalidRequest, asFailure };
+export type { Failure };
+export type { ErrorType, RoomError } from '../../shared/wire-types.js';

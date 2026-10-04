@@ -46,15 +46,33 @@ That is a conscious trade for a hobby project, and it also means one process: sc
 A room is `Room<TGameState>`: a name, an owner, a password, seats keyed by player id, one clock, and a `game` field the room layer never looks inside.
 Each game registers a module implementing `GameModule` in [`libs/rooms/types.ts`](../back/libs/rooms/types.ts), and the layer reaches a game only through it.
 
-| File (`back/libs/rooms/`) | Responsibility                                    |
-| ------------------------- | ------------------------------------------------- |
-| `types.ts`                | `Room<TGameState>` and the `GameModule` interface |
-| `registry.ts`             | Every room, and which module speaks for each      |
-| `membership.ts`           | Seats, departures and the reconnect grace         |
-| `lobby-events.ts`         | List rooms, create room                           |
-| `room-events.ts`          | Join / leave / re-sync / start                    |
-| `chat-events.ts`          | Talking in a room                                 |
-| `emit.ts`                 | Typed emit and listener helpers                   |
+| File (`back/libs/rooms/`) | Responsibility                                                       |
+| ------------------------- | -------------------------------------------------------------------- |
+| `types.ts`                | `Room<TGameState>` and the `GameModule` interface                    |
+| `registry.ts`             | Every room, which module speaks for each, the snapshots and the chat |
+| `membership.ts`           | Seats, departures and the reconnect grace                            |
+| `lobby-events.ts`         | List rooms, create a room and seat its creator                       |
+| `room-events.ts`          | Join, leave, sync and start, answered through acknowledgements       |
+| `chat-events.ts`          | Talking in a room, after the game has had its say                    |
+| `emit.ts`                 | Typed emit helpers, and `onClientRequest` for acknowledged requests  |
+
+A module reaches the layer through the `GameContext` it is handed: the typed Socket.IO server, the identity registry, and a `RoomLookup` that finds rooms (`ofType` refuses a room of another game), rebroadcasts a lobby (`emitLobby`), sends snapshots (`emitState`) and posts to the chat (`announce`).
+`GameModule` is what the layer calls back:
+
+| Member                                    | Called when                                                         |
+| ----------------------------------------- | ------------------------------------------------------------------- |
+| `parseSettings`, `createState`            | A room is created; `null` from `parseSettings` refuses it           |
+| `toLobbyInfo(room)`                       | The lobby list is rebuilt                                           |
+| `toRoomState(room, viewerId)`             | A snapshot is sent to one player                                    |
+| `syncTo(socket, room, playerId)`          | A page syncs, after its snapshot and chat: anything streamed        |
+| `handleChat?(room, playerId, text)`       | A seated player sends chat; answers `chat`, `consumed` or `blocked` |
+| `startGame(room, playerId)`               | The owner presses start; throws a `RequestError` to refuse          |
+| `onDeparture`, `onDisconnect`, `onReturn` | A seat is given up, held, or taken back                             |
+| `disposeRoom`, `dispose`                  | A room, or the server, is going away: drop timers                   |
+| `registerHandlers(socket)`                | A connection arrives: wire up the game's own events                 |
+
+A room's chat is a log on the room (`Room.chat`), not a stream: every message gets the next id in that room, the last 100 are kept, and a page that syncs is sent them as `chat:history`.
+A player's message is posted under the name on their seat; anything else is an announcement with a `kind` (`system`, `alert` or `success`) the client styles it by.
 
 Two boundaries had to be drawn for the layer to be an abstraction rather than Draw & Guess wearing a hat:
 
@@ -65,13 +83,15 @@ Two boundaries had to be drawn for the layer to be an abstraction rather than Dr
 
 Minesweeper was added without editing a line of `libs/rooms/`, though it disagrees with Draw & Guess about almost everything a game can:
 
-|                   | Draw & Guess                       | Minesweeper                    |
-| ----------------- | ---------------------------------- | ------------------------------ |
-| Timers of its own | Three (phase, drawer hold, hints)  | One (the round window)         |
-| Turn structure    | One player at a time, in a rota    | Everybody at once, per round   |
-| Per-player state  | Who has scored this turn           | None beyond the shared score   |
-| `syncTo`          | Canvas, plus the drawer's own word | Empty: the snapshot has it all |
-| Private state     | The word, until the reveal         | The mine layout, forever       |
+|                       | Draw & Guess                            | Minesweeper                      |
+| --------------------- | --------------------------------------- | -------------------------------- |
+| Timers of its own     | Three (phase, drawer hold, hints)       | One (the round window)           |
+| Turn structure        | One player at a time, in a rota         | Everybody at once, per round     |
+| Per-player state      | Who scored this turn, and how much      | Each player's pick this round    |
+| `syncTo`              | The drawing (`dg:canvas:sync`)          | Nothing: the snapshot has it all |
+| `handleChat`          | A correct guess is not chat             | None: every message is chat      |
+| Private state         | The word, until the reveal              | The mine layout, forever         |
+| Private to one viewer | The word and the choices, to the drawer | Your own pick, until the reveal  |
 
 A lobby is a Socket.IO room per game, so a client that has not subscribed to a game is never sent its rooms.
 A new player cannot join a game in progress; that is a product decision, not a limitation of the layer.
@@ -84,16 +104,18 @@ The server decides everything a player could gain by lying about.
   Clients are told how much time is left and render a countdown; nothing they send advances a phase.
   When the drawer's browser used to end each phase, closing that tab hung the room forever.
 - **Time is sent as a remaining duration, not a timestamp,** so a client whose clock disagrees with the server's still counts down correctly.
-  Every phase event and every room snapshot re-syncs it.
+  Every snapshot re-syncs it.
 - **Nothing internal is emitted directly.** A module's `toLobbyInfo` and `toRoomState` are the only way a room becomes something a client sees, so the room password and the word being guessed cannot leak through an accidental emit.
-  Secrets are omitted, not blanked, so the drawer's own copy survives a client-side merge.
+- **A snapshot is built per viewer.** `toRoomState(room, viewerId)` leaves out whatever that player may not know (the word for a guesser, another player's pick), and only the registry sends `room:state`, one player at a time.
+  A module changes its state and calls `rooms.emitState(room)`; it never emits a snapshot itself, because a room-wide emit would send everybody the same view.
 - **Every inbound event is validated** with zod ([`validation.ts`](../back/libs/validation.ts)) before it reaches game state, and **rate-limited** before that ([`rate-limit.ts`](../back/libs/rate-limit.ts)): one token bucket per kind of event, per socket, because a drawing phase is a stream of coordinates and joining a room is a click.
-- **The UI's rules are enforced, not assumed.** Only the drawer may draw, and only while drawing; only the owner may start; only a seat-holder may read a room's state; a guess is checked for membership, phase, not-the-drawer and not-already-scored.
+- **The UI's rules are enforced, not assumed.** Only the drawer may draw, and only while drawing; only the owner may start; only a seat-holder may read a room's state or talk in it; a guess is checked by the game's `handleChat` for phase, not-the-drawer and not-already-scored.
 - **The drawing is server state too.** The stroke list every client builds is built once more on the server, so a player arriving mid-turn gets the board, and undo is "drop the last stroke" rather than a full-canvas image.
 
 ## Identity and reconnection
 
 Rooms are keyed by a server-issued player id, not `socket.id`, which changes on every reload.
+A client's first event on every connection is `session:identify`, with the identity it holds or `null`, and the acknowledgement is its `SessionInfo`: the identity to keep (new, or the one it claimed if that checked out) and `reconnectGraceMs`, how long a dropped seat is held.
 Each id is paired with a secret token only its owner receives; without it any player could take any seat, because every id in a room is broadcast to everyone in it.
 The client keeps both in `sessionStorage`: per tab, surviving a reload, which is exactly the lifetime a seat should have.
 There are no accounts: this is a way to be the same player across a refresh, not the same person across a visit.
@@ -104,9 +126,21 @@ A drawer's turn is held too, but only for ten seconds and only once drawing has 
 
 ## The wire contract
 
-Every event name and payload shape is declared once in [`shared/wire-types.d.ts`](../shared/wire-types.d.ts), and both packages route emits and listeners through helpers typed on it.
-An event renamed on one side only stops compiling rather than silently never arriving.
-It is types only, imported with `import type`, so nothing resolves at runtime; that is why event names are a union of string literals rather than an object of constants.
+Every event name and payload shape is declared once in [`shared/wire-types.d.ts`](../shared/wire-types.d.ts), as the two event maps `ClientToServerEvents` and `ServerToClientEvents`.
+The server is `Server<ClientToServerEvents, ServerToClientEvents>`, and its emit helpers in [`emit.ts`](../back/libs/rooms/emit.ts) are generic over the event name, so an event renamed or reshaped on one side stops compiling rather than silently never arriving.
+It is types only, imported with `import type`, so nothing resolves at runtime.
+Inbound arguments are still handled as `unknown` and parsed with zod: a type says what a well-behaved client sends, not what arrives.
+
+The protocol is snapshot-driven.
+Whenever anything visible in a room changes, every seated, connected player is sent `room:state`: the whole room as that player may see it.
+A client renders the latest snapshot and keeps no game state of its own, so a refresh, a reconnect or a missed event cannot leave it out of step.
+Changes made in one synchronous run are coalesced, so a turn that ends and the next that starts arrive as one snapshot; nothing may count snapshots.
+Only the drawing (`dg:canvas:*`) and the chat (`chat:message`, `chat:history`) travel as increments, because they are streams.
+
+A request that can fail takes an acknowledgement as its last argument and is answered once with a `Result`: `{ ok: true, ... }` or `{ ok: false, error: { type, message } }`.
+`onClientRequest` splits the acknowledgement off (the last argument, if it is a function), answers `invalidRequest` when the arguments do not parse, and does nothing harmful when a client sent none.
+Errors are never broadcast; they go to the one request that caused them.
+A request dropped by the rate limiter is answered `invalidRequest` too, so a page awaiting it is not left hanging.
 
 Names are namespaced by concern, not by game: `room:`, `lobby:`, `chat:` and `game:start` belong to the layer; `dg:` to Draw & Guess and `ms:` to Minesweeper.
 `LobbyRoomInfo` and `RoomState` are the generic halves, and each game extends them (`DrawAndGuessLobbyRoomInfo` adds `rounds`) rather than carrying an untyped settings blob.
@@ -153,7 +187,8 @@ Production is one Node process: Vite builds into `back/build/public` and Express
 
 ## Adding a game
 
-1. One `createXModule(ctx, …)` returning a `GameModule`, and one line in `app.ts` registering it.
+1. One `createXModule(ctx, ...)` returning a `GameModule`, and one line in `app.ts` registering it.
+   Its engine changes state and calls `ctx.rooms.emitState(room)`; its `toRoomState(room, viewerId)` decides what each player sees.
 2. A member added to `GameType`, the game's room state, lobby info and settings interfaces in the shared contract, and its event names in the two unions.
 3. A lobby page and a room page.
    `RoomCreateForm` takes the game-specific fields as children and puts them into `settings`, the only part of a create request the server hands to a module.
@@ -183,6 +218,8 @@ Two serious bugs were found only by playing in a browser (a redundant hint, and 
 
 ## Pitfalls
 
+- **`room:state` is per viewer.** Emitting it to a Socket.IO room would send the drawer's word to every guesser; call `rooms.emitState(room)` and let the registry build each player's view.
+- **Snapshots are coalesced.** `emitState` sends at the end of the synchronous run, so a test waits for a snapshot that satisfies a condition rather than for the next one.
 - **`socket.off(event)` without a handler removes everyone's listeners.**
   The Gamehub once cleaned up with `socket.off('connect')`, which also removed the provider's identity handshake: the socket connected, never identified, and every create, join and start was silently dropped until a hard reload.
   Always pass the handler.

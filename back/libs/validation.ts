@@ -40,7 +40,7 @@ const gameType = z.enum(['draw-and-guess', 'minesweeper']);
 const roomCreateRequest = z.object({
   gameType,
   roomName: trimmedString(ROOM_NAME_MAX),
-  ownerUsername: username,
+  username,
   maxPlayers: z.number().int().min(2).max(8),
   password: password,
   settings: z.unknown(),
@@ -49,26 +49,25 @@ const roomCreateRequest = z.object({
 /**
  * A returning client's claim to an existing identity. Both halves are exactly
  * the shape the server issued, so anything else is rejected before it reaches
- * the token comparison — and a rejected claim just gets a new identity, never
+ * the token comparison, and a rejected claim just gets a new identity, never
  * an error saying which half was wrong.
  */
-const resumeSessionRequest = z.tuple([
-  z.object({
-    playerId: z.string().uuid(),
-    token: z.string().regex(/^[0-9a-f]{64}$/),
-  }),
-]);
+const identityClaim = z.object({
+  playerId: z.string().uuid(),
+  token: z.string().regex(/^[0-9a-f]{64}$/),
+});
 
 const gameTypeOnly = z.tuple([gameType]);
 const joinRoomRequest = z.tuple([roomId, username, password]);
-const leaveRoomRequest = z.tuple([roomId, username]);
 const roomIdOnly = z.tuple([roomId]);
-const chatRequest = z.tuple([roomId, username, trimmedString(MESSAGE_MAX)]);
+/** The speaker is whoever holds the seat, so a message carries no name. */
+const chatRequest = z.tuple([roomId, trimmedString(MESSAGE_MAX)]);
 
 /**
  * Parses socket arguments, returning `null` rather than throwing when they do
- * not fit. Handlers drop invalid events silently: a legitimate client cannot
- * produce them, and echoing details back only helps someone probing the API.
+ * not fit. A fire-and-forget event that does not fit is dropped silently; a
+ * request is answered `invalidRequest`, without the details: a legitimate
+ * client cannot produce one, and the details only help someone probing.
  */
 const parseArgs = <T>(
   schema: z.ZodType<T>,
@@ -98,11 +97,11 @@ export {
   password,
   gameType,
   // The room layer's own events.
-  resumeSessionRequest,
+  identityClaim,
   roomCreateRequest,
   gameTypeOnly,
   joinRoomRequest,
-  leaveRoomRequest,
   roomIdOnly,
   chatRequest,
+  MESSAGE_MAX,
 };

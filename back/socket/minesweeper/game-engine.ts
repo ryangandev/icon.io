@@ -2,14 +2,9 @@ import type {
   MinesweeperPickResult,
   MinesweeperSettings,
 } from '../../models/types.js';
-import type { CustomError, ErrorType } from '../../models/error.js';
+import { RequestError } from '../../models/error.js';
 import type { GameContext, Room } from '../../libs/rooms/types.js';
-import { emitToRoom } from '../../libs/rooms/emit.js';
-import {
-  getRemainingPhaseMs,
-  getRoomStatus,
-  resetPoints,
-} from '../../libs/utils.js';
+import { getRoomStatus, resetPoints } from '../../libs/utils.js';
 import {
   minesweeperDurationsInSeconds as defaultDurations,
   type MinesweeperDurationsInSeconds,
@@ -20,21 +15,14 @@ import {
   isHidden,
   isResolved,
   markHitMine,
-  minesFound,
   publicView,
   revealFrom,
 } from './board.js';
 import { mineProbabilities } from './probability.js';
 import { pointsForPick } from './scoring.js';
-import { toRoomState, type MinesweeperState } from './state.js';
+import type { MinesweeperState } from './state.js';
 
 const MIN_PLAYERS_TO_START = 2;
-
-const roomError = (message: string, errorType: ErrorType): CustomError => {
-  const error = new Error(message) as CustomError;
-  error.errorType = errorType;
-  return error;
-};
 
 type MinesweeperRoom = Room<MinesweeperState>;
 
@@ -75,7 +63,6 @@ const createMinesweeperGameEngine = (
   ctx: GameContext,
   durations: MinesweeperDurationsInSeconds = defaultDurations,
 ) => {
-  const { io } = ctx;
   /** One per room: either the pick window or the reveal pause. */
   const roundTimers = new Map<string, NodeJS.Timeout>();
 
@@ -108,18 +95,21 @@ const createMinesweeperGameEngine = (
 
   const startGame = (room: MinesweeperRoom, playerId: string) => {
     if (room.owner.playerId !== playerId) {
-      throw roomError(
-        'Only the room owner can start the game.',
+      throw new RequestError(
         'notRoomOwner',
+        'Only the room owner can start the game.',
       );
     }
     if (room.isGameStarted) {
-      throw roomError('The game has already started.', 'gameAlreadyStarted');
+      throw new RequestError(
+        'gameAlreadyStarted',
+        'The game has already started.',
+      );
     }
     if (room.currentPlayerCount < MIN_PLAYERS_TO_START) {
-      throw roomError(
-        `At least ${MIN_PLAYERS_TO_START} players are required to start.`,
+      throw new RequestError(
         'notEnoughPlayers',
+        `At least ${MIN_PLAYERS_TO_START} players are required to start.`,
       );
     }
 
@@ -129,7 +119,7 @@ const createMinesweeperGameEngine = (
     room.game.round = 0;
     room.game.picks.clear();
     room.game.lastRound = [];
-    room.game.isRevealing = false;
+    room.game.lastGame = null;
     room.playerList = resetPoints(room.playerList);
     room.isGameStarted = true;
     room.status = getRoomStatus(
@@ -142,14 +132,9 @@ const createMinesweeperGameEngine = (
       `Minesweeper started in room ${room.roomId} on ${room.game.difficulty}.`,
     );
 
-    emitToRoom(io, room.roomId, 'ms:game:started', {
-      playerList: room.playerList,
-      isGameStarted: room.isGameStarted,
-      status: room.status,
-      difficulty: room.game.difficulty,
-    });
     ctx.rooms.announce(
       room.roomId,
+      'system',
       `Game has started! ${room.game.board.totalMines} mines on a ${room.game.board.width}×${room.game.board.height} board.`,
     );
     ctx.rooms.emitLobby('minesweeper');
@@ -159,9 +144,9 @@ const createMinesweeperGameEngine = (
 
   const beginRound = (room: MinesweeperRoom) => {
     const game = room.game;
+    game.phase = 'picking';
     game.round += 1;
     game.picks.clear();
-    game.isRevealing = false;
 
     // Computed once, from the public board, before anybody has picked. This is
     // the number every score in this round is made of.
@@ -174,13 +159,7 @@ const createMinesweeperGameEngine = (
 
     room.phaseEndsAt = Date.now() + durations.round * 1000;
 
-    emitToRoom(io, room.roomId, 'ms:round', {
-      round: game.round,
-      board: publicView(game.board),
-      minesFound: minesFound(game.board),
-      lockedIn: [],
-      phaseEndsInMs: getRemainingPhaseMs(room),
-    });
+    ctx.rooms.emitState(room);
 
     schedule(room.roomId, durations.round, () => resolveRound(room));
   };
@@ -196,7 +175,7 @@ const createMinesweeperGameEngine = (
 
     const game = room.game;
     if (!room.isGameStarted) return;
-    if (game.isRevealing) return; // between rounds
+    if (game.phase !== 'picking') return; // between rounds
     if (!room.playerList[playerId]) return; // not in this room
     if (game.picks.has(playerId)) return; // already committed
     if (index < 0 || index >= game.board.width * game.board.height) return;
@@ -204,7 +183,7 @@ const createMinesweeperGameEngine = (
 
     game.picks.set(playerId, index);
 
-    emitToRoom(io, roomId, 'ms:locked', { lockedIn: [...game.picks.keys()] });
+    ctx.rooms.emitState(room);
 
     maybeResolveEarly(room);
   };
@@ -217,7 +196,7 @@ const createMinesweeperGameEngine = (
    * room the whole window.
    */
   const maybeResolveEarly = (room: MinesweeperRoom) => {
-    if (!room.isGameStarted || room.game.isRevealing) return;
+    if (!room.isGameStarted || room.game.phase !== 'picking') return;
 
     const stillChoosing = Object.entries(room.playerList).filter(
       ([playerId, player]) =>
@@ -290,40 +269,62 @@ const createMinesweeperGameEngine = (
 
     game.lastRound = results;
     game.picks.clear();
-    game.isRevealing = true;
+    game.phase = 'reveal';
     room.phaseEndsAt = Date.now() + durations.reveal * 1000;
 
-    emitToRoom(io, room.roomId, 'ms:resolve', {
-      results,
-      board: publicView(game.board),
-      playerList: room.playerList,
-      minesFound: minesFound(game.board),
-      phaseEndsInMs: getRemainingPhaseMs(room),
-    });
+    ctx.rooms.emitState(room);
 
     for (const result of results) {
       if (!result.hitMine) continue;
+      // U+2212, a true minus: a hyphen reads as a dash beside a number.
       ctx.rooms.announce(
         room.roomId,
-        `${result.username} hit a mine (${Math.round(result.risk * 100)}% risk) — ${result.points}`,
+        'alert',
+        `${result.username} hit a mine (${Math.round(result.risk * 100)}% risk): \u2212${Math.abs(result.points)}`,
       );
     }
 
     if (isResolved(game.board)) {
-      schedule(room.roomId, durations.reveal, () => endGame(room));
+      schedule(room.roomId, durations.reveal, () =>
+        endGame(room, { endedEarly: false }),
+      );
       return;
     }
 
     schedule(room.roomId, durations.reveal, () => beginRound(room));
   };
 
-  const endGame = (room: MinesweeperRoom) => {
+  /**
+   * The board and the last round stay as they are: the results screen shows
+   * the final board and what its last round came to, and so does a refresh.
+   */
+  const endGame = (
+    room: MinesweeperRoom,
+    { endedEarly }: { endedEarly: boolean },
+  ) => {
     clearRoundTimer(room.roomId);
+    const game = room.game;
+
+    const standings = Object.entries(room.playerList)
+      .map(([playerId, player]) => ({
+        playerId,
+        username: player.username,
+        points: player.points,
+      }))
+      .toSorted((a, b) => b.points - a.points);
+
+    game.lastGame = {
+      endedEarly,
+      standings,
+      difficulty: game.difficulty,
+      // A round still open for picks when the game stopped was never played.
+      rounds: game.phase === 'picking' ? game.round - 1 : game.round,
+    };
 
     room.isGameStarted = false;
-    room.game.round = 0;
-    room.game.picks.clear();
-    room.game.isRevealing = false;
+    game.phase = 'waiting';
+    game.round = 0;
+    game.picks.clear();
     room.phaseEndsAt = 0;
     room.status = getRoomStatus(
       room.currentPlayerCount,
@@ -331,16 +332,14 @@ const createMinesweeperGameEngine = (
       room.isGameStarted,
     );
 
-    const ranked = Object.values(room.playerList).toSorted(
-      (a, b) => b.points - a.points,
-    );
-    const winner = ranked[0];
+    const winner = standings[0];
 
-    emitToRoom(io, room.roomId, 'ms:game:ended', toRoomState(room));
+    ctx.rooms.emitState(room);
     ctx.rooms.announce(
       room.roomId,
+      'system',
       winner
-        ? `Game over — ${winner.username} wins with ${winner.points} points!`
+        ? `Game over: ${winner.username} wins with ${winner.points} points!`
         : 'Game has ended!',
     );
     ctx.rooms.emitLobby('minesweeper');
@@ -355,9 +354,10 @@ const createMinesweeperGameEngine = (
     if (room.currentPlayerCount < MIN_PLAYERS_TO_START) {
       ctx.rooms.announce(
         room.roomId,
+        'alert',
         'Not enough players left to continue. Game has ended.',
       );
-      endGame(room);
+      endGame(room, { endedEarly: true });
       return;
     }
 

@@ -1,7 +1,6 @@
-import type { Socket } from 'socket.io';
 import type { MinesweeperSettings } from '../../models/types.js';
 import type { GameModule, GameContext } from '../../libs/rooms/types.js';
-import { onClientEvent } from '../../libs/rooms/emit.js';
+import { onClientEvent, type IoSocket } from '../../libs/rooms/emit.js';
 import { parseArgs } from '../../libs/validation.js';
 import type { MinesweeperDurationsInSeconds } from '../../libs/game-clock.js';
 import { createMinesweeperGameEngine } from './game-engine.js';
@@ -39,8 +38,8 @@ const createMinesweeperModule = (
     toLobbyInfo,
     toRoomState,
 
-    // Nothing to catch up on: the board, the round and the last result all
-    // travel in the room snapshot the layer has already sent.
+    // Nothing to catch up on: the board, the round, the player's own pick and
+    // the last result all travel in the snapshot the layer has already sent.
     syncTo: () => {},
 
     startGame: (room, playerId) => engine.startGame(room, playerId),
@@ -52,7 +51,7 @@ const createMinesweeperModule = (
     disposeRoom: (roomId) => engine.disposeRoom(roomId),
     dispose: () => engine.dispose(),
 
-    registerHandlers: (socket: Socket) => {
+    registerHandlers: (socket: IoSocket) => {
       onClientEvent(socket, 'ms:pick', (...rawArgs: unknown[]) => {
         const validated = parseArgs(pickRequest, rawArgs, 'ms:pick');
         if (!validated) return;

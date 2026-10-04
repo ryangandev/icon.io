@@ -1,14 +1,17 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import type { Socket } from 'socket.io-client';
-import type { CanvasStroke } from '../models/types.js';
+import type { CanvasStroke, ServerToClientEvent } from '../models/types.js';
 import {
   collect,
   createRoom,
   joinRoom,
   playToDrawingPhase,
+  request,
   settle,
+  SLOW_DRAWING,
   startTestServer,
   waitFor,
+  waitForDrawState,
+  type ClientSocket,
   type TestServer,
 } from './helpers/test-server.js';
 
@@ -16,13 +19,15 @@ const RED = '#ff0000';
 const DOT = { x: 10, y: 20 };
 
 /** What the server would hand somebody arriving in this room right now. */
-const canvasSeenOnArrival = (
-  client: Socket,
+const canvasSeenOnArrival = async (
+  client: ClientSocket,
   roomId: string,
 ): Promise<CanvasStroke[]> => {
-  const synced = waitFor<CanvasStroke[]>(client, 'dg:canvas:sync');
-  client.emit('room:sync', roomId);
-  return synced;
+  const synced = waitFor(client, 'dg:canvas:sync');
+  await request(client, 'room:sync', roomId);
+  const [forRoom, strokes] = await synced;
+  expect(forRoom).toBe(roomId);
+  return strokes;
 };
 
 describe('the whiteboard relay', () => {
@@ -30,11 +35,7 @@ describe('the whiteboard relay', () => {
 
   beforeEach(async () => {
     // A drawing phase long enough to make every assertion inside one.
-    harness = await startTestServer({
-      wordSelecting: 0.2,
-      drawing: 5,
-      reviewing: 0.2,
-    });
+    harness = await startTestServer(SLOW_DRAWING);
   });
 
   afterEach(async () => {
@@ -44,18 +45,18 @@ describe('the whiteboard relay', () => {
   it('relays a stroke to the rest of the room, colour and size included', async () => {
     const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
 
-    const started = waitFor<unknown[]>(guesser, 'dg:canvas:start');
+    const started = waitFor(guesser, 'dg:canvas:start');
     drawer.emit('dg:draw:start', roomId, DOT, RED, 8);
-    expect(await started).toEqual([DOT, RED, 8]);
+    expect(await started).toEqual([roomId, DOT, RED, 8]);
 
-    const continued = waitFor<unknown[]>(guesser, 'dg:canvas:move');
+    const continued = waitFor(guesser, 'dg:canvas:move');
     drawer.emit('dg:draw:move', roomId, { x: 30, y: 40 }, RED, 8);
-    expect(await continued).toEqual([{ x: 30, y: 40 }, RED, 8]);
+    expect(await continued).toEqual([roomId, { x: 30, y: 40 }, RED, 8]);
 
-    // Carries no payload — the stroke is already fully described.
+    // Carries nothing but the room: the stroke is already fully described.
     const stopped = waitFor(guesser, 'dg:canvas:end');
     drawer.emit('dg:draw:end', roomId);
-    await expect(stopped).resolves.toEqual([]);
+    await expect(stopped).resolves.toEqual([roomId]);
   });
 
   /*
@@ -66,10 +67,10 @@ describe('the whiteboard relay', () => {
   it('describes a stroke fully from its first point', async () => {
     const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
 
-    const started = waitFor<unknown[]>(guesser, 'dg:canvas:start');
+    const started = waitFor(guesser, 'dg:canvas:start');
     drawer.emit('dg:draw:start', roomId, { x: 1, y: 1 }, '#00ff00', 24);
 
-    const [, color, size] = await started;
+    const [, , color, size] = await started;
     expect(color).toBe('#00ff00');
     expect(size).toBe(24);
   });
@@ -79,14 +80,14 @@ describe('the whiteboard relay', () => {
    * 1MB, per undo. Every client holds the same stroke list, so "drop the last
    * one" is the entire message.
    */
-  it('sends an undo with no payload at all', async () => {
+  it('sends an undo with nothing but the room it is for', async () => {
     const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
 
     const undone = collect(guesser, 'dg:canvas:undo');
     drawer.emit('dg:draw:undo', roomId);
     await settle();
 
-    expect(undone).toEqual([[]]);
+    expect(undone).toEqual([[roomId]]);
   });
 
   it('relays a clear', async () => {
@@ -94,7 +95,7 @@ describe('the whiteboard relay', () => {
 
     const cleared = waitFor(guesser, 'dg:canvas:clear');
     drawer.emit('dg:draw:clear', roomId);
-    await expect(cleared).resolves.toEqual([]);
+    await expect(cleared).resolves.toEqual([roomId]);
   });
 
   it('does not echo a stroke back to the client that drew it', async () => {
@@ -114,11 +115,14 @@ describe('the whiteboard relay', () => {
 
     const relayed = collect(guesser, 'dg:canvas:start');
 
+    const untyped = drawer as unknown as {
+      emit: (...args: unknown[]) => void;
+    };
     drawer.emit('dg:draw:start', roomId, { x: 1e9, y: 1e9 }, RED, 8);
     drawer.emit('dg:draw:start', roomId, { x: 1, y: 1 }, 'red', 8);
     drawer.emit('dg:draw:start', roomId, { x: 1, y: 1 }, RED, 1e6);
-    drawer.emit('dg:draw:start', roomId, { x: 1, y: 1 }, RED);
-    drawer.emit('dg:draw:start', roomId);
+    untyped.emit('dg:draw:start', roomId, { x: 1, y: 1 }, RED);
+    untyped.emit('dg:draw:start', roomId);
     await settle();
 
     expect(relayed).toEqual([]);
@@ -145,11 +149,7 @@ describe('the stored drawing', () => {
   let harness: TestServer;
 
   beforeEach(async () => {
-    harness = await startTestServer({
-      wordSelecting: 0.2,
-      drawing: 5,
-      reviewing: 0.2,
-    });
+    harness = await startTestServer(SLOW_DRAWING);
   });
 
   afterEach(async () => {
@@ -209,7 +209,11 @@ describe('the stored drawing', () => {
     expect(await canvasSeenOnArrival(guesser, roomId)).toHaveLength(1);
 
     // Wait out this turn; the next one clears the board for everybody.
-    await waitFor(guesser, 'dg:phase:drawing', 9000);
+    await waitForDrawState(
+      guesser,
+      (s) => s.turn === 2 && s.phase === 'drawing',
+      9000,
+    );
 
     expect(await canvasSeenOnArrival(guesser, roomId)).toEqual([]);
   });
@@ -246,18 +250,14 @@ describe('canvas authority', () => {
   let harness: TestServer;
 
   beforeEach(async () => {
-    harness = await startTestServer({
-      wordSelecting: 0.2,
-      drawing: 5,
-      reviewing: 0.2,
-    });
+    harness = await startTestServer(SLOW_DRAWING);
   });
 
   afterEach(async () => {
     await harness.teardown();
   });
 
-  const everyCanvasEvent = [
+  const everyCanvasEvent: ServerToClientEvent[] = [
     'dg:canvas:start',
     'dg:canvas:move',
     'dg:canvas:end',
@@ -267,8 +267,8 @@ describe('canvas authority', () => {
 
   /** Fires all five canvas events at a room and reports what got through. */
   const stormTheCanvas = async (
-    client: Socket,
-    witness: Socket,
+    client: ClientSocket,
+    witness: ClientSocket,
     roomId: string,
   ) => {
     const seen = everyCanvasEvent.map((event) => collect(witness, event));
@@ -300,7 +300,7 @@ describe('canvas authority', () => {
     const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
 
     // The reveal is not a drawing phase, and neither is anything after it.
-    await waitFor(drawer, 'dg:phase:review', 9000);
+    await waitForDrawState(drawer, (s) => s.phase === 'reveal', 9000);
 
     expect(await stormTheCanvas(drawer, guesser, roomId)).toEqual([]);
   });
@@ -308,8 +308,7 @@ describe('canvas authority', () => {
   it('ignores canvas events before any game has started', async () => {
     const owner = await harness.connect();
     const guest = await harness.connect();
-    const roomId = await createRoom(owner, { ownerUsername: 'Owner' });
-    await joinRoom(owner, roomId, 'Owner');
+    const roomId = await createRoom(owner, { username: 'Owner' });
     await joinRoom(guest, roomId, 'Guest');
 
     expect(await stormTheCanvas(owner, guest, roomId)).toEqual([]);

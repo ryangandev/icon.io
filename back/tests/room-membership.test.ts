@@ -1,15 +1,17 @@
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import type { DrawAndGuessRoomState } from '../models/types.js';
 import {
   collect,
+  collectChat,
   createRoom,
   joinRoom,
   lobbyView,
+  request,
   settle,
   startTestServer,
-  waitFor,
-  waitUntil,
+  syncRoom,
+  waitForChat,
+  waitForDrawState,
   type TestServer,
 } from './helpers/test-server.js';
 
@@ -24,26 +26,42 @@ describe('joining and leaving a room', () => {
     await harness.teardown();
   });
 
-  it('admits a player and tells the room who is in it', async () => {
+  it('admits a player and tells everyone in the room who is in it', async () => {
     const owner = await harness.connect();
-    const roomId = await createRoom(owner, { ownerUsername: 'Ada' });
-    await joinRoom(owner, roomId, 'Ada');
+    const roomId = await createRoom(owner, { username: 'Ada' });
 
     const guest = await harness.connect();
-    // The owner's own join snapshot may still be in flight, and it now shares
-    // an event name with this one.
-    const roomUpdate = waitUntil<DrawAndGuessRoomState>(
+    const ownerSees = waitForDrawState(
       owner,
-      'room:state',
+      (state) => state.currentPlayerCount === 2,
+    );
+    const guestSees = waitForDrawState(
+      guest,
       (state) => state.currentPlayerCount === 2,
     );
     await joinRoom(guest, roomId, 'Grace');
 
-    const state = await roomUpdate;
-    expect(state.currentPlayerCount).toBe(2);
-    expect(
-      Object.values(state.playerList).map((player) => player.username),
-    ).toEqual(expect.arrayContaining(['Ada', 'Grace']));
+    for (const state of await Promise.all([ownerSees, guestSees])) {
+      expect(
+        Object.values(state.playerList).map((player) => player.username),
+      ).toEqual(expect.arrayContaining(['Ada', 'Grace']));
+    }
+  });
+
+  it('announces an arrival in the chat', async () => {
+    const owner = await harness.connect();
+    const roomId = await createRoom(owner, { username: 'Ada' });
+
+    const guest = await harness.connect();
+    const announced = waitForChat(owner, (message) =>
+      message.text.includes('Grace'),
+    );
+    await joinRoom(guest, roomId, 'Grace');
+
+    expect(await announced).toMatchObject({
+      kind: 'system',
+      text: 'Grace has joined the room.',
+    });
   });
 
   it('refuses the wrong password and admits the right one', async () => {
@@ -51,9 +69,14 @@ describe('joining and leaving a room', () => {
     const roomId = await createRoom(owner, { password: 'open-sesame' });
 
     const guest = await harness.connect();
-    const rejection = waitFor<{ message: string }>(guest, 'room:join:denied');
-    guest.emit('room:join', roomId, 'Guest', 'wrong');
-    expect((await rejection).message).toMatch(/password/i);
+    const refused = await request(guest, 'room:join', roomId, 'Guest', 'wrong');
+    expect(refused).toEqual({
+      ok: false,
+      error: { type: 'incorrectPassword', message: expect.any(String) },
+    });
+    expect(harness.server.rooms[roomId]?.playerList[guest.playerId]).toBe(
+      undefined,
+    );
 
     await expect(
       joinRoom(guest, roomId, 'Guest', 'open-sesame'),
@@ -62,16 +85,20 @@ describe('joining and leaving a room', () => {
 
   it('reports a room that does not exist rather than inventing one', async () => {
     const client = await harness.connect();
-    const error = waitFor<{ errorType: string }>(client, 'room:error');
-    client.emit('room:join', randomUUID(), 'Nobody', '');
+    const answer = await request(
+      client,
+      'room:join',
+      randomUUID(),
+      'Nobody',
+      '',
+    );
 
-    expect((await error).errorType).toBe('roomNotExist');
+    expect(answer.error?.type).toBe('roomNotExist');
   });
 
   it('marks a room full at capacity and turns further joins away', async () => {
     const owner = await harness.connect();
     const roomId = await createRoom(owner, { maxPlayers: 2 });
-    await joinRoom(owner, roomId, 'One');
 
     const second = await harness.connect();
     await joinRoom(second, roomId, 'Two');
@@ -79,112 +106,162 @@ describe('joining and leaving a room', () => {
     expect((await lobbyView(owner, roomId))?.status).toBe('Full');
 
     const third = await harness.connect();
-    const error = waitFor<{ errorType: string }>(third, 'room:error');
-    third.emit('room:join', roomId, 'Three', '');
+    const answer = await request(third, 'room:join', roomId, 'Three', '');
 
-    expect((await error).errorType).toBe('roomNotOpen');
+    expect(answer.error?.type).toBe('roomNotOpen');
   });
 
   /*
-   * The join broadcast races the joining client's own navigation — it cannot
-   * have subscribed yet. This used to be papered over with a 250ms delay on
-   * the server; the room page now says when it is ready instead.
+   * A seated player is returning to their seat, so a full room is no reason
+   * to turn them away, and the seat they hold keeps the name it was taken
+   * with.
    */
-  it('replays the room state on request, for a client that has just mounted', async () => {
+  it('lets a seated player join again, without a second seat', async () => {
     const owner = await harness.connect();
-    const roomId = await createRoom(owner, { ownerUsername: 'Ada' });
-    await joinRoom(owner, roomId, 'Ada');
+    const roomId = await createRoom(owner, {
+      maxPlayers: 2,
+      username: 'Ada',
+      password: 'locked',
+    });
+    const second = await harness.connect();
+    await joinRoom(second, roomId, 'Two', 'locked');
 
-    // A client that subscribes only *after* joining still gets the state.
+    // Full, locked, and asked again without the password.
+    await expect(joinRoom(owner, roomId, 'Renamed')).resolves.toBeUndefined();
+
+    const room = harness.server.rooms[roomId];
+    expect(room?.currentPlayerCount).toBe(2);
+    expect(room?.playerList[owner.playerId]?.username).toBe('Ada');
+  });
+
+  it('refuses a join with a malformed payload', async () => {
+    const client = await harness.connect();
+    const answer = await request(client, 'room:join', 'not-a-room', '', '');
+
+    expect(answer.error?.type).toBe('invalidRequest');
+  });
+
+  /*
+   * The page asks once its listeners are live, rather than relying on a
+   * broadcast that raced its own navigation.
+   */
+  it('replays the room, its chat and its drawing on request', async () => {
+    const owner = await harness.connect();
+    const roomId = await createRoom(owner, { username: 'Ada' });
+
     const latecomer = await harness.connect();
-    latecomer.emit('room:join', roomId, 'Late', '');
-    await waitFor(latecomer, 'room:joined');
+    await joinRoom(latecomer, roomId, 'Late');
     await settle();
 
-    const state = waitFor<DrawAndGuessRoomState>(latecomer, 'room:state');
-    latecomer.emit('room:sync', roomId);
+    const canvas = collect(latecomer, 'dg:canvas:sync');
+    const { state, messages } = await syncRoom(latecomer, roomId);
+    await settle();
 
-    expect((await state).currentPlayerCount).toBe(2);
+    expect(state.currentPlayerCount).toBe(2);
+    expect(state.roomId).toBe(roomId);
+    expect(messages.map((message) => message.text)).toEqual([
+      'Ada created the room.',
+      'Late has joined the room.',
+    ]);
+    expect(canvas).toEqual([[roomId, []]]);
   });
 
   /*
-   * A client that arrives at a room without a seat — a pasted link, say — is
-   * told so rather than handed the room's state. The payload holds no secrets,
-   * but a locked room's player list is not something a stranger should be able
-   * to pull with a room id off the lobby broadcast, and every id in that
-   * broadcast is public.
+   * A client that arrives at a room without a seat (a pasted link, say) is
+   * told so rather than handed the room's state. A locked room's player list
+   * is not something a stranger should be able to pull with a room id off the
+   * lobby broadcast, and every id in that broadcast is public.
    */
-  it('refuses the room state to a client that holds no seat', async () => {
+  it('refuses the room to a client that holds no seat', async () => {
     const holder = await harness.connect();
-    const roomId = await createRoom(holder, { ownerUsername: 'Holder' });
-    await joinRoom(holder, roomId, 'Holder');
+    const roomId = await createRoom(holder, { username: 'Holder' });
 
     const arriving = await harness.connect();
     const leaked = collect(arriving, 'room:state');
-    const error = waitFor<{ errorType: string }>(arriving, 'room:error');
-    arriving.emit('room:sync', roomId);
+    const history = collect(arriving, 'chat:history');
+    const answer = await request(arriving, 'room:sync', roomId);
 
-    expect((await error).errorType).toBe('notRoomMember');
+    expect(answer).toEqual({
+      ok: false,
+      error: { type: 'notRoomMember', message: expect.any(String) },
+    });
     await settle();
     expect(leaked).toEqual([]);
+    expect(history).toEqual([]);
   });
 
   /*
    * ...and that refusal is the room page's cue to ask for a seat, which is how
    * a pasted link still gets you into an open room.
    */
-  it('lets a refused client join, and then see the state', async () => {
+  it('lets a refused client join, and then see the room', async () => {
     const holder = await harness.connect();
-    const roomId = await createRoom(holder, { ownerUsername: 'Holder' });
-    await joinRoom(holder, roomId, 'Holder');
+    const roomId = await createRoom(holder, { username: 'Holder' });
 
     const arriving = await harness.connect();
+    expect((await request(arriving, 'room:sync', roomId)).ok).toBe(false);
     await joinRoom(arriving, roomId, 'Arrived');
-    await settle();
 
-    const snapshot = waitFor<DrawAndGuessRoomState>(arriving, 'room:state');
-    arriving.emit('room:sync', roomId);
-
-    const state = await snapshot;
+    const { state } = await syncRoom(arriving, roomId);
     expect(state.playerList[arriving.playerId]?.username).toBe('Arrived');
     expect(state.currentPlayerCount).toBe(2);
   });
 
-  it('reports a state request for a room that has gone away', async () => {
+  it('reports a sync for a room that has gone away', async () => {
     const client = await harness.connect();
-    const error = waitFor<{ errorType: string }>(client, 'room:error');
-    client.emit('room:sync', randomUUID());
+    const answer = await request(client, 'room:sync', randomUUID());
 
-    expect((await error).errorType).toBe('roomNotExist');
+    expect(answer.error?.type).toBe('roomNotExist');
   });
 
   it('hands ownership to the next player when the owner leaves', async () => {
     const owner = await harness.connect();
-    const roomId = await createRoom(owner, { ownerUsername: 'Ada' });
-    await joinRoom(owner, roomId, 'Ada');
+    const roomId = await createRoom(owner, { username: 'Ada' });
 
     const guest = await harness.connect();
     await joinRoom(guest, roomId, 'Grace');
 
-    // The snapshot that no longer seats Ada, rather than whichever one arrives
-    // next: joining and leaving both broadcast `room:state`, so Grace's own
-    // join snapshot — in which Ada is still the owner — can still be in flight.
-    const departure = waitUntil<DrawAndGuessRoomState>(
+    const departure = waitForDrawState(
       guest,
-      'room:state',
       (state) => !state.playerList[owner.playerId],
     );
-    owner.emit('room:leave', roomId, 'Ada');
+    const announced = waitForChat(guest, (message) =>
+      message.text.includes('owner'),
+    );
+    owner.emit('room:leave', roomId);
 
-    expect((await departure).owner.username).toBe('Grace');
+    expect((await departure).owner).toEqual({
+      username: 'Grace',
+      playerId: guest.playerId,
+    });
+    expect(await announced).toMatchObject({
+      kind: 'alert',
+      text: 'Previous owner Ada has left the room. Grace is now the owner.',
+    });
+  });
+
+  it('announces a departure under the name on the seat', async () => {
+    const owner = await harness.connect();
+    const roomId = await createRoom(owner, { username: 'Ada' });
+    const guest = await harness.connect();
+    await joinRoom(guest, roomId, 'Grace');
+
+    const announced = waitForChat(owner, (message) =>
+      message.text.includes('left'),
+    );
+    guest.emit('room:leave', roomId);
+
+    expect(await announced).toMatchObject({
+      kind: 'alert',
+      text: 'Grace has left the room.',
+    });
   });
 
   it('deletes a room once the last player leaves', async () => {
     const owner = await harness.connect();
     const roomId = await createRoom(owner);
-    await joinRoom(owner, roomId, 'Only');
 
-    owner.emit('room:leave', roomId, 'Only');
+    owner.emit('room:leave', roomId);
     await settle();
 
     expect(harness.server.rooms[roomId]).toBeUndefined();
@@ -193,7 +270,6 @@ describe('joining and leaving a room', () => {
   it('holds the room briefly when its last player drops, then cleans up', async () => {
     const owner = await harness.connect();
     const roomId = await createRoom(owner);
-    await joinRoom(owner, roomId, 'Only');
 
     owner.close();
     await settle(200);
@@ -213,46 +289,40 @@ describe('joining and leaving a room', () => {
   /*
    * Leaving a room you were never in used to run the entire departure anyway:
    * the player count was recomputed, ownership could be handed on, and the
-   * room was told somebody had left. It then threw on `socketInRooms[id]`
-   * being undefined — after the damage was already done.
+   * room was told somebody had left.
    */
   describe('a leave from a socket that is not in the room', () => {
-    it('changes nothing and reports no error', async () => {
+    it('changes nothing and reports nothing', async () => {
       const owner = await harness.connect();
-      const roomId = await createRoom(owner, { ownerUsername: 'Ada' });
-      await joinRoom(owner, roomId, 'Ada');
+      const roomId = await createRoom(owner, { username: 'Ada' });
 
       const guest = await harness.connect();
       await joinRoom(guest, roomId, 'Grace');
+      await settle();
 
-      const errors = collect(owner, 'room:error');
-      const messages = collect<[string, string]>(owner, 'chat:message');
+      const messages = collectChat(owner);
+      const states = collect(owner, 'room:state');
 
       const stranger = await harness.connect();
-      const strangerErrors = collect(stranger, 'room:error');
-      stranger.emit('room:leave', roomId, 'Stranger');
+      stranger.emit('room:leave', roomId);
       await settle();
 
       expect(harness.server.rooms[roomId]?.currentPlayerCount).toBe(2);
       expect(harness.server.rooms[roomId]?.owner.username).toBe('Ada');
-      expect(messages.filter(([, text]) => text.includes('has left'))).toEqual(
-        [],
-      );
-      expect(errors).toEqual([]);
-      expect(strangerErrors).toEqual([]);
+      expect(messages).toEqual([]);
+      expect(states).toEqual([]);
     });
 
     it('removes exactly one player when the same client leaves twice', async () => {
       const owner = await harness.connect();
       const roomId = await createRoom(owner);
-      await joinRoom(owner, roomId, 'Ada');
 
       const guest = await harness.connect();
       await joinRoom(guest, roomId, 'Grace');
 
-      guest.emit('room:leave', roomId, 'Grace');
+      guest.emit('room:leave', roomId);
       await settle();
-      guest.emit('room:leave', roomId, 'Grace');
+      guest.emit('room:leave', roomId);
       await settle();
 
       expect(harness.server.rooms[roomId]?.currentPlayerCount).toBe(1);

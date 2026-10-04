@@ -18,7 +18,7 @@ import {
  *
  * These used to be `getDrawAndGuessLobbyRoomInfo` and
  * `getDrawAndGuessRoomState` in `libs/utils.ts`. They are the same functions
- * with the same job — the extraction moved them next to the game whose wire
+ * with the same job: the extraction moved them next to the game whose wire
  * format they define, and made them two members of the interface the room layer
  * calls rather than two exports anyone could reach for.
  */
@@ -40,6 +40,7 @@ const makeRoom = (
   },
   isGameStarted: false,
   phaseEndsAt: 0,
+  chat: { nextId: 1, messages: [] },
   ...overrides,
   game: { ...createState({ rounds: 2 }), ...gameOverrides },
 });
@@ -71,74 +72,179 @@ describe('toLobbyInfo', () => {
 });
 
 describe('toRoomState', () => {
-  it('omits the word and the choices while the word is in play', () => {
-    for (const phase of ['isWordSelectingPhase', 'isDrawingPhase'] as const) {
-      const state = toRoomState(
-        makeRoom(
-          {},
-          {
-            [phase]: true,
-            currentWord: 'giraffe',
-            wordChoices: ['giraffe', 'kettle', 'anchor'],
-          },
-        ),
-      );
+  const DRAWER = 'player-drawer';
+  const GUESSER = 'player-guesser';
 
-      // Omitted rather than blanked: the client merges this over its own
-      // state, so a blank would wipe the drawer's copy of the word.
-      expect(state).not.toHaveProperty('currentWord');
-      expect(state).not.toHaveProperty('wordChoices');
-      expect(JSON.stringify(state)).not.toContain('giraffe');
+  const inPhase = (
+    phase: DrawAndGuessState['phase'],
+    gameOverrides: Partial<DrawAndGuessState> = {},
+  ) =>
+    makeRoom(
+      { isGameStarted: phase !== 'waiting' },
+      {
+        phase,
+        currentDrawer: DRAWER,
+        word: 'giraffe',
+        hint: phase === 'drawing' || phase === 'reveal' ? '_______' : '',
+        wordChoices: ['giraffe', 'kettle', 'anchor'],
+        ...gameOverrides,
+      },
+    );
+
+  it('shows the choices to the drawer alone while the word is chosen', () => {
+    const room = inPhase('choosing', { word: '' });
+
+    expect(toRoomState(room, DRAWER).wordChoices).toEqual([
+      'giraffe',
+      'kettle',
+      'anchor',
+    ]);
+
+    const guesser = toRoomState(room, GUESSER);
+    // Omitted rather than blanked, so nothing about the choices travels.
+    expect(guesser).not.toHaveProperty('wordChoices');
+    expect(guesser).not.toHaveProperty('word');
+    expect(JSON.stringify(guesser)).not.toContain('giraffe');
+  });
+
+  it('shows the word to the drawer alone while it is drawn', () => {
+    const room = inPhase('drawing');
+
+    const drawer = toRoomState(room, DRAWER);
+    expect(drawer.word).toBe('giraffe');
+    expect(drawer).not.toHaveProperty('wordChoices');
+
+    const guesser = toRoomState(room, GUESSER);
+    expect(guesser).not.toHaveProperty('word');
+    expect(guesser).not.toHaveProperty('wordChoices');
+    expect(guesser.hint).toBe('_______');
+    expect(JSON.stringify(guesser)).not.toContain('giraffe');
+  });
+
+  it('reveals the word to everybody once the guessing is over', () => {
+    const room = inPhase('reveal');
+
+    expect(toRoomState(room, GUESSER).word).toBe('giraffe');
+    expect(toRoomState(room, DRAWER).word).toBe('giraffe');
+    expect(toRoomState(room, GUESSER)).not.toHaveProperty('wordChoices');
+  });
+
+  it('shows no word to anybody between games', () => {
+    const room = inPhase('waiting', { word: '', wordChoices: [] });
+
+    for (const viewer of [DRAWER, GUESSER]) {
+      expect(toRoomState(room, viewer)).not.toHaveProperty('word');
+      expect(toRoomState(room, viewer)).not.toHaveProperty('wordChoices');
     }
   });
 
-  it('reveals the word once the guessing is over', () => {
+  it('carries the phase and the turn it is in', () => {
     const state = toRoomState(
-      makeRoom({}, { isReviewingPhase: true, currentWord: 'giraffe' }),
+      inPhase('drawing', { currentRound: 2, turn: 5, wordAutoPicked: true }),
+      GUESSER,
     );
 
-    expect(state.currentWord).toBe('giraffe');
+    expect(state).toMatchObject({
+      phase: 'drawing',
+      currentRound: 2,
+      turn: 5,
+      currentDrawer: DRAWER,
+      wordAutoPicked: true,
+    });
   });
 
   it('never carries the room password', () => {
-    const state = toRoomState(makeRoom({ password: 'letmein' }));
+    const state = toRoomState(makeRoom({ password: 'letmein' }), GUESSER);
 
     expect(state).not.toHaveProperty('password');
     expect(state.hasPassword).toBe(true);
     expect(JSON.stringify(state)).not.toContain('letmein');
   });
 
-  it('sends the drawer queue as an array, which survives serialization', () => {
-    const state = toRoomState(
-      makeRoom({}, { drawerQueue: new Set(['a', 'b']) }),
-    );
-
-    expect(state.drawerQueue).toEqual(['a', 'b']);
-    expect(JSON.parse(JSON.stringify(state)).drawerQueue).toEqual(['a', 'b']);
-  });
-
   /*
    * This used to be a `receivedPointsThisTurn` boolean on every PlayerInfo,
    * which put a field only a drawing phase means anything to on the shape
    * every game shares. It is the game's state now, and reaches the wire as a
-   * list of player ids — through the same serialization the drawer queue takes.
+   * list of player ids.
    */
   it('reports who has already scored, as ids rather than a flag per player', () => {
     const state = toRoomState(
       makeRoom({}, { scoredThisTurn: new Set(['player-owner']) }),
+      GUESSER,
     );
 
     expect(state.scoredThisTurn).toEqual(['player-owner']);
+    expect(JSON.parse(JSON.stringify(state)).scoredThisTurn).toEqual([
+      'player-owner',
+    ]);
     expect(state.playerList['player-owner']).not.toHaveProperty(
       'receivedPointsThisTurn',
     );
   });
 
+  it('sends what each player gained this turn as an object, which survives serialization', () => {
+    const state = toRoomState(
+      makeRoom(
+        {},
+        {
+          turnPoints: new Map([
+            [DRAWER, 50],
+            [GUESSER, 120],
+          ]),
+        },
+      ),
+      GUESSER,
+    );
+
+    expect(JSON.parse(JSON.stringify(state)).turnPoints).toEqual({
+      [DRAWER]: 50,
+      [GUESSER]: 120,
+    });
+  });
+
+  it('keeps the drawer queue to itself', () => {
+    const state = toRoomState(
+      makeRoom({}, { drawerQueue: new Set(['a', 'b']) }),
+      GUESSER,
+    );
+
+    expect(state).not.toHaveProperty('drawerQueue');
+  });
+
   it('carries the live phase clock as a duration', () => {
-    const state = toRoomState(makeRoom({ phaseEndsAt: Date.now() + 10_000 }));
+    const state = toRoomState(
+      makeRoom({ phaseEndsAt: Date.now() + 10_000 }),
+      GUESSER,
+    );
 
     expect(state.phaseEndsInMs).toBeGreaterThan(9000);
     expect(state.phaseEndsInMs).toBeLessThanOrEqual(10_000);
+  });
+
+  it('carries the drawer hold as a duration, and zero when there is none', () => {
+    expect(toRoomState(makeRoom(), GUESSER).drawerHoldEndsInMs).toBe(0);
+
+    const held = toRoomState(
+      makeRoom({}, { drawerHoldEndsAt: Date.now() + 5000 }),
+      GUESSER,
+    );
+    expect(held.drawerHoldEndsInMs).toBeGreaterThan(4000);
+    expect(held.drawerHoldEndsInMs).toBeLessThanOrEqual(5000);
+  });
+
+  it('carries the last game until the next one replaces it', () => {
+    expect(toRoomState(makeRoom(), GUESSER).lastGame).toBeNull();
+
+    const lastGame = {
+      endedEarly: false,
+      rounds: 2,
+      turns: 4,
+      wordCategory: 'Animals' as const,
+      standings: [{ playerId: DRAWER, username: 'Dee', points: 300 }],
+    };
+    expect(toRoomState(makeRoom({}, { lastGame }), GUESSER).lastGame).toEqual(
+      lastGame,
+    );
   });
 });
 
