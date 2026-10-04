@@ -36,7 +36,8 @@ Decided by Ryan, and the frame for every design and implementation choice:
 
 ## Next
 
-1. Close the size differences `npm run design:compare` still flags, or note them in [design.md](design.md#on-purpose) when they are content, not layout.
+Nothing is queued on `rework`: every screen Figma draws matches it in `npm run design:compare`, apart from example content and the deviations in [design.md](design.md#on-purpose).
+The next step is Ryan's review above.
 
 ## Open decisions
 
