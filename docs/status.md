@@ -27,13 +27,16 @@ Decided by Ryan, and the frame for every design and implementation choice:
 ## Waiting on Ryan
 
 - Review `rework` in the browser, then whether to push it and open a pull request.
+- Review the Figma section "05 / Proposal · Room bar and in-room navigation".
+  It folds the header and the room heading into one room bar (M12 gains 160 px, a phone 80 px), drops the header's links inside a room, and opens How to play as a dialog over the room, so the only way out is Leave room, which asks first mid-game.
+  Once approved it goes into every room screen in Figma, then into code; until then 01-04 and the code stay as they are.
 - Whether a Minesweeper refresh should hold the round.
   A refresh drops the connection for a moment, and the room does not wait for a disconnected player, so if everyone else has already locked in, the round resolves without the refreshing player's pick.
   That contradicts the rule "A refresh loses nothing" in [minesweeper.md](games/minesweeper.md); the rules are kept as they are until you decide.
 
 ## Next
 
-Nothing is queued on `rework` but Ryan's review.
+Nothing is queued on `rework` but Ryan's reviews.
 
 ## Open decisions
 
