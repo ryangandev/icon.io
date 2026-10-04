@@ -133,6 +133,26 @@ describe('a Minesweeper room', () => {
     expect(screen.queryByRole('heading', { name: /results/ })).toBeNull();
   });
 
+  it('explains a mine’s cost, except on a phone', async () => {
+    const mine = { ...pick, hitMine: true, points: -105, risk: 0.15 };
+    const revealed = {
+      ...picking,
+      phase: 'reveal' as const,
+      lastRound: [mine],
+    };
+    const { unmount } = await renderSeated(revealed);
+    expect(
+      screen.getByText(
+        'Your cell had a 15% risk. A mine costs more the safer it looked.',
+      ),
+    ).toBeInTheDocument();
+    unmount();
+
+    onPhone();
+    await renderSeated(revealed);
+    expect(screen.getByText('Your cell had a 15% risk')).toBeInTheDocument();
+  });
+
   it('celebrates a game that ends while the room is open', async () => {
     const ended = minesweeperState({
       lastGame: {

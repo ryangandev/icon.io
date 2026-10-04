@@ -86,10 +86,11 @@ function Round({ room }: { room: Room }) {
   const seconds = useSecondsLeft(state.phaseEndsInMs, receivedAt, reconnecting);
   const canPick =
     state.phase === 'picking' && state.myPick === null && !reconnecting;
+  const phone = useMediaQuery(PHONE);
 
   return (
     <>
-      <TurnBar {...turnBar(room, seconds)} />
+      <TurnBar {...turnBar(room, seconds, phone)} />
       <Minefield
         room={room}
         showPicks={state.phase === 'reveal'}
@@ -178,7 +179,7 @@ const signed = (points: number) =>
   points > 0 ? `+${points}` : points < 0 ? `−${-points}` : '+0';
 
 /** "Ryan", "Ryan and Maya", "Ryan, Leo and Maya". */
-function turnBar(room: Room, seconds: number): TurnBarProps {
+function turnBar(room: Room, seconds: number, phone: boolean): TurnBarProps {
   const { state, playerId, reconnecting } = room;
   const category = `${state.difficulty} · ${state.width} × ${state.height}`;
   const clock = (label: string, waiting = false) =>
@@ -206,7 +207,10 @@ function turnBar(room: Room, seconds: number): TurnBarProps {
       return {
         ...base,
         main: `Mine. ${signed(mine.points)}`,
-        meta: `Your cell had a ${percent(mine.risk)} risk. A mine costs more the safer it looked.`,
+        // MO13: a phone shows the risk alone.
+        meta: phone
+          ? `Your cell had a ${percent(mine.risk)} risk`
+          : `Your cell had a ${percent(mine.risk)} risk. A mine costs more the safer it looked.`,
       };
     }
     const sharers = state.lastRound

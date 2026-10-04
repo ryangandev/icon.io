@@ -468,9 +468,9 @@ function cell(page: Page, row: number, column: number) {
   });
 }
 
-/** Whose result this round was a mine, if anybody's. */
+/** A desktop seat whose last pick found a mine, for M08. */
 async function mineHitBy(seats: Seat[]): Promise<Seat | undefined> {
-  for (const seat of seats) {
+  for (const seat of seats.filter((candidate) => !candidate.phone)) {
     if (await seat.page.getByText(/^Mine\. /).isVisible()) return seat;
   }
   return undefined;
