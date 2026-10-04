@@ -2,9 +2,14 @@ import type { AnyLobbyRoomInfo } from '../../../shared/wire-types';
 import { boardName } from '../minesweeper/boards';
 import { plural } from './plural';
 
-/** The setting a room was made with: "2 rounds", "Small 9 × 9". */
+/** The setting a room was made with: "2 rounds", "Small 9 × 9", "10 hands". */
 export function roomSetting(room: AnyLobbyRoomInfo): string {
-  return room.gameType === 'draw-and-guess'
-    ? plural(room.rounds, 'round')
-    : boardName(room.difficulty);
+  switch (room.gameType) {
+    case 'draw-and-guess':
+      return plural(room.rounds, 'round');
+    case 'minesweeper':
+      return boardName(room.difficulty);
+    case 'make-24':
+      return plural(room.hands, 'hand');
+  }
 }

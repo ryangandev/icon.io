@@ -5,6 +5,7 @@ import cors from 'cors';
 import * as url from 'node:url';
 import path from 'node:path';
 import type {
+  Make24DurationsInSeconds,
   MinesweeperDurationsInSeconds,
   PhaseDurationsInSeconds,
 } from './libs/game-clock.js';
@@ -16,6 +17,7 @@ import { chatEventsHandler } from './libs/rooms/chat-events.js';
 import type { Room } from './libs/rooms/types.js';
 import { createDrawAndGuessModule } from './socket/draw-and-guess/index.js';
 import { createMinesweeperModule } from './socket/minesweeper/index.js';
+import { createMake24Module } from './socket/make-24/index.js';
 import { clientDepartureOnDisconnectHandler } from './socket/client-disconnect-handler.js';
 import { playerSessionHandler } from './socket/player-session-handler.js';
 import {
@@ -42,6 +44,8 @@ interface CreateIconIoServerOptions {
   phaseDurations?: PhaseDurationsInSeconds;
   /** Minesweeper's round window and reveal pause. Shortened by tests. */
   minesweeperDurations?: MinesweeperDurationsInSeconds;
+  /** Make 24's hand and its results. Shortened by tests. */
+  make24Durations?: Make24DurationsInSeconds;
   /** How long a dropped player keeps their seat. Shortened by tests. */
   graceInSeconds?: number;
 }
@@ -76,6 +80,7 @@ const createIconIoServer = (
     serveClient = process.env.NODE_ENV === 'production',
     phaseDurations,
     minesweeperDurations,
+    make24Durations,
     graceInSeconds,
   } = options;
 
@@ -110,6 +115,7 @@ const createIconIoServer = (
   registry.register(
     createMinesweeperModule(registry.context, minesweeperDurations),
   );
+  registry.register(createMake24Module(registry.context, make24Durations));
 
   const membership = createRoomMembership(
     io,

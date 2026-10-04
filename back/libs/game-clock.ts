@@ -60,6 +60,19 @@ const minesweeperDurationsInSeconds: MinesweeperDurationsInSeconds = {
   reveal: readSecondsFromEnv('MINESWEEPER_REVEAL_SECONDS', 4),
 };
 
+/** Make 24's clock: one hand for everybody at once, then its results. */
+interface Make24DurationsInSeconds {
+  /** How long everybody has to solve a hand. */
+  hand: number;
+  /** How long a hand's results stay up before the next is dealt. */
+  reveal: number;
+}
+
+const make24DurationsInSeconds: Make24DurationsInSeconds = {
+  hand: readSecondsFromEnv('MAKE24_HAND_SECONDS', 60),
+  reveal: readSecondsFromEnv('MAKE24_REVEAL_SECONDS', 5),
+};
+
 /**
  * How long a disconnected player keeps their seat, their score and their place
  * in the round before the room gives up on them.
@@ -77,6 +90,11 @@ const reconnectGraceInSeconds = readSecondsFromEnv(
 export {
   phaseDurationsInSeconds,
   minesweeperDurationsInSeconds,
+  make24DurationsInSeconds,
   reconnectGraceInSeconds,
 };
-export type { PhaseDurationsInSeconds, MinesweeperDurationsInSeconds };
+export type {
+  PhaseDurationsInSeconds,
+  MinesweeperDurationsInSeconds,
+  Make24DurationsInSeconds,
+};

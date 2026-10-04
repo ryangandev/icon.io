@@ -2,10 +2,12 @@ import type { AddressInfo } from 'node:net';
 import { io as createClient, type Socket } from 'socket.io-client';
 import { createIconIoServer, type IconIoServer } from '../../app.js';
 import type {
+  Make24DurationsInSeconds,
   MinesweeperDurationsInSeconds,
   PhaseDurationsInSeconds,
 } from '../../libs/game-clock.js';
 import type { MinesweeperState } from '../../socket/minesweeper/index.js';
+import type { Make24State } from '../../socket/make-24/index.js';
 import type {
   AnyLobbyRoomInfo,
   AnyRoomState,
@@ -15,6 +17,7 @@ import type {
   DrawAndGuessState,
   GameType,
   HandshakeAuth,
+  Make24RoomState,
   MinesweeperDifficulty,
   MinesweeperRoomState,
   PlayerIdentity,
@@ -46,6 +49,15 @@ const SLOW_DRAWING: PhaseDurationsInSeconds = {
  */
 const FAST_MINESWEEPER: MinesweeperDurationsInSeconds = {
   round: 0.6,
+  reveal: 0.1,
+};
+
+/**
+ * A hand long enough to solve deliberately inside it, and results short
+ * enough that a game of five hands still finishes in a test.
+ */
+const FAST_MAKE24: Make24DurationsInSeconds = {
+  hand: 1,
   reveal: 0.1,
 };
 
@@ -89,11 +101,13 @@ const startTestServer = async (
   phaseDurations: PhaseDurationsInSeconds = FAST_PHASES,
   graceInSeconds = 0.6,
   minesweeperDurations: MinesweeperDurationsInSeconds = FAST_MINESWEEPER,
+  make24Durations: Make24DurationsInSeconds = FAST_MAKE24,
 ): Promise<TestServer> => {
   const server = createIconIoServer({
     serveClient: false,
     phaseDurations,
     minesweeperDurations,
+    make24Durations,
     graceInSeconds,
   });
 
@@ -218,6 +232,13 @@ const waitForMineState = (
   timeoutMs = 3000,
 ) => waitForState<MinesweeperRoomState>(client, predicate, timeoutMs);
 
+/** And for Make 24. */
+const waitForMake24State = (
+  client: ClientSocket,
+  predicate: (state: Make24RoomState) => boolean = () => true,
+  timeoutMs = 3000,
+) => waitForState<Make24RoomState>(client, predicate, timeoutMs);
+
 /** Resolves with the next chat message that satisfies `predicate`. */
 const waitForChat = async (
   client: ClientSocket,
@@ -336,6 +357,23 @@ const createMinesweeperRoom = async (
     maxPlayers: options.maxPlayers ?? 4,
     password: options.password ?? '',
     settings: { difficulty: options.difficulty ?? 'Small' },
+  });
+  if (!answer.ok) throw new Error(`room:create refused: ${answer.error.type}`);
+  return answer.roomId;
+};
+
+/** Creates a Make 24 room, with its creator seated, and returns its id. */
+const createMake24Room = async (
+  client: ClientSocket,
+  options: { roomName?: string; username?: string; hands?: number } = {},
+): Promise<string> => {
+  const answer = await client.timeout(3000).emitWithAck('room:create', {
+    gameType: 'make-24',
+    roomName: options.roomName ?? 'Card table',
+    username: options.username ?? 'Owner',
+    maxPlayers: 4,
+    password: '',
+    settings: { hands: options.hands ?? 5 },
   });
   if (!answer.ok) throw new Error(`room:create refused: ${answer.error.type}`);
   return answer.roomId;
@@ -461,6 +499,29 @@ const minesweeperRoom = (
 ): Room<MinesweeperState> =>
   harness.server.rooms[roomId] as Room<MinesweeperState>;
 
+/** The server's own Make 24 room, with every hand of the game in it. */
+const make24Room = (harness: TestServer, roomId: string): Room<Make24State> =>
+  harness.server.rooms[roomId] as Room<Make24State>;
+
+/** Seats Alice and Bob in a Make 24 room and deals the first hand. */
+const playToFirstHand = async (harness: TestServer, hands = 5) => {
+  const alice = await harness.connect();
+  const bob = await harness.connect();
+
+  const roomId = await createMake24Room(alice, { username: 'Alice', hands });
+  await joinRoom(bob, roomId, 'Bob');
+
+  const hand = waitForMake24State(
+    alice,
+    (state) => state.phase === 'solving' && state.hand === 1,
+    5000,
+  );
+  await startGame(alice, roomId);
+  const first = await hand;
+
+  return { roomId, alice, bob, first };
+};
+
 /** Seats two players in a Minesweeper room and opens the first round. */
 const playToFirstRound = async (harness: TestServer) => {
   const alice = await harness.connect();
@@ -484,11 +545,13 @@ export {
   FAST_PHASES,
   SLOW_DRAWING,
   FAST_MINESWEEPER,
+  FAST_MAKE24,
   startTestServer,
   waitFor,
   waitForState,
   waitForDrawState,
   waitForMineState,
+  waitForMake24State,
   waitForChat,
   collect,
   collectChat,
@@ -497,6 +560,7 @@ export {
   request,
   createRoom,
   createMinesweeperRoom,
+  createMake24Room,
   joinRoom,
   startGame,
   syncRoom,
@@ -506,5 +570,7 @@ export {
   serverRoom,
   minesweeperRoom,
   playToFirstRound,
+  make24Room,
+  playToFirstHand,
 };
 export type { TestServer, TestClient, ClientSocket };

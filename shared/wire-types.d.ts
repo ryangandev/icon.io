@@ -25,7 +25,7 @@
  * Which game a room is playing. Every room-layer payload carries it, and it is
  * the key the server's module registry is keyed by.
  */
-type GameType = 'draw-and-guess' | 'minesweeper';
+type GameType = 'draw-and-guess' | 'minesweeper' | 'make-24';
 
 type RoomStatus = 'Open' | 'Full' | 'In Progress';
 
@@ -121,7 +121,7 @@ interface RoomCreateRequest {
   /** '' for an open room. */
   password: string;
   /** The game's own half, which only its module can read. */
-  settings: DrawAndGuessSettings | MinesweeperSettings;
+  settings: DrawAndGuessSettings | MinesweeperSettings | Make24Settings;
 }
 
 interface DrawAndGuessSettings {
@@ -132,6 +132,11 @@ type MinesweeperDifficulty = 'Small' | 'Medium' | 'Large';
 
 interface MinesweeperSettings {
   difficulty: MinesweeperDifficulty;
+}
+
+interface Make24Settings {
+  /** Hands in a game: 5 or 10. */
+  hands: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -162,7 +167,13 @@ interface MinesweeperLobbyRoomInfo extends LobbyRoomInfo {
   difficulty: MinesweeperDifficulty;
 }
 
-type AnyLobbyRoomInfo = DrawAndGuessLobbyRoomInfo | MinesweeperLobbyRoomInfo;
+interface Make24LobbyRoomInfo extends LobbyRoomInfo {
+  gameType: 'make-24';
+  hands: number;
+}
+
+type AnyLobbyRoomInfo =
+  DrawAndGuessLobbyRoomInfo | MinesweeperLobbyRoomInfo | Make24LobbyRoomInfo;
 
 // ---------------------------------------------------------------------------
 // Rooms
@@ -304,7 +315,70 @@ interface MinesweeperRoomState extends RoomState {
   lastGame: MinesweeperGameSummary | null;
 }
 
-type AnyRoomState = DrawAndGuessRoomState | MinesweeperRoomState;
+/** On the wire, plain ASCII; a screen shows + − × ÷. */
+type Make24Operator = '+' | '-' | '*' | '/';
+
+/**
+ * One step towards 24: the cards at `left` and `right`, as they stand after
+ * the steps before, make a new card in the left card's place.
+ */
+interface Make24Step {
+  left: number;
+  op: Make24Operator;
+  right: number;
+}
+
+/** waiting: no game; solving: the hand is open; reveal: its results are shown. */
+type Make24Phase = 'waiting' | 'solving' | 'reveal';
+
+/** Somebody has solved the open hand: who, and for what. Never how. */
+interface Make24Solve {
+  playerId: string;
+  username: string;
+  points: number;
+  /** Whole seconds that were left on the hand's clock. */
+  secondsLeft: number;
+}
+
+/** One player's part in a finished hand. */
+interface Make24HandResult extends Make24Solve {
+  solved: boolean;
+  /** How they made 24, "(8 − 4) × (7 − 1)"; '' when they did not. */
+  expression: string;
+}
+
+interface Make24GameSummary extends GameSummary {
+  /** Hands played; fewer than the game's when it ended early. */
+  hands: number;
+}
+
+/**
+ * A Make 24 room, as one player may see it.
+ *
+ * While a hand is open, `solved` says who has made 24 and nobody's way of
+ * doing it, which would give the hand away; the viewer's own is in `mySolve`.
+ */
+interface Make24RoomState extends RoomState {
+  gameType: 'make-24';
+  hands: number;
+  phase: Make24Phase;
+  /** The hand open or being revealed, from 1; 0 between games. */
+  hand: number;
+  /** The hand's four cards, smallest first; empty between games. */
+  deal: number[];
+  /** Who has solved the open hand, first first. */
+  solved: Make24Solve[];
+  /** This player's own solve of the open hand, and nobody else's. */
+  mySolve: Make24HandResult | null;
+  /** Every player's result for the latest finished hand, best first. */
+  lastHand: Make24HandResult[];
+  /** One way to make 24 from the latest finished hand's cards; '' before one. */
+  lastSolution: string;
+  lastGame: Make24GameSummary | null;
+}
+
+type AnyRoomState =
+  DrawAndGuessRoomState | MinesweeperRoomState | Make24RoomState;
 
 // ---------------------------------------------------------------------------
 // Chat and the drawing
@@ -389,6 +463,9 @@ interface ClientToServerEvents {
   'dg:draw:clear': (roomId: string) => void;
 
   'ms:pick': (roomId: string, index: number) => void;
+
+  /** A solution to the open hand, as the steps that made it. */
+  't24:solve': (roomId: string, steps: Make24Step[]) => void;
 }
 
 interface ServerToClientEvents {
@@ -458,6 +535,15 @@ export type {
   MinesweeperPhase,
   MinesweeperGameSummary,
   MinesweeperRoomState,
+  Make24Settings,
+  Make24LobbyRoomInfo,
+  Make24Operator,
+  Make24Step,
+  Make24Phase,
+  Make24Solve,
+  Make24HandResult,
+  Make24GameSummary,
+  Make24RoomState,
   AnyRoomState,
   ChatMessageKind,
   ChatMessage,

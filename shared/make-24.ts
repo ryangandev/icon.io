@@ -16,8 +16,10 @@ export interface Fraction {
   d: number;
 }
 
+import type { Make24Operator, Make24Step } from './wire-types.js';
+
 /** On the wire, plain ASCII; on screen, see OPERATOR_SYMBOLS. */
-export type Operator = '+' | '-' | '*' | '/';
+export type Operator = Make24Operator;
 export const OPERATORS: readonly Operator[] = ['+', '-', '*', '/'];
 export const OPERATOR_SYMBOLS: Readonly<Record<Operator, string>> = {
   '+': '+',
@@ -27,11 +29,7 @@ export const OPERATOR_SYMBOLS: Readonly<Record<Operator, string>> = {
 };
 
 /** One step: the card at `left` and the card at `right` make a new card. */
-export interface Step {
-  left: number;
-  op: Operator;
-  right: number;
-}
+export type Step = Make24Step;
 
 /** How a card came to be: a dealt number, or two cards and an operator. */
 export type Expression =

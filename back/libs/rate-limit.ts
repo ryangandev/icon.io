@@ -66,6 +66,8 @@ const BUCKET_FOR_EVENT: Record<ClientToServerEvent, BucketName> = {
   'dg:select-word': 'room',
   // One pick per player per round, and the engine ignores the rest.
   'ms:pick': 'room',
+  // One solve per player per hand, and the engine ignores the rest.
+  't24:solve': 'room',
 };
 
 /**

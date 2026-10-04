@@ -82,6 +82,8 @@ Shorten them to play through a whole game quickly while developing:
 | `DRAWER_HOLD_SECONDS`        | `10`    | How long a turn waits for a dropped drawer |
 | `MINESWEEPER_ROUND_SECONDS`  | `15`    | How long everybody has to pick a cell      |
 | `MINESWEEPER_REVEAL_SECONDS` | `4`     | How long a round's outcome stays up        |
+| `MAKE24_HAND_SECONDS`        | `60`    | How long everybody has to solve a hand     |
+| `MAKE24_REVEAL_SECONDS`      | `5`     | How long a hand's results stay up          |
 | `RECONNECT_GRACE_SECONDS`    | `30`    | How long a dropped player keeps their seat |
 
 ## 🛠️ Set Up - Deployment
