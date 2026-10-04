@@ -12,10 +12,13 @@ export interface HeaderLink {
   current?: boolean;
 }
 
+/** The person at the screen, shown by their avatar. */
+export type Viewer = Pick<AvatarProps, 'initials' | 'tone' | 'label'>;
+
 export interface HeaderProps {
   links: readonly HeaderLink[];
   /** The viewer, once they have a name. */
-  viewer?: Pick<AvatarProps, 'initials' | 'tone' | 'label'>;
+  viewer?: Viewer;
   /** Opened from the viewer's avatar: who they are and what they can change. */
   viewerMenu?: HeaderMenu;
   className?: string;
@@ -52,24 +55,24 @@ export function Header({ links, viewer, viewerMenu, className }: HeaderProps) {
             </li>
           ))}
         </ul>
-        {viewer &&
-          (viewerMenu ? (
-            <ViewerMenu viewer={viewer} menu={viewerMenu} />
-          ) : (
-            <Avatar {...viewer} className={styles.viewer} />
-          ))}
+        {viewer && <ViewerAvatar viewer={viewer} menu={viewerMenu} />}
       </nav>
     </header>
   );
 }
 
-function ViewerMenu({
+/**
+ * The viewer's avatar at the end of a header or room bar: 40 px, 32 px on a
+ * phone. With a menu it is the button that opens the session menu (P13).
+ */
+export function ViewerAvatar({
   viewer,
   menu,
 }: {
-  viewer: NonNullable<HeaderProps['viewer']>;
-  menu: HeaderMenu;
+  viewer: Viewer;
+  menu?: HeaderMenu;
 }) {
+  if (!menu) return <Avatar {...viewer} className={styles.viewer} />;
   return (
     <Popover.Root>
       <Popover.Trigger

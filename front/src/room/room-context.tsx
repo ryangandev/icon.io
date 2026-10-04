@@ -26,7 +26,7 @@ export interface Room<State extends AnyRoomState = AnyRoomState> {
   startGame: () => void;
   starting: boolean;
   openInvite: () => void;
-  /** Leaves through the page's navigation, which confirms mid-game. */
+  /** The Leave room button: goes at once between games, asks mid-game. */
   leave: () => void;
 }
 

@@ -24,6 +24,7 @@ import {
   PickMarker,
   PickResult,
   PlayerRow,
+  RoomBar,
   RoomRow,
   Scoreboard,
   SelectField,
@@ -789,6 +790,34 @@ export default function Gallery() {
         </Specimen>
         <Specimen family="wordmark">
           <Wordmark />
+        </Specimen>
+      </Family>
+
+      <Family
+        name="Room bar"
+        file="room-bar"
+        note="A seated room's header and heading in one row. Its only link out is the wordmark, which the room guards with the leave dialog."
+      >
+        <Specimen family="room-bar" variant="Layout=Desktop" width={1312}>
+          <RoomBar
+            game="Minesweeper"
+            room="Maya’s room"
+            phase={{ tone: 'blue', label: 'Round 2' }}
+            onHowToPlay={noop}
+            onLeave={noop}
+            viewer={{ ...PLAYERS.sam, label: 'You are Sam' }}
+          />
+        </Specimen>
+        <Specimen family="room-bar" variant="Layout=Phone" width={350}>
+          <RoomBar
+            layout="phone"
+            game="Minesweeper"
+            room="Maya’s room"
+            phase={{ tone: 'blue', label: 'Round 4' }}
+            onHowToPlay={noop}
+            onLeave={noop}
+            viewer={{ ...PLAYERS.sam, label: 'You are Sam' }}
+          />
         </Specimen>
       </Family>
 

@@ -332,6 +332,9 @@ test('a Draw & Guess game', async ({ player }) => {
   await expect(maya.page.getByText('4 / 8')).toBeVisible();
   await shot(maya.page, 'D02');
   await shot(ryan.page, 'D03');
+  await ryan.page.getByRole('link', { name: 'Zumpo home' }).click();
+  await shot(ryan.page, 'P16');
+  await ryan.page.getByRole('button', { name: 'Stay' }).click();
   await maya.page
     .getByRole('button', { name: 'Invite friends' })
     .first()
@@ -372,6 +375,11 @@ test('a Draw & Guess game', async ({ player }) => {
       await watcher.page.getByRole('button', { name: 'Leave room' }).click();
       await shot(watcher.page, 'P11');
       await watcher.page.getByRole('button', { name: 'Stay' }).click();
+      await watcher.page.getByRole('button', { name: 'How to play' }).click();
+      await shot(watcher.page, 'P15');
+      await watcher.page
+        .getByRole('button', { name: 'Back to the game' })
+        .click();
 
       await guess(watcher, word);
       await expect(watcher.page.getByText(/^You got it! \+\d+$/)).toBeVisible();
@@ -389,9 +397,7 @@ test('a Draw & Guess game', async ({ player }) => {
       const notice = watcher.page.getByText(/Their turn is skipped/);
       await expect(notice).toBeVisible();
       await shot(watcher.page, 'D10');
-      await expect(
-        drawer.page.getByRole('heading', { name: 'A little pause.' }),
-      ).toBeVisible();
+      await expect(drawer.page.getByText(/^Reconnecting to /)).toBeVisible();
       await shot(drawer.page, 'P07');
       // The hold runs out and the turn moves on without them.
       await expect(notice).toBeHidden({

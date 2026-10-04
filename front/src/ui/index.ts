@@ -44,6 +44,7 @@ export {
   type HeaderLink,
   type HeaderMenu,
   type HeaderProps,
+  type Viewer,
 } from './components/header';
 export { Icon, type GlyphName, type IconProps } from './components/icon';
 export {
@@ -68,6 +69,7 @@ export {
   type PlayerRowProps,
   type PlayerRowState,
 } from './components/player-row';
+export { RoomBar, type RoomBarProps } from './components/room-bar';
 export {
   RoomRow,
   type RoomRowProps,

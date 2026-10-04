@@ -1,20 +1,21 @@
 import { useState, type ReactNode } from 'react';
 import {
-  Button,
   Chat,
   ChatInput,
   ChatMessage,
   MobileTabs,
   Notice,
   PlayerRow,
+  RoomBar,
   Scoreboard,
-  Tag,
   type PlayerRowProps,
   type TagTone,
 } from '../ui';
 import { gameInfo } from '../games/catalog';
 import { initialsOf, toneOf } from '../players/avatar';
+import { Page, useViewer } from '../shell/page';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
+import { RulesDialog } from './dialogs';
 import { useRoomContext } from './room-context';
 import type { Seat } from './players';
 import styles from './room-layout.module.css';
@@ -29,8 +30,6 @@ export interface PlayerLine {
 export interface RoomLayoutProps {
   /** The phase tag beside the room's name: "Waiting room", "Round 2 of 2". */
   phase: { tone: TagTone; label: string };
-  /** Under the title in the waiting room: the room's settings. */
-  subtitle?: string;
   /** A pending notice over the room, such as a drawer who dropped. */
   notice?: ReactNode;
   /** The game: turn bar and canvas or board, or a panel between games. */
@@ -47,12 +46,12 @@ export interface RoomLayoutProps {
 type View = 'board' | 'players' | 'chat';
 
 /**
- * A seated room: its heading, the game, the scoreboard and the chat; on a
- * phone, the three as tabs. While reconnecting it says so and holds still.
+ * A seated room's screen: the room bar, the game, the scoreboard and the
+ * chat; on a phone, the three as tabs. How to play opens over the room. While
+ * reconnecting it says so and holds still.
  */
 export function RoomLayout({
   phase,
-  subtitle,
   notice,
   stage,
   players,
@@ -64,6 +63,8 @@ export function RoomLayout({
   const game = gameInfo(state.gameType);
   const phone = useMediaQuery(PHONE);
   const [view, setView] = useState<View>('board');
+  const [rules, setRules] = useState(false);
+  const { viewer, viewerMenu } = useViewer();
 
   const input = {
     onSend: room.sendChat,
@@ -111,31 +112,20 @@ export function RoomLayout({
   const seconds = Math.round(reconnectGraceMs / 1000);
 
   return (
-    <>
-      <div className={styles.heading}>
-        <div className={styles.identity}>
-          <div className={styles.tags}>
-            <Tag>{state.roomName}</Tag>
-            <Tag tone={phase.tone}>{phase.label}</Tag>
-          </div>
-          <h1 className={styles.title}>
-            {reconnecting ? 'A little pause.' : game.name}
-          </h1>
-          {subtitle && !reconnecting && (
-            <p className={styles.subtitle}>{subtitle}</p>
-          )}
-        </div>
-        {!reconnecting && (
-          <Button
-            variant="secondary"
-            icon="leave"
-            iconOnly={phone}
-            onClick={room.leave}
-          >
-            Leave room
-          </Button>
-        )}
-      </div>
+    <Page
+      header={
+        <RoomBar
+          layout={phone ? 'phone' : 'desktop'}
+          game={game.name}
+          room={state.roomName}
+          phase={phase}
+          onHowToPlay={() => setRules(true)}
+          onLeave={reconnecting ? undefined : room.leave}
+          viewer={viewer}
+          viewerMenu={viewerMenu}
+        />
+      }
+    >
       {reconnecting ? (
         <Notice tone="pending">
           Reconnecting to {state.roomName}… Your seat and score are kept for{' '}
@@ -176,6 +166,7 @@ export function RoomLayout({
           </div>
         </div>
       )}
-    </>
+      <RulesDialog open={rules} onOpenChange={setRules} game={game} />
+    </Page>
   );
 }

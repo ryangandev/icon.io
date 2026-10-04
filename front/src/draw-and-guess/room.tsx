@@ -54,11 +54,6 @@ export function DrawAndGuessRoom() {
               ? { tone: 'peach', label: 'Game ended' }
               : { tone: 'blue', label: 'Waiting room' }
       }
-      subtitle={
-        between && !ended
-          ? `${plural(state.rounds, 'round')} · up to ${state.maxPlayers} players`
-          : undefined
-      }
       notice={<DrawerAway room={room} />}
       stage={inGame ? <Turn room={room} /> : <BetweenGames room={room} />}
       players={players.map((seat) => playerLine(state, seat))}

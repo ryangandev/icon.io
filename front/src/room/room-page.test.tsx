@@ -47,12 +47,14 @@ describe('a room page', () => {
     ]);
     act(() => fake.serverEmits('room:state', minesweeperState()));
 
+    const bar = screen.getByRole('banner');
     expect(
-      screen.getByRole('heading', { name: 'Minesweeper' }),
+      within(bar).getByRole('heading', { name: 'Minesweeper' }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText('Small 9 × 9 board, up to 8 players'),
-    ).toBeInTheDocument();
+    expect(within(bar).getByText('Friday table')).toBeInTheDocument();
+    expect(within(bar).getByText('Waiting room')).toBeInTheDocument();
+    // A room has no links out but the wordmark, which asks first.
+    expect(within(bar).queryByRole('link', { name: 'Games' })).toBeNull();
   });
 
   it('asks for the password of a private room', async () => {
@@ -133,12 +135,13 @@ describe('a room page', () => {
     act(() => fake.serverEmits('room:state', minesweeperState()));
 
     act(() => fake.drop());
-    expect(screen.getByText('A little pause.')).toBeInTheDocument();
     expect(screen.getByText(/kept for 30 seconds/)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Leave room' })).toBeNull();
 
     await act(async () => fake.open());
+    expect(screen.queryByText(/kept for 30 seconds/)).toBeNull();
     expect(
-      screen.getByRole('heading', { name: 'Minesweeper' }),
+      screen.getByRole('button', { name: 'Leave room' }),
     ).toBeInTheDocument();
   });
 
@@ -218,5 +221,72 @@ describe('a room page', () => {
     );
     expect(fake.sentArgs('room:leave')).toEqual([['r1']]);
     expect(router.state.location.pathname).toBe('/games/minesweeper');
+  });
+
+  it('asks before the wordmark takes a player out between games', async () => {
+    const user = userEvent.setup();
+    const fake = server();
+    const { router } = await renderApp(ROOM, { fake });
+    act(() => fake.serverEmits('room:state', minesweeperState()));
+
+    await user.click(screen.getByRole('link', { name: 'Zumpo home' }));
+    const dialog = screen.getByRole('dialog', { name: 'Leave Friday table?' });
+    expect(
+      within(dialog).getByText(
+        'Your seat goes with you. You can join again while a seat is open.',
+      ),
+    ).toBeInTheDocument();
+
+    await user.click(within(dialog).getByRole('button', { name: 'Stay' }));
+    expect(router.state.location.pathname).toBe(ROOM);
+    expect(fake.sentArgs('room:leave')).toEqual([]);
+
+    await user.click(screen.getByRole('link', { name: 'Zumpo home' }));
+    await user.click(
+      within(screen.getByRole('dialog')).getByRole('button', {
+        name: 'Leave room',
+      }),
+    );
+    expect(fake.sentArgs('room:leave')).toEqual([['r1']]);
+    expect(router.state.location.pathname).toBe('/');
+  });
+
+  it('asks before the wordmark takes a player out of a game', async () => {
+    const user = userEvent.setup();
+    const fake = server();
+    await renderApp(ROOM, { fake });
+    act(() =>
+      fake.serverEmits(
+        'room:state',
+        minesweeperState({ isGameStarted: true, phase: 'picking', round: 1 }),
+      ),
+    );
+
+    await user.click(screen.getByRole('link', { name: 'Zumpo home' }));
+    expect(
+      within(screen.getByRole('dialog')).getByText(
+        /The game carries on without you/,
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('shows how to play over the room, which stays', async () => {
+    const user = userEvent.setup();
+    const fake = server();
+    const { router } = await renderApp(ROOM, { fake });
+    act(() => fake.serverEmits('room:state', minesweeperState()));
+
+    await user.click(screen.getByRole('button', { name: 'How to play' }));
+    const dialog = screen.getByRole('dialog', {
+      name: 'How to play Minesweeper',
+    });
+    expect(within(dialog).getAllByRole('listitem').length).toBeGreaterThan(0);
+
+    await user.click(
+      within(dialog).getByRole('button', { name: 'Back to the game' }),
+    );
+    await vi.waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(router.state.location.pathname).toBe(ROOM);
+    expect(fake.sentArgs('room:leave')).toEqual([]);
   });
 });

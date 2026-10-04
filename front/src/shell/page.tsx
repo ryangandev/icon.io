@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { Button, Header } from '../ui';
+import { Button, Header, type HeaderMenu, type Viewer } from '../ui';
 import { useSession } from '../net/session';
 import { initialsOf, toneOf } from '../players/avatar';
 import { namePath } from './require-name';
@@ -13,13 +13,17 @@ const LINKS = [
 
 /**
  * Every screen's frame: the header, the page's own content, and the footer.
- * The viewer's avatar appears once they have a name, and opens the session
- * menu.
+ * A seated room brings its own room bar in place of the header.
  */
-export function Page({ children }: { children: ReactNode }) {
+export function Page({
+  header,
+  children,
+}: {
+  header?: ReactNode;
+  children: ReactNode;
+}) {
   const { pathname } = useLocation();
-  const navigate = useNavigate();
-  const { name } = useSession();
+  const { viewer, viewerMenu } = useViewer();
 
   const links = LINKS.map((link) => ({
     ...link,
@@ -28,33 +32,9 @@ export function Page({ children }: { children: ReactNode }) {
 
   return (
     <div className={styles.page}>
-      <Header
-        links={links}
-        viewer={
-          name
-            ? {
-                initials: initialsOf(name),
-                tone: toneOf(name),
-                label: `${name}: your name`,
-              }
-            : undefined
-        }
-        viewerMenu={{
-          title: name,
-          description:
-            'Your name is saved for this browser session. Changing it takes you back to the start.',
-          action: (
-            <Button
-              variant="secondary"
-              icon="edit"
-              className={styles.menuAction}
-              onClick={() => navigate(namePath('/games'))}
-            >
-              Change name
-            </Button>
-          ),
-        }}
-      />
+      {header ?? (
+        <Header links={links} viewer={viewer} viewerMenu={viewerMenu} />
+      )}
       <main className={styles.main}>{children}</main>
       <footer className={styles.footer}>
         <span className={styles.wide}>Good company. One more round.</span>
@@ -63,4 +43,37 @@ export function Page({ children }: { children: ReactNode }) {
       </footer>
     </div>
   );
+}
+
+/**
+ * The viewer's avatar, once they have a name, and the session menu it opens:
+ * who they are and the way to change it.
+ */
+export function useViewer(): { viewer?: Viewer; viewerMenu: HeaderMenu } {
+  const navigate = useNavigate();
+  const { name } = useSession();
+  return {
+    viewer: name
+      ? {
+          initials: initialsOf(name),
+          tone: toneOf(name),
+          label: `${name}: your name`,
+        }
+      : undefined,
+    viewerMenu: {
+      title: name,
+      description:
+        'Your name is saved for this browser session. Changing it takes you back to the start.',
+      action: (
+        <Button
+          variant="secondary"
+          icon="edit"
+          className={styles.menuAction}
+          onClick={() => navigate(namePath('/games'))}
+        >
+          Change name
+        </Button>
+      ),
+    },
+  };
 }

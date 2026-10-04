@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Navigate, useBlocker, useNavigate } from 'react-router';
+import { Navigate, useBlocker, useNavigate, type Location } from 'react-router';
 import type { GameType } from '../../../shared/wire-types';
 import { Button, ButtonLink, Card, TextField } from '../ui';
 import { gameInfo, lobbyPath, roomPath } from '../games/catalog';
@@ -220,10 +220,17 @@ function PasswordPage({
   );
 }
 
+/** Marks a navigation as the room's own Leave room button. */
+const LEAVE_ROOM = 'leave-room';
+
+const isLeaveRoom = (location: Location | undefined) =>
+  (location?.state as { via?: string } | null)?.via === LEAVE_ROOM;
+
 /**
- * In the room. Any way out of the page (the Leave button, a header link, the
- * browser's back button) passes through here: mid-game it asks first, and
- * either way it gives the seat up before the page goes.
+ * In the room. Any way out of the page passes through here and gives the seat
+ * up before the page goes. Leave room between games goes at once; anything
+ * else asks first: Leave room mid-game (P11), and the wordmark, the browser's
+ * back button or Change name at any time (P11, P16).
  */
 function SeatedRoom({
   snapshot,
@@ -256,16 +263,17 @@ function SeatedRoom({
       currentLocation.pathname !== nextLocation.pathname,
   );
   const blocked = blocker.state === 'blocked';
-  const confirming = blocked && state.isGameStarted;
+  // Only Leave room between games is sure to mean it; anything else may be a
+  // slip, so it asks.
+  const sure = blocked && !state.isGameStarted && isLeaveRoom(blocker.location);
   const { leave } = connection;
 
-  // Between games nothing is at stake: leave without asking.
   useEffect(() => {
-    if (blocked && !state.isGameStarted) {
+    if (sure) {
       leave();
       blocker.proceed?.();
     }
-  }, [blocked, state.isGameStarted, leave, blocker]);
+  }, [sure, leave, blocker]);
 
   const startGame = useCallback(async () => {
     setStarting(true);
@@ -297,7 +305,10 @@ function SeatedRoom({
             socket,
             sendChat: (text) => socket.emit('chat:send', state.roomId, text),
             openInvite: () => setInviting(true),
-            leave: () => navigate(lobbyPath(state.gameType)),
+            leave: () =>
+              navigate(lobbyPath(state.gameType), {
+                state: { via: LEAVE_ROOM },
+              }),
             startGame,
             starting,
           }
@@ -323,13 +334,11 @@ function SeatedRoom({
 
   return (
     <RoomContext.Provider value={room}>
-      <Page>
-        {state.gameType === 'draw-and-guess' ? (
-          <DrawAndGuessRoom />
-        ) : (
-          <MinesweeperRoom />
-        )}
-      </Page>
+      {state.gameType === 'draw-and-guess' ? (
+        <DrawAndGuessRoom />
+      ) : (
+        <MinesweeperRoom />
+      )}
       {celebrations > 0 && <Confetti key={celebrations} />}
       <InviteDialog
         open={inviting}
@@ -338,8 +347,9 @@ function SeatedRoom({
         link={`${window.location.origin}${roomPath(state.gameType, state.roomId)}`}
       />
       <LeaveDialog
-        open={confirming}
+        open={blocked && !sure}
         roomName={state.roomName}
+        inGame={state.isGameStarted}
         points={room.me.points}
         onStay={() => blocker.reset?.()}
         onLeave={() => {

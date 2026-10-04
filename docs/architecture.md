@@ -201,7 +201,8 @@ The room URL carries the game so that a page which cannot reach the room (a pass
 - Requests use `emitWithAck` with a 10 second timeout, and a request that times out is treated as a failure the page can show.
 
 A room page renders the latest `room:state` and nothing else: the client keeps no game state, advances no phase, and counts each clock down from the snapshot that carried it.
-Leaving is routed through the navigation blocker, whatever started it (the Leave button, a header link, the browser's back button): mid-game it asks first, and either way it sends `room:leave` before the page goes.
+Leaving is routed through the navigation blocker, whatever started it (the Leave room button, the wordmark, Change name, the browser's back button), and it sends `room:leave` before the page goes.
+Only Leave room between games goes at once; it marks its navigation with `state.via`, and anything else asks first, mid-game or not ([design](design.md#the-room-bar)).
 Leaving is never done in an effect's cleanup, where React's development double-mount would give the seat up on arrival.
 
 In production the client connects to the origin that served the page and ignores `VITE_SOCKET_URL` ([`socket.ts`](../front/src/net/socket.ts)).

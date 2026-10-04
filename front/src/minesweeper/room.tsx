@@ -24,8 +24,6 @@ export function MinesweeperRoom() {
   const players = rankedPlayers(state);
   const inGame = state.isGameStarted;
   const ended = !inGame ? state.lastGame : null;
-  const { width, height } = BOARDS[state.difficulty];
-
   return (
     <RoomLayout
       phase={
@@ -36,11 +34,6 @@ export function MinesweeperRoom() {
             : ended && players.length < 2
               ? { tone: 'peach', label: 'Game ended' }
               : { tone: 'blue', label: 'Waiting room' }
-      }
-      subtitle={
-        !inGame && !ended
-          ? `${state.difficulty} ${width} × ${height} board, up to ${state.maxPlayers} players`
-          : undefined
       }
       stage={inGame ? <Round room={room} /> : <BetweenGames room={room} />}
       players={players.map((seat) => playerLine(state, seat))}

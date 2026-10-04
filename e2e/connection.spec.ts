@@ -20,14 +20,13 @@ test('a dropped connection comes back to the room', async ({ player }) => {
   await joinRoom(leo, await createRoom(maya, 'draw-and-guess'));
 
   const restore = await dropConnection(leo);
-  await expect(
-    leo.getByRole('heading', { name: 'A little pause.' }),
-  ).toBeVisible();
+  await expect(leo.getByText(/^Reconnecting to /)).toBeVisible();
+  await expect(leo.getByRole('button', { name: 'Leave room' })).toBeHidden();
   await expect(
     maya.getByRole('region', { name: 'Players' }).getByText('Away'),
   ).toBeVisible();
   restore();
-  await expect(leo.getByRole('heading', { name: 'Draw & Guess' })).toBeVisible({
+  await expect(leo.getByRole('button', { name: 'Leave room' })).toBeVisible({
     timeout: 20_000,
   });
 

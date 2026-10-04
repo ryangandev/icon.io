@@ -1,17 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button, Dialog, DialogClose, TextField } from '../ui';
+import type { GameInfo } from '../games/catalog';
 import styles from './dialogs.module.css';
 
-/** P11: leaving mid-game costs the seat and the score, so it asks first. */
+/**
+ * P11, P16: leaving asks first. Mid-game it costs the seat and the score
+ * (P11); between games only the seat, for a way out other than Leave room
+ * (P16).
+ */
 export function LeaveDialog({
   open,
   roomName,
+  inGame,
   points,
   onStay,
   onLeave,
 }: {
   open: boolean;
   roomName: string;
+  inGame: boolean;
   points: number;
   onStay: () => void;
   onLeave: () => void;
@@ -24,7 +31,11 @@ export function LeaveDialog({
         if (!next) onStay();
       }}
       title={`Leave ${roomName}?`}
-      description={`The game carries on without you, and your seat and your ${points} points go with you. You can join again while a seat is open.`}
+      description={
+        inGame
+          ? `The game carries on without you, and your seat and your ${points} points go with you. You can join again while a seat is open.`
+          : 'Your seat goes with you. You can join again while a seat is open.'
+      }
       initialFocus={stay}
       actions={
         <>
@@ -37,6 +48,33 @@ export function LeaveDialog({
         </>
       }
     />
+  );
+}
+
+/** P15: the game's rules over the room, which carries on behind them. */
+export function RulesDialog({
+  open,
+  onOpenChange,
+  game,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  game: GameInfo;
+}) {
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={`How to play ${game.name}`}
+      description={game.lobbySummary}
+      actions={<DialogClose render={<Button>Back to the game</Button>} />}
+    >
+      <ul className={styles.facts}>
+        {game.lobbyFacts.map((fact) => (
+          <li key={fact}>{fact}</li>
+        ))}
+      </ul>
+    </Dialog>
   );
 }
 
