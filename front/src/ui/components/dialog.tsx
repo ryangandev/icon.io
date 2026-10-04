@@ -13,8 +13,9 @@ export interface DialogProps {
   /** Buttons, the confirming one first. Wrap a dismissing one in DialogClose. */
   actions: ReactNode;
   /**
-   * What takes focus on opening; by default the first button. A destructive
-   * confirmation points this at its safe choice, so Enter never destroys.
+   * What takes focus on opening; by default the first thing that can, a
+   * field before a button. A destructive confirmation points this at its safe
+   * choice, so Enter never destroys.
    */
   initialFocus?: BaseDialog.Popup.Props['initialFocus'];
 }

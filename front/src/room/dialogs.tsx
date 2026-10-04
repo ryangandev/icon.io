@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button, Dialog, DialogClose, TextField } from '../ui';
+import styles from './dialogs.module.css';
 
 /** P11: leaving mid-game costs the seat and the score, so it asks first. */
 export function LeaveDialog({
@@ -52,6 +53,9 @@ export function InviteDialog({
   link: string;
 }) {
   const [copied, setCopied] = useState(false);
+  // Opening on Copy keeps the link whole on screen, rather than selected and
+  // scrolled to its end, and makes Enter copy it.
+  const copyButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!copied) return;
@@ -74,9 +78,14 @@ export function InviteDialog({
       onOpenChange={onOpenChange}
       title="Invite friends"
       description={`Anyone with this link can join ${roomName} while a seat is open.`}
+      initialFocus={copyButton}
       actions={
         <>
-          <Button icon={copied ? 'check' : 'copy'} onClick={copy}>
+          <Button
+            ref={copyButton}
+            icon={copied ? 'check' : 'copy'}
+            onClick={copy}
+          >
             {copied ? 'Copied' : 'Copy'}
           </Button>
           <DialogClose render={<Button variant="secondary">Done</Button>} />
@@ -87,6 +96,8 @@ export function InviteDialog({
         label="Room link"
         value={link}
         readOnly
+        // Figma wraps the link over two lines; a phone needs three.
+        render={<textarea rows={2} className={styles.link} />}
         onFocus={(event) => event.currentTarget.select()}
       />
     </Dialog>

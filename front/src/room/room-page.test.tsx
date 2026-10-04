@@ -1,6 +1,6 @@
 import { act, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { Result } from '../../../shared/wire-types';
 import { FakeSocket } from '../tests/fake-socket';
 import { minesweeperState } from '../tests/fixtures';
@@ -140,6 +140,29 @@ describe('a room page', () => {
       screen.getByText('Let’s find you a fresh start.'),
     ).toBeInTheDocument();
     expect(fake.sentArgs('room:leave')).toEqual([]);
+  });
+
+  it('invites with the whole link, ready to copy', async () => {
+    const user = userEvent.setup();
+    const fake = server();
+    await renderApp(ROOM, { fake });
+    act(() => fake.serverEmits('room:state', minesweeperState()));
+
+    await user.click(
+      screen.getAllByRole('button', { name: 'Invite friends' })[0],
+    );
+    const dialog = await screen.findByRole('dialog', {
+      name: 'Invite friends',
+    });
+
+    expect(
+      within(dialog).getByRole('textbox', { name: 'Room link' }),
+    ).toHaveValue(`${window.location.origin}${ROOM}`);
+    await vi.waitFor(() =>
+      expect(
+        within(dialog).getByRole('button', { name: 'Copy' }),
+      ).toHaveFocus(),
+    );
   });
 
   it('leaves at once between games', async () => {
