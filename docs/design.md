@@ -86,6 +86,8 @@ Code differs from Figma on purpose in a few places:
 - Hover and focus never change a control's size; Figma's hover variants are wider only because strokes count in its auto layout.
 - The chat hugs its messages and scrolls past 360 px of them; Figma's empty chats (D01, M01) keep the 354 px of the component's sample messages, which code does not reserve.
 - Figma rounds auto-width text boxes up to whole pixels, so a hugging component can be up to a pixel narrower in code.
+- The drawer's word-choice clock is Running, as the Countdown's own rule says of a phase you act in; D04 and MO07 keep the Status turn bar's default Waiting tone.
+- The header marks the page you are on; Figma draws Games as current on every screen.
 
 ## Editing the Figma file
 
