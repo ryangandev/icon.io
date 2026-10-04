@@ -42,6 +42,21 @@
         "componentId": "4:39",
         "overrides": [
           {
+            "path": "Navigation / Games",
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "40:22071",
+                    "toName": "P04 / Games hub"
+                  }
+                ]
+              }
+            ]
+          },
+          {
             "path": "Navigation / You",
             "componentProperties": {
               "Initials": "MA",
@@ -368,7 +383,7 @@
                 "do": [
                   {
                     "nav": "navigate",
-                    "to": "9:545",
+                    "to": "40:22071",
                     "toName": "P04 / Games hub"
                   }
                 ]
@@ -383,7 +398,7 @@
             "do": [
               {
                 "nav": "navigate",
-                "to": "9:545",
+                "to": "40:22071",
                 "toName": "P04 / Games hub"
               }
             ]

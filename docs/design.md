@@ -15,15 +15,17 @@ They are not copied here, so there is one place to change them.
 
 [Zumpo · Paper Pop flows](https://www.figma.com/design/pd5Hgp7zbT2cMqQNan35uY?node-id=9-14702), file key `pd5Hgp7zbT2cMqQNan35uY`, one page.
 
-| Section                              | Id        | Contents                                              |
-| ------------------------------------ | --------- | ----------------------------------------------------- |
-| 00 / Review guide & flow map         | `9:14700` | Review order, the real rules, which UX is new         |
-| 01 / Platform & shared flows         | `9:431`   | P01-P14, desktop                                      |
-| 02 / Draw & Guess / complete flow    | `9:866`   | DL01-DL11 lobby, D01-D15 room, desktop                |
-| 03 / Minesweeper / complete flow     | `9:2526`  | ML01-ML10 lobby, M01-M16 room, desktop                |
-| 04 / Mobile / 390px flow adaptations | `9:10060` | MO01-MO16, the main flows at 390 px                   |
-| Shared pieces                        | `9:198`   | Component families, all named `Zumpo/…`               |
-| Archive                              | `9:197`   | Club Circuit and Pocket Studio, with their components |
+| Section                              | Id         | Contents                                              |
+| ------------------------------------ | ---------- | ----------------------------------------------------- |
+| 00 / Review guide & flow map         | `9:14700`  | Review order, the real rules, which UX is new         |
+| 01 / Platform & shared flows         | `9:431`    | P01-P14, desktop                                      |
+| 02 / Draw & Guess / complete flow    | `9:866`    | DL01-DL11 lobby, D01-D15 room, desktop                |
+| 03 / Minesweeper / complete flow     | `9:2526`   | ML01-ML10 lobby, M01-M16 room, MS01-MS05 solo         |
+| 04 / Mobile / 390px flow adaptations | `9:10060`  | MO01-MO16, the main flows at 390 px                   |
+| 05 / Make 24 / complete flow         | `40:60741` | T01-T05 solo, T06-T10 room, T11-T12 phone             |
+| 06 / Pairs / complete flow           | `40:60743` | PR01-PR04 solo, PR05-PR08 room, PR09-PR10 phone       |
+| Shared pieces                        | `9:198`    | Component families, all named `Zumpo/…`               |
+| Archive                              | `9:197`    | Club Circuit and Pocket Studio, with their components |
 
 Screens are 1440 px wide on desktop and 390 px on mobile, and each is named `<code> / <title>`.
 Review notes sit as loose text above each screen, outside the product UI.
@@ -33,10 +35,12 @@ Three early Paper Pop concepts (`3:53`, `3:54`, `3:55`) sit above the flows for 
 
 - Each screen illustrates one state; scores and boards are examples, not one continuous match.
 - The game rules in [games/](games/) are the contract.
-  A screen that contradicts them is a design bug, not a rule change; for example, Minesweeper has simultaneous irreversible picks, no flags and no separate lock button.
+  A screen that contradicts them is a design bug, not a rule change; for example, Minesweeper rooms have simultaneous irreversible picks, no flags and no separate lock button; flags exist only on your own.
 - The shared canvas keeps the 798 × 598 bitmap's ratio; the Large Minesweeper board on mobile pans horizontally.
 - Some screens are UX the old app never had: the final results panel, the leave confirmation, the invite sheet, mobile tabs and the rules dialog; Ryan approved them with the rest of the file.
 - Mobile covers the main flows, not a mobile version of every desktop state.
+  Make 24 and Pairs keep their phone screens in their own sections, and Minesweeper solo's (MS05) in 03.
+- Solo screens show a visitor with no name where it matters (MS01-MS05: no avatar); a visitor who has a name sees it as usual (T01-T05, PR01-PR04).
 - Prototype links are partial; this is a design, not a clickable spec of every control.
 
 Decisions from the first review round ([report](../design/reviews/2026-10-03-round-1.md)):
@@ -72,7 +76,7 @@ Every room screen uses it (P07, P11, P12, P15, P16, D01-D15, M01-M16, MO07-MO16)
 
 ## Figma export
 
-The Figma MCP and REST API allowances on the Starter plan are too low to read 84 screens, so a local, read-only plugin in [tools/figma-export/](../tools/figma-export/README.md) snapshots the file instead.
+The Figma MCP and REST API allowances on the Starter plan are too low to read 111 screens, so a local, read-only plugin in [tools/figma-export/](../tools/figma-export/README.md) snapshots the file instead.
 It writes tokens, each Shared pieces family in full detail, one compact JSON per screen, every vector drawing as SVG, an audit of hardcoded values, and PNG previews.
 `FORMAT.md` inside each export documents the format.
 

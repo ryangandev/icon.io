@@ -1,0 +1,750 @@
+{
+  "format": 1,
+  "code": "T06",
+  "title": "Room · hand in play",
+  "id": "40:42077",
+  "section": "05 / Make 24 / complete flow",
+  "reviewNotes": [
+    "T06 · Everyone gets the same four numbers and 60 seconds. You see who has solved and what it paid, never their working. Solving pays 50 + up to 100 for the time left."
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "40:42077",
+    "name": "T06 / Room · hand in play",
+    "x": 40,
+    "y": 1550,
+    "w": 1440,
+    "h": 843,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        24,
+        "$Zumpo · UI:space/64",
+        32,
+        "$Zumpo · UI:space/64"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "40:42078",
+        "name": "Zumpo/Room bar",
+        "w": 1312,
+        "h": 48,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Desktop"
+        },
+        "componentId": "39:19276",
+        "props": {
+          "Game": "Make 24"
+        },
+        "overrides": [
+          {
+            "path": "Room identity / Room",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Maya’s room",
+              "Tone": "Sand"
+            }
+          },
+          {
+            "path": "Room identity / Phase",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Hand 3 of 5",
+              "Tone": "Blue"
+            }
+          },
+          {
+            "path": "Action / Leave room",
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "9:2528",
+                    "toName": "ML01 / Room list · open, private, full and playing states",
+                    "transition": "dissolve"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "40:42079",
+        "name": "Board & room",
+        "w": 1312,
+        "h": 673,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/24",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "40:42080",
+            "name": "Board stage",
+            "w": 944,
+            "h": 673,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/16",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "40:42081",
+                "name": "Zumpo/Turn bar",
+                "w": 944,
+                "h": 92,
+                "wSize": "fill",
+                "hSize": "hug",
+                "component": "Zumpo/Turn bar",
+                "variant": {
+                  "Kind": "Status",
+                  "Layout": "Desktop"
+                },
+                "componentId": "26:16856",
+                "props": {
+                  "Meta": "Use each number once",
+                  "Main": "Make 24",
+                  "Label": "Hand 3 of 5"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 92,
+                    "width": 944
+                  },
+                  {
+                    "path": "Turn / Eyebrow / Category",
+                    "componentProperties": {
+                      "Icon": "24:5010",
+                      "Show icon": false,
+                      "Label": "Small · 9 × 9",
+                      "Tone": "Sand"
+                    },
+                    "visible": false
+                  },
+                  {
+                    "path": "Countdown",
+                    "componentProperties": {
+                      "Label": "to solve",
+                      "Time": "00:31",
+                      "Tone": "Running"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "40:42082",
+                "name": "Table panel",
+                "w": 944,
+                "h": 565,
+                "wSize": "fill",
+                "hSize": "hug",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside",
+                "radius": "$Zumpo · UI:radius/24",
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/20",
+                  "pad": "$Zumpo · UI:space/24",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "40:42248",
+                    "name": "Table",
+                    "w": 368,
+                    "h": 401,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "layout": {
+                      "mode": "column",
+                      "gap": "$Zumpo · UI:space/24",
+                      "pad": [
+                        "$Zumpo · UI:space/24",
+                        0
+                      ],
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "FRAME",
+                        "id": "40:42249",
+                        "name": "Cards",
+                        "w": 368,
+                        "h": 144,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "layout": {
+                          "mode": "row",
+                          "gap": "$Zumpo · UI:space/16",
+                          "align": "center",
+                          "strokesIncluded": true
+                        },
+                        "children": [
+                          {
+                            "type": "INSTANCE",
+                            "id": "40:42250",
+                            "name": "Number card / 2",
+                            "w": 112,
+                            "h": 144,
+                            "component": "Zumpo/Number card",
+                            "variant": {
+                              "State": "Made",
+                              "Size": "Regular"
+                            },
+                            "componentId": "40:22039",
+                            "props": {
+                              "Show formula": true,
+                              "Formula": "8 − 6",
+                              "Value": "2"
+                            }
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "40:42253",
+                            "name": "Number card / 4",
+                            "w": 112,
+                            "h": 144,
+                            "component": "Zumpo/Number card",
+                            "variant": {
+                              "State": "Selected",
+                              "Size": "Regular"
+                            },
+                            "componentId": "40:22036",
+                            "props": {
+                              "Value": "4"
+                            }
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "40:42256",
+                            "name": "Number card / 3",
+                            "w": 112,
+                            "h": 144,
+                            "component": "Zumpo/Number card",
+                            "variant": {
+                              "State": "Default",
+                              "Size": "Regular"
+                            },
+                            "componentId": "40:22033",
+                            "props": {
+                              "Value": "3"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "TEXT",
+                        "id": "40:42259",
+                        "name": "Prompt",
+                        "w": 227,
+                        "h": 25,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "text": "4 × ?  Pick the second number.",
+                        "textStyle": "Zumpo/Body",
+                        "fills": [
+                          "$Zumpo · UI:color/muted"
+                        ]
+                      },
+                      {
+                        "type": "FRAME",
+                        "id": "40:42260",
+                        "name": "Operators",
+                        "w": 292,
+                        "h": 64,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "layout": {
+                          "mode": "row",
+                          "gap": "$Zumpo · UI:space/12",
+                          "align": "center",
+                          "strokesIncluded": true
+                        },
+                        "children": [
+                          {
+                            "type": "INSTANCE",
+                            "id": "40:42261",
+                            "name": "Operator / +",
+                            "w": 64,
+                            "h": 64,
+                            "component": "Zumpo/Operator key",
+                            "variant": {
+                              "State": "Default"
+                            },
+                            "componentId": "40:22065",
+                            "props": {
+                              "Symbol": "+"
+                            }
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "40:42263",
+                            "name": "Operator / −",
+                            "w": 64,
+                            "h": 64,
+                            "component": "Zumpo/Operator key",
+                            "variant": {
+                              "State": "Default"
+                            },
+                            "componentId": "40:22065",
+                            "props": {
+                              "Symbol": "−"
+                            }
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "40:42265",
+                            "name": "Operator / ×",
+                            "w": 64,
+                            "h": 64,
+                            "component": "Zumpo/Operator key",
+                            "variant": {
+                              "State": "Selected"
+                            },
+                            "componentId": "40:22067"
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "40:42267",
+                            "name": "Operator / ÷",
+                            "w": 64,
+                            "h": 64,
+                            "component": "Zumpo/Operator key",
+                            "variant": {
+                              "State": "Default"
+                            },
+                            "componentId": "40:22065",
+                            "props": {
+                              "Symbol": "÷"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "FRAME",
+                        "id": "40:42269",
+                        "name": "Tools",
+                        "w": 228,
+                        "h": 48,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "layout": {
+                          "mode": "row",
+                          "gap": "$Zumpo · UI:space/12",
+                          "align": "center",
+                          "strokesIncluded": true
+                        },
+                        "children": [
+                          {
+                            "type": "INSTANCE",
+                            "id": "40:42270",
+                            "name": "Action / Undo",
+                            "w": 106,
+                            "h": 48,
+                            "wSize": "hug",
+                            "component": "Zumpo/Button",
+                            "variant": {
+                              "Style": "Secondary",
+                              "State": "Default"
+                            },
+                            "componentId": "4:18",
+                            "props": {
+                              "Icon": "Zumpo/Icon / Glyph=undo",
+                              "Show icon": true,
+                              "Label": "Undo"
+                            },
+                            "overrides": [
+                              {
+                                "path": ".",
+                                "height": 48,
+                                "width": 106
+                              }
+                            ]
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "40:42278",
+                            "name": "Action / Start over",
+                            "w": 110,
+                            "h": 48,
+                            "wSize": "hug",
+                            "component": "Zumpo/Button",
+                            "variant": {
+                              "Style": "Secondary",
+                              "State": "Default"
+                            },
+                            "componentId": "4:18",
+                            "props": {
+                              "Label": "Start over"
+                            },
+                            "overrides": [
+                              {
+                                "path": ".",
+                                "height": 48,
+                                "width": 110
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "40:42284",
+                    "name": "Steps",
+                    "w": 894,
+                    "h": 94,
+                    "wSize": "fill",
+                    "hSize": "hug",
+                    "layout": {
+                      "mode": "column",
+                      "gap": "$Zumpo · UI:space/8",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "FRAME",
+                        "id": "40:42285",
+                        "name": "Heading space",
+                        "w": 122,
+                        "h": 38,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "layout": {
+                          "mode": "column",
+                          "pad": [
+                            0,
+                            0,
+                            8,
+                            0
+                          ],
+                          "strokesIncluded": true
+                        },
+                        "children": [
+                          {
+                            "type": "TEXT",
+                            "id": "40:42286",
+                            "w": 122,
+                            "h": 30,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "text": "Your steps",
+                            "textStyle": "Zumpo/Heading",
+                            "fills": [
+                              "$Zumpo · UI:color/ink"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "FRAME",
+                        "id": "40:42287",
+                        "name": "Step 1",
+                        "w": 894,
+                        "h": 48,
+                        "wSize": "fill",
+                        "hSize": "hug",
+                        "fills": [
+                          "$Zumpo · UI:color/cream"
+                        ],
+                        "radius": "$Zumpo · UI:radius/12",
+                        "layout": {
+                          "mode": "row",
+                          "gap": "$Zumpo · UI:space/12",
+                          "pad": [
+                            "$Zumpo · UI:space/12",
+                            "$Zumpo · UI:space/16"
+                          ],
+                          "align": "center",
+                          "strokesIncluded": true
+                        },
+                        "children": [
+                          {
+                            "type": "TEXT",
+                            "id": "40:42288",
+                            "w": 6,
+                            "h": 20,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "text": "1",
+                            "textStyle": "Zumpo/Label",
+                            "fills": [
+                              "$Zumpo · UI:color/muted"
+                            ]
+                          },
+                          {
+                            "type": "TEXT",
+                            "id": "40:42289",
+                            "w": 71,
+                            "h": 24,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "text": "8 − 6 = 2",
+                            "textStyle": "Zumpo/Number",
+                            "fills": [
+                              "$Zumpo · UI:color/ink"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "40:42190",
+            "name": "Room sidebar",
+            "w": 344,
+            "h": 578,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/24",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "40:42191",
+                "name": "Zumpo/Scoreboard",
+                "w": 344,
+                "h": 304,
+                "hSize": "hug",
+                "component": "Zumpo/Scoreboard",
+                "componentId": "9:320",
+                "overrides": [
+                  {
+                    "path": "Player 1",
+                    "componentProperties": {
+                      "Icon": "24:4994",
+                      "You": false,
+                      "Host": true,
+                      "Name": "Maya",
+                      "Score": "342",
+                      "Status icon": true,
+                      "Status": "Solved · +127",
+                      "State": "Scored"
+                    }
+                  },
+                  {
+                    "path": "Player 1 / Avatar",
+                    "componentProperties": {
+                      "Initials": "MA",
+                      "Tone": "Peach"
+                    }
+                  },
+                  {
+                    "path": "Player 2",
+                    "componentProperties": {
+                      "Status icon": false,
+                      "Status": "Solving",
+                      "Host": false,
+                      "You": true,
+                      "Score": "185",
+                      "Icon": "24:4994",
+                      "Name": "Sam",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 2 / Avatar",
+                    "componentProperties": {
+                      "Initials": "SA",
+                      "Tone": "Sand"
+                    }
+                  },
+                  {
+                    "path": "Player 3",
+                    "componentProperties": {
+                      "Status icon": false,
+                      "Status": "Solving",
+                      "Host": false,
+                      "You": false,
+                      "Score": "135",
+                      "Icon": "24:5071",
+                      "Name": "Ryan",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 3 / Avatar",
+                    "componentProperties": {
+                      "Initials": "RG",
+                      "Tone": "Blue"
+                    }
+                  },
+                  {
+                    "path": "Player 4",
+                    "componentProperties": {
+                      "Status icon": false,
+                      "Status": "Solving",
+                      "Host": false,
+                      "You": false,
+                      "Score": "100",
+                      "Icon": "24:4994",
+                      "Name": "Leo",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 4 / Avatar",
+                    "componentProperties": {
+                      "Initials": "LE",
+                      "Tone": "Lime"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "40:42192",
+                "name": "Zumpo/Chat",
+                "w": 344,
+                "h": 250,
+                "hSize": "hug",
+                "component": "Zumpo/Chat",
+                "componentId": "9:334",
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 250,
+                    "width": 344
+                  },
+                  {
+                    "path": "Messages / Message 1",
+                    "componentProperties": {
+                      "Message": "good luck",
+                      "Name": "Ryan",
+                      "Kind": "Player"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 2",
+                    "componentProperties": {
+                      "Name": "System",
+                      "Message": "Maya solved it! (+127)",
+                      "Kind": "Success"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 3",
+                    "componentProperties": {
+                      "Message": "already?!",
+                      "Name": "Leo",
+                      "Kind": "Player"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 4",
+                    "componentProperties": {
+                      "Name": "System",
+                      "Message": "Ryan hit a mine (38% risk): −82",
+                      "Kind": "Alert"
+                    },
+                    "visible": false
+                  },
+                  {
+                    "path": "Messages / Message 5",
+                    "visible": false
+                  },
+                  {
+                    "path": "Messages / Message 6",
+                    "visible": false
+                  },
+                  {
+                    "path": "Chat input",
+                    "componentProperties": {
+                      "Placeholder": "Say something…",
+                      "State": "Default"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "40:42193",
+        "name": "Footer",
+        "w": 1312,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "40:42194",
+            "w": 650,
+            "h": 18,
+            "hSize": "hug",
+            "text": "Good company. One more round.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "40:42195",
+            "w": 115,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "zumpo. / play a little",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

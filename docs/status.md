@@ -6,7 +6,7 @@ Resolved items are deleted, not archived; history is in git.
 ## Now
 
 Icon.io is being rebranded and redesigned as **Zumpo** on the `rework` branch.
-The redesign is an editable Figma file of 84 screens and its shared component families (see [design.md](design.md)), with a snapshot in `design/figma/`.
+The redesign is an editable Figma file of 111 screens and its shared component families (see [design.md](design.md)), with a snapshot in `design/figma/`.
 Ryan approved it in review round two on 2026-10-03, after one fix (icons centred on their line of text); Claude's round 1 changes are in the [round 1 report](../design/reviews/2026-10-03-round-1.md).
 
 The implementation is built on `rework`, which is not pushed or merged yet.
@@ -34,15 +34,15 @@ Decided by Ryan, and the frame for every design and implementation choice:
 ## Next
 
 Two new games and solo play, decided by Ryan on 2026-10-04 (see [the proposal](../design/reviews/2026-10-04-new-games-proposal.md)).
+The Figma file has every screen (sections 03, 05 and 06, and the hub in 01 and 04).
 Claude is building them on `rework`, one commit per step, in this order:
 
-1. Draw the Minesweeper solo screens in Figma section 05, review all of 05, then move its pieces into Shared pieces and its screens into the main flow, and export.
-2. Let `shared/` hold rule code that runs on both sides, so a solo game in the browser and a room on the server follow the same rules.
-3. Give the games hub a Play solo and a Find a room button per game; solo routes need no name.
-4. Make 24: rules in `docs/games/`, the deal and solver, the cards, solo play, then rooms.
-5. Pairs: rules, the cards, solo play, then rooms.
-6. Minesweeper solo: flags, chording, the first reveal always opening an area.
-7. End-to-end tests and the design comparison for every new screen, then check each flow with two players in a browser.
+1. Let `shared/` hold rule code that runs on both sides, so a solo game in the browser and a room on the server follow the same rules.
+2. Give the games hub a Play solo and a Find a room button per game; solo routes need no name.
+3. Make 24: rules in `docs/games/`, the deal and solver, the cards, solo play, then rooms.
+4. Pairs: rules, the cards, solo play, then rooms.
+5. Minesweeper solo: flags, chording, the first reveal always opening an area.
+6. End-to-end tests and the design comparison for every new screen, then check each flow with two players in a browser.
 
 ## Open decisions
 

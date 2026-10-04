@@ -111,6 +111,10 @@ export const glyphs = {
   'edit': [
     { d: 'M1 16H5L16 5L12 1L1 12V16Z', x: 3, y: 4 },
   ],
+  'flag': [
+    { d: 'M1 1V18', x: 5, y: 2.5 },
+    { d: 'M1 1L12 5.5L1 10V1Z', x: 5, y: 2.5, fill: true },
+  ],
 } as const satisfies Record<string, readonly GlyphPath[]>;
 
 export type GlyphName = keyof typeof glyphs;

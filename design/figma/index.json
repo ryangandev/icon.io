@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "exportedAt": "2026-10-04T20:38:17.477Z",
+  "exportedAt": "2026-10-04T21:10:36.468Z",
   "file": {
     "key": "pd5Hgp7zbT2cMqQNan35uY",
     "name": "Zumpo · Paper Pop flows",
@@ -13,15 +13,15 @@
     "previews": true
   },
   "counts": {
-    "flows": 84,
-    "componentFamilies": 30,
+    "flows": 111,
+    "componentFamilies": 34,
     "outsideComponents": 0,
-    "svgs": 55,
-    "seconds": 13,
-    "nodes": 4684,
-    "instances": 3018,
-    "grids": 54,
-    "gridCells": 1742
+    "svgs": 69,
+    "seconds": 15,
+    "nodes": 6843,
+    "instances": 4380,
+    "grids": 66,
+    "gridCells": 2207
   },
   "tokens": {
     "collections": [
@@ -141,7 +141,7 @@
       "id": "24:5086",
       "file": "components/icon.json",
       "preview": "previews/components/icon.png",
-      "variants": 22
+      "variants": 23
     },
     {
       "name": "Zumpo/Input",
@@ -155,7 +155,7 @@
       "id": "24:7301",
       "file": "components/mine-cell.json",
       "preview": "previews/components/mine-cell.png",
-      "variants": 24
+      "variants": 30
     },
     {
       "name": "Zumpo/Mobile tabs",
@@ -170,6 +170,34 @@
       "file": "components/notice.json",
       "preview": "previews/components/notice.png",
       "variants": 4
+    },
+    {
+      "name": "Zumpo/Number card",
+      "id": "40:22063",
+      "file": "components/number-card.json",
+      "preview": "previews/components/number-card.png",
+      "variants": 10
+    },
+    {
+      "name": "Zumpo/Operator key",
+      "id": "40:22069",
+      "file": "components/operator-key.json",
+      "preview": "previews/components/operator-key.png",
+      "variants": 2
+    },
+    {
+      "name": "Zumpo/Pairs card",
+      "id": "40:22031",
+      "file": "components/pairs-card.json",
+      "preview": "previews/components/pairs-card.png",
+      "variants": 6
+    },
+    {
+      "name": "Zumpo/Pairs symbol",
+      "id": "40:22011",
+      "file": "components/pairs-symbol.json",
+      "preview": "previews/components/pairs-symbol.png",
+      "variants": 18
     },
     {
       "name": "Zumpo/Pick marker",
@@ -283,7 +311,7 @@
           "id": "9:14702",
           "size": [
             1440,
-            924
+            1138
           ],
           "file": "flows/00-guide/review-guide.json",
           "preview": "previews/00-guide/review-guide.png",
@@ -336,10 +364,10 @@
         {
           "code": "P04",
           "title": "Games hub",
-          "id": "9:545",
+          "id": "40:22071",
           "size": [
             1440,
-            754
+            1161
           ],
           "file": "flows/01-platform/P04.json",
           "preview": "previews/01-platform/P04.png",
@@ -1128,6 +1156,66 @@
           "file": "flows/03-minesweeper/ML10.json",
           "preview": "previews/03-minesweeper/ML10.png",
           "isFlow": true
+        },
+        {
+          "code": "MS01",
+          "title": "Solo · choose a board",
+          "id": "40:57385",
+          "size": [
+            1440,
+            920
+          ],
+          "file": "flows/03-minesweeper/MS01.json",
+          "preview": "previews/03-minesweeper/MS01.png",
+          "isFlow": true
+        },
+        {
+          "code": "MS02",
+          "title": "Solo · playing",
+          "id": "40:57584",
+          "size": [
+            1440,
+            1160
+          ],
+          "file": "flows/03-minesweeper/MS02.json",
+          "preview": "previews/03-minesweeper/MS02.png",
+          "isFlow": true
+        },
+        {
+          "code": "MS03",
+          "title": "Solo · a mine",
+          "id": "40:58393",
+          "size": [
+            1440,
+            1092
+          ],
+          "file": "flows/03-minesweeper/MS03.json",
+          "preview": "previews/03-minesweeper/MS03.png",
+          "isFlow": true
+        },
+        {
+          "code": "MS04",
+          "title": "Solo · board cleared",
+          "id": "40:59470",
+          "size": [
+            1440,
+            1376
+          ],
+          "file": "flows/03-minesweeper/MS04.json",
+          "preview": "previews/03-minesweeper/MS04.png",
+          "isFlow": true
+        },
+        {
+          "code": "MS05",
+          "title": "Phone · solo, flag mode",
+          "id": "40:60430",
+          "size": [
+            390,
+            765
+          ],
+          "file": "flows/03-minesweeper/MS05.json",
+          "preview": "previews/03-minesweeper/MS05.png",
+          "isFlow": true
         }
       ],
       "notes": []
@@ -1164,10 +1252,10 @@
         {
           "code": "MO03",
           "title": "Games hub",
-          "id": "9:10122",
+          "id": "40:22265",
           "size": [
             390,
-            1185
+            2041
           ],
           "file": "flows/04-mobile/MO03.json",
           "preview": "previews/04-mobile/MO03.png",
@@ -1327,6 +1415,288 @@
           ],
           "file": "flows/04-mobile/MO16.json",
           "preview": "previews/04-mobile/MO16.png",
+          "isFlow": true
+        }
+      ],
+      "notes": [
+        "MO03 · 390px / responsive redesign Each card says how it can be played: Play solo starts at once, without a name; Find a room is the room flow."
+      ]
+    },
+    {
+      "name": "05 / Make 24 / complete flow",
+      "id": "40:60741",
+      "dir": "05-make-24",
+      "flows": [
+        {
+          "code": "T01",
+          "title": "Solo · ready to start",
+          "id": "40:40052",
+          "size": [
+            1440,
+            831
+          ],
+          "file": "flows/05-make-24/T01.json",
+          "preview": "previews/05-make-24/T01.png",
+          "isFlow": true
+        },
+        {
+          "code": "T02",
+          "title": "Solo · combining cards",
+          "id": "40:40163",
+          "size": [
+            1440,
+            843
+          ],
+          "file": "flows/05-make-24/T02.json",
+          "preview": "previews/05-make-24/T02.png",
+          "isFlow": true
+        },
+        {
+          "code": "T03",
+          "title": "Solo · solved",
+          "id": "40:40648",
+          "size": [
+            1440,
+            795
+          ],
+          "file": "flows/05-make-24/T03.json",
+          "preview": "previews/05-make-24/T03.png",
+          "isFlow": true
+        },
+        {
+          "code": "T04",
+          "title": "Solo · not 24",
+          "id": "40:41103",
+          "size": [
+            1440,
+            818
+          ],
+          "file": "flows/05-make-24/T04.json",
+          "preview": "previews/05-make-24/T04.png",
+          "isFlow": true
+        },
+        {
+          "code": "T06",
+          "title": "Room · hand in play",
+          "id": "40:42077",
+          "size": [
+            1440,
+            843
+          ],
+          "file": "flows/05-make-24/T06.json",
+          "preview": "previews/05-make-24/T06.png",
+          "isFlow": true
+        },
+        {
+          "code": "T07",
+          "title": "Room · you solved, others still going",
+          "id": "40:42554",
+          "size": [
+            1440,
+            796
+          ],
+          "file": "flows/05-make-24/T07.json",
+          "preview": "previews/05-make-24/T07.png",
+          "isFlow": true
+        },
+        {
+          "code": "T08",
+          "title": "Room · hand reveal",
+          "id": "40:42997",
+          "size": [
+            1440,
+            818
+          ],
+          "file": "flows/05-make-24/T08.json",
+          "preview": "previews/05-make-24/T08.png",
+          "isFlow": true
+        },
+        {
+          "code": "T09",
+          "title": "Room · final scores",
+          "id": "40:43542",
+          "size": [
+            1440,
+            1215
+          ],
+          "file": "flows/05-make-24/T09.json",
+          "preview": "previews/05-make-24/T09.png",
+          "isFlow": true
+        },
+        {
+          "code": "T05",
+          "title": "Solo · run complete",
+          "id": "40:41578",
+          "size": [
+            1440,
+            1220
+          ],
+          "file": "flows/05-make-24/T05.json",
+          "preview": "previews/05-make-24/T05.png",
+          "isFlow": true
+        },
+        {
+          "code": "T10",
+          "title": "Create room · Make 24 settings",
+          "id": "40:44103",
+          "size": [
+            1440,
+            1248
+          ],
+          "file": "flows/05-make-24/T10.json",
+          "preview": "previews/05-make-24/T10.png",
+          "isFlow": true
+        },
+        {
+          "code": "T11",
+          "title": "Phone · solo hand",
+          "id": "40:44178",
+          "size": [
+            390,
+            735
+          ],
+          "file": "flows/05-make-24/T11.json",
+          "preview": "previews/05-make-24/T11.png",
+          "isFlow": true
+        },
+        {
+          "code": "T12",
+          "title": "Phone · room hand",
+          "id": "40:44375",
+          "size": [
+            390,
+            725
+          ],
+          "file": "flows/05-make-24/T12.json",
+          "preview": "previews/05-make-24/T12.png",
+          "isFlow": true
+        }
+      ],
+      "notes": []
+    },
+    {
+      "name": "06 / Pairs / complete flow",
+      "id": "40:60743",
+      "dir": "06-pairs",
+      "flows": [
+        {
+          "code": "PR01",
+          "title": "Solo · choose a board",
+          "id": "40:49758",
+          "size": [
+            1440,
+            852
+          ],
+          "file": "flows/06-pairs/PR01.json",
+          "preview": "previews/06-pairs/PR01.png",
+          "isFlow": true
+        },
+        {
+          "code": "PR02",
+          "title": "Solo · first card up",
+          "id": "40:49881",
+          "size": [
+            1440,
+            848
+          ],
+          "file": "flows/06-pairs/PR02.json",
+          "preview": "previews/06-pairs/PR02.png",
+          "isFlow": true
+        },
+        {
+          "code": "PR03",
+          "title": "Solo · not a pair",
+          "id": "40:50444",
+          "size": [
+            1440,
+            848
+          ],
+          "file": "flows/06-pairs/PR03.json",
+          "preview": "previews/06-pairs/PR03.png",
+          "isFlow": true
+        },
+        {
+          "code": "PR04",
+          "title": "Solo · board cleared",
+          "id": "40:51008",
+          "size": [
+            1440,
+            1132
+          ],
+          "file": "flows/06-pairs/PR04.json",
+          "preview": "previews/06-pairs/PR04.png",
+          "isFlow": true
+        },
+        {
+          "code": "PR05",
+          "title": "Room · a miss, the turn passes",
+          "id": "40:51587",
+          "size": [
+            1440,
+            848
+          ],
+          "file": "flows/06-pairs/PR05.json",
+          "preview": "previews/06-pairs/PR05.png",
+          "isFlow": true
+        },
+        {
+          "code": "PR06",
+          "title": "Room · your turn",
+          "id": "40:52205",
+          "size": [
+            1440,
+            848
+          ],
+          "file": "flows/06-pairs/PR06.json",
+          "preview": "previews/06-pairs/PR06.png",
+          "isFlow": true
+        },
+        {
+          "code": "PR07",
+          "title": "Room · final scores",
+          "id": "40:52794",
+          "size": [
+            1440,
+            1241
+          ],
+          "file": "flows/06-pairs/PR07.json",
+          "preview": "previews/06-pairs/PR07.png",
+          "isFlow": true
+        },
+        {
+          "code": "PR08",
+          "title": "Create room · Pairs settings",
+          "id": "40:53416",
+          "size": [
+            1440,
+            1248
+          ],
+          "file": "flows/06-pairs/PR08.json",
+          "preview": "previews/06-pairs/PR08.png",
+          "isFlow": true
+        },
+        {
+          "code": "PR09",
+          "title": "Phone · solo, small board",
+          "id": "40:53550",
+          "size": [
+            390,
+            698
+          ],
+          "file": "flows/06-pairs/PR09.json",
+          "preview": "previews/06-pairs/PR09.png",
+          "isFlow": true
+        },
+        {
+          "code": "PR10",
+          "title": "Phone · room, your turn",
+          "id": "40:53838",
+          "size": [
+            390,
+            776
+          ],
+          "file": "flows/06-pairs/PR10.json",
+          "preview": "previews/06-pairs/PR10.png",
           "isFlow": true
         }
       ],

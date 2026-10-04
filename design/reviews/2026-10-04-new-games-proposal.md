@@ -2,6 +2,8 @@
 
 日期: 2026-10-04。
 状态: Ryan 2026-10-04 回答了全部问题，并让 Claude 自审后实现；扫雷单人模式是同一轮加的。
+Claude 自审后已经把 05 并进主流程: Make 24 是 section 05, Pairs 是 section 06, 扫雷单人在 03, hub 换掉了 P04 和 MO03, 组件在 Shared pieces。
+下面写的 "05 里" 指的是当时的提案 section, 它已经删掉了。
 范围: Figma 文件 `Zumpo · Paper Pop flows` 里新的 section `05 / Proposal · Solo or together, Make 24, Pairs`。
 已经 review 过的 00-04 和 Shared pieces 一个都没动；新画面和新组件都只在 05 里。
 05 被导出器跳过 (它只导出 00-04 和 Shared pieces)，所以 `design/figma/` 和代码都不受影响。
@@ -18,8 +20,8 @@
 | PR01-PR04  | Pairs 单人: 选棋盘, 翻开第一张, 没配上, 清空棋盘           |
 | PR05-PR08  | Pairs 房间: 别人没配上轮到你, 你的回合, 最终得分, 建房设置 |
 | PR09, PR10 | Pairs 手机: 单人小棋盘, 房间大棋盘                         |
-| MS01-MS05  | 扫雷单人: 选棋盘, 进行中, 插旗, 踩雷, 清空棋盘             |
-| MS06       | 扫雷单人手机                                               |
+| MS01-MS04  | 扫雷单人: 选棋盘, 进行中 (含插旗), 踩雷, 清空棋盘          |
+| MS05       | 扫雷单人手机, Flag 模式                                    |
 
 房间画面都是从 03 的扫雷画面复制再换掉棋盘，所以 Room bar, Turn bar, 计分板和聊天和已经 review 过的一样。
 单人画面是 Maya 的视角 (和 H01 一致)，房间画面是 Sam 的视角 (和 03 一致)。

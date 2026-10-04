@@ -22,10 +22,12 @@ const FLOW_SECTIONS = [
   { id: '9:866', prefix: '02', dir: '02-draw-and-guess' },
   { id: '9:2526', prefix: '03', dir: '03-minesweeper' },
   { id: '9:10060', prefix: '04', dir: '04-mobile' },
+  { id: '40:60741', prefix: '05', dir: '05-make-24' },
+  { id: '40:60743', prefix: '06', dir: '06-pairs' },
 ];
 const SHARED_SECTION = { id: '9:198', name: 'Shared pieces' };
-const EXPECTED_FLOWS = 84;
-const EXPECTED_FAMILIES = 30;
+const EXPECTED_FLOWS = 111;
+const EXPECTED_FAMILIES = 34;
 
 const FLOW_CODE = /^([A-Z]{1,2}\d{2})\b/;
 const PATH_TYPES = ['VECTOR', 'BOOLEAN_OPERATION', 'STAR', 'POLYGON', 'LINE'];
