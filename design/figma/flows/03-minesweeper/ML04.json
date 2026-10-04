@@ -133,219 +133,195 @@
         },
         "children": [
           {
-            "type": "FRAME",
-            "id": "9:2691",
+            "type": "INSTANCE",
+            "id": "35:13626",
             "name": "A little room for you.",
             "w": 560,
             "h": 765,
             "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/paper"
-            ],
-            "strokes": [
-              "$Zumpo · UI:color/line"
-            ],
-            "strokeAlign": "inside",
-            "radius": "$Zumpo · UI:radius/24",
-            "layout": {
-              "mode": "column",
-              "gap": "$Zumpo · UI:space/24",
-              "pad": "$Zumpo · UI:space/32",
-              "strokesIncluded": true
+            "component": "Zumpo/Card",
+            "variant": {
+              "Kind": "Focused"
             },
-            "children": [
+            "componentId": "9:400",
+            "props": {
+              "Description": "Pick a board. Small is a quick game; Large takes a while."
+            },
+            "overrides": [
               {
-                "type": "TEXT",
-                "id": "9:2692",
-                "w": 496,
-                "h": 30,
-                "hSize": "hug",
-                "text": "A little room for you.",
-                "textStyle": "Zumpo/Heading",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "TEXT",
-                "id": "9:2693",
-                "name": "Pick the board. Everyone chooses at the same time.",
-                "w": 496,
-                "h": 25,
-                "hSize": "hug",
-                "text": "Pick a board. Small is a quick game; Large takes a while.",
-                "textStyle": "Zumpo/Body",
-                "fills": [
-                  "$Zumpo · UI:color/muted"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:2694",
-                "name": "Zumpo/Input",
-                "w": 496,
-                "h": 113,
-                "hSize": "hug",
-                "component": "Zumpo/Input",
-                "variant": {
-                  "State": "Default"
-                },
-                "componentId": "9:204",
-                "props": {
-                  "Helper": "Up to 40 characters.",
-                  "Value": "Maya’s room",
-                  "Label": "Room name"
-                }
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:2699",
-                "name": "Zumpo/Input",
-                "w": 496,
-                "h": 113,
-                "hSize": "hug",
-                "component": "Zumpo/Input",
-                "variant": {
-                  "State": "Default"
-                },
-                "componentId": "9:204",
-                "props": {
-                  "Select": true,
-                  "Helper": "Choose 2–8 seats.",
-                  "Value": "8 players",
-                  "Label": "Seats"
-                }
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:2704",
-                "name": "Zumpo/Input",
-                "w": 496,
-                "h": 113,
-                "hSize": "hug",
-                "component": "Zumpo/Input",
-                "variant": {
-                  "State": "Default"
-                },
-                "componentId": "9:204",
-                "props": {
-                  "Select": true,
-                  "Helper": "16 × 16 · 40 mines",
-                  "Value": "Medium",
-                  "Label": "Board"
-                }
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:2714",
-                "name": "Zumpo/Input",
-                "w": 496,
-                "h": 113,
-                "hSize": "hug",
-                "component": "Zumpo/Input",
-                "variant": {
-                  "State": "Default"
-                },
-                "componentId": "9:204",
-                "props": {
-                  "Helper": "Leave blank for an open room. Up to 20 characters.",
-                  "Value": "••••••",
-                  "Label": "Password (optional)"
-                }
-              },
-              {
-                "type": "FRAME",
-                "id": "9:2719",
-                "name": "Actions",
-                "w": 496,
-                "h": 48,
-                "hSize": "hug",
-                "layout": {
-                  "mode": "row",
-                  "gap": "$Zumpo · UI:space/12",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "INSTANCE",
-                    "id": "9:2720",
-                    "name": "Action / Create room",
-                    "w": 126,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
-                    "variant": {
-                      "Style": "Primary",
-                      "State": "Default"
-                    },
-                    "componentId": "4:15",
-                    "props": {
-                      "Label": "Create room"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 48,
-                        "reactions": [
-                          {
-                            "on": "on_click",
-                            "do": [
-                              {
-                                "nav": "navigate",
-                                "to": "9:3002",
-                                "toName": "M01 / Host · waiting for second player",
-                                "transition": "dissolve"
-                              }
-                            ]
-                          }
-                        ],
-                        "width": 126
-                      }
-                    ],
-                    "reactions": [
-                      {
-                        "on": "on_click",
-                        "do": [
-                          {
-                            "nav": "navigate",
-                            "to": "9:3002",
-                            "toName": "M01 / Host · waiting for second player",
-                            "transition": "dissolve"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "type": "INSTANCE",
-                    "id": "9:2722",
-                    "name": "Action / Cancel",
-                    "w": 90,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
-                    "variant": {
-                      "Style": "Secondary",
-                      "State": "Default"
-                    },
-                    "componentId": "4:18",
-                    "props": {
-                      "Label": "Cancel"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 48,
-                        "width": 90
-                      }
-                    ]
-                  }
-                ]
+                "path": ".",
+                "height": 765,
+                "width": 560
               }
-            ]
+            ],
+            "slots": {
+              "Content": [
+                {
+                  "type": "INSTANCE",
+                  "id": "36:14337",
+                  "name": "Zumpo/Input",
+                  "w": 496,
+                  "h": 113,
+                  "hSize": "hug",
+                  "component": "Zumpo/Input",
+                  "variant": {
+                    "State": "Default"
+                  },
+                  "componentId": "9:204",
+                  "props": {
+                    "Helper": "Up to 40 characters.",
+                    "Value": "Maya’s room",
+                    "Label": "Room name"
+                  }
+                },
+                {
+                  "type": "INSTANCE",
+                  "id": "36:14345",
+                  "name": "Zumpo/Input",
+                  "w": 496,
+                  "h": 113,
+                  "hSize": "hug",
+                  "component": "Zumpo/Input",
+                  "variant": {
+                    "State": "Default"
+                  },
+                  "componentId": "9:204",
+                  "props": {
+                    "Select": true,
+                    "Helper": "Choose 2–8 seats.",
+                    "Value": "8 players",
+                    "Label": "Seats"
+                  }
+                },
+                {
+                  "type": "INSTANCE",
+                  "id": "36:14353",
+                  "name": "Zumpo/Input",
+                  "w": 496,
+                  "h": 113,
+                  "hSize": "hug",
+                  "component": "Zumpo/Input",
+                  "variant": {
+                    "State": "Default"
+                  },
+                  "componentId": "9:204",
+                  "props": {
+                    "Select": true,
+                    "Helper": "16 × 16 · 40 mines",
+                    "Value": "Medium",
+                    "Label": "Board"
+                  }
+                },
+                {
+                  "type": "INSTANCE",
+                  "id": "36:14361",
+                  "name": "Zumpo/Input",
+                  "w": 496,
+                  "h": 113,
+                  "hSize": "hug",
+                  "component": "Zumpo/Input",
+                  "variant": {
+                    "State": "Default"
+                  },
+                  "componentId": "9:204",
+                  "props": {
+                    "Helper": "Leave blank for an open room. Up to 20 characters.",
+                    "Value": "••••••",
+                    "Label": "Password (optional)"
+                  }
+                },
+                {
+                  "type": "FRAME",
+                  "id": "36:14369",
+                  "name": "Actions",
+                  "w": 496,
+                  "h": 48,
+                  "hSize": "hug",
+                  "layout": {
+                    "mode": "row",
+                    "gap": "$Zumpo · UI:space/12",
+                    "align": "center",
+                    "strokesIncluded": true
+                  },
+                  "children": [
+                    {
+                      "type": "INSTANCE",
+                      "id": "I35:13626;35:13433;36:14373",
+                      "name": "Action / Create room",
+                      "w": 126,
+                      "h": 48,
+                      "wSize": "hug",
+                      "component": "Zumpo/Button",
+                      "variant": {
+                        "Style": "Primary",
+                        "State": "Default"
+                      },
+                      "componentId": "4:15",
+                      "props": {
+                        "Label": "Create room"
+                      },
+                      "overrides": [
+                        {
+                          "path": ".",
+                          "height": 48,
+                          "reactions": [
+                            {
+                              "on": "on_click",
+                              "do": [
+                                {
+                                  "nav": "navigate",
+                                  "to": "9:3002",
+                                  "toName": "M01 / Host · waiting for second player",
+                                  "transition": "dissolve"
+                                }
+                              ]
+                            }
+                          ],
+                          "width": 126
+                        }
+                      ],
+                      "reactions": [
+                        {
+                          "on": "on_click",
+                          "do": [
+                            {
+                              "nav": "navigate",
+                              "to": "9:3002",
+                              "toName": "M01 / Host · waiting for second player",
+                              "transition": "dissolve"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "INSTANCE",
+                      "id": "I35:13626;35:13433;36:14374",
+                      "name": "Action / Cancel",
+                      "w": 90,
+                      "h": 48,
+                      "wSize": "hug",
+                      "component": "Zumpo/Button",
+                      "variant": {
+                        "Style": "Secondary",
+                        "State": "Default"
+                      },
+                      "componentId": "4:18",
+                      "props": {
+                        "Label": "Cancel"
+                      },
+                      "overrides": [
+                        {
+                          "path": ".",
+                          "height": 48,
+                          "width": 90
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
           }
         ]
       },

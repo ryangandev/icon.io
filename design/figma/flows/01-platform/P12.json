@@ -604,8 +604,8 @@
         ]
       },
       {
-        "type": "FRAME",
-        "id": "9:804",
+        "type": "INSTANCE",
+        "id": "35:13510",
         "name": "Dialog / Invite friends",
         "x": 440,
         "y": 260,
@@ -613,154 +613,119 @@
         "w": 560,
         "h": 353,
         "hSize": "hug",
-        "fills": [
-          "$Zumpo · UI:color/paper"
-        ],
-        "strokes": [
-          "$Zumpo · UI:color/line"
-        ],
-        "strokeAlign": "inside",
-        "radius": "$Zumpo · UI:radius/24",
-        "effects": [
-          {
-            "type": "drop_shadow",
-            "color": "#282B252E",
-            "offset": [
-              0,
-              16
-            ],
-            "radius": 48
-          }
-        ],
-        "effectStyle": "Zumpo/Dialog lift",
-        "layout": {
-          "mode": "column",
-          "gap": "$Zumpo · UI:space/24",
-          "pad": "$Zumpo · UI:space/32",
-          "strokesIncluded": true
+        "component": "Zumpo/Card",
+        "variant": {
+          "Kind": "Dialog"
         },
-        "children": [
+        "componentId": "35:13434",
+        "props": {
+          "Description": "Anyone with this link can join Maya’s room while a seat is open.",
+          "Title": "Invite friends"
+        },
+        "overrides": [
           {
-            "type": "TEXT",
-            "id": "9:805",
-            "name": "Good company makes good games.",
-            "w": 496,
-            "h": 30,
-            "hSize": "hug",
-            "text": "Invite friends",
-            "textStyle": "Zumpo/Heading",
-            "fills": [
-              "$Zumpo · UI:color/ink"
-            ],
-            "autoResize": "height"
-          },
-          {
-            "type": "TEXT",
-            "id": "9:806",
-            "name": "Share the room link with your friends. A private room still needs its ",
-            "w": 496,
-            "h": 25,
-            "hSize": "hug",
-            "text": "Anyone with this link can join Maya’s room while a seat is open.",
-            "textStyle": "Zumpo/Body",
-            "fills": [
-              "$Zumpo · UI:color/muted"
-            ],
-            "autoResize": "height"
-          },
-          {
-            "type": "INSTANCE",
-            "id": "9:807",
-            "name": "Zumpo/Input",
-            "w": 496,
-            "h": 112,
-            "hSize": "hug",
-            "component": "Zumpo/Input",
-            "variant": {
-              "State": "Default"
-            },
-            "componentId": "9:204",
-            "props": {
-              "Helper": "Share this link with your friends.",
-              "Value": "zumpo.app/Gamehub/DrawAndGuess/Room/3f9c2a7e-51b4-4c8e-9d0a…",
-              "Show helper": false,
-              "Label": "Room link"
-            },
-            "overrides": [
-              {
-                "path": ".",
-                "height": 112,
-                "width": 496
-              }
-            ]
-          },
-          {
-            "type": "FRAME",
-            "id": "9:812",
-            "name": "Actions",
-            "w": 496,
-            "h": 48,
-            "hSize": "hug",
-            "layout": {
-              "mode": "row",
-              "gap": "$Zumpo · UI:space/12",
-              "align": "center",
-              "strokesIncluded": true
-            },
-            "children": [
-              {
-                "type": "INSTANCE",
-                "id": "28:23524",
-                "name": "Action / Copied",
-                "w": 118,
-                "h": 48,
-                "wSize": "hug",
-                "component": "Zumpo/Button",
-                "variant": {
-                  "Style": "Primary",
-                  "State": "Default"
-                },
-                "componentId": "4:15",
-                "props": {
-                  "Icon": "Zumpo/Icon / Glyph=check",
-                  "Show icon": true,
-                  "Label": "Copied"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 48,
-                    "width": 118
-                  }
-                ]
-              },
-              {
-                "type": "INSTANCE",
-                "id": "28:23532",
-                "name": "Action / Done",
-                "w": 78,
-                "h": 48,
-                "wSize": "hug",
-                "component": "Zumpo/Button",
-                "variant": {
-                  "Style": "Secondary",
-                  "State": "Default"
-                },
-                "componentId": "4:18",
-                "props": {
-                  "Label": "Done"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 48,
-                    "width": 78
-                  }
-                ]
-              }
-            ]
+            "path": ".",
+            "height": 353,
+            "layoutPositioning": "ABSOLUTE",
+            "width": 560
           }
-        ]
+        ],
+        "slots": {
+          "Content": [
+            {
+              "type": "INSTANCE",
+              "id": "36:14472",
+              "name": "Zumpo/Input",
+              "w": 496,
+              "h": 112,
+              "hSize": "hug",
+              "component": "Zumpo/Input",
+              "variant": {
+                "State": "Default"
+              },
+              "componentId": "9:204",
+              "props": {
+                "Helper": "Share this link with your friends.",
+                "Value": "zumpo.app/Gamehub/DrawAndGuess/Room/3f9c2a7e-51b4-4c8e-9d0a…",
+                "Show helper": false,
+                "Label": "Room link"
+              },
+              "overrides": [
+                {
+                  "path": "",
+                  "height": 112,
+                  "width": 496
+                }
+              ]
+            },
+            {
+              "type": "FRAME",
+              "id": "36:14480",
+              "name": "Actions",
+              "w": 496,
+              "h": 48,
+              "hSize": "hug",
+              "layout": {
+                "mode": "row",
+                "gap": "$Zumpo · UI:space/12",
+                "align": "center",
+                "strokesIncluded": true
+              },
+              "children": [
+                {
+                  "type": "INSTANCE",
+                  "id": "I35:13510;35:13437;36:14484",
+                  "name": "Action / Copied",
+                  "w": 118,
+                  "h": 48,
+                  "wSize": "hug",
+                  "component": "Zumpo/Button",
+                  "variant": {
+                    "Style": "Primary",
+                    "State": "Default"
+                  },
+                  "componentId": "4:15",
+                  "props": {
+                    "Icon": "Zumpo/Icon / Glyph=check",
+                    "Show icon": true,
+                    "Label": "Copied"
+                  },
+                  "overrides": [
+                    {
+                      "path": ".",
+                      "height": 48,
+                      "width": 118
+                    }
+                  ]
+                },
+                {
+                  "type": "INSTANCE",
+                  "id": "I35:13510;35:13437;36:14485",
+                  "name": "Action / Done",
+                  "w": 78,
+                  "h": 48,
+                  "wSize": "hug",
+                  "component": "Zumpo/Button",
+                  "variant": {
+                    "Style": "Secondary",
+                    "State": "Default"
+                  },
+                  "componentId": "4:18",
+                  "props": {
+                    "Label": "Done"
+                  },
+                  "overrides": [
+                    {
+                      "path": ".",
+                      "height": 48,
+                      "width": 78
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     ]
   }

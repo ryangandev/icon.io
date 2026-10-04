@@ -493,8 +493,8 @@
         ]
       },
       {
-        "type": "FRAME",
-        "id": "9:781",
+        "type": "INSTANCE",
+        "id": "35:13499",
         "name": "Dialog / Leave room",
         "x": 440,
         "y": 260,
@@ -502,127 +502,92 @@
         "w": 560,
         "h": 242,
         "hSize": "hug",
-        "fills": [
-          "$Zumpo · UI:color/paper"
-        ],
-        "strokes": [
-          "$Zumpo · UI:color/line"
-        ],
-        "strokeAlign": "inside",
-        "radius": "$Zumpo · UI:radius/24",
-        "effects": [
-          {
-            "type": "drop_shadow",
-            "color": "#282B252E",
-            "offset": [
-              0,
-              16
-            ],
-            "radius": 48
-          }
-        ],
-        "effectStyle": "Zumpo/Dialog lift",
-        "layout": {
-          "mode": "column",
-          "gap": "$Zumpo · UI:space/24",
-          "pad": "$Zumpo · UI:space/32",
-          "strokesIncluded": true
+        "component": "Zumpo/Card",
+        "variant": {
+          "Kind": "Dialog"
         },
-        "children": [
+        "componentId": "35:13434",
+        "props": {
+          "Description": "The game carries on without you, and your seat and your 180 points go with you. You can join again while a seat is open.",
+          "Title": "Leave Maya’s room?"
+        },
+        "overrides": [
           {
-            "type": "TEXT",
-            "id": "9:782",
-            "name": "Leave this little room?",
-            "w": 496,
-            "h": 30,
-            "hSize": "hug",
-            "text": "Leave Maya’s room?",
-            "textStyle": "Zumpo/Heading",
-            "fills": [
-              "$Zumpo · UI:color/ink"
-            ],
-            "autoResize": "height"
-          },
-          {
-            "type": "TEXT",
-            "id": "9:783",
-            "name": "Your seat will be released right away. If you’re the host, the room wi",
-            "w": 496,
-            "h": 50,
-            "hSize": "hug",
-            "text": "The game carries on without you, and your seat and your 180 points go with you. You can join again while a seat is open.",
-            "textStyle": "Zumpo/Body",
-            "fills": [
-              "$Zumpo · UI:color/muted"
-            ],
-            "autoResize": "height"
-          },
-          {
-            "type": "FRAME",
-            "id": "9:784",
-            "name": "Actions",
-            "w": 496,
-            "h": 48,
-            "hSize": "hug",
-            "layout": {
-              "mode": "row",
-              "gap": "$Zumpo · UI:space/12",
-              "align": "center",
-              "strokesIncluded": true
-            },
-            "children": [
-              {
-                "type": "INSTANCE",
-                "id": "28:23363",
-                "name": "Action / Leave room",
-                "w": 148,
-                "h": 48,
-                "wSize": "hug",
-                "component": "Zumpo/Button",
-                "variant": {
-                  "Style": "Danger",
-                  "State": "Default"
-                },
-                "componentId": "24:5351",
-                "props": {
-                  "Show icon": true,
-                  "Label": "Leave room"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 48,
-                    "width": 148
-                  }
-                ]
-              },
-              {
-                "type": "INSTANCE",
-                "id": "28:23372",
-                "name": "Action / Stay",
-                "w": 73,
-                "h": 48,
-                "wSize": "hug",
-                "component": "Zumpo/Button",
-                "variant": {
-                  "Style": "Secondary",
-                  "State": "Default"
-                },
-                "componentId": "4:18",
-                "props": {
-                  "Label": "Stay"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 48,
-                    "width": 73
-                  }
-                ]
-              }
-            ]
+            "path": ".",
+            "height": 242,
+            "layoutPositioning": "ABSOLUTE",
+            "width": 560
           }
-        ]
+        ],
+        "slots": {
+          "Content": [
+            {
+              "type": "FRAME",
+              "id": "36:14456",
+              "name": "Actions",
+              "w": 496,
+              "h": 48,
+              "hSize": "hug",
+              "layout": {
+                "mode": "row",
+                "gap": "$Zumpo · UI:space/12",
+                "align": "center",
+                "strokesIncluded": true
+              },
+              "children": [
+                {
+                  "type": "INSTANCE",
+                  "id": "I35:13499;35:13437;36:14460",
+                  "name": "Action / Leave room",
+                  "w": 148,
+                  "h": 48,
+                  "wSize": "hug",
+                  "component": "Zumpo/Button",
+                  "variant": {
+                    "Style": "Danger",
+                    "State": "Default"
+                  },
+                  "componentId": "24:5351",
+                  "props": {
+                    "Show icon": true,
+                    "Label": "Leave room"
+                  },
+                  "overrides": [
+                    {
+                      "path": ".",
+                      "height": 48,
+                      "width": 148
+                    }
+                  ]
+                },
+                {
+                  "type": "INSTANCE",
+                  "id": "I35:13499;35:13437;36:14461",
+                  "name": "Action / Stay",
+                  "w": 73,
+                  "h": 48,
+                  "wSize": "hug",
+                  "component": "Zumpo/Button",
+                  "variant": {
+                    "Style": "Secondary",
+                    "State": "Default"
+                  },
+                  "componentId": "4:18",
+                  "props": {
+                    "Label": "Stay"
+                  },
+                  "overrides": [
+                    {
+                      "path": ".",
+                      "height": 48,
+                      "width": 73
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     ]
   }

@@ -133,178 +133,154 @@
         },
         "children": [
           {
-            "type": "FRAME",
-            "id": "9:1137",
+            "type": "INSTANCE",
+            "id": "35:13553",
             "name": "A little room for you.",
             "w": 560,
             "h": 737,
             "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/paper"
-            ],
-            "strokes": [
-              "$Zumpo · UI:color/line"
-            ],
-            "strokeAlign": "inside",
-            "radius": "$Zumpo · UI:radius/24",
-            "layout": {
-              "mode": "column",
-              "gap": "$Zumpo · UI:space/24",
-              "pad": "$Zumpo · UI:space/32",
-              "strokesIncluded": true
+            "component": "Zumpo/Card",
+            "variant": {
+              "Kind": "Focused"
             },
-            "children": [
+            "componentId": "9:400",
+            "props": {
+              "Description": "Each round, everyone takes one turn to draw."
+            },
+            "overrides": [
               {
-                "type": "TEXT",
-                "id": "9:1138",
-                "w": 496,
-                "h": 30,
-                "hSize": "hug",
-                "text": "A little room for you.",
-                "textStyle": "Zumpo/Heading",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "TEXT",
-                "id": "9:1139",
-                "name": "Pick the rounds. Everyone gets a turn to draw.",
-                "w": 496,
-                "h": 25,
-                "hSize": "hug",
-                "text": "Each round, everyone takes one turn to draw.",
-                "textStyle": "Zumpo/Body",
-                "fills": [
-                  "$Zumpo · UI:color/muted"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:1140",
-                "name": "Zumpo/Input",
-                "w": 496,
-                "h": 113,
-                "hSize": "hug",
-                "component": "Zumpo/Input",
-                "variant": {
-                  "State": "Default"
-                },
-                "componentId": "9:204",
-                "props": {
-                  "Helper": "Up to 40 characters.",
-                  "Value": "Maya’s room",
-                  "Label": "Room name"
-                }
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:1145",
-                "name": "Zumpo/Input",
-                "w": 496,
-                "h": 113,
-                "hSize": "hug",
-                "component": "Zumpo/Input",
-                "variant": {
-                  "State": "Default"
-                },
-                "componentId": "9:204",
-                "props": {
-                  "Select": true,
-                  "Helper": "Choose 2–8 seats.",
-                  "Value": "8 players",
-                  "Label": "Seats"
-                }
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:1150",
-                "name": "Zumpo/Input",
-                "w": 496,
-                "h": 113,
-                "hSize": "hug",
-                "component": "Zumpo/Input",
-                "variant": {
-                  "State": "Default"
-                },
-                "componentId": "9:204",
-                "props": {
-                  "Select": true,
-                  "Helper": "1, 2, 3 or 4 rounds.",
-                  "Value": "2 rounds",
-                  "Label": "Rounds"
-                }
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:1160",
-                "name": "Zumpo/Input",
-                "w": 496,
-                "h": 113,
-                "hSize": "hug",
-                "component": "Zumpo/Input",
-                "variant": {
-                  "State": "Default"
-                },
-                "componentId": "9:204",
-                "props": {
-                  "Helper": "Leave blank for an open room. Up to 20 characters.",
-                  "Value": "••••••",
-                  "Label": "Password (optional)"
-                }
-              },
-              {
-                "type": "FRAME",
-                "id": "9:1165",
-                "name": "Status",
-                "w": 496,
-                "h": 20,
-                "hSize": "hug",
-                "layout": {
-                  "mode": "row",
-                  "gap": 8,
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "INSTANCE",
-                    "id": "29:23987",
-                    "name": "Zumpo/Icon",
-                    "w": 20,
-                    "h": 20,
-                    "component": "Zumpo/Icon",
-                    "variant": {
-                      "Glyph": "pending"
-                    },
-                    "componentId": "24:5002",
-                    "overrides": [
-                      {
-                        "path": "pending",
-                        "strokes": [
-                          "$Zumpo · UI:color/muted"
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "type": "TEXT",
-                    "id": "29:23989",
-                    "w": 143,
-                    "h": 20,
-                    "wSize": "hug",
-                    "hSize": "hug",
-                    "text": "Creating your room…",
-                    "textStyle": "Zumpo/Label",
-                    "fills": [
-                      "$Zumpo · UI:color/muted"
-                    ]
-                  }
-                ]
+                "path": ".",
+                "height": 737,
+                "width": 560
               }
-            ]
+            ],
+            "slots": {
+              "Content": [
+                {
+                  "type": "INSTANCE",
+                  "id": "36:13727",
+                  "name": "Zumpo/Input",
+                  "w": 496,
+                  "h": 113,
+                  "hSize": "hug",
+                  "component": "Zumpo/Input",
+                  "variant": {
+                    "State": "Default"
+                  },
+                  "componentId": "9:204",
+                  "props": {
+                    "Helper": "Up to 40 characters.",
+                    "Value": "Maya’s room",
+                    "Label": "Room name"
+                  }
+                },
+                {
+                  "type": "INSTANCE",
+                  "id": "36:13735",
+                  "name": "Zumpo/Input",
+                  "w": 496,
+                  "h": 113,
+                  "hSize": "hug",
+                  "component": "Zumpo/Input",
+                  "variant": {
+                    "State": "Default"
+                  },
+                  "componentId": "9:204",
+                  "props": {
+                    "Select": true,
+                    "Helper": "Choose 2–8 seats.",
+                    "Value": "8 players",
+                    "Label": "Seats"
+                  }
+                },
+                {
+                  "type": "INSTANCE",
+                  "id": "36:13743",
+                  "name": "Zumpo/Input",
+                  "w": 496,
+                  "h": 113,
+                  "hSize": "hug",
+                  "component": "Zumpo/Input",
+                  "variant": {
+                    "State": "Default"
+                  },
+                  "componentId": "9:204",
+                  "props": {
+                    "Select": true,
+                    "Helper": "1, 2, 3 or 4 rounds.",
+                    "Value": "2 rounds",
+                    "Label": "Rounds"
+                  }
+                },
+                {
+                  "type": "INSTANCE",
+                  "id": "36:13751",
+                  "name": "Zumpo/Input",
+                  "w": 496,
+                  "h": 113,
+                  "hSize": "hug",
+                  "component": "Zumpo/Input",
+                  "variant": {
+                    "State": "Default"
+                  },
+                  "componentId": "9:204",
+                  "props": {
+                    "Helper": "Leave blank for an open room. Up to 20 characters.",
+                    "Value": "••••••",
+                    "Label": "Password (optional)"
+                  }
+                },
+                {
+                  "type": "FRAME",
+                  "id": "36:13759",
+                  "name": "Status",
+                  "w": 496,
+                  "h": 20,
+                  "hSize": "hug",
+                  "layout": {
+                    "mode": "row",
+                    "gap": 8,
+                    "align": "center",
+                    "strokesIncluded": true
+                  },
+                  "children": [
+                    {
+                      "type": "INSTANCE",
+                      "id": "I35:13553;35:13433;36:13763",
+                      "name": "Zumpo/Icon",
+                      "w": 20,
+                      "h": 20,
+                      "component": "Zumpo/Icon",
+                      "variant": {
+                        "Glyph": "pending"
+                      },
+                      "componentId": "24:5002",
+                      "overrides": [
+                        {
+                          "path": "pending",
+                          "strokes": [
+                            "$Zumpo · UI:color/muted"
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "TEXT",
+                      "id": "I35:13553;35:13433;36:13764",
+                      "w": 143,
+                      "h": 20,
+                      "wSize": "hug",
+                      "hSize": "hug",
+                      "text": "Creating your room…",
+                      "textStyle": "Zumpo/Label",
+                      "fills": [
+                        "$Zumpo · UI:color/muted"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
           }
         ]
       },

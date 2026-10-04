@@ -134,121 +134,98 @@
         },
         "children": [
           {
-            "type": "FRAME",
-            "id": "9:2922",
+            "type": "INSTANCE",
+            "id": "35:13680",
             "name": "That room moved on.",
             "w": 560,
             "h": 242,
             "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/paper"
-            ],
-            "strokes": [
-              "$Zumpo · UI:color/line"
-            ],
-            "strokeAlign": "inside",
-            "radius": "$Zumpo · UI:radius/24",
-            "layout": {
-              "mode": "column",
-              "gap": "$Zumpo · UI:space/24",
-              "pad": "$Zumpo · UI:space/32",
-              "strokesIncluded": true
+            "component": "Zumpo/Card",
+            "variant": {
+              "Kind": "Focused"
             },
-            "children": [
+            "componentId": "9:400",
+            "props": {
+              "Description": "It filled up, started playing, or closed before you joined. Choose another room.",
+              "Title": "That room moved on."
+            },
+            "overrides": [
               {
-                "type": "TEXT",
-                "id": "9:2923",
-                "w": 496,
-                "h": 30,
-                "hSize": "hug",
-                "text": "That room moved on.",
-                "textStyle": "Zumpo/Heading",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "TEXT",
-                "id": "9:2924",
-                "name": "It filled up, started playing, or closed before you joined. Choose ano",
-                "w": 496,
-                "h": 50,
-                "hSize": "hug",
-                "text": "It filled up, started playing, or closed before you joined. Choose another room.",
-                "textStyle": "Zumpo/Body",
-                "fills": [
-                  "$Zumpo · UI:color/muted"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "FRAME",
-                "id": "9:2925",
-                "name": "Actions",
-                "w": 496,
-                "h": 48,
-                "hSize": "hug",
-                "layout": {
-                  "mode": "row",
-                  "gap": "$Zumpo · UI:space/12",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "INSTANCE",
-                    "id": "9:2926",
-                    "name": "Action / Back to rooms",
-                    "w": 139,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
-                    "variant": {
-                      "Style": "Primary",
-                      "State": "Default"
-                    },
-                    "componentId": "4:15",
-                    "props": {
-                      "Label": "Back to rooms"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 48,
-                        "reactions": [
-                          {
-                            "on": "on_click",
-                            "do": [
-                              {
-                                "nav": "navigate",
-                                "to": "9:2528",
-                                "toName": "ML01 / Room list · open, private, full and playing states",
-                                "transition": "dissolve"
-                              }
-                            ]
-                          }
-                        ],
-                        "width": 139
-                      }
-                    ],
-                    "reactions": [
-                      {
-                        "on": "on_click",
-                        "do": [
-                          {
-                            "nav": "navigate",
-                            "to": "9:2528",
-                            "toName": "ML01 / Room list · open, private, full and playing states",
-                            "transition": "dissolve"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
+                "path": ".",
+                "height": 242,
+                "width": 560
               }
-            ]
+            ],
+            "slots": {
+              "Content": [
+                {
+                  "type": "FRAME",
+                  "id": "36:14267",
+                  "name": "Actions",
+                  "w": 496,
+                  "h": 48,
+                  "hSize": "hug",
+                  "layout": {
+                    "mode": "row",
+                    "gap": "$Zumpo · UI:space/12",
+                    "align": "center",
+                    "strokesIncluded": true
+                  },
+                  "children": [
+                    {
+                      "type": "INSTANCE",
+                      "id": "I35:13680;35:13433;36:14270",
+                      "name": "Action / Back to rooms",
+                      "w": 139,
+                      "h": 48,
+                      "wSize": "hug",
+                      "component": "Zumpo/Button",
+                      "variant": {
+                        "Style": "Primary",
+                        "State": "Default"
+                      },
+                      "componentId": "4:15",
+                      "props": {
+                        "Label": "Back to rooms"
+                      },
+                      "overrides": [
+                        {
+                          "path": ".",
+                          "height": 48,
+                          "reactions": [
+                            {
+                              "on": "on_click",
+                              "do": [
+                                {
+                                  "nav": "navigate",
+                                  "to": "9:2528",
+                                  "toName": "ML01 / Room list · open, private, full and playing states",
+                                  "transition": "dissolve"
+                                }
+                              ]
+                            }
+                          ],
+                          "width": 139
+                        }
+                      ],
+                      "reactions": [
+                        {
+                          "on": "on_click",
+                          "do": [
+                            {
+                              "nav": "navigate",
+                              "to": "9:2528",
+                              "toName": "ML01 / Room list · open, private, full and playing states",
+                              "transition": "dissolve"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
           }
         ]
       },

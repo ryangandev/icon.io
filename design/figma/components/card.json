@@ -1,0 +1,310 @@
+{
+  "format": 1,
+  "name": "Zumpo/Card",
+  "id": "35:13442",
+  "type": "COMPONENT_SET",
+  "key": "976311631eaf19d7c2bb52bc0cff6bc0ef8a7e4b",
+  "properties": {
+    "Content": {
+      "type": "slot"
+    },
+    "Title": {
+      "type": "text",
+      "default": "A little room for you."
+    },
+    "Description": {
+      "type": "text",
+      "default": "Set up your game and invite some good company."
+    },
+    "Show description": {
+      "type": "boolean",
+      "default": true
+    },
+    "Show content": {
+      "type": "boolean",
+      "default": true
+    },
+    "Kind": {
+      "type": "variant",
+      "default": "Focused",
+      "options": [
+        "Focused",
+        "Dialog",
+        "Panel"
+      ]
+    }
+  },
+  "defaultVariant": "Kind=Focused",
+  "variants": [
+    {
+      "name": "Kind=Focused",
+      "id": "9:400",
+      "props": {
+        "Kind": "Focused"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "9:400",
+        "name": "Kind=Focused",
+        "w": 560,
+        "h": 269,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/24",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/24",
+          "pad": "$Zumpo · UI:space/32",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:388",
+            "name": "Title",
+            "w": 494,
+            "h": 30,
+            "wSize": "fill",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Title"
+            },
+            "text": "A little room for you.",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:389",
+            "name": "Description",
+            "w": 494,
+            "h": 25,
+            "wSize": "fill",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show description",
+              "characters": "Description"
+            },
+            "text": "Set up your game and invite some good company.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "SLOT",
+            "id": "35:13433",
+            "name": "Content",
+            "w": 494,
+            "h": 100,
+            "wSize": "fill",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show content",
+              "slotContentId": "Content"
+            },
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/24",
+              "strokesIncluded": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Kind=Dialog",
+      "id": "35:13434",
+      "props": {
+        "Kind": "Dialog"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "35:13434",
+        "name": "Kind=Dialog",
+        "w": 560,
+        "h": 269,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/24",
+        "effects": [
+          {
+            "type": "drop_shadow",
+            "color": "#282B252E",
+            "offset": [
+              0,
+              16
+            ],
+            "radius": 48
+          }
+        ],
+        "effectStyle": "Zumpo/Dialog lift",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/24",
+          "pad": "$Zumpo · UI:space/32",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "35:13435",
+            "name": "Title",
+            "w": 494,
+            "h": 30,
+            "wSize": "fill",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Title"
+            },
+            "text": "A little room for you.",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "35:13436",
+            "name": "Description",
+            "w": 494,
+            "h": 25,
+            "wSize": "fill",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show description",
+              "characters": "Description"
+            },
+            "text": "Set up your game and invite some good company.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "SLOT",
+            "id": "35:13437",
+            "name": "Content",
+            "w": 494,
+            "h": 100,
+            "wSize": "fill",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show content",
+              "slotContentId": "Content"
+            },
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/24",
+              "strokesIncluded": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Kind=Panel",
+      "id": "35:13438",
+      "props": {
+        "Kind": "Panel"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "35:13438",
+        "name": "Kind=Panel",
+        "w": 920,
+        "h": 253,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/24",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/16",
+          "pad": "$Zumpo · UI:space/32",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "35:13439",
+            "name": "Title",
+            "w": 854,
+            "h": 30,
+            "wSize": "fill",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Title"
+            },
+            "text": "A little room for you.",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "35:13440",
+            "name": "Description",
+            "w": 854,
+            "h": 25,
+            "wSize": "fill",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show description",
+              "characters": "Description"
+            },
+            "text": "Set up your game and invite some good company.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "SLOT",
+            "id": "35:13441",
+            "name": "Content",
+            "w": 854,
+            "h": 100,
+            "wSize": "fill",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show content",
+              "slotContentId": "Content"
+            },
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/16",
+              "strokesIncluded": true
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

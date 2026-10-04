@@ -33,7 +33,9 @@ design in Figma, never these files.
   or [top, right, bottom, left]), justify, align, wrap.
 - Instances: component (family name), variant, props (only values that differ
   from the property default), overrides (path inside the instance, "." for the
-  instance itself, and the overridden fields). Children are not repeated.
+  instance itself, and the overridden fields). Children are not repeated,
+  except a slot's content: slots maps each slot property to the children the
+  instance put in it.
 - svg: a vector drawing exported to svg/; its children are not repeated.
 - GRID: many same-kind children folded into rows x cols, the common cell, and
   "special" cells as {r, c, id, ...only the differing fields}. rowFrame is the

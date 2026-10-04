@@ -134,166 +134,143 @@
         },
         "children": [
           {
-            "type": "FRAME",
-            "id": "9:2886",
+            "type": "INSTANCE",
+            "id": "35:13671",
             "name": "This room has a secret.",
             "w": 560,
             "h": 354,
             "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/paper"
-            ],
-            "strokes": [
-              "$Zumpo · UI:color/line"
-            ],
-            "strokeAlign": "inside",
-            "radius": "$Zumpo · UI:radius/24",
-            "layout": {
-              "mode": "column",
-              "gap": "$Zumpo · UI:space/24",
-              "pad": "$Zumpo · UI:space/32",
-              "strokesIncluded": true
+            "component": "Zumpo/Card",
+            "variant": {
+              "Kind": "Focused"
             },
-            "children": [
+            "componentId": "9:400",
+            "props": {
+              "Description": "Enter the password for Lunch break.",
+              "Title": "This room has a secret."
+            },
+            "overrides": [
               {
-                "type": "TEXT",
-                "id": "9:2887",
-                "w": 496,
-                "h": 30,
-                "hSize": "hug",
-                "text": "This room has a secret.",
-                "textStyle": "Zumpo/Heading",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "TEXT",
-                "id": "9:2888",
-                "name": "Enter the password for Maya’s room.",
-                "w": 496,
-                "h": 25,
-                "hSize": "hug",
-                "text": "Enter the password for Lunch break.",
-                "textStyle": "Zumpo/Body",
-                "fills": [
-                  "$Zumpo · UI:color/muted"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:2889",
-                "name": "Zumpo/Input",
-                "w": 496,
-                "h": 113,
-                "hSize": "hug",
-                "component": "Zumpo/Input",
-                "variant": {
-                  "State": "Error"
-                },
-                "componentId": "9:216",
-                "props": {
-                  "Helper": "That password didn’t work. Try again.",
-                  "Value": "••••••",
-                  "Label": "Room password"
-                }
-              },
-              {
-                "type": "FRAME",
-                "id": "9:2894",
-                "name": "Actions",
-                "w": 496,
-                "h": 48,
-                "hSize": "hug",
-                "layout": {
-                  "mode": "row",
-                  "gap": "$Zumpo · UI:space/12",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "INSTANCE",
-                    "id": "9:2895",
-                    "name": "Action / Join room",
-                    "w": 108,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
-                    "variant": {
-                      "Style": "Primary",
-                      "State": "Default"
-                    },
-                    "componentId": "4:15",
-                    "props": {
-                      "Label": "Join room"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 48,
-                        "reactions": [],
-                        "width": 108
-                      }
-                    ]
-                  },
-                  {
-                    "type": "INSTANCE",
-                    "id": "9:2897",
-                    "name": "Action / Back to rooms",
-                    "w": 169,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
-                    "variant": {
-                      "Style": "Secondary",
-                      "State": "Default"
-                    },
-                    "componentId": "4:18",
-                    "props": {
-                      "Icon": "Zumpo/Icon / Glyph=back",
-                      "Show icon": true,
-                      "Label": "Back to rooms"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 48,
-                        "reactions": [
-                          {
-                            "on": "on_click",
-                            "do": [
-                              {
-                                "nav": "navigate",
-                                "to": "9:2528",
-                                "toName": "ML01 / Room list · open, private, full and playing states",
-                                "transition": "dissolve"
-                              }
-                            ]
-                          }
-                        ],
-                        "width": 169
-                      }
-                    ],
-                    "reactions": [
-                      {
-                        "on": "on_click",
-                        "do": [
-                          {
-                            "nav": "navigate",
-                            "to": "9:2528",
-                            "toName": "ML01 / Room list · open, private, full and playing states",
-                            "transition": "dissolve"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
+                "path": ".",
+                "height": 354,
+                "width": 560
               }
-            ]
+            ],
+            "slots": {
+              "Content": [
+                {
+                  "type": "INSTANCE",
+                  "id": "36:14433",
+                  "name": "Zumpo/Input",
+                  "w": 496,
+                  "h": 113,
+                  "hSize": "hug",
+                  "component": "Zumpo/Input",
+                  "variant": {
+                    "State": "Error"
+                  },
+                  "componentId": "9:216",
+                  "props": {
+                    "Helper": "That password didn’t work. Try again.",
+                    "Value": "••••••",
+                    "Label": "Room password"
+                  }
+                },
+                {
+                  "type": "FRAME",
+                  "id": "36:14441",
+                  "name": "Actions",
+                  "w": 496,
+                  "h": 48,
+                  "hSize": "hug",
+                  "layout": {
+                    "mode": "row",
+                    "gap": "$Zumpo · UI:space/12",
+                    "align": "center",
+                    "strokesIncluded": true
+                  },
+                  "children": [
+                    {
+                      "type": "INSTANCE",
+                      "id": "I35:13671;35:13433;36:14445",
+                      "name": "Action / Join room",
+                      "w": 108,
+                      "h": 48,
+                      "wSize": "hug",
+                      "component": "Zumpo/Button",
+                      "variant": {
+                        "Style": "Primary",
+                        "State": "Default"
+                      },
+                      "componentId": "4:15",
+                      "props": {
+                        "Label": "Join room"
+                      },
+                      "overrides": [
+                        {
+                          "path": ".",
+                          "height": 48,
+                          "reactions": [],
+                          "width": 108
+                        }
+                      ]
+                    },
+                    {
+                      "type": "INSTANCE",
+                      "id": "I35:13671;35:13433;36:14446",
+                      "name": "Action / Back to rooms",
+                      "w": 169,
+                      "h": 48,
+                      "wSize": "hug",
+                      "component": "Zumpo/Button",
+                      "variant": {
+                        "Style": "Secondary",
+                        "State": "Default"
+                      },
+                      "componentId": "4:18",
+                      "props": {
+                        "Icon": "Zumpo/Icon / Glyph=back",
+                        "Show icon": true,
+                        "Label": "Back to rooms"
+                      },
+                      "overrides": [
+                        {
+                          "path": ".",
+                          "height": 48,
+                          "reactions": [
+                            {
+                              "on": "on_click",
+                              "do": [
+                                {
+                                  "nav": "navigate",
+                                  "to": "9:2528",
+                                  "toName": "ML01 / Room list · open, private, full and playing states",
+                                  "transition": "dissolve"
+                                }
+                              ]
+                            }
+                          ],
+                          "width": 169
+                        }
+                      ],
+                      "reactions": [
+                        {
+                          "on": "on_click",
+                          "do": [
+                            {
+                              "nav": "navigate",
+                              "to": "9:2528",
+                              "toName": "ML01 / Room list · open, private, full and playing states",
+                              "transition": "dissolve"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
           }
         ]
       },

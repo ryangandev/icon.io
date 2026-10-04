@@ -135,133 +135,111 @@
         },
         "children": [
           {
-            "type": "FRAME",
-            "id": "9:529",
+            "type": "INSTANCE",
+            "id": "35:13452",
             "name": "What should we call you?",
             "w": 560,
             "h": 354,
             "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/paper"
-            ],
-            "strokes": [
-              "$Zumpo · UI:color/line"
-            ],
-            "strokeAlign": "inside",
-            "radius": "$Zumpo · UI:radius/24",
-            "layout": {
-              "mode": "column",
-              "gap": "$Zumpo · UI:space/24",
-              "pad": "$Zumpo · UI:space/32",
-              "strokesIncluded": true
+            "component": "Zumpo/Card",
+            "variant": {
+              "Kind": "Focused"
             },
-            "children": [
+            "componentId": "9:400",
+            "props": {
+              "Description": "Your name will appear in rooms, chat, and scores.",
+              "Title": "What should we call you?"
+            },
+            "overrides": [
               {
-                "type": "TEXT",
-                "id": "9:530",
-                "w": 496,
-                "h": 30,
-                "hSize": "hug",
-                "text": "What should we call you?",
-                "textStyle": "Zumpo/Heading",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "TEXT",
-                "id": "9:531",
-                "w": 496,
-                "h": 25,
-                "hSize": "hug",
-                "text": "Your name will appear in rooms, chat, and scores.",
-                "textStyle": "Zumpo/Body",
-                "fills": [
-                  "$Zumpo · UI:color/muted"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:532",
-                "name": "Zumpo/Input",
-                "w": 496,
-                "h": 113,
-                "hSize": "hug",
-                "component": "Zumpo/Input",
-                "variant": {
-                  "State": "Error"
-                },
-                "componentId": "9:216",
-                "props": {
-                  "Helper": "Enter a name with at least one visible character.",
-                  "Value": ""
-                }
-              },
-              {
-                "type": "FRAME",
-                "id": "9:537",
-                "name": "Actions",
-                "w": 496,
-                "h": 48,
-                "hSize": "hug",
-                "layout": {
-                  "mode": "row",
-                  "gap": "$Zumpo · UI:space/12",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "INSTANCE",
-                    "id": "9:538",
-                    "name": "Action / Let’s play",
-                    "w": 105,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
-                    "variant": {
-                      "Style": "Primary",
-                      "State": "Default"
-                    },
-                    "componentId": "4:15",
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "reactions": []
-                      }
-                    ]
-                  },
-                  {
-                    "type": "INSTANCE",
-                    "id": "9:540",
-                    "name": "Action / Back home",
-                    "w": 146,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
-                    "variant": {
-                      "Style": "Secondary",
-                      "State": "Default"
-                    },
-                    "componentId": "4:18",
-                    "props": {
-                      "Icon": "Zumpo/Icon / Glyph=back",
-                      "Show icon": true,
-                      "Label": "Back home"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 48,
-                        "width": 146
-                      }
-                    ]
-                  }
-                ]
+                "path": ".",
+                "height": 354,
+                "width": 560
               }
-            ]
+            ],
+            "slots": {
+              "Content": [
+                {
+                  "type": "INSTANCE",
+                  "id": "36:14062",
+                  "name": "Zumpo/Input",
+                  "w": 496,
+                  "h": 113,
+                  "hSize": "hug",
+                  "component": "Zumpo/Input",
+                  "variant": {
+                    "State": "Error"
+                  },
+                  "componentId": "9:216",
+                  "props": {
+                    "Helper": "Enter a name with at least one visible character.",
+                    "Value": ""
+                  }
+                },
+                {
+                  "type": "FRAME",
+                  "id": "36:14070",
+                  "name": "Actions",
+                  "w": 496,
+                  "h": 48,
+                  "hSize": "hug",
+                  "layout": {
+                    "mode": "row",
+                    "gap": "$Zumpo · UI:space/12",
+                    "align": "center",
+                    "strokesIncluded": true
+                  },
+                  "children": [
+                    {
+                      "type": "INSTANCE",
+                      "id": "I35:13452;35:13433;36:14074",
+                      "name": "Action / Let’s play",
+                      "w": 105,
+                      "h": 48,
+                      "wSize": "hug",
+                      "component": "Zumpo/Button",
+                      "variant": {
+                        "Style": "Primary",
+                        "State": "Default"
+                      },
+                      "componentId": "4:15",
+                      "overrides": [
+                        {
+                          "path": ".",
+                          "reactions": []
+                        }
+                      ]
+                    },
+                    {
+                      "type": "INSTANCE",
+                      "id": "I35:13452;35:13433;36:14075",
+                      "name": "Action / Back home",
+                      "w": 146,
+                      "h": 48,
+                      "wSize": "hug",
+                      "component": "Zumpo/Button",
+                      "variant": {
+                        "Style": "Secondary",
+                        "State": "Default"
+                      },
+                      "componentId": "4:18",
+                      "props": {
+                        "Icon": "Zumpo/Icon / Glyph=back",
+                        "Show icon": true,
+                        "Label": "Back home"
+                      },
+                      "overrides": [
+                        {
+                          "path": ".",
+                          "height": 48,
+                          "width": 146
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
           }
         ]
       },
