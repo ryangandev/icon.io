@@ -15,6 +15,7 @@ export {
   type ButtonVariant,
 } from './components/button';
 export { Card, type CardProps } from './components/card';
+export { ChoiceList, type ChoiceListProps } from './components/choice-list';
 export { Chat, type ChatProps } from './components/chat';
 export {
   ChatInput,
@@ -81,6 +82,7 @@ export {
   type SelectFieldProps,
   type SelectOption,
 } from './components/select-field';
+export { StatList, type Stat } from './components/stat-list';
 export { Tag, type TagProps, type TagTone } from './components/tag';
 export { TextField, type TextFieldProps } from './components/text-field';
 export {

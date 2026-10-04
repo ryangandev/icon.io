@@ -1,0 +1,34 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--zumpo-space-12);
+  padding-block: var(--zumpo-space-8);
+}
+
+.label {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-body);
+  letter-spacing: var(--zumpo-text-body-tracking);
+}
+
+.value {
+  margin: 0;
+  font: var(--zumpo-text-number);
+  letter-spacing: var(--zumpo-text-number-tracking);
+  text-align: right;
+}
+
+.muted {
+  color: var(--zumpo-muted);
+}
+
+.green {
+  color: var(--zumpo-green);
+}

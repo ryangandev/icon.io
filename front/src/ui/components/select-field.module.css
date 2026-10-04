@@ -82,8 +82,37 @@
   background: var(--zumpo-cream);
 }
 
-.option[data-selected] {
+.option[data-selected],
+.option[data-checked] {
   background: var(--zumpo-lime);
+}
+
+/* A choice list lays its options out in the page, 8 px apart (MS01). */
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-8);
+}
+
+/* In the page, hover and focus show, and two lines keep the full padding. */
+.choice {
+  margin: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+}
+
+.choice.withDetail {
+  padding-block: 10px;
+}
+
+.choice:hover:not([data-checked]) {
+  background: var(--zumpo-cream);
+}
+
+.choice:focus-visible {
+  outline: 2px solid var(--zumpo-ink);
+  outline-offset: 2px;
 }
 
 .text {
@@ -105,7 +134,8 @@
   letter-spacing: var(--zumpo-text-small-tracking);
 }
 
-.option[data-selected] .detail {
+.option[data-selected] .detail,
+.option[data-checked] .detail {
   color: var(--zumpo-ink);
 }
 

@@ -6,8 +6,8 @@ import styles from './turn-bar.module.css';
 export type TurnBarKind = 'word' | 'hint' | 'status';
 
 export interface TurnBarProps {
-  /** The game's category, always shown. */
-  category: string;
+  /** The game's category or board, as a tag; a game on your own has none. */
+  category?: string;
   /** What to do: "Draw the word", "Guess the word". */
   label: string;
   /**
@@ -38,8 +38,11 @@ export function TurnBar({
 }: TurnBarProps) {
   return (
     <div className={cx(styles.container, className)}>
-      <section className={styles.bar} aria-label="Turn">
-        <Tag className={styles.tag}>{category}</Tag>
+      <section
+        className={cx(styles.bar, category == null && styles.untagged)}
+        aria-label="Turn"
+      >
+        {category != null && <Tag className={styles.tag}>{category}</Tag>}
         <span className={styles.label}>{label}</span>
         <p className={styles.answer} aria-live="polite">
           <span className={cx(styles.main, styles[kind])}>{main}</span>

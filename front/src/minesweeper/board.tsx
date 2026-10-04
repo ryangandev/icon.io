@@ -5,6 +5,7 @@ import type {
 import {
   MineCell,
   PickMarker,
+  type MineCellProps,
   type MineCellState,
   type PickOutcome,
 } from '../ui';
@@ -25,14 +26,11 @@ export interface BoardProps {
 }
 
 /**
- * The shared minefield. A Large board uses compact cells; on a phone, a
- * board wider than Small keeps full-size cells and pans sideways.
+ * The shared minefield of a room: each player's view of it, with every pick
+ * of the round laid over its cell during the reveal.
  */
 export function Board({ state, onPick, showPicks }: BoardProps) {
   const { width, height, board, myPick } = state;
-  const phone = useMediaQuery(PHONE);
-  // Compact cells fit a Large board on a desktop; a phone pans instead.
-  const compact = width > 16 && !phone;
   const markers = showPicks ? markersByCell(state.lastRound) : new Map();
 
   const cellState = (index: number): MineCellState => {
@@ -47,10 +45,52 @@ export function Board({ state, onPick, showPicks }: BoardProps) {
   };
 
   return (
+    <MineGrid
+      width={width}
+      height={height}
+      cell={(index) => {
+        const cell = cellState(index);
+        return {
+          state: cell,
+          onPick:
+            onPick && cell.kind === 'hidden' ? () => onPick(index) : undefined,
+          pick: markers.get(index),
+        };
+      }}
+    />
+  );
+}
+
+export interface MineGridProps {
+  width: number;
+  height: number;
+  /** What a cell shows and does, and whose pick lies over it. */
+  cell: (index: number) => MineGridCell;
+}
+
+export type MineGridCell = Pick<
+  MineCellProps,
+  'state' | 'onPick' | 'onMark'
+> & {
+  /** A room's reveal: a pick laid over the cell. */
+  pick?: { outcome: PickOutcome; initials: string };
+};
+
+/**
+ * Any minefield, in a room or on your own. A Large board uses compact cells;
+ * on a phone, a board wider than Small keeps full-size cells and pans
+ * sideways.
+ */
+export function MineGrid({ width, height, cell }: MineGridProps) {
+  const phone = useMediaQuery(PHONE);
+  // Compact cells fit a Large board on a desktop; a phone pans instead.
+  const size = width > 16 && !phone ? 'compact' : 'regular';
+
+  return (
     <div
       className={cx(
         styles.viewport,
-        compact && styles.compact,
+        size === 'compact' && styles.compact,
         width > 9 && styles.pans,
       )}
     >
@@ -64,25 +104,23 @@ export function Board({ state, onPick, showPicks }: BoardProps) {
         {Array.from({ length: height }, (_, row) => (
           <div key={row} className={styles.row} role="row">
             {Array.from({ length: width }, (_cell, column) => {
-              const index = row * width + column;
-              const marker = markers.get(index);
+              const { pick, ...props } = cell(row * width + column);
               return (
                 <MineCell
                   key={column}
                   row={row}
                   column={column}
-                  size={compact ? 'compact' : 'regular'}
-                  state={cellState(index)}
-                  onPick={onPick ? () => onPick(index) : undefined}
+                  size={size}
                   marker={
-                    marker && (
+                    pick && (
                       <PickMarker
-                        outcome={marker.outcome}
-                        initials={marker.initials}
-                        size={compact ? 'compact' : 'regular'}
+                        outcome={pick.outcome}
+                        initials={pick.initials}
+                        size={size}
                       />
                     )
                   }
+                  {...props}
                 />
               );
             })}

@@ -9,6 +9,7 @@ import {
   AVATAR_TONES,
   Button,
   Card,
+  ChoiceList,
   Chat,
   ChatInput,
   ChatMessage,
@@ -28,6 +29,7 @@ import {
   RoomRow,
   Scoreboard,
   SelectField,
+  StatList,
   Tag,
   TextField,
   TurnBar,
@@ -118,6 +120,7 @@ export default function Gallery() {
   const [seats, setSeats] = useState(8);
   const [rounds, setRounds] = useState(2);
   const [board, setBoard] = useState<'small' | 'medium' | 'large'>('medium');
+  const [choice, setChoice] = useState('medium');
   const [colour, setColour] = useState<BrushName>('ink');
   const [size, setSize] = useState<BrushSize>(10);
   const [view, setView] = useState<'board' | 'players' | 'chat'>('board');
@@ -686,6 +689,27 @@ export default function Gallery() {
                     column={11}
                   />
                 </Specimen>
+                {(
+                  [
+                    ['Flag', 'flag'],
+                    ['Hit', 'hit'],
+                    ['Wrong flag', 'wrong-flag'],
+                  ] as const
+                ).map(([state, kind], index) => (
+                  <Specimen
+                    key={kind}
+                    family="mine-cell"
+                    variant={`State=${state}, Size=${sizeName}`}
+                    label={state}
+                  >
+                    <MineCell
+                      state={{ kind }}
+                      size={cellSize}
+                      row={0}
+                      column={12 + index}
+                    />
+                  </Specimen>
+                ))}
               </div>
             </div>
           );
@@ -819,6 +843,30 @@ export default function Gallery() {
             viewer={{ ...PLAYERS.sam, label: 'You are Sam' }}
           />
         </Specimen>
+        <Specimen label="Choice list: Board, in the page" width={496}>
+          <ChoiceList
+            label="Board"
+            value={choice}
+            onValueChange={setChoice}
+            options={[
+              {
+                value: 'small',
+                label: 'Small · 9 × 9',
+                detail: '10 mines. Best: 0:48',
+              },
+              {
+                value: 'medium',
+                label: 'Medium · 16 × 16',
+                detail: '40 mines. Best: 3:12',
+              },
+              {
+                value: 'large',
+                label: 'Large · 30 × 16',
+                detail: '99 mines. No best yet',
+              },
+            ]}
+          />
+        </Specimen>
       </Family>
 
       <Family
@@ -852,6 +900,18 @@ export default function Gallery() {
             description="Be the first to make a room. Bring a friend and get playing."
             actions={<Button>Create the first room</Button>}
           />
+        </Specimen>
+        <Specimen label="Kind=Panel: stats beside a game" width={344}>
+          <Card kind="panel" title="Best on this device">
+            <StatList
+              className={styles.stretch}
+              stats={[
+                { label: 'Small · 9 × 9', value: '0:48' },
+                { label: 'Medium · 16 × 16', value: '3:05', tone: 'green' },
+                { label: 'Large · 30 × 16', value: 'Not yet', tone: 'muted' },
+              ]}
+            />
+          </Card>
         </Specimen>
         <Specimen label="Kind=Dialog: opens over the page">
           <Button

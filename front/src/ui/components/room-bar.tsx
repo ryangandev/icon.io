@@ -20,13 +20,15 @@ export interface RoomBarProps {
   onHowToPlay: () => void;
   /** Without it, as while reconnecting, there is no Leave room button. */
   onLeave?: () => void;
+  /** "Leave room"; a game on your own has no room, so it says "Leave". */
+  leaveLabel?: string;
   viewer?: Viewer;
   viewerMenu?: HeaderMenu;
   className?: string;
 }
 
 /**
- * Zumpo/Room bar: a seated room's header and heading in one row. How to play
+ * Zumpo/Room bar: a seated room's header and heading in one row, and a game on your own's. How to play
  * opens over the room and Leave room is the way out; the wordmark is a way
  * out too, so whoever renders the bar guards the navigation.
  */
@@ -37,6 +39,7 @@ export function RoomBar({
   phase,
   onHowToPlay,
   onLeave,
+  leaveLabel = 'Leave room',
   viewer,
   viewerMenu,
   className,
@@ -74,7 +77,7 @@ export function RoomBar({
           iconOnly={phone}
           onClick={onLeave}
         >
-          Leave room
+          {leaveLabel}
         </Button>
       )}
       {viewer && <ViewerAvatar viewer={viewer} menu={viewerMenu} />}
