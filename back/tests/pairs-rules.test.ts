@@ -8,6 +8,9 @@ import {
 } from '../../shared/pairs.js';
 import { seededRandom, seedNumber } from '../../shared/seed.js';
 
+const deal = (seed: string) =>
+  dealDeck('Large', seededRandom(seedNumber(seed)));
+
 describe('the deal', () => {
   it.each(BOARDS)('fills a %s board with every symbol twice', (board) => {
     const { side, pairs } = PAIRS_BOARDS[board];
@@ -29,8 +32,6 @@ describe('the deal', () => {
   });
 
   it('deals the same deck from the same seed, and another from another', () => {
-    const deal = (seed: string) =>
-      dealDeck('Large', seededRandom(seedNumber(seed)));
     expect(deal('k3f9x2')).toEqual(deal('k3f9x2'));
     expect(deal('k3f9x2')).not.toEqual(deal('zzzzzz'));
   });

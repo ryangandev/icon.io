@@ -210,7 +210,7 @@ function RunView({
     }
   };
 
-  const link = challengeLink(soloPath('make-24'), seed);
+  const link = challengeLink(soloPath('make-24'), { seed });
 
   if (finish) {
     const { timeMs, solved, skipped, fastestMs } = summary(run);

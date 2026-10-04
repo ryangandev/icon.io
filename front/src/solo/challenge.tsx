@@ -2,9 +2,12 @@ import { Button, Card } from '../ui';
 import { useCopy } from '../shell/use-copy';
 import styles from './challenge.module.css';
 
-/** The whole address of a challenge: the same game, for somebody else. */
-export const challengeLink = (path: string, seed: string) =>
-  `${window.location.origin}${path}?seed=${seed}`;
+/**
+ * The whole address of a challenge: the same game, for somebody else. The
+ * parameters deal it: a seed, and for Pairs the board.
+ */
+export const challengeLink = (path: string, deal: Record<string, string>) =>
+  `${window.location.origin}${path}?${new URLSearchParams(deal)}`;
 
 /** Challenge a friend, among a finished game's actions (T05, PR04). */
 export function ChallengeButton({ link }: { link: string }) {
