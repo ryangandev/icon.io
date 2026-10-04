@@ -74,11 +74,15 @@
 The server owns the game clock, so the phase lengths are server-side settings.
 Shorten them to play through a whole game quickly while developing:
 
-| Variable              | Default | Purpose                                 |
-| --------------------- | ------- | --------------------------------------- |
-| `WORD_SELECT_SECONDS` | `15`    | How long the drawer has to pick a word  |
-| `DRAWING_SECONDS`     | `90`    | Length of the drawing phase             |
-| `REVIEW_SECONDS`      | `10`    | How long the word is shown after a turn |
+| Variable                     | Default | Purpose                                    |
+| ---------------------------- | ------- | ------------------------------------------ |
+| `WORD_SELECT_SECONDS`        | `15`    | How long the drawer has to pick a word     |
+| `DRAWING_SECONDS`            | `90`    | Length of the drawing phase                |
+| `REVIEW_SECONDS`             | `10`    | How long the word is shown after a turn    |
+| `DRAWER_HOLD_SECONDS`        | `10`    | How long a turn waits for a dropped drawer |
+| `MINESWEEPER_ROUND_SECONDS`  | `15`    | How long everybody has to pick a cell      |
+| `MINESWEEPER_REVEAL_SECONDS` | `4`     | How long a round's outcome stays up        |
+| `RECONNECT_GRACE_SECONDS`    | `30`    | How long a dropped player keeps their seat |
 
 ## 🛠️ Set Up - Deployment
 
