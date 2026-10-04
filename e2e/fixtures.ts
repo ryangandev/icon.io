@@ -8,7 +8,7 @@ import {
 
 export { expect };
 
-export type GameType = 'draw-and-guess' | 'minesweeper';
+export type GameType = 'draw-and-guess' | 'minesweeper' | 'make-24' | 'pairs';
 
 export interface PlayerOptions {
   /** A 390 px touch screen, as Figma's mobile frames. */
@@ -80,8 +80,10 @@ export interface RoomSettings {
   seats?: 2 | 3 | 4 | 5 | 6 | 7 | 8;
   /** Draw & Guess: how many rounds. */
   rounds?: 1 | 2 | 3 | 4;
-  /** Minesweeper: the board, by its first word. */
+  /** Minesweeper or Pairs: the board, by its first word. */
   board?: 'Small' | 'Medium' | 'Large';
+  /** Make 24: how many hands. */
+  hands?: 5 | 10;
 }
 
 /** Makes a room through the create page and returns its link. */
@@ -100,6 +102,9 @@ export async function createRoom(
   }
   if (settings.board) {
     await choose(page, 'Board', new RegExp(`^${settings.board}`));
+  }
+  if (settings.hands) {
+    await choose(page, 'Hands', new RegExp(`^${settings.hands} hands$`));
   }
   if (settings.password) {
     await page.getByLabel('Password (optional)').fill(settings.password);
