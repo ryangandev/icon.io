@@ -48,6 +48,11 @@ Decisions from the first review round ([report](../design/reviews/2026-10-03-rou
 - No disabled primary buttons: a request in flight is a status line, and an action you cannot take is not shown.
 - Dialogs (leave, invite) sit over the screen they come from, behind a scrim.
 - Example data follows one story with four players (Maya, Ryan, Leo, Sam), each with a fixed avatar colour, and every score is computed with the real formula.
+- Text on a tinted surface (peach, blue, lime) is ink; muted text is only for cream, paper and sand, where it passes WCAG AA.
+- Keyboard focus is a 2 px ink ring 2 px outside the control, distinct from hover's border.
+- A line of metadata has at most one middle dot.
+
+[taste-skill](https://github.com/Leonxlnx/taste-skill)'s `design-taste-frontend` and `redesign-existing-projects` skills are useful review checklists, not authorities: they target landing pages, and where a rule contradicts the brand direction above (its cream-palette and single-accent rules, for example), the brand wins.
 
 ## Figma export
 
