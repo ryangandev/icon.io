@@ -5,24 +5,18 @@ import type {
   MinesweeperDifficulty,
   RoomCreateRequest,
 } from '../../../shared/wire-types';
-import {
-  Button,
-  ButtonLink,
-  Card,
-  Notice,
-  SelectField,
-  TextField,
-} from '../ui';
+import { Button, ButtonLink, Notice, SelectField, TextField } from '../ui';
 import { gameInfo, lobbyPath, roomPath } from '../games/catalog';
 import { plural } from '../games/plural';
 import { DIFFICULTIES, boardDetail } from '../minesweeper/boards';
 import { useConnectedSession } from '../net/session';
 import { REQUEST_TIMEOUT_MS } from '../net/socket';
 import { ConnectionFailed } from '../shell/connection-failed';
+import { FormPage } from '../shell/form-page';
 import { Page } from '../shell/page';
 import { Stage } from '../shell/stage';
 import { StatusLine } from '../shell/status-line';
-import { LobbyHeading } from './lobby';
+import { LobbyHeading, lobbyHeading } from './lobby';
 
 /** The server's limits. */
 const ROOM_NAME_MAX_LENGTH = 40;
@@ -30,7 +24,7 @@ const PASSWORD_MAX_LENGTH = 20;
 const SEATS = [2, 3, 4, 5, 6, 7, 8] as const;
 const ROUNDS = [1, 2, 3, 4] as const;
 
-/** DL04-DL06, DL10, DL11, ML04-ML06, ML10: a new room, with its settings. */
+/** DL04-DL06, DL10, DL11, ML04-ML06, ML10, MO05: a new room, with its settings. */
 export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   const game = gameInfo(gameType);
   const { socket, status, name } = useConnectedSession();
@@ -80,100 +74,110 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
     setPending(false);
   };
 
-  return (
-    <Page>
-      <LobbyHeading
-        game={game}
-        subtitle="Make a little space for your next game."
-      />
-      <Stage>
-        {status === 'failed' ? (
+  const subtitle = 'Make a little space for your next game.';
+  if (status === 'failed') {
+    return (
+      <Page>
+        <LobbyHeading game={game} subtitle={subtitle} />
+        <Stage>
           <ConnectionFailed />
-        ) : (
-          <Card
-            title="A little room for you."
-            description={game.createDescription}
-            onSubmit={submit}
-            actions={
-              pending ? undefined : (
-                <>
-                  <Button type="submit">Create room</Button>
-                  <ButtonLink to={lobbyPath(gameType)} variant="secondary">
-                    Cancel
-                  </ButtonLink>
-                </>
-              )
-            }
-          >
-            {failed && (
-              <Notice tone="error">
-                We couldn’t create the room. Please try again.
-              </Notice>
-            )}
-            <TextField
-              label="Room name"
-              helper={`Up to ${ROOM_NAME_MAX_LENGTH} characters.`}
-              error={nameMissing ? 'Give your room a name.' : undefined}
-              value={roomName}
-              onValueChange={(next: string) => {
-                setRoomName(next);
-                if (nameMissing && next.trim()) setNameMissing(false);
-              }}
-              maxLength={ROOM_NAME_MAX_LENGTH}
-              autoComplete="off"
-              name="roomName"
-            />
-            <SelectField
-              label="Seats"
-              helper="Choose 2–8 seats."
-              options={SEATS.map((count) => ({
-                value: count,
-                label: plural(count, 'player'),
-              }))}
-              value={seats}
-              onValueChange={setSeats}
-              name="seats"
-            />
-            {gameType === 'draw-and-guess' ? (
-              <SelectField
-                label="Rounds"
-                helper="1, 2, 3 or 4 rounds."
-                options={ROUNDS.map((count) => ({
-                  value: count,
-                  label: plural(count, 'round'),
-                }))}
-                value={rounds}
-                onValueChange={setRounds}
-                name="rounds"
-              />
-            ) : (
-              <SelectField
-                label="Board"
-                helper={boardDetail(difficulty)}
-                options={DIFFICULTIES.map((board) => ({
-                  value: board,
-                  label: board,
-                  detail: boardDetail(board),
-                }))}
-                value={difficulty}
-                onValueChange={setDifficulty}
-                name="board"
-              />
-            )}
-            <TextField
-              label="Password (optional)"
-              helper={`Leave blank for an open room. Up to ${PASSWORD_MAX_LENGTH} characters.`}
-              type="password"
-              value={password}
-              onValueChange={(next: string) => setPassword(next)}
-              maxLength={PASSWORD_MAX_LENGTH}
-              autoComplete="new-password"
-              name="password"
-            />
-            {pending && <StatusLine>Creating your room…</StatusLine>}
-          </Card>
-        )}
-      </Stage>
-    </Page>
+        </Stage>
+      </Page>
+    );
+  }
+  return (
+    <FormPage
+      heading={lobbyHeading(game, subtitle)}
+      phone={{
+        eyebrow: 'Make a room',
+        title: (
+          <>
+            A little room <br />
+            for you.
+          </>
+        ),
+        subtitle: `${game.name} · room settings`,
+      }}
+      title="A little room for you."
+      description={game.createDescription}
+      onSubmit={submit}
+      actions={
+        pending ? undefined : (
+          <>
+            <Button type="submit">Create room</Button>
+            <ButtonLink to={lobbyPath(gameType)} variant="secondary">
+              Cancel
+            </ButtonLink>
+          </>
+        )
+      }
+    >
+      {failed && (
+        <Notice tone="error">
+          We couldn’t create the room. Please try again.
+        </Notice>
+      )}
+      <TextField
+        label="Room name"
+        helper={`Up to ${ROOM_NAME_MAX_LENGTH} characters.`}
+        error={nameMissing ? 'Give your room a name.' : undefined}
+        value={roomName}
+        onValueChange={(next: string) => {
+          setRoomName(next);
+          if (nameMissing && next.trim()) setNameMissing(false);
+        }}
+        maxLength={ROOM_NAME_MAX_LENGTH}
+        autoComplete="off"
+        name="roomName"
+      />
+      <SelectField
+        label="Seats"
+        helper="Choose 2–8 seats."
+        options={SEATS.map((count) => ({
+          value: count,
+          label: plural(count, 'player'),
+        }))}
+        value={seats}
+        onValueChange={setSeats}
+        name="seats"
+      />
+      {gameType === 'draw-and-guess' ? (
+        <SelectField
+          label="Rounds"
+          helper="1, 2, 3 or 4 rounds."
+          options={ROUNDS.map((count) => ({
+            value: count,
+            label: plural(count, 'round'),
+          }))}
+          value={rounds}
+          onValueChange={setRounds}
+          name="rounds"
+        />
+      ) : (
+        <SelectField
+          label="Board"
+          helper={boardDetail(difficulty)}
+          options={DIFFICULTIES.map((board) => ({
+            value: board,
+            label: board,
+            detail: boardDetail(board),
+          }))}
+          value={difficulty}
+          onValueChange={setDifficulty}
+          name="board"
+        />
+      )}
+      <TextField
+        label="Password (optional)"
+        helper={`Leave blank for an open room. Up to ${PASSWORD_MAX_LENGTH} characters.`}
+        type="password"
+        value={password}
+        onValueChange={(next: string) => setPassword(next)}
+        maxLength={PASSWORD_MAX_LENGTH}
+        autoComplete="new-password"
+        name="password"
+      />
+      {pending && <StatusLine>Creating your room…</StatusLine>}
+    </FormPage>
   );
 }

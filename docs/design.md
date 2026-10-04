@@ -88,6 +88,7 @@ Code differs from Figma on purpose in a few places:
 - Figma rounds auto-width text boxes up to whole pixels, so a hugging component can be up to a pixel narrower in code.
 - The drawer's word-choice clock is Running, as the Countdown's own rule says of a phase you act in; D04 and MO07 keep the Status turn bar's default Waiting tone.
 - The header marks the page you are on; Figma draws Games as current on every screen.
+- The phone name page (MO02) keeps the desktop's Back home button beside Let’s play, as the other phone forms (MO05, MO06) lay out their buttons; MO02 stacks a Cancel under it.
 
 ## Editing the Figma file
 

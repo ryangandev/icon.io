@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import type { Result } from '../../../shared/wire-types';
 import { FakeSocket } from '../tests/fake-socket';
 import { minesweeperState } from '../tests/fixtures';
+import { onPhone } from '../tests/phone';
 import { renderApp } from '../tests/render-app';
 
 const ROOM = '/games/minesweeper/rooms/r1';
@@ -75,6 +76,24 @@ describe('a room page', () => {
     act(() => fake.serverEmits('room:state', minesweeperState()));
     expect(
       screen.getByRole('heading', { name: 'Minesweeper' }),
+    ).toBeInTheDocument();
+  });
+
+  it('asks for a password straight on the page on a phone', async () => {
+    onPhone();
+    await renderApp(ROOM, { fake: server({ password: 'turtle' }) });
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'This room has a secret.',
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Come on in')).toBeInTheDocument();
+    expect(
+      screen.getByText('Ask the host for the password.'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('form', { name: 'This room has a secret.' }),
     ).toBeInTheDocument();
   });
 

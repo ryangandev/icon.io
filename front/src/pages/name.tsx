@@ -1,10 +1,9 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
-import { Button, ButtonLink, Card, TextField } from '../ui';
+import { Button, ButtonLink, TextField } from '../ui';
 import { useSession } from '../net/session';
-import { Page } from '../shell/page';
-import { PageHeading } from '../shell/page-heading';
-import { Stage } from '../shell/stage';
+import { FormPage } from '../shell/form-page';
+import { PHONE, useMediaQuery } from '../shell/use-media-query';
 
 /** The server's limit on a name. */
 export const NAME_MAX_LENGTH = 18;
@@ -21,9 +20,11 @@ function safeNext(next: string | null): string {
     : '/games';
 }
 
-/** P02 and P03: the name everyone else will see. */
+/** P02, P03 and MO02: the name everyone else will see. */
 export default function NamePage() {
   const { name, setName } = useSession();
+  // A phone gives up the subtitle that promises no signup; the helper keeps it.
+  const phone = useMediaQuery(PHONE);
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const [value, setValue] = useState(name);
@@ -41,46 +42,46 @@ export default function NamePage() {
   };
 
   return (
-    <Page>
-      <PageHeading
-        eyebrow="Come on in"
-        title="Every good game starts with a name."
-        subtitle="No signup. Just pick a name your friends will recognize."
+    <FormPage
+      heading={{
+        eyebrow: 'Come on in',
+        title: 'Every good game starts with a name.',
+        subtitle: 'No signup. Just pick a name your friends will recognize.',
+      }}
+      phone={{
+        eyebrow: 'Come on in',
+        subtitle: 'A little step before the fun.',
+      }}
+      title="What should we call you?"
+      description="Your name will appear in rooms, chat, and scores."
+      onSubmit={submit}
+      actions={
+        <>
+          <Button type="submit">Let’s play</Button>
+          <ButtonLink to="/" variant="secondary" icon="back">
+            Back home
+          </ButtonLink>
+        </>
+      }
+    >
+      <TextField
+        label="Your name"
+        helper={`Up to ${NAME_MAX_LENGTH} characters.${phone ? ' No signup.' : ''}`}
+        error={
+          invalid
+            ? 'Enter a name with at least one visible character.'
+            : undefined
+        }
+        value={value}
+        onValueChange={(next: string) => {
+          setValue(next);
+          if (invalid && next.trim()) setInvalid(false);
+        }}
+        maxLength={NAME_MAX_LENGTH}
+        autoComplete="nickname"
+        autoFocus
+        name="name"
       />
-      <Stage>
-        <Card
-          title="What should we call you?"
-          description="Your name will appear in rooms, chat, and scores."
-          onSubmit={submit}
-          actions={
-            <>
-              <Button type="submit">Let’s play</Button>
-              <ButtonLink to="/" variant="secondary" icon="back">
-                Back home
-              </ButtonLink>
-            </>
-          }
-        >
-          <TextField
-            label="Your name"
-            helper={`Up to ${NAME_MAX_LENGTH} characters.`}
-            error={
-              invalid
-                ? 'Enter a name with at least one visible character.'
-                : undefined
-            }
-            value={value}
-            onValueChange={(next: string) => {
-              setValue(next);
-              if (invalid && next.trim()) setInvalid(false);
-            }}
-            maxLength={NAME_MAX_LENGTH}
-            autoComplete="nickname"
-            autoFocus
-            name="name"
-          />
-        </Card>
-      </Stage>
-    </Page>
+    </FormPage>
   );
 }

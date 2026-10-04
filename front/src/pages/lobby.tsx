@@ -14,21 +14,34 @@ import { useSession } from '../net/session';
 import { initialsOf, toneOf } from '../players/avatar';
 import { ConnectionFailed } from '../shell/connection-failed';
 import { Page } from '../shell/page';
-import { PageHeading } from '../shell/page-heading';
+import { PageHeading, type PageHeadingProps } from '../shell/page-heading';
+import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import styles from './lobby.module.css';
 
-/** DL01-DL03, ML01-ML03: a game's rooms, live. */
+/** DL01-DL03, ML01-ML03, MO04: a game's rooms, live. */
 export default function LobbyPage({ gameType }: { gameType: GameType }) {
   const game = gameInfo(gameType);
   const { status } = useSession();
   const rooms = useLobby(gameType);
+  const phone = useMediaQuery(PHONE);
 
   return (
     <Page>
-      <LobbyHeading
-        game={game}
-        subtitle="Join a room or make one for your friends."
-      />
+      {phone ? (
+        // A phone counts the rooms up here rather than under the list.
+        <PageHeading
+          eyebrow="Play together"
+          title="Find your room."
+          subtitle={
+            rooms ? `${game.name} · ${plural(rooms.length, 'room')}` : game.name
+          }
+        />
+      ) : (
+        <LobbyHeading
+          game={game}
+          subtitle="Join a room or make one for your friends."
+        />
+      )}
       {status === 'failed' ? (
         <ConnectionFailed />
       ) : (
@@ -46,7 +59,7 @@ export default function LobbyPage({ gameType }: { gameType: GameType }) {
               ) : rooms.length === 0 ? (
                 <Empty gameType={gameType} />
               ) : (
-                <RoomList rooms={rooms} />
+                <RoomList rooms={rooms} counted={!phone} />
               )}
             </div>
             <Rules game={game} />
@@ -57,6 +70,14 @@ export default function LobbyPage({ gameType }: { gameType: GameType }) {
   );
 }
 
+/** A game's rooms pages share one heading on a wide screen. */
+export function lobbyHeading(
+  game: GameInfo,
+  subtitle: string,
+): PageHeadingProps {
+  return { eyebrow: 'Play together', title: `${game.name} rooms`, subtitle };
+}
+
 export function LobbyHeading({
   game,
   subtitle,
@@ -64,13 +85,7 @@ export function LobbyHeading({
   game: GameInfo;
   subtitle: string;
 }) {
-  return (
-    <PageHeading
-      eyebrow="Play together"
-      title={`${game.name} rooms`}
-      subtitle={subtitle}
-    />
-  );
+  return <PageHeading {...lobbyHeading(game, subtitle)} />;
 }
 
 function statusOf(room: AnyLobbyRoomInfo): RoomRowStatus {
@@ -79,7 +94,14 @@ function statusOf(room: AnyLobbyRoomInfo): RoomRowStatus {
   return room.hasPassword ? 'private' : 'open';
 }
 
-function RoomList({ rooms }: { rooms: AnyLobbyRoomInfo[] }) {
+function RoomList({
+  rooms,
+  counted,
+}: {
+  rooms: AnyLobbyRoomInfo[];
+  /** Says how many rooms there are, under the list. */
+  counted: boolean;
+}) {
   const navigate = useNavigate();
   return (
     <>
@@ -100,9 +122,11 @@ function RoomList({ rooms }: { rooms: AnyLobbyRoomInfo[] }) {
           />
         ))}
       </ul>
-      <p className={styles.count}>
-        {plural(rooms.length, 'room')} · Updates live
-      </p>
+      {counted && (
+        <p className={styles.count}>
+          {plural(rooms.length, 'room')} · Updates live
+        </p>
+      )}
     </>
   );
 }

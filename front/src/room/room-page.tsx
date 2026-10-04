@@ -10,10 +10,12 @@ import { REQUEST_TIMEOUT_MS } from '../net/socket';
 import { useLobby } from '../net/use-lobby';
 import { useRoom, type RoomConnection, type Snapshot } from '../net/use-room';
 import { ConnectionFailed } from '../shell/connection-failed';
+import { FormPage } from '../shell/form-page';
 import { Page } from '../shell/page';
 import { Stage } from '../shell/stage';
 import { StatusLine } from '../shell/status-line';
-import { LobbyHeading } from '../pages/lobby';
+import { PHONE, useMediaQuery } from '../shell/use-media-query';
+import { LobbyHeading, lobbyHeading } from '../pages/lobby';
 import { InviteDialog, LeaveDialog } from './dialogs';
 import { RoomContext, type Room } from './room-context';
 
@@ -139,7 +141,7 @@ function ExpiredPage({ gameType }: { gameType: GameType }) {
   );
 }
 
-/** DL07, DL08: a private room's password. */
+/** DL07, DL08, MO06: a private room's password. */
 function PasswordPage({
   gameType,
   roomId,
@@ -155,6 +157,7 @@ function PasswordPage({
 }) {
   const [password, setPassword] = useState('');
   const field = useRef<HTMLInputElement>(null);
+  const phone = useMediaQuery(PHONE);
   // The buttons stand aside while the request is in flight; a refusal hands
   // focus back to the field, the wrong guess selected, ready to retype.
   useEffect(() => {
@@ -165,54 +168,54 @@ function PasswordPage({
   // The lobby knows the room's name; a link alone does not.
   const rooms = useLobby(gameType);
   const roomName = rooms?.find((room) => room.roomId === roomId)?.roomName;
+  const description = `Enter the password for ${roomName ?? 'this room'}.`;
 
   return (
-    <Page>
-      <LobbyHeading
-        game={gameInfo(gameType)}
-        subtitle="Join a room or make one for your friends."
+    <FormPage
+      heading={lobbyHeading(
+        gameInfo(gameType),
+        'Join a room or make one for your friends.',
+      )}
+      phone={{ eyebrow: 'Come on in', subtitle: description }}
+      title="This room has a secret."
+      description={description}
+      onSubmit={(event) => {
+        event.preventDefault();
+        if (!pending) onSubmit(password);
+      }}
+      actions={
+        pending ? undefined : (
+          <>
+            <Button type="submit">Join room</Button>
+            <ButtonLink
+              to={lobbyPath(gameType)}
+              variant="secondary"
+              icon="back"
+            >
+              Back to rooms
+            </ButtonLink>
+          </>
+        )
+      }
+    >
+      <TextField
+        label="Room password"
+        helper={
+          phone
+            ? 'Ask the host for the password.'
+            : 'Ask the host for the room password.'
+        }
+        error={rejected ? 'That password didn’t work. Try again.' : undefined}
+        ref={field}
+        type="password"
+        value={password}
+        onValueChange={(next: string) => setPassword(next)}
+        autoComplete="off"
+        autoFocus
+        name="password"
       />
-      <Stage>
-        <Card
-          title="This room has a secret."
-          description={`Enter the password for ${roomName ?? 'this room'}.`}
-          onSubmit={(event) => {
-            event.preventDefault();
-            if (!pending) onSubmit(password);
-          }}
-          actions={
-            pending ? undefined : (
-              <>
-                <Button type="submit">Join room</Button>
-                <ButtonLink
-                  to={lobbyPath(gameType)}
-                  variant="secondary"
-                  icon="back"
-                >
-                  Back to rooms
-                </ButtonLink>
-              </>
-            )
-          }
-        >
-          <TextField
-            label="Room password"
-            helper="Ask the host for the room password."
-            error={
-              rejected ? 'That password didn’t work. Try again.' : undefined
-            }
-            ref={field}
-            type="password"
-            value={password}
-            onValueChange={(next: string) => setPassword(next)}
-            autoComplete="off"
-            autoFocus
-            name="password"
-          />
-          {pending && <StatusLine>Joining the room…</StatusLine>}
-        </Card>
-      </Stage>
-    </Page>
+      {pending && <StatusLine>Joining the room…</StatusLine>}
+    </FormPage>
   );
 }
 
