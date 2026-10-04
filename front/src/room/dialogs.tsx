@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { Button, Dialog, DialogClose, TextField } from '../ui';
 import type { GameInfo } from '../games/catalog';
+import { useCopy } from '../shell/use-copy';
 import styles from './dialogs.module.css';
 
 /**
@@ -97,25 +98,10 @@ export function InviteDialog({
   roomName: string;
   link: string;
 }) {
-  const [copied, setCopied] = useState(false);
+  const { copied, copy } = useCopy(link);
   // Opening on Copy keeps the link whole on screen, rather than selected and
   // scrolled to its end, and makes Enter copy it.
   const copyButton = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (!copied) return;
-    const timer = setTimeout(() => setCopied(false), 2000);
-    return () => clearTimeout(timer);
-  }, [copied]);
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(link);
-      setCopied(true);
-    } catch {
-      // Clipboard access can be refused; the link is still there to select.
-    }
-  };
 
   return (
     <Dialog

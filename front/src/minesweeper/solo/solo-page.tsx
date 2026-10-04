@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import { useSearchParams } from 'react-router';
 import type { MinesweeperDifficulty } from '../../../../shared/wire-types';
 import { BOARD_SIZES, DIFFICULTIES } from '../../../../shared/minesweeper';
@@ -26,6 +26,7 @@ import {
 } from '../../solo/device-store';
 import { SoloLayout } from '../../solo/solo-layout';
 import { SoloResult } from '../../solo/solo-result';
+import { useClock } from '../../solo/use-clock';
 import { MineGrid } from '../board';
 import {
   cellAt,
@@ -378,15 +379,4 @@ function turnBar(
           : 'Right-click or long-press to flag',
     countdown,
   };
-}
-
-/** The time now, kept fresh while `running`, for a clock that counts up. */
-function useClock(running: boolean): number {
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => {
-    if (!running) return;
-    const timer = setInterval(() => setNow(Date.now()), 250);
-    return () => clearInterval(timer);
-  }, [running]);
-  return now;
 }
