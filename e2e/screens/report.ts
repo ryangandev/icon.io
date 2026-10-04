@@ -22,6 +22,13 @@ const CONTENT: Record<string, string> = {
   MO10: 'Every guesser scored, so four scores wrap under the word; Figma’s example has three.',
   MO16: 'The chat holds the game so far, from the join messages on; Figma’s example has a few guesses.',
   MO14: 'Figma shows round 19, whose shorter line fits beside "Pick a cell"; round 1’s wraps.',
+  P13: 'Figma draws the games page under the dialog with its first two games; the page has four, as P04 shows.',
+  P14: 'Figma explains the first two games; the page explains all four.',
+  T07: 'The chat starts with the room’s join messages, which Figma leaves out.',
+  T08: 'The chat starts with the room’s join messages, which Figma leaves out.',
+  PR05: 'The chat starts with the room’s join messages, which Figma leaves out.',
+  PR06: 'The chat starts with the room’s join messages, which Figma leaves out.',
+  PR08: 'Pairs’ description takes a second line; Figma keeps the frame at the Make 24 form’s height and moves the card up.',
 };
 
 interface Screen {

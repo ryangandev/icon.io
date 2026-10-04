@@ -51,8 +51,15 @@ export async function flip(page: Page, place: string, memory: Memory) {
   return memory.get(place)!;
 }
 
-/** Two cards: a pair remembered, or something new and its partner if known. */
-export async function playTurn(page: Page, memory: Memory) {
+/**
+ * Two cards: a pair remembered, or something new and its partner if known.
+ * `afterFirst` runs with one card up, before the second is turned over.
+ */
+export async function playTurn(
+  page: Page,
+  memory: Memory,
+  afterFirst?: () => Promise<void>,
+) {
   await remember(page, memory);
   const down = (await boardOf(page)).filter((card) => !card.symbol);
   const known = down.filter((card) => memory.has(card.place));
@@ -65,6 +72,7 @@ export async function playTurn(page: Page, memory: Memory) {
   );
   const first = (pair ?? unseen[0] ?? down[0]).place;
   const symbol = await flip(page, first, memory);
+  await afterFirst?.();
   const partner =
     down.find(
       (card) => card.place !== first && memory.get(card.place) === symbol,

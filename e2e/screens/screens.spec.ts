@@ -1,6 +1,6 @@
 import { mkdirSync } from 'node:fs';
 import path from 'node:path';
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import {
   createRoom,
   dropConnection,
@@ -10,6 +10,22 @@ import {
   test,
   type PlayerOptions,
 } from '../fixtures';
+import { missHand, solveHand, startHand } from '../play/make-24';
+import {
+  clearABoard,
+  hiddenCell,
+  hitAMine,
+  openMiddle,
+  playSure,
+  provenMines,
+} from '../play/minesweeper';
+import {
+  boardOf,
+  playTurn,
+  whoseTurn,
+  yourTurn,
+  type Memory,
+} from '../play/pairs';
 import { COMPARE_DIR, figmaSize, writeReport } from './report';
 
 /*
@@ -47,6 +63,53 @@ async function shot(page: Page, code: string) {
     caret: 'hide',
   });
   await page.setViewportSize(viewport);
+}
+
+/**
+ * Captures a state that passes on its own, such as a miss on show, and says
+ * whether it held for the whole capture; if not, the capture is no good.
+ */
+async function shotWhile(
+  page: Page,
+  code: string,
+  state: Locator,
+): Promise<boolean> {
+  if (!(await state.isVisible())) return false;
+  await shot(page, code);
+  return state.isVisible();
+}
+
+/**
+ * Stops the page's clock for `capture`, so a state that passes on a timer
+ * holds still. The page needs `page.clock.install()` before it loads.
+ */
+async function paused<T>(page: Page, capture: () => Promise<T>): Promise<T> {
+  // A moment ahead: the page's time runs on while this call reaches it.
+  await page.clock.pauseAt((await page.evaluate(() => Date.now())) + 100);
+  try {
+    return await capture();
+  } finally {
+    await page.clock.resume();
+  }
+}
+
+/** What a game on your own keeps on this device, as if played before. */
+async function keepOnDevice(page: Page, kept: Record<string, string>) {
+  await page.goto('/');
+  await page.evaluate((entries) => {
+    for (const [key, value] of Object.entries(entries)) {
+      localStorage.setItem(`zumpo:solo:${key}`, value);
+    }
+  }, kept);
+}
+
+const pad = (n: number) => String(n).padStart(2, '0');
+
+/** A local calendar day `days` before today, as bests are kept by. */
+function daysAgo(days: number): string {
+  const date = new Date();
+  date.setDate(date.getDate() - days);
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
 
 async function startGame(host: Page) {
@@ -599,4 +662,245 @@ test('the bigger Minesweeper boards', async ({ player }) => {
       .getByRole('button', { name: 'Leave room' })
       .click();
   }
+});
+
+test('Minesweeper on your own', async ({ player }) => {
+  test.setTimeout(300_000);
+  const sam = await player('Sam', { ...desktop, named: false });
+  await keepOnDevice(sam, {
+    'minesweeper:board': 'Medium',
+    'best:minesweeper:Small': '48000',
+    'best:minesweeper:Medium': '192000',
+  });
+  await sam.goto('/games/minesweeper/solo');
+  await shot(sam, 'MS01');
+  await sam.getByRole('button', { name: 'Start' }).click();
+  await openMiddle(sam);
+  await playSure(sam, 2);
+  await shot(sam, 'MS02');
+  await hitAMine(sam);
+  await shot(sam, 'MS03');
+  await sam.getByRole('button', { name: 'Try again' }).first().click();
+  await clearABoard(sam);
+  await shot(sam, 'MS04');
+
+  const onPhone = await player('Sam', { ...phone, named: false });
+  await onPhone.goto('/games/minesweeper/solo?board=Small');
+  await openMiddle(onPhone);
+  await onPhone.getByRole('button', { name: 'Flag' }).click();
+  for (const mine of (await provenMines(onPhone)).slice(0, 3)) {
+    await (await hiddenCell(onPhone, mine)).click();
+  }
+  await shot(onPhone, 'MS05');
+});
+
+test('Make 24 on your own', async ({ player }) => {
+  test.setTimeout(300_000);
+  const maya = await player('Maya', desktop);
+  await keepOnDevice(maya, {
+    'best:make-24:ten-hands': '185000',
+    'days:make-24:ten-hands': JSON.stringify([
+      { day: daysAgo(1), result: 185_000 },
+      { day: daysAgo(3), result: 220_000 },
+    ]),
+  });
+  await maya.goto('/games/make-24/solo');
+  await shot(maya, 'T01');
+  await maya.getByRole('button', { name: 'Start' }).click();
+
+  const turn = maya.getByRole('region', { name: 'Turn' });
+  const startOver = maya.getByRole('button', { name: 'Start over' });
+  let solvedShown = false;
+  for (let hand = 1; hand <= 10; hand++) {
+    await expect(turn.getByText(`Hand ${hand} of 10`)).toBeVisible();
+    if (hand === 3) {
+      await startHand(maya);
+      await shot(maya, 'T02');
+      await startOver.click();
+      await missHand(maya);
+      await expect(turn.getByText(/^That makes /)).toBeVisible();
+      await shot(maya, 'T04');
+      await startOver.click();
+    }
+    // One hand skipped, as Figma's run has.
+    if (hand === 5) {
+      await maya.getByRole('button', { name: 'Skip, +30 s' }).click();
+      continue;
+    }
+    await solveHand(maya);
+    // "24! Nice." stays a moment, and the last hand goes straight to the end.
+    if (hand >= 3 && hand < 10 && !solvedShown) {
+      solvedShown = await shotWhile(maya, 'T03', turn.getByText('24! Nice.'));
+    }
+  }
+  await expect(
+    maya.getByRole('heading', { name: /^10 hands in / }),
+  ).toBeVisible();
+  await shot(maya, 'T05');
+
+  const onPhone = await player('Maya', phone);
+  await onPhone.goto('/games/make-24/solo');
+  await onPhone.getByRole('button', { name: 'Start' }).click();
+  await startHand(onPhone);
+  await shot(onPhone, 'T11');
+});
+
+const turnOf = (page: Page) => page.getByRole('region', { name: 'Turn' });
+
+test('a Make 24 game', async ({ player }) => {
+  test.setTimeout(300_000);
+  const maya = await player('Maya', desktop);
+  const sam = await player('Sam', desktop);
+  const ryan = await player('Ryan', desktop);
+  const leo = await player('Leo', phone);
+  const seats = [maya, sam, ryan, leo];
+
+  await maya.goto('/games/make-24/new');
+  await maya.getByLabel('Password (optional)').fill('otters');
+  await shot(maya, 'T10');
+  const link = await createRoom(maya, 'make-24');
+  for (const seat of [sam, ryan, leo]) await joinRoom(seat, link);
+  await startGame(maya);
+
+  const handOn = async (hand: number) => {
+    for (const seat of seats) {
+      // After the last hand's reveal, which runs its own clock.
+      await expect(
+        turnOf(seat).getByText(`Hand ${hand} of 5`, { exact: true }),
+      ).toBeVisible({ timeout: 15_000 });
+    }
+  };
+
+  // Hand 1: Maya solves it first, Sam and Leo on the way, Ryan out of time.
+  await handOn(1);
+  await solveHand(maya);
+  await startHand(sam);
+  await shot(sam, 'T06');
+  await startHand(leo);
+  await shot(leo, 'T12');
+  await sam.getByRole('button', { name: 'Start over' }).click();
+  await solveHand(sam);
+  await expect(turnOf(sam).getByText(/^Solved! \+\d+$/)).toBeVisible();
+  await shot(sam, 'T07');
+  await leo.getByRole('button', { name: 'Start over' }).click();
+  await solveHand(leo);
+  const results = sam.getByText('Hand 1 results').first();
+  await expect(results).toBeVisible({ timeout: 75_000 });
+  expect(await shotWhile(sam, 'T08', results)).toBe(true);
+
+  // Then everybody solves every hand, so each ends early.
+  for (let hand = 2; hand <= 5; hand++) {
+    await handOn(hand);
+    for (const seat of seats) await solveHand(seat);
+  }
+  // After the last hand's reveal.
+  await expect(sam.getByText('Game over', { exact: true })).toBeVisible({
+    timeout: 15_000,
+  });
+  await shot(sam, 'T09');
+});
+
+/** Pairs found so far, by the matched cards on the board. */
+const pairsFound = async (page: Page) =>
+  (await boardOf(page)).filter((card) => card.matched).length / 2;
+
+test('Pairs on your own', async ({ player }) => {
+  test.setTimeout(300_000);
+  const maya = await player('Maya', desktop);
+  await keepOnDevice(maya, {
+    'pairs:board': 'Large',
+    'best:pairs:Small': JSON.stringify({ turns: 11, ms: 52_000 }),
+    'best:pairs:Large': JSON.stringify({ turns: 31, ms: 201_000 }),
+  });
+  // A miss is on show for only a second.
+  await maya.clock.install();
+  await maya.goto('/games/pairs/solo');
+  await shot(maya, 'PR01');
+  await maya.getByRole('button', { name: 'Start' }).click();
+
+  const memory: Memory = new Map();
+  const cleared = maya.getByRole('heading', {
+    name: /^18 pairs in \d+ turns\.$/,
+  });
+  const miss = maya
+    .getByRole('region', { name: 'Turn' })
+    .getByText('Not a pair');
+  let firstUpShown = false;
+  let missShown = false;
+  while (!(await cleared.isVisible())) {
+    // A few pairs in, as Figma's board is.
+    const later = (await pairsFound(maya)) >= 4;
+    await playTurn(maya, memory, async () => {
+      if (later && !firstUpShown) {
+        await shot(maya, 'PR02');
+        firstUpShown = true;
+      }
+    });
+    if (later && !missShown && (await miss.isVisible())) {
+      missShown = await paused(maya, () => shotWhile(maya, 'PR03', miss));
+    }
+  }
+  expect(missShown, 'a miss captured').toBe(true);
+  await shot(maya, 'PR04');
+
+  const onPhone = await player('Maya', phone);
+  await onPhone.goto('/games/pairs/solo');
+  await onPhone.getByRole('button', { name: 'Start' }).click();
+  const phoneMemory: Memory = new Map();
+  for (let turn = 0; turn < 5; turn++) await playTurn(onPhone, phoneMemory);
+  await playTurn(onPhone, phoneMemory, () => shot(onPhone, 'PR09'));
+});
+
+test('a Pairs game', async ({ player }) => {
+  test.setTimeout(600_000);
+  const maya = await player('Maya', desktop);
+  const sam = await player('Sam', desktop);
+  const ryan = await player('Ryan', desktop);
+  const leo = await player('Leo', phone);
+  const seats = [maya, sam, ryan, leo];
+
+  await maya.goto('/games/pairs/new');
+  await maya.getByLabel('Board').click();
+  await maya.getByRole('option', { name: /^Large/ }).click();
+  await maya.getByLabel('Password (optional)').fill('otters');
+  await shot(maya, 'PR08');
+  const link = await createRoom(maya, 'pairs', { board: 'Large' });
+  for (const seat of [sam, ryan, leo]) await joinRoom(seat, link);
+  await startGame(maya);
+
+  const samTurn = sam.getByRole('region', { name: 'Turn' });
+  const shown = { yourTurn: false, miss: false, phone: false };
+  const memory: Memory = new Map();
+  const over = sam.getByText('Game over', { exact: true });
+  while (!(await over.isVisible())) {
+    await expect
+      .poll(async () => (await whoseTurn(seats)) !== null || over.isVisible())
+      .toBe(true);
+    const mover = await whoseTurn(seats);
+    if (!mover) break;
+    // A few pairs in, as Figma's board is.
+    const later = (await pairsFound(sam)) >= 4;
+    if (later && mover === sam && !shown.yourTurn) {
+      await expect(yourTurn(sam)).toBeVisible();
+      await shot(sam, 'PR06');
+      shown.yourTurn = true;
+    }
+    const samIsNext =
+      mover !== sam && (await samTurn.getByText('You’re next.').isVisible());
+    await playTurn(mover, memory, async () => {
+      if (later && mover === leo && !shown.phone) {
+        await shot(leo, 'PR10');
+        shown.phone = true;
+      }
+    });
+    if (later && samIsNext && !shown.miss) {
+      shown.miss = await shotWhile(
+        sam,
+        'PR05',
+        samTurn.getByText('Not a pair'),
+      );
+    }
+  }
+  expect(shown).toEqual({ yourTurn: true, miss: true, phone: true });
+  await shot(sam, 'PR07');
 });
