@@ -19,7 +19,7 @@ export default defineConfig({
   },
   outputDir: '../test-results/screens',
   webServer: {
-    command: 'node back/build/server.js',
+    command: 'node back/build/back/server.js',
     cwd: '..',
     url: `http://localhost:${PORT}`,
     reuseExistingServer: false,

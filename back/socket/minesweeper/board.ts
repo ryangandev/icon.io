@@ -3,6 +3,7 @@ import type {
   MinesweeperDifficulty,
 } from '../../models/types.js';
 import { getRandomInt } from '../../libs/utils.js';
+import { BOARD_SIZES, neighboursOf } from '../../../shared/minesweeper.js';
 
 /**
  * The minefield: the hidden layout, and the public view of it.
@@ -23,24 +24,6 @@ import { getRandomInt } from '../../libs/utils.js';
 const HIDDEN: MinesweeperCellView = -1;
 const KNOWN_MINE: MinesweeperCellView = 9;
 
-interface Difficulty {
-  width: number;
-  height: number;
-  mines: number;
-}
-
-/**
- * The three board sizes. Small is a two-minute game; Large is closer to twenty
- * and gives the probability solver something to chew on - a bigger board means
- * bigger frontiers, which means more cells whose risk is a real number rather
- * than 0 or 1.
- */
-const DIFFICULTIES: Record<MinesweeperDifficulty, Difficulty> = {
-  Small: { width: 9, height: 9, mines: 10 },
-  Medium: { width: 16, height: 16, mines: 40 },
-  Large: { width: 30, height: 16, mines: 99 },
-};
-
 interface Board {
   width: number;
   height: number;
@@ -53,28 +36,6 @@ interface Board {
   /** A mine somebody hit. Public, and a constraint the solver uses. */
   hitMines: boolean[];
 }
-
-const neighboursOf = (
-  board: Pick<Board, 'width' | 'height'>,
-  index: number,
-): number[] => {
-  const { width, height } = board;
-  const x = index % width;
-  const y = Math.floor(index / width);
-  const out: number[] = [];
-
-  for (let dy = -1; dy <= 1; dy++) {
-    for (let dx = -1; dx <= 1; dx++) {
-      if (dx === 0 && dy === 0) continue;
-      const nx = x + dx;
-      const ny = y + dy;
-      if (nx < 0 || nx >= width || ny < 0 || ny >= height) continue;
-      out.push(ny * width + nx);
-    }
-  }
-
-  return out;
-};
 
 /**
  * A fresh board with its mines already placed.
@@ -91,7 +52,7 @@ const neighboursOf = (
  * scoring mechanism, so a board that forces one is working as intended.
  */
 const createBoard = (difficulty: MinesweeperDifficulty): Board => {
-  const { width, height, mines: totalMines } = DIFFICULTIES[difficulty];
+  const { width, height, mines: totalMines } = BOARD_SIZES[difficulty];
   const size = width * height;
 
   const mines = Array.from({ length: size }, () => false);
@@ -201,7 +162,6 @@ const isResolved = (board: Board): boolean => hiddenIndexes(board).length === 0;
 export {
   HIDDEN,
   KNOWN_MINE,
-  DIFFICULTIES,
   createBoard,
   neighboursOf,
   publicView,
@@ -212,4 +172,4 @@ export {
   minesFound,
   isResolved,
 };
-export type { Board, Difficulty };
+export type { Board };

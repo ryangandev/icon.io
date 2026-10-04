@@ -11,7 +11,7 @@ front/   React SPA (Vite) ──── socket.io ────► back/   Express
                                                 ├── room layer: seats, lobbies, chat
                                                 │     └── game modules: own their clocks
                                                 └── all state in memory, one registry
-shared/  wire-types.d.ts, imported by both sides
+shared/  wire-types.d.ts, and rule code both sides run
 tools/   figma-export, figma-bridge, design-tokens: Figma into the repo (see design.md)
 ```
 
@@ -26,6 +26,7 @@ tools/   figma-export, figma-bridge, design-tokens: Figma into the repo (see des
 | `back/socket/client-disconnect-handler.ts`  | Hands a dropped socket to `membership.ts`                          |
 | `back/libs/validation.ts`, `rate-limit.ts`  | Inbound validation and per-socket token buckets                    |
 | `shared/wire-types.d.ts`                    | Every event name and payload shape                                 |
+| `shared/*.ts`                               | Rule code both sides run: board sizes, deals, arithmetic           |
 | `front/src/app.tsx`                         | Routes and their guards                                            |
 | `front/src/net/`                            | The socket, the session, and the lobby and room hooks              |
 | `front/src/shell/`, `front/src/pages/`      | The page frame and the platform pages                              |
@@ -130,6 +131,12 @@ A drawer's turn is held too, but only for ten seconds and only once drawing has 
 Every event name and payload shape is declared once in [`shared/wire-types.d.ts`](../shared/wire-types.d.ts), as the two event maps `ClientToServerEvents` and `ServerToClientEvents`.
 The server is `Server<ClientToServerEvents, ServerToClientEvents>`, and its emit helpers in [`emit.ts`](../back/libs/rooms/emit.ts) are generic over the event name, so an event renamed or reshaped on one side stops compiling rather than silently never arriving.
 It is types only, imported with `import type`, so nothing resolves at runtime.
+
+Beside it, `shared/*.ts` holds rule code that both sides run: board sizes, card deals, the arithmetic of a hand.
+A game you play on your own runs in the browser and a room runs on the server, and both import the same file, so the two cannot drift apart.
+The backend compiles `shared/` along with its own sources (`rootDir` is the repository root), which is why the server starts from `back/build/back/server.js` and its runtime copy lands in `back/build/shared/`; Vite bundles the same files into the client.
+`shared/package.json` only marks the folder as ES modules; it is never installed.
+Nothing in `shared/` may import from `back/` or `front/`, or reach for Node or the DOM.
 Inbound arguments are still handled as `unknown` and parsed with zod: a type says what a well-behaved client sends, not what arrives.
 
 The protocol is snapshot-driven.

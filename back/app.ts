@@ -81,7 +81,8 @@ const createIconIoServer = (
 
   const app = express();
   const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-  const publicStaticFolder = path.join(__dirname, 'public');
+  // build/back/app.js serves the SPA that Vite builds into build/public.
+  const publicStaticFolder = path.join(__dirname, '..', 'public');
 
   app.use(express.json());
   app.use(cors());

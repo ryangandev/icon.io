@@ -37,12 +37,11 @@ Two new games and solo play, decided by Ryan on 2026-10-04 (see [the proposal](.
 The Figma file has every screen (sections 03, 05 and 06, and the hub in 01 and 04).
 Claude is building them on `rework`, one commit per step, in this order:
 
-1. Let `shared/` hold rule code that runs on both sides, so a solo game in the browser and a room on the server follow the same rules.
-2. Give the games hub a Play solo and a Find a room button per game; solo routes need no name.
-3. Make 24: rules in `docs/games/`, the deal and solver, the cards, solo play, then rooms.
-4. Pairs: rules, the cards, solo play, then rooms.
-5. Minesweeper solo: flags, chording, the first reveal always opening an area.
-6. End-to-end tests and the design comparison for every new screen, then check each flow with two players in a browser.
+1. Give the games hub a Play solo and a Find a room button per game; solo routes need no name.
+2. Make 24: rules in `docs/games/`, the deal and solver, the cards, solo play, then rooms.
+3. Pairs: rules, the cards, solo play, then rooms.
+4. Minesweeper solo: flags, chording, the first reveal always opening an area.
+5. End-to-end tests and the design comparison for every new screen, then check each flow with two players in a browser.
 
 ## Open decisions
 

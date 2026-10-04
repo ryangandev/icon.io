@@ -9,10 +9,10 @@
   "scripts": {
     "build": "rimraf --glob \"build/*\" && tsc -p tsconfig.build.json",
     "watch": "tsc-watch --onSuccess \"npm run start:dev\"",
-    "start:dev": "cross-env NODE_ENV=development node build/server.js",
+    "start:dev": "cross-env NODE_ENV=development node build/back/server.js",
     "build:deploy": "npm run build && (cd ../front && npm run build)",
-    "start:prod": "cross-env NODE_ENV=production node build/server.js",
-    "start:deploy": "cross-env NODE_ENV=production pm2 start build/server.js --name icon-io",
+    "start:prod": "cross-env NODE_ENV=production node build/back/server.js",
+    "start:deploy": "cross-env NODE_ENV=production pm2 start build/back/server.js --name icon-io",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"

@@ -11,7 +11,7 @@ import { listNames, rankedPlayers, type Seat } from '../room/players';
 import { useRoomContext, type Room as RoomOf } from '../room/room-context';
 import { RoomLayout, type PlayerLine } from '../room/room-layout';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
-import { BOARDS } from './boards';
+import { BOARD_SIZES } from '../../../shared/minesweeper';
 import { Board } from './board';
 import styles from './room.module.css';
 
@@ -46,7 +46,7 @@ function BetweenGames({ room }: { room: Room }) {
   const { state, startGame, starting } = room;
   const count = Object.keys(state.playerList).length;
   const summary = state.lastGame;
-  const { width, height, mines } = BOARDS[state.difficulty];
+  const { width, height, mines } = BOARD_SIZES[state.difficulty];
 
   if (summary && !summary.endedEarly) {
     return (

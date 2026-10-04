@@ -9,7 +9,8 @@ import type {
 } from '../../models/types.js';
 import type { Room } from '../../libs/rooms/types.js';
 import { getRemainingPhaseMs } from '../../libs/utils.js';
-import { DIFFICULTIES, createBoard, minesFound, publicView } from './board.js';
+import { BOARD_SIZES } from '../../../shared/minesweeper.js';
+import { createBoard, minesFound, publicView } from './board.js';
 import type { Board } from './board.js';
 
 /**
@@ -84,7 +85,7 @@ const toRoomState = (
   viewerId: string,
 ): MinesweeperRoomState => {
   const game = room.game;
-  const { width, height } = DIFFICULTIES[game.difficulty];
+  const { width, height } = BOARD_SIZES[game.difficulty];
 
   return {
     ...toLobbyInfo(room),

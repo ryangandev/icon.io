@@ -7,11 +7,14 @@
     "libs/**/*.ts",
     "models/**/*.ts",
     "socket/**/*.ts",
-    "tests/**/*.ts"
+    "tests/**/*.ts",
+    // Rule code the browser runs too: a game on your own and a room follow
+    // the same rules. It compiles into build/shared/, beside build/back/.
+    "../shared/**/*.ts"
   ],
   "compilerOptions": {
     "outDir": "build",
-    "rootDir": "./",
+    "rootDir": "..",
 
     // Node 22+ ESM: top-level await, import/export, .js specifiers
     "target": "es2022",

@@ -1,5 +1,6 @@
 import type { MinesweeperCellView } from '../../models/types.js';
-import { HIDDEN, KNOWN_MINE, neighboursOf } from './board.js';
+import { neighboursOf } from '../../../shared/minesweeper.js';
+import { HIDDEN, KNOWN_MINE } from './board.js';
 
 /**
  * How likely each hidden cell is to be a mine, given only what everybody can

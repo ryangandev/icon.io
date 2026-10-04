@@ -1,15 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { pointsForPick } from '../socket/minesweeper/scoring.js';
 import {
-  DIFFICULTIES,
   createBoard,
   hiddenIndexes,
   isResolved,
   markHitMine,
-  neighboursOf,
   publicView,
   revealFrom,
 } from '../socket/minesweeper/board.js';
+import { BOARD_SIZES, neighboursOf } from '../../shared/minesweeper.js';
 
 const safe = (
   risk: number,
@@ -131,8 +130,8 @@ describe('a pick the server had to make for you', () => {
 
 describe('the board itself', () => {
   it('places exactly the mines each difficulty asks for', () => {
-    for (const [name, spec] of Object.entries(DIFFICULTIES)) {
-      const board = createBoard(name as keyof typeof DIFFICULTIES);
+    for (const [name, spec] of Object.entries(BOARD_SIZES)) {
+      const board = createBoard(name as keyof typeof BOARD_SIZES);
 
       expect(board.width).toBe(spec.width);
       expect(board.height).toBe(spec.height);
