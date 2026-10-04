@@ -34,6 +34,10 @@ async function shot(page: Page, code: string) {
   const [, height] = figmaSize(code);
   await page.setViewportSize({ width: viewport.width, height });
   await page.evaluate(() => document.fonts.ready);
+  // A winner's confetti clears itself; Figma draws the screen after it.
+  await expect(page.locator('canvas[aria-hidden]')).toHaveCount(0, {
+    timeout: 10_000,
+  });
   // Away from every control, so no hover state is captured.
   await page.mouse.move(0, 0);
   await page.screenshot({
@@ -405,9 +409,11 @@ test('a Draw & Guess game', async ({ player }) => {
       });
       await shot(watcher.page, 'D11');
       restore();
-      await expect(
-        drawer.page.getByRole('heading', { name: 'Draw & Guess' }),
-      ).toBeVisible({ timeout: 20_000 });
+      // Back in the room before the next turn, or its captures show the
+      // stale turn this player was cut off in.
+      await expect(drawer.page.getByText(/^Reconnecting to /)).toBeHidden({
+        timeout: 20_000,
+      });
     } else {
       await expect(
         drawer.page.getByText('Time ran out, so this one was picked for you'),
