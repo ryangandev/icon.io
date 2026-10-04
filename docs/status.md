@@ -12,7 +12,7 @@ Ryan approved it in review round two on 2026-10-03, after one fix (icons centred
 The implementation is built on `rework`, which is not pushed or merged yet.
 Every page, desktop and phone, is rebuilt on the Zumpo design system in `front/src/ui/`, and Ant Design is gone ([architecture](architecture.md#frontend)).
 Both sides speak the snapshot-driven wire contract in `shared/wire-types.d.ts` ([architecture](architecture.md#the-wire-contract)).
-The screens were compared with Figma one by one in a browser with two players; where code differs on purpose, [design.md](design.md#in-code) says so.
+`npm run e2e` plays the main flows with two players, and `npm run design:compare` captures every Figma screen's state beside its preview; where code differs on purpose, [design.md](design.md#on-purpose) says so.
 
 ## Product direction
 
@@ -36,8 +36,7 @@ Decided by Ryan, and the frame for every design and implementation choice:
 
 ## Next
 
-1. Commit the two-player browser checks that verified the rebuild, so a change to a flow can be checked again with one command rather than by hand.
-2. Make the pixel comparison against Figma repeatable for pages, not only component sizes: drive the app into each screen's state and diff it against the screen's preview, as was done by hand for the rebuild.
+1. Close the size differences `npm run design:compare` still flags, or note them in [design.md](design.md#on-purpose) when they are content, not layout.
 
 ## Open decisions
 

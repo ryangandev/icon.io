@@ -79,6 +79,17 @@ Each family's Figma preview sits under it at the same scale.
 
 Figma gives each sample player an avatar tone by hand; code picks one from a hash of the player's name, so a player keeps one colour in the header, the scoreboard and the results, on every screen.
 
+### Comparing with Figma
+
+`npm run design:compare` builds the app, serves it on port 3320 (`SCREENS_PORT`), and plays [the screens spec](../e2e/screens/screens.spec.ts) with the players and example data of the Figma story, capturing each screen in the state Figma draws, at Figma's width and frame height.
+It takes about three minutes, because it runs the real phase lengths so every countdown reads as in Figma.
+It writes `design/compare/index.html`, which is ignored by git: every screen's Figma preview beside its capture, flagged when the two sizes differ.
+A flag is a place to look, not a failure: a chat or board example that holds different content changes the height without anything being wrong.
+It needs the previews from the last `npm run design:import`.
+A screen no state of the app shows is listed with the reason, in [report.ts](../e2e/screens/report.ts).
+
+### On purpose
+
 Code differs from Figma on purpose in a few places:
 
 - The countdown is up to 7 px wider: DM Sans has no tabular figures, so each digit has a fixed cell and the clock keeps its width as it ticks.

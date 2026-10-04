@@ -17,6 +17,8 @@ export interface PlayerOptions {
   named?: boolean;
   /** Routes the player's connection through the test, for `dropConnection`. */
   droppable?: boolean;
+  /** Device pixels per CSS pixel; Figma's previews are at 1. */
+  scale?: number;
 }
 
 interface Fixtures {
@@ -34,15 +36,19 @@ export const test = base.extend<Fixtures>({
     const errors: string[] = [];
     await use(async (name, options = {}) => {
       const { phone = false, named = true, droppable = false } = options;
+      const { scale = phone ? 2 : 1 } = options;
       const context = await browser.newContext(
         phone
           ? {
               viewport: { width: 390, height: 844 },
-              deviceScaleFactor: 2,
+              deviceScaleFactor: scale,
               isMobile: true,
               hasTouch: true,
             }
-          : { viewport: { width: 1440, height: 900 } },
+          : {
+              viewport: { width: 1440, height: 900 },
+              deviceScaleFactor: scale,
+            },
       );
       contexts.push(context);
       if (named) {
@@ -71,6 +77,7 @@ export const test = base.extend<Fixtures>({
 export interface RoomSettings {
   name?: string;
   password?: string;
+  seats?: 2 | 3 | 4 | 5 | 6 | 7 | 8;
   /** Draw & Guess: how many rounds. */
   rounds?: 1 | 2 | 3 | 4;
   /** Minesweeper: the board, by its first word. */
@@ -85,6 +92,9 @@ export async function createRoom(
 ): Promise<string> {
   await page.goto(`/games/${game}/new`);
   if (settings.name) await page.getByLabel('Room name').fill(settings.name);
+  if (settings.seats) {
+    await choose(page, 'Seats', new RegExp(`^${settings.seats} players$`));
+  }
   if (settings.rounds) {
     await choose(page, 'Rounds', new RegExp(`^${settings.rounds} rounds?$`));
   }
@@ -172,6 +182,19 @@ export async function dropConnection(page: Page): Promise<() => void> {
     await client.close();
   }
   link.open.clear();
+  return () => {
+    link.down = false;
+  };
+}
+
+/**
+ * Keeps a droppable player from connecting at all until the returned
+ * function lets them, for the states before a first connection.
+ */
+export function holdConnection(page: Page): () => void {
+  const link = links.get(page);
+  if (!link) throw new Error('holdConnection needs a droppable player');
+  link.down = true;
   return () => {
     link.down = false;
   };

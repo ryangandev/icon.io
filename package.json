@@ -15,6 +15,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "e2e": "npm run build && playwright test -c e2e",
+    "design:compare": "npm run build && playwright test -c e2e/screens.config.ts",
     "verify": "npm run lint && npm run typecheck && npm run format:check && npm run design:tokens -- --check && npm test && npm run build",
     "design:import": "node tools/figma-export/import.mjs",
     "figma:bridge": "node tools/figma-bridge/server.mjs",
