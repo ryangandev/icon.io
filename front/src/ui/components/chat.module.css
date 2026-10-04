@@ -4,12 +4,15 @@
   padding: 20px var(--zumpo-space-24);
 }
 
+/* Figma's chat hugs its messages, up to about a dozen of them; a room keeps a
+   hundred, so beyond that the log scrolls rather than stretching the page. */
 .log {
   display: flex;
   flex: 1;
   flex-direction: column;
   gap: var(--zumpo-space-12);
   min-height: 0;
+  max-height: 360px;
   margin: 0;
   padding: 0;
   overflow-y: auto;
