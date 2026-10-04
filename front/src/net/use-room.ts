@@ -40,11 +40,13 @@ export type RoomStage =
 /** The server keeps this many messages; so does the client. */
 const CHAT_LIMIT = 100;
 
-const UNAVAILABLE: readonly ErrorType[] = [
-  'roomNotOpen',
-  'gameAlreadyStarted',
-  'invalidRequest',
-];
+const UNAVAILABLE: readonly ErrorType[] = ['roomNotOpen', 'gameAlreadyStarted'];
+
+/**
+ * Room ids are UUIDs, so a mistyped or cut-off link is refused as an invalid
+ * request: from the player's side, a room that does not exist.
+ */
+const NOT_FOUND: readonly ErrorType[] = ['roomNotExist', 'invalidRequest'];
 
 export interface RoomConnection {
   stage: RoomStage;
@@ -125,7 +127,7 @@ export function useRoom(roomId: string): RoomConnection {
           rejected: password !== '',
           pending: false,
         });
-      } else if (type === 'roomNotExist') {
+      } else if (NOT_FOUND.includes(type as ErrorType)) {
         setProblem({ kind: 'not-found' });
       } else if (UNAVAILABLE.includes(type as ErrorType)) {
         setProblem({ kind: 'unavailable' });

@@ -78,6 +78,14 @@ test('a lobby shows a new room live, and joins it', async ({ player }) => {
   await expect(sam.getByRole('button', { name: 'Leave room' })).toBeVisible();
 });
 
+test('a mangled room link says the room is gone', async ({ player }) => {
+  const sam = await player('Sam');
+  await sam.goto('/games/draw-and-guess/rooms/not-a-room');
+  await expect(
+    sam.getByRole('heading', { name: 'This room has packed up.' }),
+  ).toBeVisible();
+});
+
 test('a game in progress turns a latecomer away', async ({ player }) => {
   const maya = await player('Maya');
   const leo = await player('Leo');

@@ -10,7 +10,12 @@ import { renderApp } from '../tests/render-app';
 const ROOM = '/games/minesweeper/rooms/r1';
 const ok: Result = { ok: true };
 const refused = (
-  type: 'notRoomMember' | 'incorrectPassword' | 'roomNotExist' | 'roomNotOpen',
+  type:
+    | 'notRoomMember'
+    | 'incorrectPassword'
+    | 'roomNotExist'
+    | 'roomNotOpen'
+    | 'invalidRequest',
 ): Result => ({
   ok: false,
   error: { type, message: type },
@@ -102,6 +107,16 @@ describe('a room page', () => {
     fake.answer('room:sync', () => refused('roomNotExist'));
     await renderApp(ROOM, { fake });
     expect(screen.getByText('This room has packed up.')).toBeInTheDocument();
+  });
+
+  it('says the room is gone when the link is mangled', async () => {
+    const fake = new FakeSocket();
+    fake.answer('room:sync', () => refused('invalidRequest'));
+    await renderApp('/games/minesweeper/rooms/not-a-room', { fake });
+
+    expect(
+      await screen.findByRole('heading', { name: 'This room has packed up.' }),
+    ).toBeInTheDocument();
   });
 
   it('says so when the room filled up or started', async () => {
