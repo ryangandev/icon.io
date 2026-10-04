@@ -20,7 +20,6 @@ const CONTENT: Record<string, string> = {
   D14: 'The chat holds the whole game, more than Figma’s example of it.',
   M04: 'The chat starts with the room’s join messages, which Figma leaves out.',
   MO10: 'Every guesser scored, so four scores wrap under the word; Figma’s example has three.',
-  MO13: 'When Leo finds a mine on a low risk, the warning that a mine costs more the safer it looked wraps under the result; Figma’s example has no warning.',
   MO16: 'The chat holds the game so far, from the join messages on; Figma’s example has a few guesses.',
   MO14: 'Figma shows round 19, whose shorter line fits beside "Pick a cell"; round 1’s wraps.',
 };
