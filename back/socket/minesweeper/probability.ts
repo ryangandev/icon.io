@@ -7,8 +7,8 @@ import { HIDDEN, KNOWN_MINE, neighboursOf } from './board.js';
  *
  * This is the whole game. Every score is a function of it, so it is worth being
  * exact rather than approximately right: the number returned is the true
- * posterior — the fraction of all mine layouts consistent with the visible board
- * in which that cell is a mine — not a per-constraint estimate.
+ * posterior - the fraction of all mine layouts consistent with the visible board
+ * in which that cell is a mine - not a per-constraint estimate.
  *
  * **It takes the public view, not the board.** That is a deliberate constraint
  * rather than a convenience: a function that could see the layout could score a
@@ -21,13 +21,13 @@ import { HIDDEN, KNOWN_MINE, neighboursOf } from './board.js';
  *    of them are mines. Mines somebody has already hit count against the number
  *    and drop out of the unknowns.
  * 2. The **frontier** is the hidden cells touching at least one revealed number.
- *    Split it into independent components — two cells are connected when a
- *    constraint mentions both — because components multiply rather than interact.
+ *    Split it into independent components - two cells are connected when a
+ *    constraint mentions both - because components multiply rather than interact.
  * 3. Enumerate each component's satisfying assignments by backtracking, counting
  *    how many use `k` mines and, of those, how many make each cell a mine.
  * 4. The **sea** is the hidden cells touching nothing revealed. They are
  *    interchangeable, and are accounted for by weighting each frontier total `t`
- *    by `C(|sea|, remaining − t)` — the number of ways the mines the frontier did
+ *    by `C(|sea|, remaining − t)` - the number of ways the mines the frontier did
  *    not use could be spread through the sea.
  *
  * Counts are `bigint` because they genuinely overflow: `C(300, 99)` has 82
@@ -53,7 +53,7 @@ interface Constraint {
 /**
  * A bound on backtracking work, shared across the whole board.
  *
- * Frontier components on a real board are small — the pruning below rejects a
+ * Frontier components on a real board are small - the pruning below rejects a
  * partial assignment the moment any constraint becomes unsatisfiable, so the
  * search visits roughly the number of *valid* prefixes rather than 2^n. This
  * exists so that a pathological board degrades to an estimate instead of
@@ -91,9 +91,9 @@ const convolve = (left: bigint[], right: bigint[]): bigint[] => {
 interface ComponentCounts {
   /** Board indices, in the order they were enumerated. */
   cells: number[];
-  /** `ways[k]` — assignments of this component using `k` mines. */
+  /** `ways[k]` - assignments of this component using `k` mines. */
   ways: bigint[];
-  /** `mineWays[k][local]` — of those, how many make that cell a mine. */
+  /** `mineWays[k][local]` - of those, how many make that cell a mine. */
   mineWays: bigint[][];
 }
 
@@ -183,7 +183,7 @@ const enumerateComponent = (
  *
  * Only reached when the exact search runs out of budget, which ordinary play does
  * not do. It is here so that such a board is scored pessimistically rather than
- * not at all — an approximate risk is a playable game, a thrown exception is not.
+ * not at all - an approximate risk is a playable game, a thrown exception is not.
  */
 const approximateProbabilities = (board: PublicBoard): number[] => {
   const { cells, totalMines } = board;
@@ -389,7 +389,7 @@ const mineProbabilities = (board: PublicBoard): number[] => {
     const others = convolve(prefix[index], suffix[index + 1]);
 
     // For a cell to be a mine in a layout using `k` of this component's mines,
-    // the other components and the sea must absorb the rest — so weight `k` by
+    // the other components and the sea must absorb the rest - so weight `k` by
     // every way that can happen.
     const weightForK = Array.from({ length: component.ways.length }, () => 0n);
     for (let k = 0; k < component.ways.length; k++) {

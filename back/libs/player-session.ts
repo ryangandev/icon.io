@@ -3,8 +3,8 @@ import { randomBytes, randomUUID, timingSafeEqual } from 'node:crypto';
 /**
  * Player identity that outlives a socket.
  *
- * Until now identity *was* the socket id, which has one great property — it
- * comes from the connection, so a client cannot claim to be someone else — and
+ * Until now identity *was* the socket id, which has one great property - it
+ * comes from the connection, so a client cannot claim to be someone else - and
  * one fatal one: it changes on every reload. Refreshing the page therefore made
  * you a different person, which is why a refresh lost your score.
  *
@@ -95,7 +95,7 @@ const createPlayerSessionRegistry = () => {
 
     playerIdBySocketId.delete(socketId);
     const session = sessionsByPlayerId.get(playerId);
-    // Only clear the pointer if it still refers to this socket — a second tab
+    // Only clear the pointer if it still refers to this socket - a second tab
     // may already have taken the identity over.
     if (session?.socketId === socketId) session.socketId = null;
 

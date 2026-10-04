@@ -60,7 +60,7 @@
 | `npm run typecheck`    | Run `tsc --noEmit`                                             |
 
 > **Build order matters.** `npm run build` wipes `build/`, including the frontend
-> bundle in `build/public`. Always build the backend _before_ the frontend —
+> bundle in `build/public`. Always build the backend _before_ the frontend -
 > `build:deploy` does this for you.
 
 ## ⚙️ Environment Variables

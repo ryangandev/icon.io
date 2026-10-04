@@ -5,7 +5,7 @@ import type { Coordinate, RoomCanvas } from '../../models/types.js';
  *
  * The canvas used to live only in each client's memory: the server relayed
  * stroke events and kept none of them, so anyone who arrived after a stroke was
- * drawn — a joiner, or a player coming back from a reload — sat in front of an
+ * drawn - a joiner, or a player coming back from a reload - sat in front of an
  * empty board until the drawer happened to draw again. It was also why a
  * reloading drawer lost their turn rather than resuming it; there was nothing
  * to resume to.
@@ -20,7 +20,7 @@ import type { Coordinate, RoomCanvas } from '../../models/types.js';
  * dropped, by the drawer and by the relay alike.
  *
  * A full-tilt 90-second phase is on the order of 5,000 points, so this is well
- * clear of honest play — it is here because a modified client emitting
+ * clear of honest play - it is here because a modified client emitting
  * `continueDrawing` in a loop would otherwise grow this array for as long as
  * the room existed. Dropping the event rather than just declining to store it
  * is what keeps every client's copy identical to the server's.
@@ -50,7 +50,7 @@ const beginStroke = (
 
 /**
  * Returns false when the canvas is full, or when there is no stroke in
- * progress — a `continueDrawing` with no `startDrawing` before it cannot have
+ * progress - a `continueDrawing` with no `startDrawing` before it cannot have
  * come from the canvas, and replaying it would draw a line from wherever the
  * last path happened to end.
  */

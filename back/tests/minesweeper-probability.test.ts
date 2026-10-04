@@ -12,8 +12,8 @@ import {
 } from '../socket/minesweeper/board.js';
 
 /**
- * The solver is the whole game — every point anybody scores is a function of
- * what it returns — so it is worth pinning down against boards whose answers
+ * The solver is the whole game - every point anybody scores is a function of
+ * what it returns - so it is worth pinning down against boards whose answers
  * can be worked out by hand.
  *
  * The cases below are chosen for what they distinguish. Several of them give
@@ -88,7 +88,7 @@ describe('a single constraint', () => {
 
 /*
  * The case worth having. Three numbers reading 1-2-1 over three hidden cells
- * have exactly one solution — mine, safe, mine — and no per-constraint estimate
+ * have exactly one solution - mine, safe, mine - and no per-constraint estimate
  * finds it: taking the worst constraint touching the middle cell gives 2/3,
  * where the truth is 0. Anything that answers 2/3 here is a heuristic.
  */
@@ -117,7 +117,7 @@ describe('the 1-2-1 pattern', () => {
 describe('the frontier and the sea', () => {
   /*
    * A five-cell strip with the middle revealed as 1. The mine is next to it, so
-   * the two cells further out are provably safe — which a density estimate
+   * the two cells further out are provably safe - which a density estimate
    * would never say, because it has no idea the frontier has used the budget up.
    */
   it('knows the sea is empty when the frontier must hold every mine', () => {
@@ -146,7 +146,7 @@ describe('the frontier and the sea', () => {
 /*
  * The invariant that catches almost anything: the probabilities of the hidden
  * cells must sum to the number of mines still out there. It follows directly
- * from the definition — sum the indicator over every consistent layout — so a
+ * from the definition - sum the indicator over every consistent layout - so a
  * solver that miscounts configurations, mishandles a component boundary or
  * weights the sea wrongly will break it, whatever else it gets right.
  */
@@ -227,7 +227,7 @@ describe('what it returns for cells that are not hidden', () => {
 
 /*
  * A Large board is 480 cells and 99 mines, and the solver runs once a round.
- * The counts genuinely overflow a double there — C(300, 99) has 82 digits —
+ * The counts genuinely overflow a double there - C(300, 99) has 82 digits -
  * which is why they are bigint; this is the test that would have caught the
  * NaN if they were not.
  */

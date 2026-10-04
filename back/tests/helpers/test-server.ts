@@ -7,12 +7,18 @@ import type {
 } from '../../libs/game-clock.js';
 import type { MinesweeperState } from '../../socket/minesweeper/index.js';
 import type {
-  DrawAndGuessLobbyRoomInfo,
+  AnyLobbyRoomInfo,
+  AnyRoomState,
+  ChatMessage,
+  ClientToServerEvents,
   DrawAndGuessRoomState,
   DrawAndGuessState,
   GameType,
-  LobbyRoomInfo,
-  PlayerInfo,
+  MinesweeperDifficulty,
+  MinesweeperRoomState,
+  PlayerIdentity,
+  ServerToClientEvent,
+  ServerToClientEvents,
 } from '../../models/types.js';
 import type { Room } from '../../libs/rooms/types.js';
 
@@ -26,6 +32,13 @@ const FAST_PHASES: PhaseDurationsInSeconds = {
   reviewing: 0.2,
 };
 
+/** A drawing phase long enough to make several assertions inside one. */
+const SLOW_DRAWING: PhaseDurationsInSeconds = {
+  wordSelecting: 0.2,
+  drawing: 5,
+  reviewing: 0.2,
+};
+
 /**
  * A round window long enough that a test can pick inside it deliberately, and a
  * reveal short enough that a game of many rounds still finishes in a test.
@@ -35,29 +48,21 @@ const FAST_MINESWEEPER: MinesweeperDurationsInSeconds = {
   reveal: 0.1,
 };
 
-interface PlayerIdentity {
-  playerId: string;
-  token: string;
-}
-
-/**
- * What `dg:scores` carries after a correct guess. It used to be the player list
- * on its own; who has already scored is now the game's own state rather than a
- * flag on every `PlayerInfo`, so it travels alongside.
- */
-interface ScoresPayload {
-  playerList: Record<string, PlayerInfo>;
-  scoredThisTurn: string[];
-}
+/** A client socket typed on the contract, from the client's side of it. */
+type ClientSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
 /**
  * A connected client that has already identified itself. `playerId` is what the
- * server keys rooms by, so it is what assertions about seats and scores use —
- * `socket.id` no longer appears in room state at all.
+ * server keys rooms by, so it is what assertions about seats and scores use.
+ *
+ * `state` is the latest `room:state` this client was sent, which is all a real
+ * client renders from.
  */
-interface TestClient extends Socket {
+interface TestClient extends ClientSocket {
   playerId: string;
   token: string;
+  reconnectGraceMs: number;
+  state: AnyRoomState | undefined;
 }
 
 interface TestServer {
@@ -77,9 +82,7 @@ interface TestServer {
 
 /**
  * Boots a real server on an ephemeral port. Every suite gets its own, so a room
- * left behind by one test can never be seen by another — the throwaway scripts
- * this suite replaces all shared one long-lived server on a fixed port, and
- * leaked state between them was a recurring source of false failures.
+ * left behind by one test can never be seen by another.
  */
 const startTestServer = async (
   phaseDurations: PhaseDurationsInSeconds = FAST_PHASES,
@@ -99,7 +102,7 @@ const startTestServer = async (
 
   const { port } = server.httpServer.address() as AddressInfo;
   const url = `http://127.0.0.1:${port}`;
-  const clients: Socket[] = [];
+  const clients: ClientSocket[] = [];
 
   const connect = (identity?: PlayerIdentity): Promise<TestClient> =>
     new Promise((resolve, reject) => {
@@ -108,17 +111,21 @@ const startTestServer = async (
         forceNew: true,
       }) as TestClient;
       clients.push(client);
+      client.state = undefined;
+      client.on('room:state', (state) => {
+        client.state = state;
+      });
       client.on('connect_error', reject);
 
       client.on('connect', () => {
         // Every real client identifies before doing anything else; the server
         // reads the player id off the connection, never off a payload.
-        client.once('playerIdentity', (issued: PlayerIdentity) => {
-          client.playerId = issued.playerId;
-          client.token = issued.token;
+        client.emit('session:identify', identity ?? null, (session) => {
+          client.playerId = session.playerId;
+          client.token = session.token;
+          client.reconnectGraceMs = session.reconnectGraceMs;
           resolve(client);
         });
-        client.emit('identifyPlayer', identity ?? null);
       });
     });
 
@@ -136,74 +143,127 @@ const startTestServer = async (
   return { url, server, connect, reload, teardown };
 };
 
-/**
- * Resolves with the next `event`, rejecting if it never arrives.
- *
- * A single-argument emit resolves with that argument; a multi-argument one —
- * `receiveMessage` sends a username and a message — resolves with the arguments
- * as an array, so nothing the server sends is silently dropped.
- */
-const waitFor = <T = unknown>(
-  socket: Socket,
-  event: string,
-  timeoutMs = 3000,
-): Promise<T> =>
-  new Promise((resolve, reject) => {
-    const timer = setTimeout(() => {
-      socket.off(event, onEvent);
-      reject(new Error(`Timed out waiting for "${event}"`));
-    }, timeoutMs);
+type Args<E extends ServerToClientEvent> = Parameters<ServerToClientEvents[E]>;
 
-    const onEvent = (...args: unknown[]) => {
-      clearTimeout(timer);
-      socket.off(event, onEvent);
-      resolve((args.length === 1 ? args[0] : args) as T);
-    };
-
-    socket.on(event, onEvent);
-  });
+type Listener = (...args: unknown[]) => void;
 
 /**
- * Resolves with the first `event` whose payload satisfies `predicate`.
- *
- * `room:state` is one event now where it used to be three — a join, a leave and
- * a re-sync all carry the same snapshot, which is the point of the room layer
- * but does mean "the next snapshot" is no longer the same thing as "the
- * snapshot caused by what I just did". A test that cares which one it got says
- * so here rather than racing the one before it.
+ * The client's listener types cannot follow an event chosen by a generic
+ * parameter, so the two helpers that take one listen through this. Their own
+ * signatures are typed on the contract, which is what callers see.
  */
-const waitUntil = <T = unknown>(
-  socket: Socket,
-  event: string,
-  predicate: (payload: T) => boolean,
+const listenersOf = (socket: ClientSocket) =>
+  socket as unknown as {
+    on: (event: string, listener: Listener) => void;
+    off: (event: string, listener: Listener) => void;
+  };
+
+/**
+ * Resolves with the arguments of the next `event` that satisfies `predicate`,
+ * rejecting if none arrives in time.
+ */
+const waitFor = <E extends ServerToClientEvent>(
+  socket: ClientSocket,
+  event: E,
+  predicate: (...args: Args<E>) => boolean = () => true,
   timeoutMs = 3000,
-): Promise<T> =>
+): Promise<Args<E>> =>
   new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
-      socket.off(event, onEvent);
+      listenersOf(socket).off(event, onEvent);
       reject(new Error(`Timed out waiting for a matching "${event}"`));
     }, timeoutMs);
 
     const onEvent = (...args: unknown[]) => {
-      const payload = (args.length === 1 ? args[0] : args) as T;
-      if (!predicate(payload)) return;
-
+      if (!predicate(...(args as Args<E>))) return;
       clearTimeout(timer);
-      socket.off(event, onEvent);
-      resolve(payload);
+      listenersOf(socket).off(event, onEvent);
+      resolve(args as Args<E>);
     };
 
-    socket.on(event, onEvent);
+    listenersOf(socket).on(event, onEvent);
   });
 
 /**
- * Records every payload of `event` for later assertion. Used where a test needs
- * to prove something did *not* happen, which no amount of waiting can show.
+ * Resolves with the next `room:state` this client is sent that satisfies
+ * `predicate`. A snapshot goes out whenever anything in the room changes, so
+ * "the next snapshot" is rarely the one a test means; it says which here.
  */
-const collect = <T = unknown[]>(socket: Socket, event: string): T[] => {
+const waitForState = async <T extends AnyRoomState = AnyRoomState>(
+  client: ClientSocket,
+  predicate: (state: T) => boolean = () => true,
+  timeoutMs = 3000,
+): Promise<T> => {
+  const [state] = await waitFor(
+    client,
+    'room:state',
+    (candidate) => predicate(candidate as T),
+    timeoutMs,
+  );
+  return state as T;
+};
+
+/** The same, for Draw & Guess, whose snapshots most tests read. */
+const waitForDrawState = (
+  client: ClientSocket,
+  predicate: (state: DrawAndGuessRoomState) => boolean = () => true,
+  timeoutMs = 3000,
+) => waitForState<DrawAndGuessRoomState>(client, predicate, timeoutMs);
+
+/** And for Minesweeper. */
+const waitForMineState = (
+  client: ClientSocket,
+  predicate: (state: MinesweeperRoomState) => boolean = () => true,
+  timeoutMs = 3000,
+) => waitForState<MinesweeperRoomState>(client, predicate, timeoutMs);
+
+/** Resolves with the next chat message that satisfies `predicate`. */
+const waitForChat = async (
+  client: ClientSocket,
+  predicate: (message: ChatMessage) => boolean = () => true,
+  timeoutMs = 3000,
+): Promise<ChatMessage> => {
+  const [, message] = await waitFor(
+    client,
+    'chat:message',
+    (_roomId, candidate) => predicate(candidate),
+    timeoutMs,
+  );
+  return message;
+};
+
+/**
+ * Records the arguments of every `event` for later assertion. Used where a
+ * test needs to prove something did *not* happen, which no amount of waiting
+ * can show.
+ */
+const collect = <E extends ServerToClientEvent>(
+  socket: ClientSocket,
+  event: E,
+): Args<E>[] => {
+  const received: Args<E>[] = [];
+  listenersOf(socket).on(event, (...args) => {
+    received.push(args as Args<E>);
+  });
+  return received;
+};
+
+/** Every chat message this client is sent from now on. */
+const collectChat = (socket: ClientSocket): ChatMessage[] => {
+  const received: ChatMessage[] = [];
+  socket.on('chat:message', (_roomId, message) => {
+    received.push(message);
+  });
+  return received;
+};
+
+/** Every snapshot this client is sent from now on. */
+const collectStates = <T extends AnyRoomState = DrawAndGuessRoomState>(
+  socket: ClientSocket,
+): T[] => {
   const received: T[] = [];
-  socket.on(event, (...args: unknown[]) => {
-    received.push((args.length === 1 ? args[0] : args) as T);
+  socket.on('room:state', (state) => {
+    received.push(state as T);
   });
   return received;
 };
@@ -212,47 +272,120 @@ const collect = <T = unknown[]>(socket: Socket, event: string): T[] => {
 const settle = (ms = 150): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
+/**
+ * Sends a request and resolves with its answer. Any socket-level argument
+ * list works, which is what lets a test send a request the UI could not.
+ */
+const request = <T = { ok: boolean; error?: { type: string } }>(
+  socket: ClientSocket,
+  event: string,
+  ...args: unknown[]
+): Promise<T> =>
+  (
+    socket.timeout(3000) as unknown as {
+      emitWithAck: (event: string, ...args: unknown[]) => Promise<T>;
+    }
+  ).emitWithAck(event, ...args);
+
 interface CreateRoomOptions {
   roomName?: string;
-  ownerUsername?: string;
+  username?: string;
   maxPlayers?: number;
   rounds?: number;
   password?: string;
 }
 
 /**
- * Creates a Draw & Guess room and returns its id, without joining it.
- *
- * The request is the room layer's envelope with the game's own half in
- * `settings` — `rounds` used to be a top-level field, back when there was only
- * one game for it to belong to.
+ * Creates a Draw & Guess room and returns its id. The creator is seated in it
+ * as its owner by the request itself.
  */
 const createRoom = async (
-  socket: Socket,
+  client: ClientSocket,
   options: CreateRoomOptions = {},
 ): Promise<string> => {
-  const created = waitFor<string>(socket, 'room:created');
-  socket.emit('room:create', {
+  const answer = await client.timeout(3000).emitWithAck('room:create', {
     gameType: 'draw-and-guess',
     roomName: options.roomName ?? 'Test Room',
-    ownerUsername: options.ownerUsername ?? 'Owner',
+    username: options.username ?? 'Owner',
     maxPlayers: options.maxPlayers ?? 4,
     password: options.password ?? '',
     settings: { rounds: options.rounds ?? 1 },
   });
-  return created;
+  if (!answer.ok) throw new Error(`room:create refused: ${answer.error.type}`);
+  return answer.roomId;
 };
 
-/** Joins a room and resolves once the server has approved the request. */
+interface CreateMinesweeperRoomOptions {
+  roomName?: string;
+  username?: string;
+  maxPlayers?: number;
+  difficulty?: MinesweeperDifficulty;
+  password?: string;
+}
+
+/** Creates a Minesweeper room, with its creator seated, and returns its id. */
+const createMinesweeperRoom = async (
+  client: ClientSocket,
+  options: CreateMinesweeperRoomOptions = {},
+): Promise<string> => {
+  const answer = await client.timeout(3000).emitWithAck('room:create', {
+    gameType: 'minesweeper',
+    roomName: options.roomName ?? 'Minefield',
+    username: options.username ?? 'Owner',
+    maxPlayers: options.maxPlayers ?? 4,
+    password: options.password ?? '',
+    settings: { difficulty: options.difficulty ?? 'Small' },
+  });
+  if (!answer.ok) throw new Error(`room:create refused: ${answer.error.type}`);
+  return answer.roomId;
+};
+
+/** Takes a seat, and fails the test if the server refuses it. */
 const joinRoom = async (
-  socket: Socket,
+  client: ClientSocket,
   roomId: string,
   username: string,
   password = '',
 ): Promise<void> => {
-  const approved = waitFor(socket, 'room:joined');
-  socket.emit('room:join', roomId, username, password);
-  await approved;
+  const answer = await client
+    .timeout(3000)
+    .emitWithAck('room:join', roomId, username, password);
+  if (!answer.ok) throw new Error(`room:join refused: ${answer.error.type}`);
+};
+
+/** Starts the game, and fails the test if the server refuses. */
+const startGame = async (client: ClientSocket, roomId: string) => {
+  const answer = await client.timeout(3000).emitWithAck('game:start', roomId);
+  if (!answer.ok) throw new Error(`game:start refused: ${answer.error.type}`);
+};
+
+/**
+ * What a room page does once it has mounted: ask for the room, and collect
+ * what comes back (the snapshot, the chat so far, and the drawing for Draw &
+ * Guess).
+ */
+const syncRoom = async (client: ClientSocket, roomId: string) => {
+  const state = waitFor(client, 'room:state');
+  const history = waitFor(
+    client,
+    'chat:history',
+    (forRoom) => forRoom === roomId,
+  );
+  const answer = await client.timeout(3000).emitWithAck('room:sync', roomId);
+  if (!answer.ok) throw new Error(`room:sync refused: ${answer.error.type}`);
+  const [[snapshot], [, messages]] = await Promise.all([state, history]);
+  return { state: snapshot, messages };
+};
+
+/**
+ * Seats Alice (the owner) and Bob in a Draw & Guess room, without starting it.
+ */
+const seatTwoPlayers = async (harness: TestServer, rounds = 1) => {
+  const alice = await harness.connect();
+  const bob = await harness.connect();
+  const roomId = await createRoom(alice, { username: 'Alice', rounds });
+  await joinRoom(bob, roomId, 'Bob');
+  return { alice, bob, roomId };
 };
 
 /**
@@ -260,61 +393,49 @@ const joinRoom = async (
  * server picked to draw, who is left guessing, and what the word is.
  *
  * The drawer is chosen at random, so no test may assume it is a particular
- * client — and since the canvas and the guess path are both only open to the
- * drawer, most tests of either need this first.
+ * client; the snapshot says who it is, and the drawer's own says the word.
  */
 const playToDrawingPhase = async (harness: TestServer) => {
-  const alice = await harness.connect();
-  const bob = await harness.connect();
+  const { alice, bob, roomId } = await seatTwoPlayers(harness);
 
-  const roomId = await createRoom(alice, { ownerUsername: 'Alice', rounds: 1 });
-  await joinRoom(alice, roomId, 'Alice');
-  await joinRoom(bob, roomId, 'Bob');
+  const aliceDrawing = waitForDrawState(
+    alice,
+    (s) => s.phase === 'drawing',
+    5000,
+  );
+  const bobDrawing = waitForDrawState(bob, (s) => s.phase === 'drawing', 5000);
+  await startGame(alice, roomId);
+  const [aliceView, bobView] = await Promise.all([aliceDrawing, bobDrawing]);
 
-  let drawer: TestClient | undefined;
-  let word: string | undefined;
-  const learn = (socket: TestClient) => (received: string) => {
-    drawer = socket;
-    word = received;
-  };
-  alice.once('dg:word', learn(alice));
-  bob.once('dg:word', learn(bob));
-
-  const drawing = waitFor(alice, 'dg:phase:drawing', 5000);
-  alice.emit('game:start', roomId);
-  await drawing;
-  await settle(50);
-
+  const drawer = aliceView.currentDrawer === alice.playerId ? alice : bob;
   const guesser = drawer === alice ? bob : alice;
+  const drawerView = drawer === alice ? aliceView : bobView;
 
   return {
     roomId,
     alice,
     bob,
-    drawer: drawer!,
+    drawer,
     drawerName: drawer === alice ? 'Alice' : 'Bob',
     guesser,
     guesserName: guesser === alice ? 'Alice' : 'Bob',
-    word: word!,
+    word: drawerView.word!,
   };
 };
 
 /**
  * The lobby's view of a single room, as any subscriber would see it.
- *
- * Subscribing is what asks for the list now: a lobby is a socket.io room per
- * game rather than an `io.emit` to everyone, so a client that has not asked
- * for Draw & Guess's rooms is never sent them.
+ * Subscribing is what asks for the list now.
  */
 const lobbyView = async (
-  socket: Socket,
+  socket: ClientSocket,
   roomId: string,
   gameType: GameType = 'draw-and-guess',
-): Promise<LobbyRoomInfo | undefined> => {
-  const list = waitUntil<[string, LobbyRoomInfo[]]>(
+): Promise<AnyLobbyRoomInfo | undefined> => {
+  const list = waitFor(
     socket,
     'lobby:rooms',
-    ([forGame]) => forGame === gameType,
+    (forGame) => forGame === gameType,
   );
   socket.emit('lobby:subscribe', gameType);
   const [, rooms] = await list;
@@ -339,48 +460,20 @@ const minesweeperRoom = (
 ): Room<MinesweeperState> =>
   harness.server.rooms[roomId] as Room<MinesweeperState>;
 
-interface CreateMinesweeperRoomOptions {
-  roomName?: string;
-  ownerUsername?: string;
-  maxPlayers?: number;
-  difficulty?: 'Small' | 'Medium' | 'Large';
-  password?: string;
-}
-
-/** Creates a Minesweeper room and returns its id, without joining it. */
-const createMinesweeperRoom = async (
-  socket: Socket,
-  options: CreateMinesweeperRoomOptions = {},
-): Promise<string> => {
-  const created = waitFor<string>(socket, 'room:created');
-  socket.emit('room:create', {
-    gameType: 'minesweeper',
-    roomName: options.roomName ?? 'Minefield',
-    ownerUsername: options.ownerUsername ?? 'Owner',
-    maxPlayers: options.maxPlayers ?? 4,
-    password: options.password ?? '',
-    settings: { difficulty: options.difficulty ?? 'Small' },
-  });
-  return created;
-};
-
-/** Seats two players in a Minesweeper room and starts the first round. */
+/** Seats two players in a Minesweeper room and opens the first round. */
 const playToFirstRound = async (harness: TestServer) => {
   const alice = await harness.connect();
   const bob = await harness.connect();
 
-  const roomId = await createMinesweeperRoom(alice, {
-    ownerUsername: 'Alice',
-  });
-  await joinRoom(alice, roomId, 'Alice');
+  const roomId = await createMinesweeperRoom(alice, { username: 'Alice' });
   await joinRoom(bob, roomId, 'Bob');
 
-  const round = waitFor<{ round: number; board: number[] }>(
+  const round = waitForMineState(
     alice,
-    'ms:round',
+    (state) => state.phase === 'picking' && state.round === 1,
     5000,
   );
-  alice.emit('game:start', roomId);
+  await startGame(alice, roomId);
   const first = await round;
 
   return { roomId, alice, bob, first };
@@ -388,26 +481,29 @@ const playToFirstRound = async (harness: TestServer) => {
 
 export {
   FAST_PHASES,
+  SLOW_DRAWING,
   FAST_MINESWEEPER,
   startTestServer,
   waitFor,
-  waitUntil,
+  waitForState,
+  waitForDrawState,
+  waitForMineState,
+  waitForChat,
   collect,
+  collectChat,
+  collectStates,
   settle,
+  request,
   createRoom,
+  createMinesweeperRoom,
   joinRoom,
+  startGame,
+  syncRoom,
+  seatTwoPlayers,
   playToDrawingPhase,
   lobbyView,
   serverRoom,
-  createMinesweeperRoom,
   minesweeperRoom,
   playToFirstRound,
 };
-export type {
-  TestServer,
-  TestClient,
-  PlayerIdentity,
-  ScoresPayload,
-  DrawAndGuessRoomState,
-  DrawAndGuessLobbyRoomInfo,
-};
+export type { TestServer, TestClient, ClientSocket };

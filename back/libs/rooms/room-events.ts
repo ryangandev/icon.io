@@ -1,195 +1,186 @@
-import type { Server, Socket } from 'socket.io';
-import { asRoomError, type CustomError } from '../../models/error.js';
+import { asFailure, failure, invalidRequest } from '../../models/error.js';
 import { getRoomStatus } from '../utils.js';
-import {
-  joinRoomRequest,
-  leaveRoomRequest,
-  parseArgs,
-  roomIdOnly,
-} from '../validation.js';
+import { joinRoomRequest, parseArgs, roomIdOnly } from '../validation.js';
 import type { PlayerSessionRegistry } from '../player-session.js';
 import type { RoomMembership } from './membership.js';
 import type { RoomRegistry } from './registry.js';
-import { emitToRoom, emitToSocket, onClientEvent } from './emit.js';
-
-const roomError = (message: string, errorType: string): CustomError => {
-  const error = new Error(message) as CustomError;
-  error.errorType = errorType as CustomError['errorType'];
-  return error;
-};
+import {
+  emitToSocket,
+  onClientEvent,
+  onClientRequest,
+  type IoSocket,
+} from './emit.js';
 
 /**
- * Joining, leaving, re-syncing and starting — the four things every room does
+ * Joining, leaving, re-syncing and starting: the four things every room does
  * regardless of what is played in it.
  *
- * Two of these carry a hand-off to the game and nothing more: `room:sync` sends
- * the module's snapshot and then lets it send whatever else one arriving socket
- * needs, and `game:start` is the module's own check plus the error path.
+ * Each request is answered through its acknowledgement, success or the reason
+ * it was refused, and anything it changes reaches the room as a new snapshot.
  */
 const roomEventsHandler = (
-  io: Server,
-  socket: Socket,
+  socket: IoSocket,
   registry: RoomRegistry,
   sessions: PlayerSessionRegistry,
   membership: RoomMembership,
 ) => {
-  onClientEvent(socket, 'room:join', (...rawArgs: unknown[]) => {
+  onClientRequest(socket, 'room:join', (args, reply) => {
     const validated = parseArgs(
       joinRoomRequest,
-      // The password is optional on the wire for unlocked rooms.
-      [rawArgs[0], rawArgs[1], rawArgs[2] ?? ''],
+      // Tolerate a missing password: an unlocked room has none to send.
+      [args[0], args[1], args[2] ?? ''],
       'room:join',
     );
-    if (!validated) return;
+    if (!validated) {
+      reply(invalidRequest());
+      return;
+    }
     const [roomId, username, password] = validated;
 
     // Identity comes from the connection, never from the payload: the client
     // proved who it was during the handshake, and this is the result.
     const playerId = sessions.playerIdFor(socket.id);
-    if (!playerId) return;
+    if (!playerId) {
+      reply(invalidRequest('Identify before joining a room.'));
+      return;
+    }
 
-    try {
-      const room = registry.lookup.get(roomId);
-      if (!room) throw roomError('Room does not exist.', 'roomNotExist');
+    const room = registry.lookup.get(roomId);
+    if (!room || !registry.moduleOf(room)) {
+      reply(failure('roomNotExist', 'Room does not exist.'));
+      return;
+    }
 
-      const module = registry.moduleOf(room);
-      if (!module) throw roomError('Room does not exist.', 'roomNotExist');
+    const isAlreadySeated = Boolean(room.playerList[playerId]);
 
-      const isAlreadySeated = Boolean(room.playerList[playerId]);
-
+    if (!isAlreadySeated) {
       // A player already holding a seat is returning to it, so a full room or
-      // a game in progress is no reason to turn them away.
-      if (!isAlreadySeated && room.status !== 'Open') {
-        throw roomError('Room is not open.', 'roomNotOpen');
+      // a game in progress is no reason to turn them away, and the seat they
+      // hold is all the proof a locked room asks for.
+      if (room.status !== 'Open') {
+        reply(failure('roomNotOpen', 'Room is not open.'));
+        return;
       }
-
       if (room.password && room.password !== password) {
-        emitToSocket(socket, 'room:join:denied', {
-          status: true,
-          message: 'Incorrect password. Please try again.',
-        });
+        reply(
+          failure('incorrectPassword', 'Incorrect password. Please try again.'),
+        );
         return;
       }
 
-      const existing = room.playerList[playerId];
-      room.playerList[playerId] = {
-        username,
-        // Points survive: this is the same player, on a new connection.
-        points: existing?.points ?? 0,
-        isConnected: true,
-      };
+      room.playerList[playerId] = { username, points: 0, isConnected: true };
       room.currentPlayerCount = Object.keys(room.playerList).length;
       room.status = getRoomStatus(
         room.currentPlayerCount,
         room.maxPlayers,
         room.isGameStarted,
       );
-
-      socket.join(roomId);
-
-      emitToSocket(socket, 'room:joined', roomId);
-      registry.lookup.emitLobby(room.gameType);
-
-      // These used to be delayed by 250ms "to ensure that the client has joined
-      // the room". socket.join() above is synchronous on a single node, so by
-      // this line the socket is already a member and the delay bought nothing.
-      emitToRoom(io, roomId, 'room:state', module.toRoomState(room));
-
-      if (!isAlreadySeated) {
-        registry.lookup.announce(roomId, `${username} has joined the room.`);
-      }
-    } catch (error) {
-      console.error(error);
-      emitToSocket(socket, 'room:error', asRoomError(error));
     }
+    // A seat already held keeps the name it was taken with: standings,
+    // ownership and the chat all know the player by it.
+
+    socket.join(roomId);
+    reply({ ok: true });
+
+    if (!isAlreadySeated) {
+      registry.lookup.announce(
+        roomId,
+        'system',
+        `${username} has joined the room.`,
+      );
+    }
+    registry.lookup.emitState(room);
+    registry.lookup.emitLobby(room.gameType);
   });
 
   /**
    * Asked for by the room page once it has mounted and its listeners are live.
-   * The join broadcast races the joining client's own navigation — it cannot
-   * have subscribed yet — so rather than guessing how long that takes, the
-   * client says when it is ready.
+   * A snapshot broadcast while the page was still navigating would have
+   * nowhere to land, so rather than guessing how long that takes, the client
+   * says when it is ready.
    *
-   * Answered only for players who hold a seat. The payload carries no secrets,
-   * but a locked room's player list is not something a stranger should be able
-   * to pull with a room id off the lobby broadcast. A client that arrives
-   * without a seat — a pasted link — is told so, and asks to join.
+   * Answered only for players who hold a seat. A locked room's player list is
+   * not something a stranger should be able to pull with a room id off the
+   * lobby broadcast. A client that arrives without a seat (a pasted link) is
+   * told so, and asks to join.
    */
-  onClientEvent(socket, 'room:sync', (...rawArgs: unknown[]) => {
-    const validated = parseArgs(roomIdOnly, rawArgs, 'room:sync');
-    if (!validated) return;
+  onClientRequest(socket, 'room:sync', (args, reply) => {
+    const validated = parseArgs(roomIdOnly, args, 'room:sync');
+    if (!validated) {
+      reply(invalidRequest());
+      return;
+    }
     const [roomId] = validated;
 
     const room = registry.lookup.get(roomId);
-    if (!room) {
-      emitToSocket(socket, 'room:error', {
-        status: true,
-        message: 'Room does not exist.',
-        errorType: 'roomNotExist',
-      });
+    const module = room ? registry.moduleOf(room) : undefined;
+    if (!room || !module) {
+      reply(failure('roomNotExist', 'Room does not exist.'));
       return;
     }
 
     const playerId = sessions.playerIdFor(socket.id);
     if (!playerId || !room.playerList[playerId]) {
-      emitToSocket(socket, 'room:error', {
-        status: true,
-        message: 'You are not in this room.',
-        errorType: 'notRoomMember',
-      });
+      reply(failure('notRoomMember', 'You are not in this room.'));
       return;
     }
 
-    const module = registry.moduleOf(room);
-    if (!module) return;
+    // Normally already a member of the channel; a second tab that took the
+    // identity over is the case where it is not.
+    socket.join(roomId);
+    reply({ ok: true });
 
-    emitToSocket(socket, 'room:state', module.toRoomState(room));
+    emitToSocket(socket, 'room:state', module.toRoomState(room, playerId));
+    emitToSocket(socket, 'chat:history', roomId, [...room.chat.messages]);
 
-    // Whatever else this one socket needs and the broadcast cannot carry: a
-    // drawing, a board, a word only the drawer may see. A joiner, a player
-    // returning from a reload and a drawer resuming their own turn all arrive
-    // through here.
+    // Whatever else this one socket needs and the snapshot cannot carry, such
+    // as a drawing. A joiner, a player returning from a reload and a drawer
+    // resuming their own turn all arrive through here.
     module.syncTo(socket, room, playerId);
   });
 
   onClientEvent(socket, 'room:leave', (...rawArgs: unknown[]) => {
-    const validated = parseArgs(leaveRoomRequest, rawArgs, 'room:leave');
-    if (!validated) return;
-    const [roomId, username] = validated;
-
-    const playerId = sessions.playerIdFor(socket.id);
-    if (!playerId) return;
-
-    // Leaving is deliberate, so the seat goes at once — no grace period. A
-    // stray or repeated leave is ignored inside `leave`, before any mutation.
-    membership.leave(roomId, playerId, username);
-  });
-
-  onClientEvent(socket, 'game:start', (...rawArgs: unknown[]) => {
-    const validated = parseArgs(roomIdOnly, rawArgs, 'game:start');
+    const validated = parseArgs(roomIdOnly, rawArgs, 'room:leave');
     if (!validated) return;
     const [roomId] = validated;
 
     const playerId = sessions.playerIdFor(socket.id);
     if (!playerId) return;
 
+    // Leaving is deliberate, so the seat goes at once, with no grace period.
+    // A stray or repeated leave is ignored inside `leave`, before any change.
+    membership.leave(roomId, playerId);
+  });
+
+  onClientRequest(socket, 'game:start', (args, reply) => {
+    const validated = parseArgs(roomIdOnly, args, 'game:start');
+    if (!validated) {
+      reply(invalidRequest());
+      return;
+    }
+    const [roomId] = validated;
+
+    const playerId = sessions.playerIdFor(socket.id);
+    if (!playerId) {
+      reply(invalidRequest('Identify before starting a game.'));
+      return;
+    }
+
     const room = registry.lookup.get(roomId);
-    if (!room) {
-      emitToSocket(socket, 'room:error', {
-        status: true,
-        message: 'Room does not exist.',
-        errorType: 'roomNotExist',
-      });
+    const module = room ? registry.moduleOf(room) : undefined;
+    if (!room || !module) {
+      reply(failure('roomNotExist', 'Room does not exist.'));
       return;
     }
 
     try {
-      registry.moduleOf(room)?.startGame(room, playerId);
+      module.startGame(room, playerId);
     } catch (error) {
-      console.log(error);
-      emitToSocket(socket, 'room:error', asRoomError(error));
+      reply(asFailure(error));
+      return;
     }
+    reply({ ok: true });
   });
 };
 
-export { roomEventsHandler, roomError };
+export { roomEventsHandler };

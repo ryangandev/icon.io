@@ -10,7 +10,7 @@ import {
  * What is left in `libs/utils.ts` once the extraction took the game-specific
  * half out. The word-bank and hint helpers moved to
  * `socket/draw-and-guess/words.ts`, and the two snapshot builders became that
- * module's `toLobbyInfo`/`toRoomState` — all of which are covered in
+ * module's `toLobbyInfo`/`toRoomState` - all of which are covered in
  * `draw-and-guess-state.test.ts`.
  */
 

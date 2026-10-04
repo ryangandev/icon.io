@@ -20,7 +20,7 @@ Find anything else through [docs/README.md](docs/README.md), and read only the s
 ## Rules that fail silently
 
 - The server is authoritative: clocks, scoring and permissions live in `back/`, and the client never advances a phase ([why](docs/architecture.md#server-authority)).
-- Rooms reach clients only through a module's `toLobbyInfo` / `toRoomState`; never emit an internal room object, or secrets leak ([why](docs/architecture.md#server-authority)).
+- Rooms reach clients only through a module's `toLobbyInfo` / `toRoomState`, and `room:state` only through `rooms.emitState`, which builds each player's own view; never emit an internal room object or a room-wide snapshot, or secrets leak ([why](docs/architecture.md#server-authority)).
 - Every event name and payload is declared once in `shared/wire-types.d.ts`; change both sides through it ([why](docs/architecture.md#the-wire-contract)).
 - `socket.off(event)` without a handler removes every listener, including the identity handshake; always pass the handler ([why](docs/architecture.md#pitfalls)).
 - `docs/games/` is the behaviour contract for each game; UI work must not change a rule or timing by accident ([design](docs/design.md#what-the-screens-are-and-are-not)).

@@ -74,8 +74,8 @@ describe('a room canvas', () => {
       expect(extendStroke(canvas, at(1, 1))).toBe(true);
     }
 
-    // Refused, and — because the caller relays only what it managed to
-    // store — not sent on to anybody else either.
+    // Refused, and - because the caller relays only what it managed to
+    // store - not sent on to anybody else either.
     expect(extendStroke(canvas, at(2, 2))).toBe(false);
     expect(beginStroke(canvas, '#000000', 4, at(2, 2))).toBe(false);
     expect(canvas.pointCount).toBe(MAX_POINTS_PER_CANVAS);

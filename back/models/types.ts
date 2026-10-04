@@ -1,4 +1,9 @@
-import type { CanvasStroke, WordCategory } from '../../shared/wire-types.js';
+import type {
+  CanvasStroke,
+  DrawAndGuessGameSummary,
+  DrawAndGuessPhase,
+  WordCategory,
+} from '../../shared/wire-types.js';
 
 /**
  * Server-private state.
@@ -10,8 +15,8 @@ import type { CanvasStroke, WordCategory } from '../../shared/wire-types.js';
  * mutable form the relay maintains it in.
  *
  * The room itself is no longer described here. `RoomInfo` and
- * `DrawAndGuessDetailRoomInfo` were one type that mixed the two — a room's name,
- * seats and password alongside a drawer queue and a canvas — which is precisely
+ * `DrawAndGuessDetailRoomInfo` were one type that mixed the two - a room's name,
+ * seats and password alongside a drawer queue and a canvas - which is precisely
  * the seam the extraction cut along. What is generic is `Room<TGameState>` in
  * `libs/rooms/types.ts`; what is Draw & Guess's is `DrawAndGuessState` below,
  * and it hangs off `room.game`.
@@ -30,28 +35,41 @@ interface RoomCanvas {
 /**
  * Everything Draw & Guess knows that no other game would.
  *
- * `scoredThisTurn` used to be a `receivedPointsThisTurn` boolean on `PlayerInfo`
- * — the shared, every-game shape — which meant the room layer carried a field
- * that only means something inside a drawing phase. Per-player facts a game
- * cares about live in the game's own state, keyed by the same player id.
+ * Per-player facts the game cares about (who has scored, what each player made
+ * this turn) live here rather than on `PlayerInfo`, the shape every game
+ * shares, keyed by the same player id.
  */
 interface DrawAndGuessState {
   rounds: number;
-  currentDrawer: string; // current drawer's player id
-  currentWord: string;
-  currentWordHint: string;
+  phase: DrawAndGuessPhase;
+  /** 1-based; 0 when no game is running. */
   currentRound: number;
-  isWordSelectingPhase: boolean;
-  isDrawingPhase: boolean;
-  isReviewingPhase: boolean;
-  drawerQueue: Set<string>; // player ids still to draw this round
-  wordCategory: WordCategory | ''; // '' when no game is in progress
+  /** Turns started in this game, including the current one. */
+  turn: number;
+  /** The drawer's player id; '' between games. */
+  currentDrawer: string;
+  /** The word in play; '' until the drawer has one. Never in another player's snapshot. */
+  word: string;
+  /** The word with its unrevealed letters as underscores; '' outside a drawing. */
+  hint: string;
+  /** What the drawer is choosing between; empty once a word is chosen. */
   wordChoices: string[];
+  /** True when the word-select clock ran out and took the first choice. */
+  wordAutoPicked: boolean;
+  /** Player ids still to draw this round. */
+  drawerQueue: Set<string>;
+  wordCategory: WordCategory | ''; // '' when no game is in progress
   /** Player ids that have already scored this turn, and so cannot guess again. */
   scoredThisTurn: Set<string>;
+  /** What each player gained this turn, the drawer included; absent means nothing. */
+  turnPoints: Map<string, number>;
+  /** Epoch ms the hold for a dropped drawer runs out; 0 when not holding. */
+  drawerHoldEndsAt: number;
+  /** How the last game ended, until the next one starts. */
+  lastGame: DrawAndGuessGameSummary | null;
   // Sent to arrivals on its own rather than with the room snapshot: a snapshot
-  // goes out every time anyone joins or leaves, and the drawing is the largest
-  // thing in the room.
+  // goes out every time anything in the room changes, and the drawing is the
+  // largest thing in the room.
   canvas: RoomCanvas;
 }
 
@@ -66,20 +84,35 @@ export type {
   WordCategory,
   PlayerInfo,
   OwnerInfo,
-  RoomCreateRequestBody,
+  PlayerIdentity,
+  SessionInfo,
+  RoomCreateRequest,
   Coordinate,
   CanvasStroke,
+  ChatMessage,
+  ChatMessageKind,
   LobbyRoomInfo,
+  AnyLobbyRoomInfo,
   RoomState,
+  AnyRoomState,
+  Standing,
+  DrawAndGuessPhase,
+  DrawAndGuessGameSummary,
   DrawAndGuessLobbyRoomInfo,
   DrawAndGuessRoomState,
   DrawAndGuessSettings,
   MinesweeperDifficulty,
   MinesweeperSettings,
   MinesweeperCellView,
+  MinesweeperPhase,
   MinesweeperPickResult,
+  MinesweeperGameSummary,
   MinesweeperLobbyRoomInfo,
   MinesweeperRoomState,
+  ClientToServerEvent,
+  ClientToServerEvents,
+  ServerToClientEvent,
+  ServerToClientEvents,
 } from '../../shared/wire-types.js';
 
 export type { RoomCanvas, DrawAndGuessState };

@@ -12,6 +12,7 @@ Ryan approved it in review round two on 2026-10-03, after one fix (icons centred
 Implementation is approved.
 The design system is built in code: every Shared pieces family is a component in `front/src/ui/`, with tokens generated from the export, and matches Figma in the `/design` gallery to within anti-aliasing (see [design.md](design.md#in-code)).
 The pages still run on Ant Design.
+The backend speaks the snapshot-driven wire contract in `shared/wire-types.d.ts` ([architecture](architecture.md#the-wire-contract)); the current pages still speak the old one, so they work again only once they are rebuilt on it.
 
 ## Product direction
 
@@ -48,14 +49,13 @@ Decided by Ryan, and the frame for every design and implementation choice:
 
 ## Known issues
 
-| Issue                                             | Notes                                                                                                                                                                                                                                                                    |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Minesweeper refresh during pick or reveal         | Observed in a two-player browser session: after a refresh the UI asks for a pick already made, or loses the reveal. The snapshot has no explicit reveal phase and the player's own pick is kept only client-side. Fix without ever sending one player's pick to another. |
-| Narrow screens                                    | Side panels and chat overflow horizontally; the canvas handles mouse events only, so touch drawing does not work.                                                                                                                                                        |
-| Bundle size                                       | Main JS about 1 MB (330 kB gzip), two drawing background images about 1 MB and 1.4 MB, and a chunk-size warning on build.                                                                                                                                                |
-| Backend dependency advisories                     | A 2026-10-02 audit of backend production dependencies reported engine.io (high) and qs (moderate). Re-run `npm audit` before acting.                                                                                                                                     |
-| Old public URL                                    | `icon.ryiscrispy.com` no longer resolves; nothing is deployed.                                                                                                                                                                                                           |
-| A drawer who vanishes freezes the canvas for 10 s | The deliberate bound of the drawer hold ([architecture](architecture.md#identity-and-reconnection)).                                                                                                                                                                     |
+| Issue                                             | Notes                                                                                                                                |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Narrow screens                                    | Side panels and chat overflow horizontally; the canvas handles mouse events only, so touch drawing does not work.                    |
+| Bundle size                                       | Main JS about 1 MB (330 kB gzip), two drawing background images about 1 MB and 1.4 MB, and a chunk-size warning on build.            |
+| Backend dependency advisories                     | A 2026-10-02 audit of backend production dependencies reported engine.io (high) and qs (moderate). Re-run `npm audit` before acting. |
+| Old public URL                                    | `icon.ryiscrispy.com` no longer resolves; nothing is deployed.                                                                       |
+| A drawer who vanishes freezes the canvas for 10 s | The deliberate bound of the drawer hold ([architecture](architecture.md#identity-and-reconnection)).                                 |
 
 ## Backlog
 

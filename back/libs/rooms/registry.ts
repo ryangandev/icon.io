@@ -1,10 +1,15 @@
-import type { Server } from 'socket.io';
-import type { GameType } from '../../../shared/wire-types.js';
+import type { ChatMessage, GameType } from '../../../shared/wire-types.js';
 import type { PlayerSessionRegistry } from '../player-session.js';
 import type { GameContext, GameModule, Room, RoomLookup } from './types.js';
-import { emitToLobby, emitToRoom } from './emit.js';
+import {
+  emitToLobby,
+  emitToPlayer,
+  emitToRoom,
+  type IoServer,
+} from './emit.js';
 
-const SYSTEM = '📢 System';
+/** How many messages a room remembers for a page that arrives late. */
+const CHAT_HISTORY_LIMIT = 100;
 
 /**
  * Every room on the server, and which module speaks for each.
@@ -19,9 +24,57 @@ const SYSTEM = '📢 System';
  * order rather than by a lazy reference: nothing is called on a module until
  * a connection arrives, which is long after every module is in place.
  */
-const createRoomRegistry = (io: Server, sessions: PlayerSessionRegistry) => {
+const createRoomRegistry = (io: IoServer, sessions: PlayerSessionRegistry) => {
   const all: Record<string, Room> = {};
   const modules = new Map<GameType, GameModule>();
+
+  /** Rooms with a snapshot owed to their players at the end of this run. */
+  const staleRooms = new Set<string>();
+
+  /**
+   * Sends every seated, connected player their own view of each stale room.
+   *
+   * Per player rather than to the room's channel, because a snapshot is not
+   * the same for everybody: the drawer is sent the word nobody else may see,
+   * and a Minesweeper player their own pick and nobody else's.
+   */
+  const flushStates = (): void => {
+    const roomIds = [...staleRooms];
+    staleRooms.clear();
+
+    for (const roomId of roomIds) {
+      const room = all[roomId];
+      // Emptied and deleted while the snapshot was pending: nobody to tell.
+      if (!room) continue;
+      const module = modules.get(room.gameType);
+      if (!module) continue;
+
+      for (const [playerId, seat] of Object.entries(room.playerList)) {
+        if (!seat.isConnected) continue;
+        emitToPlayer(
+          io,
+          sessions,
+          playerId,
+          'room:state',
+          module.toRoomState(room, playerId),
+        );
+      }
+    }
+  };
+
+  /** Appends to a room's chat, keeps it bounded, and sends it to the room. */
+  const post = (room: Room, message: Omit<ChatMessage, 'id'>): void => {
+    const posted: ChatMessage = { id: room.chat.nextId, ...message };
+    room.chat.nextId += 1;
+    room.chat.messages.push(posted);
+    if (room.chat.messages.length > CHAT_HISTORY_LIMIT) {
+      room.chat.messages.splice(
+        0,
+        room.chat.messages.length - CHAT_HISTORY_LIMIT,
+      );
+    }
+    emitToRoom(io, room.roomId, 'chat:message', room.roomId, posted);
+  };
 
   const lookup: RoomLookup = {
     all,
@@ -42,9 +95,24 @@ const createRoomRegistry = (io: Server, sessions: PlayerSessionRegistry) => {
 
       emitToLobby(io, gameType, 'lobby:rooms', gameType, rooms);
     },
-    announce: (roomId, message) => {
-      emitToRoom(io, roomId, 'chat:message', SYSTEM, message);
+    emitState: (room) => {
+      if (staleRooms.size === 0) queueMicrotask(flushStates);
+      staleRooms.add(room.roomId);
     },
+    announce: (roomId, kind, text) => {
+      const room = all[roomId];
+      if (room) post(room, { kind, text });
+    },
+  };
+
+  /**
+   * A seated player's message, posted as theirs. The name comes from the seat,
+   * never from the payload, so nobody can speak as somebody else.
+   */
+  const say = (room: Room, playerId: string, text: string): void => {
+    const seat = room.playerList[playerId];
+    if (!seat) return;
+    post(room, { kind: 'player', playerId, username: seat.username, text });
   };
 
   const context: GameContext = { io, sessions, rooms: lookup };
@@ -67,6 +135,7 @@ const createRoomRegistry = (io: Server, sessions: PlayerSessionRegistry) => {
     Object.values(all).filter((room) => room.playerList[playerId]);
 
   const dispose = (): void => {
+    staleRooms.clear();
     for (const module of modules.values()) module.dispose();
   };
 
@@ -74,6 +143,7 @@ const createRoomRegistry = (io: Server, sessions: PlayerSessionRegistry) => {
     all,
     lookup,
     context,
+    say,
     register,
     moduleFor,
     moduleOf,
@@ -85,5 +155,5 @@ const createRoomRegistry = (io: Server, sessions: PlayerSessionRegistry) => {
 
 type RoomRegistry = ReturnType<typeof createRoomRegistry>;
 
-export { createRoomRegistry, SYSTEM };
+export { createRoomRegistry, CHAT_HISTORY_LIMIT };
 export type { RoomRegistry };

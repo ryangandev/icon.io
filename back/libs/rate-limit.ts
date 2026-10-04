@@ -1,8 +1,10 @@
+import type { ClientToServerEvent } from '../../shared/wire-types.js';
+
 /**
  * How often a client may say something.
  *
- * Every inbound event has had its *shape* checked since the validation pass —
- * a room name cannot be a megabyte long, a coordinate cannot be a billion — but
+ * Every inbound event has had its *shape* checked since the validation pass -
+ * a room name cannot be a megabyte long, a coordinate cannot be a billion - but
  * nothing bounded how many of them arrived. A client could emit `dg:draw:start`
  * in a loop, or `room:create` a thousand times a second, and the only limit was
  * its own bandwidth. This is the other half of that check.
@@ -39,7 +41,11 @@ const RULES: Record<BucketName, BucketRule> = {
   room: { ratePerSecond: 4, burst: 10 },
 };
 
-const BUCKET_FOR_EVENT: Record<string, BucketName> = {
+/**
+ * Typed on the contract, so an event added to it without a budget here fails
+ * to compile rather than quietly falling into the default.
+ */
+const BUCKET_FOR_EVENT: Record<ClientToServerEvent, BucketName> = {
   'dg:draw:start': 'drawing',
   'dg:draw:move': 'drawing',
   'dg:draw:end': 'drawing',
@@ -47,10 +53,10 @@ const BUCKET_FOR_EVENT: Record<string, BucketName> = {
   'dg:draw:undo': 'canvasCommand',
   'dg:draw:clear': 'canvasCommand',
 
+  // Talking and guessing are one event, so they share one budget.
   'chat:send': 'chat',
-  'dg:guess': 'chat',
 
-  identifyPlayer: 'room',
+  'session:identify': 'room',
   'lobby:subscribe': 'room',
   'lobby:unsubscribe': 'room',
   'room:create': 'room',
@@ -64,7 +70,7 @@ const BUCKET_FOR_EVENT: Record<string, BucketName> = {
 };
 
 /**
- * Anything not listed above has no handler, so it costs nothing to process —
+ * Anything not listed above has no handler, so it costs nothing to process -
  * but it still costs a packet to receive, and a flood of them should be as
  * bounded as a flood of real ones.
  */
@@ -83,7 +89,8 @@ const createRateLimiter = (now: () => number = Date.now) => {
   const buckets = new Map<BucketName, TokenBucket>();
 
   const allow = (eventName: string): boolean => {
-    const name = BUCKET_FOR_EVENT[eventName] ?? DEFAULT_BUCKET;
+    const name =
+      BUCKET_FOR_EVENT[eventName as ClientToServerEvent] ?? DEFAULT_BUCKET;
     const rule = RULES[name];
     const currentMs = now();
 

@@ -1,13 +1,17 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
-  collect,
+  collectChat,
+  collectStates,
   createRoom,
   joinRoom,
   playToDrawingPhase,
+  seatTwoPlayers,
   settle,
+  SLOW_DRAWING,
+  startGame,
   startTestServer,
-  waitFor,
-  type ScoresPayload,
+  waitForChat,
+  waitForDrawState,
   type TestClient,
   type TestServer,
 } from './helpers/test-server.js';
@@ -26,50 +30,45 @@ const playToDrawingPhaseWithThree = async (harness: TestServer) => {
   ]);
   const clients = [alice!, bob!, carol!];
 
-  const roomId = await createRoom(alice!, { ownerUsername: 'Alice' });
-  for (const [index, client] of clients.entries()) {
-    await joinRoom(client, roomId, names[index]!);
-  }
+  const roomId = await createRoom(alice!, { username: 'Alice' });
+  await joinRoom(bob!, roomId, 'Bob');
+  await joinRoom(carol!, roomId, 'Carol');
 
-  let drawer: TestClient | undefined;
-  let word: string | undefined;
-  for (const client of clients) {
-    client.once('dg:word', (received: string) => {
-      drawer = client;
-      word = received;
-    });
-  }
+  const views = clients.map((client) =>
+    waitForDrawState(client, (s) => s.phase === 'drawing', 5000),
+  );
+  await startGame(alice!, roomId);
+  const states = await Promise.all(views);
 
-  const drawing = waitFor(alice!, 'dg:phase:drawing', 5000);
-  alice!.emit('game:start', roomId);
-  await drawing;
-  await settle(50);
+  const drawerIndex = clients.findIndex(
+    (client) => client.playerId === states[0]!.currentDrawer,
+  );
 
   return {
     roomId,
-    drawer: drawer!,
-    guessers: clients.filter((client) => client !== drawer),
+    drawer: clients[drawerIndex]!,
+    guessers: clients.filter((_, index) => index !== drawerIndex),
     guesserName: (client: TestClient) => names[clients.indexOf(client)]!,
-    word: word!,
+    word: states[drawerIndex]!.word!,
   };
 };
 
+const pointsOf = (harness: TestServer, roomId: string) =>
+  Object.values(harness.server.rooms[roomId]!.playerList).map(
+    (player) => player.points,
+  );
+
 /*
- * Every check below is about what the *server* permits. The UI already disables
- * the guess box for the drawer and for anyone who has scored, and only routes a
- * message during the drawing phase — but none of that binds a modified client,
- * and until this pass none of it was checked on arrival.
+ * Every check below is about what the *server* permits. A guess is a chat
+ * message, so the server is what decides whether a message is a guess, a
+ * scored guess, ordinary chat, or something nobody may see.
  */
 describe('guess authority', () => {
   let harness: TestServer;
 
   beforeEach(async () => {
     // Long enough to make the assertions inside a single drawing phase.
-    harness = await startTestServer({
-      wordSelecting: 0.2,
-      drawing: 5,
-      reviewing: 0.2,
-    });
+    harness = await startTestServer(SLOW_DRAWING);
   });
 
   afterEach(async () => {
@@ -80,65 +79,119 @@ describe('guess authority', () => {
     const { roomId, guesser, guesserName, drawer, word } =
       await playToDrawingPhase(harness);
 
-    const scored = waitFor<ScoresPayload>(drawer, 'dg:scores');
-    const announced = waitFor<[string, string]>(drawer, 'dg:guess:correct');
-    guesser.emit('dg:guess', roomId, guesserName, ` ${word.toUpperCase()} `);
+    const scored = waitForDrawState(drawer, (s) =>
+      s.scoredThisTurn.includes(guesser.playerId),
+    );
+    const announced = waitForChat(drawer, (m) => m.kind === 'success');
+    guesser.emit('chat:send', roomId, ` ${word.toUpperCase()} `);
 
-    const players = (await scored).playerList;
-    const scores = Object.values(players)
-      .map((player) => player.points)
-      .toSorted((a, b) => b - a);
+    const state = await scored;
+    const guesserPoints = state.playerList[guesser.playerId]!.points;
+    const drawerPoints = state.playerList[drawer.playerId]!.points;
     // Guessed at once, so near the top of the range: the guesser takes the
     // floor plus almost the whole bonus, and the drawer two fifths of that.
-    expect(scores[0]).toBeGreaterThan(140);
-    expect(scores[1]).toBe(Math.round(scores[0]! * 0.4));
-    expect((await announced)[1]).toContain(guesserName);
-    expect((await announced)[1]).toContain(`+${scores[0]}`);
+    expect(guesserPoints).toBeGreaterThan(140);
+    expect(drawerPoints).toBe(Math.round(guesserPoints * 0.4));
+    expect(state.turnPoints).toEqual({
+      [guesser.playerId]: guesserPoints,
+      [drawer.playerId]: drawerPoints,
+    });
+    expect((await announced).text).toBe(
+      `${guesserName} guessed the correct word! (+${guesserPoints})`,
+    );
   });
 
-  it('does not leak the word by echoing a wrong guess back as a hint', async () => {
+  it('never shows a correct guess as chat, to anybody', async () => {
+    const { roomId, guesser, drawer, word } = await playToDrawingPhase(harness);
+
+    const drawerHeard = collectChat(drawer);
+    const guesserHeard = collectChat(guesser);
+    guesser.emit('chat:send', roomId, word);
+    await settle();
+
+    for (const heard of [drawerHeard, guesserHeard]) {
+      expect(heard.filter((m) => m.kind === 'player')).toEqual([]);
+      expect(JSON.stringify(heard)).not.toContain(word);
+    }
+  });
+
+  it('shows a wrong guess as ordinary chat, to the guesser as well', async () => {
     const { roomId, guesser, guesserName, drawer } =
       await playToDrawingPhase(harness);
 
-    const drawerHeard = collect<[string, string]>(drawer, 'chat:message');
-    guesser.emit('dg:guess', roomId, guesserName, 'definitely wrong');
-    await settle();
+    const drawerHeard = waitForChat(drawer, (m) => m.kind === 'player');
+    const guesserHeard = waitForChat(guesser, (m) => m.kind === 'player');
+    guesser.emit('chat:send', roomId, 'definitely wrong');
 
-    expect(drawerHeard).toContainEqual([guesserName, 'definitely wrong']);
-  });
-
-  it('refuses to let the drawer score by guessing their own word', async () => {
-    const { roomId, drawer, drawerName, word, guesser } =
-      await playToDrawingPhase(harness);
-
-    const scored = collect(guesser, 'dg:scores');
-    drawer.emit('dg:guess', roomId, drawerName, word);
-    await settle();
-
-    expect(scored).toEqual([]);
-    expect(
-      Object.values(harness.server.rooms[roomId]!.playerList).every(
-        (player) => player.points === 0,
-      ),
-    ).toBe(true);
+    for (const message of await Promise.all([drawerHeard, guesserHeard])) {
+      expect(message).toMatchObject({
+        kind: 'player',
+        playerId: guesser.playerId,
+        username: guesserName,
+        text: 'definitely wrong',
+      });
+    }
   });
 
   /*
-   * A flat 100 made a turn pass/fail rather than a race: the same score for
-   * getting it in three seconds and for getting it in the last one.
+   * Anything the drawer types while the word is in play could be the word, or
+   * a hint at it.
+   */
+  it('silences the drawer while the word is in play', async () => {
+    const { roomId, drawer, word, guesser } = await playToDrawingPhase(harness);
+
+    const heard = collectChat(guesser);
+    const states = collectStates(guesser);
+    drawer.emit('chat:send', roomId, word);
+    drawer.emit('chat:send', roomId, 'it is a fruit');
+    await settle();
+
+    expect(heard).toEqual([]);
+    expect(states).toEqual([]);
+    expect(pointsOf(harness, roomId).every((points) => points === 0)).toBe(
+      true,
+    );
+  });
+
+  it('silences the drawer while they are still choosing, too', async () => {
+    const { alice, bob, roomId } = await seatTwoPlayers(harness);
+    const choosing = waitForDrawState(alice, (s) => s.phase === 'choosing');
+    await startGame(alice, roomId);
+    const { currentDrawer } = await choosing;
+    const [drawer, other] =
+      currentDrawer === alice.playerId ? [alice, bob] : [bob, alice];
+
+    const heard = collectChat(other);
+    drawer.emit('chat:send', roomId, 'one of these is easy');
+    // ...while everybody else may talk.
+    const otherHeard = waitForChat(drawer, (m) => m.kind === 'player');
+    other.emit('chat:send', roomId, 'good luck');
+
+    expect((await otherHeard).text).toBe('good luck');
+    await settle();
+    expect(heard.filter((m) => m.playerId === drawer.playerId)).toEqual([]);
+  });
+
+  /*
+   * A guess is worth what is left on the clock: the same score for getting it
+   * in three seconds and in the last one would make a turn pass/fail.
    */
   it('pays a fast guess more than a slow one', async () => {
     const early = await playToDrawingPhase(harness);
-    const earlyScored = waitFor<ScoresPayload>(early.drawer, 'dg:scores');
-    early.guesser.emit('dg:guess', early.roomId, early.guesserName, early.word);
+    const earlyScored = waitForDrawState(early.drawer, (s) =>
+      s.scoredThisTurn.includes(early.guesser.playerId),
+    );
+    early.guesser.emit('chat:send', early.roomId, early.word);
     const earlyPoints = (await earlyScored).playerList[early.guesser.playerId]!
       .points;
 
     const late = await playToDrawingPhase(harness);
     // Most of the five-second phase spent staring at the canvas.
     await settle(3500);
-    const lateScored = waitFor<ScoresPayload>(late.drawer, 'dg:scores');
-    late.guesser.emit('dg:guess', late.roomId, late.guesserName, late.word);
+    const lateScored = waitForDrawState(late.drawer, (s) =>
+      s.scoredThisTurn.includes(late.guesser.playerId),
+    );
+    late.guesser.emit('chat:send', late.roomId, late.word);
     const latePoints = (await lateScored).playerList[late.guesser.playerId]!
       .points;
 
@@ -148,73 +201,103 @@ describe('guess authority', () => {
     expect(earlyPoints).toBeLessThanOrEqual(150);
   });
 
-  it('refuses to let one player score twice in a turn', async () => {
-    const { roomId, guesser, guesserName, drawer, word } =
-      await playToDrawingPhase(harness);
+  /*
+   * A player who has scored knows the word, so they are silenced until the
+   * next turn starts, and they can never score twice in one.
+   */
+  it('refuses to let one player score twice, or speak again, in a turn', async () => {
+    const { roomId, drawer, guessers, word } =
+      await playToDrawingPhaseWithThree(harness);
+    const [scorer, other] = guessers as [TestClient, TestClient];
 
-    const scored = collect<ScoresPayload>(drawer, 'dg:scores');
-    for (let i = 0; i < 5; i++) {
-      guesser.emit('dg:guess', roomId, guesserName, word);
-    }
+    const successes = collectChat(drawer);
+    scorer.emit('chat:send', roomId, word);
+    await waitForChat(drawer, (m) => m.kind === 'success');
+
+    for (let i = 0; i < 5; i++) scorer.emit('chat:send', roomId, word);
+    scorer.emit('chat:send', roomId, 'it was easy');
     await settle(300);
 
-    expect(scored).toHaveLength(1);
+    expect(successes.filter((m) => m.kind === 'success')).toHaveLength(1);
+    expect(successes.filter((m) => m.playerId === scorer.playerId)).toEqual([]);
     expect(
-      Math.max(
-        ...Object.values(harness.server.rooms[roomId]!.playerList).map(
-          (player) => player.points,
-        ),
-      ),
+      harness.server.rooms[roomId]!.playerList[scorer.playerId]!.points,
     ).toBeLessThanOrEqual(150);
+
+    // Somebody still guessing is unaffected.
+    const stillTalking = waitForChat(drawer, (m) => m.kind === 'player');
+    other.emit('chat:send', roomId, 'no idea');
+    expect((await stillTalking).playerId).toBe(other.playerId);
   });
 
-  it('refuses a guess from somebody who is not in the room', async () => {
+  it('keeps a scorer silenced through the reveal, and lets them talk next turn', async () => {
+    const { roomId, drawer, guessers, word } =
+      await playToDrawingPhaseWithThree(harness);
+
+    const revealed = waitForDrawState(drawer, (s) => s.phase === 'reveal');
+    for (const guesser of guessers) guesser.emit('chat:send', roomId, word);
+    await revealed;
+
+    const heard = collectChat(drawer);
+    for (const guesser of guessers) guesser.emit('chat:send', roomId, 'easy');
+    await settle();
+    expect(heard).toEqual([]);
+
+    // The next turn starts with nobody having scored. One of the two scorers
+    // is drawing it, and so silenced for a different reason; the other may
+    // talk again.
+    const next = await waitForDrawState(drawer, (s) => s.turn === 2);
+    const speaker = guessers.find(
+      (guesser) => guesser.playerId !== next.currentDrawer,
+    )!;
+    const spoken = waitForChat(drawer, (m) => m.kind === 'player');
+    speaker.emit('chat:send', roomId, 'my turn to guess');
+    expect(await spoken).toMatchObject({
+      playerId: speaker.playerId,
+      text: 'my turn to guess',
+    });
+  });
+
+  it('refuses a message from somebody who is not in the room', async () => {
     const { roomId, word, drawer } = await playToDrawingPhase(harness);
     const outsider = await harness.connect();
 
-    const scored = collect(drawer, 'dg:scores');
-    const heard = collect(drawer, 'chat:message');
-    outsider.emit('dg:guess', roomId, 'Outsider', word);
-    outsider.emit('chat:send', roomId, 'Outsider', 'let me in');
+    const heard = collectChat(drawer);
+    outsider.emit('chat:send', roomId, word);
+    outsider.emit('chat:send', roomId, 'let me in');
     await settle();
 
-    expect(scored).toEqual([]);
-    expect(JSON.stringify(heard)).not.toContain('Outsider');
+    expect(heard).toEqual([]);
+    expect(pointsOf(harness, roomId).every((points) => points === 0)).toBe(
+      true,
+    );
   });
 
   /*
-   * The reveal shows the word to the whole room. Guessing during it is
-   * guessing with the answer on screen.
+   * The reveal shows the word to the whole room. Typing it then is chat, not
+   * a guess.
    */
-  it('refuses a guess made outside the drawing phase', async () => {
-    const alice = await harness.connect();
-    const bob = await harness.connect();
-    const roomId = await createRoom(alice, { rounds: 1 });
-    await joinRoom(alice, roomId, 'Alice');
-    await joinRoom(bob, roomId, 'Bob');
-
-    const scored = collect(alice, 'dg:scores');
+  it('scores nothing outside the drawing phase', async () => {
+    const { alice, bob, roomId } = await seatTwoPlayers(harness);
 
     // Before the game has started at all.
-    bob.emit('dg:guess', roomId, 'Bob', 'anything');
+    bob.emit('chat:send', roomId, 'anything');
     await settle();
-    expect(scored).toEqual([]);
 
     // ...and during the reveal, when everyone can read the word.
-    const reveal = waitFor<{ currentWord: string }>(
-      alice,
-      'dg:phase:review',
-      9000,
+    const reveal = waitForDrawState(alice, (s) => s.phase === 'reveal', 9000);
+    await startGame(alice, roomId);
+    const { word, currentDrawer } = await reveal;
+    const notDrawer = currentDrawer === alice.playerId ? bob : alice;
+
+    const heard = waitForChat(alice, (m) => m.text === word);
+    notDrawer.emit('chat:send', roomId, word!);
+
+    expect((await heard).kind).toBe('player');
+    expect(pointsOf(harness, roomId).every((points) => points === 0)).toBe(
+      true,
     );
-    alice.emit('game:start', roomId);
-    const { currentWord } = await reveal;
-
-    bob.emit('dg:guess', roomId, 'Bob', currentWord);
-    alice.emit('dg:guess', roomId, 'Alice', currentWord);
-    await settle();
-
-    expect(scored).toEqual([]);
-  });
+  }, 15_000);
 
   /*
    * The rest of a drawing phase whose word everyone has guessed is dead time:
@@ -222,42 +305,46 @@ describe('guess authority', () => {
    * countdown for a word they already know.
    */
   it('ends the turn as soon as everybody has guessed', async () => {
-    const { roomId, guesser, guesserName, drawer, word } =
-      await playToDrawingPhase(harness);
+    const { roomId, guesser, drawer, word } = await playToDrawingPhase(harness);
 
-    const reveal = waitFor<{ currentWord: string }>(
+    const reveal = waitForDrawState(
       drawer,
-      'dg:phase:review',
+      (s) => s.phase === 'reveal',
       1000, // far inside the five-second drawing phase
     );
-    const messages = collect<[string, string]>(drawer, 'chat:message');
-    guesser.emit('dg:guess', roomId, guesserName, word);
+    const announced = waitForChat(drawer, (m) =>
+      m.text.includes('Everybody guessed'),
+    );
+    guesser.emit('chat:send', roomId, word);
 
-    expect((await reveal).currentWord).toBe(word);
-    expect(
-      messages.some(([, text]) => text.includes('Everybody guessed')),
-    ).toBe(true);
+    expect((await reveal).word).toBe(word);
+    expect((await announced).kind).toBe('system');
   });
 
   it('waits for the players who have not guessed yet', async () => {
-    const { roomId, drawer, guessers, guesserName, word } =
+    const { roomId, drawer, guessers, word } =
       await playToDrawingPhaseWithThree(harness);
 
-    const ended = collect(drawer, 'dg:phase:review');
-    guessers[0].emit('dg:guess', roomId, guesserName(guessers[0]), word);
+    const states = collectStates(drawer);
+    guessers[0]!.emit('chat:send', roomId, word);
     await settle(300);
 
     // One of the two has guessed; the other is still trying.
-    expect(ended).toEqual([]);
+    expect(states.filter((s) => s.phase === 'reveal')).toEqual([]);
+    expect(states.at(-1)?.scoredThisTurn).toEqual([guessers[0]!.playerId]);
 
-    const reveal = waitFor<{ currentWord: string }>(
-      drawer,
-      'dg:phase:review',
-      1000,
+    const reveal = waitForDrawState(drawer, (s) => s.phase === 'reveal', 1000);
+    guessers[1]!.emit('chat:send', roomId, word);
+
+    const revealed = await reveal;
+    expect(revealed.word).toBe(word);
+    // Both guessers scored, and the drawer took a cut of each.
+    const points = revealed.turnPoints;
+    expect(Object.keys(points)).toHaveLength(3);
+    expect(points[drawer.playerId]).toBe(
+      Math.round(points[guessers[0]!.playerId]! * 0.4) +
+        Math.round(points[guessers[1]!.playerId]! * 0.4),
     );
-    guessers[1].emit('dg:guess', roomId, guesserName(guessers[1]), word);
-
-    expect((await reveal).currentWord).toBe(word);
   });
 
   /*
@@ -265,41 +352,54 @@ describe('guess authority', () => {
    * so waiting for them would cost the room the whole rest of the phase.
    */
   it('does not wait for a player who is away', async () => {
-    const { roomId, drawer, guessers, guesserName, word } =
+    const { roomId, drawer, guessers, word } =
       await playToDrawingPhaseWithThree(harness);
 
-    guessers[1].close();
+    guessers[1]!.close();
     await settle(100);
-    // Still seated, just away — and so still in the room's player list.
+    // Still seated, just away, and so still in the room's player list.
     expect(
-      harness.server.rooms[roomId]?.playerList[guessers[1].playerId]
+      harness.server.rooms[roomId]?.playerList[guessers[1]!.playerId]
         ?.isConnected,
     ).toBe(false);
 
-    const reveal = waitFor<{ currentWord: string }>(
-      drawer,
-      'dg:phase:review',
-      1000,
-    );
-    guessers[0].emit('dg:guess', roomId, guesserName(guessers[0]), word);
+    const reveal = waitForDrawState(drawer, (s) => s.phase === 'reveal', 1000);
+    guessers[0]!.emit('chat:send', roomId, word);
 
-    expect((await reveal).currentWord).toBe(word);
+    expect((await reveal).word).toBe(word);
   });
 
-  it('passes ordinary room chat through to everyone else', async () => {
+  it('resets what everybody made at the start of every turn', async () => {
+    const { roomId, guesser, drawer, word } = await playToDrawingPhase(harness);
+
+    guesser.emit('chat:send', roomId, word);
+    const reveal = await waitForDrawState(drawer, (s) => s.phase === 'reveal');
+    expect(Object.keys(reveal.turnPoints)).toHaveLength(2);
+
+    const next = await waitForDrawState(drawer, (s) => s.turn === 2);
+    expect(next.turnPoints).toEqual({});
+    expect(next.scoredThisTurn).toEqual([]);
+  });
+
+  it('posts room chat to everyone, under the name on the seat', async () => {
     const alice = await harness.connect();
     const bob = await harness.connect();
-    const roomId = await createRoom(alice);
-    await joinRoom(alice, roomId, 'Alice');
+    const roomId = await createRoom(alice, { username: 'Alice' });
     await joinRoom(bob, roomId, 'Bob');
-    // `joinRoom` resolves on the approval, which the server sends before it
-    // announces the arrival to the room. Without settling first, the next
-    // `receiveMessage` Bob sees can be his own "has joined" notice.
     await settle();
 
-    const heard = waitFor<[string, string]>(bob, 'chat:message');
-    alice.emit('chat:send', roomId, 'Alice', 'hello room');
+    const bobHeard = waitForChat(bob, (m) => m.kind === 'player');
+    const aliceHeard = waitForChat(alice, (m) => m.kind === 'player');
+    alice.emit('chat:send', roomId, 'hello room');
 
-    expect(await heard).toEqual(['Alice', 'hello room']);
+    const [toBob, toAlice] = await Promise.all([bobHeard, aliceHeard]);
+    expect(toBob).toEqual({
+      id: expect.any(Number),
+      kind: 'player',
+      playerId: alice.playerId,
+      username: 'Alice',
+      text: 'hello room',
+    });
+    expect(toAlice).toEqual(toBob);
   });
 });

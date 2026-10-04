@@ -1,14 +1,16 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { RULES, createRateLimiter } from '../libs/rate-limit.js';
 import {
+  SLOW_DRAWING,
   collect,
   createRoom,
   joinRoom,
   playToDrawingPhase,
+  request,
   settle,
+  startGame,
   startTestServer,
-  waitFor,
-  type ScoresPayload,
+  waitForDrawState,
   type TestServer,
 } from './helpers/test-server.js';
 
@@ -91,7 +93,7 @@ describe('the rate limiter', () => {
     const clock = fakeClock();
     const limiter = createRateLimiter(clock.now);
 
-    // A hundred and forty-four points a second for ten seconds — a hand on a
+    // A hundred and forty-four points a second for ten seconds: a hand on a
     // 144Hz display, dragging without pause.
     for (let second = 0; second < 10; second++) {
       for (let point = 0; point < 144; point++) {
@@ -106,11 +108,7 @@ describe('a throttled socket', () => {
   let harness: TestServer;
 
   beforeEach(async () => {
-    harness = await startTestServer({
-      wordSelecting: 0.2,
-      drawing: 5,
-      reviewing: 0.2,
-    });
+    harness = await startTestServer(SLOW_DRAWING);
   });
 
   afterEach(async () => {
@@ -132,30 +130,53 @@ describe('a throttled socket', () => {
   });
 
   it('leaves the other traffic alone while it throttles one kind', async () => {
-    const { drawer, guesser, guesserName, roomId, word } =
-      await playToDrawingPhase(harness);
+    const { drawer, guesser, roomId, word } = await playToDrawingPhase(harness);
 
     for (let i = 0; i < 200; i++) drawer.emit('dg:draw:clear', roomId);
 
-    // The guess path has its own budget and has spent none of it.
-    const scored = waitFor<ScoresPayload>(drawer, 'dg:scores');
-    guesser.emit('dg:guess', roomId, guesserName, word);
+    // The chat path has its own budget and has spent none of it.
+    const scored = waitForDrawState(drawer, (state) =>
+      state.scoredThisTurn.includes(guesser.playerId),
+    );
+    guesser.emit('chat:send', roomId, word);
 
     expect((await scored).playerList[guesser.playerId]?.points).toBeGreaterThan(
       0,
     );
   });
 
+  /*
+   * A request the client is awaiting must be answered even when it is
+   * dropped, or the page that sent it waits forever for its acknowledgement.
+   */
+  it('answers a throttled request instead of leaving it hanging', async () => {
+    const client = await harness.connect();
+    const roomId = await createRoom(client);
+
+    const answers = await Promise.all(
+      Array.from({ length: RULES.room.burst + 5 }, () =>
+        request(client, 'room:sync', roomId),
+      ),
+    );
+
+    const refused = answers.filter((answer) => !answer.ok);
+    expect(refused.length).toBeGreaterThan(0);
+    for (const answer of refused) {
+      expect(answer.error).toEqual({
+        type: 'invalidRequest',
+        message: 'Too many requests. Try again in a moment.',
+      });
+    }
+    expect(client.connected).toBe(true);
+  });
+
   it('does not stop an ordinary game from being played', async () => {
     const owner = await harness.connect();
     const guest = await harness.connect();
-    const roomId = await createRoom(owner, { ownerUsername: 'Owner' });
-    await joinRoom(owner, roomId, 'Owner');
+    const roomId = await createRoom(owner, { username: 'Owner' });
     await joinRoom(guest, roomId, 'Guest');
 
-    const started = waitFor(owner, 'dg:game:started');
-    owner.emit('game:start', roomId);
-    await started;
+    await startGame(owner, roomId);
 
     expect(harness.server.rooms[roomId]?.isGameStarted).toBe(true);
   });

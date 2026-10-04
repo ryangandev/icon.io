@@ -1,7 +1,7 @@
 /**
  * What a pick is worth.
  *
- * A cell's score is the risk it carried — its mine probability computed from
+ * A cell's score is the risk it carried - its mine probability computed from
  * public information immediately before the round. That definition does three
  * useful things at once, and the whole game rests on them:
  *
@@ -27,7 +27,7 @@ const SAFE_RISK_WEIGHT = 90;
  * You are punished for how wrong you were, not for how unlucky. Detonating a
  * cell you should have read as safe is a blunder and costs 120; detonating a
  * forced coin-flip costs 70, because there was nothing better to do. Without
- * this the endgame — where the free cells run out and everybody must guess —
+ * this the endgame - where the free cells run out and everybody must guess -
  * would be a dice roll deciding the match.
  */
 const MINE_BASE = 20;
@@ -47,14 +47,14 @@ interface PickPayout {
  * Collisions split the reward but not the penalty, which is deliberately
  * asymmetric.
  *
- * The reward is for *claiming* a cell — a finite thing, and if three players
+ * The reward is for *claiming* a cell - a finite thing, and if three players
  * claim it they have between them uncovered one cell's worth of board. The
  * penalty is for *the decision*, which is individually yours: splitting it too
  * would let you hide in a crowd, and piling onto a coin-flip to pay a third of
  * the price is exactly backwards.
  *
  * What falls out is that crowding a safe cell is mildly wasteful and crowding a
- * risky one is punished, so players spread across the board — which is also what
+ * risky one is punished, so players spread across the board - which is also what
  * makes a round interesting to watch.
  */
 const pointsForPick = ({
@@ -68,7 +68,7 @@ const pointsForPick = ({
   }
 
   // Letting the clock run out plays the safest cell available, and forfeits the
-  // base — enough that being present is worth something, not so much that a
+  // base - enough that being present is worth something, not so much that a
   // dropped connection wrecks a game.
   const base = autoPlayed ? 0 : SAFE_BASE;
   const reward = base + SAFE_RISK_WEIGHT * risk;

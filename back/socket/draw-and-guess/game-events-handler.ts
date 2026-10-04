@@ -1,21 +1,20 @@
-import type { Socket } from 'socket.io';
 import type { DrawAndGuessGameEngine } from './game-engine.js';
 import type { GameContext } from '../../libs/rooms/types.js';
-import { onClientEvent } from '../../libs/rooms/emit.js';
+import { onClientEvent, type IoSocket } from '../../libs/rooms/emit.js';
 import { parseArgs } from '../../libs/validation.js';
 import { selectWordRequest } from './validation.js';
 
 /**
  * Socket glue only. Every phase transition is driven by the engine's own clock;
- * the two events a client used to fire to end a phase — `drawingPhaseTimerEnded`
- * and `reviewingPhaseTimerEnded` — no longer exist, because a client that could
+ * the two events a client used to fire to end a phase - `drawingPhaseTimerEnded`
+ * and `reviewingPhaseTimerEnded` - no longer exist, because a client that could
  * end a phase could also decline to.
  *
  * Starting the game is not here: that is `game:start`, which every game answers,
  * and the room layer routes it to whichever module owns the room.
  */
 const gameEventsHandler = (
-  socket: Socket,
+  socket: IoSocket,
   ctx: GameContext,
   gameEngine: DrawAndGuessGameEngine,
 ) => {
