@@ -794,13 +794,10 @@ export default function Gallery() {
 
       <Family
         name="Card and dialog"
-        file="modal"
-        note="The focused card of name, create-room and password pages, and the dialog over a room."
+        file="card"
+        note="The focused card of name, create-room and password pages, the dialog over a room, and the panels of an empty or loading lobby. Figma's variants hold an empty Content slot, so the specimens are not measured; the screens that use them are."
       >
-        <Specimen
-          label="Card, as the focused pages draw it: a Heading title (Zumpo/Modal uses Title, so it is not measured)"
-          width={560}
-        >
+        <Specimen label="Kind=Focused" width={560}>
           <Card
             title="A little room for you."
             description="Set up your game and invite some good company."
@@ -819,7 +816,15 @@ export default function Gallery() {
             />
           </Card>
         </Specimen>
-        <Specimen label="Dialog: opens over the page">
+        <Specimen label="Kind=Panel" width={920}>
+          <Card
+            kind="panel"
+            title="A little quiet in here."
+            description="Be the first to make a room. Bring a friend and get playing."
+            actions={<Button>Create the first room</Button>}
+          />
+        </Specimen>
+        <Specimen label="Kind=Dialog: opens over the page">
           <Button
             variant="secondary"
             icon="leave"

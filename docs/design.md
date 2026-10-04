@@ -77,6 +77,10 @@ To review the design system, run the frontend dev server and open [`/design`](ht
 Every specimen is captioned with its Figma variant, uses that variant's sample copy, and shows its size beside Figma's, in red when they differ by more than half a pixel.
 Each family's Figma preview sits under it at the same scale.
 
+`Zumpo/Card` is every focused surface: the one card of a name, create-room, password or error page (Kind=Focused), a dialog over a room (Dialog), and a panel in a page's column, such as an empty or loading lobby (Panel).
+Its Title and Description are text properties, and each screen puts its own fields, status and actions into its Content slot, so a change to the surface reaches all 28 screens that use it.
+In code the same three are `Card`, `Card kind="panel"` and `Dialog`, which shares the card's styles.
+
 Figma gives each sample player an avatar tone by hand; code picks one from a hash of the player's name, so a player keeps one colour in the header, the scoreboard and the results, on every screen.
 
 ### Comparing with Figma
@@ -127,6 +131,8 @@ When editing through the Plugin API:
 - `resize()` fixes a frame's sizing modes; set them back to `AUTO` afterwards where the frame should hug.
 - `layoutSizingHorizontal = 'FILL'` works only after the node is in an auto layout parent.
 - Vector paths take no `A` (arc) command; use cubic curves, and reset `x` and `y` to 0 before setting `vectorPaths` again.
+- A node moved into an instance's slot keeps its old id, and the API then cannot read anything inside it, so the exporter fails; clone it into the slot and remove the original instead.
+  The exporter writes a slot's content under the instance's `slots`.
 - Figma desktop suspends the plugin while the screen is locked; a script queued then waits until it is unlocked.
 - After any edit, check text and component bounds, roles, real scoring, countdowns, hidden information, canvas ratio, mobile usability and prototype links, then export again.
 

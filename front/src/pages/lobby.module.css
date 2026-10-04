@@ -35,28 +35,6 @@
   letter-spacing: var(--zumpo-text-small-tracking);
 }
 
-.panel {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--zumpo-space-16);
-  padding: var(--zumpo-space-32);
-  border: 1px solid var(--zumpo-line);
-  border-radius: var(--zumpo-radius-24);
-  background: var(--zumpo-paper);
-}
-
-.panelTitle {
-  font: var(--zumpo-text-heading);
-  letter-spacing: var(--zumpo-text-heading-tracking);
-}
-
-.panelText {
-  color: var(--zumpo-muted);
-  font: var(--zumpo-text-body);
-  letter-spacing: var(--zumpo-text-body-tracking);
-}
-
 .skeleton {
   height: 80px;
   border-radius: var(--zumpo-radius-16);
@@ -71,6 +49,11 @@
   border: 1px solid var(--zumpo-line);
   border-radius: var(--zumpo-radius-24);
   background: var(--zumpo-lime);
+}
+
+.rulesTitle {
+  font: var(--zumpo-text-heading);
+  letter-spacing: var(--zumpo-text-heading-tracking);
 }
 
 .rulesText {

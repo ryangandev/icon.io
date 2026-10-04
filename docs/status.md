@@ -33,11 +33,7 @@ Decided by Ryan, and the frame for every design and implementation choice:
 
 ## Next
 
-1. Make the focused card one Shared pieces component in Figma, as Ryan decided on 2026-10-04.
-   The 25 focused cards (P02-P12, DL04-DL11, ML04-ML10) are hand-built frames with the same surface: 560 px wide, 32 px padding, 24 px gaps, a Heading title, a Body description, then fields and actions; the two dialogs add the dialog shadow.
-   `Zumpo/Modal` is the unused draft of it, with a Title-style title.
-   Rename it `Zumpo/Card` to match code's `Card`, give it the Heading title and a place for each card's own fields, and swap every frame for an instance.
-   It needs Figma desktop open with the bridge plugin running and the screen unlocked.
+Nothing is queued on `rework` but Ryan's review.
 
 ## Open decisions
 

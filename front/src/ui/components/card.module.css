@@ -1,4 +1,5 @@
-/* The focused card of name, create-room and password pages, and of dialogs. */
+/* Zumpo/Card: the focused card of name, create-room and password pages, and
+   of dialogs. */
 .card {
   display: flex;
   flex-direction: column;
@@ -9,6 +10,13 @@
   border-radius: var(--zumpo-radius-24);
   background: var(--zumpo-paper);
   color: var(--zumpo-ink);
+}
+
+/* Kind=Panel: a card in a page's column. */
+.panel {
+  width: 100%;
+  gap: var(--zumpo-space-16);
+  align-items: flex-start;
 }
 
 .title {

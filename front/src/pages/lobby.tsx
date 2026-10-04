@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 import type { AnyLobbyRoomInfo, GameType } from '../../../shared/wire-types';
-import { ButtonLink, RoomRow, type RoomRowStatus } from '../ui';
+import { ButtonLink, Card, RoomRow, type RoomRowStatus } from '../ui';
 import {
   createRoomPath,
   gameInfo,
@@ -133,33 +133,28 @@ function RoomList({
 
 function Empty({ gameType }: { gameType: GameType }) {
   return (
-    <section className={styles.panel} aria-labelledby="lobby-empty">
-      <h2 id="lobby-empty" className={styles.panelTitle}>
-        A little quiet in here.
-      </h2>
-      <p className={styles.panelText}>
-        Be the first to make a room. Bring a friend and get playing.
-      </p>
-      <ButtonLink to={createRoomPath(gameType)}>
-        Create the first room
-      </ButtonLink>
-    </section>
+    <Card
+      kind="panel"
+      title="A little quiet in here."
+      description="Be the first to make a room. Bring a friend and get playing."
+      actions={
+        <ButtonLink to={createRoomPath(gameType)}>
+          Create the first room
+        </ButtonLink>
+      }
+    />
   );
 }
 
 function Loading() {
   return (
     <>
-      <section
-        className={styles.panel}
-        aria-labelledby="lobby-loading"
-        aria-busy="true"
-      >
-        <h2 id="lobby-loading" className={styles.panelTitle}>
-          Finding your people…
-        </h2>
-        <p className={styles.panelText}>Connecting to the room list.</p>
-      </section>
+      <Card
+        kind="panel"
+        title="Finding your people…"
+        description="Connecting to the room list."
+        busy
+      />
       <div className={styles.skeleton} aria-hidden="true" />
       <div className={styles.skeleton} aria-hidden="true" />
       <div className={styles.skeleton} aria-hidden="true" />
@@ -170,7 +165,7 @@ function Loading() {
 function Rules({ game }: { game: GameInfo }) {
   return (
     <aside className={styles.rules} aria-labelledby="lobby-rules">
-      <h2 id="lobby-rules" className={styles.panelTitle}>
+      <h2 id="lobby-rules" className={styles.rulesTitle}>
         How to play
       </h2>
       <p className={styles.rulesText}>{game.lobbySummary}</p>
