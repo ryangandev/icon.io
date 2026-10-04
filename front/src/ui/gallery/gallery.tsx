@@ -24,6 +24,9 @@ import {
   Notice,
   NumberCard,
   OperatorKey,
+  PairsCard,
+  PairsSymbol,
+  symbolName,
   PickMarker,
   PickResult,
   PlayerRow,
@@ -42,6 +45,7 @@ import {
   type GlyphName,
 } from '..';
 import { glyphs } from '../generated/glyphs';
+import { pairsSymbols } from '../generated/pairs-symbols';
 import { Specimen } from './specimen';
 import styles from './gallery.module.css';
 
@@ -817,6 +821,64 @@ export default function Gallery() {
         <Specimen family="operator-key" variant="State=Selected">
           <OperatorKey symbol="×" label="times" selected onPick={noop} />
         </Specimen>
+      </Family>
+
+      <Family name="Pairs card" file="pairs-card">
+        {(['regular', 'compact'] as const).map((cardSize) => {
+          const sizeName = cardSize === 'regular' ? 'Regular' : 'Compact';
+          return (
+            <div
+              key={cardSize}
+              className={styles.cellRow}
+              role="grid"
+              aria-label={`Pairs ${sizeName}`}
+            >
+              <div role="row" className={styles.cellRow}>
+                {(
+                  [
+                    ['Down', { kind: 'down' }],
+                    ['Up', { kind: 'up', symbol: 0 }],
+                    ['Matched', { kind: 'matched', symbol: 0 }],
+                  ] as const
+                ).map(([state, cardState]) => (
+                  <Specimen
+                    key={state}
+                    family="pairs-card"
+                    variant={`State=${state}, Size=${sizeName}`}
+                    label={state}
+                  >
+                    <PairsCard
+                      state={cardState}
+                      size={cardSize}
+                      row={0}
+                      column={0}
+                      onPick={noop}
+                    />
+                  </Specimen>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </Family>
+
+      <Family
+        name="Pairs symbol"
+        file="pairs-symbol"
+        note="Nine shapes in two brush colours each; a Small board draws eight of them."
+      >
+        <div className={styles.cellRow}>
+          {pairsSymbols.map((_, symbol) => (
+            <Specimen
+              key={symbol}
+              family="pairs-symbol"
+              variant={`Symbol=${symbolName(symbol)}`}
+              label={symbolName(symbol)}
+            >
+              <PairsSymbol symbol={symbol} />
+            </Specimen>
+          ))}
+        </div>
       </Family>
 
       <Family name="Pick result" file="pick-result">

@@ -66,6 +66,16 @@ export {
 } from './components/number-card';
 export { OperatorKey, type OperatorKeyProps } from './components/operator-key';
 export {
+  PairsCard,
+  type PairsCardProps,
+  type PairsCardState,
+} from './components/pairs-card';
+export {
+  PairsSymbol,
+  symbolName,
+  type PairsSymbolProps,
+} from './components/pairs-symbol';
+export {
   PickMarker,
   type PickMarkerProps,
   type PickOutcome,
