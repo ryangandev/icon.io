@@ -40,7 +40,7 @@ you did not take.
 **The winner is whoever has the most points when the last round ends.** Nothing
 in the UI crowns them — the player list is sorted by score, so the winner is
 whoever is sitting at #1 when the game ends. (A round summary screen is on the
-roadmap; see [`ANALYSIS.md`](ANALYSIS.md).)
+roadmap; see [`status.md`](../status.md#backlog).)
 
 ## Scoring
 
@@ -120,7 +120,7 @@ A room with nobody left in it is deleted.
 Everything that decides an outcome:
 
 - **The clock** — one timer per room, in
-  [`game-engine.ts`](../back/socket/draw-and-guess/game-engine.ts).
+  [`game-engine.ts`](../../back/socket/draw-and-guess/game-engine.ts).
 - **The word** — sent to the drawer alone, and omitted rather than blanked from
   the room snapshot so that a broadcast cannot clobber the drawer's own copy.
 - **The drawing** — the same replayable stroke list every client builds, kept
@@ -145,20 +145,20 @@ Shorten them to play a whole game through in seconds while developing:
 ## Where the code lives
 
 Draw & Guess is a **game module** on the generic room layer — seats, ownership,
-the reconnect grace and the lobby are not its code. See §1 of
-[`ANALYSIS.md`](ANALYSIS.md) for the split.
+the reconnect grace and the lobby are not its code. See
+[the room layer](../architecture.md#the-room-layer) for the split.
 
-| File                                                                                                       | Responsibility                                  |
-| ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| [`module.ts`](../back/socket/draw-and-guess/module.ts)                                                     | What the room layer calls, and all it calls     |
-| [`game-engine.ts`](../back/socket/draw-and-guess/game-engine.ts)                                           | The turn state machine and the phase clock      |
-| [`state.ts`](../back/socket/draw-and-guess/state.ts)                                                       | The game's state, and the two wire snapshots    |
-| [`chat-events-handler.ts`](../back/socket/draw-and-guess/chat-events-handler.ts)                           | The guess channel — scored, not chat            |
-| [`whiteboard-canvas-events-handler.ts`](../back/socket/draw-and-guess/whiteboard-canvas-events-handler.ts) | Relay draw / undo / clear                       |
-| [`canvas.ts`](../back/socket/draw-and-guess/canvas.ts)                                                     | The room's drawing, as a replayable stroke list |
-| [`words.ts`](../back/socket/draw-and-guess/words.ts)                                                       | Picking words and hiding them                   |
-| [`validation.ts`](../back/socket/draw-and-guess/validation.ts)                                             | This game's inbound shapes                      |
+| File                                                                                                          | Responsibility                                  |
+| ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| [`module.ts`](../../back/socket/draw-and-guess/module.ts)                                                     | What the room layer calls, and all it calls     |
+| [`game-engine.ts`](../../back/socket/draw-and-guess/game-engine.ts)                                           | The turn state machine and the phase clock      |
+| [`state.ts`](../../back/socket/draw-and-guess/state.ts)                                                       | The game's state, and the two wire snapshots    |
+| [`chat-events-handler.ts`](../../back/socket/draw-and-guess/chat-events-handler.ts)                           | The guess channel — scored, not chat            |
+| [`whiteboard-canvas-events-handler.ts`](../../back/socket/draw-and-guess/whiteboard-canvas-events-handler.ts) | Relay draw / undo / clear                       |
+| [`canvas.ts`](../../back/socket/draw-and-guess/canvas.ts)                                                     | The room's drawing, as a replayable stroke list |
+| [`words.ts`](../../back/socket/draw-and-guess/words.ts)                                                       | Picking words and hiding them                   |
+| [`validation.ts`](../../back/socket/draw-and-guess/validation.ts)                                             | This game's inbound shapes                      |
 
 Its events are all prefixed `dg:`. Everything generic — `room:`, `lobby:`,
 `chat:`, `game:start` — belongs to the room layer and is listed in
-[`shared/wire-types.d.ts`](../shared/wire-types.d.ts).
+[`shared/wire-types.d.ts`](../../shared/wire-types.d.ts).

@@ -1,0 +1,27 @@
+# Icon.io, becoming Zumpo
+
+Real-time multiplayer browser games (Draw & Guess, Minesweeper): a React SPA in `front/`, an Express + Socket.IO server in `back/`, shared wire types in `shared/`, all game state in server memory.
+It is being rebranded and redesigned as Zumpo; [docs/status.md](docs/status.md) says where that stands.
+
+Find anything else through [docs/README.md](docs/README.md), and read only the section it points to.
+
+## Commands
+
+| Command                                                      | What it does                                                    |
+| ------------------------------------------------------------ | --------------------------------------------------------------- |
+| `npm ci && npm run install:all`                              | Install root tooling, then `back/` and `front/` (own lockfiles) |
+| `npm run verify`                                             | Lint, typecheck, format check, tests, build: what CI runs       |
+| `npm --prefix back run watch` / `npm --prefix front run dev` | Dev servers on 3000 / 3001                                      |
+| `npm run design:import`                                      | Unpack the newest Figma export into `design/figma/`             |
+| `npm run figma:run -- script.js`                             | Run a Plugin API script in Figma through the bridge             |
+
+## Rules that fail silently
+
+- The server is authoritative: clocks, scoring and permissions live in `back/`, and the client never advances a phase ([why](docs/architecture.md#server-authority)).
+- Rooms reach clients only through a module's `toLobbyInfo` / `toRoomState`; never emit an internal room object, or secrets leak ([why](docs/architecture.md#server-authority)).
+- Every event name and payload is declared once in `shared/wire-types.d.ts`; change both sides through it ([why](docs/architecture.md#the-wire-contract)).
+- `socket.off(event)` without a handler removes every listener, including the identity handshake; always pass the handler ([why](docs/architecture.md#pitfalls)).
+- `docs/games/` is the behaviour contract for each game; UI work must not change a rule or timing by accident ([design](docs/design.md#what-the-screens-are-and-are-not)).
+- Figma is the design source of truth and `design/figma/` is generated from it; never hand-edit the export ([why](docs/design.md#figma-export)).
+- Backend tests bind real localhost ports; a sandbox that forbids listening makes them time out, which is not a test failure ([testing](docs/architecture.md#testing)).
+- Verify UI and flow changes in a real browser with two players, not just with the suites ([why](docs/architecture.md#testing)).

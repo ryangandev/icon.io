@@ -33,7 +33,7 @@ jobs:
 
       # One linter for the whole repo. oxlint rather than ESLint because
       # typescript-eslint still caps TypeScript below 6.1 and this project is
-      # on 7 — see docs/ANALYSIS.md.
+      # on 7; see docs/architecture.md#tooling.
       - name: Lint
         run: npm run lint
 

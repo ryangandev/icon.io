@@ -169,23 +169,23 @@ If the room falls below two players the game ends.
 ## Where the code lives
 
 Minesweeper is a **game module** on the generic room layer — seats, ownership,
-the reconnect grace, chat and the lobby are not its code. See §1 of
-[`ANALYSIS.md`](ANALYSIS.md).
+the reconnect grace, chat and the lobby are not its code. See
+[the room layer](../architecture.md#the-room-layer).
 
-| File                                                          | Responsibility                                 |
-| ------------------------------------------------------------- | ---------------------------------------------- |
-| [`module.ts`](../back/socket/minesweeper/module.ts)           | What the room layer calls, and all it calls    |
-| [`game-engine.ts`](../back/socket/minesweeper/game-engine.ts) | The round loop, and what a round resolves to   |
-| [`probability.ts`](../back/socket/minesweeper/probability.ts) | The exact solver — every score comes from it   |
-| [`scoring.ts`](../back/socket/minesweeper/scoring.ts)         | The payout curves, and why they are that shape |
-| [`board.ts`](../back/socket/minesweeper/board.ts)             | The minefield, and the public view of it       |
-| [`state.ts`](../back/socket/minesweeper/state.ts)             | The game's state, and the two wire snapshots   |
+| File                                                             | Responsibility                                 |
+| ---------------------------------------------------------------- | ---------------------------------------------- |
+| [`module.ts`](../../back/socket/minesweeper/module.ts)           | What the room layer calls, and all it calls    |
+| [`game-engine.ts`](../../back/socket/minesweeper/game-engine.ts) | The round loop, and what a round resolves to   |
+| [`probability.ts`](../../back/socket/minesweeper/probability.ts) | The exact solver — every score comes from it   |
+| [`scoring.ts`](../../back/socket/minesweeper/scoring.ts)         | The payout curves, and why they are that shape |
+| [`board.ts`](../../back/socket/minesweeper/board.ts)             | The minefield, and the public view of it       |
+| [`state.ts`](../../back/socket/minesweeper/state.ts)             | The game's state, and the two wire snapshots   |
 
 Its events are all prefixed `ms:`.
 
 ### The solver
 
-[`probability.ts`](../back/socket/minesweeper/probability.ts) computes the true
+[`probability.ts`](../../back/socket/minesweeper/probability.ts) computes the true
 posterior, not an estimate. Every revealed number constrains its hidden
 neighbours; the **frontier** — cells touching a number — splits into independent
 components, each component's satisfying assignments are enumerated by
@@ -200,7 +200,7 @@ classic **1-2-1** pattern — three numbers reading 1, 2, 1 over three hidden ce
 — has exactly one solution, mine-safe-mine, and a local estimate puts the middle
 cell at 2/3 where the truth is 0. Getting that wrong would not crash anything;
 it would just quietly pay people the wrong amount forever. It is pinned down by
-[`minesweeper-probability.test.ts`](../back/tests/minesweeper-probability.test.ts),
+[`minesweeper-probability.test.ts`](../../back/tests/minesweeper-probability.test.ts),
 including the invariant that the risks of all hidden cells must sum to the number
 of mines still out there — which they do, on hand-built boards and on real ones
 part-way through a game.

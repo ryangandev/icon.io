@@ -19,14 +19,14 @@ Icon.io is an evolved version of my original project, [**Icon**](https://github.
 
 ## 🎮 Games
 
-| Game                                   | Players | What it is                                                      |
-| -------------------------------------- | ------- | --------------------------------------------------------------- |
-| [Draw & Guess](docs/DRAW-AND-GUESS.md) | 2–8     | One player draws a word, everyone else races to type it         |
-| [Minesweeper](docs/MINESWEEPER.md)     | 2–8     | A shared minefield; each pick pays exactly how dangerous it was |
+| Game                                         | Players | What it is                                                      |
+| -------------------------------------------- | ------- | --------------------------------------------------------------- |
+| [Draw & Guess](docs/games/draw-and-guess.md) | 2–8     | One player draws a word, everyone else races to type it         |
+| [Minesweeper](docs/games/minesweeper.md)     | 2–8     | A shared minefield; each pick pays exactly how dangerous it was |
 
 Each game is a module on a shared room layer that owns seats, ownership, the
-reconnect grace and the lobby. See [`docs/ANALYSIS.md`](docs/ANALYSIS.md) for the
-architecture, a feature inventory, known issues, and the roadmap.
+reconnect grace and the lobby. See [`docs/README.md`](docs/README.md) for the
+architecture, current status, known issues, and the roadmap.
 
 ## ✅ Checks
 
