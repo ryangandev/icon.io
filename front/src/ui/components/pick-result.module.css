@@ -7,20 +7,27 @@
   color: var(--zumpo-ink);
 }
 
+/* A long name gives way only once the detail has wrapped as far as it can. */
 .name {
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font: var(--zumpo-text-label);
   letter-spacing: var(--zumpo-text-label-tracking);
 }
 
-.spacer {
-  flex: 1;
-}
-
 .detail {
+  flex-shrink: 1000;
+  margin-left: auto;
   color: var(--zumpo-muted);
   font: var(--zumpo-text-small);
   letter-spacing: var(--zumpo-text-small-tracking);
   text-align: right;
+}
+
+.part {
+  white-space: nowrap;
 }
 
 .points {
@@ -33,4 +40,13 @@
 
 .mine .points {
   color: var(--zumpo-danger);
+}
+
+/* Phone: the results card is a third narrower, and Figma (MO13) tightens the
+   row to match. */
+@container (max-width: 560px) {
+  .row {
+    gap: 8px;
+    padding: 8px 4px;
+  }
 }

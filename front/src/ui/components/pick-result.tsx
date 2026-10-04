@@ -18,7 +18,11 @@ export interface PickResultProps {
   initials: string;
   tone: AvatarTone;
   outcome: PickOutcome;
-  /** The risk the solver gave the cell before the round, plus "split 2 ways" for a shared cell. */
+  /**
+   * The risk the solver gave the cell before the round, plus "split 2 ways"
+   * for a shared cell, joined with " · ". On a narrow row the parts wrap onto
+   * lines of their own, never inside one.
+   */
   detail: string;
   /** What the pick paid, signed. */
   points: number;
@@ -42,8 +46,14 @@ export function PickResult({
       <Avatar initials={initials} tone={tone} />
       <span className={styles.name}>{name}</span>
       <Tag {...tag}>{label}</Tag>
-      <span className={styles.spacer} />
-      <span className={styles.detail}>{detail}</span>
+      <span className={styles.detail}>
+        {detail.split(' · ').map((part, index) => (
+          <span key={index}>
+            {index > 0 && ' · '}
+            <span className={styles.part}>{part}</span>
+          </span>
+        ))}
+      </span>
       <span className={styles.points}>
         {points > 0 ? `+${points}` : points < 0 ? `−${-points}` : '0'}
       </span>
