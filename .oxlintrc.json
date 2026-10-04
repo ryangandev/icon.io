@@ -12,7 +12,12 @@
     "react/react-in-jsx-scope": "off",
     "typescript/no-explicit-any": "warn"
   },
-  "ignorePatterns": ["**/node_modules", "**/build", "**/dist"],
+  "ignorePatterns": [
+    "**/node_modules",
+    "**/build",
+    "**/dist",
+    "front/src/ui/generated"
+  ],
   "overrides": [
     {
       "files": ["back/**/*.ts"],

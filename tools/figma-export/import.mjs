@@ -47,3 +47,10 @@ console.log(
 console.log(`Exported at ${index.exportedAt} from "${index.file.name}"`);
 console.log(JSON.stringify(index.counts));
 for (const warning of index.warnings) console.warn(`warning: ${warning}`);
+
+// Keep the frontend's generated tokens and glyphs in step with the design.
+execFileSync(
+  process.execPath,
+  [path.join(repo, 'tools', 'design-tokens', 'generate.mjs')],
+  { stdio: 'inherit' },
+);
