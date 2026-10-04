@@ -93,8 +93,7 @@ interface RoomError {
 
 /** What an acknowledged request answers: success with its value, or why not. */
 type Result<T extends object = object> =
-  | ({ ok: true } & T)
-  | { ok: false; error: RoomError };
+  ({ ok: true } & T) | { ok: false; error: RoomError };
 
 /**
  * A new room. The creator takes the first seat and becomes its owner, so a
