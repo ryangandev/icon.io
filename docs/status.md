@@ -49,13 +49,12 @@ Decided by Ryan, and the frame for every design and implementation choice:
 
 ## Known issues
 
-| Issue                                             | Notes                                                                                                                                |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Narrow screens                                    | Side panels and chat overflow horizontally; the canvas handles mouse events only, so touch drawing does not work.                    |
-| Bundle size                                       | Main JS about 1 MB (330 kB gzip), two drawing background images about 1 MB and 1.4 MB, and a chunk-size warning on build.            |
-| Backend dependency advisories                     | A 2026-10-02 audit of backend production dependencies reported engine.io (high) and qs (moderate). Re-run `npm audit` before acting. |
-| Old public URL                                    | `icon.ryiscrispy.com` no longer resolves; nothing is deployed.                                                                       |
-| A drawer who vanishes freezes the canvas for 10 s | The deliberate bound of the drawer hold ([architecture](architecture.md#identity-and-reconnection)).                                 |
+| Issue                                             | Notes                                                                                                                     |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Narrow screens                                    | Side panels and chat overflow horizontally; the canvas handles mouse events only, so touch drawing does not work.         |
+| Bundle size                                       | Main JS about 1 MB (330 kB gzip), two drawing background images about 1 MB and 1.4 MB, and a chunk-size warning on build. |
+| Old public URL                                    | `icon.ryiscrispy.com` no longer resolves; nothing is deployed.                                                            |
+| A drawer who vanishes freezes the canvas for 10 s | The deliberate bound of the drawer hold ([architecture](architecture.md#identity-and-reconnection)).                      |
 
 ## Backlog
 
