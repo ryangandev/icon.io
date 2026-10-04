@@ -31,7 +31,7 @@ interface Difficulty {
 
 /**
  * The three board sizes. Small is a two-minute game; Large is closer to twenty
- * and gives the probability solver something to chew on — a bigger board means
+ * and gives the probability solver something to chew on - a bigger board means
  * bigger frontiers, which means more cells whose risk is a real number rather
  * than 0 or 1.
  */
@@ -81,7 +81,7 @@ const neighboursOf = (
  *
  * **There is no first-click safety**, which inverts the single-player
  * convention on purpose. That guarantee exists so an opening click cannot end
- * the game — and here a mine does not end anything, so the reason for it is
+ * the game - and here a mine does not end anything, so the reason for it is
  * gone. Keeping it would also make the first player's score a lie: risk is
  * scored from public information, which says the opening cell is as dangerous
  * as the board's density, and it would not have been.
@@ -136,7 +136,7 @@ const publicView = (board: Board): MinesweeperCellView[] => {
   return view;
 };
 
-/** A cell nobody has resolved yet — still worth picking. */
+/** A cell nobody has resolved yet - still worth picking. */
 const isHidden = (board: Board, index: number): boolean =>
   !board.revealed[index] && !board.hitMines[index];
 
@@ -194,7 +194,7 @@ const minesFound = (board: Board): number =>
 /**
  * The board is resolved when nothing is left to pick: every safe cell has been
  * uncovered, or every mine has been hit, or some of each. Either way the game
- * is over, and it always arrives — every round resolves at least one cell.
+ * is over, and it always arrives - every round resolves at least one cell.
  */
 const isResolved = (board: Board): boolean => hiddenIndexes(board).length === 0;
 

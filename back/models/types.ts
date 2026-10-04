@@ -15,8 +15,8 @@ import type {
  * mutable form the relay maintains it in.
  *
  * The room itself is no longer described here. `RoomInfo` and
- * `DrawAndGuessDetailRoomInfo` were one type that mixed the two — a room's name,
- * seats and password alongside a drawer queue and a canvas — which is precisely
+ * `DrawAndGuessDetailRoomInfo` were one type that mixed the two - a room's name,
+ * seats and password alongside a drawer queue and a canvas - which is precisely
  * the seam the extraction cut along. What is generic is `Room<TGameState>` in
  * `libs/rooms/types.ts`; what is Draw & Guess's is `DrawAndGuessState` below,
  * and it hangs off `room.game`.

@@ -3,8 +3,8 @@ import type { ClientToServerEvent } from '../../shared/wire-types.js';
 /**
  * How often a client may say something.
  *
- * Every inbound event has had its *shape* checked since the validation pass —
- * a room name cannot be a megabyte long, a coordinate cannot be a billion — but
+ * Every inbound event has had its *shape* checked since the validation pass -
+ * a room name cannot be a megabyte long, a coordinate cannot be a billion - but
  * nothing bounded how many of them arrived. A client could emit `dg:draw:start`
  * in a loop, or `room:create` a thousand times a second, and the only limit was
  * its own bandwidth. This is the other half of that check.
@@ -70,7 +70,7 @@ const BUCKET_FOR_EVENT: Record<ClientToServerEvent, BucketName> = {
 };
 
 /**
- * Anything not listed above has no handler, so it costs nothing to process —
+ * Anything not listed above has no handler, so it costs nothing to process -
  * but it still costs a packet to receive, and a flood of them should be as
  * bounded as a flood of real ones.
  */

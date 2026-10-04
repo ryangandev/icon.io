@@ -16,7 +16,7 @@ import { difficultySetting, pickRequest } from './validation.js';
  * hat. This one keeps **one** timer where that one keeps three, needs **no**
  * per-player state of its own beyond the score every game has, and its `syncTo`
  * is empty because a Minesweeper room holds nothing an arriving player is not
- * already sent in the snapshot — no private word, no separate canvas.
+ * already sent in the snapshot - no private word, no separate canvas.
  *
  * The room layer needed no changes to accommodate any of that, which is the
  * result the extraction was hoping for.

@@ -60,7 +60,7 @@ interface IconIoServer {
  * Builds a fully wired server without starting it.
  *
  * This used to all happen at module scope in `server.ts`, which meant importing
- * the server was the same thing as binding a port — so the only way to exercise
+ * the server was the same thing as binding a port - so the only way to exercise
  * any of it was to spawn a process and talk to a fixed port.
  *
  * The connection block below is now three generic handlers plus a loop over
@@ -103,7 +103,7 @@ const createIconIoServer = (
   const registry = createRoomRegistry(io, sessions);
 
   // Every game the server knows how to run. A module is registered once and
-  // then reached only through the registry — the room layer below never names
+  // then reached only through the registry - the room layer below never names
   // one, and adding the second took this line and nothing else here.
   registry.register(createDrawAndGuessModule(registry.context, phaseDurations));
   registry.register(
@@ -176,7 +176,7 @@ const createIconIoServer = (
   if (serveClient) {
     console.log('Serving the built client.');
     // Express 5 / path-to-regexp v8: a bare '*' is no longer a valid path.
-    // Wildcards must be named — '/{*splat}' matches the root as well as any subpath.
+    // Wildcards must be named - '/{*splat}' matches the root as well as any subpath.
     app.get('/{*splat}', (_req: Request, res: Response) => {
       res.sendFile('index.html', { root: publicStaticFolder });
     });

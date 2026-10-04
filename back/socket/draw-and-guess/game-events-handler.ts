@@ -6,8 +6,8 @@ import { selectWordRequest } from './validation.js';
 
 /**
  * Socket glue only. Every phase transition is driven by the engine's own clock;
- * the two events a client used to fire to end a phase — `drawingPhaseTimerEnded`
- * and `reviewingPhaseTimerEnded` — no longer exist, because a client that could
+ * the two events a client used to fire to end a phase - `drawingPhaseTimerEnded`
+ * and `reviewingPhaseTimerEnded` - no longer exist, because a client that could
  * end a phase could also decline to.
  *
  * Starting the game is not here: that is `game:start`, which every game answers,

@@ -189,7 +189,7 @@ describe('the board itself', () => {
 
   /*
    * The game has to end. Every round resolves at least one cell, and a board is
-   * over when nothing is left to pick — so termination is a property of the
+   * over when nothing is left to pick - so termination is a property of the
    * board rather than a rule anybody has to enforce.
    */
   it('is resolved once nothing is left to pick', () => {

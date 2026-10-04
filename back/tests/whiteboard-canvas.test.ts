@@ -62,7 +62,7 @@ describe('the whiteboard relay', () => {
   /*
    * A stroke describes itself from its first point, so a client can replay it
    * without waiting to learn the colour from a later event. That is what makes
-   * the stroke list — and so a one-byte undo — possible.
+   * the stroke list - and so a one-byte undo - possible.
    */
   it('describes a stroke fully from its first point', async () => {
     const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
@@ -76,7 +76,7 @@ describe('the whiteboard relay', () => {
   });
 
   /*
-   * Undo used to carry a full-canvas PNG data URL — on the order of 100KB to
+   * Undo used to carry a full-canvas PNG data URL - on the order of 100KB to
    * 1MB, per undo. Every client holds the same stroke list, so "drop the last
    * one" is the entire message.
    */
@@ -159,7 +159,7 @@ describe('the stored drawing', () => {
   /*
    * A room in progress is closed to new players, so the arrival this matters
    * for is a player who is already in the room and whose page has just
-   * (re)mounted — a reload, or a navigation back into the room.
+   * (re)mounted - a reload, or a navigation back into the room.
    */
   it('hands the drawing so far to a player arriving mid-turn', async () => {
     const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
@@ -238,12 +238,12 @@ describe('the stored drawing', () => {
 });
 
 /*
- * The relay used to check the *shape* of a payload and nothing else — not that
+ * The relay used to check the *shape* of a payload and nothing else - not that
  * the sender was in the room, not that they were the drawer, not that a drawing
  * phase was even running. Room ids are not secret: the lobby list is broadcast
  * to every connected client and carries the id of every room, locked ones
  * included. A client that had never joined could therefore draw on a stranger's
- * canvas, undo their last stroke, or wipe the whole thing mid-turn — and `clear`
+ * canvas, undo their last stroke, or wipe the whole thing mid-turn - and `clear`
  * costs the attacker exactly one emit.
  */
 describe('canvas authority', () => {

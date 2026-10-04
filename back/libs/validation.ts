@@ -11,8 +11,8 @@ import { z } from 'zod';
  * never notices them.
  *
  * What is here is the room layer's: identity, lobbies, rooms, chat. A game's own
- * events are validated next to that game — `socket/draw-and-guess/validation.ts`
- * — out of the same primitives, which are exported for exactly that.
+ * events are validated next to that game - `socket/draw-and-guess/validation.ts`
+ * - out of the same primitives, which are exported for exactly that.
  */
 
 const USERNAME_MAX = 18; // matches the landing page input
@@ -25,8 +25,8 @@ const trimmedString = (max: number) => z.string().trim().min(1).max(max);
 // Room ids are generated with randomUUID(); anything else cannot match a room.
 const roomId = z.string().uuid();
 const username = trimmedString(USERNAME_MAX);
-// `.optional().default('')` tolerates the field being absent — an unlocked room
-// sends no password — without also swallowing an over-long one. Using `.catch()`
+// `.optional().default('')` tolerates the field being absent - an unlocked room
+// sends no password - without also swallowing an over-long one. Using `.catch()`
 // here would substitute '' on failure, quietly creating an *unlocked* room from
 // a request whose password was rejected.
 const password = z.string().max(PASSWORD_MAX).optional().default('');
@@ -34,7 +34,7 @@ const gameType = z.enum(['draw-and-guess', 'minesweeper']);
 
 /**
  * The generic half of a create request. `settings` is deliberately unchecked
- * here — only the game's module knows what it should contain, and it is handed
+ * here - only the game's module knows what it should contain, and it is handed
  * the raw value to accept or reject.
  */
 const roomCreateRequest = z.object({

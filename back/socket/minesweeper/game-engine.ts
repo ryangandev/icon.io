@@ -30,7 +30,7 @@ type MinesweeperRoom = Room<MinesweeperState>;
  * The safest cell on the board, for a player who ran out of time.
  *
  * It reuses the same risk numbers everyone else was scored against, so an
- * auto-play is the move a cautious player would have made — and it forfeits the
+ * auto-play is the move a cautious player would have made - and it forfeits the
  * base points, so it is never better than turning up.
  */
 const safestHiddenCell = (room: MinesweeperRoom): number | undefined => {
@@ -165,7 +165,7 @@ const createMinesweeperGameEngine = (
   };
 
   /**
-   * A player has chosen a cell. One pick each, and it is final — you cannot
+   * A player has chosen a cell. One pick each, and it is final - you cannot
    * watch who locks in and then change your mind, which is what keeps the
    * simultaneous window honest.
    */
@@ -366,8 +366,8 @@ const createMinesweeperGameEngine = (
   };
 
   /**
-   * A connection dropped. There is no turn to hold here — the round belongs to
-   * everybody — so the only thing to do is stop waiting for a player who cannot
+   * A connection dropped. There is no turn to hold here - the round belongs to
+   * everybody - so the only thing to do is stop waiting for a player who cannot
    * answer. Their seat and score are held by the room layer as usual.
    */
   const handleDisconnect = (room: MinesweeperRoom) => {

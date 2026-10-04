@@ -22,8 +22,8 @@ const recount = (room: Room) => {
  * Who is in a room, and for how long after they stop answering.
  *
  * The leave handler and the disconnect handler used to carry near-identical
- * copies of the departure logic — recount, transfer ownership, delete the room
- * if empty, tell the engine — which is how they came to disagree about whether
+ * copies of the departure logic - recount, transfer ownership, delete the room
+ * if empty, tell the engine - which is how they came to disagree about whether
  * to check membership first. They are one code path now, with one difference
  * that matters:
  *
@@ -34,8 +34,8 @@ const recount = (room: Room) => {
  *
  * None of that has anything to do with what is being played, which is why this
  * moved out of `socket/draw-and-guess/` unchanged in behaviour. What used to be
- * three direct calls into the Draw & Guess engine — a stranded turn, a drawer
- * who dropped, a drawer who came back — are three calls on whatever module owns
+ * three direct calls into the Draw & Guess engine - a stranded turn, a drawer
+ * who dropped, a drawer who came back - are three calls on whatever module owns
  * the room.
  */
 const createRoomMembership = (
@@ -153,7 +153,7 @@ const createRoomMembership = (
 
     const held = registry.roomsHeldBy(playerId);
     if (held.length === 0) {
-      // Not in a room, so there is no seat to hold — but the identity still
+      // Not in a room, so there is no seat to hold - but the identity still
       // outlives the connection for the same grace period. Forgetting it here
       // would mean a reload from the lobby came back as a stranger, and would
       // race a reconnection that has already landed.
@@ -174,7 +174,7 @@ const createRoomMembership = (
         `${player.username} lost connection.`,
       );
 
-      // The seat waits for them. So, briefly, may their turn — that decision
+      // The seat waits for them. So, briefly, may their turn - that decision
       // belongs to the game, which is the only thing that knows whether there
       // is anything worth coming back to.
       registry.moduleOf(room)?.onDisconnect(room, playerId);
@@ -202,7 +202,7 @@ const createRoomMembership = (
 
   /**
    * A player proved they are who they were. Any seat still being held for them
-   * becomes theirs again — score, ownership and place in the round intact.
+   * becomes theirs again - score, ownership and place in the round intact.
    */
   const handleResume = (playerId: string) => {
     cancelGrace('session', playerId);

@@ -1,6 +1,6 @@
 /**
  * How long each phase of a turn lasts. These live on the server because the
- * server is what enforces them — clients are told how much time is left, they
+ * server is what enforces them - clients are told how much time is left, they
  * do not decide it.
  *
  * Overridable so a game can be sped up for local play or an integration run
@@ -66,7 +66,7 @@ const minesweeperDurationsInSeconds: MinesweeperDurationsInSeconds = {
  *
  * Long enough to cover a refresh, a tab restore or a brief network blip; short
  * enough that a room is not held up by somebody who has actually gone. A player
- * who leaves deliberately is removed at once — this is only for connections
+ * who leaves deliberately is removed at once - this is only for connections
  * that drop.
  */
 const reconnectGraceInSeconds = readSecondsFromEnv(

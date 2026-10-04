@@ -4,7 +4,7 @@ import { roomId } from '../../libs/validation.js';
 /**
  * Draw & Guess's own inbound shapes, built from the same primitives the room
  * layer validates with. These used to sit in `libs/validation.ts` alongside
- * the generic ones, which is fine with one game and misleading with two — a
+ * the generic ones, which is fine with one game and misleading with two - a
  * brush size is not something the room layer has an opinion about.
  */
 
