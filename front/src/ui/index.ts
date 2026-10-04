@@ -60,6 +60,12 @@ export {
 } from './components/mobile-tabs';
 export { Notice, type NoticeProps, type NoticeTone } from './components/notice';
 export {
+  NumberCard,
+  type NumberCardProps,
+  type NumberCardState,
+} from './components/number-card';
+export { OperatorKey, type OperatorKeyProps } from './components/operator-key';
+export {
   PickMarker,
   type PickMarkerProps,
   type PickOutcome,

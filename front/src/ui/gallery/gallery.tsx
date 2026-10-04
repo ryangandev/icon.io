@@ -22,6 +22,8 @@ import {
   MineCell,
   MobileTabs,
   Notice,
+  NumberCard,
+  OperatorKey,
   PickMarker,
   PickResult,
   PlayerRow,
@@ -758,6 +760,63 @@ export default function Gallery() {
             ))}
           </div>
         </div>
+      </Family>
+
+      <Family
+        name="Number card"
+        file="number-card"
+        note="Values longer than two characters, such as 8/3, step down a text size."
+      >
+        {(['regular', 'compact'] as const).map((cardSize) => {
+          const sizeName = cardSize === 'regular' ? 'Regular' : 'Compact';
+          return (
+            <div key={cardSize} className={styles.cellRow}>
+              {(
+                [
+                  ['Default', 'default', '8', undefined],
+                  ['Selected', 'selected', '8', undefined],
+                  ['Made', 'made', '4', '8 − 4'],
+                  ['Solved', 'solved', '24', '4 × 6'],
+                  ['Not 24', 'not-24', '20', 'Not 24'],
+                ] as const
+              ).map(([state, kind, value, formula]) => (
+                <Specimen
+                  key={kind}
+                  family="number-card"
+                  variant={`State=${state}, Size=${sizeName}`}
+                  label={state}
+                >
+                  <NumberCard
+                    value={value}
+                    formula={formula}
+                    state={kind}
+                    size={cardSize}
+                  />
+                </Specimen>
+              ))}
+              <Specimen label="A fraction">
+                <NumberCard
+                  value="8/3"
+                  formula="8 ÷ 3"
+                  state="made"
+                  size={cardSize}
+                />
+              </Specimen>
+              <Specimen label="A button">
+                <NumberCard value="7" size={cardSize} label="7" onPick={noop} />
+              </Specimen>
+            </div>
+          );
+        })}
+      </Family>
+
+      <Family name="Operator key" file="operator-key">
+        <Specimen family="operator-key" variant="State=Default">
+          <OperatorKey symbol="×" label="times" onPick={noop} />
+        </Specimen>
+        <Specimen family="operator-key" variant="State=Selected">
+          <OperatorKey symbol="×" label="times" selected onPick={noop} />
+        </Specimen>
       </Family>
 
       <Family name="Pick result" file="pick-result">

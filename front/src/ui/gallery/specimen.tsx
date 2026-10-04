@@ -74,7 +74,12 @@ export function Specimen({
     let live = true;
     void Promise.all([loadFamily(family), document.fonts.ready]).then(
       ([data]) => {
-        const element = slot.current?.firstElementChild;
+        let element = slot.current?.firstElementChild;
+        // A component whose root lays out as contents is measured by what
+        // it draws.
+        while (element && getComputedStyle(element).display === 'contents') {
+          element = element.firstElementChild;
+        }
         if (!live || !data || !element) return;
         const figma = variant
           ? data.variants?.find((v) => v.name === variant)?.node

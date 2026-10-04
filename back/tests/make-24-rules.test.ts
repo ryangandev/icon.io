@@ -113,13 +113,13 @@ describe('a solved hand', () => {
   });
 });
 
-describe('reading an expression', () => {
-  const op = (
-    o: '+' | '-' | '*' | '/',
-    left: Expression,
-    right: Expression,
-  ): Expression => ({ op: o, left, right });
+const op = (
+  o: '+' | '-' | '*' | '/',
+  left: Expression,
+  right: Expression,
+): Expression => ({ op: o, left, right });
 
+describe('reading an expression', () => {
   it('keeps only the brackets it needs', () => {
     expect(formatExpression(op('*', op('-', 8, 4), op('-', 7, 1)))).toBe(
       '(8 − 4) × (7 − 1)',
