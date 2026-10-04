@@ -49,9 +49,8 @@
 | `npm run preview`   | Serve the production build locally                                  |
 | `npm run typecheck` | Run `tsc --noEmit`                                                  |
 | `npm test`          | Run the Vitest suite once (`npm run test:watch` to keep it running) |
-| `npm run format`    | Format `src` with Prettier                                          |
 
-Linting runs from the repository root (`npm run lint`), over both apps.
+Linting and formatting run from the repository root (`npm run lint`, `npm run format`), over both apps.
 
 ## ⚙️ Environment Variables
 

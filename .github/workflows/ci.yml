@@ -19,7 +19,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: |
             package-lock.json
@@ -44,6 +44,11 @@ jobs:
       # suggestion and the style drifts back apart one editor at a time.
       - name: Format
         run: npm run format:check
+
+      # The code tokens are generated from the Figma export; this fails when
+      # one was edited by hand or the export changed without regenerating.
+      - name: Design tokens
+        run: npm run design:tokens -- --check
 
       # The backend suite binds ephemeral ports and drives real socket.io
       # clients, so it needs no services — but it is timing-sensitive, and a

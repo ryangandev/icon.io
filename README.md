@@ -12,10 +12,10 @@ Icon.io is an evolved version of my original project, [**Icon**](https://github.
 
 ## 🧱 Stack
 
-| Layer    | Tech                                                        |
-| -------- | ----------------------------------------------------------- |
-| Frontend | React 19 · TypeScript 7 · Vite 8 · Ant Design 6 · Socket.io |
-| Backend  | Node.js 20+ · TypeScript 7 · Express 5 · Socket.io          |
+| Layer    | Tech                                                   |
+| -------- | ------------------------------------------------------ |
+| Frontend | React 19 · TypeScript 7 · Vite 8 · Base UI · Socket.io |
+| Backend  | Node.js 22.12+ · TypeScript 7 · Express 5 · Socket.io  |
 
 ## 🎮 Games
 
@@ -37,7 +37,7 @@ npm ci && npm run install:all
 npm run verify
 ```
 
-`verify` is lint → typecheck → test → build, which is exactly what CI runs on every pull request. The individual steps are `npm run lint`, `npm run typecheck`, `npm test` and `npm run build`.
+`verify` is lint → typecheck → format check → design token check → test → build, which is exactly what CI runs on every pull request. The individual steps are `npm run lint`, `npm run typecheck`, `npm run format:check`, `npm run design:tokens -- --check`, `npm test` and `npm run build`.
 
 Linting and formatting are root-level commands with one shared config each — [`.oxlintrc.json`](.oxlintrc.json) and [`.prettierrc.json`](.prettierrc.json) — covering both packages. `npm run format` rewrites; CI runs `npm run format:check`.
 

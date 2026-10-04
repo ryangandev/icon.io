@@ -6,7 +6,7 @@
 
 ## ✨ Technology Stack
 
-- **Node.js 20+** (ESM)
+- **Node.js 22.12+** (ESM)
 - **TypeScript 7**
 - **Express 5**
 - **Socket.io**
