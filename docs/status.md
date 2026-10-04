@@ -36,12 +36,12 @@ Decided by Ryan, and the frame for every design and implementation choice:
 Two new games and solo play, decided by Ryan on 2026-10-04 (see [the proposal](../design/reviews/2026-10-04-new-games-proposal.md)).
 The Figma file has every screen (sections 03, 05 and 06, and the hub in 01 and 04).
 Claude is building them on `rework`, one commit per step.
-Done: every game card offers Play solo where the game has it, and Minesweeper solo is playable (`/games/minesweeper/solo`).
+Done: every game card offers Play solo where the game has it, Minesweeper solo is playable (`/games/minesweeper/solo`), and so is Make 24, on your own (`/games/make-24/solo`) and in rooms.
 Still to do, in this order:
 
-1. Make 24: rules in `docs/games/`, the deal and solver, the cards, solo play, then rooms.
-2. Pairs: rules, the cards, solo play, then rooms.
-3. End-to-end tests and the design comparison for every new screen, then check each flow with two players in a browser.
+1. Pairs: rules, the cards, solo play, then rooms.
+2. End-to-end tests and the design comparison for every new screen, then check each flow with two players in a browser.
+3. In Figma, T09's table panel spaces its children 24 apart where T08's, the same panel, uses 20; the code uses 20 for both.
 
 ## Open decisions
 

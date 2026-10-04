@@ -1,13 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import {
-  combine,
-  dealtCards,
-  formatFraction,
-  isTarget,
-  OPERATORS,
-  type Card,
-  type Step,
-} from '../../../../shared/make-24';
+import { formatFraction } from '../../../../shared/make-24';
+import { stepsToSolve } from '../../tests/make-24';
 import {
   cardsOf,
   deal,
@@ -26,24 +19,8 @@ import {
   type SoloRun,
 } from './run';
 
-/** Steps that make 24 from `cards`, found the long way. */
-function stepsToSolve(cards: readonly Card[]): Step[] | null {
-  if (cards.length === 1) return isTarget(cards[0].value) ? [] : null;
-  for (let left = 0; left < cards.length; left++) {
-    for (let right = 0; right < cards.length; right++) {
-      for (const op of OPERATORS) {
-        const step = { left, op, right };
-        const next = left === right ? null : combine(cards, step);
-        const rest = next && stepsToSolve(next);
-        if (rest) return [step, ...rest];
-      }
-    }
-  }
-  return null;
-}
-
 function solveHand(run: SoloRun, now: number): SoloRun {
-  for (const step of stepsToSolve(dealtCards(deal(run)))!) {
+  for (const step of stepsToSolve(deal(run))) {
     run = takeStep(run, step, now);
   }
   return run;
@@ -59,7 +36,7 @@ describe('a run on your own', () => {
 
   it('combines cards a step at a time, and undoes them for free', () => {
     let run = newRun('k3f9x2', 0);
-    const [first] = stepsToSolve(dealtCards(deal(run)))!;
+    const [first] = stepsToSolve(deal(run));
     run = takeStep(run, first, 1000);
     expect(cardsOf(run)).toHaveLength(3);
     expect(undo(run).steps).toEqual([]);
@@ -81,6 +58,8 @@ describe('a run on your own', () => {
     run = nextHand(run, 25_000);
     expect(run.hand).toBe(1);
     expect(runTime(run, 30_000)).toBe(26_000);
+    // A reading from before the deal never winds the clock back.
+    expect(runTime(run, 24_000)).toBe(21_000);
   });
 
   it('adds 30 seconds for a skip, and keeps a way to solve it', () => {

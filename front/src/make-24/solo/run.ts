@@ -74,9 +74,14 @@ export const isBetweenHands = (run: SoloRun) =>
 
 export const isOver = (run: SoloRun) => run.results.length === RUN_HANDS;
 
-/** The run clock: finished hands, and the open one so far. */
+/**
+ * The run clock: finished hands, and the open one so far. A reading taken
+ * before the hand was dealt counts it as just begun, so the clock never runs
+ * back.
+ */
 export const runTime = (run: SoloRun, now: number) =>
-  run.bankedMs + (run.handStartedAt === null ? 0 : now - run.handStartedAt);
+  run.bankedMs +
+  (run.handStartedAt === null ? 0 : Math.max(0, now - run.handStartedAt));
 
 function finishHand(run: SoloRun, result: HandResult): SoloRun {
   return {

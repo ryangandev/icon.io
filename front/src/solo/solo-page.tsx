@@ -1,4 +1,5 @@
 import type { GameType } from '../../../shared/wire-types';
+import { Make24Solo } from '../make-24/solo/solo-page';
 import { MinesweeperSolo } from '../minesweeper/solo/solo-page';
 import NotFoundPage from '../pages/not-found';
 
@@ -7,6 +8,8 @@ export default function SoloPage({ gameType }: { gameType: GameType }) {
   switch (gameType) {
     case 'minesweeper':
       return <MinesweeperSolo />;
+    case 'make-24':
+      return <Make24Solo />;
     default:
       return <NotFoundPage />;
   }

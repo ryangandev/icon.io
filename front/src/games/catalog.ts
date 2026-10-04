@@ -92,7 +92,7 @@ On your own, it is classic Minesweeper: open every safe cell without hitting a m
     tagline:
       'Four numbers. Plus, minus, times, divide. Make 24 before anyone else.',
     phoneTagline: 'Four numbers. Plus, minus, times, divide. Make 24.',
-    facts: '2–8 players · 5 or 10 hands',
+    facts: 'Solo or 2–8 players',
     lobbySummary:
       'Everyone gets the same four numbers at once. Use each one once, with plus, minus, times and divide, to make 24. Quicker answers score more.',
     lobbyFacts: [
@@ -107,8 +107,20 @@ Every hand is four numbers from 1 to 13, and every hand can be solved. Use each 
 
 Pick a number, a sign, then another number: the two become one new card. Keep going until one card is left. Undo and Start over are free.
 
-Everyone gets the same hand at the same time, with 60 seconds to solve it. Solving it pays 50 points, plus up to 100 more for the time left. Others see that you solved it, never how, and your chat waits until the hand ends.`,
+Everyone gets the same hand at the same time, with 60 seconds to solve it. Solving it pays 50 points, plus up to 100 more for the time left. Others see that you solved it, never how, and your chat waits until the hand ends.
+
+On your own, a run is ten hands against one clock. Skip a hand you are stuck on, and 30 seconds go on the clock. Your best time is kept on this device, and Challenge a friend sends them the same ten hands.`,
     createDescription: 'Every hand is 60 seconds. Five hands is a quick game.',
+    solo: {
+      summary:
+        'Four numbers, four signs, one target. Every hand can be solved.',
+      facts: [
+        'Ten hands against one clock',
+        'Use each number once: pick a number, a sign and another number',
+        'Stuck? Skip the hand for 30 seconds on the clock',
+        'Your best time is kept on this device',
+      ],
+    },
   },
 ];
 
