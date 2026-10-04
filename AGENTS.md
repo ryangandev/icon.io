@@ -11,6 +11,7 @@ Find anything else through [docs/README.md](docs/README.md), and read only the s
 | ------------------------------------------------------------ | --------------------------------------------------------------- |
 | `npm ci && npm run install:all`                              | Install root tooling, then `back/` and `front/` (own lockfiles) |
 | `npm run verify`                                             | Lint, typecheck, format check, tests, build: what CI runs       |
+| `npm run e2e`                                                | Build, then play the main flows with two players in Chromium    |
 | `npm --prefix back run watch` / `npm --prefix front run dev` | Dev servers on 3000 / 3001                                      |
 | `npm run design:import`                                      | Unpack the newest Figma export into `design/figma/`             |
 | `npm run design:export`                                      | Export the Figma file through the bridge and import it          |

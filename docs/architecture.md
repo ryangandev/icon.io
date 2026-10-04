@@ -240,6 +240,9 @@ Because it binds ports, it times out in sandboxes that forbid listening on local
 The frontend suite renders the whole app in jsdom against a fake socket ([`tests/fake-socket.ts`](../front/src/tests/fake-socket.ts)), with each test playing the server; jsdom has no 2D context, so canvas rendering is verified in a browser only.
 
 Two serious bugs were found only by playing in a browser (a redundant hint, and the lost identity under [pitfalls](#pitfalls)), so UI and flow changes are verified end to end, not just by the suites.
+`npm run e2e` does the repeatable part: [Playwright](../e2e/) builds the app, serves it as production does on port 3310 (`E2E_PORT`), and plays the main flows with each player in a browser context of their own.
+Reveals are cut to a second so a whole game fits in a test, any error in a browser console fails it, and a player made `droppable` can lose the connection mid-game through `dropConnection`, which cuts both Socket.IO transports; browser offline emulation leaves an open WebSocket alone.
+It checks behaviour, not looks, so a layout change still needs a look in a browser at both widths.
 
 ## Tooling
 

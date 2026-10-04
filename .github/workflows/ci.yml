@@ -58,3 +58,36 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  # Two players in real browsers against the production build: the flows the
+  # unit suites stub out, like a dropped connection or a whole game.
+  e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            back/package-lock.json
+            front/package-lock.json
+
+      - name: Install
+        run: |
+          npm ci
+          npm run install:all
+          npx playwright install --with-deps chromium
+
+      - name: Browser checks
+        run: npm run e2e
+
+      - name: Keep the traces of failed checks
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-traces
+          path: test-results/
