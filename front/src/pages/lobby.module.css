@@ -1,0 +1,93 @@
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--zumpo-space-16);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 368px;
+  align-items: start;
+  gap: var(--zumpo-space-24);
+}
+
+.rooms {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-16);
+  min-width: 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-16);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.count {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-small);
+  letter-spacing: var(--zumpo-text-small-tracking);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--zumpo-space-16);
+  padding: var(--zumpo-space-32);
+  border: 1px solid var(--zumpo-line);
+  border-radius: var(--zumpo-radius-24);
+  background: var(--zumpo-paper);
+}
+
+.panelTitle {
+  font: var(--zumpo-text-heading);
+  letter-spacing: var(--zumpo-text-heading-tracking);
+}
+
+.panelText {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-body);
+  letter-spacing: var(--zumpo-text-body-tracking);
+}
+
+.skeleton {
+  height: 80px;
+  border-radius: var(--zumpo-radius-16);
+  background: var(--zumpo-sand);
+}
+
+.rules {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-16);
+  padding: var(--zumpo-space-32);
+  border: 1px solid var(--zumpo-line);
+  border-radius: var(--zumpo-radius-24);
+  background: var(--zumpo-lime);
+}
+
+.rulesText {
+  font: var(--zumpo-text-body);
+  letter-spacing: var(--zumpo-text-body-tracking);
+  white-space: pre-line;
+}
+
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The phone list stands alone; the rules are a header link away. */
+@media (max-width: 640px) {
+  .rules {
+    display: none;
+  }
+}

@@ -1,0 +1,50 @@
+/* A screen: 64 px margins up to the 1440 px design width, centred beyond. */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-24);
+  min-height: 100dvh;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 24px var(--zumpo-space-64) var(--zumpo-space-32);
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--zumpo-space-24);
+  min-width: 0;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--zumpo-space-12);
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-small);
+  letter-spacing: var(--zumpo-text-small-tracking);
+}
+
+.narrow {
+  display: none;
+}
+
+.menuAction {
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: var(--zumpo-space-20) var(--zumpo-space-20) var(--zumpo-space-32);
+  }
+
+  .wide {
+    display: none;
+  }
+
+  .narrow {
+    display: inline;
+  }
+}

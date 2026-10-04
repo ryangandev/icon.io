@@ -1,0 +1,40 @@
+.artwork {
+  display: flex;
+  align-self: stretch;
+  align-items: center;
+  justify-content: center;
+  gap: var(--zumpo-space-16);
+  height: 120px;
+  overflow: hidden;
+  border-radius: var(--zumpo-radius-16);
+  background: var(--zumpo-paper);
+}
+
+/* The sample drawing at 0.32 of its 480 × 320 canvas, as on the cards. */
+.turtle {
+  width: 153.6px;
+  height: 102.4px;
+}
+
+.cells {
+  display: flex;
+  align-items: center;
+  gap: var(--zumpo-space-4);
+}
+
+/* Full-size cells even on phones, as in the mobile cards; specific enough to
+   beat the board's phone size. */
+.cells span[role='gridcell'] {
+  --zumpo-cell-size: 44px;
+}
+
+.lastCell {
+  display: contents;
+}
+
+/* The phone card drops the last cell to fit. */
+@media (max-width: 640px) {
+  .lastCell {
+    display: none;
+  }
+}

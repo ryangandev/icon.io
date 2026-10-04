@@ -1,0 +1,327 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Navigate, useBlocker, useNavigate } from 'react-router';
+import type { GameType } from '../../../shared/wire-types';
+import { Button, ButtonLink, Card, TextField } from '../ui';
+import { gameInfo, lobbyPath, roomPath } from '../games/catalog';
+import { DrawAndGuessRoom } from '../draw-and-guess/room';
+import { MinesweeperRoom } from '../minesweeper/room';
+import { useSession } from '../net/session';
+import { REQUEST_TIMEOUT_MS } from '../net/socket';
+import { useLobby } from '../net/use-lobby';
+import { useRoom, type RoomConnection, type Snapshot } from '../net/use-room';
+import { ConnectionFailed } from '../shell/connection-failed';
+import { Page } from '../shell/page';
+import { Stage } from '../shell/stage';
+import { StatusLine } from '../shell/status-line';
+import { LobbyHeading } from '../pages/lobby';
+import { InviteDialog, LeaveDialog } from './dialogs';
+import { RoomContext, type Room } from './room-context';
+
+/**
+ * /games/:game/rooms/:roomId: takes a seat, asking for a password if the room
+ * has one, and shows the room; or says why it cannot.
+ */
+export default function RoomPage({
+  gameType,
+  roomId,
+}: {
+  gameType: GameType;
+  roomId: string;
+}) {
+  const connection = useRoom(roomId);
+  const { stage } = connection;
+
+  switch (stage.kind) {
+    case 'connecting':
+      return (
+        <Page>
+          <Stage>
+            <Card
+              title="Getting the room ready…"
+              description="Connecting to Zumpo. This normally takes a moment."
+            >
+              <StatusLine>Connecting…</StatusLine>
+            </Card>
+          </Stage>
+        </Page>
+      );
+    case 'failed':
+      return (
+        <Page>
+          <Stage>
+            <ConnectionFailed />
+          </Stage>
+        </Page>
+      );
+    case 'password':
+      return (
+        <PasswordPage
+          gameType={gameType}
+          roomId={roomId}
+          rejected={stage.rejected}
+          pending={stage.pending}
+          onSubmit={connection.submitPassword}
+        />
+      );
+    case 'unavailable':
+      return (
+        <Page>
+          <LobbyHeading
+            game={gameInfo(gameType)}
+            subtitle="Join a room or make one for your friends."
+          />
+          <Stage>
+            <Card
+              title="That room moved on."
+              description="It filled up, started playing, or closed before you joined. Choose another room."
+              actions={
+                <ButtonLink to={lobbyPath(gameType)}>Back to rooms</ButtonLink>
+              }
+            />
+          </Stage>
+        </Page>
+      );
+    case 'not-found':
+      return (
+        <Page>
+          <Stage>
+            <Card
+              title="This room has packed up."
+              description="The room no longer exists. Find another room or start your own."
+              actions={
+                <ButtonLink to={lobbyPath(gameType)}>Back to rooms</ButtonLink>
+              }
+            />
+          </Stage>
+        </Page>
+      );
+    case 'expired':
+      return <ExpiredPage gameType={gameType} />;
+    case 'seated':
+      // A link with the wrong game in it still reaches the room.
+      if (stage.snapshot.state.gameType !== gameType) {
+        return (
+          <Navigate
+            to={roomPath(stage.snapshot.state.gameType, roomId)}
+            replace
+          />
+        );
+      }
+      return (
+        <SeatedRoom
+          snapshot={stage.snapshot}
+          reconnecting={stage.reconnecting}
+          connection={connection}
+        />
+      );
+  }
+}
+
+/** P08: the seat was released while this player was away. */
+function ExpiredPage({ gameType }: { gameType: GameType }) {
+  return (
+    <Page>
+      <Stage>
+        <Card
+          title="Let’s find you a fresh start."
+          description="We couldn’t reconnect. Your seat may have been released. You can return to the room list."
+          actions={
+            <>
+              <ButtonLink to={lobbyPath(gameType)}>Back to rooms</ButtonLink>
+              <ButtonLink to="/games" variant="secondary" icon="back">
+                Back to games
+              </ButtonLink>
+            </>
+          }
+        />
+      </Stage>
+    </Page>
+  );
+}
+
+/** DL07, DL08: a private room's password. */
+function PasswordPage({
+  gameType,
+  roomId,
+  rejected,
+  pending,
+  onSubmit,
+}: {
+  gameType: GameType;
+  roomId: string;
+  rejected: boolean;
+  pending: boolean;
+  onSubmit: (password: string) => void;
+}) {
+  const [password, setPassword] = useState('');
+  // The lobby knows the room's name; a link alone does not.
+  const rooms = useLobby(gameType);
+  const roomName = rooms?.find((room) => room.roomId === roomId)?.roomName;
+
+  return (
+    <Page>
+      <LobbyHeading
+        game={gameInfo(gameType)}
+        subtitle="Join a room or make one for your friends."
+      />
+      <Stage>
+        <Card
+          title="This room has a secret."
+          description={`Enter the password for ${roomName ?? 'this room'}.`}
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (!pending) onSubmit(password);
+          }}
+          actions={
+            pending ? undefined : (
+              <>
+                <Button type="submit">Join room</Button>
+                <ButtonLink
+                  to={lobbyPath(gameType)}
+                  variant="secondary"
+                  icon="back"
+                >
+                  Back to rooms
+                </ButtonLink>
+              </>
+            )
+          }
+        >
+          <TextField
+            label="Room password"
+            helper="Ask the host for the room password."
+            error={
+              rejected ? 'That password didn’t work. Try again.' : undefined
+            }
+            type="password"
+            value={password}
+            onValueChange={(next: string) => setPassword(next)}
+            autoComplete="off"
+            autoFocus
+            name="password"
+          />
+          {pending && <StatusLine>Joining the room…</StatusLine>}
+        </Card>
+      </Stage>
+    </Page>
+  );
+}
+
+/**
+ * In the room. Any way out of the page (the Leave button, a header link, the
+ * browser's back button) passes through here: mid-game it asks first, and
+ * either way it gives the seat up before the page goes.
+ */
+function SeatedRoom({
+  snapshot,
+  reconnecting,
+  connection,
+}: {
+  snapshot: Snapshot;
+  reconnecting: boolean;
+  connection: RoomConnection;
+}) {
+  const { socket, playerId, reconnectGraceMs } = useSession();
+  const navigate = useNavigate();
+  const { state, receivedAt } = snapshot;
+  const [inviting, setInviting] = useState(false);
+  const [starting, setStarting] = useState(false);
+
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      currentLocation.pathname !== nextLocation.pathname,
+  );
+  const blocked = blocker.state === 'blocked';
+  const confirming = blocked && state.isGameStarted;
+  const { leave } = connection;
+
+  // Between games nothing is at stake: leave without asking.
+  useEffect(() => {
+    if (blocked && !state.isGameStarted) {
+      leave();
+      blocker.proceed?.();
+    }
+  }, [blocked, state.isGameStarted, leave, blocker]);
+
+  const startGame = useCallback(async () => {
+    setStarting(true);
+    try {
+      await socket
+        .timeout(REQUEST_TIMEOUT_MS)
+        .emitWithAck('game:start', state.roomId);
+    } catch {
+      // No answer; the button comes back so the host can try again.
+    }
+    setStarting(false);
+  }, [socket, state.roomId]);
+
+  const me = state.playerList[playerId];
+
+  const room = useMemo<Room | null>(
+    () =>
+      me
+        ? {
+            state,
+            receivedAt,
+            reconnecting,
+            reconnectGraceMs,
+            playerId,
+            me,
+            isHost: state.owner.playerId === playerId,
+            chat: connection.chat,
+            canvas: connection.canvas,
+            socket,
+            sendChat: (text) => socket.emit('chat:send', state.roomId, text),
+            openInvite: () => setInviting(true),
+            leave: () => navigate(lobbyPath(state.gameType)),
+            startGame,
+            starting,
+          }
+        : null,
+    [
+      state,
+      receivedAt,
+      reconnecting,
+      reconnectGraceMs,
+      playerId,
+      me,
+      connection.chat,
+      connection.canvas,
+      socket,
+      navigate,
+      startGame,
+      starting,
+    ],
+  );
+
+  // A snapshot without us in it means the seat is gone.
+  if (!room) return <ExpiredPage gameType={state.gameType} />;
+
+  return (
+    <RoomContext.Provider value={room}>
+      <Page>
+        {state.gameType === 'draw-and-guess' ? (
+          <DrawAndGuessRoom />
+        ) : (
+          <MinesweeperRoom />
+        )}
+      </Page>
+      <InviteDialog
+        open={inviting}
+        onOpenChange={setInviting}
+        roomName={state.roomName}
+        link={`${window.location.origin}${roomPath(state.gameType, state.roomId)}`}
+      />
+      <LeaveDialog
+        open={confirming}
+        roomName={state.roomName}
+        points={room.me.points}
+        onStay={() => blocker.reset?.()}
+        onLeave={() => {
+          leave();
+          blocker.proceed?.();
+        }}
+      />
+    </RoomContext.Provider>
+  );
+}

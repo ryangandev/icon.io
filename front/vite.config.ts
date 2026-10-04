@@ -40,5 +40,28 @@ export default defineConfig({
     outDir: '../back/build/public',
     emptyOutDir: true,
     sourcemap: true,
+    rolldownOptions: {
+      output: {
+        // Libraries change far less often than the app, so each ships in a
+        // chunk of its own that browsers keep cached across releases.
+        codeSplitting: {
+          groups: [
+            {
+              name: 'react',
+              test: /node_modules[\\/](react|react-dom|scheduler)[\\/]/,
+            },
+            { name: 'router', test: /node_modules[\\/]react-router[\\/]/ },
+            {
+              name: 'base-ui',
+              test: /node_modules[\\/](@base-ui|@floating-ui)[\\/]/,
+            },
+            {
+              name: 'socket',
+              test: /node_modules[\\/](socket\.io|engine\.io)[^\\/]*[\\/]/,
+            },
+          ],
+        },
+      },
+    },
   },
 });

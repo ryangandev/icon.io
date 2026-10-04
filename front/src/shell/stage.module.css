@@ -1,0 +1,14 @@
+.stage {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 0;
+}
+
+@media (max-width: 640px) {
+  .stage {
+    align-items: flex-start;
+    padding: 0;
+  }
+}

@@ -1,13 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './styles/global.css';
-import App from './app';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './ui/zumpo.css';
+import './app.css';
+import { App } from './app';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement,
-);
-root.render(
-  <React.StrictMode>
+createRoot(document.getElementById('root') as HTMLElement).render(
+  <StrictMode>
     <App />
-  </React.StrictMode>,
+  </StrictMode>,
 );

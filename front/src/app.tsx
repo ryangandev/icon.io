@@ -1,67 +1,97 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router';
-import Layout from './layout';
-import Landing from './pages/landing-page';
-import Gamehub from './pages/gamehub-page';
-import DrawAndGuessLobby from './pages/lobbies/draw-and-guess-lobby';
-import DrawAndGuessRoom from './pages/rooms/draw-and-guess-room';
-import MinesweeperLobby from './pages/lobbies/minesweeper-lobby';
-import MinesweeperRoom from './pages/rooms/minesweeper-room';
-import NotFound from './pages/not-found-page';
-import { SocketProvider } from './providers/socket-provider';
-import ValidateAuth from './components/validate-auth';
-import RequireSocket from './components/require-socket';
+import {
+  createBrowserRouter,
+  Outlet,
+  RouterProvider,
+  ScrollRestoration,
+  useParams,
+  type RouteObject,
+} from 'react-router';
+import { isGameType } from './games/catalog';
+import { SessionProvider } from './net/session';
+import CreateRoomPage from './pages/create-room';
+import GamesPage from './pages/games';
+import HomePage from './pages/home';
+import HowToPlayPage from './pages/how-to-play';
+import LobbyPage from './pages/lobby';
+import NamePage from './pages/name';
+import NotFoundPage from './pages/not-found';
+import RoomPage from './room/room-page';
+import { RequireName } from './shell/require-name';
 
 // The design system gallery, for development only: the build drops it.
 const DesignGallery = import.meta.env.DEV
   ? lazy(() => import('./ui/gallery/gallery'))
   : null;
 
-export default function App() {
+function Root() {
   return (
-    <SocketProvider>
-      <Router>
-        <Routes>
-          {DesignGallery && (
-            <Route
-              path="/design"
-              element={
+    <div className="zumpo">
+      <Outlet />
+      <ScrollRestoration />
+    </div>
+  );
+}
+
+/** A page under /games/:game, for a game that exists. */
+function GamePage({
+  page: Page,
+}: {
+  page: typeof LobbyPage | typeof CreateRoomPage;
+}) {
+  const { game } = useParams();
+  if (!isGameType(game)) return <NotFoundPage />;
+  return <Page key={game} gameType={game} />;
+}
+
+function GameRoomPage() {
+  const { game, roomId } = useParams();
+  if (!isGameType(game) || !roomId) return <NotFoundPage />;
+  return <RoomPage key={roomId} gameType={game} roomId={roomId} />;
+}
+
+export const routes: RouteObject[] = [
+  {
+    element: <Root />,
+    children: [
+      { path: '/', element: <HomePage /> },
+      { path: '/name', element: <NamePage /> },
+      { path: '/how-to-play', element: <HowToPlayPage /> },
+      {
+        element: <RequireName />,
+        children: [
+          { path: '/games', element: <GamesPage /> },
+          { path: '/games/:game', element: <GamePage page={LobbyPage} /> },
+          {
+            path: '/games/:game/new',
+            element: <GamePage page={CreateRoomPage} />,
+          },
+          { path: '/games/:game/rooms/:roomId', element: <GameRoomPage /> },
+        ],
+      },
+      ...(DesignGallery
+        ? [
+            {
+              path: '/design',
+              element: (
                 <Suspense>
                   <DesignGallery />
                 </Suspense>
-              }
-            />
-          )}
-          <Route path="/" element={<Layout />}>
-            {/* Page Components */}
-            <Route index element={<Landing />} />
-            <Route path="/Landing" element={<Landing />} />
+              ),
+            },
+          ]
+        : []),
+      { path: '*', element: <NotFoundPage /> },
+    ],
+  },
+];
 
-            <Route element={<ValidateAuth />}>
-              <Route path="/Gamehub" element={<Gamehub />} />
-              <Route element={<RequireSocket />}>
-                <Route
-                  path="/Gamehub/DrawAndGuess/Lobby"
-                  element={<DrawAndGuessLobby />}
-                />
-                <Route
-                  path="/Gamehub/DrawAndGuess/Room/:roomId"
-                  element={<DrawAndGuessRoom />}
-                />
-                <Route
-                  path="/Gamehub/Minesweeper/Lobby"
-                  element={<MinesweeperLobby />}
-                />
-                <Route
-                  path="/Gamehub/Minesweeper/Room/:roomId"
-                  element={<MinesweeperRoom />}
-                />
-              </Route>
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </Router>
-    </SocketProvider>
+const router = createBrowserRouter(routes);
+
+export function App() {
+  return (
+    <SessionProvider>
+      <RouterProvider router={router} />
+    </SessionProvider>
   );
 }
