@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="Icon.io Logo" src="https://github.com/ryangandev/icon.io/blob/main/front/public/favicon.ico" height="auto" width="200">
+    <img alt="Icon.io Logo" src="public/favicon.svg" height="auto" width="200">
 </p>
 
 <h1 align="center">Icon.io [Frontend]</h1>
@@ -9,8 +9,8 @@
 - **React 19**
 - **TypeScript 7**
 - **Vite 8** (build tool)
-- **Ant Design 6** (being replaced by the Zumpo design system)
-- **Base UI** (headless primitives for the Zumpo design system)
+- **The Zumpo design system** in `src/ui/`, on **Base UI** headless primitives and CSS Modules
+- **React Router 8**
 - **Socket.io**
 - **oxlint** (linter)
 
@@ -42,14 +42,16 @@
 
 ## 📜 Scripts
 
-| Script              | What it does                                                     |
-| ------------------- | ---------------------------------------------------------------- |
-| `npm run dev`       | Start the Vite dev server on port 3001 (`npm start` is an alias) |
-| `npm run build`     | Typecheck, then build straight into `../back/build/public`       |
-| `npm run preview`   | Serve the production build locally                               |
-| `npm run typecheck` | Run `tsc --noEmit`                                               |
-| `npm run lint`      | Run oxlint                                                       |
-| `npm run format`    | Format `src` with Prettier                                       |
+| Script              | What it does                                                        |
+| ------------------- | ------------------------------------------------------------------- |
+| `npm run dev`       | Start the Vite dev server on port 3001 (`npm start` is an alias)    |
+| `npm run build`     | Typecheck, then build straight into `../back/build/public`          |
+| `npm run preview`   | Serve the production build locally                                  |
+| `npm run typecheck` | Run `tsc --noEmit`                                                  |
+| `npm test`          | Run the Vitest suite once (`npm run test:watch` to keep it running) |
+| `npm run format`    | Format `src` with Prettier                                          |
+
+Linting runs from the repository root (`npm run lint`), over both apps.
 
 ## ⚙️ Environment Variables
 

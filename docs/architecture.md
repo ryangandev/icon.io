@@ -15,24 +15,24 @@ shared/  wire-types.d.ts, imported by both sides
 tools/   figma-export, figma-bridge, design-tokens: Figma into the repo (see design.md)
 ```
 
-| Path                                       | What it is                                                         |
-| ------------------------------------------ | ------------------------------------------------------------------ |
-| `back/app.ts`                              | `createIconIoServer()`: builds a fully wired server without a port |
-| `back/server.ts`                           | Entry point that binds the port                                    |
-| `back/libs/rooms/`                         | The generic room layer (table below)                               |
-| `back/socket/draw-and-guess/`              | Draw & Guess module                                                |
-| `back/socket/minesweeper/`                 | Minesweeper module, board, solver and scoring                      |
-| `back/socket/player-session-handler.ts`    | The identity handshake                                             |
-| `back/socket/client-disconnect-handler.ts` | Hands a dropped socket to `membership.ts`                          |
-| `back/libs/validation.ts`, `rate-limit.ts` | Inbound validation and per-socket token buckets                    |
-| `shared/wire-types.d.ts`                   | Every event name and payload shape                                 |
-| `front/src/app.tsx`                        | Routes and their guards                                            |
-| `front/src/providers/socket-provider.tsx`  | The socket, identity storage and handshake                         |
-| `front/src/components/require-socket.tsx`  | Holds a page until the socket is connected                         |
-| `front/src/components/validate-auth.tsx`   | Holds a page until there is a username                             |
-| `front/src/pages/lobbies/`, `pages/rooms/` | One lobby and one room page per game                               |
-| `front/src/ui/`                            | The Zumpo design system: components, base styles, generated tokens |
-| `front/src/ui/gallery/`                    | The development-only `/design` page that reviews it against Figma  |
+| Path                                        | What it is                                                         |
+| ------------------------------------------- | ------------------------------------------------------------------ |
+| `back/app.ts`                               | `createIconIoServer()`: builds a fully wired server without a port |
+| `back/server.ts`                            | Entry point that binds the port                                    |
+| `back/libs/rooms/`                          | The generic room layer (table below)                               |
+| `back/socket/draw-and-guess/`               | Draw & Guess module                                                |
+| `back/socket/minesweeper/`                  | Minesweeper module, board, solver and scoring                      |
+| `back/socket/player-session-handler.ts`     | The identity handshake                                             |
+| `back/socket/client-disconnect-handler.ts`  | Hands a dropped socket to `membership.ts`                          |
+| `back/libs/validation.ts`, `rate-limit.ts`  | Inbound validation and per-socket token buckets                    |
+| `shared/wire-types.d.ts`                    | Every event name and payload shape                                 |
+| `front/src/app.tsx`                         | Routes and their guards                                            |
+| `front/src/net/`                            | The socket, the session, and the lobby and room hooks              |
+| `front/src/shell/`, `front/src/pages/`      | The page frame and the platform pages                              |
+| `front/src/room/`                           | What both rooms share: seating, layout, panels, dialogs            |
+| `front/src/draw-and-guess/`, `minesweeper/` | Each game's room view                                              |
+| `front/src/ui/`                             | The Zumpo design system: components, base styles, generated tokens |
+| `front/src/ui/gallery/`                     | The development-only `/design` page that reviews it against Figma  |
 
 There is no database and no business HTTP API.
 Everything except serving static files happens over Socket.io, and server state is one flat registry of rooms of every game, owned by [`back/libs/rooms/registry.ts`](../back/libs/rooms/registry.ts).
@@ -113,34 +113,70 @@ Names are namespaced by concern, not by game: `room:`, `lobby:`, `chat:` and `ga
 
 ## Frontend
 
-React 19 with Ant Design 6 components and per-component CSS files under `front/src/styles/`.
-The Zumpo redesign will replace most of this layer; see [status.md](status.md) before investing in the current UI.
-Ant Design is being removed, decided by Ryan: Paper Pop shares nothing with antd's look, so theming it would be a permanent fight, and it is most of the 1 MB main bundle.
+React 19 on the Zumpo design system, with no component library.
+Ant Design was removed, decided by Ryan: Paper Pop shares nothing with antd's look, so theming it would have been a permanent fight, and it was most of a 1 MB main bundle.
 Zumpo components are built on headless primitives, which bring keyboard and screen-reader behaviour, with our own styles from the Figma tokens.
+
+### The design system
 
 The design system lives in [`front/src/ui/`](../front/src/ui/index.ts), one component per Figma Shared pieces family:
 
-- **[Base UI](https://base-ui.com) for the primitives** (select, dialog, tabs, radio groups, fields, buttons).
+- **[Base UI](https://base-ui.com) for the primitives** (select, dialog, popover, tabs, radio groups, fields, buttons).
   Radix's maintenance has slowed since its authors moved to Base UI, and React Aria is heavier than these few widgets need.
   Base UI exposes state as `data-*` attributes (`data-checked`, `data-highlighted`, `data-popup-open`), which the styles select on.
 - **CSS Modules over generated custom properties.**
-  `npm run design:tokens` writes `ui/generated/` from the Figma export: `tokens.css` (`--zumpo-*` colours, spacing, radii, text styles as `font` shorthands, shadows), `glyphs.ts` (icon paths) and `brushes.ts` (the canvas palette, which JavaScript needs as values).
+  `npm run design:tokens` writes `ui/generated/` from the Figma export: `tokens.css` (`--zumpo-*` colours, spacing, radii, text styles as `font` shorthands, shadows), `glyphs.ts` (icon paths), `brushes.ts` (the canvas palette, which JavaScript needs as values) and `drawings.ts` (the sample turtle drawing on the game cards).
   `npm run verify` fails if they are stale.
 - **`zumpo.css`** loads the self-hosted fonts and the tokens; the `.zumpo` class scopes the base styles and `.zumpo-page` adds the page canvas.
-  Portals (select menus, dialogs) carry `.zumpo` themselves, because they render outside the page.
+  Portals (select menus, dialogs, the header menu) carry `.zumpo` themselves, because they render outside the page.
 - **Desktop and Phone variants are container queries**, so a component follows its own width, as Figma's `Layout` variants do, wherever a page puts it.
+  Pages switch layouts at `(max-width: 640px)`, the width Figma's phone screens are drawn for, through `useMediaQuery(PHONE)` where the markup itself differs (tabs instead of columns).
 - **States never change size:** hover borders, selection rings and cell outlines are inset shadows, not borders, so nothing shifts and overlays such as the pick marker cover the whole box.
 - **The `/design` gallery** renders every family in the states Figma draws, beside its Figma preview, and measures each specimen against the export.
   It exists only in development (the build drops it), and the Vite dev server serves `design/figma/` at `/__figma` for it.
 
-Routes live in [`app.tsx`](../front/src/app.tsx): `/` and `/Landing`, then behind `ValidateAuth` (needs a username) `/Gamehub`, and behind `RequireSocket` (needs a connection) `/Gamehub/<Game>/Lobby` and `/Gamehub/<Game>/Room/:roomId`.
-`RequireSocket` opens the connection instead of redirecting, and redirects only on real failure, so a refresh or a deep link lands where it was.
-It gives up after 10 seconds, which is shorter than a free hosting tier's cold start; revisit when a host is chosen.
+### Routes
 
-In production the client connects to the origin that served the page and ignores `VITE_SOCKET_URL` ([`socket-provider.tsx`](../front/src/providers/socket-provider.tsx)).
+Routes live in [`app.tsx`](../front/src/app.tsx), on a data router so a room can intercept navigation away from it:
+
+| Path                         | Page                                                        |
+| ---------------------------- | ----------------------------------------------------------- |
+| `/`                          | Home                                                        |
+| `/name?next=`                | Choosing a name, then on to `next` (only a path in the app) |
+| `/how-to-play`               | Both games' rules                                           |
+| `/games`                     | The games                                                   |
+| `/games/:game`               | A game's lobby                                              |
+| `/games/:game/new`           | Making a room                                               |
+| `/games/:game/rooms/:roomId` | A room, and the link a host shares                          |
+
+Everything under `/games` needs a name and sends a player without one to `/name` first, then back.
+The room URL carries the game so that a page which cannot reach the room (a password, a room that moved on) still knows which game it belongs to; a link with the wrong game in it redirects to the right one.
+
+### Talking to the server
+
+[`net/`](../front/src/net/) is the only code that touches the socket, typed on the wire contract's two event maps:
+
+- **`session.tsx`** owns the one socket.
+  The first page that needs the server connects it; every connection starts with `session:identify`, and the identity and the chosen name are kept in `sessionStorage` (see [identity](#identity-and-reconnection)).
+  Its status (`connecting`, `online`, `reconnecting`, `failed`) is what pages show, and `connectionId` changes on every identification, so anything the server keeps per connection is set up again.
+- **`use-lobby.ts`** subscribes to one game's rooms while online.
+- **`use-room.ts`** takes a seat: `room:sync` first, then `room:join` when the server says this player has no seat, then the password page if the room has one.
+  It keeps the latest snapshot and when it arrived, the chat, and the drawing as a `CanvasStream`, which lives outside React because a stroke grows dozens of times a second.
+  A `notRoomMember` answer after the page has held a seat means the seat was released while away, which the page reports rather than quietly rejoining.
+- Requests use `emitWithAck` with a 10 second timeout, and a request that times out is treated as a failure the page can show.
+
+A room page renders the latest `room:state` and nothing else: the client keeps no game state, advances no phase, and counts each clock down from the snapshot that carried it.
+Leaving is routed through the navigation blocker, whatever started it (the Leave button, a header link, the browser's back button): mid-game it asks first, and either way it sends `room:leave` before the page goes.
+Leaving is never done in an effect's cleanup, where React's development double-mount would give the seat up on arrival.
+
+In production the client connects to the origin that served the page and ignores `VITE_SOCKET_URL` ([`socket.ts`](../front/src/net/socket.ts)).
 Serving the frontend from a different host than the backend needs that changed first, plus CORS.
 
-The whiteboard canvas bitmap is 798 × 598; mouse positions are scaled into bitmap space, and it handles mouse events only.
+### The drawing canvas
+
+The canvas bitmap is 798 × 598, scaled to the screen's pixel ratio; pointer positions are mapped into that space.
+It takes pointer events, so mouse, pen and touch all draw, and `touch-action: none` keeps a finger drawing rather than scrolling.
+The server never echoes a drawer's own strokes, so the drawer's input is applied locally as well as sent.
 
 ## Configuration
 
@@ -155,8 +191,7 @@ Production is one Node process: Vite builds into `back/build/public` and Express
 
 1. One `createXModule(ctx, …)` returning a `GameModule`, and one line in `app.ts` registering it.
 2. A member added to `GameType`, the game's room state, lobby info and settings interfaces in the shared contract, and its event names in the two unions.
-3. A lobby page and a room page.
-   `RoomCreateForm` takes the game-specific fields as children and puts them into `settings`, the only part of a create request the server hands to a module.
+3. An entry in [`games/catalog.ts`](../front/src/games/catalog.ts), the game's fields in [`create-room.tsx`](../front/src/pages/create-room.tsx), which puts them into `settings` (the only part of a create request the server hands to a module), and a room view rendered by [`room-page.tsx`](../front/src/room/room-page.tsx) inside the shared `RoomLayout`.
 
 Nothing in `libs/rooms/` should need editing.
 If it does, the abstraction is wrong rather than the game unusual, and that is worth fixing rather than working around.
@@ -166,7 +201,7 @@ If it does, the abstraction is wrong rather than the game unusual, and that is w
 Vitest on both sides.
 The backend suite runs real Socket.IO clients against a real server on an ephemeral port per suite, because that is where the interesting behaviour lives, and phase durations are parameters so a whole game runs in milliseconds.
 Because it binds ports, it times out in sandboxes that forbid listening on localhost; run it where that is allowed before concluding a test is broken.
-The frontend suite uses jsdom with a fake socket; jsdom has no 2D context, so canvas rendering is verified in a browser only.
+The frontend suite renders the whole app in jsdom against a fake socket ([`tests/fake-socket.ts`](../front/src/tests/fake-socket.ts)), with each test playing the server; jsdom has no 2D context, so canvas rendering is verified in a browser only.
 
 Two serious bugs were found only by playing in a browser (a redundant hint, and the lost identity under [pitfalls](#pitfalls)), so UI and flow changes are verified end to end, not just by the suites.
 

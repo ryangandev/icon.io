@@ -77,6 +77,8 @@ To review the design system, run the frontend dev server and open [`/design`](ht
 Every specimen is captioned with its Figma variant, uses that variant's sample copy, and shows its size beside Figma's, in red when they differ by more than half a pixel.
 Each family's Figma preview sits under it at the same scale.
 
+Figma gives each sample player an avatar tone by hand; code picks one from a hash of the player's name, so a player keeps one colour in the header, the scoreboard and the results, on every screen.
+
 Code differs from Figma on purpose in a few places:
 
 - The countdown is up to 7 px wider: DM Sans has no tabular figures, so each digit has a fixed cell and the clock keeps its width as it ticks.
