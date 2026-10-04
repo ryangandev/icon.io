@@ -4,10 +4,12 @@ import { createIconIoServer, type IconIoServer } from '../../app.js';
 import type {
   Make24DurationsInSeconds,
   MinesweeperDurationsInSeconds,
+  PairsDurationsInSeconds,
   PhaseDurationsInSeconds,
 } from '../../libs/game-clock.js';
 import type { MinesweeperState } from '../../socket/minesweeper/index.js';
 import type { Make24State } from '../../socket/make-24/index.js';
+import type { PairsState } from '../../socket/pairs/index.js';
 import type {
   AnyLobbyRoomInfo,
   AnyRoomState,
@@ -20,6 +22,8 @@ import type {
   Make24RoomState,
   MinesweeperDifficulty,
   MinesweeperRoomState,
+  PairsBoard,
+  PairsRoomState,
   PlayerIdentity,
   ServerToClientEvent,
   ServerToClientEvents,
@@ -59,6 +63,15 @@ const FAST_MINESWEEPER: MinesweeperDurationsInSeconds = {
 const FAST_MAKE24: Make24DurationsInSeconds = {
   hand: 1,
   reveal: 0.1,
+};
+
+/**
+ * A turn long enough to flip two cards deliberately inside it, and a miss on
+ * show long enough to assert on before the turn passes.
+ */
+const FAST_PAIRS: PairsDurationsInSeconds = {
+  turn: 1,
+  show: 0.3,
 };
 
 /** A client socket typed on the contract, from the client's side of it. */
@@ -102,12 +115,14 @@ const startTestServer = async (
   graceInSeconds = 0.6,
   minesweeperDurations: MinesweeperDurationsInSeconds = FAST_MINESWEEPER,
   make24Durations: Make24DurationsInSeconds = FAST_MAKE24,
+  pairsDurations: PairsDurationsInSeconds = FAST_PAIRS,
 ): Promise<TestServer> => {
   const server = createIconIoServer({
     serveClient: false,
     phaseDurations,
     minesweeperDurations,
     make24Durations,
+    pairsDurations,
     graceInSeconds,
   });
 
@@ -238,6 +253,13 @@ const waitForMake24State = (
   predicate: (state: Make24RoomState) => boolean = () => true,
   timeoutMs = 3000,
 ) => waitForState<Make24RoomState>(client, predicate, timeoutMs);
+
+/** And for Pairs. */
+const waitForPairsState = (
+  client: ClientSocket,
+  predicate: (state: PairsRoomState) => boolean = () => true,
+  timeoutMs = 3000,
+) => waitForState<PairsRoomState>(client, predicate, timeoutMs);
 
 /** Resolves with the next chat message that satisfies `predicate`. */
 const waitForChat = async (
@@ -374,6 +396,23 @@ const createMake24Room = async (
     maxPlayers: 4,
     password: '',
     settings: { hands: options.hands ?? 5 },
+  });
+  if (!answer.ok) throw new Error(`room:create refused: ${answer.error.type}`);
+  return answer.roomId;
+};
+
+/** Creates a Pairs room, with its creator seated, and returns its id. */
+const createPairsRoom = async (
+  client: ClientSocket,
+  options: { username?: string; board?: PairsBoard; maxPlayers?: number } = {},
+): Promise<string> => {
+  const answer = await client.timeout(3000).emitWithAck('room:create', {
+    gameType: 'pairs',
+    roomName: 'Memory lane',
+    username: options.username ?? 'Owner',
+    maxPlayers: options.maxPlayers ?? 4,
+    password: '',
+    settings: { board: options.board ?? 'Small' },
   });
   if (!answer.ok) throw new Error(`room:create refused: ${answer.error.type}`);
   return answer.roomId;
@@ -522,6 +561,14 @@ const playToFirstHand = async (harness: TestServer, hands = 5) => {
   return { roomId, alice, bob, first };
 };
 
+/**
+ * The server's own Pairs room. Tests read the deck through it on purpose:
+ * knowing where each symbol lies is the only way to play a pair or a miss
+ * deliberately, and it is exactly what a client is never sent.
+ */
+const pairsRoom = (harness: TestServer, roomId: string): Room<PairsState> =>
+  harness.server.rooms[roomId] as Room<PairsState>;
+
 /** Seats two players in a Minesweeper room and opens the first round. */
 const playToFirstRound = async (harness: TestServer) => {
   const alice = await harness.connect();
@@ -546,12 +593,14 @@ export {
   SLOW_DRAWING,
   FAST_MINESWEEPER,
   FAST_MAKE24,
+  FAST_PAIRS,
   startTestServer,
   waitFor,
   waitForState,
   waitForDrawState,
   waitForMineState,
   waitForMake24State,
+  waitForPairsState,
   waitForChat,
   collect,
   collectChat,
@@ -561,6 +610,7 @@ export {
   createRoom,
   createMinesweeperRoom,
   createMake24Room,
+  createPairsRoom,
   joinRoom,
   startGame,
   syncRoom,
@@ -572,5 +622,6 @@ export {
   playToFirstRound,
   make24Room,
   playToFirstHand,
+  pairsRoom,
 };
 export type { TestServer, TestClient, ClientSocket };

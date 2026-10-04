@@ -30,7 +30,7 @@ const username = trimmedString(USERNAME_MAX);
 // here would substitute '' on failure, quietly creating an *unlocked* room from
 // a request whose password was rejected.
 const password = z.string().max(PASSWORD_MAX).optional().default('');
-const gameType = z.enum(['draw-and-guess', 'minesweeper', 'make-24']);
+const gameType = z.enum(['draw-and-guess', 'minesweeper', 'make-24', 'pairs']);
 
 /**
  * The generic half of a create request. `settings` is deliberately unchecked

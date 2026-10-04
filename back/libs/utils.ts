@@ -66,21 +66,30 @@ const resetPoints = (
   );
 };
 
+/** "1 point", "6 pairs". */
+const countOf = (count: number, unit: string): string =>
+  `${count} ${count === 1 ? unit : `${unit}s`}`;
+
 /**
  * The chat line a finished game ends on, from its standings, best first:
- * everyone who shares the top score shares the win.
+ * everyone who shares the top score shares the win. `unit` is what a game's
+ * points are: points, or the pairs found in Pairs.
  */
-const gameOverMessage = (standings: readonly Standing[]): string => {
+const gameOverMessage = (
+  standings: readonly Standing[],
+  unit = 'point',
+): string => {
   const top = standings[0];
   if (!top) return 'Game has ended!';
   const winners = standings
     .filter((standing) => standing.points === top.points)
     .map((standing) => standing.username);
+  const score = countOf(top.points, unit);
   if (winners.length === 1) {
-    return `Game over: ${top.username} wins with ${top.points} points!`;
+    return `Game over: ${top.username} wins with ${score}!`;
   }
   const names = `${winners.slice(0, -1).join(', ')} and ${winners.at(-1)}`;
-  return `Game over: ${names} tie with ${top.points} points!`;
+  return `Game over: ${names} tie with ${score}!`;
 };
 
 export {

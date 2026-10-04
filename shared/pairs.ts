@@ -26,7 +26,7 @@ export const PAIRS_BOARDS: Readonly<Record<PairsBoard, PairsBoardSize>> = {
 
 export const BOARDS = Object.keys(PAIRS_BOARDS) as readonly PairsBoard[];
 
-function shuffle<T>(items: readonly T[], random: () => number): T[] {
+export function shuffle<T>(items: readonly T[], random: () => number): T[] {
   const shuffled = [...items];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(random() * (i + 1));

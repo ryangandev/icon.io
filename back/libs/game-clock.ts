@@ -73,6 +73,19 @@ const make24DurationsInSeconds: Make24DurationsInSeconds = {
   reveal: readSecondsFromEnv('MAKE24_REVEAL_SECONDS', 5),
 };
 
+/** Pairs' clock: one player's turn, and a miss left up for everybody. */
+interface PairsDurationsInSeconds {
+  /** How long a player has to turn over two cards. */
+  turn: number;
+  /** How long two cards that did not match stay up before they turn back. */
+  show: number;
+}
+
+const pairsDurationsInSeconds: PairsDurationsInSeconds = {
+  turn: readSecondsFromEnv('PAIRS_TURN_SECONDS', 10),
+  show: readSecondsFromEnv('PAIRS_SHOW_SECONDS', 2),
+};
+
 /**
  * How long a disconnected player keeps their seat, their score and their place
  * in the round before the room gives up on them.
@@ -91,10 +104,12 @@ export {
   phaseDurationsInSeconds,
   minesweeperDurationsInSeconds,
   make24DurationsInSeconds,
+  pairsDurationsInSeconds,
   reconnectGraceInSeconds,
 };
 export type {
   PhaseDurationsInSeconds,
   MinesweeperDurationsInSeconds,
   Make24DurationsInSeconds,
+  PairsDurationsInSeconds,
 };

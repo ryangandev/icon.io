@@ -97,6 +97,18 @@ describe('gameOverMessage', () => {
     ).toBe('Game over: Alice, Bob and Cat tie with 40 points!');
   });
 
+  it('counts in the game’s own unit, one or many', () => {
+    expect(
+      gameOverMessage([standing('Maya', 6), standing('Leo', 4)], 'pair'),
+    ).toBe('Game over: Maya wins with 6 pairs!');
+    expect(gameOverMessage([standing('Maya', 1)], 'pair')).toBe(
+      'Game over: Maya wins with 1 pair!',
+    );
+    expect(gameOverMessage([standing('Ada', 1)])).toBe(
+      'Game over: Ada wins with 1 point!',
+    );
+  });
+
   it('just ends a game nobody is left in', () => {
     expect(gameOverMessage([])).toBe('Game has ended!');
   });

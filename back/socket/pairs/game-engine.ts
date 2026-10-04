@@ -1,0 +1,266 @@
+import type { PairsSettings } from '../../models/types.js';
+import { RequestError } from '../../models/error.js';
+import type { GameContext, Room } from '../../libs/rooms/types.js';
+import {
+  gameOverMessage,
+  getRoomStatus,
+  resetPoints,
+} from '../../libs/utils.js';
+import {
+  pairsDurationsInSeconds as defaultDurations,
+  type PairsDurationsInSeconds,
+} from '../../libs/game-clock.js';
+import { dealDeck, PAIRS_BOARDS, shuffle } from '../../../shared/pairs.js';
+import { pairsFound, playerAfter, type PairsState } from './state.js';
+
+const MIN_PLAYERS_TO_START = 2;
+
+type PairsRoom = Room<PairsState>;
+
+/**
+ * Owns the turn loop. Unlike Minesweeper or Make 24, a Pairs board belongs to
+ * one player at a time: they turn over two cards, keep the turn while they
+ * find pairs, and pass it on with a miss or when their clock runs out.
+ */
+const createPairsGameEngine = (
+  ctx: GameContext,
+  durations: PairsDurationsInSeconds = defaultDurations,
+) => {
+  /** One per room: either the open turn or a miss on show. */
+  const turnTimers = new Map<string, NodeJS.Timeout>();
+
+  const roomOf = (roomId: string): PairsRoom | undefined =>
+    ctx.rooms.ofType<PairsState>(roomId, 'pairs');
+
+  const clearTurnTimer = (roomId: string) => {
+    const pending = turnTimers.get(roomId);
+    if (pending) {
+      clearTimeout(pending);
+      turnTimers.delete(roomId);
+    }
+  };
+
+  const schedule = (
+    roomId: string,
+    durationInSeconds: number,
+    onDue: () => void,
+  ) => {
+    clearTurnTimer(roomId);
+    turnTimers.set(
+      roomId,
+      setTimeout(() => {
+        turnTimers.delete(roomId);
+        // The room may have been emptied and deleted while we waited.
+        if (roomOf(roomId)) onDue();
+      }, durationInSeconds * 1000),
+    );
+  };
+
+  const startGame = (room: PairsRoom, playerId: string) => {
+    if (room.owner.playerId !== playerId) {
+      throw new RequestError(
+        'notRoomOwner',
+        'Only the room owner can start the game.',
+      );
+    }
+    if (room.isGameStarted) {
+      throw new RequestError(
+        'gameAlreadyStarted',
+        'The game has already started.',
+      );
+    }
+    if (room.currentPlayerCount < MIN_PLAYERS_TO_START) {
+      throw new RequestError(
+        'notEnoughPlayers',
+        `At least ${MIN_PLAYERS_TO_START} players are required to start.`,
+      );
+    }
+
+    const game = room.game;
+    game.deck = dealDeck(game.board, Math.random);
+    game.matched = game.deck.map(() => false);
+    game.up = [];
+    game.order = shuffle(Object.keys(room.playerList), Math.random);
+    game.turnPlayerId = null;
+    game.lastGame = null;
+    room.playerList = resetPoints(room.playerList);
+    room.isGameStarted = true;
+    room.status = getRoomStatus(
+      room.currentPlayerCount,
+      room.maxPlayers,
+      room.isGameStarted,
+    );
+
+    console.log(`Pairs started in room ${room.roomId}, ${game.board} board.`);
+
+    ctx.rooms.announce(
+      room.roomId,
+      'system',
+      `Game has started! ${PAIRS_BOARDS[game.board].pairs} pairs to find, ${durations.turn} seconds a turn.`,
+    );
+    ctx.rooms.emitLobby('pairs');
+
+    // The first player in the order, or the first after them who is here.
+    const [first] = game.order;
+    beginTurn(
+      room,
+      room.playerList[first].isConnected ? first : playerAfter(room, first)!,
+    );
+  };
+
+  /** `playerId` turns over two cards, with a fresh clock. */
+  const beginTurn = (room: PairsRoom, playerId: string) => {
+    const game = room.game;
+    game.phase = 'flipping';
+    game.turnPlayerId = playerId;
+    game.up = [];
+    room.phaseEndsAt = Date.now() + durations.turn * 1000;
+
+    ctx.rooms.emitState(room);
+
+    schedule(room.roomId, durations.turn, () => passTurn(room));
+  };
+
+  /** The turn goes to the next player, and any card still up turns back. */
+  const passTurn = (room: PairsRoom) => {
+    if (!room.isGameStarted) return;
+    const next = playerAfter(room, room.game.turnPlayerId);
+    if (next === null) return;
+    beginTurn(room, next);
+  };
+
+  /**
+   * The player whose turn it is turns over the card at `index`. Only during
+   * `flipping`, two cards a turn, and never one already up or matched.
+   */
+  const flip = (roomId: string, playerId: string, index: number) => {
+    const room = roomOf(roomId);
+    if (!room?.isGameStarted) return;
+
+    const game = room.game;
+    if (game.phase !== 'flipping' || game.turnPlayerId !== playerId) return;
+    const player = room.playerList[playerId];
+    if (!player) return;
+    if (index >= game.deck.length) return;
+    if (game.matched[index] || game.up.includes(index)) return;
+
+    game.up.push(index);
+    if (game.up.length === 1) {
+      ctx.rooms.emitState(room);
+      return;
+    }
+
+    const [first, second] = game.up;
+    if (game.deck[first] !== game.deck[second]) {
+      // A miss stays up for everybody to remember, then the turn passes.
+      game.phase = 'showing';
+      room.phaseEndsAt = Date.now() + durations.show * 1000;
+      ctx.rooms.emitState(room);
+      schedule(room.roomId, durations.show, () => passTurn(room));
+      return;
+    }
+
+    game.matched[first] = true;
+    game.matched[second] = true;
+    game.up = [];
+    player.points += 1;
+    ctx.rooms.announce(
+      room.roomId,
+      'success',
+      `${player.username} found a pair! (+1)`,
+    );
+
+    if (game.matched.every(Boolean)) {
+      endGame(room, { endedEarly: false });
+      return;
+    }
+    // A pair is the finder's, and so is the next turn.
+    beginTurn(room, playerId);
+  };
+
+  /** The last summary stays, for the results screen and a refresh. */
+  const endGame = (
+    room: PairsRoom,
+    { endedEarly }: { endedEarly: boolean },
+  ) => {
+    clearTurnTimer(room.roomId);
+    const game = room.game;
+
+    const standings = Object.entries(room.playerList)
+      .map(([playerId, player]) => ({
+        playerId,
+        username: player.username,
+        points: player.points,
+      }))
+      .toSorted((a, b) => b.points - a.points);
+
+    game.lastGame = {
+      endedEarly,
+      standings,
+      board: game.board,
+      pairs: pairsFound(game),
+    };
+
+    room.isGameStarted = false;
+    game.phase = 'waiting';
+    game.deck = [];
+    game.matched = [];
+    game.up = [];
+    game.order = [];
+    game.turnPlayerId = null;
+    room.phaseEndsAt = 0;
+    room.status = getRoomStatus(
+      room.currentPlayerCount,
+      room.maxPlayers,
+      room.isGameStarted,
+    );
+
+    ctx.rooms.emitState(room);
+    ctx.rooms.announce(
+      room.roomId,
+      'system',
+      gameOverMessage(standings, 'pair'),
+    );
+    ctx.rooms.emitLobby('pairs');
+  };
+
+  /** Called after the seat is already gone from `playerList`. */
+  const handlePlayerDeparture = (room: PairsRoom, playerId: string) => {
+    if (!room.isGameStarted) return;
+
+    if (room.currentPlayerCount < MIN_PLAYERS_TO_START) {
+      ctx.rooms.announce(
+        room.roomId,
+        'alert',
+        'Not enough players left to continue. Game has ended.',
+      );
+      endGame(room, { endedEarly: true });
+      return;
+    }
+
+    // Nobody is left to finish their turn. A miss of theirs on show passes
+    // the turn on by itself when it turns back.
+    if (room.game.turnPlayerId === playerId && room.game.phase === 'flipping') {
+      passTurn(room);
+    }
+  };
+
+  const disposeRoom = (roomId: string) => clearTurnTimer(roomId);
+
+  const dispose = () => {
+    for (const roomId of new Set(turnTimers.keys())) clearTurnTimer(roomId);
+  };
+
+  return {
+    startGame,
+    flip,
+    handlePlayerDeparture,
+    disposeRoom,
+    dispose,
+  };
+};
+
+type PairsGameEngine = ReturnType<typeof createPairsGameEngine>;
+
+export { createPairsGameEngine, MIN_PLAYERS_TO_START };
+export type { PairsGameEngine, PairsRoom, PairsSettings };

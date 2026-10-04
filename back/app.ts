@@ -7,6 +7,7 @@ import path from 'node:path';
 import type {
   Make24DurationsInSeconds,
   MinesweeperDurationsInSeconds,
+  PairsDurationsInSeconds,
   PhaseDurationsInSeconds,
 } from './libs/game-clock.js';
 import { createRoomRegistry } from './libs/rooms/registry.js';
@@ -18,6 +19,7 @@ import type { Room } from './libs/rooms/types.js';
 import { createDrawAndGuessModule } from './socket/draw-and-guess/index.js';
 import { createMinesweeperModule } from './socket/minesweeper/index.js';
 import { createMake24Module } from './socket/make-24/index.js';
+import { createPairsModule } from './socket/pairs/index.js';
 import { clientDepartureOnDisconnectHandler } from './socket/client-disconnect-handler.js';
 import { playerSessionHandler } from './socket/player-session-handler.js';
 import {
@@ -46,6 +48,8 @@ interface CreateIconIoServerOptions {
   minesweeperDurations?: MinesweeperDurationsInSeconds;
   /** Make 24's hand and its results. Shortened by tests. */
   make24Durations?: Make24DurationsInSeconds;
+  /** A Pairs turn and a miss on show. Shortened by tests. */
+  pairsDurations?: PairsDurationsInSeconds;
   /** How long a dropped player keeps their seat. Shortened by tests. */
   graceInSeconds?: number;
 }
@@ -81,6 +85,7 @@ const createIconIoServer = (
     phaseDurations,
     minesweeperDurations,
     make24Durations,
+    pairsDurations,
     graceInSeconds,
   } = options;
 
@@ -116,6 +121,7 @@ const createIconIoServer = (
     createMinesweeperModule(registry.context, minesweeperDurations),
   );
   registry.register(createMake24Module(registry.context, make24Durations));
+  registry.register(createPairsModule(registry.context, pairsDurations));
 
   const membership = createRoomMembership(
     io,
