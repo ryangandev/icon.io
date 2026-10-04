@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { io as createClient } from 'socket.io-client';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { DrawAndGuessRoomState } from '../models/types.js';
 import {
@@ -97,6 +98,49 @@ describe('player identity', () => {
 
     expect(client.connected).toBe(true);
     expect(client.playerId).toMatch(/^[0-9a-f-]{36}$/);
+  });
+
+  it('identifies a connection before reading anything it buffered offline', async () => {
+    // A client sends what it was asked to while offline the moment it
+    // connects, ahead of its own connect handler. Identity must already be
+    // settled by then, or a quick first click is refused.
+    const client = createClient(harness.url, {
+      transports: ['websocket'],
+      forceNew: true,
+      autoConnect: false,
+      auth: { identity: null },
+    });
+    const answer = client.timeout(2000).emitWithAck('room:create', {
+      gameType: 'minesweeper',
+      roomName: 'Early',
+      username: 'Ryan',
+      maxPlayers: 2,
+      password: '',
+      settings: { difficulty: 'Small' },
+    });
+    client.connect();
+
+    try {
+      await expect(answer).resolves.toMatchObject({ ok: true });
+    } finally {
+      client.close();
+    }
+  });
+
+  it('ignores handshake auth that is not a claim at all', async () => {
+    const client = createClient(harness.url, {
+      transports: ['websocket'],
+      forceNew: true,
+      auth: { identity: 'me, honestly' },
+    });
+    try {
+      const session = await new Promise<{ playerId: string }>((resolve) =>
+        client.once('session:ready', resolve),
+      );
+      expect(session.playerId).toMatch(/^[0-9a-f-]{36}$/);
+    } finally {
+      client.close();
+    }
   });
 
   it('forgets an identity once nobody could still be using it', async () => {

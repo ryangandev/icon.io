@@ -14,6 +14,7 @@ import type {
   DrawAndGuessRoomState,
   DrawAndGuessState,
   GameType,
+  HandshakeAuth,
   MinesweeperDifficulty,
   MinesweeperRoomState,
   PlayerIdentity,
@@ -106,9 +107,11 @@ const startTestServer = async (
 
   const connect = (identity?: PlayerIdentity): Promise<TestClient> =>
     new Promise((resolve, reject) => {
+      const auth: HandshakeAuth = { identity: identity ?? null };
       const client = createClient(url, {
         transports: ['websocket'],
         forceNew: true,
+        auth,
       }) as TestClient;
       clients.push(client);
       client.state = undefined;
@@ -117,15 +120,13 @@ const startTestServer = async (
       });
       client.on('connect_error', reject);
 
-      client.on('connect', () => {
-        // Every real client identifies before doing anything else; the server
-        // reads the player id off the connection, never off a payload.
-        client.emit('session:identify', identity ?? null, (session) => {
-          client.playerId = session.playerId;
-          client.token = session.token;
-          client.reconnectGraceMs = session.reconnectGraceMs;
-          resolve(client);
-        });
+      // Every real client waits for its identity before doing anything else;
+      // the server reads the player id off the connection, never off a payload.
+      client.once('session:ready', (session) => {
+        client.playerId = session.playerId;
+        client.token = session.token;
+        client.reconnectGraceMs = session.reconnectGraceMs;
+        resolve(client);
       });
     });
 

@@ -1,6 +1,7 @@
 import type {
   ClientToServerEvents,
   ServerToClientEvents,
+  SessionInfo,
 } from '../../../shared/wire-types';
 import type { ZumpoSocket } from '../net/socket';
 
@@ -36,6 +37,12 @@ type Responder = (...args: never[]) => unknown;
 export class FakeSocket {
   connected = false;
   active = false;
+  /** Who the server says each connection is, once the handshake is done. */
+  session: SessionInfo = {
+    playerId: 'p1',
+    token: 't1',
+    reconnectGraceMs: 30_000,
+  };
   /** Every plain emit the app made, in order. */
   readonly sent: { event: ClientEvent; args: unknown[] }[] = [];
   /** Every request the app made, answered or not. */
@@ -106,11 +113,12 @@ export class FakeSocket {
     this.responders.set(event, respond as Responder);
   }
 
-  /** The handshake completes. */
+  /** The handshake completes, and the server says who the connection is. */
   open(): void {
     this.connected = true;
     this.active = true;
     this.fire('connect');
+    this.fire('session:ready', this.session);
   }
 
   /** The connection drops, and the client starts retrying. */

@@ -85,6 +85,7 @@ export type {
   PlayerInfo,
   OwnerInfo,
   PlayerIdentity,
+  HandshakeAuth,
   SessionInfo,
   RoomCreateRequest,
   Coordinate,

@@ -56,7 +56,6 @@ const BUCKET_FOR_EVENT: Record<ClientToServerEvent, BucketName> = {
   // Talking and guessing are one event, so they share one budget.
   'chat:send': 'chat',
 
-  'session:identify': 'room',
   'lobby:subscribe': 'room',
   'lobby:unsubscribe': 'room',
   'room:create': 'room',

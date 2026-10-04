@@ -134,10 +134,8 @@ const createIconIoServer = (
         return;
       }
 
-      // The identity handshake is answered with an identity or not at all, so
-      // a throttled one simply goes unanswered.
       const { ack } = splitAck(rawArgs);
-      if (ack && eventName !== 'session:identify') {
+      if (ack) {
         ack(invalidRequest('Too many requests. Try again in a moment.'));
       }
 
@@ -151,8 +149,8 @@ const createIconIoServer = (
       }
     });
 
-    // Identity first: every handler below reads the player id off the
-    // connection, so nothing can happen until the client has identified.
+    // Identity first, from the handshake: every handler below reads the player
+    // id off the connection, and this runs before any event from it is read.
     playerSessionHandler(
       socket,
       sessions,

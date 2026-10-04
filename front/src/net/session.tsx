@@ -8,8 +8,9 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { createSocket, REQUEST_TIMEOUT_MS, type ZumpoSocket } from './socket';
-import { readIdentity, readName, writeIdentity, writeName } from './storage';
+import type { SessionInfo } from '../../../shared/wire-types';
+import { createSocket, type ZumpoSocket } from './socket';
+import { readName, writeIdentity, writeName } from './storage';
 
 /**
  * Where the connection stands.
@@ -32,7 +33,7 @@ export interface Session {
   /** How long the server keeps a dropped player's seat. */
   reconnectGraceMs: number;
   /**
-   * Counts identifications. Anything kept on the server for this connection,
+   * Counts connections the server has identified. Anything kept on the server for this connection,
    * like a lobby subscription or a room's listeners, is set up again when it
    * changes.
    */
@@ -66,22 +67,15 @@ export function SessionProvider({
   useEffect(() => {
     let everOnline = false;
 
-    const identify = async () => {
-      try {
-        const session = await socket
-          .timeout(REQUEST_TIMEOUT_MS)
-          .emitWithAck('session:identify', readIdentity());
-        writeIdentity(session);
-        everOnline = true;
-        setPlayerId(session.playerId);
-        setReconnectGraceMs(session.reconnectGraceMs);
-        setConnectionId((id) => id + 1);
-        setStatus('online');
-      } catch {
-        // No answer: the connection is unusable, so let the reconnection
-        // logic start over rather than sit connected and unidentified.
-        socket.disconnect().connect();
-      }
+    // The server settles who this connection is from the handshake, and says
+    // so before anything else.
+    const onReady = (session: SessionInfo) => {
+      writeIdentity(session);
+      everOnline = true;
+      setPlayerId(session.playerId);
+      setReconnectGraceMs(session.reconnectGraceMs);
+      setConnectionId((id) => id + 1);
+      setStatus('online');
     };
 
     const onDisconnect = (reason: string) => {
@@ -99,13 +93,13 @@ export function SessionProvider({
 
     const onReconnectFailed = () => setStatus('failed');
 
-    socket.on('connect', identify);
+    socket.on('session:ready', onReady);
     socket.on('disconnect', onDisconnect);
     socket.on('connect_error', onConnectError);
     socket.io.on('reconnect_failed', onReconnectFailed);
 
     return () => {
-      socket.off('connect', identify);
+      socket.off('session:ready', onReady);
       socket.off('disconnect', onDisconnect);
       socket.off('connect_error', onConnectError);
       socket.io.off('reconnect_failed', onReconnectFailed);

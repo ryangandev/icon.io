@@ -57,6 +57,11 @@ const identityClaim = z.object({
   token: z.string().regex(/^[0-9a-f]{64}$/),
 });
 
+/** The handshake's `auth`; any identity that is not exactly a claim is none. */
+const handshakeAuth = z.object({
+  identity: identityClaim.nullable().catch(null),
+});
+
 const gameTypeOnly = z.tuple([gameType]);
 const joinRoomRequest = z.tuple([roomId, username, password]);
 const roomIdOnly = z.tuple([roomId]);
@@ -98,6 +103,7 @@ export {
   gameType,
   // The room layer's own events.
   identityClaim,
+  handshakeAuth,
   roomCreateRequest,
   gameTypeOnly,
   joinRoomRequest,

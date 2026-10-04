@@ -115,7 +115,8 @@ The server decides everything a player could gain by lying about.
 ## Identity and reconnection
 
 Rooms are keyed by a server-issued player id, not `socket.id`, which changes on every reload.
-A client's first event on every connection is `session:identify`, with the identity it holds or `null`, and the acknowledgement is its `SessionInfo`: the identity to keep (new, or the one it claimed if that checked out) and `reconnectGraceMs`, how long a dropped seat is held.
+A client presents the identity it holds, or `null`, in the Socket.IO handshake (`auth`) of every connection, and the server's first event is `session:ready` with its `SessionInfo`: the identity to keep (new, or the one it claimed if that checked out) and `reconnectGraceMs`, how long a dropped seat is held.
+Identity is part of the handshake rather than a first event because the client flushes whatever it sent while offline the moment it connects, before its own `connect` handler runs; as an event, a quick first click reached the server before the identity did and was refused.
 Each id is paired with a secret token only its owner receives; without it any player could take any seat, because every id in a room is broadcast to everyone in it.
 The client keeps both in `sessionStorage`: per tab, surviving a reload, which is exactly the lifetime a seat should have.
 There are no accounts: this is a way to be the same player across a refresh, not the same person across a visit.
@@ -191,8 +192,8 @@ The room URL carries the game so that a page which cannot reach the room (a pass
 [`net/`](../front/src/net/) is the only code that touches the socket, typed on the wire contract's two event maps:
 
 - **`session.tsx`** owns the one socket.
-  The first page that needs the server connects it; every connection starts with `session:identify`, and the identity and the chosen name are kept in `sessionStorage` (see [identity](#identity-and-reconnection)).
-  Its status (`connecting`, `online`, `reconnecting`, `failed`) is what pages show, and `connectionId` changes on every identification, so anything the server keeps per connection is set up again.
+  The first page that needs the server connects it; every handshake presents the stored identity, the session goes online at `session:ready`, and the identity and the chosen name are kept in `sessionStorage` (see [identity](#identity-and-reconnection)).
+  Its status (`connecting`, `online`, `reconnecting`, `failed`) is what pages show, and `connectionId` changes on every `session:ready`, so anything the server keeps per connection is set up again.
 - **`use-lobby.ts`** subscribes to one game's rooms while online.
 - **`use-room.ts`** takes a seat: `room:sync` first, then `room:join` when the server says this player has no seat, then the password page if the room has one.
   It keeps the latest snapshot and when it arrived, the chat, and the drawing as a `CanvasStream`, which lives outside React because a stroke grows dozens of times a second.
@@ -257,6 +258,7 @@ Two serious bugs were found only by playing in a browser (a redundant hint, and 
 - **Snapshots are coalesced.** `emitState` sends at the end of the synchronous run, so a test waits for a snapshot that satisfies a condition rather than for the next one.
 - **`socket.off(event)` without a handler removes everyone's listeners.**
   The Gamehub once cleaned up with `socket.off('connect')`, which also removed the provider's identity handshake: the socket connected, never identified, and every create, join and start was silently dropped until a hard reload.
+  Today the same mistake on `session:ready` would leave the session connecting forever.
   Always pass the handler.
 - **Build order:** see [configuration](#configuration).
 - **Port-binding tests in sandboxes:** see [testing](#testing).

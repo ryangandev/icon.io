@@ -61,7 +61,21 @@ interface PlayerIdentity {
   token: string;
 }
 
-/** The answer to `session:identify`. */
+/**
+ * What a client presents in the Socket.IO handshake (`auth`), on every
+ * connection: nothing, or the identity it was issued before. A claim that does
+ * not check out simply gets a new identity.
+ *
+ * Identity travels in the handshake rather than as an event so that the server
+ * knows who a connection is before it reads a single event from it. The client
+ * buffers what it sends while offline and flushes it the moment it connects,
+ * ahead of anything its own `connect` handler could say first.
+ */
+interface HandshakeAuth {
+  identity: PlayerIdentity | null;
+}
+
+/** Sent as `session:ready` once the handshake has settled who a connection is. */
 interface SessionInfo extends PlayerIdentity {
   /** How long a dropped connection keeps its seats, for the reconnecting notice. */
   reconnectGraceMs: number;
@@ -330,16 +344,6 @@ interface CanvasStroke {
 type Ack<T> = (answer: T) => void;
 
 interface ClientToServerEvents {
-  /**
-   * The first thing a client says on every connection: nothing, or the
-   * identity it was issued before. A claim that does not check out simply
-   * gets a new identity.
-   */
-  'session:identify': (
-    claim: PlayerIdentity | null,
-    ack: Ack<SessionInfo>,
-  ) => void;
-
   'lobby:subscribe': (gameType: GameType) => void;
   'lobby:unsubscribe': (gameType: GameType) => void;
 
@@ -388,6 +392,12 @@ interface ClientToServerEvents {
 }
 
 interface ServerToClientEvents {
+  /**
+   * The first thing the server says on every connection: who this connection
+   * is, which the client stores for the next one.
+   */
+  'session:ready': (session: SessionInfo) => void;
+
   'lobby:rooms': (gameType: GameType, rooms: AnyLobbyRoomInfo[]) => void;
 
   'room:state': (state: AnyRoomState) => void;
@@ -424,6 +434,7 @@ export type {
   PlayerInfo,
   OwnerInfo,
   PlayerIdentity,
+  HandshakeAuth,
   SessionInfo,
   ErrorType,
   RoomError,

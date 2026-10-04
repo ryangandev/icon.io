@@ -2,6 +2,7 @@ import { act, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { FakeSocket } from '../tests/fake-socket';
 import { SessionProvider, useConnectedSession, useSession } from './session';
+import { createSocket } from './socket';
 
 function Status() {
   const { status, playerId } = useConnectedSession();
@@ -16,11 +17,8 @@ function Idle() {
   return <p>{useSession().status}</p>;
 }
 
-const identity = { playerId: 'p1', token: 't1', reconnectGraceMs: 30_000 };
-
 function setup(children = <Status />) {
   const fake = new FakeSocket();
-  fake.answer('session:identify', () => identity);
   render(
     <SessionProvider socket={fake.asSocket()}>{children}</SessionProvider>,
   );
@@ -36,31 +34,35 @@ describe('the session', () => {
     expect(fake.active).toBe(false);
   });
 
-  it('identifies on connecting and keeps the identity for this tab', async () => {
+  it('goes online once the server says who it is, and keeps that for this tab', async () => {
     const fake = setup();
     expect(screen.getByText('connecting')).toBeInTheDocument();
 
     await act(async () => fake.open());
 
     expect(screen.getByText('online p1')).toBeInTheDocument();
-    expect(fake.requests[0]).toEqual({
-      event: 'session:identify',
-      args: [null],
-    });
     expect(JSON.parse(sessionStorage.getItem('zumpo:identity')!)).toEqual({
       playerId: 'p1',
       token: 't1',
     });
   });
 
-  it('claims the stored identity again after a reload', async () => {
+  it('presents the stored identity in every handshake', () => {
+    const socket = createSocket();
+    const auth = socket.auth as (send: (data: object) => void) => void;
+    const presented: object[] = [];
+
+    auth((data) => presented.push(data));
     sessionStorage.setItem(
       'zumpo:identity',
       JSON.stringify({ playerId: 'p1', token: 't1' }),
     );
-    const fake = setup();
-    await act(async () => fake.open());
-    expect(fake.requests[0].args).toEqual([{ playerId: 'p1', token: 't1' }]);
+    auth((data) => presented.push(data));
+
+    expect(presented).toEqual([
+      { identity: null },
+      { identity: { playerId: 'p1', token: 't1' } },
+    ]);
   });
 
   it('says it is reconnecting when an established connection drops', async () => {
@@ -72,7 +74,6 @@ describe('the session', () => {
 
     await act(async () => fake.open());
     expect(screen.getByText('online p1')).toBeInTheDocument();
-    expect(fake.requests).toHaveLength(2);
   });
 
   it('fails once retries run out, and starts over on request', async () => {

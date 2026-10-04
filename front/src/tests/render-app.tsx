@@ -18,11 +18,7 @@ export async function renderApp(
 ) {
   sessionStorage.clear();
   if (name) sessionStorage.setItem('zumpo:name', name);
-  fake.answer('session:identify', () => ({
-    playerId: ME,
-    token: 't1',
-    reconnectGraceMs: 30_000,
-  }));
+  fake.session = { playerId: ME, token: 't1', reconnectGraceMs: 30_000 };
   const router = createMemoryRouter(routes, { initialEntries: [path] });
   const view = render(
     <SessionProvider socket={fake.asSocket()}>

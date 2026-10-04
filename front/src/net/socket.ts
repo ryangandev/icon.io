@@ -1,8 +1,10 @@
 import { io, type Socket } from 'socket.io-client';
 import type {
   ClientToServerEvents,
+  HandshakeAuth,
   ServerToClientEvents,
 } from '../../../shared/wire-types';
+import { readIdentity } from './storage';
 
 /** The client end of the contract in `shared/wire-types.d.ts`. */
 export type ZumpoSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
@@ -22,10 +24,15 @@ function serverUrl(): string | undefined {
   return import.meta.env.VITE_SOCKET_URL ?? 'http://localhost:3000';
 }
 
-/** A socket that waits for `connect()`, so the session decides when to start. */
+/**
+ * A socket that waits for `connect()`, so the session decides when to start.
+ * Every connection, the first and each reconnection, presents the identity
+ * stored by then.
+ */
 export function createSocket(): ZumpoSocket {
   return io(serverUrl(), {
     autoConnect: false,
+    auth: (send) => send({ identity: readIdentity() } satisfies HandshakeAuth),
     reconnectionAttempts: RECONNECTION_ATTEMPTS,
     reconnectionDelay: 1000,
     timeout: REQUEST_TIMEOUT_MS,
