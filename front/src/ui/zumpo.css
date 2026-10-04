@@ -1,0 +1,39 @@
+/* The Zumpo design system's global layer: fonts, tokens, and the base styles
+   of the .zumpo scope, which a Zumpo page root and every portal (menus,
+   dialogs) carry. Components bring their own CSS modules. */
+
+@import '@fontsource/nunito-sans/900.css';
+@import '@fontsource/dm-sans/400.css';
+@import '@fontsource/dm-sans/500.css';
+@import '@fontsource/dm-sans/700.css';
+@import './generated/tokens.css';
+
+.zumpo {
+  color: var(--zumpo-ink);
+  font: var(--zumpo-text-body);
+  /* Figma renders text with greyscale antialiasing; match it. */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+.zumpo *,
+.zumpo *::before,
+.zumpo *::after {
+  box-sizing: border-box;
+}
+
+.zumpo :where(h1, h2, h3, h4, p, ul, ol, figure) {
+  margin: 0;
+}
+
+.zumpo-page {
+  min-height: 100dvh;
+  background: var(--zumpo-cream);
+}
+
+.zumpo :where(button, input, select, textarea) {
+  font: inherit;
+  color: inherit;
+}
