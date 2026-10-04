@@ -1,4 +1,5 @@
 import { act, render, screen } from '@testing-library/react';
+import { StrictMode } from 'react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { FakeSocket } from '../tests/fake-socket';
 import { SessionProvider, useConnectedSession, useSession } from './session';
@@ -27,6 +28,19 @@ function setup(children = <Status />) {
 
 describe('the session', () => {
   beforeEach(() => sessionStorage.clear());
+
+  it('still connects after a development double mount', () => {
+    const fake = new FakeSocket();
+    render(
+      <StrictMode>
+        <SessionProvider socket={fake.asSocket()}>
+          <Status />
+        </SessionProvider>
+      </StrictMode>,
+    );
+    expect(fake.active).toBe(true);
+    expect(screen.getByText('connecting')).toBeInTheDocument();
+  });
 
   it('stays idle until a page needs the server', () => {
     const fake = setup(<Idle />);

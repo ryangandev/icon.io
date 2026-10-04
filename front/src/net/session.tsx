@@ -106,11 +106,20 @@ export function SessionProvider({
     };
   }, [socket]);
 
-  useEffect(() => () => void socket.disconnect(), [socket]);
-
   // Read by `connect`, which must stay stable for the effects that call it.
   const statusRef = useRef(status);
   statusRef.current = status;
+
+  // Unmounted, the session lets the connection go and starts from idle, so a
+  // remount (React's development double mount, for one) connects again.
+  useEffect(
+    () => () => {
+      socket.disconnect();
+      statusRef.current = 'idle';
+      setStatus('idle');
+    },
+    [socket],
+  );
 
   const connect = useCallback(() => {
     const current = statusRef.current;
