@@ -33,15 +33,14 @@ Decided by Ryan, and the frame for every design and implementation choice:
 
 ## Next
 
-Two new games and solo play, decided by Ryan on 2026-10-04 (see [the proposal](../design/reviews/2026-10-04-new-games-proposal.md)).
-The Figma file has every screen (sections 03, 05 and 06, and the hub in 01 and 04).
-Claude is building them on `rework`, one commit per step.
-Done: every game card offers Play solo where the game has it, Minesweeper solo is playable (`/games/minesweeper/solo`), and so is Make 24, on your own (`/games/make-24/solo`) and in rooms.
-Still to do, in this order:
+Two new games and solo play, decided by Ryan on 2026-10-04 (see [the proposal](../design/reviews/2026-10-04-new-games-proposal.md)), are built on `rework`.
+Minesweeper, Make 24 and Pairs each play on your own with no name asked (`/games/<game>/solo`), Make 24 and Pairs play in rooms too, and every game card offers Play solo where the game has it.
+`npm run e2e` plays each new flow, and `npm run design:compare` captures every one of their Figma screens with no layout difference.
+What is left needs the Figma file, which Claude could not reach this time:
 
-1. Pairs: rules, the cards, solo play, then rooms.
-2. End-to-end tests and the design comparison for every new screen, then check each flow with two players in a browser.
-3. In Figma, T09's table panel spaces its children 24 apart where T08's, the same panel, uses 20; the code uses 20 for both.
+1. Run `npm run design:export`, so the export carries the Ring and Half symbols' arcs, then delete `ARCS_BEFORE_EXPORT` in `tools/design-tokens/generate.mjs`, which stands in with arcs measured from the previews.
+2. In T09, space the table panel's children 20 apart, as T08 and the code do; T09 uses 24.
+3. Redraw P13 and P14 with all four games, as P04 already has them.
 
 ## Open decisions
 
