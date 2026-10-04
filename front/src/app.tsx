@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router';
 import Layout from './layout';
 import Landing from './pages/landing-page';
@@ -11,11 +12,26 @@ import { SocketProvider } from './providers/socket-provider';
 import ValidateAuth from './components/validate-auth';
 import RequireSocket from './components/require-socket';
 
+// The design system gallery, for development only: the build drops it.
+const DesignGallery = import.meta.env.DEV
+  ? lazy(() => import('./ui/gallery/gallery'))
+  : null;
+
 export default function App() {
   return (
     <SocketProvider>
       <Router>
         <Routes>
+          {DesignGallery && (
+            <Route
+              path="/design"
+              element={
+                <Suspense>
+                  <DesignGallery />
+                </Suspense>
+              }
+            />
+          )}
           <Route path="/" element={<Layout />}>
             {/* Page Components */}
             <Route index element={<Landing />} />

@@ -1,0 +1,136 @@
+.page {
+  padding: 48px 64px 96px;
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 720px;
+  margin-bottom: 48px;
+}
+
+.title {
+  font: var(--zumpo-text-title);
+}
+
+.lede {
+  color: var(--zumpo-muted);
+}
+
+.summary {
+  font: var(--zumpo-text-label);
+}
+
+.family {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 40px 0;
+  border-top: 1px solid var(--zumpo-line);
+}
+
+.familyHead {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.familyName {
+  font: var(--zumpo-text-heading);
+}
+
+.familyNote {
+  max-width: 720px;
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-small);
+}
+
+.specimens {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  align-items: flex-start;
+  gap: 24px 32px;
+}
+
+.reference {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+}
+
+/* The export's previews are 2x: shown at 1x they compare one to one. */
+.reference img {
+  zoom: 0.5;
+  max-width: 200%;
+  height: auto;
+  border: 1px dashed var(--zumpo-line);
+  border-radius: 8px;
+}
+
+.specimen {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+}
+
+.slot {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* A component that fills its container in Figma fills the slot here. */
+.slot[data-fill] {
+  align-items: stretch;
+}
+
+.caption,
+.referenceCaption {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-small);
+}
+
+.size {
+  font-variant-numeric: tabular-nums;
+}
+
+.specimen[data-mismatch] .size {
+  color: var(--zumpo-danger);
+}
+
+.deviation {
+  max-width: 320px;
+  color: var(--zumpo-ink);
+}
+
+.markerBox,
+.markerBoxCompact {
+  position: relative;
+  display: block;
+  width: 44px;
+  height: 44px;
+}
+
+.markerBoxCompact {
+  width: 26px;
+  height: 26px;
+}
+
+.cellRow {
+  display: flex;
+  gap: 4px;
+}
+
+@media (max-width: 1100px) {
+  .page {
+    padding: 24px 20px 64px;
+  }
+}
