@@ -89,6 +89,24 @@ describe('a Minesweeper room', () => {
     expect(screen.getByText('Hit a mine · −105')).toBeInTheDocument();
   });
 
+  it('counts down to the final scores after the last round', async () => {
+    const { update } = await renderSeated({
+      ...picking,
+      phase: 'reveal',
+      lastRound: [pick],
+    });
+    expect(screen.getByText('next round')).toBeInTheDocument();
+
+    // Nothing left to pick: no round follows.
+    update({
+      ...picking,
+      phase: 'reveal',
+      lastRound: [pick],
+      board: picking.board.map(() => 1),
+    });
+    expect(screen.getByText('final scores')).toBeInTheDocument();
+  });
+
   it('says when the clock picked for the player', async () => {
     await renderSeated({
       ...picking,

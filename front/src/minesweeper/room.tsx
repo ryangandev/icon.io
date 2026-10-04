@@ -11,7 +11,7 @@ import { listNames, rankedPlayers, type Seat } from '../room/players';
 import { useRoomContext, type Room as RoomOf } from '../room/room-context';
 import { RoomLayout, type PlayerLine } from '../room/room-layout';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
-import { BOARD_SIZES } from '../../../shared/minesweeper';
+import { BOARD_SIZES, HIDDEN } from '../../../shared/minesweeper';
 import { Board } from './board';
 import styles from './room.module.css';
 
@@ -186,7 +186,11 @@ function turnBar(room: Room, seconds: number, phone: boolean): TurnBarProps {
       category,
       label: `Round ${state.round} results`,
       kind: 'status' as const,
-      countdown: clock('next round', true),
+      // The last round leads to the final scores, not another round.
+      countdown: clock(
+        state.board.includes(HIDDEN) ? 'next round' : 'final scores',
+        true,
+      ),
     };
     if (!mine) return { ...base, main: 'Round over' };
     if (mine.autoPlayed) {

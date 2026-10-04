@@ -1,4 +1,7 @@
-import type { MinesweeperDifficulty } from './wire-types.js';
+import type {
+  MinesweeperCellView,
+  MinesweeperDifficulty,
+} from './wire-types.js';
 
 /**
  * Minesweeper geometry that a room on the server and a game on your own in
@@ -6,6 +9,11 @@ import type { MinesweeperDifficulty } from './wire-types.js';
  *
  * Cells are a flat row-major array: `index = y * width + x`.
  */
+
+/** A cell nobody has opened yet, as a board is seen. */
+export const HIDDEN: MinesweeperCellView = -1;
+/** A mine somebody hit, now common knowledge. */
+export const KNOWN_MINE: MinesweeperCellView = 9;
 
 export interface BoardSize {
   width: number;

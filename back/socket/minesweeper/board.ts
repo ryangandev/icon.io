@@ -3,7 +3,12 @@ import type {
   MinesweeperDifficulty,
 } from '../../models/types.js';
 import { getRandomInt } from '../../libs/utils.js';
-import { BOARD_SIZES, neighboursOf } from '../../../shared/minesweeper.js';
+import {
+  BOARD_SIZES,
+  HIDDEN,
+  KNOWN_MINE,
+  neighboursOf,
+} from '../../../shared/minesweeper.js';
 
 /**
  * The minefield: the hidden layout, and the public view of it.
@@ -20,9 +25,6 @@ import { BOARD_SIZES, neighboursOf } from '../../../shared/minesweeper.js';
  *   Draw & Guess: a leaked word spoils a turn, a leaked minefield spoils the
  *   entire game and cannot be re-rolled.
  */
-
-const HIDDEN: MinesweeperCellView = -1;
-const KNOWN_MINE: MinesweeperCellView = 9;
 
 interface Board {
   width: number;
@@ -160,8 +162,6 @@ const minesFound = (board: Board): number =>
 const isResolved = (board: Board): boolean => hiddenIndexes(board).length === 0;
 
 export {
-  HIDDEN,
-  KNOWN_MINE,
   createBoard,
   neighboursOf,
   publicView,

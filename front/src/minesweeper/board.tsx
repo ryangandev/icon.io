@@ -12,10 +12,8 @@ import {
 import { cx } from '../ui/cx';
 import { initialsOf } from '../players/avatar';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
+import { HIDDEN, KNOWN_MINE } from '../../../shared/minesweeper';
 import styles from './board.module.css';
-
-const HIDDEN = -1;
-const MINE = 9;
 
 export interface BoardProps {
   state: MinesweeperRoomState;
@@ -35,7 +33,7 @@ export function Board({ state, onPick, showPicks }: BoardProps) {
 
   const cellState = (index: number): MineCellState => {
     const value = board[index];
-    if (value === MINE) return { kind: 'mine' };
+    if (value === KNOWN_MINE) return { kind: 'mine' };
     if (value === HIDDEN) {
       return index === myPick && state.phase === 'picking'
         ? { kind: 'picked' }
