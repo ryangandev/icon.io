@@ -30,6 +30,8 @@ Decided by Ryan, and the frame for every design and implementation choice:
 - Whether a Minesweeper refresh should hold the round.
   A refresh drops the connection for a moment, and the room does not wait for a disconnected player, so if everyone else has already locked in, the round resolves without the refreshing player's pick.
   That contradicts the rule "A refresh loses nothing" in [minesweeper.md](games/minesweeper.md); the rules are kept as they are until you decide.
+- Review the Figma section "05 / Proposal · Solo or together, Make 24, Pairs": a solo or together entry on the games hub, and two new games, each playable alone or in a room.
+  The rules and five open questions are in [the proposal](../design/reviews/2026-10-04-new-games-proposal.md); nothing in 00-04, Shared pieces or the code changes until it is approved.
 
 ## Next
 
