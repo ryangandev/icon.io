@@ -21,7 +21,7 @@ Decided by Ryan, and the frame for every design and implementation choice:
 - Keep three ways to play long term: on your own, with friends, and light competition.
 - Grow into a platform of web mini-games that are easy to start, short, and easy to share.
 - "Short" is the product direction; it does not approve changing the current games' timings.
-- "On your own" is a future direction; it does not yet commit to offline play, a PWA, or every game supporting every mode.
+- "On your own" starts with solo modes for Make 24, Pairs and Minesweeper; it does not commit to offline play, a PWA, or every game supporting every mode.
 - Earlier reports are a source of facts about features, not of product, brand or visual direction.
 
 ## Waiting on Ryan
@@ -30,19 +30,25 @@ Decided by Ryan, and the frame for every design and implementation choice:
 - Whether a Minesweeper refresh should hold the round.
   A refresh drops the connection for a moment, and the room does not wait for a disconnected player, so if everyone else has already locked in, the round resolves without the refreshing player's pick.
   That contradicts the rule "A refresh loses nothing" in [minesweeper.md](games/minesweeper.md); the rules are kept as they are until you decide.
-- Review the Figma section "05 / Proposal · Solo or together, Make 24, Pairs": a solo or together entry on the games hub, and two new games, each playable alone or in a room.
-  The rules and five open questions are in [the proposal](../design/reviews/2026-10-04-new-games-proposal.md); nothing in 00-04, Shared pieces or the code changes until it is approved.
 
 ## Next
 
-Nothing is queued on `rework` but Ryan's reviews.
+Two new games and solo play, decided by Ryan on 2026-10-04 (see [the proposal](../design/reviews/2026-10-04-new-games-proposal.md)).
+Claude is building them on `rework`, one commit per step, in this order:
+
+1. Draw the Minesweeper solo screens in Figma section 05, review all of 05, then move its pieces into Shared pieces and its screens into the main flow, and export.
+2. Let `shared/` hold rule code that runs on both sides, so a solo game in the browser and a room on the server follow the same rules.
+3. Give the games hub a Play solo and a Find a room button per game; solo routes need no name.
+4. Make 24: rules in `docs/games/`, the deal and solver, the cards, solo play, then rooms.
+5. Pairs: rules, the cards, solo play, then rooms.
+6. Minesweeper solo: flags, chording, the first reveal always opening an area.
+7. End-to-end tests and the design comparison for every new screen, then check each flow with two players in a browser.
 
 ## Open decisions
 
 | Decision             | Where it stands                                                                                                                                                                                                                                                     |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Deployment           | Deferred by Ryan. Constraints: free to start, pay only once there is real demand, not all-Vercel. One Node service works as is; a split static frontend was discussed, not chosen. Re-check providers' current terms when this resumes; earlier findings are stale. |
-| Solo play            | Direction only. Demo, practice mode or bots not chosen. Today both games need two players, so a lone visitor waits forever.                                                                                                                                         |
 | Code and repo naming | When the code, package names and repository move from Icon.io to Zumpo.                                                                                                                                                                                             |
 | Domain and trademark | Availability for Zumpo not checked. A Chinese name is deliberately undecided.                                                                                                                                                                                       |
 

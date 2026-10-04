@@ -1,7 +1,7 @@
 # 提案: 一个人玩或一起玩, Make 24 和 Pairs
 
 日期: 2026-10-04。
-状态: 等 Ryan review。
+状态: Ryan 2026-10-04 回答了全部问题，并让 Claude 自审后实现；扫雷单人模式是同一轮加的。
 范围: Figma 文件 `Zumpo · Paper Pop flows` 里新的 section `05 / Proposal · Solo or together, Make 24, Pairs`。
 已经 review 过的 00-04 和 Shared pieces 一个都没动；新画面和新组件都只在 05 里。
 05 被导出器跳过 (它只导出 00-04 和 Shared pieces)，所以 `design/figma/` 和代码都不受影响。
@@ -18,6 +18,8 @@
 | PR01-PR04  | Pairs 单人: 选棋盘, 翻开第一张, 没配上, 清空棋盘           |
 | PR05-PR08  | Pairs 房间: 别人没配上轮到你, 你的回合, 最终得分, 建房设置 |
 | PR09, PR10 | Pairs 手机: 单人小棋盘, 房间大棋盘                         |
+| MS01-MS05  | 扫雷单人: 选棋盘, 进行中, 插旗, 踩雷, 清空棋盘             |
+| MS06       | 扫雷单人手机                                               |
 
 房间画面都是从 03 的扫雷画面复制再换掉棋盘，所以 Room bar, Turn bar, 计分板和聊天和已经 review 过的一样。
 单人画面是 Maya 的视角 (和 H01 一致)，房间画面是 Sam 的视角 (和 03 一致)。
@@ -30,11 +32,11 @@ Games hub (H01 桌面, H02 手机) 从两个游戏变成四个。
 | 游戏         | 卡片上的标签       | 按钮                         |
 | ------------ | ------------------ | ---------------------------- |
 | Draw & Guess | 2-8 players        | Find a room                  |
-| Minesweeper  | 2-8 players        | Find a room                  |
+| Minesweeper  | Solo · 2-8 players | Play solo (主) / Find a room |
 | Make 24      | Solo · 2-8 players | Play solo (主) / Find a room |
 | Pairs        | Solo · 2-6 players | Play solo (主) / Find a room |
 
-先选游戏、再选怎么玩，而不是先选模式：只有两个游戏有单人模式，先选模式的话一半的入口是空的。
+先选游戏、再选怎么玩，而不是先选模式：Draw & Guess 没有单人模式，先选模式的话会有空的入口。
 "Play solo" 是主按钮，因为它一点就能开始，不用等人；这正好解决了 status.md 里"一个人进来只能干等"的问题。
 "Find a room" 进入和现在一样的房间列表和建房流程。
 
@@ -92,6 +94,18 @@ Games hub (H01 桌面, H02 手机) 从两个游戏变成四个。
 - 所有对都被找到时结束，对数最多的获胜，同分并列。
 - 翻开的牌所有人都看得到 (这是记忆游戏的核心)；牌面的排列只在服务器上，客户端只收到翻开的牌。
 
+## Minesweeper 一个人玩
+
+经典扫雷，和房间用同样的三种棋盘 (Small, Medium, Large)。
+
+- 第一下点开的格子一定是 0，周围一片会自动打开；雷在第一下之后才埋。
+- 点格子翻开；右键或长按插旗，再来一次拔旗。手机上棋盘下面有 Reveal / Flag 切换，切到 Flag 时点一下就是插旗。
+- 点一个数字，如果它周围的旗数等于数字，就把周围其余的格子都翻开 (chord)。
+- 上方显示剩余雷数 (雷数减旗数) 和正着走的时钟，时钟从第一下开始。
+- 踩雷: 所有雷亮出来，踩到的那颗标红，插错的旗打叉；Try again 开一盘新的。
+- 所有安全格都翻开就赢: 剩下的雷自动插旗，显示用时和这台设备上这个棋盘的最好成绩。
+- 没有挑战链接: 雷要等第一下点在哪才埋，两个人点的地方不同，棋盘就不同。
+
 ## 新组件 (都在 05 的 Proposed pieces 里)
 
 | 组件                 | 变体                                           | 说明                                                                |
@@ -100,13 +114,15 @@ Games hub (H01 桌面, H02 手机) 从两个游戏变成四个。
 | `Zumpo/Operator key` | Glyph=+ − × ÷, State=Default, Selected         | 运算符按钮                                                          |
 | `Zumpo/Pairs card`   | State=Down, Up, Matched, Size=Regular, Compact | 翻牌；朝下用扫雷未翻格子同样的蓝色和 Cell edge 阴影，表示"还没翻开" |
 | `Zumpo/Pairs symbol` | 18 个图案                                      | 9 种形状 × 2 种颜色，全部用笔刷颜色 token                           |
+| `Zumpo/Mine cell`    | 新增 State=Flag, Wrong flag, Hit               | 已有组件加三个状态，单人扫雷用                                      |
+| `Zumpo/Icon`         | 新增 Glyph=flag                                | 旗子图标                                                            |
 
 其余全部复用现有组件：Room bar, Turn bar, Scoreboard, Player row, Pick result, Chat, Card, Button, Tag, Countdown, Select option, Mobile tabs。
 
-## 需要你决定
+## Ryan 的决定 (2026-10-04)
 
-1. 入口方式: 我选的是"每张游戏卡片上两个按钮"。另一种是 hub 顶部加一个 All / Solo / With friends 的筛选。你倾向哪个？
-2. 单人的 Make 24: 我选的是"随时开一局 10 手 + 挑战链接"。另一种是 Wordle 那样的"今天的 10 手，所有人一样，一天一次"。要不要每日模式？
-3. 单人模式要不要先填名字？我建议不用：点 Play solo 直接开始，只有 Find a room 才走名字页。
-4. 名字: Make 24 和 Pairs 是暂定名。
-5. Minesweeper 将来要不要也加单人模式？这次没做。
+1. 入口: 每张游戏卡片上两个按钮。
+2. 单人 Make 24: 随时开一局 10 手 + 挑战链接，不做每日模式。
+3. 单人模式不用填名字: 点 Play solo 直接开始，只有 Find a room 走名字页。
+4. 名字: 就叫 Make 24 和 Pairs。
+5. Minesweeper 也加单人模式，先画 Figma。
