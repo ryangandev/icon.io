@@ -84,9 +84,9 @@ Figma gives each sample player an avatar tone by hand; code picks one from a has
 `npm run design:compare` builds the app, serves it on port 3320 (`SCREENS_PORT`), and plays [the screens spec](../e2e/screens/screens.spec.ts) with the players and example data of the Figma story, capturing each screen in the state Figma draws, at Figma's width and frame height.
 It takes about three minutes, because it runs the real phase lengths so every countdown reads as in Figma.
 It writes `design/compare/index.html`, which is ignored by git: every screen's Figma preview beside its capture, flagged when the two sizes differ.
-A flag is a place to look, not a failure: a chat or board example that holds different content changes the height without anything being wrong.
+A size that differs because the game holds other content than Figma's example, such as a longer chat, is listed with the reason in [report.ts](../e2e/screens/report.ts) and marked apart; any other difference is layout, to fix or to note below.
+So is a screen no state of the app shows.
 It needs the previews from the last `npm run design:import`.
-A screen no state of the app shows is listed with the reason, in [report.ts](../e2e/screens/report.ts).
 
 ### On purpose
 

@@ -264,10 +264,23 @@ async function nextDrawer(seats: Seat[]): Promise<Seat> {
   throw new Error('no drawer');
 }
 
+/**
+ * Chooses the shortest word offered, as Figma's "Turtle" is short: a long
+ * word wraps the turn bar onto another line and makes the screen taller.
+ */
 async function chooseAndDraw(drawer: Page): Promise<string> {
-  const choice = drawer.getByRole('button', { name: WORD_CHOICE }).first();
-  const word = (await choice.locator('span').first().textContent())!.trim();
-  await choice.click();
+  const choices = await drawer.getByRole('button', { name: WORD_CHOICE }).all();
+  const words = await Promise.all(
+    choices.map(async (choice) =>
+      (await choice.locator('span').first().textContent())!.trim(),
+    ),
+  );
+  const shortest = words.reduce(
+    (best, word, i) => (word.length < words[best].length ? i : best),
+    0,
+  );
+  const word = words[shortest];
+  await choices[shortest].click();
   await draw(drawer);
   return word;
 }
@@ -275,6 +288,8 @@ async function chooseAndDraw(drawer: Page): Promise<string> {
 async function draw(drawer: Page) {
   const canvas = drawer.getByLabel('Drawing canvas');
   await expect(canvas).toBeVisible();
+  // On a desktop the canvas runs below the fold, and a stroke there misses it.
+  await canvas.scrollIntoViewIfNeeded();
   const box = (await canvas.boundingBox())!;
   const at = (x: number, y: number) =>
     [box.x + box.width * x, box.y + box.height * y] as const;
@@ -314,6 +329,7 @@ test('a Draw & Guess game', async ({ player }) => {
   const link = await createRoom(maya.page, 'draw-and-guess', { rounds: 1 });
   await shot(maya.page, 'D01');
   for (const seat of [ryan, sam, leo]) await joinRoom(seat.page, link);
+  await expect(maya.page.getByText('4 / 8')).toBeVisible();
   await shot(maya.page, 'D02');
   await shot(ryan.page, 'D03');
   await maya.page
@@ -468,32 +484,48 @@ test('a Minesweeper game', async ({ player }) => {
   const link = await createRoom(maya.page, 'minesweeper');
   await shot(maya.page, 'M01');
   for (const seat of [ryan, sam, leo]) await joinRoom(seat.page, link);
+  await expect(maya.page.getByText('4 / 8')).toBeVisible();
   await shot(maya.page, 'M02');
   await shot(ryan.page, 'M03');
   await startGame(maya.page);
 
   await expect(maya.page.getByText('Pick a cell')).toBeVisible();
   await shot(maya.page, 'M04');
-  await shot(leo.page, 'MO11');
   await cell(maya.page, 2, 2).click();
+  await expect(
+    maya.page.getByText('Waiting for Ryan, Sam and Leo'),
+  ).toBeVisible();
   await shot(maya.page, 'M05');
   await cell(leo.page, 8, 2).click();
+  await expect(leo.page.getByText('Waiting for Ryan and Sam')).toBeVisible();
   await shot(leo.page, 'MO12');
   // Ryan and Sam share a cell; their reward splits if it is safe.
   await cell(ryan.page, 5, 5).click();
   await cell(sam.page, 5, 5).click();
   await expect(maya.page.getByText(/Round 1 results/).first()).toBeVisible();
   await shot(maya.page, 'M07');
+  for (const seat of [ryan, leo]) {
+    await expect(seat.page.getByText(/Round 1 results/).first()).toBeVisible();
+  }
   await shot(ryan.page, 'M09');
   await shot(leo.page, 'MO13');
   let mine = await mineHitBy(seats);
   if (mine) await shot(mine.page, 'M08');
+  // MO11 is a round after a mine was hit, which the turn bar counts.
+  let hitCounted = false;
+  const countHit = async () => {
+    if (!mine || hitCounted) return;
+    await expect(leo.page.getByText('Pick a cell')).toBeVisible();
+    await shot(leo.page, 'MO11');
+    hitCounted = true;
+  };
 
   // Round 2: Sam does not pick, so the clock picks the safest cell for him.
   await expect(maya.page.getByText('Pick a cell')).toBeVisible({
     timeout: 20_000,
   });
   await shot(maya.page, 'M11');
+  await countHit();
   for (const seat of [maya, ryan, leo]) {
     await seat.page.getByRole('button', { name: HIDDEN }).first().click();
   }
@@ -510,6 +542,7 @@ test('a Minesweeper game', async ({ player }) => {
       timeout: 20_000,
     });
     if (await over.isVisible()) break;
+    await countHit();
     for (const [index, seat] of seats.entries()) {
       const hidden = seat.page.getByRole('button', { name: HIDDEN });
       const count = await hidden.count();
