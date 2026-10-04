@@ -9,10 +9,10 @@ Icon.io is being rebranded and redesigned as **Zumpo** on the `rework` branch.
 The redesign is an editable Figma file of 82 screens and its shared component families (see [design.md](design.md)), with a snapshot in `design/figma/`.
 Ryan approved it in review round two on 2026-10-03, after one fix (icons centred on their line of text); Claude's round 1 changes are in the [round 1 report](../design/reviews/2026-10-03-round-1.md).
 
-Implementation is approved.
-The design system is built in code: every Shared pieces family is a component in `front/src/ui/`, with tokens generated from the export, and matches Figma in the `/design` gallery to within anti-aliasing (see [design.md](design.md#in-code)).
-The pages still run on Ant Design.
-The backend speaks the snapshot-driven wire contract in `shared/wire-types.d.ts` ([architecture](architecture.md#the-wire-contract)); the current pages still speak the old one, so they work again only once they are rebuilt on it.
+The implementation is built on `rework`, which is not pushed or merged yet.
+Every page, desktop and phone, is rebuilt on the Zumpo design system in `front/src/ui/`, and Ant Design is gone ([architecture](architecture.md#frontend)).
+Both sides speak the snapshot-driven wire contract in `shared/wire-types.d.ts` ([architecture](architecture.md#the-wire-contract)).
+The screens were compared with Figma one by one in a browser with two players; where code differs on purpose, [design.md](design.md#in-code) says so.
 
 ## Product direction
 
@@ -26,17 +26,18 @@ Decided by Ryan, and the frame for every design and implementation choice:
 
 ## Waiting on Ryan
 
-- The open questions in the [round 1 report](../design/reviews/2026-10-03-round-1.md#需要你决定) and its copy suggestions, before the pages that show them are rebuilt.
-  Until then the screens are built as drawn.
+- Review `rework` in the browser, then whether to push it and open a pull request.
+- Whether a Minesweeper refresh should hold the round.
+  A refresh drops the connection for a moment, and the room does not wait for a disconnected player, so if everyone else has already locked in, the round resolves without the refreshing player's pick.
+  That contradicts the rule "A refresh loses nothing" in [minesweeper.md](games/minesweeper.md); the rules are kept as they are until you decide.
 - Whether `Zumpo/Modal` should become the one focused card.
   It uses the Title style and no screen uses it; the 20+ focused cards (P02-P10, DL04-DL11, ML04-ML10) and the two dialogs are hand-built frames with a Heading title, which code follows.
   Making Modal match them and swapping the frames for instances would make one change reach every card.
 
 ## Next
 
-1. Rebuild the pages on the design system, platform flow first, then each game, then mobile, and remove Ant Design ([why](architecture.md#frontend)).
-   Fix the known issues below that live in the pages being rebuilt, reproducing each end to end first.
-2. Make the pixel comparison against Figma repeatable for pages, not only component sizes: render each screen and variant at 2x and diff it against the page, as was done by hand for the components.
+1. Commit the two-player browser checks that verified the rebuild, so a change to a flow can be checked again with one command rather than by hand.
+2. Make the pixel comparison against Figma repeatable for pages, not only component sizes: drive the app into each screen's state and diff it against the screen's preview, as was done by hand for the rebuild.
 
 ## Open decisions
 
@@ -49,12 +50,10 @@ Decided by Ryan, and the frame for every design and implementation choice:
 
 ## Known issues
 
-| Issue                                             | Notes                                                                                                                     |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Narrow screens                                    | Side panels and chat overflow horizontally; the canvas handles mouse events only, so touch drawing does not work.         |
-| Bundle size                                       | Main JS about 1 MB (330 kB gzip), two drawing background images about 1 MB and 1.4 MB, and a chunk-size warning on build. |
-| Old public URL                                    | `icon.ryiscrispy.com` no longer resolves; nothing is deployed.                                                            |
-| A drawer who vanishes freezes the canvas for 10 s | The deliberate bound of the drawer hold ([architecture](architecture.md#identity-and-reconnection)).                      |
+| Issue                                             | Notes                                                                                                |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Old public URL                                    | `icon.ryiscrispy.com` no longer resolves; nothing is deployed.                                       |
+| A drawer who vanishes freezes the canvas for 10 s | The deliberate bound of the drawer hold ([architecture](architecture.md#identity-and-reconnection)). |
 
 ## Backlog
 
