@@ -6,7 +6,7 @@ Resolved items are deleted, not archived; history is in git.
 ## Now
 
 Icon.io is being rebranded and redesigned as **Zumpo** on the `rework` branch.
-The redesign is an editable Figma file of 82 screens and its shared component families (see [design.md](design.md)), with a snapshot in `design/figma/`.
+The redesign is an editable Figma file of 84 screens and its shared component families (see [design.md](design.md)), with a snapshot in `design/figma/`.
 Ryan approved it in review round two on 2026-10-03, after one fix (icons centred on their line of text); Claude's round 1 changes are in the [round 1 report](../design/reviews/2026-10-03-round-1.md).
 
 The implementation is built on `rework`, which is not pushed or merged yet.
@@ -27,9 +27,6 @@ Decided by Ryan, and the frame for every design and implementation choice:
 ## Waiting on Ryan
 
 - Review `rework` in the browser, then whether to push it and open a pull request.
-- Review the Figma section "05 / Proposal · Room bar and in-room navigation".
-  It folds the header and the room heading into one room bar (M12 gains 160 px, a phone 80 px), drops the header's links inside a room, and opens How to play as a dialog over the room, so the only way out is Leave room, which asks first mid-game.
-  Once approved it goes into every room screen in Figma, then into code; until then 01-04 and the code stay as they are.
 - Whether a Minesweeper refresh should hold the round.
   A refresh drops the connection for a moment, and the room does not wait for a disconnected player, so if everyone else has already locked in, the round resolves without the refreshing player's pick.
   That contradicts the rule "A refresh loses nothing" in [minesweeper.md](games/minesweeper.md); the rules are kept as they are until you decide.

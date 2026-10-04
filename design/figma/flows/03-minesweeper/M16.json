@@ -14,7 +14,7 @@
     "x": 40,
     "y": 8552,
     "w": 1440,
-    "h": 870,
+    "h": 710,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -34,179 +34,29 @@
     "children": [
       {
         "type": "INSTANCE",
-        "id": "9:9974",
-        "name": "Zumpo/Header",
+        "id": "39:20421",
+        "name": "Zumpo/Room bar",
         "w": 1312,
-        "h": 104,
-        "component": "Zumpo/Header",
-        "componentId": "4:39",
+        "h": 48,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Desktop"
+        },
+        "componentId": "39:19276",
         "overrides": [
           {
-            "path": "Navigation / You",
+            "path": "Room identity / Phase",
             "componentProperties": {
-              "Initials": "SA",
-              "Tone": "Sand"
+              "Show icon": false,
+              "Icon": "24:5010",
+              "Label": "Game ended",
+              "Tone": "Peach"
             }
-          }
-        ]
-      },
-      {
-        "type": "FRAME",
-        "id": "9:9984",
-        "name": "Room heading",
-        "w": 1312,
-        "h": 80,
-        "hSize": "hug",
-        "layout": {
-          "mode": "row",
-          "gap": "$Zumpo · UI:space/24",
-          "justify": "space_between",
-          "align": "center",
-          "strokesIncluded": true
-        },
-        "children": [
-          {
-            "type": "FRAME",
-            "id": "9:9985",
-            "name": "Room identity",
-            "w": 930,
-            "h": 80,
-            "hSize": "hug",
-            "layout": {
-              "mode": "column",
-              "gap": "$Zumpo · UI:space/8",
-              "strokesIncluded": true
-            },
-            "children": [
-              {
-                "type": "FRAME",
-                "id": "9:9986",
-                "name": "Room context",
-                "w": 930,
-                "h": 30,
-                "hSize": "hug",
-                "layout": {
-                  "mode": "row",
-                  "gap": "$Zumpo · UI:space/12",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "INSTANCE",
-                    "id": "27:22051",
-                    "name": "Tag / Maya's room",
-                    "w": 95,
-                    "h": 30,
-                    "wSize": "hug",
-                    "hSize": "hug",
-                    "component": "Zumpo/Tag",
-                    "variant": {
-                      "Tone": "Sand"
-                    },
-                    "componentId": "24:6511",
-                    "props": {
-                      "Label": "Maya's room"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 30,
-                        "width": 95
-                      }
-                    ]
-                  },
-                  {
-                    "type": "INSTANCE",
-                    "id": "27:22056",
-                    "name": "Tag / Game ended",
-                    "w": 97,
-                    "h": 30,
-                    "wSize": "hug",
-                    "hSize": "hug",
-                    "component": "Zumpo/Tag",
-                    "variant": {
-                      "Tone": "Peach"
-                    },
-                    "componentId": "24:6526",
-                    "props": {
-                      "Label": "Game ended"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 30,
-                        "width": 97
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "TEXT",
-                "id": "9:9991",
-                "w": 230,
-                "h": 42,
-                "wSize": "hug",
-                "hSize": "hug",
-                "text": "Minesweeper",
-                "textStyle": "Zumpo/Title",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ]
-              },
-              {
-                "type": "TEXT",
-                "id": "9:9992",
-                "visible": false,
-                "w": 930,
-                "h": 25,
-                "text": "Everybody picks at once. Keep your choice to yourself.",
-                "textStyle": "Zumpo/Body",
-                "fills": [
-                  "$Zumpo · UI:color/muted"
-                ],
-                "autoResize": "height"
-              }
-            ]
           },
           {
-            "type": "INSTANCE",
-            "id": "9:9993",
-            "name": "Action / Leave room",
-            "w": 150,
-            "h": 48,
-            "wSize": "hug",
-            "component": "Zumpo/Button",
-            "variant": {
-              "Style": "Secondary",
-              "State": "Default"
-            },
-            "componentId": "4:18",
-            "props": {
-              "Show icon": true,
-              "Label": "Leave room"
-            },
-            "overrides": [
-              {
-                "path": ".",
-                "height": 48,
-                "reactions": [
-                  {
-                    "on": "on_click",
-                    "do": [
-                      {
-                        "nav": "navigate",
-                        "to": "9:2528",
-                        "toName": "ML01 / Room list · open, private, full and playing states",
-                        "transition": "dissolve"
-                      }
-                    ]
-                  }
-                ],
-                "width": 150
-              }
-            ],
+            "path": "Action / Leave room",
             "reactions": [
               {
                 "on": "on_click",
@@ -220,30 +70,6 @@
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "type": "INSTANCE",
-        "id": "9:9995",
-        "name": "Zumpo/Notice",
-        "visible": false,
-        "w": 1312,
-        "h": 52,
-        "hSize": "hug",
-        "component": "Zumpo/Notice",
-        "variant": {
-          "Tone": "Error"
-        },
-        "componentId": "9:235",
-        "props": {
-          "Message": "Too few players remain. The game ended. Scores are retained."
-        },
-        "overrides": [
-          {
-            "path": ".",
-            "height": 52,
-            "width": 1312
           }
         ]
       },

@@ -14,7 +14,7 @@
     "x": 40,
     "y": 6851,
     "w": 1440,
-    "h": 1258,
+    "h": 1098,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -34,179 +34,32 @@
     "children": [
       {
         "type": "INSTANCE",
-        "id": "9:2196",
-        "name": "Zumpo/Header",
+        "id": "39:19788",
+        "name": "Zumpo/Room bar",
         "w": 1312,
-        "h": 104,
-        "component": "Zumpo/Header",
-        "componentId": "4:39",
+        "h": 48,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Desktop"
+        },
+        "componentId": "39:19276",
+        "props": {
+          "Game": "Draw & Guess"
+        },
         "overrides": [
           {
-            "path": "Navigation / You",
+            "path": "Room identity / Phase",
             "componentProperties": {
-              "Initials": "MA",
-              "Tone": "Peach"
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Round 2 of 2",
+              "Tone": "Blue"
             }
-          }
-        ]
-      },
-      {
-        "type": "FRAME",
-        "id": "9:2206",
-        "name": "Room heading",
-        "w": 1312,
-        "h": 80,
-        "hSize": "hug",
-        "layout": {
-          "mode": "row",
-          "gap": "$Zumpo · UI:space/24",
-          "justify": "space_between",
-          "align": "center",
-          "strokesIncluded": true
-        },
-        "children": [
-          {
-            "type": "FRAME",
-            "id": "9:2207",
-            "name": "Room identity",
-            "w": 930,
-            "h": 80,
-            "hSize": "hug",
-            "layout": {
-              "mode": "column",
-              "gap": "$Zumpo · UI:space/8",
-              "strokesIncluded": true
-            },
-            "children": [
-              {
-                "type": "FRAME",
-                "id": "9:2208",
-                "name": "Room context",
-                "w": 930,
-                "h": 30,
-                "hSize": "hug",
-                "layout": {
-                  "mode": "row",
-                  "gap": "$Zumpo · UI:space/12",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "INSTANCE",
-                    "id": "27:18715",
-                    "name": "Tag / Maya's room",
-                    "w": 95,
-                    "h": 30,
-                    "wSize": "hug",
-                    "hSize": "hug",
-                    "component": "Zumpo/Tag",
-                    "variant": {
-                      "Tone": "Sand"
-                    },
-                    "componentId": "24:6511",
-                    "props": {
-                      "Label": "Maya's room"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 30,
-                        "width": 95
-                      }
-                    ]
-                  },
-                  {
-                    "type": "INSTANCE",
-                    "id": "27:18720",
-                    "name": "Tag / Round 2 of 2",
-                    "w": 95,
-                    "h": 30,
-                    "wSize": "hug",
-                    "hSize": "hug",
-                    "component": "Zumpo/Tag",
-                    "variant": {
-                      "Tone": "Blue"
-                    },
-                    "componentId": "24:6516",
-                    "props": {
-                      "Label": "Round 2 of 2"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 30,
-                        "width": 95
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "TEXT",
-                "id": "9:2213",
-                "w": 248,
-                "h": 42,
-                "wSize": "hug",
-                "hSize": "hug",
-                "text": "Draw & Guess",
-                "textStyle": "Zumpo/Title",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ]
-              },
-              {
-                "type": "TEXT",
-                "id": "9:2214",
-                "visible": false,
-                "w": 930,
-                "h": 25,
-                "text": "A few good guesses go a long way.",
-                "textStyle": "Zumpo/Body",
-                "fills": [
-                  "$Zumpo · UI:color/muted"
-                ],
-                "autoResize": "height"
-              }
-            ]
           },
           {
-            "type": "INSTANCE",
-            "id": "9:2215",
-            "name": "Action / Leave room",
-            "w": 150,
-            "h": 48,
-            "wSize": "hug",
-            "component": "Zumpo/Button",
-            "variant": {
-              "Style": "Secondary",
-              "State": "Default"
-            },
-            "componentId": "4:18",
-            "props": {
-              "Show icon": true,
-              "Label": "Leave room"
-            },
-            "overrides": [
-              {
-                "path": ".",
-                "height": 48,
-                "reactions": [
-                  {
-                    "on": "on_click",
-                    "do": [
-                      {
-                        "nav": "navigate",
-                        "to": "9:769",
-                        "toName": "P11 / Leave room confirmation",
-                        "transition": "dissolve"
-                      }
-                    ]
-                  }
-                ],
-                "width": 150
-              }
-            ],
+            "path": "Action / Leave room",
             "reactions": [
               {
                 "on": "on_click",
@@ -220,30 +73,13 @@
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "type": "INSTANCE",
-        "id": "9:2217",
-        "name": "Zumpo/Notice",
-        "visible": false,
-        "w": 1312,
-        "h": 52,
-        "hSize": "hug",
-        "component": "Zumpo/Notice",
-        "variant": {
-          "Tone": "Info"
-        },
-        "componentId": "9:227",
-        "props": {
-          "Message": "Time ran out. The first offered word was chosen for the drawer."
-        },
-        "overrides": [
+          },
           {
-            "path": ".",
-            "height": 52,
-            "width": 1312
+            "path": "You",
+            "componentProperties": {
+              "Initials": "MA",
+              "Tone": "Peach"
+            }
           }
         ]
       },

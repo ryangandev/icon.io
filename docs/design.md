@@ -35,7 +35,7 @@ Three early Paper Pop concepts (`3:53`, `3:54`, `3:55`) sit above the flows for 
 - The game rules in [games/](games/) are the contract.
   A screen that contradicts them is a design bug, not a rule change; for example, Minesweeper has simultaneous irreversible picks, no flags and no separate lock button.
 - The shared canvas keeps the 798 × 598 bitmap's ratio; the Large Minesweeper board on mobile pans horizontally.
-- New UX that does not exist in the app today is marked as proposed and is not yet approved: the final results panel, leave confirmation, invite sheet, mobile tabs, and the rules view.
+- Some screens are UX the old app never had: the final results panel, the leave confirmation, the invite sheet, mobile tabs and the rules dialog; Ryan approved them with the rest of the file.
 - Mobile covers the main flows, not a mobile version of every desktop state.
 - Prototype links are partial; this is a design, not a clickable spec of every control.
 
@@ -54,11 +54,25 @@ Decisions from the first review round ([report](../design/reviews/2026-10-03-rou
 - An icon beside text is centred on the text's first line, never top-aligned: a leading icon sits in a slot one line-height tall (`height: 1lh` in code), so a wrapped message keeps it level with line one.
   Trailing indicators, like the check on a selected option, centre on the whole row.
 
+### The room bar
+
+Ryan approved the room bar on 2026-10-04, after a proposal round in Figma.
+A seated room has one `Zumpo/Room bar` in place of the header and the room heading: the wordmark, the game, the room and phase tags, How to play, Leave room and the viewer.
+On a phone it drops the wordmark, puts the tags under the game and keeps the two actions to their icons.
+Every room screen uses it (P07, P11, P12, P15, P16, D01-D15, M01-M16, MO07-MO16), and it is 160 px shorter than the old pair on a desktop and 80 px on a phone.
+
+- A room has no links out but the wordmark: How to play opens over the room (P15), so a game is never lost to a rules check.
+- Leave room between games leaves at once; nothing is at stake and the click says what it means.
+- Every other way out asks first, mid-game and between games: Leave room mid-game, the wordmark, the browser's back button and Change name.
+  Mid-game the dialog names the points that go (P11); between games only the seat (P16).
+- While reconnecting the bar has no Leave room; the notice under it says what is happening (P07).
+- The room screens' hidden notice layers are gone; the visible notices, such as D10's pending one, stay.
+
 [taste-skill](https://github.com/Leonxlnx/taste-skill)'s `design-taste-frontend` and `redesign-existing-projects` skills are useful review checklists, not authorities: they target landing pages, and where a rule contradicts the brand direction above (its cream-palette and single-accent rules, for example), the brand wins.
 
 ## Figma export
 
-The Figma MCP and REST API allowances on the Starter plan are too low to read 82 screens, so a local, read-only plugin in [tools/figma-export/](../tools/figma-export/README.md) snapshots the file instead.
+The Figma MCP and REST API allowances on the Starter plan are too low to read 84 screens, so a local, read-only plugin in [tools/figma-export/](../tools/figma-export/README.md) snapshots the file instead.
 It writes tokens, each Shared pieces family in full detail, one compact JSON per screen, every vector drawing as SVG, an audit of hardcoded values, and PNG previews.
 `FORMAT.md` inside each export documents the format.
 
@@ -80,6 +94,8 @@ Each family's Figma preview sits under it at the same scale.
 `Zumpo/Card` is every focused surface: the one card of a name, create-room, password or error page (Kind=Focused), a dialog over a room (Dialog), and a panel in a page's column, such as an empty or loading lobby (Panel).
 Its Title and Description are text properties, and each screen puts its own fields, status and actions into its Content slot, so a change to the surface reaches all 28 screens that use it.
 In code the same three are `Card`, `Card kind="panel"` and `Dialog`, which shares the card's styles.
+
+`RoomBar` is `Zumpo/Room bar`, with `layout="phone"` for its Phone variant; `RoomLayout` renders it in the page's header slot, so it stays the page's banner, and `SeatedRoom` guards the navigation its wordmark and the viewer menu start.
 
 Figma gives each sample player an avatar tone by hand; code picks one from a hash of the player's name, so a player keeps one colour in the header, the scoreboard and the results, on every screen.
 

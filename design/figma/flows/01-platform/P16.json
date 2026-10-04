@@ -1,20 +1,20 @@
 {
   "format": 1,
-  "code": "D05",
-  "title": "Guesser · waiting for word selection",
-  "id": "9:1597",
-  "section": "02 / Draw & Guess / complete flow",
+  "code": "P16",
+  "title": "Leave room between games",
+  "id": "39:21404",
+  "section": "01 / Platform & shared flows",
   "reviewNotes": [
-    "D05 · Guesser · waiting for word selection"
+    "P16 · Leaving between games, through the wordmark or back, asks too"
   ],
   "frame": {
     "type": "FRAME",
-    "id": "9:1597",
-    "name": "D05 / Guesser · waiting for word selection",
-    "x": 1580,
-    "y": 4061,
+    "id": "39:21404",
+    "name": "P16 / Leave room between games",
+    "x": 4660,
+    "y": 4014,
     "w": 1440,
-    "h": 996,
+    "h": 753,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -34,7 +34,7 @@
     "children": [
       {
         "type": "INSTANCE",
-        "id": "39:19563",
+        "id": "39:21405",
         "name": "Zumpo/Room bar",
         "w": 1312,
         "h": 48,
@@ -54,7 +54,7 @@
             "componentProperties": {
               "Icon": "24:5010",
               "Show icon": false,
-              "Label": "Round 2 of 2",
+              "Label": "Waiting room",
               "Tone": "Blue"
             }
           },
@@ -78,10 +78,10 @@
       },
       {
         "type": "FRAME",
-        "id": "9:1622",
+        "id": "39:21406",
         "name": "Game & room",
         "w": 1312,
-        "h": 826,
+        "h": 583,
         "hSize": "hug",
         "layout": {
           "mode": "row",
@@ -91,10 +91,10 @@
         "children": [
           {
             "type": "FRAME",
-            "id": "9:1623",
+            "id": "39:21407",
             "name": "Game stage",
             "w": 944,
-            "h": 826,
+            "h": 233,
             "hSize": "hug",
             "layout": {
               "mode": "column",
@@ -103,100 +103,100 @@
             },
             "children": [
               {
-                "type": "INSTANCE",
-                "id": "27:18213",
-                "name": "Zumpo/Turn bar",
+                "type": "FRAME",
+                "id": "39:21408",
+                "name": "Waiting room",
                 "w": 944,
-                "h": 102,
+                "h": 233,
                 "wSize": "fill",
                 "hSize": "hug",
-                "component": "Zumpo/Turn bar",
-                "variant": {
-                  "Kind": "Status",
-                  "Layout": "Desktop"
-                },
-                "componentId": "26:16856",
-                "props": {
-                  "Meta": "Get ready to guess",
-                  "Main": "Maya is choosing a word",
-                  "Label": "Next up"
-                }
-              },
-              {
-                "type": "FRAME",
-                "id": "27:18231",
-                "name": "Canvas",
-                "w": 944,
-                "h": 708,
                 "fills": [
-                  "$Zumpo · UI:color/white"
+                  "$Zumpo · UI:color/paper"
                 ],
                 "strokes": [
                   "$Zumpo · UI:color/line"
                 ],
                 "strokeAlign": "inside",
                 "radius": "$Zumpo · UI:radius/24",
-                "clip": true,
                 "layout": {
                   "mode": "column",
-                  "gap": "$Zumpo · UI:space/16",
-                  "justify": "center",
-                  "align": "center",
+                  "gap": "$Zumpo · UI:space/12",
+                  "pad": 40,
                   "strokesIncluded": true
                 },
                 "children": [
                   {
+                    "type": "TEXT",
+                    "id": "39:21409",
+                    "w": 456,
+                    "h": 42,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "Waiting for Maya to start.",
+                    "textStyle": "Zumpo/Title",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "39:21410",
+                    "w": 862,
+                    "h": 25,
+                    "wSize": "fill",
+                    "hSize": "hug",
+                    "text": "4 players, 2 rounds. Only the host can start the game.",
+                    "textStyle": "Zumpo/Body",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ],
+                    "autoResize": "height"
+                  },
+                  {
                     "type": "FRAME",
-                    "id": "27:18232",
-                    "name": "Empty canvas note",
-                    "w": 238,
-                    "h": 69,
+                    "id": "39:21411",
+                    "name": "Actions",
+                    "w": 161,
+                    "h": 60,
                     "wSize": "hug",
                     "hSize": "hug",
                     "layout": {
-                      "mode": "column",
+                      "mode": "row",
                       "gap": "$Zumpo · UI:space/12",
+                      "pad": [
+                        12,
+                        0,
+                        0,
+                        0
+                      ],
                       "align": "center",
                       "strokesIncluded": true
                     },
                     "children": [
                       {
                         "type": "INSTANCE",
-                        "id": "27:18233",
-                        "name": "Zumpo/Icon",
-                        "w": 32,
-                        "h": 32,
-                        "component": "Zumpo/Icon",
+                        "id": "39:21412",
+                        "name": "Action / Invite friends",
+                        "w": 161,
+                        "h": 48,
+                        "wSize": "hug",
+                        "component": "Zumpo/Button",
                         "variant": {
-                          "Glyph": "brush"
+                          "Style": "Secondary",
+                          "State": "Default"
                         },
-                        "componentId": "24:5053",
+                        "componentId": "4:18",
+                        "props": {
+                          "Icon": "Zumpo/Icon / Glyph=link",
+                          "Show icon": true,
+                          "Label": "Invite friends"
+                        },
                         "overrides": [
                           {
-                            "path": "brush",
-                            "strokes": [
-                              "$Zumpo · UI:color/muted"
-                            ]
-                          },
-                          {
-                            "path": "brush",
-                            "strokes": [
-                              "$Zumpo · UI:color/muted"
-                            ]
+                            "path": ".",
+                            "height": 48,
+                            "width": 161
                           }
-                        ]
-                      },
-                      {
-                        "type": "TEXT",
-                        "id": "27:18236",
-                        "w": 238,
-                        "h": 25,
-                        "wSize": "hug",
-                        "hSize": "hug",
-                        "text": "Maya’s drawing will appear here.",
-                        "textStyle": "Zumpo/Body",
-                        "fills": [
-                          "$Zumpo · UI:color/muted"
                         ]
                       }
                     ]
@@ -207,10 +207,10 @@
           },
           {
             "type": "FRAME",
-            "id": "9:1628",
+            "id": "39:21413",
             "name": "Room sidebar",
             "w": 344,
-            "h": 604,
+            "h": 583,
             "hSize": "hug",
             "layout": {
               "mode": "column",
@@ -220,7 +220,7 @@
             "children": [
               {
                 "type": "INSTANCE",
-                "id": "9:1629",
+                "id": "39:21414",
                 "name": "Zumpo/Scoreboard",
                 "w": 344,
                 "h": 304,
@@ -231,14 +231,21 @@
                   {
                     "path": "Player 1",
                     "componentProperties": {
-                      "Icon": "24:5053",
-                      "Status icon": true,
-                      "You": false,
-                      "Name": "Maya",
-                      "Status": "Choosing a word",
+                      "Status icon": false,
+                      "Status": "Waiting",
                       "Host": true,
-                      "Score": "460",
-                      "State": "Highlight"
+                      "You": false,
+                      "Score": "0",
+                      "Icon": "24:5053",
+                      "Name": "Maya",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 1 / Avatar",
+                    "componentProperties": {
+                      "Initials": "MA",
+                      "Tone": "Peach"
                     }
                   },
                   {
@@ -248,7 +255,7 @@
                       "Status": "Waiting",
                       "Host": false,
                       "You": false,
-                      "Score": "320",
+                      "Score": "0",
                       "Icon": "24:5053",
                       "Name": "Ryan",
                       "State": "Default"
@@ -261,7 +268,7 @@
                       "Status": "Waiting",
                       "Host": false,
                       "You": false,
-                      "Score": "240",
+                      "Score": "0",
                       "Icon": "24:5053",
                       "Name": "Leo",
                       "State": "Default"
@@ -274,7 +281,7 @@
                       "Status": "Waiting",
                       "Host": false,
                       "You": true,
-                      "Score": "180",
+                      "Score": "0",
                       "Icon": "24:5053",
                       "Name": "Sam",
                       "State": "Default"
@@ -284,48 +291,48 @@
               },
               {
                 "type": "INSTANCE",
-                "id": "9:1659",
+                "id": "39:21415",
                 "name": "Zumpo/Chat",
                 "w": 344,
-                "h": 276,
+                "h": 255,
                 "hSize": "hug",
                 "component": "Zumpo/Chat",
                 "componentId": "9:334",
                 "overrides": [
                   {
                     "path": ".",
-                    "height": 276,
+                    "height": 255,
                     "width": 344
                   },
                   {
                     "path": "Messages / Message 1",
                     "componentProperties": {
-                      "Message": "that horse was art",
-                      "Name": "Leo",
-                      "Kind": "Player"
+                      "Name": "System",
+                      "Message": "Ryan has joined the room.",
+                      "Kind": "System"
                     }
                   },
                   {
                     "path": "Messages / Message 2",
                     "componentProperties": {
-                      "Message": "it was a giraffe!!",
-                      "Name": "Sam",
-                      "Kind": "Player"
+                      "Name": "System",
+                      "Message": "Leo has joined the room.",
+                      "Kind": "System"
                     }
                   },
                   {
                     "path": "Messages / Message 3",
                     "componentProperties": {
-                      "Message": "my turn, brace yourselves",
-                      "Name": "Maya",
-                      "Kind": "Player"
+                      "Name": "System",
+                      "Message": "Sam has joined the room.",
+                      "Kind": "System"
                     }
                   },
                   {
                     "path": "Messages / Message 4",
                     "componentProperties": {
-                      "Message": "gl",
-                      "Name": "Ryan",
+                      "Message": "hi all",
+                      "Name": "Sam",
                       "Kind": "Player"
                     }
                   },
@@ -352,7 +359,7 @@
       },
       {
         "type": "FRAME",
-        "id": "9:1672",
+        "id": "39:21416",
         "name": "Footer",
         "w": 1312,
         "h": 18,
@@ -367,7 +374,7 @@
         "children": [
           {
             "type": "TEXT",
-            "id": "9:1673",
+            "id": "39:21417",
             "w": 650,
             "h": 18,
             "hSize": "hug",
@@ -380,7 +387,7 @@
           },
           {
             "type": "TEXT",
-            "id": "9:1674",
+            "id": "39:21418",
             "w": 115,
             "h": 18,
             "wSize": "hug",
@@ -392,6 +399,119 @@
             ]
           }
         ]
+      },
+      {
+        "type": "RECTANGLE",
+        "id": "39:21449",
+        "name": "Scrim",
+        "x": 0,
+        "y": 0,
+        "absolute": true,
+        "w": 1440,
+        "h": 753,
+        "opacity": 0.4,
+        "fills": [
+          "$Zumpo · UI:color/ink"
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "39:21450",
+        "name": "Dialog / Leave room",
+        "x": 440,
+        "y": 260,
+        "absolute": true,
+        "w": 560,
+        "h": 217,
+        "hSize": "hug",
+        "component": "Zumpo/Card",
+        "variant": {
+          "Kind": "Dialog"
+        },
+        "componentId": "35:13434",
+        "props": {
+          "Description": "Your seat goes with you. You can join again while a seat is open.",
+          "Title": "Leave Maya’s room?"
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 217,
+            "layoutPositioning": "ABSOLUTE",
+            "width": 560
+          }
+        ],
+        "slots": {
+          "Content": [
+            {
+              "type": "FRAME",
+              "id": "39:21454",
+              "name": "Actions",
+              "w": 233,
+              "h": 48,
+              "wSize": "hug",
+              "hSize": "hug",
+              "clip": true,
+              "layout": {
+                "mode": "row",
+                "gap": "$Zumpo · UI:space/12",
+                "align": "center",
+                "strokesIncluded": true
+              },
+              "children": [
+                {
+                  "type": "INSTANCE",
+                  "id": "39:21455",
+                  "name": "Action / Leave room",
+                  "w": 148,
+                  "h": 48,
+                  "wSize": "hug",
+                  "component": "Zumpo/Button",
+                  "variant": {
+                    "Style": "Danger",
+                    "State": "Default"
+                  },
+                  "componentId": "24:5351",
+                  "props": {
+                    "Show icon": true,
+                    "Label": "Leave room"
+                  },
+                  "overrides": [
+                    {
+                      "path": "",
+                      "height": 48,
+                      "width": 148
+                    }
+                  ]
+                },
+                {
+                  "type": "INSTANCE",
+                  "id": "39:21464",
+                  "name": "Action / Stay",
+                  "w": 73,
+                  "h": 48,
+                  "wSize": "hug",
+                  "component": "Zumpo/Button",
+                  "variant": {
+                    "Style": "Secondary",
+                    "State": "Default"
+                  },
+                  "componentId": "4:18",
+                  "props": {
+                    "Label": "Stay"
+                  },
+                  "overrides": [
+                    {
+                      "path": "",
+                      "height": 48,
+                      "width": 73
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     ]
   }

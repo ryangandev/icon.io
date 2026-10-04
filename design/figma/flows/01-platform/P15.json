@@ -1,21 +1,20 @@
 {
   "format": 1,
-  "code": "D07",
-  "title": "Guesser · live canvas & hint",
-  "id": "9:1777",
-  "section": "02 / Draw & Guess / complete flow",
+  "code": "P15",
+  "title": "How to play over a room",
+  "id": "39:21323",
+  "section": "01 / Platform & shared flows",
   "reviewNotes": [
-    "D07 · Guesser · live canvas & hint"
+    "P15 · How to play opens over the room, which stays as it is"
   ],
   "frame": {
     "type": "FRAME",
-    "id": "9:1777",
-    "name": "D07 / Guesser · live canvas & hint",
-    "x": 4660,
-    "y": 4061,
+    "id": "39:21323",
+    "name": "P15 / How to play over a room",
+    "x": 3120,
+    "y": 4014,
     "w": 1440,
     "h": 1008,
-    "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
     ],
@@ -34,7 +33,7 @@
     "children": [
       {
         "type": "INSTANCE",
-        "id": "39:19628",
+        "id": "39:21324",
         "name": "Zumpo/Room bar",
         "w": 1312,
         "h": 48,
@@ -57,28 +56,12 @@
               "Label": "Round 2 of 2",
               "Tone": "Blue"
             }
-          },
-          {
-            "path": "Action / Leave room",
-            "reactions": [
-              {
-                "on": "on_click",
-                "do": [
-                  {
-                    "nav": "navigate",
-                    "to": "9:769",
-                    "toName": "P11 / Leave room confirmation",
-                    "transition": "dissolve"
-                  }
-                ]
-              }
-            ]
           }
         ]
       },
       {
         "type": "FRAME",
-        "id": "9:1802",
+        "id": "39:21325",
         "name": "Game & room",
         "w": 1312,
         "h": 838,
@@ -91,7 +74,7 @@
         "children": [
           {
             "type": "FRAME",
-            "id": "9:1803",
+            "id": "39:21326",
             "name": "Game stage",
             "w": 944,
             "h": 838,
@@ -104,7 +87,7 @@
             "children": [
               {
                 "type": "INSTANCE",
-                "id": "27:18337",
+                "id": "39:21327",
                 "name": "Zumpo/Turn bar",
                 "w": 944,
                 "h": 114,
@@ -122,7 +105,7 @@
               },
               {
                 "type": "FRAME",
-                "id": "27:18355",
+                "id": "39:21328",
                 "name": "Canvas",
                 "w": 944,
                 "h": 708,
@@ -145,7 +128,7 @@
                 "children": [
                   {
                     "type": "INSTANCE",
-                    "id": "27:18356",
+                    "id": "39:21329",
                     "name": "Drawing / Turtle",
                     "w": 672,
                     "h": 448,
@@ -161,7 +144,7 @@
           },
           {
             "type": "FRAME",
-            "id": "9:1816",
+            "id": "39:21330",
             "name": "Room sidebar",
             "w": 344,
             "h": 678,
@@ -174,7 +157,7 @@
             "children": [
               {
                 "type": "INSTANCE",
-                "id": "9:1817",
+                "id": "39:21331",
                 "name": "Zumpo/Scoreboard",
                 "w": 344,
                 "h": 304,
@@ -199,7 +182,7 @@
               },
               {
                 "type": "INSTANCE",
-                "id": "9:1847",
+                "id": "39:21332",
                 "name": "Zumpo/Chat",
                 "w": 344,
                 "h": 350,
@@ -267,7 +250,7 @@
       },
       {
         "type": "FRAME",
-        "id": "9:1860",
+        "id": "39:21333",
         "name": "Footer",
         "w": 1312,
         "h": 18,
@@ -282,7 +265,7 @@
         "children": [
           {
             "type": "TEXT",
-            "id": "9:1861",
+            "id": "39:21334",
             "w": 650,
             "h": 18,
             "hSize": "hug",
@@ -295,7 +278,7 @@
           },
           {
             "type": "TEXT",
-            "id": "9:1862",
+            "id": "39:21335",
             "w": 115,
             "h": 18,
             "wSize": "hug",
@@ -307,6 +290,109 @@
             ]
           }
         ]
+      },
+      {
+        "type": "RECTANGLE",
+        "id": "39:21336",
+        "name": "Scrim",
+        "x": 0,
+        "y": 0,
+        "absolute": true,
+        "w": 1440,
+        "h": 1008,
+        "opacity": 0.4,
+        "fills": [
+          "$Zumpo · UI:color/ink"
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "39:21388",
+        "name": "Dialog / How to play",
+        "x": 440,
+        "y": 260,
+        "absolute": true,
+        "w": 560,
+        "h": 366,
+        "hSize": "hug",
+        "component": "Zumpo/Card",
+        "variant": {
+          "Kind": "Dialog"
+        },
+        "componentId": "35:13434",
+        "props": {
+          "Description": "Take turns drawing a word while everyone else races to guess it in the chat. Faster guesses score more.",
+          "Title": "How to play Draw & Guess"
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 366,
+            "layoutPositioning": "ABSOLUTE",
+            "width": 560
+          }
+        ],
+        "slots": {
+          "Content": [
+            {
+              "type": "TEXT",
+              "id": "39:21392",
+              "name": "2–8 players 1–4 rounds, everyone draws once a round 15s to pick a word · 90s to draw The answer shows for 10s",
+              "w": 494,
+              "h": 100,
+              "wSize": "fill",
+              "hSize": "hug",
+              "text": "2–8 players\n1–4 rounds, everyone draws once a round\n15s to pick a word · 90s to draw\nThe answer shows for 10s",
+              "textStyle": "Zumpo/Body",
+              "fills": [
+                "$Zumpo · Primitives:color/ink"
+              ],
+              "autoResize": "height"
+            },
+            {
+              "type": "FRAME",
+              "id": "39:21395",
+              "name": "Actions",
+              "w": 160,
+              "h": 48,
+              "wSize": "hug",
+              "hSize": "hug",
+              "clip": true,
+              "layout": {
+                "mode": "row",
+                "gap": "$Zumpo · UI:space/12",
+                "align": "center",
+                "strokesIncluded": true
+              },
+              "children": [
+                {
+                  "type": "INSTANCE",
+                  "id": "39:21396",
+                  "name": "Action / Back to the game",
+                  "w": 160,
+                  "h": 48,
+                  "wSize": "hug",
+                  "component": "Zumpo/Button",
+                  "variant": {
+                    "Style": "Primary",
+                    "State": "Default"
+                  },
+                  "componentId": "4:15",
+                  "props": {
+                    "Label": "Back to the game"
+                  },
+                  "overrides": [
+                    {
+                      "path": "",
+                      "height": 48,
+                      "width": 160
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     ]
   }

@@ -14,7 +14,7 @@
     "x": 1510,
     "y": 2640,
     "w": 390,
-    "h": 840,
+    "h": 760,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -33,195 +33,18 @@
     },
     "children": [
       {
-        "type": "FRAME",
-        "id": "9:10774",
-        "name": "Mobile navigation",
+        "type": "INSTANCE",
+        "id": "39:20599",
+        "name": "Zumpo/Room bar",
         "w": 350,
-        "h": 44,
-        "hSize": "hug",
-        "layout": {
-          "mode": "row",
-          "gap": "$Zumpo · UI:space/12",
-          "justify": "space_between",
-          "align": "center",
-          "strokesIncluded": true
-        },
-        "children": [
-          {
-            "type": "INSTANCE",
-            "id": "9:10775",
-            "name": "Zumpo/Wordmark",
-            "w": 140,
-            "h": 44,
-            "wSize": "hug",
-            "component": "Zumpo/Wordmark",
-            "componentId": "4:36"
-          },
-          {
-            "type": "INSTANCE",
-            "id": "9:10778",
-            "name": "Viewer",
-            "w": 32,
-            "h": 32,
-            "component": "Zumpo/Avatar",
-            "variant": {
-              "Tone": "Sand"
-            },
-            "componentId": "26:10572",
-            "props": {
-              "Initials": "SA"
-            },
-            "overrides": [
-              {
-                "path": ".",
-                "height": 32,
-                "width": 32
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "type": "FRAME",
-        "id": "27:22509",
-        "name": "Room heading",
-        "w": 350,
-        "h": 80,
+        "h": 68,
         "wSize": "fill",
         "hSize": "hug",
-        "layout": {
-          "mode": "row",
-          "gap": "$Zumpo · UI:space/12",
-          "align": "center",
-          "strokesIncluded": true
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Phone"
         },
-        "children": [
-          {
-            "type": "FRAME",
-            "id": "27:22510",
-            "name": "Room identity",
-            "w": 292,
-            "h": 80,
-            "wSize": "fill",
-            "hSize": "hug",
-            "layout": {
-              "mode": "column",
-              "gap": "$Zumpo · UI:space/8",
-              "strokesIncluded": true
-            },
-            "children": [
-              {
-                "type": "FRAME",
-                "id": "27:22511",
-                "name": "Room context",
-                "w": 174,
-                "h": 30,
-                "wSize": "hug",
-                "hSize": "hug",
-                "layout": {
-                  "mode": "row",
-                  "gap": "$Zumpo · UI:space/8",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "INSTANCE",
-                    "id": "27:22512",
-                    "name": "Tag / Maya's room",
-                    "w": 95,
-                    "h": 30,
-                    "wSize": "hug",
-                    "hSize": "hug",
-                    "component": "Zumpo/Tag",
-                    "variant": {
-                      "Tone": "Sand"
-                    },
-                    "componentId": "24:6511",
-                    "props": {
-                      "Label": "Maya's room"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 30,
-                        "width": 95
-                      }
-                    ]
-                  },
-                  {
-                    "type": "INSTANCE",
-                    "id": "27:22517",
-                    "name": "Tag / Round 4",
-                    "w": 71,
-                    "h": 30,
-                    "wSize": "hug",
-                    "hSize": "hug",
-                    "component": "Zumpo/Tag",
-                    "variant": {
-                      "Tone": "Blue"
-                    },
-                    "componentId": "24:6516",
-                    "props": {
-                      "Label": "Round 4"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 30,
-                        "width": 71
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "TEXT",
-                "id": "27:22522",
-                "name": "Title",
-                "w": 230,
-                "h": 42,
-                "wSize": "hug",
-                "hSize": "hug",
-                "text": "Minesweeper",
-                "textStyle": "Zumpo/Title",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ]
-              }
-            ]
-          },
-          {
-            "type": "INSTANCE",
-            "id": "27:22523",
-            "name": "Action / Leave room (icon)",
-            "w": 46,
-            "h": 48,
-            "wSize": "hug",
-            "component": "Zumpo/Button",
-            "variant": {
-              "Style": "Secondary",
-              "State": "Default"
-            },
-            "componentId": "4:18",
-            "props": {
-              "Show icon": true,
-              "Label": "Leave room"
-            },
-            "overrides": [
-              {
-                "path": ".",
-                "height": 48,
-                "paddingLeft": 12,
-                "paddingRight": 12,
-                "width": 46
-              },
-              {
-                "path": "Let’s play",
-                "visible": false
-              }
-            ]
-          }
-        ]
+        "componentId": "39:19277"
       },
       {
         "type": "INSTANCE",
@@ -239,30 +62,6 @@
           {
             "path": ".",
             "height": 34,
-            "width": 350
-          }
-        ]
-      },
-      {
-        "type": "INSTANCE",
-        "id": "9:10793",
-        "name": "Zumpo/Notice",
-        "visible": false,
-        "w": 350,
-        "h": 52,
-        "hSize": "hug",
-        "component": "Zumpo/Notice",
-        "variant": {
-          "Tone": "Info"
-        },
-        "componentId": "9:227",
-        "props": {
-          "Message": "Locked at E4 · waiting for 2 more"
-        },
-        "overrides": [
-          {
-            "path": ".",
-            "height": 52,
             "width": 350
           }
         ]
