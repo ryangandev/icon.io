@@ -4,9 +4,8 @@ import {
   formatExpression,
   formatFraction,
   isTarget,
-  newSeed,
-  SEED_PATTERN,
 } from '../../../../shared/make-24';
+import { newSeed, SEED_PATTERN } from '../../../../shared/seed';
 import {
   Button,
   ButtonLink,

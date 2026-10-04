@@ -9,16 +9,18 @@ import {
   formatFraction,
   formatLastStep,
   isSolvable,
-  newSeed,
   play,
-  SEED_PATTERN,
-  seededRandom,
-  seedNumber,
   solve,
   solves,
   whole,
   type Expression,
 } from '../../shared/make-24.js';
+import {
+  newSeed,
+  SEED_PATTERN,
+  seededRandom,
+  seedNumber,
+} from '../../shared/seed.js';
 
 const fraction = (n: number, d: number) => ({ n, d });
 

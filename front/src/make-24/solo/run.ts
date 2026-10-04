@@ -4,13 +4,12 @@ import {
   dealtCards,
   isTarget,
   play,
-  seededRandom,
-  seedNumber,
   solve,
   type Card,
   type Expression,
   type Step,
 } from '../../../../shared/make-24';
+import { seededRandom, seedNumber } from '../../../../shared/seed';
 
 /**
  * A run of Make 24 on your own: ten hands against one clock, in the browser.
