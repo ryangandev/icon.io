@@ -2,7 +2,7 @@
 // draws, beside that family's Figma preview, each measured against the
 // export. Development only, at /design.
 
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import '../zumpo.css';
 import {
   Avatar,
@@ -121,6 +121,7 @@ export default function Gallery() {
   const [size, setSize] = useState<BrushSize>(10);
   const [view, setView] = useState<'board' | 'players' | 'chat'>('board');
   const [dialog, setDialog] = useState(false);
+  const stay = useRef<HTMLButtonElement>(null);
 
   return (
     <div className={`zumpo zumpo-page ${styles.page}`}>
@@ -830,6 +831,7 @@ export default function Gallery() {
         <Dialog
           open={dialog}
           onOpenChange={setDialog}
+          initialFocus={stay}
           title="Leave Maya’s room?"
           description="The game carries on without you, and your seat and your 180 points go with you. You can join again while a seat is open."
           actions={
@@ -841,7 +843,13 @@ export default function Gallery() {
               >
                 Leave room
               </Button>
-              <DialogClose render={<Button variant="secondary">Stay</Button>} />
+              <DialogClose
+                render={
+                  <Button ref={stay} variant="secondary">
+                    Stay
+                  </Button>
+                }
+              />
             </>
           }
         />

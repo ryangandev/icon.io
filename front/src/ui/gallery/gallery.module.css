@@ -47,6 +47,12 @@
 }
 
 .specimens {
+  /* Specimens keep their Figma widths; on a narrow screen they scroll here
+     rather than widening the page. The bleed keeps badges that overflow a
+     cell and focus rings clear of the scroller's clip. */
+  overflow-x: auto;
+  margin: -12px;
+  padding: 12px;
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
@@ -65,7 +71,7 @@
 /* The export's previews are 2x: shown at 1x they compare one to one. */
 .reference img {
   zoom: 0.5;
-  max-width: 200%;
+  max-width: 100%;
   height: auto;
   border: 1px dashed var(--zumpo-line);
   border-radius: 8px;
@@ -126,6 +132,7 @@
 
 .cellRow {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
 }
 
