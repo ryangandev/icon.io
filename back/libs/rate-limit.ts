@@ -68,6 +68,8 @@ const BUCKET_FOR_EVENT: Record<ClientToServerEvent, BucketName> = {
   'ms:pick': 'room',
   // One solve per player per hand, and the engine ignores the rest.
   't24:solve': 'room',
+  // Two flips a turn, and the engine ignores the rest.
+  'pairs:flip': 'room',
 };
 
 /**

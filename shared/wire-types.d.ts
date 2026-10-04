@@ -25,7 +25,7 @@
  * Which game a room is playing. Every room-layer payload carries it, and it is
  * the key the server's module registry is keyed by.
  */
-type GameType = 'draw-and-guess' | 'minesweeper' | 'make-24';
+type GameType = 'draw-and-guess' | 'minesweeper' | 'make-24' | 'pairs';
 
 type RoomStatus = 'Open' | 'Full' | 'In Progress';
 
@@ -121,7 +121,8 @@ interface RoomCreateRequest {
   /** '' for an open room. */
   password: string;
   /** The game's own half, which only its module can read. */
-  settings: DrawAndGuessSettings | MinesweeperSettings | Make24Settings;
+  settings:
+    DrawAndGuessSettings | MinesweeperSettings | Make24Settings | PairsSettings;
 }
 
 interface DrawAndGuessSettings {
@@ -137,6 +138,13 @@ interface MinesweeperSettings {
 interface Make24Settings {
   /** Hands in a game: 5 or 10. */
   hands: number;
+}
+
+/** Small is 4 × 4, 8 pairs; Large is 6 × 6, 18 pairs. */
+type PairsBoard = 'Small' | 'Large';
+
+interface PairsSettings {
+  board: PairsBoard;
 }
 
 // ---------------------------------------------------------------------------
@@ -172,8 +180,16 @@ interface Make24LobbyRoomInfo extends LobbyRoomInfo {
   hands: number;
 }
 
+interface PairsLobbyRoomInfo extends LobbyRoomInfo {
+  gameType: 'pairs';
+  board: PairsBoard;
+}
+
 type AnyLobbyRoomInfo =
-  DrawAndGuessLobbyRoomInfo | MinesweeperLobbyRoomInfo | Make24LobbyRoomInfo;
+  | DrawAndGuessLobbyRoomInfo
+  | MinesweeperLobbyRoomInfo
+  | Make24LobbyRoomInfo
+  | PairsLobbyRoomInfo;
 
 // ---------------------------------------------------------------------------
 // Rooms
@@ -379,8 +395,50 @@ interface Make24RoomState extends RoomState {
   lastGame: Make24GameSummary | null;
 }
 
+/**
+ * waiting: no game; flipping: a player is turning over two cards; showing:
+ * two that did not match are up for everybody, before they turn back.
+ */
+type PairsPhase = 'waiting' | 'flipping' | 'showing';
+
+/**
+ * A card in its place. Its symbol, an index into the Pairs symbols, is sent
+ * only while it is up or matched, so where the others lie never leaves the
+ * server.
+ */
+interface PairsCardView {
+  state: 'down' | 'up' | 'matched';
+  symbol: number | null;
+}
+
+interface PairsGameSummary extends GameSummary {
+  board: PairsBoard;
+  /** Pairs found; fewer than the board's when the game ended early. */
+  pairs: number;
+}
+
+/** A Pairs room, as one player may see it. Points are pairs found. */
+interface PairsRoomState extends RoomState {
+  gameType: 'pairs';
+  board: PairsBoard;
+  phase: PairsPhase;
+  /** Every card in its place, row by row; empty between games. */
+  cards: PairsCardView[];
+  pairsFound: number;
+  /** Whose turn it is; null between games. */
+  turnPlayerId: string | null;
+  /** Whose turn comes next, skipping anybody not connected. */
+  nextPlayerId: string | null;
+  /** The places of the two cards that just did not match, while they show. */
+  lastMiss: number[];
+  lastGame: PairsGameSummary | null;
+}
+
 type AnyRoomState =
-  DrawAndGuessRoomState | MinesweeperRoomState | Make24RoomState;
+  | DrawAndGuessRoomState
+  | MinesweeperRoomState
+  | Make24RoomState
+  | PairsRoomState;
 
 // ---------------------------------------------------------------------------
 // Chat and the drawing
@@ -468,6 +526,9 @@ interface ClientToServerEvents {
 
   /** A solution to the open hand, as the steps that made it. */
   't24:solve': (roomId: string, steps: Make24Step[]) => void;
+
+  /** Turning over the card at `index`, on your turn. */
+  'pairs:flip': (roomId: string, index: number) => void;
 }
 
 interface ServerToClientEvents {
@@ -546,6 +607,13 @@ export type {
   Make24HandResult,
   Make24GameSummary,
   Make24RoomState,
+  PairsBoard,
+  PairsSettings,
+  PairsLobbyRoomInfo,
+  PairsPhase,
+  PairsCardView,
+  PairsGameSummary,
+  PairsRoomState,
   AnyRoomState,
   ChatMessageKind,
   ChatMessage,
