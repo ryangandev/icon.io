@@ -41,36 +41,93 @@ export function Button({
 }: ButtonProps) {
   return (
     <BaseButton
-      className={cx(
-        styles.button,
-        variant !== 'primary' && styles[variant],
-        iconOnly && styles.iconOnly,
-        iconOnlyWhenNarrow && styles.iconOnlyWhenNarrow,
+      className={buttonClass({
+        variant,
+        iconOnly,
+        iconOnlyWhenNarrow,
         className,
-      )}
+      })}
       {...rest}
     >
-      {icon && <Icon glyph={icon} size={20} />}
-      <span className={styles.label}>{children}</span>
+      <ButtonContent icon={icon}>{children}</ButtonContent>
     </BaseButton>
   );
 }
 
-export interface ButtonLinkProps extends Omit<
+export interface ButtonLinkProps extends Pick<
   ButtonProps,
-  'render' | 'nativeButton' | 'type'
+  | 'variant'
+  | 'icon'
+  | 'iconOnly'
+  | 'iconOnlyWhenNarrow'
+  | 'className'
+  | 'children'
 > {
   to: LinkProps['to'];
   replace?: boolean;
 }
 
-/** A Button that navigates: a link, styled and sized as a Button. */
-export function ButtonLink({ to, replace, ...rest }: ButtonLinkProps) {
+/**
+ * A Button that navigates. It stays a plain link, so assistive technology
+ * announces it as one and it opens in a new tab like any other link.
+ */
+export function ButtonLink({
+  to,
+  replace,
+  variant = 'primary',
+  icon,
+  iconOnly = false,
+  iconOnlyWhenNarrow = false,
+  className,
+  children,
+}: ButtonLinkProps) {
   return (
-    <Button
-      {...rest}
-      render={<Link to={to} replace={replace} />}
-      nativeButton={false}
-    />
+    <Link
+      to={to}
+      replace={replace}
+      className={buttonClass({
+        variant,
+        iconOnly,
+        iconOnlyWhenNarrow,
+        className,
+      })}
+    >
+      <ButtonContent icon={icon}>{children}</ButtonContent>
+    </Link>
+  );
+}
+
+function buttonClass({
+  variant,
+  iconOnly,
+  iconOnlyWhenNarrow,
+  className,
+}: {
+  variant: ButtonVariant;
+  iconOnly: boolean;
+  iconOnlyWhenNarrow: boolean;
+  className?: string;
+}) {
+  return cx(
+    styles.button,
+    variant !== 'primary' && styles[variant],
+    iconOnly && styles.iconOnly,
+    iconOnlyWhenNarrow && styles.iconOnlyWhenNarrow,
+    className,
+  );
+}
+
+function ButtonContent({
+  icon,
+  children,
+}: {
+  icon?: GlyphName;
+  children: ReactNode;
+}) {
+  return (
+    <>
+      {icon && <Icon glyph={icon} size={20} />}
+      <span className={styles.label}>{children}</span>
+    </>
   );
 }
