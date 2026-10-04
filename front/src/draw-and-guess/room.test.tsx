@@ -91,6 +91,43 @@ describe('a Draw & Guess room', () => {
     );
   });
 
+  it('shares first place in a tie', async () => {
+    await renderSeated(
+      drawAndGuessState({
+        playerList: {
+          p1: { username: 'Ryan', points: 414, isConnected: true },
+          p2: { username: 'Maya', points: 414, isConnected: true },
+          p3: { username: 'Sam', points: 90, isConnected: true },
+        },
+        lastGame: {
+          endedEarly: false,
+          standings: [
+            { playerId: 'p1', username: 'Ryan', points: 414 },
+            { playerId: 'p2', username: 'Maya', points: 414 },
+            { playerId: 'p3', username: 'Sam', points: 90 },
+          ],
+          wordCategory: 'Food',
+          rounds: 2,
+          turns: 6,
+        },
+      }),
+    );
+    expect(
+      screen.getByRole('heading', {
+        name: 'Ryan and Maya tie with 414 points.',
+      }),
+    ).toBeInTheDocument();
+    const places = within(screen.getByRole('list', { name: 'Standings' }))
+      .getAllByRole('listitem')
+      .filter((item) => item.parentElement?.tagName === 'OL')
+      .map((item) => item.textContent);
+    expect(places).toEqual([
+      expect.stringMatching(/^1.*Ryan.*Winner/),
+      expect.stringMatching(/^1.*Maya.*Winner/),
+      expect.stringMatching(/^3.*Sam.*3rd place/),
+    ]);
+  });
+
   describe('on a phone', () => {
     it('takes a guess under the board', async () => {
       onPhone();

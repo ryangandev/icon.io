@@ -4,7 +4,11 @@ import type {
 } from '../../models/types.js';
 import { RequestError } from '../../models/error.js';
 import type { GameContext, Room } from '../../libs/rooms/types.js';
-import { getRoomStatus, resetPoints } from '../../libs/utils.js';
+import {
+  gameOverMessage,
+  getRoomStatus,
+  resetPoints,
+} from '../../libs/utils.js';
 import {
   minesweeperDurationsInSeconds as defaultDurations,
   type MinesweeperDurationsInSeconds,
@@ -332,16 +336,8 @@ const createMinesweeperGameEngine = (
       room.isGameStarted,
     );
 
-    const winner = standings[0];
-
     ctx.rooms.emitState(room);
-    ctx.rooms.announce(
-      room.roomId,
-      'system',
-      winner
-        ? `Game over: ${winner.username} wins with ${winner.points} points!`
-        : 'Game has ended!',
-    );
+    ctx.rooms.announce(room.roomId, 'system', gameOverMessage(standings));
     ctx.rooms.emitLobby('minesweeper');
   };
 

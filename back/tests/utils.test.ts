@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  gameOverMessage,
   getRandomElementFromSet,
   getRemainingPhaseMs,
   getRoomStatus,
@@ -69,5 +70,34 @@ describe('resetPoints', () => {
     // A player inside their reconnect grace keeps their seat, so a new game
     // must not quietly mark them present.
     expect(reset.b.isConnected).toBe(false);
+  });
+});
+
+const standing = (username: string, points: number) => ({
+  playerId: username.toLowerCase(),
+  username,
+  points,
+});
+
+describe('gameOverMessage', () => {
+  it('names the winner', () => {
+    expect(gameOverMessage([standing('Alice', 40), standing('Bob', 12)])).toBe(
+      'Game over: Alice wins with 40 points!',
+    );
+  });
+
+  it('names everyone who shares the top score', () => {
+    expect(
+      gameOverMessage([
+        standing('Alice', 40),
+        standing('Bob', 40),
+        standing('Cat', 40),
+        standing('Dan', 3),
+      ]),
+    ).toBe('Game over: Alice, Bob and Cat tie with 40 points!');
+  });
+
+  it('just ends a game nobody is left in', () => {
+    expect(gameOverMessage([])).toBe('Game has ended!');
   });
 });

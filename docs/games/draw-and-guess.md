@@ -36,6 +36,7 @@ Scores are shown throughout, in the player list, ranked.
 Draw & Guess is a race for points, not an elimination game: a turn you guess nothing on costs you nothing but the points you did not take.
 
 **The winner is whoever has the most points when the last round ends.**
+Players who share the top score share the win, and the results screen ranks a shared score in one place (1, 1, 3).
 The room snapshot keeps a summary of the finished game (`lastGame`: the standings best first, the category, how many rounds and turns were played, and whether it ended early) until the next game starts, which is what a results screen is drawn from.
 
 ## Scoring

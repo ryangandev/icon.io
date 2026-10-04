@@ -29,7 +29,8 @@ That always happens: every round uncovers at least one cell, so a finite board r
 ## Winning and losing
 
 **The winner is whoever has the most points when the board runs out.**
-The game ends when nothing is left to pick (every safe cell uncovered, every mine found, or some of each), and the room announces `Game over: <name> wins with <n> points!`.
+Players who share the top score share the win, and the results screen ranks a shared score in one place (1, 1, 3).
+The game ends when nothing is left to pick (every safe cell uncovered, every mine found, or some of each), and the room announces `Game over: <name> wins with <n> points!`, or `Game over: <names> tie with <n> points!`.
 
 **There is no lose condition.**
 Hitting a mine costs points; it does not remove you, end the round, or end the game.

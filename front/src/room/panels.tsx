@@ -4,7 +4,7 @@ import { Button, ButtonLink, PlayerRow } from '../ui';
 import { gameInfo, lobbyPath } from '../games/catalog';
 import { initialsOf, toneOf } from '../players/avatar';
 import { StatusLine } from '../shell/status-line';
-import { ordinal } from './players';
+import { listNames, ordinal, placesOf } from './players';
 import { useRoomContext } from './room-context';
 import styles from './panels.module.css';
 
@@ -146,8 +146,10 @@ export function ResultsPanel({
   starting: boolean;
 }) {
   const { state, isHost, playerId } = useRoomContext();
-  const [winner] = summary.standings;
-  const place = summary.standings.findIndex((s) => s.playerId === playerId) + 1;
+  const { standings } = summary;
+  const places = placesOf(standings);
+  const winners = standings.filter((_, index) => places[index] === 1);
+  const place = places[standings.findIndex((s) => s.playerId === playerId)];
   const count = Object.keys(state.playerList).length;
 
   const actions = !isHost ? (
@@ -169,33 +171,44 @@ export function ResultsPanel({
     <section className={styles.results} aria-labelledby="results-title">
       <div className={styles.resultHeading}>
         <h2 id="results-title" className={styles.title}>
-          {winner
-            ? `${winner.username} wins with ${winner.points} points.`
-            : 'Game over.'}
+          {winners.length === 0
+            ? 'Game over.'
+            : winners.length === 1
+              ? `${winners[0].username} wins with ${winners[0].points} points.`
+              : `${listNames(winners.map((w) => w.username))} tie with ${winners[0].points} points.`}
         </h2>
         <p className={styles.body}>
           {detail}
           {place > 1 && ` You finished ${ordinal(place)}.`}
         </p>
       </div>
-      <ol className={styles.ranking}>
-        {summary.standings.map((standing, index) => {
+      <ol className={styles.ranking} aria-label="Standings">
+        {standings.map((standing, index) => {
           const seat = state.playerList[standing.playerId];
+          const standingPlace = places[index];
           return (
             <li key={standing.playerId} className={styles.place}>
-              <span className={styles.number}>{index + 1}</span>
+              <span className={styles.number}>{standingPlace}</span>
               <ul className={styles.row}>
                 <PlayerRow
                   name={standing.username}
                   initials={initialsOf(standing.username)}
                   tone={toneOf(standing.username)}
                   status={
-                    index === 0 ? 'Winner' : `${ordinal(index + 1)} place`
+                    standingPlace === 1
+                      ? 'Winner'
+                      : `${ordinal(standingPlace)} place`
                   }
                   score={standing.points}
                   host={standing.playerId === state.owner.playerId}
                   you={standing.playerId === playerId}
-                  state={index === 0 ? 'highlight' : seat ? 'default' : 'away'}
+                  state={
+                    standingPlace === 1
+                      ? 'highlight'
+                      : seat
+                        ? 'default'
+                        : 'away'
+                  }
                 />
               </ul>
             </li>

@@ -7,7 +7,7 @@ import { plural } from '../games/plural';
 import { useSecondsLeft } from '../net/use-seconds-left';
 import { initialsOf, toneOf } from '../players/avatar';
 import { EndedEarlyPanel, ResultsPanel, WaitingPanel } from '../room/panels';
-import { rankedPlayers, type Seat } from '../room/players';
+import { listNames, rankedPlayers, type Seat } from '../room/players';
 import { useRoomContext, type Room as RoomOf } from '../room/room-context';
 import { RoomLayout, type PlayerLine } from '../room/room-layout';
 import { BOARDS } from './boards';
@@ -169,11 +169,6 @@ const signed = (points: number) =>
   points > 0 ? `+${points}` : points < 0 ? `−${-points}` : '+0';
 
 /** "Ryan", "Ryan and Maya", "Ryan, Leo and Maya". */
-function listNames(names: readonly string[]): string {
-  if (names.length <= 1) return names.join('');
-  return `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
-}
-
 function turnBar(room: Room, seconds: number): TurnBarProps {
   const { state, playerId, reconnecting } = room;
   const category = `${state.difficulty} · ${state.width} × ${state.height}`;

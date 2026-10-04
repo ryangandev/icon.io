@@ -19,6 +19,7 @@ import {
   waitForMineState,
   type TestServer,
 } from './helpers/test-server.js';
+import { gameOverMessage } from '../libs/utils.js';
 import { hiddenIndexes } from '../socket/minesweeper/board.js';
 import { pointsForPick } from '../socket/minesweeper/scoring.js';
 
@@ -530,10 +531,9 @@ describe('a Minesweeper game', () => {
       expect(standing.points).toBe(final.playerList[standing.playerId]!.points);
     }
 
-    const winner = summary.standings[0]!;
     expect(message).toMatchObject({
       kind: 'system',
-      text: `Game over: ${winner.username} wins with ${winner.points} points!`,
+      text: gameOverMessage(summary.standings),
     });
     expect(hiddenIndexes(minesweeperRoom(harness, roomId).game.board)).toEqual(
       [],

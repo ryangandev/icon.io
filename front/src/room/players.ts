@@ -14,6 +14,22 @@ export function rankedPlayers(state: AnyRoomState): Seat[] {
     .toSorted((a, b) => b.points - a.points);
 }
 
+/**
+ * Each standing's place, best first: a shared score shares a place, and the
+ * next one skips past it (1, 1, 3).
+ */
+export function placesOf(standings: readonly { points: number }[]): number[] {
+  return standings.map(
+    ({ points }) => standings.findIndex((s) => s.points === points) + 1,
+  );
+}
+
+/** "Ryan", "Ryan and Maya", "Ryan, Maya and Sam". */
+export function listNames(names: readonly string[]): string {
+  if (names.length <= 1) return names.join('');
+  return `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
+}
+
 /** "1st", "2nd", "3rd", "4th"… */
 export function ordinal(place: number): string {
   const tens = place % 100;

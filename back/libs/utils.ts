@@ -1,5 +1,9 @@
 import { randomUUID } from 'node:crypto';
-import type { PlayerInfo, RoomStatus } from '../../shared/wire-types.js';
+import type {
+  PlayerInfo,
+  RoomStatus,
+  Standing,
+} from '../../shared/wire-types.js';
 
 /**
  * Helpers that belong to no particular game.
@@ -62,7 +66,25 @@ const resetPoints = (
   );
 };
 
+/**
+ * The chat line a finished game ends on, from its standings, best first:
+ * everyone who shares the top score shares the win.
+ */
+const gameOverMessage = (standings: readonly Standing[]): string => {
+  const top = standings[0];
+  if (!top) return 'Game has ended!';
+  const winners = standings
+    .filter((standing) => standing.points === top.points)
+    .map((standing) => standing.username);
+  if (winners.length === 1) {
+    return `Game over: ${top.username} wins with ${top.points} points!`;
+  }
+  const names = `${winners.slice(0, -1).join(', ')} and ${winners.at(-1)}`;
+  return `Game over: ${names} tie with ${top.points} points!`;
+};
+
 export {
+  gameOverMessage,
   generateRoomId,
   getRandomInt,
   getRoomStatus,
