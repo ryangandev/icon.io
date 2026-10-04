@@ -12,9 +12,9 @@
     "id": "9:13517",
     "name": "MO16 / Room · chat tab",
     "x": 1510,
-    "y": 3727.28,
+    "y": 3624,
     "w": 390,
-    "h": 835,
+    "h": 674,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -60,20 +60,20 @@
           {
             "type": "INSTANCE",
             "id": "9:13522",
-            "name": "Player / YO",
+            "name": "Viewer",
             "w": 32,
             "h": 32,
             "component": "Zumpo/Avatar",
-            "componentId": "4:34",
+            "variant": {
+              "Tone": "Sand"
+            },
+            "componentId": "26:10572",
             "props": {
-              "Initials": "YO"
+              "Initials": "SA"
             },
             "overrides": [
               {
                 "path": ".",
-                "fills": [
-                  "$Zumpo · UI:color/blue"
-                ],
                 "height": 32,
                 "width": 32
               }
@@ -83,46 +83,107 @@
       },
       {
         "type": "FRAME",
-        "id": "9:13525",
-        "name": "Page heading",
+        "id": "27:22739",
+        "name": "Room heading",
         "w": 350,
-        "h": 125,
+        "h": 80,
+        "wSize": "fill",
         "hSize": "hug",
         "layout": {
-          "mode": "column",
+          "mode": "row",
           "gap": "$Zumpo · UI:space/12",
+          "align": "center",
           "strokesIncluded": true
         },
         "children": [
           {
             "type": "FRAME",
-            "id": "9:13526",
-            "name": "Status / MAYA’S ROOM",
-            "w": 97,
-            "h": 34,
-            "wSize": "hug",
+            "id": "27:22740",
+            "name": "Room identity",
+            "w": 292,
+            "h": 80,
+            "wSize": "fill",
             "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/sand"
-            ],
-            "radius": "$Zumpo · UI:radius/999",
             "layout": {
-              "mode": "row",
+              "mode": "column",
               "gap": "$Zumpo · UI:space/8",
-              "pad": "$Zumpo · UI:space/8",
-              "align": "center",
               "strokesIncluded": true
             },
             "children": [
               {
-                "type": "TEXT",
-                "id": "9:13527",
-                "w": 81,
-                "h": 18,
+                "type": "FRAME",
+                "id": "27:22741",
+                "name": "Room context",
+                "w": 198,
+                "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
-                "text": "MAYA’S ROOM",
-                "textStyle": "Zumpo/Small",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "27:22742",
+                    "name": "Tag / Maya's room",
+                    "w": 95,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Sand"
+                    },
+                    "componentId": "24:6511",
+                    "props": {
+                      "Label": "Maya's room"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 95
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "27:22747",
+                    "name": "Tag / Round 2 of 2",
+                    "w": 95,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Blue"
+                    },
+                    "componentId": "24:6516",
+                    "props": {
+                      "Label": "Round 2 of 2"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 95
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "27:22752",
+                "name": "Title",
+                "w": 248,
+                "h": 42,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Draw & Guess",
+                "textStyle": "Zumpo/Title",
                 "fills": [
                   "$Zumpo · UI:color/ink"
                 ]
@@ -130,30 +191,35 @@
             ]
           },
           {
-            "type": "TEXT",
-            "id": "9:13528",
-            "w": 350,
-            "h": 42,
-            "hSize": "hug",
-            "text": "Draw & Guess",
-            "textStyle": "Zumpo/Title",
-            "fills": [
-              "$Zumpo · UI:color/ink"
-            ],
-            "autoResize": "height"
-          },
-          {
-            "type": "TEXT",
-            "id": "9:13529",
-            "w": 350,
-            "h": 25,
-            "hSize": "hug",
-            "text": "Round 1 · 4 players",
-            "textStyle": "Zumpo/Body",
-            "fills": [
-              "$Zumpo · UI:color/muted"
-            ],
-            "autoResize": "height"
+            "type": "INSTANCE",
+            "id": "27:22753",
+            "name": "Action / Leave room (icon)",
+            "w": 46,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Secondary",
+              "State": "Default"
+            },
+            "componentId": "4:18",
+            "props": {
+              "Show icon": true,
+              "Label": "Leave room"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "paddingLeft": 12,
+                "paddingRight": 12,
+                "width": 46
+              },
+              {
+                "path": "Let’s play",
+                "visible": false
+              }
+            ]
           }
         ]
       },
@@ -182,47 +248,63 @@
         "id": "9:13537",
         "name": "Zumpo/Chat",
         "w": 350,
-        "h": 327,
+        "h": 350,
+        "wSize": "fill",
         "hSize": "hug",
         "component": "Zumpo/Chat",
         "componentId": "9:334",
         "overrides": [
           {
             "path": ".",
-            "height": 327,
-            "width": 350
-          }
-        ]
-      },
-      {
-        "type": "INSTANCE",
-        "id": "9:13550",
-        "name": "Zumpo/Input",
-        "w": 350,
-        "h": 115,
-        "hSize": "hug",
-        "component": "Zumpo/Input",
-        "variant": {
-          "State": "Focus"
-        },
-        "componentId": "9:210",
-        "overrides": [
-          {
-            "path": ".",
-            "height": 115,
+            "height": 350,
             "width": 350
           },
           {
-            "path": "Your name",
-            "characters": "Your guess"
+            "path": "Messages / Message 1",
+            "componentProperties": {
+              "Message": "my turn, brace yourselves",
+              "Name": "Maya",
+              "Kind": "Player"
+            }
           },
           {
-            "path": "Editable value / Maya",
-            "characters": "spaceship?"
+            "path": "Messages / Message 3",
+            "componentProperties": {
+              "Message": "a hat",
+              "Name": "Leo",
+              "Kind": "Player"
+            }
           },
           {
-            "path": "Choose a name people will see.",
-            "characters": "Enter to guess · 40 characters max."
+            "path": "Messages / Message 4",
+            "componentProperties": {
+              "Message": "shell",
+              "Name": "Ryan",
+              "Kind": "Player"
+            }
+          },
+          {
+            "path": "Messages / Message 5",
+            "componentProperties": {
+              "Message": "tortoise",
+              "Name": "Leo",
+              "Kind": "Player"
+            }
+          },
+          {
+            "path": "Messages / Message 6",
+            "componentProperties": {
+              "Message": "snail?",
+              "Name": "Sam",
+              "Kind": "Player"
+            }
+          },
+          {
+            "path": "Chat input",
+            "componentProperties": {
+              "Placeholder": "Type your guess…",
+              "State": "Default"
+            }
           }
         ]
       },

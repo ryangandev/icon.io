@@ -1,15 +1,20 @@
 {
   "unboundColors": {},
   "unstyledText": {
-    "DM Sans Medium 8": {
-      "count": 15,
+    "DM Sans Medium 10": {
+      "count": 3,
       "samples": [
-        "M07 > M07 / Safe pick · score gained > Board & room > Minefield panel > Board alignment > Minefield / 9 × 9 > Board row 3 > Pick / Ryan > Player pick badge > RG",
-        "M07 > M07 / Safe pick · score gained > Board & room > Minefield panel > Board alignment > Minefield / 9 × 9 > Board row 4 > Pick / You > Player pick badge > YO",
-        "M07 > M07 / Safe pick · score gained > Board & room > Minefield panel > Board alignment > Minefield / 9 × 9 > Board row 5 > Pick / Maya > Player pick badge > MA",
-        "M07 > M07 / Safe pick · score gained > Board & room > Minefield panel > Board alignment > Minefield / 9 × 9 > Board row 7 > Pick / Leo > Player pick badge > LE",
-        "M08 > M08 / Mine hit · score lost > Board & room > Minefield panel > Board alignment > Minefield / 9 × 9 > Board row 3 > Pick / Ryan > Player pick badge > RG",
-        "M08 > M08 / Mine hit · score lost > Board & room > Minefield panel > Board alignment > Minefield / 9 × 9 > Board row 4 > Pick / You > Player pick badge > YO"
+        "Zumpo/Pick marker > Outcome=Safe, Size=Regular > Badge > Initials",
+        "Zumpo/Pick marker > Outcome=Mine, Size=Regular > Badge > Initials",
+        "Zumpo/Pick marker > Outcome=Auto, Size=Regular > Badge > Initials"
+      ]
+    },
+    "DM Sans Medium 8": {
+      "count": 3,
+      "samples": [
+        "Zumpo/Pick marker > Outcome=Safe, Size=Compact > Badge > Initials",
+        "Zumpo/Pick marker > Outcome=Mine, Size=Compact > Badge > Initials",
+        "Zumpo/Pick marker > Outcome=Auto, Size=Compact > Badge > Initials"
       ]
     }
   },
@@ -18,14 +23,25 @@
   "missingComponents": {},
   "hiddenLayers": {
     "INSTANCE": {
-      "count": 9,
+      "count": 82,
       "samples": [
-        "M01 > M01 / Host · waiting for second player > Board & room > Minefield panel > Board stats > Zumpo/Countdown",
-        "M02 > M02 / Host · ready to start > Board & room > Minefield panel > Board stats > Zumpo/Countdown",
-        "M03 > M03 / Guest · waiting for host > Board & room > Minefield panel > Board stats > Zumpo/Countdown",
-        "M06 > M06 / Everyone locked · reveal imminent > Board & room > Minefield panel > Board stats > Zumpo/Countdown",
-        "M14 > M14 / Final scores · host replay > Board & room > Minefield panel > Board stats > Zumpo/Countdown",
-        "M15 > M15 / Final scores · guest waits > Board & room > Minefield panel > Board stats > Zumpo/Countdown"
+        "Zumpo/Button > Style=Primary, State=Default > Icon",
+        "Zumpo/Button > Style=Primary, State=Hover > Icon",
+        "Zumpo/Button > Style=Primary, State=Disabled > Icon",
+        "Zumpo/Button > Style=Secondary, State=Default > Icon",
+        "Zumpo/Button > Style=Secondary, State=Hover > Icon",
+        "Zumpo/Button > Style=Secondary, State=Disabled > Icon"
+      ]
+    },
+    "TEXT": {
+      "count": 29,
+      "samples": [
+        "Zumpo/Select option > Selected=False > Text > Detail",
+        "Zumpo/Select option > Selected=True > Text > Detail",
+        "P07 > P07 / Reconnecting > Page heading > Reconnecting you to Maya’s room.",
+        "P11 > P11 / Leave room confirmation > Room heading > Room identity > A few good guesses go a long way.",
+        "D04 > D04 / Drawer · choose one of 3 words > Room heading > Room identity > A few good guesses go a long way.",
+        "D05 > D05 / Guesser · waiting for word selection > Room heading > Room identity > A few good guesses go a long way."
       ]
     }
   },

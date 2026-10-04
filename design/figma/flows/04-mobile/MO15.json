@@ -12,9 +12,9 @@
     "id": "9:13463",
     "name": "MO15 / Room · players tab",
     "x": 1020,
-    "y": 3727.28,
+    "y": 3624,
     "w": 390,
-    "h": 753,
+    "h": 628,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -60,20 +60,20 @@
           {
             "type": "INSTANCE",
             "id": "9:13468",
-            "name": "Player / YO",
+            "name": "Viewer",
             "w": 32,
             "h": 32,
             "component": "Zumpo/Avatar",
-            "componentId": "4:34",
+            "variant": {
+              "Tone": "Sand"
+            },
+            "componentId": "26:10572",
             "props": {
-              "Initials": "YO"
+              "Initials": "SA"
             },
             "overrides": [
               {
                 "path": ".",
-                "fills": [
-                  "$Zumpo · UI:color/blue"
-                ],
                 "height": 32,
                 "width": 32
               }
@@ -83,46 +83,107 @@
       },
       {
         "type": "FRAME",
-        "id": "9:13471",
-        "name": "Page heading",
+        "id": "27:22713",
+        "name": "Room heading",
         "w": 350,
-        "h": 125,
+        "h": 80,
+        "wSize": "fill",
         "hSize": "hug",
         "layout": {
-          "mode": "column",
+          "mode": "row",
           "gap": "$Zumpo · UI:space/12",
+          "align": "center",
           "strokesIncluded": true
         },
         "children": [
           {
             "type": "FRAME",
-            "id": "9:13472",
-            "name": "Status / MAYA’S ROOM",
-            "w": 97,
-            "h": 34,
-            "wSize": "hug",
+            "id": "27:22714",
+            "name": "Room identity",
+            "w": 292,
+            "h": 80,
+            "wSize": "fill",
             "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/sand"
-            ],
-            "radius": "$Zumpo · UI:radius/999",
             "layout": {
-              "mode": "row",
+              "mode": "column",
               "gap": "$Zumpo · UI:space/8",
-              "pad": "$Zumpo · UI:space/8",
-              "align": "center",
               "strokesIncluded": true
             },
             "children": [
               {
-                "type": "TEXT",
-                "id": "9:13473",
-                "w": 81,
-                "h": 18,
+                "type": "FRAME",
+                "id": "27:22715",
+                "name": "Room context",
+                "w": 198,
+                "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
-                "text": "MAYA’S ROOM",
-                "textStyle": "Zumpo/Small",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "27:22716",
+                    "name": "Tag / Maya's room",
+                    "w": 95,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Sand"
+                    },
+                    "componentId": "24:6511",
+                    "props": {
+                      "Label": "Maya's room"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 95
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "27:22721",
+                    "name": "Tag / Round 2 of 2",
+                    "w": 95,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Blue"
+                    },
+                    "componentId": "24:6516",
+                    "props": {
+                      "Label": "Round 2 of 2"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 95
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "27:22726",
+                "name": "Title",
+                "w": 248,
+                "h": 42,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Draw & Guess",
+                "textStyle": "Zumpo/Title",
                 "fills": [
                   "$Zumpo · UI:color/ink"
                 ]
@@ -130,30 +191,35 @@
             ]
           },
           {
-            "type": "TEXT",
-            "id": "9:13474",
-            "w": 350,
-            "h": 42,
-            "hSize": "hug",
-            "text": "Draw & Guess",
-            "textStyle": "Zumpo/Title",
-            "fills": [
-              "$Zumpo · UI:color/ink"
-            ],
-            "autoResize": "height"
-          },
-          {
-            "type": "TEXT",
-            "id": "9:13475",
-            "w": 350,
-            "h": 25,
-            "hSize": "hug",
-            "text": "Round 1 · 4 players",
-            "textStyle": "Zumpo/Body",
-            "fills": [
-              "$Zumpo · UI:color/muted"
-            ],
-            "autoResize": "height"
+            "type": "INSTANCE",
+            "id": "27:22727",
+            "name": "Action / Leave room (icon)",
+            "w": 46,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Secondary",
+              "State": "Default"
+            },
+            "componentId": "4:18",
+            "props": {
+              "Show icon": true,
+              "Label": "Leave room"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "paddingLeft": 12,
+                "paddingRight": 12,
+                "width": 46
+              },
+              {
+                "path": "Let’s play",
+                "visible": false
+              }
+            ]
           }
         ]
       },
@@ -182,39 +248,28 @@
         "id": "9:13483",
         "name": "Zumpo/Scoreboard",
         "w": 350,
-        "h": 312,
+        "h": 304,
         "hSize": "hug",
         "component": "Zumpo/Scoreboard",
         "componentId": "9:320",
         "overrides": [
           {
             "path": ".",
-            "height": 312,
+            "height": 304,
             "width": 350
-          }
-        ]
-      },
-      {
-        "type": "INSTANCE",
-        "id": "9:13513",
-        "name": "Action / Leave room",
-        "w": 120,
-        "h": 48,
-        "wSize": "hug",
-        "component": "Zumpo/Button",
-        "variant": {
-          "Style": "Quiet",
-          "State": "Default"
-        },
-        "componentId": "4:21",
-        "props": {
-          "Label": "Leave room"
-        },
-        "overrides": [
+          },
           {
-            "path": ".",
-            "height": 48,
-            "width": 120
+            "path": "Player 1",
+            "componentProperties": {
+              "Icon": "24:5053",
+              "Status icon": true,
+              "You": false,
+              "Name": "Maya",
+              "Status": "Drawing",
+              "Host": true,
+              "Score": "460",
+              "State": "Highlight"
+            }
           }
         ]
       },

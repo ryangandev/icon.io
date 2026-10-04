@@ -12,9 +12,9 @@
     "id": "9:4137",
     "name": "M06 / Everyone locked · reveal imminent",
     "x": 3120,
-    "y": 4418,
+    "y": 4061,
     "w": 1440,
-    "h": 1110,
+    "h": 1224,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -42,9 +42,10 @@
         "componentId": "4:39",
         "overrides": [
           {
-            "path": "Navigation / Zumpo/Avatar",
+            "path": "Navigation / You",
             "componentProperties": {
-              "Initials": "YO"
+              "Initials": "SA",
+              "Tone": "Sand"
             }
           }
         ]
@@ -54,7 +55,7 @@
         "id": "9:4148",
         "name": "Room heading",
         "w": 1312,
-        "h": 117,
+        "h": 80,
         "hSize": "hug",
         "layout": {
           "mode": "row",
@@ -69,7 +70,7 @@
             "id": "9:4149",
             "name": "Room identity",
             "w": 930,
-            "h": 117,
+            "h": 80,
             "hSize": "hug",
             "layout": {
               "mode": "column",
@@ -82,7 +83,7 @@
                 "id": "9:4150",
                 "name": "Room context",
                 "w": 930,
-                "h": 34,
+                "h": 30,
                 "hSize": "hug",
                 "layout": {
                   "mode": "row",
@@ -92,72 +93,50 @@
                 },
                 "children": [
                   {
-                    "type": "FRAME",
-                    "id": "9:4151",
-                    "name": "Status / MAYA’S ROOM",
-                    "w": 97,
-                    "h": 34,
+                    "type": "INSTANCE",
+                    "id": "27:20521",
+                    "name": "Tag / Maya's room",
+                    "w": 95,
+                    "h": 30,
                     "wSize": "hug",
                     "hSize": "hug",
-                    "fills": [
-                      "$Zumpo · UI:color/sand"
-                    ],
-                    "radius": "$Zumpo · UI:radius/999",
-                    "layout": {
-                      "mode": "row",
-                      "gap": "$Zumpo · UI:space/8",
-                      "pad": "$Zumpo · UI:space/8",
-                      "align": "center",
-                      "strokesIncluded": true
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Sand"
                     },
-                    "children": [
+                    "componentId": "24:6511",
+                    "props": {
+                      "Label": "Maya's room"
+                    },
+                    "overrides": [
                       {
-                        "type": "TEXT",
-                        "id": "9:4152",
-                        "w": 81,
-                        "h": 18,
-                        "wSize": "hug",
-                        "hSize": "hug",
-                        "text": "MAYA’S ROOM",
-                        "textStyle": "Zumpo/Small",
-                        "fills": [
-                          "$Zumpo · UI:color/ink"
-                        ]
+                        "path": ".",
+                        "height": 30,
+                        "width": 95
                       }
                     ]
                   },
                   {
-                    "type": "FRAME",
-                    "id": "9:4153",
-                    "name": "Status / ROUND 6",
-                    "w": 68,
-                    "h": 34,
+                    "type": "INSTANCE",
+                    "id": "27:20526",
+                    "name": "Tag / Round 4",
+                    "w": 71,
+                    "h": 30,
                     "wSize": "hug",
                     "hSize": "hug",
-                    "fills": [
-                      "$Zumpo · UI:color/blue"
-                    ],
-                    "radius": "$Zumpo · UI:radius/999",
-                    "layout": {
-                      "mode": "row",
-                      "gap": "$Zumpo · UI:space/8",
-                      "pad": "$Zumpo · UI:space/8",
-                      "align": "center",
-                      "strokesIncluded": true
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Blue"
                     },
-                    "children": [
+                    "componentId": "24:6516",
+                    "props": {
+                      "Label": "Round 4"
+                    },
+                    "overrides": [
                       {
-                        "type": "TEXT",
-                        "id": "9:4154",
-                        "w": 52,
-                        "h": 18,
-                        "wSize": "hug",
-                        "hSize": "hug",
-                        "text": "ROUND 6",
-                        "textStyle": "Zumpo/Small",
-                        "fills": [
-                          "$Zumpo · UI:color/ink"
-                        ]
+                        "path": ".",
+                        "height": 30,
+                        "width": 71
                       }
                     ]
                   }
@@ -179,9 +158,9 @@
               {
                 "type": "TEXT",
                 "id": "9:4156",
+                "visible": false,
                 "w": 930,
                 "h": 25,
-                "hSize": "hug",
                 "text": "Everybody picks at once. Keep your choice to yourself.",
                 "textStyle": "Zumpo/Body",
                 "fills": [
@@ -195,16 +174,17 @@
             "type": "INSTANCE",
             "id": "9:4157",
             "name": "Action / Leave room",
-            "w": 120,
+            "w": 150,
             "h": 48,
             "wSize": "hug",
             "component": "Zumpo/Button",
             "variant": {
-              "Style": "Quiet",
+              "Style": "Secondary",
               "State": "Default"
             },
-            "componentId": "4:21",
+            "componentId": "4:18",
             "props": {
+              "Show icon": true,
               "Label": "Leave room"
             },
             "overrides": [
@@ -224,7 +204,7 @@
                     ]
                   }
                 ],
-                "width": 120
+                "width": 150
               }
             ],
             "reactions": [
@@ -247,23 +227,23 @@
         "type": "INSTANCE",
         "id": "9:4159",
         "name": "Zumpo/Notice",
+        "visible": false,
         "w": 1312,
-        "h": 56,
+        "h": 52,
         "hSize": "hug",
         "component": "Zumpo/Notice",
         "variant": {
           "Tone": "Pending"
         },
         "componentId": "9:239",
+        "props": {
+          "Message": "4 / 4 locked. Revealing everybody’s picks…"
+        },
         "overrides": [
           {
             "path": ".",
-            "height": 56,
+            "height": 52,
             "width": 1312
-          },
-          {
-            "path": "Connection restored. Welcome back!",
-            "characters": "4 / 4 locked. Revealing everybody’s picks…"
           }
         ]
       },
@@ -272,7 +252,7 @@
         "id": "9:4162",
         "name": "Board & room",
         "w": 1312,
-        "h": 663,
+        "h": 894,
         "hSize": "hug",
         "layout": {
           "mode": "row",
@@ -282,126 +262,805 @@
         "children": [
           {
             "type": "FRAME",
-            "id": "9:4163",
-            "name": "Minefield panel",
+            "id": "27:20582",
+            "name": "Board stage",
             "w": 944,
-            "h": 588,
+            "h": 894,
             "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/paper"
-            ],
-            "strokes": [
-              "$Zumpo · UI:color/line"
-            ],
-            "strokeAlign": "inside",
-            "radius": "$Zumpo · UI:radius/24",
             "layout": {
               "mode": "column",
-              "gap": "$Zumpo · UI:space/20",
-              "pad": "$Zumpo · UI:space/24",
+              "gap": "$Zumpo · UI:space/16",
               "strokesIncluded": true
             },
             "children": [
               {
-                "type": "FRAME",
-                "id": "9:4164",
-                "name": "Board stats",
-                "w": 896,
-                "h": 34,
+                "type": "INSTANCE",
+                "id": "27:20583",
+                "name": "Zumpo/Turn bar",
+                "w": 944,
+                "h": 102,
+                "wSize": "fill",
                 "hSize": "hug",
-                "layout": {
-                  "mode": "row",
-                  "gap": "$Zumpo · UI:space/12",
-                  "justify": "space_between",
-                  "align": "center",
-                  "strokesIncluded": true
+                "component": "Zumpo/Turn bar",
+                "variant": {
+                  "Kind": "Status",
+                  "Layout": "Desktop"
                 },
-                "children": [
+                "componentId": "26:16856",
+                "props": {
+                  "Meta": "Revealing the picks…",
+                  "Main": "Everyone is locked in",
+                  "Label": "Round 4"
+                },
+                "overrides": [
                   {
-                    "type": "FRAME",
-                    "id": "9:4165",
-                    "name": "Status / SMALL · 9 × 9",
-                    "w": 92,
-                    "h": 34,
-                    "wSize": "hug",
-                    "hSize": "hug",
-                    "fills": [
-                      "$Zumpo · UI:color/blue"
-                    ],
-                    "radius": "$Zumpo · UI:radius/999",
-                    "layout": {
-                      "mode": "row",
-                      "gap": "$Zumpo · UI:space/8",
-                      "pad": "$Zumpo · UI:space/8",
-                      "align": "center",
-                      "strokesIncluded": true
-                    },
-                    "children": [
-                      {
-                        "type": "TEXT",
-                        "id": "9:4166",
-                        "w": 76,
-                        "h": 18,
-                        "wSize": "hug",
-                        "hSize": "hug",
-                        "text": "SMALL · 9 × 9",
-                        "textStyle": "Zumpo/Small",
-                        "fills": [
-                          "$Zumpo · UI:color/ink"
-                        ]
-                      }
-                    ]
+                    "path": "Turn / Eyebrow / Category",
+                    "componentProperties": {
+                      "Icon": "24:5010",
+                      "Show icon": false,
+                      "Label": "Small · 9 × 9",
+                      "Tone": "Sand"
+                    }
                   },
                   {
-                    "type": "TEXT",
-                    "id": "9:4167",
-                    "w": 60,
-                    "h": 20,
-                    "wSize": "hug",
-                    "hSize": "hug",
-                    "text": "10 mines",
-                    "textStyle": "Zumpo/Label",
-                    "fills": [
-                      "$Zumpo · UI:color/ink"
-                    ]
-                  },
-                  {
-                    "type": "INSTANCE",
-                    "id": "9:4168",
-                    "name": "Zumpo/Countdown",
-                    "visible": false,
-                    "w": 150,
-                    "h": 48,
-                    "hSize": "hug",
-                    "component": "Zumpo/Countdown",
-                    "componentId": "9:404"
+                    "path": "Countdown",
+                    "visible": false
                   }
                 ]
               },
               {
                 "type": "FRAME",
-                "id": "9:4505",
-                "name": "Board alignment",
-                "w": 896,
-                "h": 428,
+                "id": "9:4163",
+                "name": "Minefield panel",
+                "w": 944,
+                "h": 776,
+                "wSize": "fill",
                 "hSize": "hug",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside",
+                "radius": "$Zumpo · UI:radius/24",
                 "layout": {
-                  "mode": "row",
-                  "justify": "center",
-                  "align": "center",
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/20",
+                  "pad": "$Zumpo · UI:space/24",
                   "strokesIncluded": true
                 },
                 "children": [
                   {
                     "type": "FRAME",
-                    "id": "9:4171",
-                    "name": "Minefield / 9 × 9",
-                    "w": 428,
+                    "id": "9:4505",
+                    "name": "Board alignment",
+                    "w": 896,
                     "h": 428,
                     "hSize": "hug",
-                    "fills": [
-                      "$Zumpo · UI:color/paper"
-                    ],
+                    "layout": {
+                      "mode": "row",
+                      "justify": "center",
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "FRAME",
+                        "id": "9:4171",
+                        "name": "Minefield / 9 × 9",
+                        "w": 428,
+                        "h": 428,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "layout": {
+                          "mode": "column",
+                          "gap": "$Zumpo · UI:space/4",
+                          "strokesIncluded": true
+                        },
+                        "children": [
+                          {
+                            "type": "GRID",
+                            "rows": 4,
+                            "cols": 9,
+                            "count": 36,
+                            "kind": "Zumpo/Mine cell",
+                            "firstId": "26:7539",
+                            "rowFrame": {
+                              "type": "FRAME",
+                              "name": "Row 1",
+                              "w": 428,
+                              "h": 44,
+                              "wSize": "hug",
+                              "hSize": "hug",
+                              "layout": {
+                                "mode": "row",
+                                "gap": 4,
+                                "strokesIncluded": true
+                              }
+                            },
+                            "pitch": [
+                              48,
+                              48
+                            ],
+                            "cell": {
+                              "type": "INSTANCE",
+                              "name": "Zumpo/Mine cell",
+                              "w": 44,
+                              "h": 44,
+                              "component": "Zumpo/Mine cell",
+                              "variant": {
+                                "State": "Hidden",
+                                "Size": "Regular"
+                              },
+                              "componentId": "24:7235"
+                            },
+                            "special": [
+                              {
+                                "r": 0,
+                                "c": 0,
+                                "id": "26:7539",
+                                "variant": {
+                                  "State": "Empty",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7240"
+                              },
+                              {
+                                "r": 0,
+                                "c": 1,
+                                "id": "26:7540",
+                                "variant": {
+                                  "State": "Empty",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7240"
+                              },
+                              {
+                                "r": 0,
+                                "c": 2,
+                                "id": "26:7541",
+                                "variant": {
+                                  "State": "1",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7241"
+                              },
+                              {
+                                "r": 0,
+                                "c": 7,
+                                "id": "26:7547",
+                                "variant": {
+                                  "State": "1",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7241"
+                              },
+                              {
+                                "r": 1,
+                                "c": 0,
+                                "id": "26:7551",
+                                "variant": {
+                                  "State": "Empty",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7240"
+                              },
+                              {
+                                "r": 1,
+                                "c": 1,
+                                "id": "26:7552",
+                                "variant": {
+                                  "State": "Empty",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7240"
+                              },
+                              {
+                                "r": 1,
+                                "c": 2,
+                                "id": "26:7553",
+                                "variant": {
+                                  "State": "2",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7243"
+                              },
+                              {
+                                "r": 1,
+                                "c": 4,
+                                "id": "26:7556",
+                                "variant": {
+                                  "State": "3",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7245"
+                              },
+                              {
+                                "r": 1,
+                                "c": 7,
+                                "id": "26:7560",
+                                "variant": {
+                                  "State": "1",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7241"
+                              },
+                              {
+                                "r": 2,
+                                "c": 0,
+                                "id": "26:7564",
+                                "variant": {
+                                  "State": "Empty",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7240"
+                              },
+                              {
+                                "r": 2,
+                                "c": 1,
+                                "id": "26:7565",
+                                "variant": {
+                                  "State": "Empty",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7240"
+                              },
+                              {
+                                "r": 2,
+                                "c": 2,
+                                "id": "26:7566",
+                                "variant": {
+                                  "State": "2",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7243"
+                              },
+                              {
+                                "r": 2,
+                                "c": 5,
+                                "id": "26:7570",
+                                "variant": {
+                                  "State": "1",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7241"
+                              },
+                              {
+                                "r": 3,
+                                "c": 2,
+                                "id": "26:7603",
+                                "variant": {
+                                  "State": "1",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7241"
+                              },
+                              {
+                                "r": 3,
+                                "c": 3,
+                                "id": "26:7605",
+                                "variant": {
+                                  "State": "Empty",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7240"
+                              },
+                              {
+                                "r": 3,
+                                "c": 4,
+                                "id": "26:7606",
+                                "variant": {
+                                  "State": "2",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7243"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "FRAME",
+                            "id": "26:7575",
+                            "name": "Row 4",
+                            "w": 428,
+                            "h": 44,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "layout": {
+                              "mode": "row",
+                              "gap": 4,
+                              "strokesIncluded": true
+                            },
+                            "children": [
+                              {
+                                "type": "INSTANCE",
+                                "id": "26:7576",
+                                "name": "Zumpo/Mine cell",
+                                "w": 44,
+                                "h": 44,
+                                "component": "Zumpo/Mine cell",
+                                "variant": {
+                                  "State": "1",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7241"
+                              },
+                              {
+                                "type": "INSTANCE",
+                                "id": "26:7578",
+                                "name": "Zumpo/Mine cell",
+                                "w": 44,
+                                "h": 44,
+                                "component": "Zumpo/Mine cell",
+                                "variant": {
+                                  "State": "1",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7241"
+                              },
+                              {
+                                "type": "INSTANCE",
+                                "id": "26:7580",
+                                "name": "Zumpo/Mine cell",
+                                "w": 44,
+                                "h": 44,
+                                "component": "Zumpo/Mine cell",
+                                "variant": {
+                                  "State": "2",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7243"
+                              },
+                              {
+                                "type": "INSTANCE",
+                                "id": "26:7582",
+                                "name": "Zumpo/Mine cell",
+                                "w": 44,
+                                "h": 44,
+                                "component": "Zumpo/Mine cell",
+                                "variant": {
+                                  "State": "1",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7241"
+                              },
+                              {
+                                "type": "INSTANCE",
+                                "id": "26:7584",
+                                "name": "Zumpo/Mine cell",
+                                "w": 44,
+                                "h": 44,
+                                "component": "Zumpo/Mine cell",
+                                "variant": {
+                                  "State": "3",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7245"
+                              },
+                              {
+                                "type": "INSTANCE",
+                                "id": "26:7586",
+                                "name": "Zumpo/Mine cell",
+                                "w": 44,
+                                "h": 44,
+                                "component": "Zumpo/Mine cell",
+                                "variant": {
+                                  "State": "Mine",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7257"
+                              },
+                              {
+                                "type": "INSTANCE",
+                                "id": "26:7597",
+                                "name": "Zumpo/Mine cell",
+                                "w": 44,
+                                "h": 44,
+                                "component": "Zumpo/Mine cell",
+                                "variant": {
+                                  "State": "Hidden",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7235"
+                              },
+                              {
+                                "type": "INSTANCE",
+                                "id": "26:7598",
+                                "name": "Zumpo/Mine cell",
+                                "w": 44,
+                                "h": 44,
+                                "component": "Zumpo/Mine cell",
+                                "variant": {
+                                  "State": "Hidden",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7235"
+                              },
+                              {
+                                "type": "INSTANCE",
+                                "id": "26:7599",
+                                "name": "Zumpo/Mine cell",
+                                "w": 44,
+                                "h": 44,
+                                "component": "Zumpo/Mine cell",
+                                "variant": {
+                                  "State": "Hidden",
+                                  "Size": "Regular"
+                                },
+                                "componentId": "24:7235"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "FRAME",
+                            "id": "26:7612",
+                            "name": "Row 6",
+                            "w": 428,
+                            "h": 44,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "layout": {
+                              "mode": "row",
+                              "gap": 4,
+                              "strokesIncluded": true
+                            },
+                            "children": [
+                              {
+                                "type": "GRID",
+                                "rows": 1,
+                                "cols": 9,
+                                "count": 9,
+                                "kind": "Zumpo/Mine cell",
+                                "firstId": "26:7613",
+                                "pitch": [
+                                  48,
+                                  0
+                                ],
+                                "cell": {
+                                  "type": "INSTANCE",
+                                  "name": "Zumpo/Mine cell",
+                                  "w": 44,
+                                  "h": 44,
+                                  "component": "Zumpo/Mine cell",
+                                  "variant": {
+                                    "State": "1",
+                                    "Size": "Regular"
+                                  },
+                                  "componentId": "24:7241"
+                                },
+                                "special": [
+                                  {
+                                    "r": 0,
+                                    "c": 3,
+                                    "id": "26:7619",
+                                    "variant": {
+                                      "State": "Empty",
+                                      "Size": "Regular"
+                                    },
+                                    "componentId": "24:7240"
+                                  },
+                                  {
+                                    "r": 0,
+                                    "c": 5,
+                                    "id": "26:7622",
+                                    "variant": {
+                                      "State": "Hidden",
+                                      "Size": "Regular"
+                                    },
+                                    "componentId": "24:7235"
+                                  },
+                                  {
+                                    "r": 0,
+                                    "c": 6,
+                                    "id": "26:7623",
+                                    "variant": {
+                                      "State": "Hidden",
+                                      "Size": "Regular"
+                                    },
+                                    "componentId": "24:7235"
+                                  },
+                                  {
+                                    "r": 0,
+                                    "c": 8,
+                                    "id": "26:7626",
+                                    "variant": {
+                                      "State": "Hidden",
+                                      "Size": "Regular"
+                                    },
+                                    "componentId": "24:7235"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "type": "FRAME",
+                            "id": "26:7627",
+                            "name": "Row 7",
+                            "w": 428,
+                            "h": 44,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "layout": {
+                              "mode": "row",
+                              "gap": 4,
+                              "strokesIncluded": true
+                            },
+                            "children": [
+                              {
+                                "type": "GRID",
+                                "rows": 1,
+                                "cols": 9,
+                                "count": 9,
+                                "kind": "Zumpo/Mine cell",
+                                "firstId": "26:7628",
+                                "pitch": [
+                                  48,
+                                  0
+                                ],
+                                "cell": {
+                                  "type": "INSTANCE",
+                                  "name": "Zumpo/Mine cell",
+                                  "w": 44,
+                                  "h": 44,
+                                  "component": "Zumpo/Mine cell",
+                                  "variant": {
+                                    "State": "Empty",
+                                    "Size": "Regular"
+                                  },
+                                  "componentId": "24:7240"
+                                },
+                                "special": [
+                                  {
+                                    "r": 0,
+                                    "c": 4,
+                                    "id": "26:7632",
+                                    "variant": {
+                                      "State": "1",
+                                      "Size": "Regular"
+                                    },
+                                    "componentId": "24:7241"
+                                  },
+                                  {
+                                    "r": 0,
+                                    "c": 5,
+                                    "id": "26:7634",
+                                    "variant": {
+                                      "State": "2",
+                                      "Size": "Regular"
+                                    },
+                                    "componentId": "24:7243"
+                                  },
+                                  {
+                                    "r": 0,
+                                    "c": 6,
+                                    "id": "26:7636",
+                                    "variant": {
+                                      "State": "Hidden",
+                                      "Size": "Regular"
+                                    },
+                                    "componentId": "24:7235"
+                                  },
+                                  {
+                                    "r": 0,
+                                    "c": 7,
+                                    "id": "26:7637",
+                                    "variant": {
+                                      "State": "1",
+                                      "Size": "Regular"
+                                    },
+                                    "componentId": "24:7241"
+                                  },
+                                  {
+                                    "r": 0,
+                                    "c": 8,
+                                    "id": "26:7639",
+                                    "variant": {
+                                      "State": "Hidden",
+                                      "Size": "Regular"
+                                    },
+                                    "componentId": "24:7235"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "type": "FRAME",
+                            "id": "26:7640",
+                            "name": "Row 8",
+                            "w": 428,
+                            "h": 44,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "layout": {
+                              "mode": "row",
+                              "gap": 4,
+                              "strokesIncluded": true
+                            },
+                            "children": [
+                              {
+                                "type": "GRID",
+                                "rows": 1,
+                                "cols": 9,
+                                "count": 9,
+                                "kind": "Zumpo/Mine cell",
+                                "firstId": "26:7641",
+                                "pitch": [
+                                  48,
+                                  0
+                                ],
+                                "cell": {
+                                  "type": "INSTANCE",
+                                  "name": "Zumpo/Mine cell",
+                                  "w": 44,
+                                  "h": 44,
+                                  "component": "Zumpo/Mine cell",
+                                  "variant": {
+                                    "State": "Empty",
+                                    "Size": "Regular"
+                                  },
+                                  "componentId": "24:7240"
+                                },
+                                "special": [
+                                  {
+                                    "r": 0,
+                                    "c": 4,
+                                    "id": "26:7645",
+                                    "variant": {
+                                      "State": "1",
+                                      "Size": "Regular"
+                                    },
+                                    "componentId": "24:7241"
+                                  },
+                                  {
+                                    "r": 0,
+                                    "c": 5,
+                                    "id": "26:7647",
+                                    "variant": {
+                                      "State": "Hidden",
+                                      "Size": "Regular"
+                                    },
+                                    "componentId": "24:7235"
+                                  },
+                                  {
+                                    "r": 0,
+                                    "c": 6,
+                                    "id": "26:7648",
+                                    "variant": {
+                                      "State": "Picked",
+                                      "Size": "Regular"
+                                    },
+                                    "componentId": "24:7236"
+                                  },
+                                  {
+                                    "r": 0,
+                                    "c": 7,
+                                    "id": "26:7652",
+                                    "variant": {
+                                      "State": "Hidden",
+                                      "Size": "Regular"
+                                    },
+                                    "componentId": "24:7235"
+                                  },
+                                  {
+                                    "r": 0,
+                                    "c": 8,
+                                    "id": "26:7653",
+                                    "variant": {
+                                      "State": "Hidden",
+                                      "Size": "Regular"
+                                    },
+                                    "componentId": "24:7235"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "type": "FRAME",
+                            "id": "26:7654",
+                            "name": "Row 9",
+                            "w": 428,
+                            "h": 44,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "layout": {
+                              "mode": "row",
+                              "gap": 4,
+                              "strokesIncluded": true
+                            },
+                            "children": [
+                              {
+                                "type": "GRID",
+                                "rows": 1,
+                                "cols": 9,
+                                "count": 9,
+                                "kind": "Zumpo/Mine cell",
+                                "firstId": "26:7655",
+                                "pitch": [
+                                  48,
+                                  0
+                                ],
+                                "cell": {
+                                  "type": "INSTANCE",
+                                  "name": "Zumpo/Mine cell",
+                                  "w": 44,
+                                  "h": 44,
+                                  "component": "Zumpo/Mine cell",
+                                  "variant": {
+                                    "State": "Empty",
+                                    "Size": "Regular"
+                                  },
+                                  "componentId": "24:7240"
+                                },
+                                "special": [
+                                  {
+                                    "r": 0,
+                                    "c": 4,
+                                    "id": "26:7659",
+                                    "variant": {
+                                      "State": "1",
+                                      "Size": "Regular"
+                                    },
+                                    "componentId": "24:7241"
+                                  },
+                                  {
+                                    "r": 0,
+                                    "c": 5,
+                                    "id": "26:7661",
+                                    "variant": {
+                                      "State": "Hidden",
+                                      "Size": "Regular"
+                                    },
+                                    "componentId": "24:7235"
+                                  },
+                                  {
+                                    "r": 0,
+                                    "c": 6,
+                                    "id": "26:7662",
+                                    "variant": {
+                                      "State": "Hidden",
+                                      "Size": "Regular"
+                                    },
+                                    "componentId": "24:7235"
+                                  },
+                                  {
+                                    "r": 0,
+                                    "c": 7,
+                                    "id": "26:7663",
+                                    "variant": {
+                                      "State": "Hidden",
+                                      "Size": "Regular"
+                                    },
+                                    "componentId": "24:7235"
+                                  },
+                                  {
+                                    "r": 0,
+                                    "c": 8,
+                                    "id": "26:7664",
+                                    "variant": {
+                                      "State": "Hidden",
+                                      "Size": "Regular"
+                                    },
+                                    "componentId": "24:7235"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "27:20601",
+                    "name": "Round 3 results",
+                    "w": 894,
+                    "h": 278,
+                    "wSize": "fill",
+                    "hSize": "hug",
                     "layout": {
                       "mode": "column",
                       "gap": "$Zumpo · UI:space/4",
@@ -410,1986 +1069,168 @@
                     "children": [
                       {
                         "type": "FRAME",
-                        "id": "9:4172",
-                        "name": "Board row 1",
-                        "w": 428,
-                        "h": 44,
+                        "id": "27:20603",
+                        "name": "Heading space",
+                        "w": 183,
+                        "h": 38,
+                        "wSize": "hug",
                         "hSize": "hug",
                         "layout": {
-                          "mode": "row",
-                          "gap": "$Zumpo · UI:space/4",
-                          "align": "center",
+                          "mode": "column",
+                          "pad": [
+                            0,
+                            0,
+                            8,
+                            0
+                          ],
                           "strokesIncluded": true
                         },
                         "children": [
                           {
-                            "type": "INSTANCE",
-                            "id": "9:4173",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/green"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4177",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/green"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4181",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4185",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "props": {
-                              "Number": ""
-                            },
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4189",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4193",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4197",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4201",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4205",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
+                            "type": "TEXT",
+                            "id": "27:20602",
+                            "w": 183,
+                            "h": 30,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "text": "Round 3 results",
+                            "textStyle": "Zumpo/Heading",
+                            "fills": [
+                              "$Zumpo · UI:color/ink"
                             ]
                           }
                         ]
                       },
                       {
-                        "type": "FRAME",
-                        "id": "9:4209",
-                        "name": "Board row 2",
-                        "w": 428,
-                        "h": 44,
-                        "hSize": "hug",
-                        "layout": {
-                          "mode": "row",
-                          "gap": "$Zumpo · UI:space/4",
-                          "align": "center",
-                          "strokesIncluded": true
+                        "type": "INSTANCE",
+                        "id": "27:20604",
+                        "name": "Pick result / Ryan",
+                        "w": 894,
+                        "h": 56,
+                        "wSize": "fill",
+                        "component": "Zumpo/Pick result",
+                        "variant": {
+                          "Outcome": "Safe"
                         },
-                        "children": [
+                        "componentId": "27:19188",
+                        "props": {
+                          "Points": "+25",
+                          "Detail": "17% risk",
+                          "Name": "Ryan"
+                        },
+                        "overrides": [
                           {
-                            "type": "INSTANCE",
-                            "id": "9:4210",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              }
-                            ]
+                            "path": ".",
+                            "height": 56,
+                            "width": 894
                           },
                           {
-                            "type": "INSTANCE",
-                            "id": "9:4214",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4218",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "props": {
-                              "Number": "2"
-                            },
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/ink"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4222",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/green"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4226",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4230",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/green"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4234",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4238",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4242",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/green"
-                                ]
-                              }
-                            ]
+                            "path": "Avatar",
+                            "componentProperties": {
+                              "Initials": "RG",
+                              "Tone": "Blue"
+                            }
                           }
                         ]
                       },
                       {
-                        "type": "FRAME",
-                        "id": "9:4246",
-                        "name": "Board row 3",
-                        "w": 428,
-                        "h": 44,
-                        "hSize": "hug",
-                        "layout": {
-                          "mode": "row",
-                          "gap": "$Zumpo · UI:space/4",
-                          "align": "center",
-                          "strokesIncluded": true
+                        "type": "INSTANCE",
+                        "id": "27:20617",
+                        "name": "Pick result / Sam",
+                        "w": 894,
+                        "h": 56,
+                        "wSize": "fill",
+                        "component": "Zumpo/Pick result",
+                        "variant": {
+                          "Outcome": "Safe"
                         },
-                        "children": [
+                        "componentId": "27:19188",
+                        "props": {
+                          "Points": "+23",
+                          "Detail": "14% risk"
+                        },
+                        "overrides": [
                           {
-                            "type": "INSTANCE",
-                            "id": "9:4247",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
+                            "path": ".",
+                            "height": 56,
+                            "width": 894
                           },
                           {
-                            "type": "INSTANCE",
-                            "id": "9:4251",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/green"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4255",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "props": {
-                              "Number": "2"
-                            },
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/ink"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4259",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4263",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/green"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4267",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4271",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4275",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4279",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
+                            "path": "Avatar",
+                            "componentProperties": {
+                              "Initials": "SA",
+                              "Tone": "Sand"
+                            }
                           }
                         ]
                       },
                       {
-                        "type": "FRAME",
-                        "id": "9:4283",
-                        "name": "Board row 4",
-                        "w": 428,
-                        "h": 44,
-                        "hSize": "hug",
-                        "layout": {
-                          "mode": "row",
-                          "gap": "$Zumpo · UI:space/4",
-                          "align": "center",
-                          "strokesIncluded": true
+                        "type": "INSTANCE",
+                        "id": "27:20630",
+                        "name": "Pick result / Leo",
+                        "w": 894,
+                        "h": 56,
+                        "wSize": "fill",
+                        "component": "Zumpo/Pick result",
+                        "variant": {
+                          "Outcome": "Safe"
                         },
-                        "children": [
+                        "componentId": "27:19188",
+                        "props": {
+                          "Points": "+15",
+                          "Detail": "6% risk",
+                          "Name": "Leo"
+                        },
+                        "overrides": [
                           {
-                            "type": "INSTANCE",
-                            "id": "9:4284",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
+                            "path": ".",
+                            "height": 56,
+                            "width": 894
                           },
                           {
-                            "type": "INSTANCE",
-                            "id": "9:4288",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "props": {
-                              "Number": ""
-                            },
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/ink"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4292",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4296",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "props": {
-                              "Number": "2"
-                            },
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/ink"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4300",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Selected"
-                            },
-                            "componentId": "9:365",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4304",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4308",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4312",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4316",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
+                            "path": "Avatar",
+                            "componentProperties": {
+                              "Initials": "LE",
+                              "Tone": "Lime"
+                            }
                           }
                         ]
                       },
                       {
-                        "type": "FRAME",
-                        "id": "9:4320",
-                        "name": "Board row 5",
-                        "w": 428,
-                        "h": 44,
-                        "hSize": "hug",
-                        "layout": {
-                          "mode": "row",
-                          "gap": "$Zumpo · UI:space/4",
-                          "align": "center",
-                          "strokesIncluded": true
+                        "type": "INSTANCE",
+                        "id": "27:20643",
+                        "name": "Pick result / Maya",
+                        "w": 894,
+                        "h": 56,
+                        "wSize": "fill",
+                        "component": "Zumpo/Pick result",
+                        "variant": {
+                          "Outcome": "Safe"
                         },
-                        "children": [
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4321",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "props": {
-                              "Number": ""
-                            },
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/ink"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4325",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4329",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "props": {
-                              "Number": ""
-                            },
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/coral"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4333",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4337",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4341",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/green"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4345",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4349",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4353",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/green"
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "type": "FRAME",
-                        "id": "9:4357",
-                        "name": "Board row 6",
-                        "w": 428,
-                        "h": 44,
-                        "hSize": "hug",
-                        "layout": {
-                          "mode": "row",
-                          "gap": "$Zumpo · UI:space/4",
-                          "align": "center",
-                          "strokesIncluded": true
+                        "componentId": "27:19188",
+                        "props": {
+                          "Points": "+10",
+                          "Detail": "0% risk",
+                          "Name": "Maya"
                         },
-                        "children": [
+                        "overrides": [
                           {
-                            "type": "INSTANCE",
-                            "id": "9:4358",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
+                            "path": ".",
+                            "height": 56,
+                            "width": 894
                           },
                           {
-                            "type": "INSTANCE",
-                            "id": "9:4362",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4366",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/green"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4370",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4374",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/green"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4378",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/green"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4382",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4386",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/green"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4390",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "type": "FRAME",
-                        "id": "9:4394",
-                        "name": "Board row 7",
-                        "w": 428,
-                        "h": 44,
-                        "hSize": "hug",
-                        "layout": {
-                          "mode": "row",
-                          "gap": "$Zumpo · UI:space/4",
-                          "align": "center",
-                          "strokesIncluded": true
-                        },
-                        "children": [
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4395",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4399",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/green"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4403",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4407",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4411",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/green"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4415",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4419",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/green"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4423",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4427",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "type": "FRAME",
-                        "id": "9:4431",
-                        "name": "Board row 8",
-                        "w": 428,
-                        "h": 44,
-                        "hSize": "hug",
-                        "layout": {
-                          "mode": "row",
-                          "gap": "$Zumpo · UI:space/4",
-                          "align": "center",
-                          "strokesIncluded": true
-                        },
-                        "children": [
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4432",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4436",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4440",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4444",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4448",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4452",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4456",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "props": {
-                              "Number": "2"
-                            },
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/ink"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4460",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4464",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "props": {
-                              "Number": ""
-                            },
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/coral"
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "type": "FRAME",
-                        "id": "9:4468",
-                        "name": "Board row 9",
-                        "w": 428,
-                        "h": 44,
-                        "hSize": "hug",
-                        "layout": {
-                          "mode": "row",
-                          "gap": "$Zumpo · UI:space/4",
-                          "align": "center",
-                          "strokesIncluded": true
-                        },
-                        "children": [
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4469",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4473",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4477",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "props": {
-                              "Number": ""
-                            },
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/coral"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4481",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4485",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/green"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4489",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "props": {
-                              "Number": "2"
-                            },
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/ink"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4493",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4497",
-                            "name": "Cell / Open",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "Open"
-                            },
-                            "componentId": "4:49",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "counterAxisSizingMode": "FIXED",
-                                "height": 44,
-                                "width": 44
-                              },
-                              {
-                                "path": "1",
-                                "fills": [
-                                  "$Zumpo · UI:color/green"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "9:4501",
-                            "name": "Zumpo/Mine feedback",
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine feedback",
-                            "variant": {
-                              "State": "Hidden"
-                            },
-                            "componentId": "9:360",
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 44,
-                                "primaryAxisSizingMode": "FIXED",
-                                "width": 44
-                              }
-                            ]
+                            "path": "Avatar",
+                            "componentProperties": {
+                              "Initials": "MA",
+                              "Tone": "Peach"
+                            }
                           }
                         ]
                       }
                     ]
                   }
                 ]
-              },
-              {
-                "type": "TEXT",
-                "id": "9:4506",
-                "name": "Choose once per round. Your cell click locks your pick. Everyone’s pic",
-                "w": 896,
-                "h": 36,
-                "hSize": "hug",
-                "text": "Choose once per round. Your cell click locks your pick.\nEveryone’s picks stay hidden until the reveal.",
-                "textStyle": "Zumpo/Small",
-                "fills": [
-                  "$Zumpo · UI:color/muted"
-                ],
-                "autoResize": "height"
               }
             ]
           },
@@ -2398,7 +1239,7 @@
             "id": "9:4507",
             "name": "Room sidebar",
             "w": 344,
-            "h": 663,
+            "h": 608,
             "hSize": "hug",
             "layout": {
               "mode": "column",
@@ -2411,26 +1252,83 @@
                 "id": "9:4508",
                 "name": "Zumpo/Scoreboard",
                 "w": 344,
-                "h": 312,
+                "h": 304,
                 "hSize": "hug",
                 "component": "Zumpo/Scoreboard",
                 "componentId": "9:320",
                 "overrides": [
                   {
-                    "path": "Player / Maya · host / Player details / Drawing now",
-                    "characters": "Locked in"
+                    "path": "Player 1",
+                    "componentProperties": {
+                      "Status icon": true,
+                      "Status": "Locked in",
+                      "Host": false,
+                      "You": false,
+                      "Score": "79",
+                      "Icon": "24:5010",
+                      "Name": "Ryan",
+                      "State": "Default"
+                    }
                   },
                   {
-                    "path": "Player / Ryan / Player details / Connected",
-                    "characters": "Locked in"
+                    "path": "Player 1 / Avatar",
+                    "componentProperties": {
+                      "Initials": "RG",
+                      "Tone": "Blue"
+                    }
                   },
                   {
-                    "path": "Player / Leo / Player details / Connected",
-                    "characters": "Locked in"
+                    "path": "Player 2",
+                    "componentProperties": {
+                      "Status icon": true,
+                      "Status": "Locked in",
+                      "Host": false,
+                      "You": true,
+                      "Score": "64",
+                      "Icon": "24:5010",
+                      "Name": "Sam",
+                      "State": "Default"
+                    }
                   },
                   {
-                    "path": "Player / You / Player details / Connected",
-                    "characters": "Locked in"
+                    "path": "Player 2 / Avatar",
+                    "componentProperties": {
+                      "Initials": "SA",
+                      "Tone": "Sand"
+                    }
+                  },
+                  {
+                    "path": "Player 3",
+                    "componentProperties": {
+                      "Status icon": true,
+                      "Status": "Locked in",
+                      "Host": false,
+                      "You": false,
+                      "Score": "56",
+                      "Icon": "24:5010",
+                      "Name": "Leo",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 4",
+                    "componentProperties": {
+                      "Status icon": true,
+                      "Status": "Locked in",
+                      "Host": true,
+                      "You": false,
+                      "Score": "−78",
+                      "Icon": "24:5010",
+                      "Name": "Maya",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 4 / Avatar",
+                    "componentProperties": {
+                      "Initials": "MA",
+                      "Tone": "Peach"
+                    }
                   }
                 ]
               },
@@ -2439,18 +1337,62 @@
                 "id": "9:4538",
                 "name": "Zumpo/Chat",
                 "w": 344,
-                "h": 327,
+                "h": 280,
                 "hSize": "hug",
                 "component": "Zumpo/Chat",
                 "componentId": "9:334",
                 "overrides": [
                   {
-                    "path": "Ryan / spaceship?",
-                    "characters": "That corner looks promising."
+                    "path": ".",
+                    "height": 280,
+                    "width": 344
                   },
                   {
-                    "path": "Leo / a very ambitious pencil",
-                    "characters": "I think I know my pick."
+                    "path": "Messages / Message 1",
+                    "componentProperties": {
+                      "Name": "System",
+                      "Message": "Game has started! 10 mines on a 9×9 board.",
+                      "Kind": "System"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 2",
+                    "componentProperties": {
+                      "Message": "good luck",
+                      "Name": "Ryan",
+                      "Kind": "Player"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 3",
+                    "componentProperties": {
+                      "Name": "System",
+                      "Message": "Maya hit a mine (11% risk): −109",
+                      "Kind": "Alert"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 4",
+                    "componentProperties": {
+                      "Message": "ouch",
+                      "Name": "Maya",
+                      "Kind": "Player"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 5",
+                    "visible": false
+                  },
+                  {
+                    "path": "Messages / Message 6",
+                    "visible": false
+                  },
+                  {
+                    "path": "Chat input",
+                    "componentProperties": {
+                      "Placeholder": "Say something…",
+                      "State": "Default"
+                    }
                   }
                 ]
               }

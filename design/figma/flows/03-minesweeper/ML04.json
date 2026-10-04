@@ -14,7 +14,7 @@
     "x": 4660,
     "y": 150,
     "w": 1440,
-    "h": 1389,
+    "h": 1248,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -42,9 +42,10 @@
         "componentId": "4:39",
         "overrides": [
           {
-            "path": "Navigation / Zumpo/Avatar",
+            "path": "Navigation / You",
             "componentProperties": {
-              "Initials": "MA"
+              "Initials": "MA",
+              "Tone": "Peach"
             }
           }
         ]
@@ -54,7 +55,7 @@
         "id": "9:2685",
         "name": "Page heading",
         "w": 1312,
-        "h": 125,
+        "h": 121,
         "hSize": "hug",
         "layout": {
           "mode": "column",
@@ -63,37 +64,26 @@
         },
         "children": [
           {
-            "type": "FRAME",
-            "id": "9:2686",
-            "name": "Status / PLAY TOGETHER",
-            "w": 109,
-            "h": 34,
+            "type": "INSTANCE",
+            "id": "24:6830",
+            "name": "Tag / PLAY TOGETHER",
+            "w": 117,
+            "h": 30,
             "wSize": "hug",
             "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/sand"
-            ],
-            "radius": "$Zumpo · UI:radius/999",
-            "layout": {
-              "mode": "row",
-              "gap": "$Zumpo · UI:space/8",
-              "pad": "$Zumpo · UI:space/8",
-              "align": "center",
-              "strokesIncluded": true
+            "component": "Zumpo/Tag",
+            "variant": {
+              "Tone": "Sand"
             },
-            "children": [
+            "componentId": "24:6511",
+            "props": {
+              "Label": "PLAY TOGETHER"
+            },
+            "overrides": [
               {
-                "type": "TEXT",
-                "id": "9:2687",
-                "w": 93,
-                "h": 18,
-                "wSize": "hug",
-                "hSize": "hug",
-                "text": "PLAY TOGETHER",
-                "textStyle": "Zumpo/Small",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ]
+                "path": ".",
+                "height": 30,
+                "width": 117
               }
             ]
           },
@@ -130,8 +120,7 @@
         "id": "9:2690",
         "name": "Dialog stage",
         "w": 1312,
-        "h": 1014,
-        "hSize": "hug",
+        "h": 877,
         "layout": {
           "mode": "row",
           "pad": [
@@ -148,7 +137,7 @@
             "id": "9:2691",
             "name": "A little room for you.",
             "w": 560,
-            "h": 902,
+            "h": 765,
             "hSize": "hug",
             "fills": [
               "$Zumpo · UI:color/paper"
@@ -181,10 +170,11 @@
               {
                 "type": "TEXT",
                 "id": "9:2693",
+                "name": "Pick the board. Everyone chooses at the same time.",
                 "w": 496,
                 "h": 25,
                 "hSize": "hug",
-                "text": "Pick the board. Everyone chooses at the same time.",
+                "text": "Pick a board. Small is a quick game; Large takes a while.",
                 "textStyle": "Zumpo/Body",
                 "fills": [
                   "$Zumpo · UI:color/muted"
@@ -203,20 +193,11 @@
                   "State": "Default"
                 },
                 "componentId": "9:204",
-                "overrides": [
-                  {
-                    "path": "Your name",
-                    "characters": "Room name"
-                  },
-                  {
-                    "path": "Editable value / Maya",
-                    "characters": "Maya’s room"
-                  },
-                  {
-                    "path": "Choose a name people will see.",
-                    "characters": "Up to 40 characters."
-                  }
-                ]
+                "props": {
+                  "Helper": "Up to 40 characters.",
+                  "Value": "Maya’s room",
+                  "Label": "Room name"
+                }
               },
               {
                 "type": "INSTANCE",
@@ -230,20 +211,12 @@
                   "State": "Default"
                 },
                 "componentId": "9:204",
-                "overrides": [
-                  {
-                    "path": "Your name",
-                    "characters": "Seats"
-                  },
-                  {
-                    "path": "Editable value / Maya",
-                    "characters": "8 players  ▾"
-                  },
-                  {
-                    "path": "Choose a name people will see.",
-                    "characters": "Choose 2–8 seats."
-                  }
-                ]
+                "props": {
+                  "Select": true,
+                  "Helper": "Choose 2–8 seats.",
+                  "Value": "8 players",
+                  "Label": "Seats"
+                }
               },
               {
                 "type": "INSTANCE",
@@ -257,43 +230,12 @@
                   "State": "Default"
                 },
                 "componentId": "9:204",
-                "overrides": [
-                  {
-                    "path": "Your name",
-                    "characters": "Board"
-                  },
-                  {
-                    "path": "Editable value / Maya",
-                    "characters": "Medium · 16 × 16 · 40 mines  ▾"
-                  },
-                  {
-                    "path": "Choose a name people will see.",
-                    "characters": "Small 9 × 9 / Medium 16 × 16 / Large 30 × 16."
-                  }
-                ]
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:2709",
-                "name": "Zumpo/Input",
-                "w": 496,
-                "h": 113,
-                "hSize": "hug",
-                "component": "Zumpo/Input",
-                "variant": {
-                  "State": "Disabled"
-                },
-                "componentId": "9:222",
-                "overrides": [
-                  {
-                    "path": "Your name",
-                    "characters": "Host"
-                  },
-                  {
-                    "path": "Choose a name people will see.",
-                    "characters": "You’re the host."
-                  }
-                ]
+                "props": {
+                  "Select": true,
+                  "Helper": "16 × 16 · 40 mines",
+                  "Value": "Medium",
+                  "Label": "Board"
+                }
               },
               {
                 "type": "INSTANCE",
@@ -307,20 +249,11 @@
                   "State": "Default"
                 },
                 "componentId": "9:204",
-                "overrides": [
-                  {
-                    "path": "Your name",
-                    "characters": "Password (optional)"
-                  },
-                  {
-                    "path": "Editable value / Maya",
-                    "characters": "••••••"
-                  },
-                  {
-                    "path": "Choose a name people will see.",
-                    "characters": "Leave blank for an open room. Up to 20 characters."
-                  }
-                ]
+                "props": {
+                  "Helper": "Leave blank for an open room. Up to 20 characters.",
+                  "Value": "••••••",
+                  "Label": "Password (optional)"
+                }
               },
               {
                 "type": "FRAME",
@@ -390,15 +323,15 @@
                     "type": "INSTANCE",
                     "id": "9:2722",
                     "name": "Action / Cancel",
-                    "w": 88,
+                    "w": 90,
                     "h": 48,
                     "wSize": "hug",
                     "component": "Zumpo/Button",
                     "variant": {
-                      "Style": "Quiet",
+                      "Style": "Secondary",
                       "State": "Default"
                     },
-                    "componentId": "4:21",
+                    "componentId": "4:18",
                     "props": {
                       "Label": "Cancel"
                     },
@@ -406,7 +339,7 @@
                       {
                         "path": ".",
                         "height": 48,
-                        "width": 88
+                        "width": 90
                       }
                     ]
                   }

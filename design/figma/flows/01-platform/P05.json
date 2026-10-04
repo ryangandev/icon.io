@@ -12,9 +12,9 @@
     "id": "9:583",
     "name": "P05 / Connecting",
     "x": 40,
-    "y": 1278,
+    "y": 1310,
     "w": 1440,
-    "h": 555,
+    "h": 527,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -42,9 +42,10 @@
         "componentId": "4:39",
         "overrides": [
           {
-            "path": "Navigation / Zumpo/Avatar",
+            "path": "Navigation / You",
             "componentProperties": {
-              "Initials": "MA"
+              "Initials": "MA",
+              "Tone": "Peach"
             }
           }
         ]
@@ -54,7 +55,7 @@
         "id": "9:594",
         "name": "Dialog stage",
         "w": 1312,
-        "h": 329,
+        "h": 301,
         "hSize": "hug",
         "layout": {
           "mode": "row",
@@ -72,7 +73,7 @@
             "id": "9:595",
             "name": "Getting the room ready…",
             "w": 560,
-            "h": 217,
+            "h": 189,
             "hSize": "hug",
             "fills": [
               "$Zumpo · UI:color/paper"
@@ -118,39 +119,48 @@
               {
                 "type": "FRAME",
                 "id": "9:598",
-                "name": "Actions",
+                "name": "Status",
                 "w": 496,
-                "h": 48,
+                "h": 20,
                 "hSize": "hug",
                 "layout": {
                   "mode": "row",
-                  "gap": "$Zumpo · UI:space/12",
+                  "gap": 8,
                   "align": "center",
                   "strokesIncluded": true
                 },
                 "children": [
                   {
                     "type": "INSTANCE",
-                    "id": "9:599",
-                    "name": "Action / Connecting…",
-                    "w": 130,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
+                    "id": "28:23147",
+                    "name": "Zumpo/Icon",
+                    "w": 20,
+                    "h": 20,
+                    "component": "Zumpo/Icon",
                     "variant": {
-                      "Style": "Primary",
-                      "State": "Disabled"
+                      "Glyph": "pending"
                     },
-                    "componentId": "4:17",
-                    "props": {
-                      "Label": "Connecting…"
-                    },
+                    "componentId": "24:5002",
                     "overrides": [
                       {
-                        "path": ".",
-                        "height": 48,
-                        "width": 130
+                        "path": "pending",
+                        "strokes": [
+                          "$Zumpo · UI:color/muted"
+                        ]
                       }
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "28:23149",
+                    "w": 90,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "Connecting…",
+                    "textStyle": "Zumpo/Label",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
                     ]
                   }
                 ]

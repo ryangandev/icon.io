@@ -12,9 +12,9 @@
     "id": "9:10261",
     "name": "MO07 / Drawer · choose a word",
     "x": 1020,
-    "y": 1519,
+    "y": 1551,
     "w": 390,
-    "h": 1099,
+    "h": 846,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -60,10 +60,13 @@
           {
             "type": "INSTANCE",
             "id": "9:10266",
-            "name": "Player / YO",
+            "name": "Viewer",
             "w": 32,
             "h": 32,
             "component": "Zumpo/Avatar",
+            "variant": {
+              "Tone": "Peach"
+            },
             "componentId": "4:34",
             "props": {
               "Initials": "MA"
@@ -83,46 +86,107 @@
       },
       {
         "type": "FRAME",
-        "id": "9:10269",
-        "name": "Page heading",
+        "id": "27:22211",
+        "name": "Room heading",
         "w": 350,
-        "h": 125,
+        "h": 80,
+        "wSize": "fill",
         "hSize": "hug",
         "layout": {
-          "mode": "column",
+          "mode": "row",
           "gap": "$Zumpo · UI:space/12",
+          "align": "center",
           "strokesIncluded": true
         },
         "children": [
           {
             "type": "FRAME",
-            "id": "9:10270",
-            "name": "Status / MAYA’S ROOM",
-            "w": 97,
-            "h": 34,
-            "wSize": "hug",
+            "id": "27:22212",
+            "name": "Room identity",
+            "w": 292,
+            "h": 80,
+            "wSize": "fill",
             "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/sand"
-            ],
-            "radius": "$Zumpo · UI:radius/999",
             "layout": {
-              "mode": "row",
+              "mode": "column",
               "gap": "$Zumpo · UI:space/8",
-              "pad": "$Zumpo · UI:space/8",
-              "align": "center",
               "strokesIncluded": true
             },
             "children": [
               {
-                "type": "TEXT",
-                "id": "9:10271",
-                "w": 81,
-                "h": 18,
+                "type": "FRAME",
+                "id": "27:22213",
+                "name": "Room context",
+                "w": 198,
+                "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
-                "text": "MAYA’S ROOM",
-                "textStyle": "Zumpo/Small",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "27:22214",
+                    "name": "Tag / Maya's room",
+                    "w": 95,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Sand"
+                    },
+                    "componentId": "24:6511",
+                    "props": {
+                      "Label": "Maya's room"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 95
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "27:22219",
+                    "name": "Tag / Round 2 of 2",
+                    "w": 95,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Blue"
+                    },
+                    "componentId": "24:6516",
+                    "props": {
+                      "Label": "Round 2 of 2"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 95
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "27:22224",
+                "name": "Title",
+                "w": 248,
+                "h": 42,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Draw & Guess",
+                "textStyle": "Zumpo/Title",
                 "fills": [
                   "$Zumpo · UI:color/ink"
                 ]
@@ -130,30 +194,35 @@
             ]
           },
           {
-            "type": "TEXT",
-            "id": "9:10272",
-            "w": 350,
-            "h": 42,
-            "hSize": "hug",
-            "text": "Draw & Guess",
-            "textStyle": "Zumpo/Title",
-            "fills": [
-              "$Zumpo · UI:color/ink"
-            ],
-            "autoResize": "height"
-          },
-          {
-            "type": "TEXT",
-            "id": "9:10273",
-            "w": 350,
-            "h": 25,
-            "hSize": "hug",
-            "text": "Round 1 · 4 players",
-            "textStyle": "Zumpo/Body",
-            "fills": [
-              "$Zumpo · UI:color/muted"
-            ],
-            "autoResize": "height"
+            "type": "INSTANCE",
+            "id": "27:22225",
+            "name": "Action / Leave room (icon)",
+            "w": 46,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Secondary",
+              "State": "Default"
+            },
+            "componentId": "4:18",
+            "props": {
+              "Show icon": true,
+              "Label": "Leave room"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "paddingLeft": 12,
+                "paddingRight": 12,
+                "width": 46
+              },
+              {
+                "path": "Let’s play",
+                "visible": false
+              }
+            ]
           }
         ]
       },
@@ -226,236 +295,117 @@
         "type": "INSTANCE",
         "id": "9:10281",
         "name": "Zumpo/Notice",
+        "visible": false,
         "w": 350,
-        "h": 56,
+        "h": 52,
         "hSize": "hug",
         "component": "Zumpo/Notice",
         "variant": {
           "Tone": "Info"
         },
         "componentId": "9:227",
+        "props": {
+          "Message": "Choose privately · 00:15"
+        },
         "overrides": [
           {
             "path": ".",
-            "height": 56,
+            "height": 52,
             "width": 350
-          },
-          {
-            "path": "Connection restored. Welcome back!",
-            "characters": "Choose privately · 00:15"
           }
         ]
       },
       {
-        "type": "FRAME",
-        "id": "9:10284",
-        "name": "Whiteboard / select",
+        "type": "INSTANCE",
+        "id": "27:22234",
+        "name": "Zumpo/Turn bar",
         "w": 350,
-        "h": 650,
-        "fills": [
-          "$Zumpo · UI:color/white"
-        ],
-        "strokes": [
-          "$Zumpo · UI:color/line"
-        ],
-        "strokeAlign": "inside",
-        "radius": "$Zumpo · UI:radius/24",
+        "h": 144,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Turn bar",
+        "variant": {
+          "Kind": "Status",
+          "Layout": "Phone"
+        },
+        "componentId": "27:22192",
+        "props": {
+          "Main": "Pick a word",
+          "Meta": "Only you can see these",
+          "Label": "Your turn to draw"
+        }
+      },
+      {
+        "type": "FRAME",
+        "id": "27:22252",
+        "name": "Word choices",
+        "w": 350,
+        "h": 354,
+        "wSize": "fill",
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/12",
+          "strokesIncluded": true
+        },
         "children": [
           {
-            "type": "FRAME",
-            "id": "9:10285",
-            "name": "Phase overlay",
-            "x": 16,
-            "y": 40,
-            "w": 318,
-            "h": 530,
+            "type": "INSTANCE",
+            "id": "27:22253",
+            "name": "Word / Turtle",
+            "w": 350,
+            "h": 110,
+            "wSize": "fill",
             "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/paper"
-            ],
-            "strokes": [
-              "$Zumpo · UI:color/line"
-            ],
-            "strokeAlign": "inside",
-            "radius": "$Zumpo · UI:radius/24",
-            "layout": {
-              "mode": "column",
-              "gap": "$Zumpo · UI:space/16",
-              "pad": "$Zumpo · UI:space/16",
-              "strokesIncluded": true
+            "component": "Zumpo/Word choice",
+            "componentId": "9:408",
+            "overrides": [
+              {
+                "path": ".",
+                "height": 110,
+                "width": 350
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "27:22256",
+            "name": "Word / Rabbit",
+            "w": 350,
+            "h": 110,
+            "wSize": "fill",
+            "hSize": "hug",
+            "component": "Zumpo/Word choice",
+            "componentId": "9:408",
+            "props": {
+              "Word": "Rabbit"
             },
-            "children": [
+            "overrides": [
               {
-                "type": "TEXT",
-                "id": "9:10286",
-                "w": 286,
-                "h": 60,
-                "hSize": "hug",
-                "text": "Your turn to make a mark.",
-                "textStyle": "Zumpo/Heading",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
+                "path": ".",
+                "height": 110,
+                "width": 350
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "27:22259",
+            "name": "Word / Parrot",
+            "w": 350,
+            "h": 110,
+            "wSize": "fill",
+            "hSize": "hug",
+            "component": "Zumpo/Word choice",
+            "componentId": "9:408",
+            "props": {
+              "Word": "Parrot"
+            },
+            "overrides": [
               {
-                "type": "TEXT",
-                "id": "9:10287",
-                "w": 286,
-                "h": 50,
-                "hSize": "hug",
-                "text": "Choose one of these 3 words. Only you can see them.",
-                "textStyle": "Zumpo/Body",
-                "fills": [
-                  "$Zumpo · UI:color/muted"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "FRAME",
-                "id": "9:10288",
-                "name": "Private word choices",
-                "w": 286,
-                "h": 354,
-                "hSize": "hug",
-                "layout": {
-                  "mode": "column",
-                  "gap": "$Zumpo · UI:space/12",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "INSTANCE",
-                    "id": "9:10289",
-                    "name": "Zumpo/Word choice",
-                    "w": 286,
-                    "h": 110,
-                    "hSize": "hug",
-                    "component": "Zumpo/Word choice",
-                    "componentId": "9:408",
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 110,
-                        "reactions": [
-                          {
-                            "on": "on_click",
-                            "do": [
-                              {
-                                "nav": "navigate",
-                                "to": "9:10300",
-                                "toName": "MO08 / Drawer · live canvas"
-                              }
-                            ]
-                          }
-                        ],
-                        "width": 286
-                      }
-                    ],
-                    "reactions": [
-                      {
-                        "on": "on_click",
-                        "do": [
-                          {
-                            "nav": "navigate",
-                            "to": "9:10300",
-                            "toName": "MO08 / Drawer · live canvas"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "type": "INSTANCE",
-                    "id": "9:10292",
-                    "name": "Zumpo/Word choice",
-                    "w": 286,
-                    "h": 110,
-                    "hSize": "hug",
-                    "component": "Zumpo/Word choice",
-                    "componentId": "9:408",
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 110,
-                        "reactions": [
-                          {
-                            "on": "on_click",
-                            "do": [
-                              {
-                                "nav": "navigate",
-                                "to": "9:10300",
-                                "toName": "MO08 / Drawer · live canvas"
-                              }
-                            ]
-                          }
-                        ],
-                        "width": 286
-                      },
-                      {
-                        "path": "Rocket",
-                        "characters": "Cactus"
-                      }
-                    ],
-                    "reactions": [
-                      {
-                        "on": "on_click",
-                        "do": [
-                          {
-                            "nav": "navigate",
-                            "to": "9:10300",
-                            "toName": "MO08 / Drawer · live canvas"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "type": "INSTANCE",
-                    "id": "9:10295",
-                    "name": "Zumpo/Word choice",
-                    "w": 286,
-                    "h": 110,
-                    "hSize": "hug",
-                    "component": "Zumpo/Word choice",
-                    "componentId": "9:408",
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 110,
-                        "reactions": [
-                          {
-                            "on": "on_click",
-                            "do": [
-                              {
-                                "nav": "navigate",
-                                "to": "9:10300",
-                                "toName": "MO08 / Drawer · live canvas"
-                              }
-                            ]
-                          }
-                        ],
-                        "width": 286
-                      },
-                      {
-                        "path": "Rocket",
-                        "characters": "Umbrella"
-                      }
-                    ],
-                    "reactions": [
-                      {
-                        "on": "on_click",
-                        "do": [
-                          {
-                            "nav": "navigate",
-                            "to": "9:10300",
-                            "toName": "MO08 / Drawer · live canvas"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
+                "path": ".",
+                "height": 110,
+                "width": 350
               }
             ]
           }

@@ -12,7 +12,7 @@
     "id": "9:704",
     "name": "P08 / Reconnection expired",
     "x": 4660,
-    "y": 1278,
+    "y": 1310,
     "w": 1440,
     "h": 580,
     "hSize": "hug",
@@ -42,9 +42,10 @@
         "componentId": "4:39",
         "overrides": [
           {
-            "path": "Navigation / Zumpo/Avatar",
+            "path": "Navigation / You",
             "componentProperties": {
-              "Initials": "MA"
+              "Initials": "MA",
+              "Tone": "Peach"
             }
           }
         ]
@@ -184,23 +185,25 @@
                     "type": "INSTANCE",
                     "id": "9:722",
                     "name": "Action / Back to games",
-                    "w": 141,
+                    "w": 171,
                     "h": 48,
                     "wSize": "hug",
                     "component": "Zumpo/Button",
                     "variant": {
-                      "Style": "Quiet",
+                      "Style": "Secondary",
                       "State": "Default"
                     },
-                    "componentId": "4:21",
+                    "componentId": "4:18",
                     "props": {
+                      "Icon": "Zumpo/Icon / Glyph=back",
+                      "Show icon": true,
                       "Label": "Back to games"
                     },
                     "overrides": [
                       {
                         "path": ".",
                         "height": 48,
-                        "width": 141
+                        "width": 171
                       }
                     ]
                   }

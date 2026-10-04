@@ -12,9 +12,9 @@
     "id": "9:2448",
     "name": "D15 / Not enough players · game ended",
     "x": 4660,
-    "y": 7232.23,
+    "y": 6851,
     "w": 1440,
-    "h": 1154.41,
+    "h": 900,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -42,9 +42,10 @@
         "componentId": "4:39",
         "overrides": [
           {
-            "path": "Navigation / Zumpo/Avatar",
+            "path": "Navigation / You",
             "componentProperties": {
-              "Initials": "MA"
+              "Initials": "SA",
+              "Tone": "Sand"
             }
           }
         ]
@@ -54,7 +55,7 @@
         "id": "9:2459",
         "name": "Room heading",
         "w": 1312,
-        "h": 117,
+        "h": 80,
         "hSize": "hug",
         "layout": {
           "mode": "row",
@@ -69,7 +70,7 @@
             "id": "9:2460",
             "name": "Room identity",
             "w": 930,
-            "h": 117,
+            "h": 80,
             "hSize": "hug",
             "layout": {
               "mode": "column",
@@ -82,7 +83,7 @@
                 "id": "9:2461",
                 "name": "Room context",
                 "w": 930,
-                "h": 34,
+                "h": 30,
                 "hSize": "hug",
                 "layout": {
                   "mode": "row",
@@ -92,72 +93,50 @@
                 },
                 "children": [
                   {
-                    "type": "FRAME",
-                    "id": "9:2462",
-                    "name": "Status / MAYA’S ROOM",
-                    "w": 97,
-                    "h": 34,
+                    "type": "INSTANCE",
+                    "id": "27:19081",
+                    "name": "Tag / Maya's room",
+                    "w": 95,
+                    "h": 30,
                     "wSize": "hug",
                     "hSize": "hug",
-                    "fills": [
-                      "$Zumpo · UI:color/sand"
-                    ],
-                    "radius": "$Zumpo · UI:radius/999",
-                    "layout": {
-                      "mode": "row",
-                      "gap": "$Zumpo · UI:space/8",
-                      "pad": "$Zumpo · UI:space/8",
-                      "align": "center",
-                      "strokesIncluded": true
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Sand"
                     },
-                    "children": [
+                    "componentId": "24:6511",
+                    "props": {
+                      "Label": "Maya's room"
+                    },
+                    "overrides": [
                       {
-                        "type": "TEXT",
-                        "id": "9:2463",
-                        "w": 81,
-                        "h": 18,
-                        "wSize": "hug",
-                        "hSize": "hug",
-                        "text": "MAYA’S ROOM",
-                        "textStyle": "Zumpo/Small",
-                        "fills": [
-                          "$Zumpo · UI:color/ink"
-                        ]
+                        "path": ".",
+                        "height": 30,
+                        "width": 95
                       }
                     ]
                   },
                   {
-                    "type": "FRAME",
-                    "id": "9:2464",
-                    "name": "Status / GAME ENDED",
-                    "w": 93,
-                    "h": 34,
+                    "type": "INSTANCE",
+                    "id": "27:19086",
+                    "name": "Tag / Game ended",
+                    "w": 97,
+                    "h": 30,
                     "wSize": "hug",
                     "hSize": "hug",
-                    "fills": [
-                      "$Zumpo · UI:color/blue"
-                    ],
-                    "radius": "$Zumpo · UI:radius/999",
-                    "layout": {
-                      "mode": "row",
-                      "gap": "$Zumpo · UI:space/8",
-                      "pad": "$Zumpo · UI:space/8",
-                      "align": "center",
-                      "strokesIncluded": true
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Peach"
                     },
-                    "children": [
+                    "componentId": "24:6526",
+                    "props": {
+                      "Label": "Game ended"
+                    },
+                    "overrides": [
                       {
-                        "type": "TEXT",
-                        "id": "9:2465",
-                        "w": 77,
-                        "h": 18,
-                        "wSize": "hug",
-                        "hSize": "hug",
-                        "text": "GAME ENDED",
-                        "textStyle": "Zumpo/Small",
-                        "fills": [
-                          "$Zumpo · UI:color/ink"
-                        ]
+                        "path": ".",
+                        "height": 30,
+                        "width": 97
                       }
                     ]
                   }
@@ -179,9 +158,9 @@
               {
                 "type": "TEXT",
                 "id": "9:2467",
+                "visible": false,
                 "w": 930,
                 "h": 25,
-                "hSize": "hug",
                 "text": "A few good guesses go a long way.",
                 "textStyle": "Zumpo/Body",
                 "fills": [
@@ -195,16 +174,17 @@
             "type": "INSTANCE",
             "id": "9:2468",
             "name": "Action / Leave room",
-            "w": 120,
+            "w": 150,
             "h": 48,
             "wSize": "hug",
             "component": "Zumpo/Button",
             "variant": {
-              "Style": "Quiet",
+              "Style": "Secondary",
               "State": "Default"
             },
-            "componentId": "4:21",
+            "componentId": "4:18",
             "props": {
+              "Show icon": true,
               "Label": "Leave room"
             },
             "overrides": [
@@ -224,7 +204,7 @@
                     ]
                   }
                 ],
-                "width": 120
+                "width": 150
               }
             ],
             "reactions": [
@@ -247,23 +227,23 @@
         "type": "INSTANCE",
         "id": "9:2470",
         "name": "Zumpo/Notice",
+        "visible": false,
         "w": 1312,
-        "h": 56,
+        "h": 52,
         "hSize": "hug",
         "component": "Zumpo/Notice",
         "variant": {
           "Tone": "Error"
         },
         "componentId": "9:235",
+        "props": {
+          "Message": "Too few players remain. The game has ended and scores are retained."
+        },
         "overrides": [
           {
             "path": ".",
-            "height": 56,
+            "height": 52,
             "width": 1312
-          },
-          {
-            "path": "Connection restored. Welcome back!",
-            "characters": "Too few players remain. The game has ended and scores are retained."
           }
         ]
       },
@@ -272,7 +252,7 @@
         "id": "9:2473",
         "name": "Game & room",
         "w": 1312,
-        "h": 707.41,
+        "h": 570,
         "hSize": "hug",
         "layout": {
           "mode": "row",
@@ -285,7 +265,7 @@
             "id": "9:2474",
             "name": "Game stage",
             "w": 944,
-            "h": 707.41,
+            "h": 258,
             "hSize": "hug",
             "layout": {
               "mode": "column",
@@ -295,68 +275,126 @@
             "children": [
               {
                 "type": "FRAME",
-                "id": "9:2475",
-                "name": "Whiteboard / insufficient",
+                "id": "27:19184",
+                "name": "Waiting room",
                 "w": 944,
-                "h": 707.41,
+                "h": 258,
+                "wSize": "fill",
+                "hSize": "hug",
                 "fills": [
-                  "$Zumpo · UI:color/white"
+                  "$Zumpo · UI:color/paper"
                 ],
                 "strokes": [
                   "$Zumpo · UI:color/line"
                 ],
                 "strokeAlign": "inside",
                 "radius": "$Zumpo · UI:radius/24",
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/12",
+                  "pad": 40,
+                  "strokesIncluded": true
+                },
                 "children": [
                   {
-                    "type": "FRAME",
-                    "id": "9:2476",
-                    "name": "Phase overlay",
-                    "x": 48,
-                    "y": 279.2,
-                    "w": 848,
-                    "h": 149,
+                    "type": "TEXT",
+                    "id": "27:19185",
+                    "w": 323,
+                    "h": 42,
+                    "wSize": "hug",
                     "hSize": "hug",
+                    "text": "Everyone else left.",
+                    "textStyle": "Zumpo/Title",
                     "fills": [
-                      "$Zumpo · UI:color/paper"
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "27:19186",
+                    "w": 862,
+                    "h": 50,
+                    "wSize": "fill",
+                    "hSize": "hug",
+                    "text": "Draw & Guess needs at least 2 players, so the game has ended. You are the host now: invite friends to start a new one.",
+                    "textStyle": "Zumpo/Body",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
                     ],
-                    "strokes": [
-                      "$Zumpo · UI:color/line"
-                    ],
-                    "strokeAlign": "inside",
-                    "radius": "$Zumpo · UI:radius/24",
+                    "autoResize": "height"
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "27:19187",
+                    "name": "Actions",
+                    "w": 340,
+                    "h": 60,
+                    "wSize": "hug",
+                    "hSize": "hug",
                     "layout": {
-                      "mode": "column",
-                      "gap": "$Zumpo · UI:space/16",
-                      "pad": "$Zumpo · UI:space/32",
+                      "mode": "row",
+                      "gap": "$Zumpo · UI:space/12",
+                      "pad": [
+                        12,
+                        0,
+                        0,
+                        0
+                      ],
+                      "align": "center",
                       "strokesIncluded": true
                     },
                     "children": [
                       {
-                        "type": "TEXT",
-                        "id": "9:2477",
-                        "w": 784,
-                        "h": 42,
-                        "hSize": "hug",
-                        "text": "The room needs one more.",
-                        "textStyle": "Zumpo/Title",
-                        "fills": [
-                          "$Zumpo · UI:color/ink"
-                        ],
-                        "autoResize": "height"
+                        "type": "INSTANCE",
+                        "id": "27:19168",
+                        "name": "Action / Invite friends",
+                        "w": 159,
+                        "h": 48,
+                        "wSize": "hug",
+                        "component": "Zumpo/Button",
+                        "variant": {
+                          "Style": "Primary",
+                          "State": "Default"
+                        },
+                        "componentId": "4:15",
+                        "props": {
+                          "Icon": "Zumpo/Icon / Glyph=link",
+                          "Show icon": true,
+                          "Label": "Invite friends"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 48,
+                            "width": 159
+                          }
+                        ]
                       },
                       {
-                        "type": "TEXT",
-                        "id": "9:2478",
-                        "w": 784,
-                        "h": 25,
-                        "hSize": "hug",
-                        "text": "Too few players remain. Your scores are kept.",
-                        "textStyle": "Zumpo/Body",
-                        "fills": [
-                          "$Zumpo · UI:color/muted"
-                        ],
-                        "autoResize": "height"
+                        "type": "INSTANCE",
+                        "id": "27:19176",
+                        "name": "Action / Back to rooms",
+                        "w": 169,
+                        "h": 48,
+                        "wSize": "hug",
+                        "component": "Zumpo/Button",
+                        "variant": {
+                          "Style": "Secondary",
+                          "State": "Default"
+                        },
+                        "componentId": "4:18",
+                        "props": {
+                          "Icon": "Zumpo/Icon / Glyph=back",
+                          "Show icon": true,
+                          "Label": "Back to rooms"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 48,
+                            "width": 169
+                          }
+                        ]
                       }
                     ]
                   }
@@ -369,7 +407,7 @@
             "id": "9:2479",
             "name": "Room sidebar",
             "w": 344,
-            "h": 489,
+            "h": 570,
             "hSize": "hug",
             "layout": {
               "mode": "column",
@@ -382,43 +420,51 @@
                 "id": "9:2480",
                 "name": "Zumpo/Scoreboard",
                 "w": 344,
-                "h": 138,
+                "h": 136,
                 "hSize": "hug",
                 "component": "Zumpo/Scoreboard",
                 "componentId": "9:320",
                 "overrides": [
                   {
                     "path": ".",
-                    "height": 138,
+                    "height": 136,
                     "width": 344
                   },
                   {
-                    "path": "Player / Maya · host / Player details / Drawing now",
-                    "characters": "Game ended"
+                    "path": "Heading / Count",
+                    "characters": "1 / 8"
                   },
                   {
-                    "path": "Player / Ryan",
+                    "path": "Player 1",
+                    "componentProperties": {
+                      "Status icon": false,
+                      "Status": "Waiting",
+                      "Host": true,
+                      "You": true,
+                      "Score": "180",
+                      "Icon": "24:5053",
+                      "Name": "Sam",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 1 / Avatar",
+                    "componentProperties": {
+                      "Initials": "SA",
+                      "Tone": "Sand"
+                    }
+                  },
+                  {
+                    "path": "Player 2",
                     "visible": false
                   },
                   {
-                    "path": "Player / Ryan / Player details / Connected",
-                    "characters": "Game ended"
-                  },
-                  {
-                    "path": "Player / Leo",
+                    "path": "Player 3",
                     "visible": false
                   },
                   {
-                    "path": "Player / Leo / Player details / Connected",
-                    "characters": "Game ended"
-                  },
-                  {
-                    "path": "Player / You",
+                    "path": "Player 4",
                     "visible": false
-                  },
-                  {
-                    "path": "Player / You / Player details / Connected",
-                    "characters": "Game ended"
                   }
                 ]
               },
@@ -427,10 +473,68 @@
                 "id": "9:2510",
                 "name": "Zumpo/Chat",
                 "w": 344,
-                "h": 327,
+                "h": 410,
                 "hSize": "hug",
                 "component": "Zumpo/Chat",
-                "componentId": "9:334"
+                "componentId": "9:334",
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 410,
+                    "width": 344
+                  },
+                  {
+                    "path": "Messages / Message 1",
+                    "componentProperties": {
+                      "Name": "System",
+                      "Message": "Previous owner Maya has left the room. Ryan is now the owner.",
+                      "Kind": "Alert"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 2",
+                    "componentProperties": {
+                      "Name": "System",
+                      "Message": "Leo has left the room.",
+                      "Kind": "Alert"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 3",
+                    "componentProperties": {
+                      "Name": "System",
+                      "Message": "Previous owner Ryan has left the room. Sam is now the owner.",
+                      "Kind": "Alert"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 4",
+                    "componentProperties": {
+                      "Name": "System",
+                      "Message": "Not enough players left to continue. Game has ended.",
+                      "Kind": "Alert"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 5",
+                    "componentProperties": {
+                      "Name": "System",
+                      "Message": "Game has ended!",
+                      "Kind": "System"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 6",
+                    "visible": false
+                  },
+                  {
+                    "path": "Chat input",
+                    "componentProperties": {
+                      "Placeholder": "Say something…",
+                      "State": "Default"
+                    }
+                  }
+                ]
               }
             ]
           }

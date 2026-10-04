@@ -12,9 +12,9 @@
     "id": "9:10237",
     "name": "MO06 / Room password",
     "x": 530,
-    "y": 1519,
+    "y": 1551,
     "w": 390,
-    "h": 612,
+    "h": 536,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -64,16 +64,16 @@
             "w": 32,
             "h": 32,
             "component": "Zumpo/Avatar",
-            "componentId": "4:34",
+            "variant": {
+              "Tone": "Sand"
+            },
+            "componentId": "26:10572",
             "props": {
-              "Initials": "YO"
+              "Initials": "SA"
             },
             "overrides": [
               {
                 "path": ".",
-                "fills": [
-                  "$Zumpo · UI:color/blue"
-                ],
                 "height": 32,
                 "width": 32
               }
@@ -86,7 +86,7 @@
         "id": "9:10245",
         "name": "Page heading",
         "w": 350,
-        "h": 167,
+        "h": 163,
         "hSize": "hug",
         "layout": {
           "mode": "column",
@@ -95,37 +95,26 @@
         },
         "children": [
           {
-            "type": "FRAME",
-            "id": "9:10246",
-            "name": "Status / COME ON IN",
-            "w": 87,
-            "h": 34,
+            "type": "INSTANCE",
+            "id": "24:7150",
+            "name": "Tag / COME ON IN",
+            "w": 95,
+            "h": 30,
             "wSize": "hug",
             "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/sand"
-            ],
-            "radius": "$Zumpo · UI:radius/999",
-            "layout": {
-              "mode": "row",
-              "gap": "$Zumpo · UI:space/8",
-              "pad": "$Zumpo · UI:space/8",
-              "align": "center",
-              "strokesIncluded": true
+            "component": "Zumpo/Tag",
+            "variant": {
+              "Tone": "Sand"
             },
-            "children": [
+            "componentId": "24:6511",
+            "props": {
+              "Label": "COME ON IN"
+            },
+            "overrides": [
               {
-                "type": "TEXT",
-                "id": "9:10247",
-                "w": 71,
-                "h": 18,
-                "wSize": "hug",
-                "hSize": "hug",
-                "text": "COME ON IN",
-                "textStyle": "Zumpo/Small",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ]
+                "path": ".",
+                "height": 30,
+                "width": 95
               }
             ]
           },
@@ -145,10 +134,11 @@
           {
             "type": "TEXT",
             "id": "9:10249",
+            "name": "A little step before the fun.",
             "w": 350,
             "h": 25,
             "hSize": "hug",
-            "text": "A little step before the fun.",
+            "text": "Enter the password for Friday doodles.",
             "textStyle": "Zumpo/Body",
             "fills": [
               "$Zumpo · UI:color/muted"
@@ -169,72 +159,83 @@
           "State": "Focus"
         },
         "componentId": "9:210",
+        "props": {
+          "Helper": "Ask the host for the password.",
+          "Value": "••••••",
+          "Label": "Room password"
+        },
         "overrides": [
           {
             "path": ".",
             "height": 115,
             "width": 350
-          },
-          {
-            "path": "Your name",
-            "characters": "Room password"
-          },
-          {
-            "path": "Editable value / Maya",
-            "characters": "••••••"
-          },
-          {
-            "path": "Choose a name people will see.",
-            "characters": "Ask the host for the password."
           }
         ]
       },
       {
-        "type": "INSTANCE",
-        "id": "9:10255",
-        "name": "Action / Join room",
-        "w": 108,
+        "type": "FRAME",
+        "id": "28:23978",
+        "name": "Actions",
+        "w": 289,
         "h": 48,
         "wSize": "hug",
-        "component": "Zumpo/Button",
-        "variant": {
-          "Style": "Primary",
-          "State": "Default"
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "strokesIncluded": true
         },
-        "componentId": "4:15",
-        "props": {
-          "Label": "Join room"
-        },
-        "overrides": [
+        "children": [
           {
-            "path": ".",
-            "height": 48,
-            "reactions": [],
-            "width": 108
-          }
-        ]
-      },
-      {
-        "type": "INSTANCE",
-        "id": "9:10257",
-        "name": "Action / Cancel",
-        "w": 88,
-        "h": 48,
-        "wSize": "hug",
-        "component": "Zumpo/Button",
-        "variant": {
-          "Style": "Quiet",
-          "State": "Default"
-        },
-        "componentId": "4:21",
-        "props": {
-          "Label": "Cancel"
-        },
-        "overrides": [
+            "type": "INSTANCE",
+            "id": "9:10255",
+            "name": "Action / Join room",
+            "w": 108,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Primary",
+              "State": "Default"
+            },
+            "componentId": "4:15",
+            "props": {
+              "Label": "Join room"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "reactions": [],
+                "width": 108
+              }
+            ]
+          },
           {
-            "path": ".",
-            "height": 48,
-            "width": 88
+            "type": "INSTANCE",
+            "id": "28:23979",
+            "name": "Action / Back to rooms",
+            "w": 169,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Secondary",
+              "State": "Default"
+            },
+            "componentId": "4:18",
+            "props": {
+              "Icon": "Zumpo/Icon / Glyph=back",
+              "Show icon": true,
+              "Label": "Back to rooms"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "width": 169
+              }
+            ]
           }
         ]
       },

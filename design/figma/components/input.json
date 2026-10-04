@@ -4,8 +4,28 @@
   "id": "9:223",
   "type": "COMPONENT_SET",
   "key": "6c24724774901b35dd5870438dd6e393fe452136",
-  "description": "Paper Pop shared Input. Reuse variants in all game and platform flows.",
+  "description": "Labelled text field. Select shows the chevron for a dropdown (the open list is Zumpo/Select menu). Error: the helper becomes the error message in danger red; do not repeat it in a Notice.",
   "properties": {
+    "Label": {
+      "type": "text",
+      "default": "Your name"
+    },
+    "Value": {
+      "type": "text",
+      "default": "Maya"
+    },
+    "Helper": {
+      "type": "text",
+      "default": "Up to 18 characters."
+    },
+    "Select": {
+      "type": "boolean",
+      "default": false
+    },
+    "Show helper": {
+      "type": "boolean",
+      "default": true
+    },
     "State": {
       "type": "variant",
       "default": "Default",
@@ -43,10 +63,14 @@
           {
             "type": "TEXT",
             "id": "9:200",
+            "name": "Label",
             "w": 496,
             "h": 20,
             "wSize": "fill",
             "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
             "text": "Your name",
             "textStyle": "Zumpo/Label",
             "fills": [
@@ -57,7 +81,7 @@
           {
             "type": "FRAME",
             "id": "9:201",
-            "name": "Editable value",
+            "name": "Field",
             "w": 496,
             "h": 59,
             "wSize": "fill",
@@ -72,7 +96,7 @@
             "radius": "$Zumpo · UI:radius/12",
             "layout": {
               "mode": "row",
-              "gap": "$Zumpo · UI:space/12",
+              "gap": 8,
               "pad": "$Zumpo · UI:space/16",
               "align": "center",
               "strokesIncluded": true
@@ -81,27 +105,60 @@
               {
                 "type": "TEXT",
                 "id": "9:202",
+                "name": "Value",
                 "w": 462,
                 "h": 25,
                 "wSize": "fill",
                 "hSize": "hug",
+                "propRefs": {
+                  "characters": "Value"
+                },
                 "text": "Maya",
                 "textStyle": "Zumpo/Body",
                 "fills": [
                   "$Zumpo · UI:color/ink"
                 ],
                 "autoResize": "height"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "24:6033",
+                "name": "Chevron",
+                "visible": false,
+                "w": 20,
+                "h": 20,
+                "propRefs": {
+                  "visible": "Select"
+                },
+                "component": "Zumpo/Icon",
+                "variant": {
+                  "Glyph": "chevron-down"
+                },
+                "componentId": "24:5017",
+                "overrides": [
+                  {
+                    "path": "chevron-down",
+                    "strokes": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  }
+                ]
               }
             ]
           },
           {
             "type": "TEXT",
             "id": "9:203",
+            "name": "Helper",
             "w": 496,
             "h": 18,
             "wSize": "fill",
             "hSize": "hug",
-            "text": "Choose a name people will see.",
+            "propRefs": {
+              "visible": "Show helper",
+              "characters": "Helper"
+            },
+            "text": "Up to 18 characters.",
             "textStyle": "Zumpo/Small",
             "fills": [
               "$Zumpo · UI:color/muted"
@@ -135,10 +192,14 @@
           {
             "type": "TEXT",
             "id": "9:206",
+            "name": "Label",
             "w": 496,
             "h": 20,
             "wSize": "fill",
             "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
             "text": "Your name",
             "textStyle": "Zumpo/Label",
             "fills": [
@@ -149,7 +210,7 @@
           {
             "type": "FRAME",
             "id": "9:207",
-            "name": "Editable value",
+            "name": "Field",
             "w": 496,
             "h": 61,
             "wSize": "fill",
@@ -165,7 +226,7 @@
             "radius": "$Zumpo · UI:radius/12",
             "layout": {
               "mode": "row",
-              "gap": "$Zumpo · UI:space/12",
+              "gap": 8,
               "pad": "$Zumpo · UI:space/16",
               "align": "center",
               "strokesIncluded": true
@@ -174,27 +235,60 @@
               {
                 "type": "TEXT",
                 "id": "9:208",
+                "name": "Value",
                 "w": 460,
                 "h": 25,
                 "wSize": "fill",
                 "hSize": "hug",
+                "propRefs": {
+                  "characters": "Value"
+                },
                 "text": "Maya",
                 "textStyle": "Zumpo/Body",
                 "fills": [
                   "$Zumpo · UI:color/ink"
                 ],
                 "autoResize": "height"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "24:6037",
+                "name": "Chevron",
+                "visible": false,
+                "w": 20,
+                "h": 20,
+                "propRefs": {
+                  "visible": "Select"
+                },
+                "component": "Zumpo/Icon",
+                "variant": {
+                  "Glyph": "chevron-down"
+                },
+                "componentId": "24:5017",
+                "overrides": [
+                  {
+                    "path": "chevron-down",
+                    "strokes": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  }
+                ]
               }
             ]
           },
           {
             "type": "TEXT",
             "id": "9:209",
+            "name": "Helper",
             "w": 496,
             "h": 18,
             "wSize": "fill",
             "hSize": "hug",
-            "text": "Choose a name people will see.",
+            "propRefs": {
+              "visible": "Show helper",
+              "characters": "Helper"
+            },
+            "text": "Up to 18 characters.",
             "textStyle": "Zumpo/Small",
             "fills": [
               "$Zumpo · UI:color/muted"
@@ -228,10 +322,14 @@
           {
             "type": "TEXT",
             "id": "9:212",
+            "name": "Label",
             "w": 496,
             "h": 20,
             "wSize": "fill",
             "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
             "text": "Your name",
             "textStyle": "Zumpo/Label",
             "fills": [
@@ -242,7 +340,7 @@
           {
             "type": "FRAME",
             "id": "9:213",
-            "name": "Editable value",
+            "name": "Field",
             "w": 496,
             "h": 59,
             "wSize": "fill",
@@ -251,13 +349,13 @@
               "$Zumpo · UI:color/paper"
             ],
             "strokes": [
-              "$Zumpo · UI:color/coral"
+              "$Zumpo · UI:color/danger"
             ],
             "strokeAlign": "inside",
             "radius": "$Zumpo · UI:radius/12",
             "layout": {
               "mode": "row",
-              "gap": "$Zumpo · UI:space/12",
+              "gap": 8,
               "pad": "$Zumpo · UI:space/16",
               "align": "center",
               "strokesIncluded": true
@@ -266,30 +364,63 @@
               {
                 "type": "TEXT",
                 "id": "9:214",
+                "name": "Value",
                 "w": 462,
                 "h": 25,
                 "wSize": "fill",
                 "hSize": "hug",
+                "propRefs": {
+                  "characters": "Value"
+                },
                 "text": "Maya",
                 "textStyle": "Zumpo/Body",
                 "fills": [
                   "$Zumpo · UI:color/ink"
                 ],
                 "autoResize": "height"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "24:6039",
+                "name": "Chevron",
+                "visible": false,
+                "w": 20,
+                "h": 20,
+                "propRefs": {
+                  "visible": "Select"
+                },
+                "component": "Zumpo/Icon",
+                "variant": {
+                  "Glyph": "chevron-down"
+                },
+                "componentId": "24:5017",
+                "overrides": [
+                  {
+                    "path": "chevron-down",
+                    "strokes": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  }
+                ]
               }
             ]
           },
           {
             "type": "TEXT",
             "id": "9:215",
+            "name": "Helper",
             "w": 496,
             "h": 18,
             "wSize": "fill",
             "hSize": "hug",
-            "text": "Please enter a name.",
+            "propRefs": {
+              "visible": "Show helper",
+              "characters": "Helper"
+            },
+            "text": "Up to 18 characters.",
             "textStyle": "Zumpo/Small",
             "fills": [
-              "$Zumpo · UI:color/coral"
+              "$Zumpo · UI:color/danger"
             ],
             "autoResize": "height"
           }
@@ -320,10 +451,14 @@
           {
             "type": "TEXT",
             "id": "9:218",
+            "name": "Label",
             "w": 496,
             "h": 20,
             "wSize": "fill",
             "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
             "text": "Your name",
             "textStyle": "Zumpo/Label",
             "fills": [
@@ -334,7 +469,7 @@
           {
             "type": "FRAME",
             "id": "9:219",
-            "name": "Editable value",
+            "name": "Field",
             "w": 496,
             "h": 59,
             "wSize": "fill",
@@ -349,7 +484,7 @@
             "radius": "$Zumpo · UI:radius/12",
             "layout": {
               "mode": "row",
-              "gap": "$Zumpo · UI:space/12",
+              "gap": 8,
               "pad": "$Zumpo · UI:space/16",
               "align": "center",
               "strokesIncluded": true
@@ -358,27 +493,60 @@
               {
                 "type": "TEXT",
                 "id": "9:220",
+                "name": "Value",
                 "w": 462,
                 "h": 25,
                 "wSize": "fill",
                 "hSize": "hug",
+                "propRefs": {
+                  "characters": "Value"
+                },
                 "text": "Maya",
                 "textStyle": "Zumpo/Body",
                 "fills": [
                   "$Zumpo · UI:color/muted"
                 ],
                 "autoResize": "height"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "24:6041",
+                "name": "Chevron",
+                "visible": false,
+                "w": 20,
+                "h": 20,
+                "propRefs": {
+                  "visible": "Select"
+                },
+                "component": "Zumpo/Icon",
+                "variant": {
+                  "Glyph": "chevron-down"
+                },
+                "componentId": "24:5017",
+                "overrides": [
+                  {
+                    "path": "chevron-down",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  }
+                ]
               }
             ]
           },
           {
             "type": "TEXT",
             "id": "9:221",
+            "name": "Helper",
             "w": 496,
             "h": 18,
             "wSize": "fill",
             "hSize": "hug",
-            "text": "Choose a name people will see.",
+            "propRefs": {
+              "visible": "Show helper",
+              "characters": "Helper"
+            },
+            "text": "Up to 18 characters.",
             "textStyle": "Zumpo/Small",
             "fills": [
               "$Zumpo · UI:color/muted"

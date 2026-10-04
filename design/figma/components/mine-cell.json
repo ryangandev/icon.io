@@ -1,46 +1,70 @@
 {
   "format": 1,
   "name": "Zumpo/Mine cell",
-  "id": "4:52",
+  "id": "24:7301",
   "type": "COMPONENT_SET",
-  "key": "45231c6dca1d1a1f98fda85633f3cd57676140a8",
-  "description": "Editable Minesweeper cell states. Number is exposed as text.",
+  "key": "eb5fe49972010764e753e0a0cf78c1bb73e0ad75",
+  "description": "One Minesweeper cell, as a client sees it: Hidden; Picked (your locked pick this round, nobody else sees it); Empty or 1–8 once uncovered; Mine where somebody hit one (it stays on the board). Regular is 44px (Small and Medium boards; 36px on phones); Compact 26px for the 30 × 16 board. There are no flags. Pick outcomes during the reveal are drawn on top with Zumpo/Pick marker.",
   "properties": {
-    "Number": {
-      "type": "text",
-      "default": "1"
-    },
     "State": {
       "type": "variant",
-      "default": "Closed",
+      "default": "Hidden",
       "options": [
-        "Closed",
-        "Open",
-        "Selected",
-        "Flagged"
+        "Hidden",
+        "Picked",
+        "Empty",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "Mine"
+      ]
+    },
+    "Size": {
+      "type": "variant",
+      "default": "Regular",
+      "options": [
+        "Regular",
+        "Compact"
       ]
     }
   },
-  "defaultVariant": "State=Closed",
+  "defaultVariant": "State=Hidden, Size=Regular",
   "variants": [
     {
-      "name": "State=Closed",
-      "id": "4:48",
+      "name": "State=Hidden, Size=Regular",
+      "id": "24:7235",
       "props": {
-        "State": "Closed"
+        "State": "Hidden",
+        "Size": "Regular"
       },
       "node": {
         "type": "COMPONENT",
-        "id": "4:48",
-        "name": "State=Closed",
-        "x": 0,
-        "y": 0,
+        "id": "24:7235",
+        "name": "State=Hidden, Size=Regular",
+        "x": 24,
+        "y": 24,
         "w": 44,
         "h": 44,
         "fills": [
-          "$Zumpo · UI:color/sand"
+          "$Zumpo · UI:color/blue"
         ],
         "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
         "layout": {
           "mode": "row",
           "justify": "center",
@@ -50,61 +74,18 @@
       }
     },
     {
-      "name": "State=Open",
-      "id": "4:49",
+      "name": "State=Picked, Size=Regular",
+      "id": "24:7236",
       "props": {
-        "State": "Open"
+        "State": "Picked",
+        "Size": "Regular"
       },
       "node": {
         "type": "COMPONENT",
-        "id": "4:49",
-        "name": "State=Open",
-        "x": 60,
-        "y": 0,
-        "w": 44,
-        "h": 44,
-        "fills": [
-          "$Zumpo · UI:color/paper"
-        ],
-        "radius": "$Zumpo · UI:radius/8",
-        "layout": {
-          "mode": "row",
-          "justify": "center",
-          "align": "center",
-          "strokesIncluded": true
-        },
-        "children": [
-          {
-            "type": "TEXT",
-            "id": "4:53",
-            "w": 7,
-            "h": 24,
-            "wSize": "hug",
-            "hSize": "hug",
-            "propRefs": {
-              "characters": "Number"
-            },
-            "text": "1",
-            "textStyle": "Zumpo/Number",
-            "fills": [
-              "$Zumpo · UI:color/green"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "name": "State=Selected",
-      "id": "4:50",
-      "props": {
-        "State": "Selected"
-      },
-      "node": {
-        "type": "COMPONENT",
-        "id": "4:50",
-        "name": "State=Selected",
-        "x": 120,
-        "y": 0,
+        "id": "24:7236",
+        "name": "State=Picked, Size=Regular",
+        "x": 80,
+        "y": 24,
         "w": 44,
         "h": 44,
         "fills": [
@@ -121,26 +102,76 @@
           "justify": "center",
           "align": "center",
           "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:7237",
+            "name": "Lock",
+            "w": 18,
+            "h": 18,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "lock"
+            },
+            "componentId": "24:5010"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Empty, Size=Regular",
+      "id": "24:7240",
+      "props": {
+        "State": "Empty",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7240",
+        "name": "State=Empty, Size=Regular",
+        "x": 136,
+        "y": 24,
+        "w": 44,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
         }
       }
     },
     {
-      "name": "State=Flagged",
-      "id": "4:51",
+      "name": "State=1, Size=Regular",
+      "id": "24:7241",
       "props": {
-        "State": "Flagged"
+        "State": "1",
+        "Size": "Regular"
       },
       "node": {
         "type": "COMPONENT",
-        "id": "4:51",
-        "name": "State=Flagged",
-        "x": 180,
-        "y": 0,
+        "id": "24:7241",
+        "name": "State=1, Size=Regular",
+        "x": 192,
+        "y": 24,
         "w": 44,
         "h": 44,
         "fills": [
-          "$Zumpo · UI:color/sand"
+          "$Zumpo · UI:color/cream"
         ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
         "radius": "$Zumpo · UI:radius/8",
         "layout": {
           "mode": "row",
@@ -150,12 +181,1046 @@
         },
         "children": [
           {
-            "type": "FRAME",
-            "id": "4:54",
-            "name": "Flag",
-            "w": 18,
-            "h": 18,
-            "svg": "svg/flag-f31229.svg"
+            "type": "TEXT",
+            "id": "24:7242",
+            "name": "Number",
+            "w": 7,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "1",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/number/1"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=2, Size=Regular",
+      "id": "24:7243",
+      "props": {
+        "State": "2",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7243",
+        "name": "State=2, Size=Regular",
+        "x": 248,
+        "y": 24,
+        "w": 44,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "24:7244",
+            "name": "Number",
+            "w": 11,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "2",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/number/2"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=3, Size=Regular",
+      "id": "24:7245",
+      "props": {
+        "State": "3",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7245",
+        "name": "State=3, Size=Regular",
+        "x": 304,
+        "y": 24,
+        "w": 44,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "24:7246",
+            "name": "Number",
+            "w": 11,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "3",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/number/3"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=4, Size=Regular",
+      "id": "24:7247",
+      "props": {
+        "State": "4",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7247",
+        "name": "State=4, Size=Regular",
+        "x": 360,
+        "y": 24,
+        "w": 44,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "24:7248",
+            "name": "Number",
+            "w": 12,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "4",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/number/4"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=5, Size=Regular",
+      "id": "24:7249",
+      "props": {
+        "State": "5",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7249",
+        "name": "State=5, Size=Regular",
+        "x": 416,
+        "y": 24,
+        "w": 44,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "24:7250",
+            "name": "Number",
+            "w": 12,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "5",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/number/5"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=6, Size=Regular",
+      "id": "24:7251",
+      "props": {
+        "State": "6",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7251",
+        "name": "State=6, Size=Regular",
+        "x": 472,
+        "y": 24,
+        "w": 44,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "24:7252",
+            "name": "Number",
+            "w": 12,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "6",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/number/6"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=7, Size=Regular",
+      "id": "24:7253",
+      "props": {
+        "State": "7",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7253",
+        "name": "State=7, Size=Regular",
+        "x": 528,
+        "y": 24,
+        "w": 44,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "24:7254",
+            "name": "Number",
+            "w": 10,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "7",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/number/7"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=8, Size=Regular",
+      "id": "24:7255",
+      "props": {
+        "State": "8",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7255",
+        "name": "State=8, Size=Regular",
+        "x": 584,
+        "y": 24,
+        "w": 44,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "24:7256",
+            "name": "Number",
+            "w": 12,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "8",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/number/8"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Mine, Size=Regular",
+      "id": "24:7257",
+      "props": {
+        "State": "Mine",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7257",
+        "name": "State=Mine, Size=Regular",
+        "x": 640,
+        "y": 24,
+        "w": 44,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/peach"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:7258",
+            "name": "Mine",
+            "w": 22,
+            "h": 22,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "mine"
+            },
+            "componentId": "24:5071",
+            "overrides": [
+              {
+                "path": "mine",
+                "fills": [
+                  "$Zumpo · UI:color/danger"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "mine",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "mine",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "mine",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "mine",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "mine",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "mine",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "mine",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "mine",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Hidden, Size=Compact",
+      "id": "24:7268",
+      "props": {
+        "State": "Hidden",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7268",
+        "name": "State=Hidden, Size=Compact",
+        "x": 24,
+        "y": 92,
+        "w": 26,
+        "h": 26,
+        "fills": [
+          "$Zumpo · UI:color/blue"
+        ],
+        "radius": 6,
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        }
+      }
+    },
+    {
+      "name": "State=Picked, Size=Compact",
+      "id": "24:7269",
+      "props": {
+        "State": "Picked",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7269",
+        "name": "State=Picked, Size=Compact",
+        "x": 80,
+        "y": 92,
+        "w": 26,
+        "h": 26,
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": 6,
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:7270",
+            "name": "Lock",
+            "w": 12,
+            "h": 12,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "lock"
+            },
+            "componentId": "24:5010"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Empty, Size=Compact",
+      "id": "24:7273",
+      "props": {
+        "State": "Empty",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7273",
+        "name": "State=Empty, Size=Compact",
+        "x": 136,
+        "y": 92,
+        "w": 26,
+        "h": 26,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": 6,
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        }
+      }
+    },
+    {
+      "name": "State=1, Size=Compact",
+      "id": "24:7274",
+      "props": {
+        "State": "1",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7274",
+        "name": "State=1, Size=Compact",
+        "x": 192,
+        "y": 92,
+        "w": 26,
+        "h": 26,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": 6,
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "24:7275",
+            "name": "Number",
+            "w": 6,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "1",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/number/1"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=2, Size=Compact",
+      "id": "24:7276",
+      "props": {
+        "State": "2",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7276",
+        "name": "State=2, Size=Compact",
+        "x": 248,
+        "y": 92,
+        "w": 26,
+        "h": 26,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": 6,
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "24:7277",
+            "name": "Number",
+            "w": 9,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "2",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/number/2"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=3, Size=Compact",
+      "id": "24:7278",
+      "props": {
+        "State": "3",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7278",
+        "name": "State=3, Size=Compact",
+        "x": 304,
+        "y": 92,
+        "w": 26,
+        "h": 26,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": 6,
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "24:7279",
+            "name": "Number",
+            "w": 9,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "3",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/number/3"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=4, Size=Compact",
+      "id": "24:7280",
+      "props": {
+        "State": "4",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7280",
+        "name": "State=4, Size=Compact",
+        "x": 360,
+        "y": 92,
+        "w": 26,
+        "h": 26,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": 6,
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "24:7281",
+            "name": "Number",
+            "w": 10,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "4",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/number/4"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=5, Size=Compact",
+      "id": "24:7282",
+      "props": {
+        "State": "5",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7282",
+        "name": "State=5, Size=Compact",
+        "x": 416,
+        "y": 92,
+        "w": 26,
+        "h": 26,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": 6,
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "24:7283",
+            "name": "Number",
+            "w": 9,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "5",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/number/5"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=6, Size=Compact",
+      "id": "24:7284",
+      "props": {
+        "State": "6",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7284",
+        "name": "State=6, Size=Compact",
+        "x": 472,
+        "y": 92,
+        "w": 26,
+        "h": 26,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": 6,
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "24:7285",
+            "name": "Number",
+            "w": 9,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "6",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/number/6"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=7, Size=Compact",
+      "id": "24:7286",
+      "props": {
+        "State": "7",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7286",
+        "name": "State=7, Size=Compact",
+        "x": 528,
+        "y": 92,
+        "w": 26,
+        "h": 26,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": 6,
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "24:7287",
+            "name": "Number",
+            "w": 8,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "7",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/number/7"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=8, Size=Compact",
+      "id": "24:7288",
+      "props": {
+        "State": "8",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7288",
+        "name": "State=8, Size=Compact",
+        "x": 584,
+        "y": 92,
+        "w": 26,
+        "h": 26,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": 6,
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "24:7289",
+            "name": "Number",
+            "w": 9,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "8",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/number/8"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Mine, Size=Compact",
+      "id": "24:7290",
+      "props": {
+        "State": "Mine",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7290",
+        "name": "State=Mine, Size=Compact",
+        "x": 640,
+        "y": 92,
+        "w": 26,
+        "h": 26,
+        "fills": [
+          "$Zumpo · UI:color/peach"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "strokeAlign": "inside",
+        "radius": 6,
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:7291",
+            "name": "Mine",
+            "w": 16,
+            "h": 16,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "mine"
+            },
+            "componentId": "24:5071",
+            "overrides": [
+              {
+                "path": "mine",
+                "fills": [
+                  "$Zumpo · UI:color/danger"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "mine",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "mine",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "mine",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "mine",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "mine",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "mine",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "mine",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "mine",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              }
+            ]
           }
         ]
       }

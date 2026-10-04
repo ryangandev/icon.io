@@ -14,7 +14,7 @@
     "x": 3120,
     "y": 150,
     "w": 1440,
-    "h": 872,
+    "h": 868,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -42,9 +42,10 @@
         "componentId": "4:39",
         "overrides": [
           {
-            "path": "Navigation / Zumpo/Avatar",
+            "path": "Navigation / You",
             "componentProperties": {
-              "Initials": "MA"
+              "Initials": "SA",
+              "Tone": "Sand"
             }
           }
         ]
@@ -54,7 +55,7 @@
         "id": "9:2649",
         "name": "Page heading",
         "w": 1312,
-        "h": 125,
+        "h": 121,
         "hSize": "hug",
         "layout": {
           "mode": "column",
@@ -63,37 +64,26 @@
         },
         "children": [
           {
-            "type": "FRAME",
-            "id": "9:2650",
-            "name": "Status / PLAY TOGETHER",
-            "w": 109,
-            "h": 34,
+            "type": "INSTANCE",
+            "id": "24:6825",
+            "name": "Tag / PLAY TOGETHER",
+            "w": 117,
+            "h": 30,
             "wSize": "hug",
             "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/sand"
-            ],
-            "radius": "$Zumpo · UI:radius/999",
-            "layout": {
-              "mode": "row",
-              "gap": "$Zumpo · UI:space/8",
-              "pad": "$Zumpo · UI:space/8",
-              "align": "center",
-              "strokesIncluded": true
+            "component": "Zumpo/Tag",
+            "variant": {
+              "Tone": "Sand"
             },
-            "children": [
+            "componentId": "24:6511",
+            "props": {
+              "Label": "PLAY TOGETHER"
+            },
+            "overrides": [
               {
-                "type": "TEXT",
-                "id": "9:2651",
-                "w": 93,
-                "h": 18,
-                "wSize": "hug",
-                "hSize": "hug",
-                "text": "PLAY TOGETHER",
-                "textStyle": "Zumpo/Small",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ]
+                "path": ".",
+                "height": 30,
+                "width": 117
               }
             ]
           },
@@ -144,16 +134,18 @@
             "type": "INSTANCE",
             "id": "9:2655",
             "name": "Action / Back to games",
-            "w": 141,
+            "w": 171,
             "h": 48,
             "wSize": "hug",
             "component": "Zumpo/Button",
             "variant": {
-              "Style": "Quiet",
+              "Style": "Secondary",
               "State": "Default"
             },
-            "componentId": "4:21",
+            "componentId": "4:18",
             "props": {
+              "Icon": "Zumpo/Icon / Glyph=back",
+              "Show icon": true,
               "Label": "Back to games"
             },
             "overrides": [
@@ -173,7 +165,7 @@
                     ]
                   }
                 ],
-                "width": 141
+                "width": 171
               }
             ],
             "reactions": [
@@ -395,10 +387,10 @@
                 "w": 304,
                 "h": 75,
                 "hSize": "hug",
-                "text": "Everyone picks a covered cell at the same time. Safe cells score points; mines cost points.",
+                "text": "Everyone picks a hidden cell at the same time. Riskier safe picks score more, and a mine costs points.",
                 "textStyle": "Zumpo/Body",
                 "fills": [
-                  "$Zumpo · UI:color/muted"
+                  "$Zumpo · UI:color/ink"
                 ],
                 "autoResize": "height"
               },
@@ -409,7 +401,7 @@
                 "w": 304,
                 "h": 100,
                 "hSize": "hug",
-                "text": "2–8 players\nSmall, Medium or Large boards\n15s to pick · 4s reveal\nSame cell? Safe rewards are split.",
+                "text": "2–8 players\nSmall, Medium or Large board\n15s to pick · 4s reveal\nSame safe cell? The points are split.",
                 "textStyle": "Zumpo/Body",
                 "fills": [
                   "$Zumpo · UI:color/ink"

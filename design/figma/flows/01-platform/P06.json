@@ -12,9 +12,9 @@
     "id": "9:604",
     "name": "P06 / Connection failed",
     "x": 1580,
-    "y": 1278,
+    "y": 1310,
     "w": 1440,
-    "h": 635,
+    "h": 555,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -42,9 +42,10 @@
         "componentId": "4:39",
         "overrides": [
           {
-            "path": "Navigation / Zumpo/Avatar",
+            "path": "Navigation / You",
             "componentProperties": {
-              "Initials": "MA"
+              "Initials": "MA",
+              "Tone": "Peach"
             }
           }
         ]
@@ -183,16 +184,18 @@
                     "type": "INSTANCE",
                     "id": "9:622",
                     "name": "Action / Back to games",
-                    "w": 141,
+                    "w": 171,
                     "h": 48,
                     "wSize": "hug",
                     "component": "Zumpo/Button",
                     "variant": {
-                      "Style": "Quiet",
+                      "Style": "Secondary",
                       "State": "Default"
                     },
-                    "componentId": "4:21",
+                    "componentId": "4:18",
                     "props": {
+                      "Icon": "Zumpo/Icon / Glyph=back",
+                      "Show icon": true,
                       "Label": "Back to games"
                     },
                     "overrides": [
@@ -212,7 +215,7 @@
                             ]
                           }
                         ],
-                        "width": 141
+                        "width": 171
                       }
                     ],
                     "reactions": [
@@ -239,23 +242,23 @@
         "type": "INSTANCE",
         "id": "9:624",
         "name": "Zumpo/Notice",
+        "visible": false,
         "w": 1312,
-        "h": 56,
+        "h": 52,
         "hSize": "hug",
         "component": "Zumpo/Notice",
         "variant": {
           "Tone": "Error"
         },
         "componentId": "9:235",
+        "props": {
+          "Message": "Connection timed out."
+        },
         "overrides": [
           {
             "path": ".",
-            "height": 56,
+            "height": 52,
             "width": 1312
-          },
-          {
-            "path": "Connection restored. Welcome back!",
-            "characters": "Connection timed out."
           }
         ]
       },

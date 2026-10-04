@@ -12,9 +12,9 @@
     "id": "9:2780",
     "name": "ML06 / Create room · pending request",
     "x": 1580,
-    "y": 1639,
+    "y": 1542,
     "w": 1440,
-    "h": 1469,
+    "h": 1220,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -42,9 +42,10 @@
         "componentId": "4:39",
         "overrides": [
           {
-            "path": "Navigation / Zumpo/Avatar",
+            "path": "Navigation / You",
             "componentProperties": {
-              "Initials": "MA"
+              "Initials": "MA",
+              "Tone": "Peach"
             }
           }
         ]
@@ -54,7 +55,7 @@
         "id": "9:2791",
         "name": "Page heading",
         "w": 1312,
-        "h": 125,
+        "h": 121,
         "hSize": "hug",
         "layout": {
           "mode": "column",
@@ -63,37 +64,26 @@
         },
         "children": [
           {
-            "type": "FRAME",
-            "id": "9:2792",
-            "name": "Status / PLAY TOGETHER",
-            "w": 109,
-            "h": 34,
+            "type": "INSTANCE",
+            "id": "24:6840",
+            "name": "Tag / PLAY TOGETHER",
+            "w": 117,
+            "h": 30,
             "wSize": "hug",
             "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/sand"
-            ],
-            "radius": "$Zumpo · UI:radius/999",
-            "layout": {
-              "mode": "row",
-              "gap": "$Zumpo · UI:space/8",
-              "pad": "$Zumpo · UI:space/8",
-              "align": "center",
-              "strokesIncluded": true
+            "component": "Zumpo/Tag",
+            "variant": {
+              "Tone": "Sand"
             },
-            "children": [
+            "componentId": "24:6511",
+            "props": {
+              "Label": "PLAY TOGETHER"
+            },
+            "overrides": [
               {
-                "type": "TEXT",
-                "id": "9:2793",
-                "w": 93,
-                "h": 18,
-                "wSize": "hug",
-                "hSize": "hug",
-                "text": "PLAY TOGETHER",
-                "textStyle": "Zumpo/Small",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ]
+                "path": ".",
+                "height": 30,
+                "width": 117
               }
             ]
           },
@@ -130,8 +120,7 @@
         "id": "9:2796",
         "name": "Dialog stage",
         "w": 1312,
-        "h": 1094,
-        "hSize": "hug",
+        "h": 849,
         "layout": {
           "mode": "row",
           "pad": [
@@ -148,7 +137,7 @@
             "id": "9:2797",
             "name": "A little room for you.",
             "w": 560,
-            "h": 982,
+            "h": 737,
             "hSize": "hug",
             "fills": [
               "$Zumpo · UI:color/paper"
@@ -181,10 +170,11 @@
               {
                 "type": "TEXT",
                 "id": "9:2799",
+                "name": "Pick the board. Everyone chooses at the same time.",
                 "w": 496,
                 "h": 25,
                 "hSize": "hug",
-                "text": "Pick the board. Everyone chooses at the same time.",
+                "text": "Pick a board. Small is a quick game; Large takes a while.",
                 "textStyle": "Zumpo/Body",
                 "fills": [
                   "$Zumpo · UI:color/muted"
@@ -203,20 +193,11 @@
                   "State": "Default"
                 },
                 "componentId": "9:204",
-                "overrides": [
-                  {
-                    "path": "Your name",
-                    "characters": "Room name"
-                  },
-                  {
-                    "path": "Editable value / Maya",
-                    "characters": "Maya’s room"
-                  },
-                  {
-                    "path": "Choose a name people will see.",
-                    "characters": "Up to 40 characters."
-                  }
-                ]
+                "props": {
+                  "Helper": "Up to 40 characters.",
+                  "Value": "Maya’s room",
+                  "Label": "Room name"
+                }
               },
               {
                 "type": "INSTANCE",
@@ -230,20 +211,12 @@
                   "State": "Default"
                 },
                 "componentId": "9:204",
-                "overrides": [
-                  {
-                    "path": "Your name",
-                    "characters": "Seats"
-                  },
-                  {
-                    "path": "Editable value / Maya",
-                    "characters": "8 players  ▾"
-                  },
-                  {
-                    "path": "Choose a name people will see.",
-                    "characters": "Choose 2–8 seats."
-                  }
-                ]
+                "props": {
+                  "Select": true,
+                  "Helper": "Choose 2–8 seats.",
+                  "Value": "8 players",
+                  "Label": "Seats"
+                }
               },
               {
                 "type": "INSTANCE",
@@ -257,43 +230,12 @@
                   "State": "Default"
                 },
                 "componentId": "9:204",
-                "overrides": [
-                  {
-                    "path": "Your name",
-                    "characters": "Board"
-                  },
-                  {
-                    "path": "Editable value / Maya",
-                    "characters": "Medium · 16 × 16 · 40 mines  ▾"
-                  },
-                  {
-                    "path": "Choose a name people will see.",
-                    "characters": "Small 9 × 9 / Medium 16 × 16 / Large 30 × 16."
-                  }
-                ]
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:2815",
-                "name": "Zumpo/Input",
-                "w": 496,
-                "h": 113,
-                "hSize": "hug",
-                "component": "Zumpo/Input",
-                "variant": {
-                  "State": "Disabled"
-                },
-                "componentId": "9:222",
-                "overrides": [
-                  {
-                    "path": "Your name",
-                    "characters": "Host"
-                  },
-                  {
-                    "path": "Choose a name people will see.",
-                    "characters": "You’re the host."
-                  }
-                ]
+                "props": {
+                  "Select": true,
+                  "Helper": "16 × 16 · 40 mines",
+                  "Value": "Medium",
+                  "Label": "Board"
+                }
               },
               {
                 "type": "INSTANCE",
@@ -307,106 +249,58 @@
                   "State": "Default"
                 },
                 "componentId": "9:204",
-                "overrides": [
-                  {
-                    "path": "Your name",
-                    "characters": "Password (optional)"
-                  },
-                  {
-                    "path": "Editable value / Maya",
-                    "characters": "••••••"
-                  },
-                  {
-                    "path": "Choose a name people will see.",
-                    "characters": "Leave blank for an open room. Up to 20 characters."
-                  }
-                ]
+                "props": {
+                  "Helper": "Leave blank for an open room. Up to 20 characters.",
+                  "Value": "••••••",
+                  "Label": "Password (optional)"
+                }
               },
               {
                 "type": "FRAME",
                 "id": "9:2825",
-                "name": "Actions",
+                "name": "Status",
                 "w": 496,
-                "h": 48,
+                "h": 20,
                 "hSize": "hug",
                 "layout": {
                   "mode": "row",
-                  "gap": "$Zumpo · UI:space/12",
+                  "gap": 8,
                   "align": "center",
                   "strokesIncluded": true
                 },
                 "children": [
                   {
                     "type": "INSTANCE",
-                    "id": "9:2826",
-                    "name": "Action / Creating…",
-                    "w": 109,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
+                    "id": "29:23990",
+                    "name": "Zumpo/Icon",
+                    "w": 20,
+                    "h": 20,
+                    "component": "Zumpo/Icon",
                     "variant": {
-                      "Style": "Primary",
-                      "State": "Disabled"
+                      "Glyph": "pending"
                     },
-                    "componentId": "4:17",
-                    "props": {
-                      "Label": "Creating…"
-                    },
+                    "componentId": "24:5002",
                     "overrides": [
                       {
-                        "path": ".",
-                        "height": 48,
-                        "width": 109
+                        "path": "pending",
+                        "strokes": [
+                          "$Zumpo · UI:color/muted"
+                        ]
                       }
                     ]
                   },
                   {
-                    "type": "INSTANCE",
-                    "id": "9:2828",
-                    "name": "Action / Cancel",
-                    "w": 88,
-                    "h": 48,
+                    "type": "TEXT",
+                    "id": "29:23992",
+                    "w": 143,
+                    "h": 20,
                     "wSize": "hug",
-                    "component": "Zumpo/Button",
-                    "variant": {
-                      "Style": "Quiet",
-                      "State": "Default"
-                    },
-                    "componentId": "4:21",
-                    "props": {
-                      "Label": "Cancel"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 48,
-                        "width": 88
-                      }
+                    "hSize": "hug",
+                    "text": "Creating your room…",
+                    "textStyle": "Zumpo/Label",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
                     ]
-                  }
-                ]
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:2830",
-                "name": "Zumpo/Notice",
-                "w": 496,
-                "h": 56,
-                "hSize": "hug",
-                "component": "Zumpo/Notice",
-                "variant": {
-                  "Tone": "Pending"
-                },
-                "componentId": "9:239",
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 56,
-                    "width": 496
-                  },
-                  {
-                    "path": "Connection restored. Welcome back!",
-                    "characters": "Creating your room…"
                   }
                 ]
               }

@@ -12,9 +12,9 @@
     "id": "9:2836",
     "name": "ML07 / Password-protected room",
     "x": 3120,
-    "y": 1639,
+    "y": 1542,
     "w": 1440,
-    "h": 843,
+    "h": 839,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -42,9 +42,10 @@
         "componentId": "4:39",
         "overrides": [
           {
-            "path": "Navigation / Zumpo/Avatar",
+            "path": "Navigation / You",
             "componentProperties": {
-              "Initials": "MA"
+              "Initials": "SA",
+              "Tone": "Sand"
             }
           }
         ]
@@ -54,7 +55,7 @@
         "id": "9:2847",
         "name": "Page heading",
         "w": 1312,
-        "h": 125,
+        "h": 121,
         "hSize": "hug",
         "layout": {
           "mode": "column",
@@ -63,37 +64,26 @@
         },
         "children": [
           {
-            "type": "FRAME",
-            "id": "9:2848",
-            "name": "Status / PLAY TOGETHER",
-            "w": 109,
-            "h": 34,
+            "type": "INSTANCE",
+            "id": "24:6845",
+            "name": "Tag / PLAY TOGETHER",
+            "w": 117,
+            "h": 30,
             "wSize": "hug",
             "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/sand"
-            ],
-            "radius": "$Zumpo · UI:radius/999",
-            "layout": {
-              "mode": "row",
-              "gap": "$Zumpo · UI:space/8",
-              "pad": "$Zumpo · UI:space/8",
-              "align": "center",
-              "strokesIncluded": true
+            "component": "Zumpo/Tag",
+            "variant": {
+              "Tone": "Sand"
             },
-            "children": [
+            "componentId": "24:6511",
+            "props": {
+              "Label": "PLAY TOGETHER"
+            },
+            "overrides": [
               {
-                "type": "TEXT",
-                "id": "9:2849",
-                "w": 93,
-                "h": 18,
-                "wSize": "hug",
-                "hSize": "hug",
-                "text": "PLAY TOGETHER",
-                "textStyle": "Zumpo/Small",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ]
+                "path": ".",
+                "height": 30,
+                "width": 117
               }
             ]
           },
@@ -113,10 +103,11 @@
           {
             "type": "TEXT",
             "id": "9:2851",
+            "name": "Make a little space for your next game.",
             "w": 1312,
             "h": 25,
             "hSize": "hug",
-            "text": "Make a little space for your next game.",
+            "text": "Join a room or make one for your friends.",
             "textStyle": "Zumpo/Body",
             "fills": [
               "$Zumpo · UI:color/muted"
@@ -131,7 +122,6 @@
         "name": "Dialog stage",
         "w": 1312,
         "h": 468,
-        "hSize": "hug",
         "layout": {
           "mode": "row",
           "pad": [
@@ -181,10 +171,11 @@
               {
                 "type": "TEXT",
                 "id": "9:2855",
+                "name": "Enter the password for Maya’s room.",
                 "w": 496,
                 "h": 25,
                 "hSize": "hug",
-                "text": "Enter the password for Maya’s room.",
+                "text": "Enter the password for Lunch break.",
                 "textStyle": "Zumpo/Body",
                 "fills": [
                   "$Zumpo · UI:color/muted"
@@ -203,20 +194,11 @@
                   "State": "Focus"
                 },
                 "componentId": "9:210",
-                "overrides": [
-                  {
-                    "path": "Your name",
-                    "characters": "Room password"
-                  },
-                  {
-                    "path": "Editable value / Maya",
-                    "characters": "••••••"
-                  },
-                  {
-                    "path": "Choose a name people will see.",
-                    "characters": "Ask the host for the room password."
-                  }
-                ]
+                "props": {
+                  "Helper": "Ask the host for the room password.",
+                  "Value": "••••••",
+                  "Label": "Room password"
+                }
               },
               {
                 "type": "FRAME",
@@ -286,16 +268,18 @@
                     "type": "INSTANCE",
                     "id": "9:2864",
                     "name": "Action / Back to rooms",
-                    "w": 139,
+                    "w": 169,
                     "h": 48,
                     "wSize": "hug",
                     "component": "Zumpo/Button",
                     "variant": {
-                      "Style": "Quiet",
+                      "Style": "Secondary",
                       "State": "Default"
                     },
-                    "componentId": "4:21",
+                    "componentId": "4:18",
                     "props": {
+                      "Icon": "Zumpo/Icon / Glyph=back",
+                      "Show icon": true,
                       "Label": "Back to rooms"
                     },
                     "overrides": [
@@ -315,7 +299,7 @@
                             ]
                           }
                         ],
-                        "width": 139
+                        "width": 169
                       }
                     ],
                     "reactions": [

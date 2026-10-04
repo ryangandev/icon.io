@@ -4,13 +4,23 @@
   "id": "9:408",
   "type": "COMPONENT",
   "key": "12cc636ee21c0ebafaa2bad6a960fafd50d9f400",
-  "description": "Drawer-only private candidate. Do not show choices to other players.",
+  "description": "Drawer-only word candidate (three per turn, from the game’s category). Never shown to anyone else. Detail: letter count.",
+  "properties": {
+    "Word": {
+      "type": "text",
+      "default": "Turtle"
+    },
+    "Detail": {
+      "type": "text",
+      "default": "6 letters"
+    }
+  },
   "node": {
     "type": "COMPONENT",
     "id": "9:408",
     "name": "Zumpo/Word choice",
-    "x": 840,
-    "y": 2060,
+    "x": 32,
+    "y": 3098,
     "w": 260,
     "h": 110,
     "hSize": "hug",
@@ -32,11 +42,15 @@
       {
         "type": "TEXT",
         "id": "9:406",
+        "name": "Word",
         "w": 210,
         "h": 30,
         "wSize": "fill",
         "hSize": "hug",
-        "text": "Rocket",
+        "propRefs": {
+          "characters": "Word"
+        },
+        "text": "Turtle",
         "textStyle": "Zumpo/Heading",
         "fills": [
           "$Zumpo · UI:color/ink"
@@ -46,11 +60,15 @@
       {
         "type": "TEXT",
         "id": "9:407",
+        "name": "Detail",
         "w": 210,
         "h": 18,
         "wSize": "fill",
         "hSize": "hug",
-        "text": "Pick to draw",
+        "propRefs": {
+          "characters": "Detail"
+        },
+        "text": "6 letters",
         "textStyle": "Zumpo/Small",
         "fills": [
           "$Zumpo · UI:color/muted"

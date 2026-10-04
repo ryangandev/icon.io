@@ -4,8 +4,12 @@
   "id": "9:240",
   "type": "COMPONENT_SET",
   "key": "281a96909a6f4e16ac3e89e88d8828c672d28177",
-  "description": "Paper Pop shared Notice. Reuse variants in all game and platform flows.",
+  "description": "Page-level status. Use it for things that are not shown anywhere else on the screen; never repeat an inline field error or a card’s own message. Set the Message property.",
   "properties": {
+    "Message": {
+      "type": "text",
+      "default": "Connection restored. Welcome back!"
+    },
     "Tone": {
       "type": "variant",
       "default": "Info",
@@ -32,7 +36,7 @@
         "x": 24,
         "y": 48,
         "w": 560,
-        "h": 56,
+        "h": 52,
         "hSize": "hug",
         "fills": [
           "$Zumpo · UI:color/blue"
@@ -47,25 +51,48 @@
         },
         "children": [
           {
-            "type": "TEXT",
-            "id": "9:225",
-            "w": 5,
-            "h": 24,
-            "wSize": "hug",
-            "hSize": "hug",
-            "text": "i",
-            "textStyle": "Zumpo/Number",
-            "fills": [
-              "$Zumpo · UI:color/ink"
+            "type": "INSTANCE",
+            "id": "24:5087",
+            "name": "Icon",
+            "w": 20,
+            "h": 20,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "info"
+            },
+            "componentId": "24:4990",
+            "overrides": [
+              {
+                "path": "info",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "info",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "info",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
             ]
           },
           {
             "type": "TEXT",
             "id": "9:226",
-            "w": 511,
+            "name": "Message",
+            "w": 496,
             "h": 20,
             "wSize": "fill",
             "hSize": "hug",
+            "propRefs": {
+              "characters": "Message"
+            },
             "text": "Connection restored. Welcome back!",
             "textStyle": "Zumpo/Label",
             "fills": [
@@ -89,7 +116,7 @@
         "x": 608,
         "y": 48,
         "w": 560,
-        "h": 56,
+        "h": 52,
         "hSize": "hug",
         "fills": [
           "$Zumpo · UI:color/lime"
@@ -104,25 +131,42 @@
         },
         "children": [
           {
-            "type": "TEXT",
-            "id": "9:229",
-            "w": 15,
-            "h": 24,
-            "wSize": "hug",
-            "hSize": "hug",
-            "text": "✓",
-            "textStyle": "Zumpo/Number",
-            "fills": [
-              "$Zumpo · UI:color/ink"
+            "type": "INSTANCE",
+            "id": "24:5091",
+            "name": "Icon",
+            "w": 20,
+            "h": 20,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "check"
+            },
+            "componentId": "24:4994",
+            "overrides": [
+              {
+                "path": "check",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "check",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
             ]
           },
           {
             "type": "TEXT",
             "id": "9:230",
-            "w": 501,
+            "name": "Message",
+            "w": 496,
             "h": 20,
             "wSize": "fill",
             "hSize": "hug",
+            "propRefs": {
+              "characters": "Message"
+            },
             "text": "Connection restored. Welcome back!",
             "textStyle": "Zumpo/Label",
             "fills": [
@@ -146,7 +190,7 @@
         "x": 24,
         "y": 160,
         "w": 560,
-        "h": 56,
+        "h": 52,
         "hSize": "hug",
         "fills": [
           "$Zumpo · UI:color/peach"
@@ -161,25 +205,48 @@
         },
         "children": [
           {
-            "type": "TEXT",
-            "id": "9:233",
-            "w": 6,
-            "h": 24,
-            "wSize": "hug",
-            "hSize": "hug",
-            "text": "!",
-            "textStyle": "Zumpo/Number",
-            "fills": [
-              "$Zumpo · UI:color/ink"
+            "type": "INSTANCE",
+            "id": "24:5094",
+            "name": "Icon",
+            "w": 20,
+            "h": 20,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "alert"
+            },
+            "componentId": "24:4999",
+            "overrides": [
+              {
+                "path": "alert",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "alert",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "alert",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              }
             ]
           },
           {
             "type": "TEXT",
             "id": "9:234",
-            "w": 510,
+            "name": "Message",
+            "w": 496,
             "h": 20,
             "wSize": "fill",
             "hSize": "hug",
+            "propRefs": {
+              "characters": "Message"
+            },
             "text": "Connection restored. Welcome back!",
             "textStyle": "Zumpo/Label",
             "fills": [
@@ -203,7 +270,7 @@
         "x": 608,
         "y": 160,
         "w": 560,
-        "h": 56,
+        "h": 52,
         "hSize": "hug",
         "fills": [
           "$Zumpo · UI:color/sand"
@@ -218,25 +285,36 @@
         },
         "children": [
           {
-            "type": "TEXT",
-            "id": "9:237",
-            "w": 11,
-            "h": 24,
-            "wSize": "hug",
-            "hSize": "hug",
-            "text": "◌",
-            "textStyle": "Zumpo/Number",
-            "fills": [
-              "$Zumpo · UI:color/ink"
+            "type": "INSTANCE",
+            "id": "24:5098",
+            "name": "Icon",
+            "w": 20,
+            "h": 20,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "pending"
+            },
+            "componentId": "24:5002",
+            "overrides": [
+              {
+                "path": "pending",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
             ]
           },
           {
             "type": "TEXT",
             "id": "9:238",
-            "w": 505,
+            "name": "Message",
+            "w": 496,
             "h": 20,
             "wSize": "fill",
             "hSize": "hug",
+            "propRefs": {
+              "characters": "Message"
+            },
             "text": "Connection restored. Welcome back!",
             "textStyle": "Zumpo/Label",
             "fills": [

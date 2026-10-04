@@ -1,0 +1,444 @@
+{
+  "format": 1,
+  "name": "Zumpo/Pick marker",
+  "id": "24:7320",
+  "type": "COMPONENT_SET",
+  "key": "0045ffed1ab7a7fadacbe9d08cfbca5cc3d9f36f",
+  "description": "Laid over a Mine cell during the reveal to show whose pick it was and how it went: Safe (green), Mine (danger) or Auto (the clock ran out and the server picked the safest cell). Initials: one player, or \"×2\" when several shared the cell.",
+  "properties": {
+    "Initials": {
+      "type": "text",
+      "default": "SA"
+    },
+    "Outcome": {
+      "type": "variant",
+      "default": "Safe",
+      "options": [
+        "Safe",
+        "Mine",
+        "Auto"
+      ]
+    },
+    "Size": {
+      "type": "variant",
+      "default": "Regular",
+      "options": [
+        "Regular",
+        "Compact"
+      ]
+    }
+  },
+  "defaultVariant": "Outcome=Safe, Size=Regular",
+  "variants": [
+    {
+      "name": "Outcome=Safe, Size=Regular",
+      "id": "24:7302",
+      "props": {
+        "Outcome": "Safe",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7302",
+        "name": "Outcome=Safe, Size=Regular",
+        "w": 44,
+        "h": 44,
+        "strokes": [
+          "$Zumpo · UI:color/green"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "24:7303",
+            "name": "Badge",
+            "x": 22,
+            "y": -6,
+            "w": 21,
+            "h": 14,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/green"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                4
+              ],
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "24:7304",
+                "name": "Initials",
+                "w": 13,
+                "h": 12,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Initials"
+                },
+                "text": "SA",
+                "font": "DM Sans Medium",
+                "size": 10,
+                "lineHeight": "12px",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Outcome=Mine, Size=Regular",
+      "id": "24:7305",
+      "props": {
+        "Outcome": "Mine",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7305",
+        "name": "Outcome=Mine, Size=Regular",
+        "w": 44,
+        "h": 44,
+        "strokes": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "24:7306",
+            "name": "Badge",
+            "x": 22,
+            "y": -6,
+            "w": 21,
+            "h": 14,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/danger"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                4
+              ],
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "24:7307",
+                "name": "Initials",
+                "w": 13,
+                "h": 12,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Initials"
+                },
+                "text": "SA",
+                "font": "DM Sans Medium",
+                "size": 10,
+                "lineHeight": "12px",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Outcome=Auto, Size=Regular",
+      "id": "24:7308",
+      "props": {
+        "Outcome": "Auto",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7308",
+        "name": "Outcome=Auto, Size=Regular",
+        "w": 44,
+        "h": 44,
+        "strokes": [
+          "$Zumpo · UI:color/muted"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "dash": [
+          4,
+          3
+        ],
+        "radius": "$Zumpo · UI:radius/8",
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "24:7309",
+            "name": "Badge",
+            "x": 22,
+            "y": -6,
+            "w": 21,
+            "h": 14,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                4
+              ],
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "24:7310",
+                "name": "Initials",
+                "w": 13,
+                "h": 12,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Initials"
+                },
+                "text": "SA",
+                "font": "DM Sans Medium",
+                "size": 10,
+                "lineHeight": "12px",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Outcome=Safe, Size=Compact",
+      "id": "24:7311",
+      "props": {
+        "Outcome": "Safe",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7311",
+        "name": "Outcome=Safe, Size=Compact",
+        "w": 26,
+        "h": 26,
+        "strokes": [
+          "$Zumpo · UI:color/green"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": 6,
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "24:7312",
+            "name": "Badge",
+            "x": 10,
+            "y": -6,
+            "w": 19,
+            "h": 12,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/green"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                4
+              ],
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "24:7313",
+                "name": "Initials",
+                "w": 11,
+                "h": 10,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Initials"
+                },
+                "text": "SA",
+                "font": "DM Sans Medium",
+                "size": 8,
+                "lineHeight": "10px",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Outcome=Mine, Size=Compact",
+      "id": "24:7314",
+      "props": {
+        "Outcome": "Mine",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7314",
+        "name": "Outcome=Mine, Size=Compact",
+        "w": 26,
+        "h": 26,
+        "strokes": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": 6,
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "24:7315",
+            "name": "Badge",
+            "x": 10,
+            "y": -6,
+            "w": 19,
+            "h": 12,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/danger"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                4
+              ],
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "24:7316",
+                "name": "Initials",
+                "w": 11,
+                "h": 10,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Initials"
+                },
+                "text": "SA",
+                "font": "DM Sans Medium",
+                "size": 8,
+                "lineHeight": "10px",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Outcome=Auto, Size=Compact",
+      "id": "24:7317",
+      "props": {
+        "Outcome": "Auto",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:7317",
+        "name": "Outcome=Auto, Size=Compact",
+        "w": 26,
+        "h": 26,
+        "strokes": [
+          "$Zumpo · UI:color/muted"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "dash": [
+          4,
+          3
+        ],
+        "radius": 6,
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "24:7318",
+            "name": "Badge",
+            "x": 10,
+            "y": -6,
+            "w": 19,
+            "h": 12,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                4
+              ],
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "24:7319",
+                "name": "Initials",
+                "w": 11,
+                "h": 10,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Initials"
+                },
+                "text": "SA",
+                "font": "DM Sans Medium",
+                "size": 8,
+                "lineHeight": "10px",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

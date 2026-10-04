@@ -1,0 +1,447 @@
+{
+  "format": 1,
+  "name": "Zumpo/Tag",
+  "id": "24:6541",
+  "type": "COMPONENT_SET",
+  "key": "8391d9c3731f75017622cca982477ed7e4c696f4",
+  "description": "Small label for context and state: the room, the phase, a board size, a player status. Sand is neutral context; Blue a phase; Lime good or live; Peach blocked; Ink the current tab or a strong marker.",
+  "properties": {
+    "Label": {
+      "type": "text",
+      "default": "Waiting room"
+    },
+    "Show icon": {
+      "type": "boolean",
+      "default": false
+    },
+    "Icon": {
+      "type": "instance_swap",
+      "default": "Zumpo/Icon / Glyph=lock"
+    },
+    "Tone": {
+      "type": "variant",
+      "default": "Sand",
+      "options": [
+        "Sand",
+        "Blue",
+        "Lime",
+        "Peach",
+        "Paper",
+        "Ink"
+      ]
+    }
+  },
+  "defaultVariant": "Tone=Sand",
+  "variants": [
+    {
+      "name": "Tone=Sand",
+      "id": "24:6511",
+      "props": {
+        "Tone": "Sand"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:6511",
+        "name": "Tone=Sand",
+        "w": 100,
+        "h": 30,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/sand"
+        ],
+        "radius": "$Zumpo · UI:radius/999",
+        "layout": {
+          "mode": "row",
+          "gap": 6,
+          "pad": [
+            6,
+            12
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:6512",
+            "name": "Icon",
+            "visible": false,
+            "w": 14,
+            "h": 14,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "lock"
+            },
+            "componentId": "24:5010"
+          },
+          {
+            "type": "TEXT",
+            "id": "24:6515",
+            "name": "Label",
+            "w": 76,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Waiting room",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tone=Blue",
+      "id": "24:6516",
+      "props": {
+        "Tone": "Blue"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:6516",
+        "name": "Tone=Blue",
+        "w": 100,
+        "h": 30,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/blue"
+        ],
+        "radius": "$Zumpo · UI:radius/999",
+        "layout": {
+          "mode": "row",
+          "gap": 6,
+          "pad": [
+            6,
+            12
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:6517",
+            "name": "Icon",
+            "visible": false,
+            "w": 14,
+            "h": 14,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "lock"
+            },
+            "componentId": "24:5010"
+          },
+          {
+            "type": "TEXT",
+            "id": "24:6520",
+            "name": "Label",
+            "w": 76,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Waiting room",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tone=Lime",
+      "id": "24:6521",
+      "props": {
+        "Tone": "Lime"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:6521",
+        "name": "Tone=Lime",
+        "w": 100,
+        "h": 30,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "radius": "$Zumpo · UI:radius/999",
+        "layout": {
+          "mode": "row",
+          "gap": 6,
+          "pad": [
+            6,
+            12
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:6522",
+            "name": "Icon",
+            "visible": false,
+            "w": 14,
+            "h": 14,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "lock"
+            },
+            "componentId": "24:5010"
+          },
+          {
+            "type": "TEXT",
+            "id": "24:6525",
+            "name": "Label",
+            "w": 76,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Waiting room",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tone=Peach",
+      "id": "24:6526",
+      "props": {
+        "Tone": "Peach"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:6526",
+        "name": "Tone=Peach",
+        "w": 100,
+        "h": 30,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/peach"
+        ],
+        "radius": "$Zumpo · UI:radius/999",
+        "layout": {
+          "mode": "row",
+          "gap": 6,
+          "pad": [
+            6,
+            12
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:6527",
+            "name": "Icon",
+            "visible": false,
+            "w": 14,
+            "h": 14,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "lock"
+            },
+            "componentId": "24:5010"
+          },
+          {
+            "type": "TEXT",
+            "id": "24:6530",
+            "name": "Label",
+            "w": 76,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Waiting room",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tone=Paper",
+      "id": "24:6531",
+      "props": {
+        "Tone": "Paper"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:6531",
+        "name": "Tone=Paper",
+        "w": 100,
+        "h": 30,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "radius": "$Zumpo · UI:radius/999",
+        "layout": {
+          "mode": "row",
+          "gap": 6,
+          "pad": [
+            6,
+            12
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:6532",
+            "name": "Icon",
+            "visible": false,
+            "w": 14,
+            "h": 14,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "lock"
+            },
+            "componentId": "24:5010"
+          },
+          {
+            "type": "TEXT",
+            "id": "24:6535",
+            "name": "Label",
+            "w": 76,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Waiting room",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tone=Ink",
+      "id": "24:6536",
+      "props": {
+        "Tone": "Ink"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:6536",
+        "name": "Tone=Ink",
+        "w": 100,
+        "h": 30,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "radius": "$Zumpo · UI:radius/999",
+        "layout": {
+          "mode": "row",
+          "gap": 6,
+          "pad": [
+            6,
+            12
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:6537",
+            "name": "Icon",
+            "visible": false,
+            "w": 14,
+            "h": 14,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "lock"
+            },
+            "componentId": "24:5010",
+            "overrides": [
+              {
+                "path": "lock",
+                "strokes": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              },
+              {
+                "path": "lock",
+                "strokes": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "24:6540",
+            "name": "Label",
+            "w": 76,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Waiting room",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/paper"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

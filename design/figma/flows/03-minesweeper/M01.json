@@ -12,9 +12,9 @@
     "id": "9:3002",
     "name": "M01 / Host · waiting for second player",
     "x": 1580,
-    "y": 3208,
+    "y": 2934,
     "w": 1440,
-    "h": 810,
+    "h": 877,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -42,9 +42,10 @@
         "componentId": "4:39",
         "overrides": [
           {
-            "path": "Navigation / Zumpo/Avatar",
+            "path": "Navigation / You",
             "componentProperties": {
-              "Initials": "MA"
+              "Initials": "MA",
+              "Tone": "Peach"
             }
           }
         ]
@@ -54,7 +55,7 @@
         "id": "9:3013",
         "name": "Room heading",
         "w": 1312,
-        "h": 117,
+        "h": 113,
         "hSize": "hug",
         "layout": {
           "mode": "row",
@@ -69,7 +70,7 @@
             "id": "9:3014",
             "name": "Room identity",
             "w": 930,
-            "h": 117,
+            "h": 113,
             "hSize": "hug",
             "layout": {
               "mode": "column",
@@ -82,7 +83,7 @@
                 "id": "9:3015",
                 "name": "Room context",
                 "w": 930,
-                "h": 34,
+                "h": 30,
                 "hSize": "hug",
                 "layout": {
                   "mode": "row",
@@ -92,74 +93,42 @@
                 },
                 "children": [
                   {
-                    "type": "FRAME",
-                    "id": "9:3016",
-                    "name": "Status / MAYA’S ROOM",
-                    "w": 97,
-                    "h": 34,
+                    "type": "INSTANCE",
+                    "id": "27:20273",
+                    "name": "Tag / Maya's room",
+                    "w": 95,
+                    "h": 30,
                     "wSize": "hug",
                     "hSize": "hug",
-                    "fills": [
-                      "$Zumpo · UI:color/sand"
-                    ],
-                    "radius": "$Zumpo · UI:radius/999",
-                    "layout": {
-                      "mode": "row",
-                      "gap": "$Zumpo · UI:space/8",
-                      "pad": "$Zumpo · UI:space/8",
-                      "align": "center",
-                      "strokesIncluded": true
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Sand"
                     },
-                    "children": [
+                    "componentId": "24:6511",
+                    "props": {
+                      "Label": "Maya's room"
+                    },
+                    "overrides": [
                       {
-                        "type": "TEXT",
-                        "id": "9:3017",
-                        "w": 81,
-                        "h": 18,
-                        "wSize": "hug",
-                        "hSize": "hug",
-                        "text": "MAYA’S ROOM",
-                        "textStyle": "Zumpo/Small",
-                        "fills": [
-                          "$Zumpo · UI:color/ink"
-                        ]
+                        "path": ".",
+                        "height": 30,
+                        "width": 95
                       }
                     ]
                   },
                   {
-                    "type": "FRAME",
-                    "id": "9:3018",
-                    "name": "Status / WAITING ROOM",
-                    "w": 105,
-                    "h": 34,
+                    "type": "INSTANCE",
+                    "id": "27:20278",
+                    "name": "Tag / Waiting room",
+                    "w": 100,
+                    "h": 30,
                     "wSize": "hug",
                     "hSize": "hug",
-                    "fills": [
-                      "$Zumpo · UI:color/blue"
-                    ],
-                    "radius": "$Zumpo · UI:radius/999",
-                    "layout": {
-                      "mode": "row",
-                      "gap": "$Zumpo · UI:space/8",
-                      "pad": "$Zumpo · UI:space/8",
-                      "align": "center",
-                      "strokesIncluded": true
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Blue"
                     },
-                    "children": [
-                      {
-                        "type": "TEXT",
-                        "id": "9:3019",
-                        "w": 89,
-                        "h": 18,
-                        "wSize": "hug",
-                        "hSize": "hug",
-                        "text": "WAITING ROOM",
-                        "textStyle": "Zumpo/Small",
-                        "fills": [
-                          "$Zumpo · UI:color/ink"
-                        ]
-                      }
-                    ]
+                    "componentId": "24:6516"
                   }
                 ]
               },
@@ -179,10 +148,11 @@
               {
                 "type": "TEXT",
                 "id": "9:3021",
+                "name": "Everybody picks at once. Keep your choice to yourself.",
                 "w": 930,
                 "h": 25,
                 "hSize": "hug",
-                "text": "Everybody picks at once. Keep your choice to yourself.",
+                "text": "Small 9 × 9 board, up to 8 players",
                 "textStyle": "Zumpo/Body",
                 "fills": [
                   "$Zumpo · UI:color/muted"
@@ -195,16 +165,17 @@
             "type": "INSTANCE",
             "id": "9:3022",
             "name": "Action / Leave room",
-            "w": 120,
+            "w": 150,
             "h": 48,
             "wSize": "hug",
             "component": "Zumpo/Button",
             "variant": {
-              "Style": "Quiet",
+              "Style": "Secondary",
               "State": "Default"
             },
-            "componentId": "4:21",
+            "componentId": "4:18",
             "props": {
+              "Show icon": true,
               "Label": "Leave room"
             },
             "overrides": [
@@ -224,7 +195,7 @@
                     ]
                   }
                 ],
-                "width": 120
+                "width": 150
               }
             ],
             "reactions": [
@@ -247,23 +218,23 @@
         "type": "INSTANCE",
         "id": "9:3024",
         "name": "Zumpo/Notice",
+        "visible": false,
         "w": 1312,
-        "h": 56,
+        "h": 52,
         "hSize": "hug",
         "component": "Zumpo/Notice",
         "variant": {
           "Tone": "Info"
         },
         "componentId": "9:227",
+        "props": {
+          "Message": "1 / 8 players · At least 2 players are needed to start."
+        },
         "overrides": [
           {
             "path": ".",
-            "height": 56,
+            "height": 52,
             "width": 1312
-          },
-          {
-            "path": "Connection restored. Welcome back!",
-            "characters": "1 / 8 players · At least 2 players are needed to start."
           }
         ]
       },
@@ -272,7 +243,7 @@
         "id": "9:3027",
         "name": "Board & room",
         "w": 1312,
-        "h": 363,
+        "h": 514,
         "hSize": "hug",
         "layout": {
           "mode": "row",
@@ -282,113 +253,27 @@
         "children": [
           {
             "type": "FRAME",
-            "id": "9:3028",
-            "name": "Minefield panel",
+            "id": "27:20310",
+            "name": "Board stage",
             "w": 944,
-            "h": 361,
+            "h": 233,
             "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/paper"
-            ],
-            "strokes": [
-              "$Zumpo · UI:color/line"
-            ],
-            "strokeAlign": "inside",
-            "radius": "$Zumpo · UI:radius/24",
             "layout": {
               "mode": "column",
-              "gap": "$Zumpo · UI:space/20",
-              "pad": "$Zumpo · UI:space/24",
+              "gap": "$Zumpo · UI:space/16",
               "strokesIncluded": true
             },
             "children": [
               {
                 "type": "FRAME",
-                "id": "9:3029",
-                "name": "Board stats",
-                "w": 896,
-                "h": 34,
-                "hSize": "hug",
-                "layout": {
-                  "mode": "row",
-                  "gap": "$Zumpo · UI:space/12",
-                  "justify": "space_between",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "FRAME",
-                    "id": "9:3030",
-                    "name": "Status / SMALL · 9 × 9",
-                    "w": 108,
-                    "h": 34,
-                    "wSize": "hug",
-                    "hSize": "hug",
-                    "fills": [
-                      "$Zumpo · UI:color/blue"
-                    ],
-                    "radius": "$Zumpo · UI:radius/999",
-                    "layout": {
-                      "mode": "row",
-                      "gap": "$Zumpo · UI:space/8",
-                      "pad": "$Zumpo · UI:space/8",
-                      "align": "center",
-                      "strokesIncluded": true
-                    },
-                    "children": [
-                      {
-                        "type": "TEXT",
-                        "id": "9:3031",
-                        "name": "SMALL · 9 × 9",
-                        "w": 92,
-                        "h": 18,
-                        "wSize": "hug",
-                        "hSize": "hug",
-                        "text": "MEDIUM · 16 × 16",
-                        "textStyle": "Zumpo/Small",
-                        "fills": [
-                          "$Zumpo · UI:color/ink"
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "type": "TEXT",
-                    "id": "9:3032",
-                    "name": "10 mines",
-                    "w": 64,
-                    "h": 20,
-                    "wSize": "hug",
-                    "hSize": "hug",
-                    "text": "40 mines",
-                    "textStyle": "Zumpo/Label",
-                    "fills": [
-                      "$Zumpo · UI:color/ink"
-                    ]
-                  },
-                  {
-                    "type": "INSTANCE",
-                    "id": "9:3033",
-                    "name": "Zumpo/Countdown",
-                    "visible": false,
-                    "w": 150,
-                    "h": 48,
-                    "hSize": "hug",
-                    "component": "Zumpo/Countdown",
-                    "componentId": "9:404"
-                  }
-                ]
-              },
-              {
-                "type": "FRAME",
-                "id": "9:3036",
-                "name": "A little better with company.",
-                "w": 896,
-                "h": 201,
+                "id": "27:20319",
+                "name": "Waiting room",
+                "w": 944,
+                "h": 233,
+                "wSize": "fill",
                 "hSize": "hug",
                 "fills": [
-                  "$Zumpo · UI:color/cream"
+                  "$Zumpo · UI:color/paper"
                 ],
                 "strokes": [
                   "$Zumpo · UI:color/line"
@@ -397,31 +282,32 @@
                 "radius": "$Zumpo · UI:radius/24",
                 "layout": {
                   "mode": "column",
-                  "gap": "$Zumpo · UI:space/16",
-                  "pad": "$Zumpo · UI:space/32",
+                  "gap": "$Zumpo · UI:space/12",
+                  "pad": 40,
                   "strokesIncluded": true
                 },
                 "children": [
                   {
                     "type": "TEXT",
-                    "id": "9:3037",
-                    "w": 832,
-                    "h": 30,
+                    "id": "27:20320",
+                    "w": 502,
+                    "h": 42,
+                    "wSize": "hug",
                     "hSize": "hug",
                     "text": "A little better with company.",
-                    "textStyle": "Zumpo/Heading",
+                    "textStyle": "Zumpo/Title",
                     "fills": [
                       "$Zumpo · UI:color/ink"
-                    ],
-                    "autoResize": "height"
+                    ]
                   },
                   {
                     "type": "TEXT",
-                    "id": "9:3038",
-                    "w": 832,
+                    "id": "27:20321",
+                    "w": 862,
                     "h": 25,
+                    "wSize": "fill",
                     "hSize": "hug",
-                    "text": "The host starts the game when at least 2 players have joined.",
+                    "text": "Minesweeper needs at least 2 players. Share the room so a friend can join, and the game can start.",
                     "textStyle": "Zumpo/Body",
                     "fills": [
                       "$Zumpo · UI:color/muted"
@@ -429,44 +315,55 @@
                     "autoResize": "height"
                   },
                   {
-                    "type": "INSTANCE",
-                    "id": "9:3039",
-                    "name": "Action / Invite a friend",
-                    "w": 135,
-                    "h": 48,
+                    "type": "FRAME",
+                    "id": "27:20322",
+                    "name": "Actions",
+                    "w": 159,
+                    "h": 60,
                     "wSize": "hug",
-                    "component": "Zumpo/Button",
-                    "variant": {
-                      "Style": "Primary",
-                      "State": "Default"
+                    "hSize": "hug",
+                    "layout": {
+                      "mode": "row",
+                      "gap": "$Zumpo · UI:space/12",
+                      "pad": [
+                        12,
+                        0,
+                        0,
+                        0
+                      ],
+                      "align": "center",
+                      "strokesIncluded": true
                     },
-                    "componentId": "4:15",
-                    "props": {
-                      "Label": "Invite a friend"
-                    },
-                    "overrides": [
+                    "children": [
                       {
-                        "path": ".",
-                        "height": 48,
-                        "width": 135
+                        "type": "INSTANCE",
+                        "id": "27:20311",
+                        "name": "Action / Invite friends",
+                        "w": 159,
+                        "h": 48,
+                        "wSize": "hug",
+                        "component": "Zumpo/Button",
+                        "variant": {
+                          "Style": "Primary",
+                          "State": "Default"
+                        },
+                        "componentId": "4:15",
+                        "props": {
+                          "Icon": "Zumpo/Icon / Glyph=link",
+                          "Show icon": true,
+                          "Label": "Invite friends"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 48,
+                            "width": 159
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
-              },
-              {
-                "type": "TEXT",
-                "id": "9:3041",
-                "name": "Choose once per round. Your cell click locks your pick. Everyone’s pic",
-                "w": 896,
-                "h": 36,
-                "hSize": "hug",
-                "text": "Choose once per round. Your cell click locks your pick.\nEveryone’s picks stay hidden until the reveal.",
-                "textStyle": "Zumpo/Small",
-                "fills": [
-                  "$Zumpo · UI:color/muted"
-                ],
-                "autoResize": "height"
               }
             ]
           },
@@ -475,7 +372,7 @@
             "id": "9:3042",
             "name": "Room sidebar",
             "w": 344,
-            "h": 363,
+            "h": 514,
             "hSize": "hug",
             "layout": {
               "mode": "column",
@@ -488,61 +385,51 @@
                 "id": "9:3043",
                 "name": "Zumpo/Scoreboard",
                 "w": 344,
-                "h": 138,
+                "h": 136,
                 "hSize": "hug",
                 "component": "Zumpo/Scoreboard",
                 "componentId": "9:320",
                 "overrides": [
                   {
                     "path": ".",
-                    "height": 138,
+                    "height": 136,
                     "width": 344
                   },
                   {
-                    "path": "Player / Maya · host / Player details / Maya · host",
-                    "characters": "Maya · you"
+                    "path": "Heading / Count",
+                    "characters": "1 / 8"
                   },
                   {
-                    "path": "Player / Maya · host / Player details / Drawing now",
-                    "characters": "Ready to play"
-                  },
-                  {
-                    "path": "Player / Maya · host / 460",
-                    "characters": "0"
-                  },
-                  {
-                    "path": "Player / Ryan",
-                    "visible": false
-                  },
-                  {
-                    "path": "Player / Ryan / 320",
-                    "characters": "0"
-                  },
-                  {
-                    "path": "Player / Leo",
-                    "visible": false
-                  },
-                  {
-                    "path": "Player / Leo / 240",
-                    "characters": "0"
-                  },
-                  {
-                    "path": "Player / You",
-                    "visible": false
-                  },
-                  {
-                    "path": "Player / You / Player / YO",
+                    "path": "Player 1",
                     "componentProperties": {
-                      "Initials": "SA"
+                      "Status icon": false,
+                      "Status": "Waiting",
+                      "Host": true,
+                      "You": true,
+                      "Score": "0",
+                      "Icon": "24:5053",
+                      "Name": "Maya",
+                      "State": "Default"
                     }
                   },
                   {
-                    "path": "Player / You / Player details / You",
-                    "characters": "Sam"
+                    "path": "Player 1 / Avatar",
+                    "componentProperties": {
+                      "Initials": "MA",
+                      "Tone": "Peach"
+                    }
                   },
                   {
-                    "path": "Player / You / 180",
-                    "characters": "0"
+                    "path": "Player 2",
+                    "visible": false
+                  },
+                  {
+                    "path": "Player 3",
+                    "visible": false
+                  },
+                  {
+                    "path": "Player 4",
+                    "visible": false
                   }
                 ]
               },
@@ -551,31 +438,46 @@
                 "id": "9:3073",
                 "name": "Zumpo/Chat",
                 "w": 344,
-                "h": 201,
+                "h": 354,
                 "hSize": "hug",
                 "component": "Zumpo/Chat",
                 "componentId": "9:334",
                 "overrides": [
                   {
                     "path": ".",
-                    "height": 201,
+                    "height": 354,
                     "width": 344
                   },
                   {
-                    "path": "Ryan",
+                    "path": "Messages / Message 1",
                     "visible": false
                   },
                   {
-                    "path": "Ryan / spaceship?",
-                    "characters": "That corner looks promising."
-                  },
-                  {
-                    "path": "Leo",
+                    "path": "Messages / Message 2",
                     "visible": false
                   },
                   {
-                    "path": "Leo / a very ambitious pencil",
-                    "characters": "I think I know my pick."
+                    "path": "Messages / Message 3",
+                    "visible": false
+                  },
+                  {
+                    "path": "Messages / Message 4",
+                    "visible": false
+                  },
+                  {
+                    "path": "Messages / Message 5",
+                    "visible": false
+                  },
+                  {
+                    "path": "Messages / Message 6",
+                    "visible": false
+                  },
+                  {
+                    "path": "Chat input",
+                    "componentProperties": {
+                      "Placeholder": "Say something…",
+                      "State": "Default"
+                    }
                   }
                 ]
               }
