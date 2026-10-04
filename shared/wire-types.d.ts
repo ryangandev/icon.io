@@ -33,7 +33,7 @@ type RoomStatus = 'Open' | 'Full' | 'In Progress';
 type WordCategory =
   | 'Fruits'
   | 'Animals'
-  | 'League Of Legends'
+  | 'League of Legends'
   | 'Electronics'
   | 'Sports'
   | 'Food';

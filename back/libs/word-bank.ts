@@ -70,7 +70,7 @@ const wordBank: WordBank = {
     'Tiger',
     'Elephant',
   ],
-  'League Of Legends': [
+  'League of Legends': [
     // Tanks
     'Alistar',
     'Amumu',

@@ -12,7 +12,7 @@ The faster you guess, the more it is worth, and the drawer takes a cut of whatev
 A **game** is a number of **rounds**, chosen when the room is created.
 In each round every player draws exactly once, in a random order, so a 2-round game with 4 players is 8 turns.
 
-One word category (Fruits, Animals, League Of Legends, Electronics, Sports or Food) is drawn at random for the whole game and shown to everyone.
+One word category (Fruits, Animals, League of Legends, Electronics, Sports or Food) is drawn at random for the whole game and shown to everyone.
 
 Each **turn** has three phases, and the server decides when each one ends:
 
