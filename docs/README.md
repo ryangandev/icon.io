@@ -22,6 +22,7 @@ Where to find the answer, without searching the repository.
 | Draw & Guess rules, scoring, timings, code             | [games/draw-and-guess.md](games/draw-and-guess.md)                                                                              |
 | Minesweeper rules, scoring, solver, code               | [games/minesweeper.md](games/minesweeper.md)                                                                                    |
 | Brand, visual direction, the Figma file                | [design.md](design.md)                                                                                                          |
+| The design system in code, reviewing it against Figma  | [design.md#in-code](design.md#in-code), then [architecture.md#frontend](architecture.md#frontend)                               |
 | What the Figma screens do and do not promise           | [design.md#what-the-screens-are-and-are-not](design.md#what-the-screens-are-and-are-not)                                        |
 | What a design review changed and left open             | [design/reviews/](../design/reviews/), newest first                                                                             |
 | Exporting Figma into the repo                          | [design.md#figma-export](design.md#figma-export), then [the plugin README](../tools/figma-export/README.md)                     |

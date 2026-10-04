@@ -62,11 +62,27 @@ The Figma MCP and REST API allowances on the Starter plan are too low to read 82
 It writes tokens, each Shared pieces family in full detail, one compact JSON per screen, every vector drawing as SVG, an audit of hardcoded values, and PNG previews.
 `FORMAT.md` inside each export documents the format.
 
-`npm run design:import` unpacks the newest export into `design/figma/`.
+`npm run design:import` unpacks the newest export into `design/figma/` and regenerates the code tokens from it.
 With the bridge running, `npm run design:export` runs the same exporter through it and imports the result in one step.
 The JSON and SVG there are committed, so every agent and every worktree can read the design without Figma access, and a diff between two exports shows exactly what a review round changed.
 `design/figma/previews/` is ignored: PNGs are regenerated on every export and would bloat history.
 Everything in `design/figma/` is generated; change the design in Figma and export again rather than editing it.
+
+## In code
+
+Each Shared pieces family is one component in [`front/src/ui/`](../front/src/ui/index.ts), named as in Figma without the `Zumpo/` prefix; [architecture.md](architecture.md#frontend) explains how the layer is built.
+Variables, text styles and effect styles reach code only through the generated `--zumpo-*` tokens, so a value code needs and Figma lacks is a gap to fix in Figma first, as the menu, dialog and cell shadows were.
+
+To review the design system, run the frontend dev server and open [`/design`](http://localhost:3001/design).
+Every specimen is captioned with its Figma variant, uses that variant's sample copy, and shows its size beside Figma's, in red when they differ by more than half a pixel.
+Each family's Figma preview sits under it at the same scale.
+
+Code differs from Figma on purpose in a few places:
+
+- The countdown is up to 7 px wider: DM Sans has no tabular figures, so each digit has a fixed cell and the clock keeps its width as it ticks.
+- The chat input's text is 16 px on touch screens, where Figma's 12 px would make iOS zoom the page on focus.
+- Hover and focus never change a control's size; Figma's hover variants are wider only because strokes count in its auto layout.
+- Figma rounds auto-width text boxes up to whole pixels, so a hugging component can be up to a pixel narrower in code.
 
 ## Editing the Figma file
 

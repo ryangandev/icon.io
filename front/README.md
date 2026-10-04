@@ -9,7 +9,8 @@
 - **React 19**
 - **TypeScript 7**
 - **Vite 8** (build tool)
-- **Ant Design 6**
+- **Ant Design 6** (being replaced by the Zumpo design system)
+- **Base UI** (headless primitives for the Zumpo design system)
 - **Socket.io**
 - **oxlint** (linter)
 
@@ -36,6 +37,8 @@
 - The above steps will start the Vite dev server on port 3001. You will also need to start the backend to connect to the server in another terminal. Refer to the [Backend README](https://github.com/ryangandev/icon.io/blob/main/back/README.md) for instructions on how to start the backend.
 
 - If both the frontend and backend are running, you can access the application at `http://localhost:3001`.
+
+- The Zumpo design system gallery is at `http://localhost:3001/design` while the dev server runs; it needs no backend.
 
 ## 📜 Scripts
 

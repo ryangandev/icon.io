@@ -12,7 +12,7 @@ front/   React SPA (Vite) ──── socket.io ────► back/   Express
                                                 │     └── game modules: own their clocks
                                                 └── all state in memory, one registry
 shared/  wire-types.d.ts, imported by both sides
-tools/   figma-export: read-only Figma exporter (see design.md)
+tools/   figma-export, figma-bridge, design-tokens: Figma into the repo (see design.md)
 ```
 
 | Path                                       | What it is                                                         |
@@ -31,6 +31,8 @@ tools/   figma-export: read-only Figma exporter (see design.md)
 | `front/src/components/require-socket.tsx`  | Holds a page until the socket is connected                         |
 | `front/src/components/validate-auth.tsx`   | Holds a page until there is a username                             |
 | `front/src/pages/lobbies/`, `pages/rooms/` | One lobby and one room page per game                               |
+| `front/src/ui/`                            | The Zumpo design system: components, base styles, generated tokens |
+| `front/src/ui/gallery/`                    | The development-only `/design` page that reviews it against Figma  |
 
 There is no database and no business HTTP API.
 Everything except serving static files happens over Socket.io, and server state is one flat registry of rooms of every game, owned by [`back/libs/rooms/registry.ts`](../back/libs/rooms/registry.ts).
@@ -116,6 +118,21 @@ The Zumpo redesign will replace most of this layer; see [status.md](status.md) b
 Ant Design is being removed, decided by Ryan: Paper Pop shares nothing with antd's look, so theming it would be a permanent fight, and it is most of the 1 MB main bundle.
 Zumpo components are built on headless primitives, which bring keyboard and screen-reader behaviour, with our own styles from the Figma tokens.
 
+The design system lives in [`front/src/ui/`](../front/src/ui/index.ts), one component per Figma Shared pieces family:
+
+- **[Base UI](https://base-ui.com) for the primitives** (select, dialog, tabs, radio groups, fields, buttons).
+  Radix's maintenance has slowed since its authors moved to Base UI, and React Aria is heavier than these few widgets need.
+  Base UI exposes state as `data-*` attributes (`data-checked`, `data-highlighted`, `data-popup-open`), which the styles select on.
+- **CSS Modules over generated custom properties.**
+  `npm run design:tokens` writes `ui/generated/` from the Figma export: `tokens.css` (`--zumpo-*` colours, spacing, radii, text styles as `font` shorthands, shadows), `glyphs.ts` (icon paths) and `brushes.ts` (the canvas palette, which JavaScript needs as values).
+  `npm run verify` fails if they are stale.
+- **`zumpo.css`** loads the self-hosted fonts and the tokens; the `.zumpo` class scopes the base styles and `.zumpo-page` adds the page canvas.
+  Portals (select menus, dialogs) carry `.zumpo` themselves, because they render outside the page.
+- **Desktop and Phone variants are container queries**, so a component follows its own width, as Figma's `Layout` variants do, wherever a page puts it.
+- **States never change size:** hover borders, selection rings and cell outlines are inset shadows, not borders, so nothing shifts and overlays such as the pick marker cover the whole box.
+- **The `/design` gallery** renders every family in the states Figma draws, beside its Figma preview, and measures each specimen against the export.
+  It exists only in development (the build drops it), and the Vite dev server serves `design/figma/` at `/__figma` for it.
+
 Routes live in [`app.tsx`](../front/src/app.tsx): `/` and `/Landing`, then behind `ValidateAuth` (needs a username) `/Gamehub`, and behind `RequireSocket` (needs a connection) `/Gamehub/<Game>/Lobby` and `/Gamehub/<Game>/Room/:roomId`.
 `RequireSocket` opens the connection instead of redirecting, and redirects only on real failure, so a refresh or a deep link lands where it was.
 It gives up after 10 seconds, which is shorter than a free hosting tier's cold start; revisit when a host is chosen.
@@ -171,3 +188,7 @@ Two serious bugs were found only by playing in a browser (a redundant hint, and 
   Always pass the handler.
 - **Build order:** see [configuration](#configuration).
 - **Port-binding tests in sandboxes:** see [testing](#testing).
+- **DM Sans has no tabular figures**, so `font-variant-numeric: tabular-nums` does nothing.
+  A number that ticks in place, like the countdown, sets each digit in a fixed `1ch` cell instead, or it shifts its neighbours every second.
+- **Chrome snaps an SVG box at a half pixel to a whole one**, which moves a stroke by a device pixel.
+  Keep an SVG's box on whole pixels (cover the parent with `inset: 0`) and place the geometry inside it, as the pick marker's ring does with CSS `x`, `y`, `width` and `height` on its `rect`.

@@ -9,7 +9,9 @@ Icon.io is being rebranded and redesigned as **Zumpo** on the `rework` branch.
 The redesign is an editable Figma file of 82 screens and its shared component families (see [design.md](design.md)), with a snapshot in `design/figma/`.
 Ryan approved it in review round two on 2026-10-03, after one fix (icons centred on their line of text); Claude's round 1 changes are in the [round 1 report](../design/reviews/2026-10-03-round-1.md).
 
-Implementation is approved and has started with the design system in code.
+Implementation is approved.
+The design system is built in code: every Shared pieces family is a component in `front/src/ui/`, with tokens generated from the export, and matches Figma in the `/design` gallery to within anti-aliasing (see [design.md](design.md#in-code)).
+The pages still run on Ant Design.
 
 ## Product direction
 
@@ -25,13 +27,15 @@ Decided by Ryan, and the frame for every design and implementation choice:
 
 - The open questions in the [round 1 report](../design/reviews/2026-10-03-round-1.md#需要你决定) and its copy suggestions, before the pages that show them are rebuilt.
   Until then the screens are built as drawn.
+- Whether `Zumpo/Modal` should become the one focused card.
+  It uses the Title style and no screen uses it; the 20+ focused cards (P02-P10, DL04-DL11, ML04-ML10) and the two dialogs are hand-built frames with a Heading title, which code follows.
+  Making Modal match them and swapping the frames for instances would make one change reach every card.
 
 ## Next
 
-1. Build the design system: tokens generated from the export, then the Shared pieces as code components on headless primitives with Zumpo's own styles, checked against the Figma previews.
-   Ant Design goes away ([why](architecture.md#frontend)).
-2. Rebuild the pages on it, platform flow first, then each game, then mobile.
+1. Rebuild the pages on the design system, platform flow first, then each game, then mobile, and remove Ant Design ([why](architecture.md#frontend)).
    Fix the known issues below that live in the pages being rebuilt, reproducing each end to end first.
+2. Make the pixel comparison against Figma repeatable for pages, not only component sizes: render each screen and variant at 2x and diff it against the page, as was done by hand for the components.
 
 ## Open decisions
 
