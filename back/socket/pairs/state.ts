@@ -15,8 +15,9 @@ interface PairsState {
   board: PairsBoard;
   phase: PairsPhase;
   /**
-   * The symbol in each place, row by row; empty between games. Never leaves
-   * the server, except a card at a time while it is up or matched.
+   * The symbol in each place, row by row: the board in play, or the last
+   * game's as it ended; empty before the first. Never leaves the server,
+   * except a card at a time while it is up or matched.
    */
   deck: number[];
   matched: boolean[];

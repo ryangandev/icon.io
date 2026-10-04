@@ -301,10 +301,12 @@ describe('a Pairs game', () => {
       phase: 'waiting',
       isGameStarted: false,
       status: 'Open',
-      cards: [],
       turnPlayerId: null,
       nextPlayerId: null,
     });
+    // The finished board stays on the table, every card matched.
+    expect(view.cards).toHaveLength(16);
+    expect(view.cards.every((card) => card.state === 'matched')).toBe(true);
     expect(view.lastGame).toMatchObject({
       endedEarly: false,
       board: 'Small',

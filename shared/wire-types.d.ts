@@ -422,7 +422,10 @@ interface PairsRoomState extends RoomState {
   gameType: 'pairs';
   board: PairsBoard;
   phase: PairsPhase;
-  /** Every card in its place, row by row; empty between games. */
+  /**
+   * Every card in its place, row by row: the board in play, or the last
+   * game's as it ended; empty before the first game.
+   */
   cards: PairsCardView[];
   pairsFound: number;
   /** Whose turn it is; null between games. */

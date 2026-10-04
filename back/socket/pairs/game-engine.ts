@@ -201,10 +201,9 @@ const createPairsGameEngine = (
       pairs: pairsFound(game),
     };
 
+    // The board stays on the table as it ended, until the next deal.
     room.isGameStarted = false;
     game.phase = 'waiting';
-    game.deck = [];
-    game.matched = [];
     game.up = [];
     game.order = [];
     game.turnPlayerId = null;
