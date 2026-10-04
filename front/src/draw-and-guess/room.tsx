@@ -69,7 +69,13 @@ export function DrawAndGuessRoom() {
             : 'Say something…',
         lockedReason: chatLock(state, isDrawer, scored),
       }}
-      boardInput={drawing && !isDrawer && !scored}
+      boardInput={
+        inGame && !isDrawer && state.phase !== 'choosing'
+          ? drawing && !scored
+            ? 'Guess'
+            : 'Message'
+          : undefined
+      }
     />
   );
 }
@@ -228,7 +234,7 @@ function Turn({ room }: { room: Room }) {
 
   return (
     <>
-      <TurnBar {...turnBar(room, seconds, drawerName)} />
+      <TurnBar {...turnBar(room, seconds, drawerName, phone)} />
       {canDraw && (
         <DrawingToolbar
           colour={colour}
@@ -269,11 +275,15 @@ function Turn({ room }: { room: Room }) {
   );
 }
 
-/** What the turn bar says, for this player, in this phase. */
+/**
+ * What the turn bar says, for this player, in this phase. On a phone the
+ * guess box sits right under the board, so the hint needs no pointer to it.
+ */
 function turnBar(
   room: Room,
   seconds: number,
   drawerName: string,
+  phone: boolean,
 ): TurnBarProps {
   const { state, playerId, reconnecting } = room;
   const isDrawer = state.currentDrawer === playerId;
@@ -331,7 +341,9 @@ function turnBar(
             label: 'Guess the word',
             kind: 'hint',
             main: state.hint,
-            meta: `${plural(letters, 'letter')} · type your guess in the chat`,
+            meta: phone
+              ? plural(letters, 'letter')
+              : `${plural(letters, 'letter')} · type your guess in the chat`,
             countdown: clock('left'),
           };
     default:

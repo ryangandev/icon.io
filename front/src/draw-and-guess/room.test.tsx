@@ -1,8 +1,12 @@
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { drawAndGuessState, ME } from '../tests/fixtures';
+import { onPhone } from '../tests/phone';
 import { renderSeated } from '../tests/seated';
+
+/** The phone's Board tab. */
+const board = () => within(screen.getByRole('tabpanel', { name: 'Board' }));
 
 const turn = {
   isGameStarted: true,
@@ -85,5 +89,53 @@ describe('a Draw & Guess room', () => {
       'placeholder',
       'You got it. Chat opens next turn.',
     );
+  });
+
+  describe('on a phone', () => {
+    it('takes a guess under the board', async () => {
+      onPhone();
+      await renderSeated(
+        drawAndGuessState({
+          ...turn,
+          phase: 'drawing',
+          currentDrawer: 'p2',
+          hint: '______',
+        }),
+      );
+      expect(board().getByText('6 letters')).toBeInTheDocument();
+      expect(board().getByRole('textbox', { name: 'Guess' })).toBeEnabled();
+    });
+
+    it('keeps the locked input under the board through the review', async () => {
+      onPhone();
+      await renderSeated(
+        drawAndGuessState({
+          ...turn,
+          phase: 'reveal',
+          currentDrawer: 'p2',
+          word: 'turtle',
+          scoredThisTurn: [ME],
+          turnPoints: { [ME]: 120, p2: 48 },
+        }),
+      );
+      expect(board().getByRole('textbox', { name: 'Message' })).toHaveAttribute(
+        'placeholder',
+        'You got it. Chat opens next turn.',
+      );
+    });
+
+    it('gives the drawer no input under the board', async () => {
+      onPhone();
+      await renderSeated(
+        drawAndGuessState({
+          ...turn,
+          phase: 'drawing',
+          currentDrawer: ME,
+          word: 'turtle',
+          hint: '______',
+        }),
+      );
+      expect(board().queryByRole('textbox')).toBeNull();
+    });
   });
 });

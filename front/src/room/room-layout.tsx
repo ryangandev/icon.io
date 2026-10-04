@@ -39,9 +39,9 @@ export interface RoomLayoutProps {
   chat: { placeholder: string; lockedReason?: string };
   /**
    * On a phone, the chat input repeated under the board, so a guess needs no
-   * switch to the Chat tab.
+   * switch to the Chat tab: its accessible name, or nothing for no input.
    */
-  boardInput?: boolean;
+  boardInput?: string;
 }
 
 type View = 'board' | 'players' | 'chat';
@@ -57,7 +57,7 @@ export function RoomLayout({
   stage,
   players,
   chat,
-  boardInput = false,
+  boardInput,
 }: RoomLayoutProps) {
   const room = useRoomContext();
   const { state, reconnecting, reconnectGraceMs } = room;
@@ -155,7 +155,7 @@ export function RoomLayout({
               panel: (
                 <div className={styles.stage}>
                   {stage}
-                  {boardInput && <ChatInput {...input} label="Guess" />}
+                  {boardInput && <ChatInput {...input} label={boardInput} />}
                 </div>
               ),
             },
