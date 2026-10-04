@@ -1,0 +1,36 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 8px 12px;
+  color: var(--zumpo-ink);
+}
+
+.name {
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.detail {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-small);
+  letter-spacing: var(--zumpo-text-small-tracking);
+  text-align: right;
+}
+
+.points {
+  flex: none;
+  min-width: 56px;
+  font: var(--zumpo-text-number);
+  letter-spacing: var(--zumpo-text-number-tracking);
+  text-align: right;
+}
+
+.mine .points {
+  color: var(--zumpo-danger);
+}

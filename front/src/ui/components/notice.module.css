@@ -1,0 +1,36 @@
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--zumpo-space-12);
+  padding: var(--zumpo-space-16);
+  border-radius: var(--zumpo-radius-12);
+  background: var(--zumpo-blue);
+  color: var(--zumpo-ink);
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+}
+
+.icon {
+  flex: none;
+}
+
+.message {
+  flex: 1;
+  min-width: 0;
+}
+
+.success {
+  background: var(--zumpo-lime);
+}
+
+.error {
+  background: var(--zumpo-peach);
+}
+
+.error .icon {
+  color: var(--zumpo-danger);
+}
+
+.pending {
+  background: var(--zumpo-sand);
+}

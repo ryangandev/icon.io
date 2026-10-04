@@ -1,0 +1,52 @@
+import { cx } from '../cx';
+import { Avatar, type AvatarTone } from './avatar';
+import type { PickOutcome } from './pick-marker';
+import { Tag, type TagProps } from './tag';
+import styles from './pick-result.module.css';
+
+const OUTCOMES: Record<
+  PickOutcome,
+  Pick<TagProps, 'tone' | 'icon'> & { label: string }
+> = {
+  safe: { tone: 'lime', icon: 'check', label: 'Safe' },
+  mine: { tone: 'peach', icon: 'mine', label: 'Mine' },
+  auto: { tone: 'sand', icon: 'clock', label: 'Auto-picked' },
+};
+
+export interface PickResultProps {
+  name: string;
+  initials: string;
+  tone: AvatarTone;
+  outcome: PickOutcome;
+  /** The risk the solver gave the cell before the round, plus "split 2 ways" for a shared cell. */
+  detail: string;
+  /** What the pick paid, signed. */
+  points: number;
+}
+
+/**
+ * Zumpo/Pick result: one player's pick in the round summary under the board.
+ * It never names the cell; the board's markers show where.
+ */
+export function PickResult({
+  name,
+  initials,
+  tone,
+  outcome,
+  detail,
+  points,
+}: PickResultProps) {
+  const { label, ...tag } = OUTCOMES[outcome];
+  return (
+    <li className={cx(styles.row, outcome === 'mine' && styles.mine)}>
+      <Avatar initials={initials} tone={tone} />
+      <span className={styles.name}>{name}</span>
+      <Tag {...tag}>{label}</Tag>
+      <span className={styles.spacer} />
+      <span className={styles.detail}>{detail}</span>
+      <span className={styles.points}>
+        {points > 0 ? `+${points}` : points < 0 ? `−${-points}` : '0'}
+      </span>
+    </li>
+  );
+}

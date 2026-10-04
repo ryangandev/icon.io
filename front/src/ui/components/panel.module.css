@@ -1,0 +1,17 @@
+/* The paper card that holds a room's chat, players and turn: one shape for all. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--zumpo-line);
+  border-radius: var(--zumpo-radius-24);
+  background: var(--zumpo-paper);
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--zumpo-ink);
+  font: var(--zumpo-text-heading);
+  letter-spacing: var(--zumpo-text-heading-tracking);
+}

@@ -1,0 +1,117 @@
+.trigger {
+  cursor: pointer;
+}
+
+.value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chevron {
+  display: flex;
+  flex: none;
+  transition: transform 120ms ease-out;
+}
+
+.trigger[data-popup-open] .chevron {
+  transform: rotate(180deg);
+}
+
+.positioner {
+  z-index: 10;
+  outline: none;
+}
+
+/* Zumpo/Select menu */
+.popup {
+  box-sizing: border-box;
+  width: var(--anchor-width);
+  max-height: var(--available-height);
+  padding: var(--zumpo-space-8);
+  overflow-y: auto;
+  border: 1px solid var(--zumpo-line);
+  border-radius: var(--zumpo-radius-12);
+  background: var(--zumpo-paper);
+  box-shadow: 0 8px 24px #282b251f;
+  outline: none;
+  transform-origin: var(--transform-origin);
+  transition:
+    opacity 120ms ease-out,
+    transform 120ms ease-out;
+}
+
+.popup[data-starting-style],
+.popup[data-ending-style] {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Options with a second line sit flush, as on the Board menu. */
+.list:has(.detail) {
+  gap: 0;
+}
+
+/* Zumpo/Select option */
+.option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--zumpo-radius-8);
+  color: var(--zumpo-ink);
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+}
+
+.option[data-highlighted] {
+  background: var(--zumpo-cream);
+}
+
+.option[data-selected] {
+  background: var(--zumpo-lime);
+}
+
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.optionLabel {
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+}
+
+.detail {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-small);
+  letter-spacing: var(--zumpo-text-small-tracking);
+}
+
+.option[data-selected] .detail {
+  color: var(--zumpo-ink);
+}
+
+.check {
+  display: flex;
+  flex: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron,
+  .popup {
+    transition: none;
+  }
+}
