@@ -43,8 +43,10 @@ Three early Paper Pop concepts (`3:53`, `3:54`, `3:55`) sit above the flows for 
 - Solo screens show a visitor with no name where it matters (MS01-MS05: no avatar); a visitor who has a name sees it as usual (T01-T05, PR01-PR04).
 - Prototype links are partial; this is a design, not a clickable spec of every control.
 
-Decisions from the first review round ([report](../design/reviews/2026-10-03-round-1.md)):
+Decisions from the design review rounds (their reports are in git history):
 
+- A game card says how it can be played and its buttons are the way in: Play solo first where the game has it, because one click starts it with nobody to wait for, then Find a room.
+  You pick the game, then how to play it, so a game without a solo mode never shows an empty entry.
 - A game screen states the turn in one `Zumpo/Turn bar` above the canvas or board: what is happening, whose turn, and the server's countdown.
 - In Draw & Guess the guess is the chat input; it is locked for the drawer and for anyone who has scored this turn, as the server already enforces.
 - Brush colours are `color/brush/*` tokens, and the drawer's controls are one `Zumpo/Drawing toolbar`.

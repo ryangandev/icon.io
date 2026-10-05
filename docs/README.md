@@ -26,7 +26,6 @@ Where to find the answer, without searching the repository.
 | Brand, visual direction, the Figma file                | [design.md](design.md)                                                                                                          |
 | The design system in code, reviewing it against Figma  | [design.md#in-code](design.md#in-code), then [architecture.md#frontend](architecture.md#frontend)                               |
 | What the Figma screens do and do not promise           | [design.md#what-the-screens-are-and-are-not](design.md#what-the-screens-are-and-are-not)                                        |
-| What a design review changed and left open             | [design/reviews/](../design/reviews/), newest first                                                                             |
 | Exporting Figma into the repo                          | [design.md#figma-export](design.md#figma-export), then [the plugin README](../tools/figma-export/README.md)                     |
 | Editing the Figma file safely                          | [design.md#editing-the-figma-file](design.md#editing-the-figma-file), then [the bridge README](../tools/figma-bridge/README.md) |
 | Running and deploying the app                          | [README.md](../README.md), [back/README.md](../back/README.md), [front/README.md](../front/README.md)                           |
@@ -43,7 +42,6 @@ Each fact has one home; everywhere else links to it.
 | `games/*.md`      | Each game's rules, scoring, settings and code map: the behaviour contract         |
 | `design.md`       | Brand, the Figma file, the export pipeline, editing rules                         |
 | `design/figma/`   | Generated design snapshot; never edited by hand                                   |
-| `design/reviews/` | One report per design review round: changes made and questions for Ryan           |
 
 ## Keeping it true
 

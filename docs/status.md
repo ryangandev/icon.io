@@ -7,7 +7,7 @@ Resolved items are deleted, not archived; history is in git.
 
 The project is rebranded and redesigned as **Zumpo**; the code, packages, folder and repository carry the name.
 The redesign is an editable Figma file of 111 screens and its shared component families (see [design.md](design.md)), with a snapshot in `design/figma/`.
-Ryan approved it in review round two on 2026-10-03, after one fix (icons centred on their line of text); Claude's round 1 changes are in the [round 1 report](../design/reviews/2026-10-03-round-1.md).
+Ryan approved it in review round two on 2026-10-03, after one fix (icons centred on their line of text).
 
 The implementation was built on `rework` and merged into `main` on 2026-10-05 ([#26](https://github.com/ryangandev/zumpo/pull/26)).
 Every page, desktop and phone, is rebuilt on the Zumpo design system in `front/src/ui/`, and Ant Design is gone ([architecture](architecture.md#frontend)).
@@ -32,7 +32,7 @@ Decided by Ryan, and the frame for every design and implementation choice:
 
 ## Next
 
-Two new games and solo play, decided by Ryan on 2026-10-04 (see [the proposal](../design/reviews/2026-10-04-new-games-proposal.md)), are built and merged.
+Two new games and solo play, decided by Ryan on 2026-10-04, are built and merged.
 Minesweeper, Make 24 and Pairs each play on your own with no name asked (`/games/<game>/solo`), Make 24 and Pairs play in rooms too, and every game card and How to play offer Play solo where the game has it.
 `npm run e2e` plays each new flow, and `npm run design:compare` captures every one of their Figma screens with no layout difference.
 What is left needs the Figma file, which Claude could not reach this time:
@@ -40,6 +40,7 @@ What is left needs the Figma file, which Claude could not reach this time:
 1. Run `npm run design:export`, so the export carries the Ring and Half symbols' arcs, then delete `ARCS_BEFORE_EXPORT` in `tools/design-tokens/generate.mjs`, which stands in with arcs measured from the previews.
 2. In T09, space the table panel's children 20 apart, as T08 and the code do; T09 uses 24.
 3. Redraw P13 and P14 with all four games, as P04 already has them, and give P14's solo games the same Play solo and Find a room pair as P04's cards.
+4. In the 00 / Review guide, drop the sentence pointing at `design/reviews/`; the review reports were folded into [design.md](design.md) and deleted.
 
 ## Open decisions
 
