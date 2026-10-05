@@ -232,8 +232,8 @@ Phase lengths are server settings because the server owns the clock; each game d
 The test suite passes durations straight to `createZumpoServer()`, so an environment variable cannot change a suite's timing.
 
 Production is one Node process: Vite builds into `server/build/public` and Express serves it, with Socket.IO on the same HTTP server.
-`npm --prefix server run build` empties `server/build/` including the frontend bundle, so the backend must build first; the root `npm run build` does it in that order.
-It empties the folder rather than deleting it, and `server/tsconfig.json` names its source folders instead of `**/*.ts`, because TypeScript 7's watcher restarts on any change under a folder it watches: otherwise every e2e or design run restarts a running `npm --prefix server run watch` and loses its rooms.
+`npm run build -w server` empties `server/build/` including the client bundle, so the server must build first; the root `npm run build` does it in that order.
+It empties the folder rather than deleting it, and `server/tsconfig.json` names its source folders instead of `**/*.ts`, because TypeScript 7's watcher restarts on any change under a folder it watches: otherwise every e2e or design run restarts a running `npm run dev` server and loses its rooms.
 
 ## Adding a game
 
@@ -266,8 +266,10 @@ It checks behaviour, not looks.
 - **oxlint, not ESLint:** `typescript-eslint` refuses TypeScript 7 (support tracked for TS ≥ 7.1 in typescript-eslint#10940).
   Keeping the Go compiler beats keeping a linter, `tsc --strict` already rejects what the type-aware rules would catch, and switching back is a config file because the rule names are ESLint's.
   Revisit when typescript-eslint supports TS 7.
-- **Root tooling, separate apps:** the root `package.json` carries lint, format and orchestration only; `server/` and `client/` keep their own dependencies and lockfiles.
-  It is deliberately not an npm workspace.
+- **npm workspaces:** `client/` and `server/` are workspaces, each declaring its own dependencies, with one lockfile and one `node_modules` at the root.
+  One `npm ci` installs everything, one dependency tree means one copy of TypeScript and Vitest, and the root scripts run either package with `-w`.
+  The root `package.json` carries lint, format, orchestration and the design tools; `shared/` is not a workspace, because both sides import it by path.
+- **`concurrently` for `npm run dev`:** one terminal runs the server's `tsc-watch` and Vite side by side, with labelled output, and stops both together.
 - **Strict TypeScript** with `noImplicitAny`, `verbatimModuleSyntax` and `noUnusedLocals`.
 
 ## Pitfalls

@@ -7,17 +7,20 @@ Find anything else through [docs/README.md](docs/README.md), and read only the s
 
 ## Commands
 
-| Command                                                         | What it does                                                       |
-| --------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `npm ci && npm run install:all`                                 | Install root tooling, then `server/` and `client/` (own lockfiles) |
-| `npm run verify`                                                | Lint, typecheck, format check, tests, build: what CI runs          |
-| `npm run e2e`                                                   | Build, then play the main flows with two players in Chromium       |
-| `npm run design:compare`                                        | Build, then capture every Figma screen's state for side by side    |
-| `npm --prefix server run watch` / `npm --prefix client run dev` | Dev servers on 3000 / 3001                                         |
-| `npm run design:import`                                         | Unpack the newest Figma export into `design/figma/`                |
-| `npm run design:export`                                         | Export the Figma file through the bridge and import it             |
-| `npm run design:tokens`                                         | Regenerate `client/src/ui/generated/` from the export              |
-| `npm run figma:run -- script.js`                                | Run a Plugin API script in Figma through the bridge                |
+| Command                          | What it does                                                    |
+| -------------------------------- | --------------------------------------------------------------- |
+| `npm ci`                         | Install everything: one lockfile for `client/` and `server/`    |
+| `npm run dev`                    | Server on 3000 and client on 3001, both reloading on change     |
+| `npm run verify`                 | Lint, typecheck, format check, tests, build: what CI runs       |
+| `npm run e2e`                    | Build, then play the main flows with two players in Chromium    |
+| `npm run build` / `npm start`    | Build for production, then serve it all from one port (3000)    |
+| `npm run design:compare`         | Build, then capture every Figma screen's state for side by side |
+| `npm run design:import`          | Unpack the newest Figma export into `design/figma/`             |
+| `npm run design:export`          | Export the Figma file through the bridge and import it          |
+| `npm run design:tokens`          | Regenerate `client/src/ui/generated/` from the export           |
+| `npm run figma:run -- script.js` | Run a Plugin API script in Figma through the bridge             |
+
+Run one package's script with `-w`, for example `npm test -w server`.
 
 ## Rules that fail silently
 

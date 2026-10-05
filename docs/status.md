@@ -63,7 +63,6 @@ Ideas worth doing next, roughly in order:
 - Spectators, or letting a latecomer in for the next round; the canvas is already server state.
 - A round summary and close-guess feedback ("Sam is close!"); the server knows what it awarded and does not say.
 - A longer word bank and per-room word packs; six fixed categories today.
-- One command that starts both dev servers.
 
 ## Deliberately not doing
 
