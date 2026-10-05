@@ -76,10 +76,12 @@
   background: var(--zumpo-line);
 }
 
-.plain:hover:not(:disabled) {
-  box-shadow:
-    var(--zumpo-shadow-cell-edge),
-    inset 0 0 0 2px var(--zumpo-ink);
+@media (hover: hover) {
+  .plain:hover:not(:disabled) {
+    box-shadow:
+      var(--zumpo-shadow-cell-edge),
+      inset 0 0 0 2px var(--zumpo-ink);
+  }
 }
 
 .key:focus-visible {
@@ -89,5 +91,6 @@
 
 .key:disabled {
   cursor: not-allowed;
-  opacity: 0.4;
+  /* As a disabled Button. */
+  opacity: 0.45;
 }
