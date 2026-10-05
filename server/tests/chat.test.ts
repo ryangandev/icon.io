@@ -68,12 +68,13 @@ describe('room chat', () => {
 
   it('numbers each room’s messages on its own', async () => {
     const alice = await harness.connect();
+    const bob = await harness.connect();
     const first = await createRoom(alice, { username: 'Alice' });
-    const second = await createRoom(alice, { username: 'Alice' });
+    const second = await createRoom(bob, { username: 'Bob' });
 
     const [inFirst, inSecond] = await Promise.all([
       syncRoom(alice, first),
-      syncRoom(alice, second),
+      syncRoom(bob, second),
     ]);
 
     expect(inFirst.messages.map((m) => m.id)).toEqual([1]);

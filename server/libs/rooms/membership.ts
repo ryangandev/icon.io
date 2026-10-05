@@ -143,6 +143,18 @@ const createRoomMembership = (
   };
 
   /**
+   * A player sits at one table at a time, so taking a seat gives up any other.
+   * The client leaves a room on its way out, but only while connected: a
+   * player who navigated away offline still holds that seat, and would hold it
+   * through the grace period while already playing somewhere else.
+   */
+  const leaveAllBut = (playerId: string, roomId?: string) => {
+    for (const room of registry.roomsHeldBy(playerId)) {
+      if (room.roomId !== roomId) leave(room.roomId, playerId);
+    }
+  };
+
+  /**
    * A connection dropped. The player keeps their seat, marked away, until
    * either they come back or the grace period expires. A connection that
    * another had already taken over leaves nobody away.
@@ -250,6 +262,7 @@ const createRoomMembership = (
     /** How long a dropped connection keeps its seats. */
     graceMs: graceInSeconds * 1000,
     leave,
+    leaveAllBut,
     handleDisconnect,
     handleResume,
     dispose,

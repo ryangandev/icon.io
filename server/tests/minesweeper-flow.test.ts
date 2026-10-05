@@ -40,11 +40,12 @@ describe('a Minesweeper room', () => {
 
   it('appears in its own lobby, not Draw & Guess’s', async () => {
     const client = await harness.connect();
+    const other = await harness.connect();
     const minefield = await createMinesweeperRoom(client, {
       roomName: 'Minefield',
       difficulty: 'Medium',
     });
-    await createRoom(client, { roomName: 'Doodles' });
+    await createRoom(other, { roomName: 'Doodles' });
 
     const drawList = waitFor(client, 'lobby:rooms');
     client.emit('lobby:subscribe', 'draw-and-guess');

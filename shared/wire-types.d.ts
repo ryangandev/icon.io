@@ -98,6 +98,8 @@ type ErrorType =
   | 'gameAlreadyStarted'
   | 'notRoomOwner'
   | 'notRoomMember'
+  /** The server holds as many rooms as it will; none can be made for now. */
+  | 'tooManyRooms'
   | 'invalidRequest';
 
 interface RoomError {

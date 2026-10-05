@@ -1,6 +1,7 @@
-import { invalidRequest } from '../../models/error.js';
+import { failure, invalidRequest } from '../../models/error.js';
 import { generateRoomId, getRoomStatus } from '../utils.js';
 import { parseArgs, roomCreateRequest, gameTypeOnly } from '../validation.js';
+import type { RoomMembership } from './membership.js';
 import type { RoomRegistry } from './registry.js';
 import type { Room } from './types.js';
 import {
@@ -20,7 +21,12 @@ import {
  * `io.emit` to the whole server, so every Minesweeper room appearing does not
  * wake every client sitting in the Draw & Guess lobby.
  */
-const lobbyEventsHandler = (socket: IoSocket, registry: RoomRegistry) => {
+const lobbyEventsHandler = (
+  socket: IoSocket,
+  registry: RoomRegistry,
+  membership: RoomMembership,
+  maxRooms: number,
+) => {
   onClientEvent(socket, 'lobby:subscribe', (...rawArgs: unknown[]) => {
     const validated = parseArgs(gameTypeOnly, rawArgs, 'lobby:subscribe');
     if (!validated) return;
@@ -80,8 +86,21 @@ const lobbyEventsHandler = (socket: IoSocket, registry: RoomRegistry) => {
       return;
     }
 
+    // Rooms live in memory, and one player holds one seat, but nothing stops
+    // somebody opening connection after connection to make room after room.
+    if (Object.keys(registry.all).length >= maxRooms) {
+      reply(
+        failure(
+          'tooManyRooms',
+          'Zumpo has as many rooms as it can hold right now.',
+        ),
+      );
+      return;
+    }
+
     // Identity comes from the connection, never from the payload.
     const playerId = socket.data.playerId;
+    membership.leaveAllBut(playerId);
 
     const roomId = generateRoomId();
     const room: Room = {

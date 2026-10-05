@@ -1,6 +1,10 @@
 import type { AddressInfo } from 'node:net';
 import { io as createClient, type Socket } from 'socket.io-client';
-import { createZumpoServer, type ZumpoServer } from '../../app.js';
+import {
+  createZumpoServer,
+  type CreateZumpoServerOptions,
+  type ZumpoServer,
+} from '../../app.js';
 import type {
   Make24DurationsInSeconds,
   MinesweeperDurationsInSeconds,
@@ -116,6 +120,7 @@ const startTestServer = async (
   minesweeperDurations: MinesweeperDurationsInSeconds = FAST_MINESWEEPER,
   make24Durations: Make24DurationsInSeconds = FAST_MAKE24,
   pairsDurations: PairsDurationsInSeconds = FAST_PAIRS,
+  overrides: CreateZumpoServerOptions = {},
 ): Promise<TestServer> => {
   const server = createZumpoServer({
     serveClient: false,
@@ -124,6 +129,7 @@ const startTestServer = async (
     make24Durations,
     pairsDurations,
     graceInSeconds,
+    ...overrides,
   });
 
   await new Promise<void>((resolve) => {

@@ -62,6 +62,7 @@ const roomEventsHandler = (
         return;
       }
 
+      membership.leaveAllBut(playerId, roomId);
       room.playerList[playerId] = { username, points: 0, isConnected: true };
       room.currentPlayerCount = Object.keys(room.playerList).length;
       room.status = getRoomStatus(

@@ -99,6 +99,8 @@ Minesweeper was added without editing a line of `libs/rooms/`, though it disagre
 
 A lobby is a Socket.IO room per game, so a client that has not subscribed to a game is never sent its rooms.
 A new player cannot join a game in progress; that is a product decision, not a limitation of the layer.
+A player holds one seat at a time: creating or joining a room gives up any other seat, as leaving it would.
+The client leaves a room on its way out, but only while connected, so without this a player who navigated away offline would hold the old seat through its grace period while playing somewhere else.
 
 ## Server authority
 
@@ -116,6 +118,7 @@ The server decides everything a player could gain by lying about.
   With nobody else in it there is nothing to gain by lying, so solo play needs no name, opens no socket, and keeps its bests in the device's `localStorage` ([`solo/`](../client/src/solo/)).
   Its rules are still one copy: anything a room plays too, such as board sizes or a deal, comes from `shared/*.ts`.
 - **Every inbound event is validated** with zod ([`validation.ts`](../server/libs/validation.ts)) before it reaches game state, and **rate-limited** before that ([`rate-limit.ts`](../server/libs/rate-limit.ts)): one token bucket per kind of event, per socket, because a drawing phase is a stream of coordinates and joining a room is a click.
+- **What a client can make the server hold is bounded, not only how fast.** A packet may be at most 16 KB (socket.io's default is 1 MB, parsed in full before zod sees it), one player holds one seat, and the server holds at most 500 rooms; past that, `room:create` is refused with `tooManyRooms` ([`app.ts`](../server/app.ts)).
 - **The UI's rules are enforced, not assumed.** Only the drawer may draw, and only while drawing; only the owner may start; only a seat-holder may read a room's state or talk in it; a guess is checked by the game's `handleChat` for phase, not-the-drawer and not-already-scored.
 - **The drawing is server state too.** The stroke list every client builds is built once more on the server, so a player arriving mid-turn gets the board, and undo is "drop the last stroke" rather than a full-canvas image.
 

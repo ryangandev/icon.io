@@ -37,6 +37,19 @@ import type {
 /** At most one "you are being throttled" line per socket per this long. */
 const THROTTLE_LOG_INTERVAL_MS = 5000;
 
+/**
+ * The most rooms the server holds at once. Each is small, but they live in
+ * memory, and a client can open connections faster than people play.
+ */
+const DEFAULT_MAX_ROOMS = 500;
+
+/**
+ * The largest packet a client may send. The biggest real one, a room's
+ * settings or a hand's solution, is well under a kilobyte; socket.io's default
+ * of a megabyte would be parsed in full before anything checked it.
+ */
+const MAX_PACKET_BYTES = 16 * 1024;
+
 /** How long closing waits for connections to take their last packet. */
 const CLOSE_FLUSH_MS = 1000;
 
@@ -55,6 +68,8 @@ interface CreateZumpoServerOptions {
   pairsDurations?: PairsDurationsInSeconds;
   /** How long a dropped player keeps their seat. Shortened by tests. */
   graceInSeconds?: number;
+  /** The most rooms open at once. Lowered by tests. */
+  maxRooms?: number;
 }
 
 interface ZumpoServer {
@@ -90,6 +105,7 @@ const createZumpoServer = (
     make24Durations,
     pairsDurations,
     graceInSeconds,
+    maxRooms = DEFAULT_MAX_ROOMS,
   } = options;
 
   const app = express();
@@ -108,6 +124,7 @@ const createZumpoServer = (
       cors: {
         origin: corsOrigin,
       },
+      maxHttpBufferSize: MAX_PACKET_BYTES,
     },
   );
 
@@ -178,7 +195,7 @@ const createZumpoServer = (
 
     // The room layer: lobbies, seats, ownership, chat. None of it knows which
     // game it is running.
-    lobbyEventsHandler(socket, registry);
+    lobbyEventsHandler(socket, registry, membership, maxRooms);
     roomEventsHandler(socket, registry, membership);
     chatEventsHandler(socket, registry);
 
