@@ -15,7 +15,8 @@ import {
   type TestServer,
 } from './helpers/test-server.js';
 import { GUESSES } from '../../shared/daily-word-guesses.js';
-import { MAX_GUESSES } from '../../shared/daily-word.js';
+import { MAX_GUESSES, roomWords } from '../../shared/daily-word.js';
+import { seededRandom, seedNumber } from '../../shared/seed.js';
 
 type Answer = { ok: boolean; error?: { type: string; message: string } };
 
@@ -331,6 +332,25 @@ describe('a Daily Word game', () => {
     const { roomId } = await playToFirstWord(harness, 5);
     const { words } = dailyWordRoom(harness, roomId).game;
     expect(new Set(words).size).toBe(5);
+  });
+
+  it('deals the same words every game when given a seed', async () => {
+    await harness.teardown();
+    harness = await startTestServer(
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      {
+        dailyWordSeed: 'figma',
+      },
+    );
+    const seeded = roomWords(seededRandom(seedNumber('figma')), 5, new Date());
+    for (let game = 0; game < 2; game++) {
+      const { roomId } = await playToFirstWord(harness, 5);
+      expect(dailyWordRoom(harness, roomId).game.words).toEqual(seeded);
+    }
   });
 
   it('ends early when too few players are left', async () => {

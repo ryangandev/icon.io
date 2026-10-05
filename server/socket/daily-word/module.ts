@@ -17,8 +17,9 @@ import { guessRequest, roundsSetting } from './validation.js';
 const createDailyWordModule = (
   ctx: GameContext,
   durations?: DailyWordDurationsInSeconds,
+  seed?: string,
 ): GameModule<DailyWordState, DailyWordSettings> => {
-  const engine = createDailyWordGameEngine(ctx, durations);
+  const engine = createDailyWordGameEngine(ctx, durations, seed);
 
   return {
     gameType: 'daily-word',
