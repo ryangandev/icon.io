@@ -3,6 +3,7 @@ import type { GameType } from '../../../shared/wire-types';
 import { Make24Solo } from '../make-24/solo/solo-page';
 import { MinesweeperSolo } from '../minesweeper/solo/solo-page';
 import { PairsSolo } from '../pairs/solo/solo-page';
+import { LiarsDiceSolo } from '../liars-dice/solo/solo-page';
 import NotFoundPage from '../pages/not-found';
 
 // Daily Word brings its word lists, so it loads only when played.
@@ -21,6 +22,8 @@ export default function SoloPage({ gameType }: { gameType: GameType }) {
       return <Make24Solo />;
     case 'pairs':
       return <PairsSolo />;
+    case 'liars-dice':
+      return <LiarsDiceSolo />;
     case 'daily-word':
       return (
         <Suspense>

@@ -35,6 +35,7 @@ const gameType = z.enum([
   'minesweeper',
   'make-24',
   'pairs',
+  'liars-dice',
   'hush',
   'daily-word',
 ]);

@@ -13,6 +13,7 @@ export type GameType =
   | 'minesweeper'
   | 'make-24'
   | 'pairs'
+  | 'liars-dice'
   | 'hush'
   | 'daily-word';
 
@@ -97,6 +98,8 @@ export interface RoomSettings {
   board?: 'Small' | 'Medium' | 'Large';
   /** Make 24: how many hands. */
   hands?: 5 | 10;
+  /** Liar's Dice: how many dice each player starts with. */
+  dice?: 3 | 5;
   /** Daily Word: how many words. */
   words?: 3 | 5;
 }
@@ -120,6 +123,9 @@ export async function createRoom(
   }
   if (settings.hands) {
     await choose(page, 'Hands', new RegExp(`^${settings.hands} hands$`));
+  }
+  if (settings.dice) {
+    await choose(page, 'Dice each', new RegExp(`^${settings.dice} dice`));
   }
   if (settings.words) {
     await choose(page, 'Words', new RegExp(`^${settings.words} words$`));

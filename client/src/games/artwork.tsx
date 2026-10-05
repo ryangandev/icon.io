@@ -1,4 +1,5 @@
 import {
+  Die,
   HushCard,
   LetterTile,
   Lives,
@@ -29,6 +30,8 @@ export function GameArtwork({ type }: { type: GameType }) {
         <BoardArtwork />
       ) : type === 'make-24' ? (
         <HandArtwork />
+      ) : type === 'liars-dice' ? (
+        <DiceArtwork />
       ) : type === 'pairs' ? (
         <PairsArtwork />
       ) : type === 'hush' ? (
@@ -130,6 +133,27 @@ function PairsArtwork() {
       {!phone && (
         <PairsCard state={{ kind: 'down' }} size={size} row={0} column={4} />
       )}
+    </div>
+  );
+}
+
+/**
+ * A table at a call: the dice that count towards five 5s, a wild one among
+ * them, one that does not, and cups still hidden. A phone keeps the first four.
+ */
+function DiceArtwork() {
+  return (
+    <div className={styles.dice}>
+      <Die face="hidden" label={null} />
+      <Die face={5} state="counted" label={null} />
+      <Die face={1} state="wild" label={null} />
+      <Die face={5} state="counted" label={null} />
+      <span className={styles.lastCell}>
+        <Die face={2} state="dim" label={null} />
+      </span>
+      <span className={styles.lastCell}>
+        <Die face="hidden" label={null} />
+      </span>
     </div>
   );
 }

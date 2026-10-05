@@ -1,6 +1,7 @@
 import type {
   DailyWordRoomState,
   DrawAndGuessRoomState,
+  LiarsDiceRoomState,
   HushRoomState,
   Make24RoomState,
   MinesweeperRoomState,
@@ -107,6 +108,26 @@ export function pairsState(
     turnPlayerId: null,
     nextPlayerId: null,
     lastMiss: [],
+    lastGame: null,
+    ...overrides,
+  };
+}
+
+export function liarsDiceState(
+  overrides: Partial<LiarsDiceRoomState> = {},
+): LiarsDiceRoomState {
+  return {
+    ...room,
+    maxPlayers: 6,
+    gameType: 'liars-dice',
+    dicePerPlayer: 3,
+    phase: 'waiting',
+    round: 0,
+    cups: [],
+    bids: [],
+    turnPlayerId: null,
+    nextPlayerId: null,
+    reveal: null,
     lastGame: null,
     ...overrides,
   };
