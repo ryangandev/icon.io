@@ -27,7 +27,18 @@ function Outline({ shape, ...props }: { shape: Shape } & SVGAttrs) {
 }
 
 /** Stripes 1.5 wide every 5, across the whole box, clipped to the shape. */
-const STRIPES = Array.from({ length: 8 }, (_, index) => 1.75 + index * 5);
+const STRIPES = {
+  x: [1.75, 6.75, 11.75, 16.75, 21.75, 26.75, 31.75, 36.75],
+  width: 1.5,
+};
+
+/**
+ * At 16 pixels and under (a Mini card) fine stripes blur into a tint, so
+ * they are fewer and heavier: 2.5 wide every 7.5, a whole pixel every three
+ * at 16, which reads as stripes at 1x.
+ */
+const COARSE_STRIPES = { x: [2.5, 10, 17.5, 25, 32.5], width: 2.5 };
+const COARSE_SIZE = 16;
 
 /**
  * Zumpo/Trios shape: one shape of a Trios card, solid, striped or in
@@ -42,6 +53,7 @@ export function TriosShape({
   className,
 }: TriosShapeProps) {
   const clip = useId();
+  const stripes = size <= COARSE_SIZE ? COARSE_STRIPES : STRIPES;
   return (
     <svg
       className={cx(styles.shape, styles[colour], className)}
@@ -56,8 +68,8 @@ export function TriosShape({
             <Outline shape={shape} />
           </clipPath>
           <g clipPath={`url(#${clip})`}>
-            {STRIPES.map((x) => (
-              <rect key={x} x={x} y={0} width={1.5} height={40} />
+            {stripes.x.map((x) => (
+              <rect key={x} x={x} y={0} width={stripes.width} height={40} />
             ))}
           </g>
         </>

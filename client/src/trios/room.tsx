@@ -185,6 +185,11 @@ function turnBar(
     reconnecting
       ? { seconds: left, label: 'paused', waiting: true }
       : { seconds: left, label, waiting };
+  // A hint is help, not a deadline: its clock never turns urgent.
+  const hintClock = (label: string) => ({
+    ...clock(label, false),
+    deadline: false,
+  });
   if (state.phase === 'taken' && state.lastTrio) {
     const mine = state.lastTrio.playerId === playerId;
     return {
@@ -209,7 +214,7 @@ function turnBar(
   const hints = state.hint.length;
   const toHint =
     state.phaseEndsInMs > 0
-      ? clock(hints === 0 ? 'to a hint' : 'to a second hint', false)
+      ? hintClock(hints === 0 ? 'to a hint' : 'to a second hint')
       : undefined;
   return {
     label: hints > 0 ? 'Hint' : 'Find a trio',

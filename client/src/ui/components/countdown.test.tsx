@@ -25,3 +25,22 @@ describe('Countdown', () => {
     expect(screen.getByRole('timer')).toHaveTextContent('00:15to pick');
   });
 });
+
+describe('Countdown tones', () => {
+  const classOf = (props: { deadline?: boolean; seconds: number }) => {
+    const { unmount } = render(<Countdown label="to a hint" {...props} />);
+    const name = screen.getByRole('timer').className;
+    unmount();
+    return name;
+  };
+
+  it('turns urgent in the last seconds of a deadline', () => {
+    expect(classOf({ seconds: 3 })).not.toBe(classOf({ seconds: 12 }));
+  });
+
+  it('keeps a clock that is no deadline running to the end', () => {
+    expect(classOf({ seconds: 3, deadline: false })).toBe(
+      classOf({ seconds: 12 }),
+    );
+  });
+});
