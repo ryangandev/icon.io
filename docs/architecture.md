@@ -271,6 +271,8 @@ It checks behaviour, not looks.
   One `npm ci` installs everything, one dependency tree means one copy of TypeScript and Vitest, and the root scripts run either package with `-w`.
   The root `package.json` carries lint, format, orchestration and the design tools; `shared/` is not a workspace, because both sides import it by path.
 - **`concurrently` for `npm run dev`:** one terminal runs the server's `tsc-watch` and Vite side by side, with labelled output, and stops both together.
+- **Dependabot** opens grouped pull requests once a month for npm and the GitHub Actions ([`dependabot.yml`](../.github/dependabot.yml)): minor and patch versions together, each npm major on its own.
+  CI vets each one like any other pull request.
 - **Strict TypeScript** with `noImplicitAny`, `verbatimModuleSyntax` and `noUnusedLocals`.
 
 ## Pitfalls
