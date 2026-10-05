@@ -110,6 +110,7 @@ describe('a bot on its turn', () => {
 
   it('always makes a legal move, and never calls with no bid to call', () => {
     const random = seededRandom(42);
+    const illegal: string[] = [];
     for (let game = 0; game < 300; game++) {
       const diceOnTable = 2 + Math.floor(random() * 29);
       const dice = rollDice(1 + Math.floor(random() * 5), random).slice(
@@ -118,15 +119,21 @@ describe('a bot on its turn', () => {
       );
       let bid: Bid | null = null;
       for (let turn = 0; turn < 40; turn++) {
-        const style = newStyle(random);
-        const move = botMove({ dice, diceOnTable, bid }, style, random);
-        if (move.kind === 'call') {
-          expect(bid).not.toBeNull();
-          break;
-        }
-        expect(isRaise(move.bid, bid, diceOnTable)).toBe(true);
+        const move = botMove(
+          { dice, diceOnTable, bid },
+          newStyle(random),
+          random,
+        );
+        const legal =
+          move.kind === 'call'
+            ? bid !== null
+            : isRaise(move.bid, bid, diceOnTable);
+        if (!legal)
+          illegal.push(JSON.stringify({ dice, diceOnTable, bid, move }));
+        if (move.kind === 'call') break;
         bid = move.bid;
       }
     }
+    expect(illegal).toEqual([]);
   });
 });
