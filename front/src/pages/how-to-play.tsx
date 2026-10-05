@@ -1,11 +1,12 @@
 import { ButtonLink } from '../ui';
 import { cx } from '../ui/cx';
 import { GAMES, lobbyPath } from '../games/catalog';
+import { GameWaysIn } from '../games/game-card';
 import { Page } from '../shell/page';
 import { PageHeading } from '../shell/page-heading';
 import styles from './how-to-play.module.css';
 
-/** P14: every rule of both games, on one page. */
+/** P14: every game's rules on one page, each with its ways in. */
 export default function HowToPlayPage() {
   return (
     <Page>
@@ -25,9 +26,11 @@ export default function HowToPlayPage() {
               {game.name}
             </h2>
             <p className={styles.rules}>{game.rules}</p>
-            <ButtonLink to={lobbyPath(game.type)} className={styles.action}>
-              Find a room
-            </ButtonLink>
+            <GameWaysIn
+              game={game}
+              to={lobbyPath(game.type)}
+              className={styles.action}
+            />
           </section>
         ))}
       </div>

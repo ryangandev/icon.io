@@ -82,6 +82,34 @@ describe('a lobby', () => {
   });
 });
 
+/** A game's rules on How to play, by its name. */
+const rules = (name: string) => within(screen.getByRole('region', { name }));
+
+describe('how to play', () => {
+  it('offers each game its ways in beside its rules', async () => {
+    await renderApp('/how-to-play', { name: '' });
+
+    expect(
+      rules('Draw & Guess').getByRole('link', { name: 'Find a room' }),
+    ).toHaveAttribute('href', '/games/draw-and-guess');
+    expect(
+      rules('Draw & Guess').queryByRole('link', { name: 'Play solo' }),
+    ).toBeNull();
+    for (const [name, type] of [
+      ['Minesweeper', 'minesweeper'],
+      ['Make 24', 'make-24'],
+      ['Pairs', 'pairs'],
+    ]) {
+      expect(
+        rules(name).getByRole('link', { name: 'Play solo' }),
+      ).toHaveAttribute('href', `/games/${type}/solo`);
+      expect(
+        rules(name).getByRole('link', { name: 'Find a room' }),
+      ).toHaveAttribute('href', `/games/${type}`);
+    }
+  });
+});
+
 describe('making a room', () => {
   it('asks for a name before it sends anything', async () => {
     const user = userEvent.setup();

@@ -25,17 +25,38 @@ export function GameCard({ game, to }: { game: GameInfo; to: string }) {
       </p>
       <Tag tone="paper">{game.facts}</Tag>
       <GameArtwork type={game.type} />
-      {game.solo ? (
-        <div className={styles.actions}>
-          <ButtonLink to={soloPath(game.type)}>Play solo</ButtonLink>
-          <ButtonLink to={to} variant="secondary">
-            Find a room
-          </ButtonLink>
-        </div>
-      ) : (
-        <ButtonLink to={to}>Find a room</ButtonLink>
-      )}
+      <GameWaysIn game={game} to={to} />
     </section>
+  );
+}
+
+/**
+ * The ways into a game, on its card and beside its rules: Play solo first when
+ * it has one, then Find a room.
+ */
+export function GameWaysIn({
+  game,
+  to,
+  className,
+}: {
+  game: GameInfo;
+  to: string;
+  className?: string;
+}) {
+  if (!game.solo) {
+    return (
+      <ButtonLink to={to} className={className}>
+        Find a room
+      </ButtonLink>
+    );
+  }
+  return (
+    <div className={cx(styles.actions, className)}>
+      <ButtonLink to={soloPath(game.type)}>Play solo</ButtonLink>
+      <ButtonLink to={to} variant="secondary">
+        Find a room
+      </ButtonLink>
+    </div>
   );
 }
 
