@@ -1,4 +1,5 @@
 import {
+  LetterTile,
   MineCell,
   NumberCard,
   PairsCard,
@@ -25,8 +26,10 @@ export function GameArtwork({ type }: { type: GameType }) {
         <BoardArtwork />
       ) : type === 'make-24' ? (
         <HandArtwork />
-      ) : (
+      ) : type === 'pairs' ? (
         <PairsArtwork />
+      ) : (
+        <WordArtwork />
       )}
     </div>
   );
@@ -143,6 +146,26 @@ function BoardArtwork() {
       <span className={styles.lastCell}>
         <MineCell state={{ kind: 'open', adjacent: 1 }} row={0} column={5} />
       </span>
+    </div>
+  );
+}
+
+/** A guess against PLANT: two letters elsewhere, one in place, two not in it.
+    The phone card keeps the first three, as MO03 does. */
+function WordArtwork() {
+  const marks = ['present', 'absent', 'correct', 'absent', 'present'] as const;
+  const tiles = [...'TRAIL'].map((letter, index) => (
+    <LetterTile
+      key={index}
+      letter={letter}
+      state={marks[index]}
+      size="regular"
+    />
+  ));
+  return (
+    <div className={styles.word}>
+      {tiles.slice(0, 3)}
+      <span className={styles.wordTail}>{tiles.slice(3)}</span>
     </div>
   );
 }

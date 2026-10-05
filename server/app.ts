@@ -4,6 +4,7 @@ import { Server } from 'socket.io';
 import * as url from 'node:url';
 import path from 'node:path';
 import type {
+  DailyWordDurationsInSeconds,
   Make24DurationsInSeconds,
   MinesweeperDurationsInSeconds,
   PairsDurationsInSeconds,
@@ -19,6 +20,7 @@ import { createDrawAndGuessModule } from './socket/draw-and-guess/index.js';
 import { createMinesweeperModule } from './socket/minesweeper/index.js';
 import { createMake24Module } from './socket/make-24/index.js';
 import { createPairsModule } from './socket/pairs/index.js';
+import { createDailyWordModule } from './socket/daily-word/index.js';
 import { clientDepartureOnDisconnectHandler } from './socket/client-disconnect-handler.js';
 import { playerSessionHandler } from './socket/player-session-handler.js';
 import {
@@ -65,6 +67,8 @@ interface CreateZumpoServerOptions {
   make24Durations?: Make24DurationsInSeconds;
   /** A Pairs turn and a miss on show. Shortened by tests. */
   pairsDurations?: PairsDurationsInSeconds;
+  /** A Daily Word round and its results. Shortened by tests. */
+  dailyWordDurations?: DailyWordDurationsInSeconds;
   /** How long a dropped player keeps their seat. Shortened by tests. */
   graceInSeconds?: number;
   /** The most rooms open at once. Lowered by tests. */
@@ -103,6 +107,7 @@ const createZumpoServer = (
     minesweeperDurations,
     make24Durations,
     pairsDurations,
+    dailyWordDurations,
     graceInSeconds,
     maxRooms = DEFAULT_MAX_ROOMS,
   } = options;
@@ -139,6 +144,9 @@ const createZumpoServer = (
   );
   registry.register(createMake24Module(registry.context, make24Durations));
   registry.register(createPairsModule(registry.context, pairsDurations));
+  registry.register(
+    createDailyWordModule(registry.context, dailyWordDurations),
+  );
 
   const membership = createRoomMembership(
     io,

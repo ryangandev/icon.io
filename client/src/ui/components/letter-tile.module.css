@@ -1,0 +1,85 @@
+/* Zumpo/Letter tile. Outlines are inset shadows, so a typed letter never
+   moves the tiles beside it. */
+.tile {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--zumpo-radius-12);
+  background: var(--zumpo-paper);
+  color: var(--zumpo-ink);
+}
+
+.letter {
+  font: var(--zumpo-text-title);
+  letter-spacing: var(--zumpo-text-title-tracking);
+}
+
+.compact {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--zumpo-radius-8);
+}
+
+.compact .letter {
+  font: var(--zumpo-text-heading);
+  letter-spacing: var(--zumpo-text-heading-tracking);
+}
+
+.small {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--zumpo-radius-8);
+}
+
+.small .letter {
+  font: var(--zumpo-text-number);
+  letter-spacing: var(--zumpo-text-number-tracking);
+}
+
+/* Square corners: no radius token is small enough for a 16 px tile. */
+.mini {
+  width: 16px;
+  height: 16px;
+  border-radius: 0;
+}
+
+.empty {
+  box-shadow: inset 0 0 0 2px var(--zumpo-line);
+}
+
+.typed {
+  box-shadow: inset 0 0 0 2px var(--zumpo-ink);
+}
+
+.small.empty,
+.mini.empty {
+  box-shadow: inset 0 0 0 1px var(--zumpo-line);
+}
+
+.small.typed {
+  box-shadow: inset 0 0 0 1px var(--zumpo-ink);
+}
+
+.correct {
+  box-shadow: var(--zumpo-shadow-cell-edge);
+  background: var(--zumpo-green);
+  color: var(--zumpo-paper);
+}
+
+.present {
+  border-radius: var(--zumpo-radius-999);
+  box-shadow: var(--zumpo-shadow-cell-edge);
+  background: var(--zumpo-coral);
+}
+
+.absent {
+  background: var(--zumpo-line);
+}
+
+.mini.correct,
+.mini.present {
+  box-shadow: none;
+}

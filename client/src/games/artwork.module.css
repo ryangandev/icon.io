@@ -42,16 +42,20 @@
   display: contents;
 }
 
-.pairs {
+.pairs,
+.word,
+.wordTail {
   display: flex;
   align-items: center;
   gap: var(--zumpo-space-8);
 }
 
-/* The phone card drops the last cell to fit, and a hand's answer; its cards
-   are smaller than any card in play, as in the mobile cards. */
+/* The phone card drops the last cell, the last two letters and a hand's
+   answer to fit; its cards are smaller than any card in play, as in the
+   mobile cards. */
 @media (max-width: 640px) {
   .lastCell,
+  .wordTail,
   .answer {
     display: none;
   }
