@@ -52,7 +52,9 @@ export async function pickMiss(page: Page): Promise<number[]> {
 export const turnOf = (page: Page) =>
   page.getByRole('region', { name: 'Turn' });
 
-/** Waits until the player is asked to find a trio again. */
+/** Waits until the player can pick again: every card on the table takes a pick. */
 export async function readyToFind(page: Page) {
-  await expect(turnOf(page).getByText('Find a trio')).toBeVisible();
+  await expect(
+    page.getByRole('group', { name: 'Table' }).getByRole('button'),
+  ).toHaveCount(12);
 }
