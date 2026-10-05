@@ -195,6 +195,10 @@ test('a tab taken over, and a room closed by a restart', async ({ player }) => {
     await joinRoom(copy, link);
     await expect(page.getByText('Zumpo is open in another tab.')).toBeVisible();
     await shot(page, code);
+    // Gone now, not after the seat's grace, so the Minesweeper lobby screens
+    // list only their own rooms.
+    await copy.getByRole('button', { name: 'Leave room' }).click();
+    await expect(copy).toHaveURL(/\/games\/minesweeper$/);
   }
 
   // A server of this test's own, so stopping it leaves the others alone.
