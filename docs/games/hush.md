@@ -131,6 +131,10 @@ A dropped connection keeps your seat and your cards for 30 seconds, as in every 
   The level then resumes with a countdown.
 - **During `ready`**, a player who is away holds up the level until they come back or their seat goes.
 
+- **A player who is connected but idle can hold up a level for as long as they like.**
+  Playing has no time limit on purpose, and gets no deadline or auto-play for an idle player: a deadline would be a clock to read, and an auto-play an exploit (wait it out, and the server plays your card at a moment you did not have to judge).
+  The remedy is leaving: whoever is tired of waiting can leave, and so can the idle player, whose cards are then shown and discarded with no life lost, as for a lost seat.
+
 A game keeps the level count it started with if somebody leaves.
 If the room falls below two players the game ends, and its summary says it ended early, with the levels cleared until then.
 
