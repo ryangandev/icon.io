@@ -119,6 +119,8 @@ const toRoomState = (
       diceLeft: room.playerList[playerId].points,
       dice:
         open || playerId === viewerId ? [...(game.dice[playerId] ?? [])] : null,
+      outInRound:
+        game.outs.find((out) => out.playerId === playerId)?.round ?? null,
     }));
 
   return {

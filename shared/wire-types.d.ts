@@ -476,6 +476,8 @@ interface LiarsDiceCup {
   diceLeft: number;
   /** The dice rolled this round, each 1 to 6, or null when hidden. */
   dice: number[] | null;
+  /** The round this player lost their last die in; null while still in. */
+  outInRound: number | null;
 }
 
 /** What a call found. */

@@ -141,18 +141,17 @@ If the room falls below two players the game ends, and its summary says it ended
 
 Every change reaches a player as `room:state`, the whole room as that player may see it ([the wire contract](../architecture.md#the-wire-contract)).
 
-| Field           | What it is                                                                                                               |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `dicePerPlayer` | 3 or 5                                                                                                                   |
-| `phase`         | `waiting`, `bidding` or `reveal`                                                                                         |
-| `round`         | The round in play or being revealed, from 1; 0 before the first game                                                     |
-| `order`         | The players in turn order for this game, including those who are out                                                     |
-| `cups`          | Every player's dice left, and the dice themselves: your own during bidding, everybody's during a reveal and after a game |
-| `bids`          | This round's bids in order, each with who made it; the last is the bid in front of the player whose turn it is           |
-| `turnPlayerId`  | Whose turn it is; `null` during a reveal and between games                                                               |
-| `nextPlayerId`  | Whose turn comes next, the next player still in; `null` during a reveal and between games                                |
-| `reveal`        | During a reveal and after a game: the bid called, who called it, how many dice matched, and who lost a die               |
-| `lastGame`      | The summary of the last finished game, in finishing order, until the next one starts                                     |
+| Field           | What it is                                                                                                                                                                |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dicePerPlayer` | 3 or 5                                                                                                                                                                    |
+| `phase`         | `waiting`, `bidding` or `reveal`                                                                                                                                          |
+| `round`         | The round in play or being revealed, from 1; 0 before the first game                                                                                                      |
+| `cups`          | Every seated player in turn order: dice left, the round they went out in, and the dice themselves (your own during bidding, everybody's during a reveal and after a game) |
+| `bids`          | This round's bids in order, each with who made it; the last is the bid in front of the player whose turn it is                                                            |
+| `turnPlayerId`  | Whose turn it is; `null` during a reveal and between games                                                                                                                |
+| `nextPlayerId`  | Whose turn comes next, the next player still in; `null` during a reveal and between games                                                                                 |
+| `reveal`        | During a reveal and after a game: the bid called, who called it, how many dice matched, and who lost a die                                                                |
+| `lastGame`      | The summary of the last finished game, in finishing order, until the next one starts                                                                                      |
 
 Liar's Dice's two events of its own are `ld:bid`, with the room, the count and the face, and `ld:call`, with the room.
 

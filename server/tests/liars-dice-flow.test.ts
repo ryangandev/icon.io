@@ -430,6 +430,14 @@ describe('the end of a game', () => {
     expect(ended.phase).toBe('waiting');
     expect(ended.isGameStarted).toBe(false);
     expect(ended.reveal).toMatchObject({ loserId: c.playerId, out: true });
+    expect(ended.cups.map((cup) => cup.outInRound)).toEqual(
+      ended.cups.map(
+        (cup) =>
+          ({ [a.playerId]: null, [b.playerId]: 2, [c.playerId]: 3 })[
+            cup.playerId
+          ],
+      ),
+    );
     expect(ended.lastGame).toMatchObject({
       endedEarly: false,
       dicePerPlayer: 3,
