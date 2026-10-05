@@ -56,13 +56,13 @@ The drawer cannot guess their own word.
 
 ## How to play
 
-1. Enter a username on the landing page and pick Draw & Guess from the Gamehub.
-2. **Create a room** (name, 2–8 seats, 1–4 rounds, and an optional password) or **Join** one from the lobby table.
-   Locked rooms prompt for the password.
-3. The room owner (👑) presses **START**.
+1. Pick Draw & Guess from the games and **Find a room**, choosing a name first if you have none.
+2. **Create a room** (name, 2–8 seats, 1–4 rounds, and an optional password) or join one from the lobby.
+   A locked room asks for its password.
+3. The host (the crown in the player list) presses **Start game**.
    It needs at least two players.
-4. **When it is your turn** (🖌️), pick one of three words within 15 seconds, then draw it.
-   You have a colour picker, four brush sizes, undo and clear.
+4. **When it is your turn**, pick one of three words within 15 seconds, then draw it.
+   You have twelve brush colours, four brush sizes, undo and clear.
 5. **When it is not**, type guesses into the chat box.
    Matching is case-insensitive and ignores surrounding spaces, so `steak`, `Steak` and `STEAK` all count.
 6. A wrong guess is just chat: everyone sees it, which is half the fun.

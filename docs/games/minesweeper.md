@@ -89,14 +89,13 @@ A player who is disconnected sits the round out entirely.
 
 ## How to play
 
-1. Enter a username on the landing page and pick Minesweeper from the Gamehub.
-2. **Create a room** (name, 2–8 seats, a board size, and an optional password) or **Join** one from the lobby.
-3. The room owner (👑) presses **START**.
+1. Pick Minesweeper from the games and **Find a room**, choosing a name first if you have none.
+2. **Create a room** (name, 2–8 seats, a board size, and an optional password) or join one from the lobby.
+3. The host (the crown in the player list) presses **Start game**.
    It needs at least two players.
 4. Each round, **click one cell**.
-   Your choice highlights blue and locks; the player list shows 🔒 beside everybody who has committed.
-5. When the round resolves, the summary under the board shows every player's pick: what it risked, and what it paid.
-   Green outlines were safe, red hit.
+   Your pick locks in at once; the player list shows **Locked in** beside everybody who has picked.
+5. When the round resolves, every pick is marked on the board, and the results under it show each player's pick: what it risked, and what it paid.
 6. Read the numbers the way you always have (a `3` has three mines among its eight neighbours) and pick again.
 
 **The risk of a cell is not shown before you pick it.**
