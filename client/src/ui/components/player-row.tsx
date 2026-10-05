@@ -15,8 +15,7 @@ export interface PlayerRowProps {
   statusIcon?: GlyphName;
   /**
    * Left out where a score says nothing, as in Hush, where a team scores
-   * together. TODO(figma export): Figma hides the Score text by an override;
-   * the Player row needs a Show score property for the export to say so.
+   * together: Figma's Show score off.
    */
   score?: number;
   /** Shows the crown; it passes on when the host leaves. */

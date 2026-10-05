@@ -461,6 +461,19 @@ export default function Gallery() {
             <PlayerRow {...PLAYERS.sam} status="Waiting" score={180} host you />
           </ul>
         </Specimen>
+        <Specimen family="player-row" label="Show score off" width={312}>
+          <ul
+            style={{ margin: 0, padding: 0, listStyle: 'none', width: '100%' }}
+          >
+            <PlayerRow
+              {...PLAYERS.maya}
+              {...SAMPLE_AVATAR}
+              status="Level cleared"
+              statusIcon="check"
+              state="scored"
+            />
+          </ul>
+        </Specimen>
       </Family>
 
       <Family name="Scoreboard" file="scoreboard">
@@ -867,7 +880,7 @@ export default function Gallery() {
       <Family
         name="Hush card"
         file="hush-card"
-        note="Proposed for Hush; Figma keeps it in the section's Proposed pieces until it joins Shared pieces."
+        note="Hush's numbered cards: in a hand, next to play, on top of the pile, played under it, or discarded by a mistake."
       >
         {(['large', 'regular', 'small'] as const).map((cardSize) => {
           const sizeName = cardSize[0].toUpperCase() + cardSize.slice(1);
@@ -899,7 +912,7 @@ export default function Gallery() {
       <Family
         name="Lives"
         file="lives"
-        note="Proposed for Hush, with the Hush card."
+        note="A Hush team's lives, as hearts full or lost; the hub card hides the label."
       >
         {[3, 2, 1, 0].map((lives) => (
           <Specimen
@@ -911,6 +924,9 @@ export default function Gallery() {
             <Lives lives={lives} />
           </Specimen>
         ))}
+        <Specimen family="lives" label="Show label off">
+          <Lives lives={2} showLabel={false} />
+        </Specimen>
       </Family>
 
       <Family
