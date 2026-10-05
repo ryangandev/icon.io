@@ -8,6 +8,7 @@ import {
   symbolNamed,
   Tag,
 } from '../ui';
+import { cx } from '../ui/cx';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import {
   turtle,
@@ -151,15 +152,28 @@ function BoardArtwork() {
   );
 }
 
-/** A pile mid-level: three cards played, the top one, and two lives left. */
+/**
+ * A pile mid-level: three cards played, the top one, and two lives left. A
+ * phone keeps the pile's top three, as MO03 draws it.
+ */
 function PileArtwork() {
   return (
     <div className={styles.pile}>
-      {[12, 27, 45].map((value) => (
-        <HushCard key={value} value={value} state="played" size="small" />
+      {[12, 27, 45].map((value, index) => (
+        <HushCard
+          key={value}
+          value={value}
+          state="played"
+          size="small"
+          className={index === 0 ? styles.wideOnly : undefined}
+        />
       ))}
       <HushCard value={58} state="pile" size="small" />
-      <Lives lives={2} showLabel={false} className={styles.lives} />
+      <Lives
+        lives={2}
+        showLabel={false}
+        className={cx(styles.lives, styles.wideOnly)}
+      />
     </div>
   );
 }

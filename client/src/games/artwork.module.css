@@ -59,11 +59,14 @@
   margin-left: var(--zumpo-space-16);
 }
 
-/* The phone card drops the last cell to fit, and a hand's answer; its cards
-   are smaller than any card in play, as in the mobile cards. */
+/* The phone card drops the last cell to fit, a hand's answer, and Hush's
+   lowest card and lives; its cards are smaller than any card in play, as in
+   the mobile cards. */
 @media (max-width: 640px) {
   .lastCell,
-  .answer {
+  .answer,
+  /* Two classes, to outrank the display a component gives its own root. */
+  .pile > .wideOnly {
     display: none;
   }
 
