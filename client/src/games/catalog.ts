@@ -206,6 +206,34 @@ On your own, play 1 to 5 bots with no clock, and go on to the next round when yo
     },
   },
   {
+    type: 'hush',
+    name: 'Hush',
+    tone: 'sand',
+    tagline: 'No turns, no talking. Play every card in order, together.',
+    facts: '2–4 players',
+    maxPlayers: 4,
+    scoreUnit: 'level',
+    lobbySummary:
+      'Everybody holds numbered cards. Without a word, the team plays them all onto one pile, lowest first. There are no turns: anybody plays at any moment.',
+    lobbyFacts: [
+      '2–4 players, playing together',
+      'Level 1 deals one card each, level 2 two, and so on',
+      'No turns, no clock and no chat while a level is played',
+      '3 lives; a level without a slip wins one back',
+    ],
+    rules: `2–4 players · 7, 6 or 5 levels
+
+Everybody holds numbered cards from 1 to 100, and the whole table plays them onto one pile, lowest first. There are no turns: anybody plays their lowest card at any moment. Nobody may say a word, so the chat is locked while a level is played.
+
+Level 1 deals one card each, level 2 two, and so on. Before each level everybody presses Ready; then the cards are dealt, and play opens after a 3-second countdown.
+
+Play a card while somebody still holds a lower one, and the team loses a life: every lower card is shown and discarded, and play stops for 3 seconds. The team has 3 lives, and a level without a slip wins one back.
+
+Clear the last level to win together. Two players play 7 levels, three play 6 and four play 5. A player who drops pauses the level until they are back; if their seat goes, their cards are discarded and no life is lost.`,
+    createDescription:
+      'Play every card in order, together, without a word. Fewer players play more levels.',
+  },
+  {
     type: 'daily-word',
     name: 'Daily Word',
     tone: 'blue',

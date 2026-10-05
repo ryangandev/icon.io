@@ -14,6 +14,7 @@ import { Button, ButtonLink, Notice, SelectField, TextField } from '../ui';
 import { gameInfo, lobbyPath, roomPath } from '../games/catalog';
 import { plural } from '../games/plural';
 import { DIFFICULTIES, boardDetail } from '../minesweeper/boards';
+import { levelsFor } from '../../../shared/hush';
 import {
   BOARDS as PAIRS_BOARDS,
   boardDetail as pairsBoardDetail,
@@ -40,8 +41,8 @@ const DICE_DETAIL: Record<DicePerPlayer, string> = {
 };
 
 /**
- * DL04-DL06, DL10, DL11, ML04-ML06, ML10, MO05, T10, PR08, LD07, DW11: a new room, with
- * its settings.
+ * DL04-DL06, DL10, DL11, ML04-ML06, ML10, MO05, T10, PR08, LD07, HU09, DW11:
+ * a new room, with its settings.
  */
 export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   const game = gameInfo(gameType);
@@ -90,7 +91,9 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
                 ? { dicePerPlayer }
                 : gameType === 'pairs'
                   ? { board: pairsBoard }
-                  : { rounds: words },
+                  : gameType === 'daily-word'
+                    ? { rounds: words }
+                    : {},
     };
     setPending(true);
     setFailed(null);
@@ -170,7 +173,12 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
       />
       <SelectField
         label="Seats"
-        helper={`Choose 2–${game.maxPlayers} seats.`}
+        helper={
+          gameType === 'hush'
+            ? // Hush has no settings of its own; its length is its seats.
+              `Choose 2–${game.maxPlayers} seats. 2 players play ${levelsFor(2)} levels, ${game.maxPlayers} play ${levelsFor(game.maxPlayers)}.`
+            : `Choose 2–${game.maxPlayers} seats.`
+        }
         options={seatCounts(game.maxPlayers).map((count) => ({
           value: count,
           label: plural(count, 'player'),
@@ -241,7 +249,7 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
           onValueChange={setWords}
           name="words"
         />
-      ) : (
+      ) : gameType === 'minesweeper' ? (
         <SelectField
           label="Board"
           helper={boardDetail(difficulty)}
@@ -254,7 +262,7 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
           onValueChange={setDifficulty}
           name="board"
         />
-      )}
+      ) : null}
       <TextField
         label="Password (optional)"
         helper={`Leave blank for an open room. Up to ${PASSWORD_MAX_LENGTH} characters.`}

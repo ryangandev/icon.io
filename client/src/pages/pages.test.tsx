@@ -164,6 +164,39 @@ describe('making a room', () => {
   });
 });
 
+describe('making a Hush room', () => {
+  it('asks only for seats, and says what they mean for the game', async () => {
+    const user = userEvent.setup();
+    const { fake } = await renderApp('/games/hush/new');
+    expect(
+      screen.getByText('Choose 2–4 seats. 2 players play 7 levels, 4 play 5.'),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('combobox', { name: 'Board' })).toBeNull();
+
+    await user.click(screen.getByRole('button', { name: 'Create room' }));
+    await waitFor(() =>
+      expect(fake.requests).toContainEqual({
+        event: 'room:create',
+        args: [
+          expect.objectContaining({
+            gameType: 'hush',
+            maxPlayers: 4,
+            settings: {},
+          }),
+        ],
+      }),
+    );
+  });
+
+  it('offers only rooms, beside its rules', async () => {
+    await renderApp('/how-to-play', { name: '' });
+    expect(
+      rules('Hush').getByRole('link', { name: 'Find a room' }),
+    ).toHaveAttribute('href', '/games/hush');
+    expect(rules('Hush').queryByRole('link', { name: 'Play solo' })).toBeNull();
+  });
+});
+
 describe('on a phone', () => {
   it('keeps one way in on the front door', async () => {
     onPhone();

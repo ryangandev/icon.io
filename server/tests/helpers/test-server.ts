@@ -8,6 +8,7 @@ import {
 import type {
   LiarsDiceDurationsInSeconds,
   DailyWordDurationsInSeconds,
+  HushDurationsInSeconds,
   Make24DurationsInSeconds,
   MinesweeperDurationsInSeconds,
   PairsDurationsInSeconds,
@@ -17,6 +18,7 @@ import type { MinesweeperState } from '../../socket/minesweeper/index.js';
 import type { Make24State } from '../../socket/make-24/index.js';
 import type { PairsState } from '../../socket/pairs/index.js';
 import type { LiarsDiceState } from '../../socket/liars-dice/index.js';
+import type { HushState } from '../../socket/hush/index.js';
 import type { DailyWordState } from '../../socket/daily-word/index.js';
 import type {
   AnyLobbyRoomInfo,
@@ -29,6 +31,7 @@ import type {
   GameType,
   HandshakeAuth,
   LiarsDiceRoomState,
+  HushRoomState,
   Make24RoomState,
   MinesweeperDifficulty,
   MinesweeperRoomState,
@@ -94,6 +97,16 @@ const FAST_LIARS_DICE: LiarsDiceDurationsInSeconds = {
 };
 
 /**
+ * A countdown and a mistake long enough to assert on inside them, and a
+ * cleared level short enough that a game of several levels fits in a test.
+ */
+const FAST_HUSH: HushDurationsInSeconds = {
+  countdown: 0.2,
+  mistake: 0.3,
+  cleared: 0.2,
+};
+
+/**
  * A round long enough to type several guesses deliberately inside it, and
  * results short enough that a game of three words still finishes in a test.
  */
@@ -153,6 +166,7 @@ const startTestServer = async (
     make24Durations,
     pairsDurations,
     liarsDiceDurations: FAST_LIARS_DICE,
+    hushDurations: FAST_HUSH,
     dailyWordDurations: FAST_DAILY_WORD,
     graceInSeconds,
     ...overrides,
@@ -299,6 +313,13 @@ const waitForLiarsDiceState = (
   predicate: (state: LiarsDiceRoomState) => boolean = () => true,
   timeoutMs = 3000,
 ) => waitForState<LiarsDiceRoomState>(client, predicate, timeoutMs);
+
+/** And for Hush. */
+const waitForHushState = (
+  client: ClientSocket,
+  predicate: (state: HushRoomState) => boolean = () => true,
+  timeoutMs = 3000,
+) => waitForState<HushRoomState>(client, predicate, timeoutMs);
 
 /** And for Daily Word. */
 const waitForDailyWordState = (
@@ -485,6 +506,23 @@ const createLiarsDiceRoom = async (
   return answer.roomId;
 };
 
+/** Creates a Hush room, with its creator seated, and returns its id. */
+const createHushRoom = async (
+  client: ClientSocket,
+  options: { username?: string; maxPlayers?: number } = {},
+): Promise<string> => {
+  const answer = await client.timeout(3000).emitWithAck('room:create', {
+    gameType: 'hush',
+    roomName: 'Quiet corner',
+    username: options.username ?? 'Owner',
+    maxPlayers: options.maxPlayers ?? 4,
+    password: '',
+    settings: {},
+  });
+  if (!answer.ok) throw new Error(`room:create refused: ${answer.error.type}`);
+  return answer.roomId;
+};
+
 /** Takes a seat, and fails the test if the server refuses it. */
 const joinRoom = async (
   client: ClientSocket,
@@ -647,6 +685,14 @@ const liarsDiceRoom = (
 ): Room<LiarsDiceState> =>
   harness.server.rooms.get(roomId) as Room<LiarsDiceState>;
 
+/**
+ * The server's own Hush room. Tests read the hands through it on purpose:
+ * knowing who holds what is the only way to play a mistake deliberately, and
+ * it is exactly what a client is never sent.
+ */
+const hushRoom = (harness: TestServer, roomId: string): Room<HushState> =>
+  harness.server.rooms.get(roomId) as Room<HushState>;
+
 /** Creates a Daily Word room, with its creator seated, and returns its id. */
 const createDailyWordRoom = async (
   client: ClientSocket,
@@ -723,6 +769,7 @@ export {
   FAST_MAKE24,
   FAST_PAIRS,
   FAST_LIARS_DICE,
+  FAST_HUSH,
   FAST_DAILY_WORD,
   startTestServer,
   waitFor,
@@ -732,6 +779,7 @@ export {
   waitForMake24State,
   waitForPairsState,
   waitForLiarsDiceState,
+  waitForHushState,
   waitForDailyWordState,
   waitForChat,
   collect,
@@ -744,6 +792,7 @@ export {
   createMake24Room,
   createPairsRoom,
   createLiarsDiceRoom,
+  createHushRoom,
   createDailyWordRoom,
   joinRoom,
   startGame,
@@ -758,6 +807,7 @@ export {
   playToFirstHand,
   pairsRoom,
   liarsDiceRoom,
+  hushRoom,
   dailyWordRoom,
   playToFirstWord,
 };

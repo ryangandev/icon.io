@@ -31,6 +31,7 @@ type GameType =
   | 'make-24'
   | 'pairs'
   | 'liars-dice'
+  | 'hush'
   | 'daily-word';
 
 type RoomStatus = 'Open' | 'Full' | 'In Progress';
@@ -135,6 +136,7 @@ interface RoomCreateRequest {
     | Make24Settings
     | PairsSettings
     | LiarsDiceSettings
+    | HushSettings
     | DailyWordSettings;
 }
 
@@ -164,6 +166,9 @@ interface LiarsDiceSettings {
   /** Dice each player starts a game with: 3 or 5. */
   dicePerPlayer: number;
 }
+
+/** Hush has nothing to choose but the seats; its level count follows them. */
+type HushSettings = Record<string, never>;
 
 interface DailyWordSettings {
   /** Words a game has: 3 or 5. */
@@ -213,6 +218,10 @@ interface LiarsDiceLobbyRoomInfo extends LobbyRoomInfo {
   dicePerPlayer: number;
 }
 
+interface HushLobbyRoomInfo extends LobbyRoomInfo {
+  gameType: 'hush';
+}
+
 interface DailyWordLobbyRoomInfo extends LobbyRoomInfo {
   gameType: 'daily-word';
   rounds: number;
@@ -224,6 +233,7 @@ type AnyLobbyRoomInfo =
   | Make24LobbyRoomInfo
   | PairsLobbyRoomInfo
   | LiarsDiceLobbyRoomInfo
+  | HushLobbyRoomInfo
   | DailyWordLobbyRoomInfo;
 
 // ---------------------------------------------------------------------------
@@ -548,6 +558,105 @@ interface LiarsDiceRoomState extends RoomState {
   lastGame: LiarsDiceGameSummary | null;
 }
 
+/**
+ * waiting: no game; ready: everybody presses Ready, and nobody holds cards
+ * yet; countdown: the hands are dealt, and play opens when it ends; playing:
+ * anybody plays their lowest card; mistake: a card went over a lower one, and
+ * play stops for a moment; paused: a player who holds cards has dropped;
+ * cleared: the level is done. The chat is locked from countdown to paused.
+ */
+type HushPhase =
+  | 'waiting'
+  | 'ready'
+  | 'countdown'
+  | 'playing'
+  | 'mistake'
+  | 'paused'
+  | 'cleared';
+
+/** A card on the pile, and who played it. */
+interface HushPlay {
+  card: number;
+  playerId: string;
+}
+
+/**
+ * A card that left a hand without being played: under a card played over it
+ * (`mistake`), or with a player who left (`left`).
+ */
+interface HushDiscard {
+  card: number;
+  playerId: string;
+  reason: 'mistake' | 'left';
+}
+
+/** What everybody may know about one player's hand. */
+interface HushSeat {
+  /** How many cards they hold. */
+  held: number;
+  /** Whether they have pressed Ready for the coming level. */
+  ready: boolean;
+}
+
+/** The play that just cost a life, while it shows. */
+interface HushMistake {
+  playerId: string;
+  card: number;
+  /** Every card under it, from every hand, lowest first. */
+  discarded: HushDiscard[];
+}
+
+/** One level of a game, as it went. */
+interface HushLevelRecord {
+  level: number;
+  livesLost: number;
+  /** A clean level wins back a lost life. */
+  lifeBack: boolean;
+  /** False for the level the game ended on without clearing it. */
+  cleared: boolean;
+}
+
+/** A player's cards still held when the game ended, shown to everybody. */
+interface HushHeld {
+  playerId: string;
+  cards: number[];
+}
+
+/** Every player's points are the levels the team cleared: one result for all. */
+interface HushGameSummary extends GameSummary {
+  levels: number;
+  levelsCleared: number;
+  won: boolean;
+  /** Lives left at the end. */
+  lives: number;
+  history: HushLevelRecord[];
+  held: HushHeld[];
+}
+
+/** A Hush room, as one player may see it: their own cards and nobody else's. */
+interface HushRoomState extends RoomState {
+  gameType: 'hush';
+  phase: HushPhase;
+  /** The level being played, from 1; 0 between games. */
+  level: number;
+  /** Levels in this game; between games, what a game would have now. */
+  levels: number;
+  lives: number;
+  /** The viewer's own cards, lowest first. */
+  hand: number[];
+  /** Every seated player's card count and ready state, by player id. */
+  table: Record<string, HushSeat>;
+  /** This level's pile, lowest first; between games, the last one as it ended. */
+  pile: HushPlay[];
+  /** This level's discards, lowest first. */
+  discards: HushDiscard[];
+  /** While `mistake` shows. */
+  lastMistake: HushMistake | null;
+  /** While `cleared` shows: the level just cleared. */
+  lastLevel: HushLevelRecord | null;
+  lastGame: HushGameSummary | null;
+}
+
 /** waiting: no game; guessing: a word is open; reveal: its results are shown. */
 type DailyWordPhase = 'waiting' | 'guessing' | 'reveal';
 
@@ -616,6 +725,7 @@ type AnyRoomState =
   | Make24RoomState
   | PairsRoomState
   | LiarsDiceRoomState
+  | HushRoomState
   | DailyWordRoomState;
 
 // ---------------------------------------------------------------------------
@@ -713,6 +823,10 @@ interface ClientToServerEvents {
   /** Calling Liar on the bid in front of you, on your turn. */
   'ld:call': (roomId: string) => void;
 
+  /** Ready for the coming level; once a level, and only before it starts. */
+  'hush:ready': (roomId: string) => void;
+  /** Playing `card`, which must still be the player's lowest. */
+  'hush:play': (roomId: string, card: number) => void;
   /**
    * A guess at the open word, lowercase. Refused as `invalidRequest` with the
    * reason; an accepted one arrives marked in the next snapshot.
@@ -825,6 +939,17 @@ export type {
   LiarsDiceStanding,
   LiarsDiceGameSummary,
   LiarsDiceRoomState,
+  HushSettings,
+  HushLobbyRoomInfo,
+  HushPhase,
+  HushPlay,
+  HushDiscard,
+  HushSeat,
+  HushMistake,
+  HushLevelRecord,
+  HushHeld,
+  HushGameSummary,
+  HushRoomState,
   DailyWordSettings,
   DailyWordLobbyRoomInfo,
   DailyWordPhase,
