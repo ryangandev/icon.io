@@ -153,3 +153,10 @@ export function numberWord(count: number): string {
 export function bidWords(bid: Bid): string {
   return `${numberWord(bid.count)} ${bid.face}${bid.count === 1 ? '' : 's'}`;
 }
+
+/** What a call found, as the chat says it: "there were none", "there was one". */
+export function foundWords(matched: number): string {
+  if (matched === 0) return 'there were none';
+  if (matched === 1) return 'there was one';
+  return `there were ${numberWord(matched)}`;
+}

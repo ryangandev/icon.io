@@ -15,7 +15,7 @@ import {
   bidWords,
   countFace,
   isRaise,
-  numberWord,
+  foundWords,
   OPENING_BID,
   rollDice,
   type Bid,
@@ -281,14 +281,10 @@ const createLiarsDiceGameEngine = (
     game.phase = 'reveal';
     game.turnPlayerId = null;
 
-    const there =
-      count.matched === 1
-        ? 'there was one'
-        : `there were ${numberWord(count.matched)}`;
     ctx.rooms.announce(
       room.roomId,
       'system',
-      `${nameOf(room, callerId)} called Liar on ${bidWords(called)}: ${there}. ${loser.username} loses a die.`,
+      `${nameOf(room, callerId)} called Liar on ${bidWords(called)}: ${foundWords(count.matched)}. ${loser.username} loses a die.`,
     );
     if (out) {
       ctx.rooms.announce(room.roomId, 'alert', `${loser.username} is out.`);

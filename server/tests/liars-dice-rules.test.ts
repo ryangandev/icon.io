@@ -4,6 +4,7 @@ import {
   bidWords,
   countFace,
   counts,
+  foundWords,
   isDicePerPlayer,
   isHigher,
   isRaise,
@@ -111,5 +112,11 @@ describe('the words for a bid', () => {
     expect(bidWords({ count: 1, face: 2 })).toBe('one 2');
     expect(bidWords({ count: 4, face: 5 })).toBe('four 5s');
     expect(bidWords({ count: 14, face: 6 })).toBe('14 6s');
+  });
+
+  it('says what a call found, none included', () => {
+    expect(foundWords(0)).toBe('there were none');
+    expect(foundWords(1)).toBe('there was one');
+    expect(foundWords(5)).toBe('there were five');
   });
 });
