@@ -70,6 +70,9 @@ const BUCKET_FOR_EVENT: Record<ClientToServerEvent, BucketName> = {
   't24:solve': 'room',
   // Two flips a turn, and the engine ignores the rest.
   'pairs:flip': 'room',
+  // One bid or call a turn, and the engine ignores the rest.
+  'ld:bid': 'room',
+  'ld:call': 'room',
 };
 
 /**

@@ -25,7 +25,8 @@
  * Which game a room is playing. Every room-layer payload carries it, and it is
  * the key the server's module registry is keyed by.
  */
-type GameType = 'draw-and-guess' | 'minesweeper' | 'make-24' | 'pairs';
+type GameType =
+  'draw-and-guess' | 'minesweeper' | 'make-24' | 'pairs' | 'liars-dice';
 
 type RoomStatus = 'Open' | 'Full' | 'In Progress';
 
@@ -122,7 +123,11 @@ interface RoomCreateRequest {
   password: string;
   /** The game's own half, which only its module can read. */
   settings:
-    DrawAndGuessSettings | MinesweeperSettings | Make24Settings | PairsSettings;
+    | DrawAndGuessSettings
+    | MinesweeperSettings
+    | Make24Settings
+    | PairsSettings
+    | LiarsDiceSettings;
 }
 
 interface DrawAndGuessSettings {
@@ -145,6 +150,11 @@ type PairsBoard = 'Small' | 'Large';
 
 interface PairsSettings {
   board: PairsBoard;
+}
+
+interface LiarsDiceSettings {
+  /** Dice each player starts a game with: 3 or 5. */
+  dicePerPlayer: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -185,11 +195,17 @@ interface PairsLobbyRoomInfo extends LobbyRoomInfo {
   board: PairsBoard;
 }
 
+interface LiarsDiceLobbyRoomInfo extends LobbyRoomInfo {
+  gameType: 'liars-dice';
+  dicePerPlayer: number;
+}
+
 type AnyLobbyRoomInfo =
   | DrawAndGuessLobbyRoomInfo
   | MinesweeperLobbyRoomInfo
   | Make24LobbyRoomInfo
-  | PairsLobbyRoomInfo;
+  | PairsLobbyRoomInfo
+  | LiarsDiceLobbyRoomInfo;
 
 // ---------------------------------------------------------------------------
 // Rooms
@@ -437,11 +453,86 @@ interface PairsRoomState extends RoomState {
   lastGame: PairsGameSummary | null;
 }
 
+/**
+ * waiting: no game; bidding: the player whose turn it is raises or calls Liar;
+ * reveal: every cup is open after a call.
+ */
+type LiarsDicePhase = 'waiting' | 'bidding' | 'reveal';
+
+/** At least `count` dice on the table show `face` (2 to 6; ones are wild). */
+interface LiarsDiceBid {
+  playerId: string;
+  count: number;
+  face: number;
+}
+
+/**
+ * A player's place at the table. `dice` is sent only when this viewer may see
+ * them: their own during bidding, everybody's during a reveal and after a game.
+ */
+interface LiarsDiceCup {
+  playerId: string;
+  /** Dice left, after the call being revealed; 0 for a player who is out. */
+  diceLeft: number;
+  /** The dice rolled this round, each 1 to 6, or null when hidden. */
+  dice: number[] | null;
+}
+
+/** What a call found. */
+interface LiarsDiceReveal {
+  /** The bid called. */
+  bid: LiarsDiceBid;
+  callerId: string;
+  /** Dice that counted towards the bid's face, wild ones included. */
+  matched: number;
+  /** How many of those were wild ones. */
+  wild: number;
+  /** Who lost a die: the caller when the bid stood, the bidder when it was a lie. */
+  loserId: string;
+  /** Whether that was their last die. */
+  out: boolean;
+}
+
+/** A place in a finished game; points are the dice left. */
+interface LiarsDiceStanding extends Standing {
+  /** The round the player lost their last die in; null for whoever kept dice. */
+  outInRound: number | null;
+}
+
+interface LiarsDiceGameSummary extends GameSummary {
+  dicePerPlayer: number;
+  /** Rounds played. */
+  rounds: number;
+  /** Winner first, then everybody else by how long they lasted; never shared. */
+  standings: LiarsDiceStanding[];
+}
+
+/** A Liar's Dice room, as one player may see it. Points are dice left. */
+interface LiarsDiceRoomState extends RoomState {
+  gameType: 'liars-dice';
+  dicePerPlayer: number;
+  phase: LiarsDicePhase;
+  /** The round in play or being revealed, from 1; 0 before the first game. */
+  round: number;
+  /** Every seated player at the table, in turn order, those who are out included. */
+  cups: LiarsDiceCup[];
+  /** This round's bids in order; the last is the bid in front of the player whose turn it is. */
+  bids: LiarsDiceBid[];
+  /** Whose turn it is; null during a reveal and between games. */
+  turnPlayerId: string | null;
+  /** Whose turn comes next: the next player still in. */
+  nextPlayerId: string | null;
+  /** The call being revealed, and after a game the last one; null otherwise. */
+  reveal: LiarsDiceReveal | null;
+  lastGame: LiarsDiceGameSummary | null;
+}
+
 type AnyRoomState =
   | DrawAndGuessRoomState
   | MinesweeperRoomState
   | Make24RoomState
-  | PairsRoomState;
+  | PairsRoomState
+  | LiarsDiceRoomState;
 
 // ---------------------------------------------------------------------------
 // Chat and the drawing
@@ -532,6 +623,11 @@ interface ClientToServerEvents {
 
   /** Turning over the card at `index`, on your turn. */
   'pairs:flip': (roomId: string, index: number) => void;
+
+  /** Raising to at least `count` dice showing `face`, on your turn. */
+  'ld:bid': (roomId: string, count: number, face: number) => void;
+  /** Calling Liar on the bid in front of you, on your turn. */
+  'ld:call': (roomId: string) => void;
 }
 
 interface ServerToClientEvents {
@@ -617,6 +713,15 @@ export type {
   PairsCardView,
   PairsGameSummary,
   PairsRoomState,
+  LiarsDiceSettings,
+  LiarsDiceLobbyRoomInfo,
+  LiarsDicePhase,
+  LiarsDiceBid,
+  LiarsDiceCup,
+  LiarsDiceReveal,
+  LiarsDiceStanding,
+  LiarsDiceGameSummary,
+  LiarsDiceRoomState,
   AnyRoomState,
   ChatMessageKind,
   ChatMessage,

@@ -86,6 +86,19 @@ const pairsDurationsInSeconds: PairsDurationsInSeconds = {
   show: readSecondsFromEnv('PAIRS_SHOW_SECONDS', 2),
 };
 
+/** Liar's Dice's clock: one player's turn to bid or call, and a call's reveal. */
+interface LiarsDiceDurationsInSeconds {
+  /** How long a player has to raise the bid or call Liar. */
+  turn: number;
+  /** How long every cup stays open after a call, before the next round is rolled. */
+  reveal: number;
+}
+
+const liarsDiceDurationsInSeconds: LiarsDiceDurationsInSeconds = {
+  turn: readSecondsFromEnv('LIARS_DICE_TURN_SECONDS', 20),
+  reveal: readSecondsFromEnv('LIARS_DICE_REVEAL_SECONDS', 5),
+};
+
 /**
  * How long a disconnected player keeps their seat, their score and their place
  * in the round before the room gives up on them.
@@ -105,6 +118,7 @@ export {
   minesweeperDurationsInSeconds,
   make24DurationsInSeconds,
   pairsDurationsInSeconds,
+  liarsDiceDurationsInSeconds,
   reconnectGraceInSeconds,
 };
 export type {
@@ -112,4 +126,5 @@ export type {
   MinesweeperDurationsInSeconds,
   Make24DurationsInSeconds,
   PairsDurationsInSeconds,
+  LiarsDiceDurationsInSeconds,
 };
