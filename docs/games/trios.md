@@ -108,7 +108,7 @@ A player's third pick sends their three cards to the server as one **claim** (`t
 The server takes claims in the order they arrive:
 
 - **A trio**, with all three cards still on the table: the claimant takes it, **+1**.
-  The room goes to `taken` for 2 seconds: the three cards stay where they are, marked as found, and the turn bar says who found them, so everybody sees what was taken and by whom.
+  The room goes to `taken` for 2 seconds: the three cards stay where they are, outlined in green and tagged with the finder's initials, and the turn bar says who found them, so everybody sees what was taken and by whom.
   Then three new cards are dealt into their places and the room goes back to `finding`.
 - **Not a trio:** nothing is taken, and the claimant is **locked out for 3 seconds**: their three cards show as wrong on their own screen, and they cannot pick until the lockout ends.
   Nobody else is told.
@@ -119,7 +119,7 @@ The server takes claims in the order they arrive:
 The score is the trios you found, never anything less: a wrong claim costs time, not a trio.
 
 When somebody else takes a trio, any of your picked cards that were in it leave your selection, and the rest stay picked.
-During `taken` nobody can pick.
+During `taken` nobody can pick, but your picks stay shown, so you see what is still picked when the new cards come.
 
 ### Hints
 
@@ -129,6 +129,7 @@ A table nobody can crack would stall the room, so the server breaks a long silen
 - **30 seconds** after that, a second card of the same trio.
 
 The turn bar counts down to the next hint, so a room's clock means something without ending anything.
+A hint is help, not a deadline, so that clock never turns urgent in its last seconds.
 A hint is the same for everybody, so it changes nobody's chances; hints are cleared when a trio is taken.
 
 ### The end
@@ -202,5 +203,5 @@ Trios' one event of its own is `trios:claim`, with the room and the three cards.
 | [`trios/solo/`](../../client/src/trios/solo/)                | A run on your own                                                         |
 | [`trios/room.tsx`](../../client/src/trios/room.tsx)          | A room's screens                                                          |
 
-The rules are covered by [`trios-rules.test.ts`](../../server/tests/trios-rules.test.ts) and [`trios-flow.test.ts`](../../server/tests/trios-flow.test.ts).
+The rules are covered by [`trios-rules.test.ts`](../../server/tests/trios-rules.test.ts) and [`trios-flow.test.ts`](../../server/tests/trios-flow.test.ts), and a room's race and a run on your own by [`e2e/trios.spec.ts`](../../e2e/trios.spec.ts).
 The screens are TS01-TS12 in [the Figma file](../design.md).
