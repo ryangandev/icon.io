@@ -37,6 +37,9 @@ import type {
 /** At most one "you are being throttled" line per socket per this long. */
 const THROTTLE_LOG_INTERVAL_MS = 5000;
 
+/** How long closing waits for connections to take their last packet. */
+const CLOSE_FLUSH_MS = 1000;
+
 interface CreateZumpoServerOptions {
   /** Defaults to `process.env.CORS_ORIGIN`, then the Vite dev server. */
   corsOrigin?: string;
@@ -204,13 +207,31 @@ const createZumpoServer = (
   }
 
   /**
-   * Closes every live connection before the HTTP server, because socket.io
-   * keep-alives will otherwise hold the process open long past the test that
-   * created them.
+   * Shuts the server down: tells every connection first, then closes them
+   * before the HTTP server, because socket.io keep-alives would otherwise hold
+   * the process open long past the test that created them.
+   *
+   * Rooms live in this process, so they end here. Each page is told so before
+   * its connection goes, and can say why its room closed instead of finding it
+   * missing after the reconnect. `io.close()` alone would cut the transports
+   * with that last packet still unsent, so the sockets are disconnected first,
+   * which flushes it, and given a moment to finish.
    */
   const close = async (): Promise<void> => {
     registry.dispose();
     membership.dispose();
+
+    const closed = [...io.sockets.sockets.values()].map(
+      (socket) =>
+        new Promise<void>((resolve) => socket.conn.once('close', resolve)),
+    );
+    io.emit('server:closing');
+    io.disconnectSockets(true);
+    await Promise.race([
+      Promise.all(closed),
+      new Promise((resolve) => setTimeout(resolve, CLOSE_FLUSH_MS).unref()),
+    ]);
+
     await io.close();
     await new Promise<void>((resolve) => {
       if (!httpServer.listening) {

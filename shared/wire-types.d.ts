@@ -540,6 +540,12 @@ interface ServerToClientEvents {
    * is, which the client stores for the next one.
    */
   'session:ready': (session: SessionInfo) => void;
+  /**
+   * The server is shutting down, for a deploy or a restart, and every room
+   * goes with it. Sent to every connection just before it is closed, so a
+   * room page can say why its room ended rather than find it missing later.
+   */
+  'server:closing': () => void;
 
   'lobby:rooms': (gameType: GameType, rooms: AnyLobbyRoomInfo[]) => void;
 

@@ -44,6 +44,7 @@ What is left needs the Figma file, which Claude could not reach this time:
 2. In T09, space the table panel's children 20 apart, as T08 and the code do; T09 uses 24.
 3. Redraw P13 and P14 with all four games, as P04 already has them, and give P14's solo games the same Play solo and Find a room pair as P04's cards.
 4. In the 00 / Review guide, drop the sentence pointing at `design/reviews/`; the review reports were folded into [design.md](design.md) and deleted.
+5. Draw the room state for a server restart ("Zumpo just restarted.", desktop and phone) beside P09, whose card code reuses for it ([design](design.md#on-purpose)).
 
 ## Open decisions
 

@@ -26,6 +26,7 @@ export interface Snapshot {
  * - unavailable: the room is full, playing, or would not take this player.
  * - not-found: the room does not exist, or no longer does.
  * - expired: this player had a seat, and it was released while they were away.
+ * - closed: the server shut down, for a deploy or a restart, and the room with it.
  * - seated: in the room; `reconnecting` while the connection is down.
  */
 export type RoomStage =
@@ -35,6 +36,7 @@ export type RoomStage =
   | { kind: 'unavailable' }
   | { kind: 'not-found' }
   | { kind: 'expired' }
+  | { kind: 'closed' }
   | { kind: 'seated'; snapshot: Snapshot; reconnecting: boolean };
 
 /** The server keeps this many messages; so does the client. */
@@ -73,6 +75,8 @@ export function useRoom(roomId: string): RoomConnection {
   /** Whether this page has held a seat, which turns "not a member" into "expired". */
   const seated = useRef(false);
   const left = useRef(false);
+  /** Set once the server said it is shutting down: the room is gone for good. */
+  const closed = useRef(false);
 
   const request = useCallback(
     async (
@@ -139,7 +143,7 @@ export function useRoom(roomId: string): RoomConnection {
   );
 
   useEffect(() => {
-    if (connection === null || left.current) return;
+    if (connection === null || left.current || closed.current) return;
     let current = true;
     const isCurrent = () => current;
 
@@ -188,6 +192,12 @@ export function useRoom(roomId: string): RoomConnection {
     const onCanvasClear = (id: string) => {
       if (id === roomId) canvas.clear();
     };
+    // Rooms live in the server's memory, so they end with it. The page says so
+    // now, rather than reconnecting to a server that has never heard of it.
+    const onClosing = () => {
+      closed.current = true;
+      setProblem({ kind: 'closed' });
+    };
 
     socket.on('room:state', onState);
     socket.on('chat:history', onHistory);
@@ -198,6 +208,7 @@ export function useRoom(roomId: string): RoomConnection {
     socket.on('dg:canvas:end', onCanvasEnd);
     socket.on('dg:canvas:undo', onCanvasUndo);
     socket.on('dg:canvas:clear', onCanvasClear);
+    socket.on('server:closing', onClosing);
 
     void (async () => {
       const synced = await sync();
@@ -228,6 +239,7 @@ export function useRoom(roomId: string): RoomConnection {
       socket.off('dg:canvas:end', onCanvasEnd);
       socket.off('dg:canvas:undo', onCanvasUndo);
       socket.off('dg:canvas:clear', onCanvasClear);
+      socket.off('server:closing', onClosing);
     };
   }, [connection, socket, roomId, canvas, sync, join, settle]);
 

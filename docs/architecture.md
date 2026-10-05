@@ -39,6 +39,8 @@ tools/   figma-export, figma-bridge, design-tokens: Figma into the repo (see des
 There is no database and no business HTTP API.
 Everything except serving static files happens over Socket.io, and server state is one flat registry of rooms of every game, owned by [`server/libs/rooms/registry.ts`](../server/libs/rooms/registry.ts).
 Restarting the server drops every room.
+It goes properly, though: on SIGTERM or SIGINT ([`server.ts`](../server/server.ts)) the server sends every connection `server:closing` and then disconnects it, and a room page shows that the room ended in a restart instead of reconnecting to a server that has never heard of it.
+The sockets are disconnected before `io.close()`, which would cut the transports with that last packet unsent, and given a second to flush it.
 That is a conscious trade for a hobby project, and it also means one process: scaling out needs a decision about where each room's state and clock live, which a Socket.IO Redis adapter alone does not answer.
 
 `createZumpoServer()` exists so the server is testable: when these objects were module-level, importing anything meant taking port 3000.

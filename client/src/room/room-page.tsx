@@ -102,6 +102,20 @@ export default function RoomPage({
       );
     case 'expired':
       return <ExpiredPage gameType={gameType} />;
+    case 'closed':
+      return (
+        <Page>
+          <Stage>
+            <Card
+              title="Zumpo just restarted."
+              description="Rooms close when Zumpo restarts for an update, so this one has ended. Find another room or start your own."
+              actions={
+                <ButtonLink to={lobbyPath(gameType)}>Back to rooms</ButtonLink>
+              }
+            />
+          </Stage>
+        </Page>
+      );
     case 'seated':
       // A link with the wrong game in it still reaches the room.
       if (stage.snapshot.state.gameType !== gameType) {
