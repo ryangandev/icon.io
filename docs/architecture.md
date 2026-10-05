@@ -37,7 +37,7 @@ tools/   figma-export, figma-bridge, design-tokens: Figma into the repo (see des
 | `client/src/ui/gallery/`                     | The development-only `/design` page that reviews it against Figma    |
 
 There is no database and no business HTTP API.
-Everything except serving static files happens over Socket.io, and server state is one flat registry of rooms of every game, owned by [`server/libs/rooms/registry.ts`](../server/libs/rooms/registry.ts).
+Everything except serving static files and a health check (`/healthz`, which reports the rooms and connections it holds) happens over Socket.io, and server state is one flat registry of rooms of every game, owned by [`server/libs/rooms/registry.ts`](../server/libs/rooms/registry.ts).
 Restarting the server drops every room.
 It goes properly, though: on SIGTERM or SIGINT ([`server.ts`](../server/server.ts)) the server sends every connection `server:closing` and then disconnects it, and a room page shows that the room ended in a restart instead of reconnecting to a server that has never heard of it.
 The sockets are disconnected before `io.close()`, which would cut the transports with that last packet unsent, and given a second to flush it.
@@ -269,6 +269,7 @@ What the free plan costs in behaviour:
 - **750 instance hours a month**, enough for one service running all month.
 
 `autoDeployTrigger: checksPass` deploys a commit on `main` only after CI has passed on it.
+Render polls `/healthz` rather than `/`, so a deploy is healthy when the server answers, not merely when it can send a file.
 The Node version comes from `.nvmrc`, like CI's.
 Cloudflare serves the DNS for `ryangan.me`: the `zumpo` record is a CNAME to the service's `onrender.com` host, left "DNS only" so Render can issue its certificate.
 

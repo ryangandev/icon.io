@@ -1,7 +1,6 @@
 import express, { type Request, type Response } from 'express';
 import { createServer, type Server as HttpServer } from 'node:http';
 import { Server } from 'socket.io';
-import cors from 'cors';
 import * as url from 'node:url';
 import path from 'node:path';
 import type {
@@ -113,8 +112,6 @@ const createZumpoServer = (
   // build/server/app.js serves the SPA that Vite builds into build/public.
   const publicStaticFolder = path.join(__dirname, '..', 'public');
 
-  app.use(express.json());
-  app.use(cors());
   app.use(express.static(publicStaticFolder));
 
   const httpServer = createServer(app);
@@ -203,6 +200,17 @@ const createZumpoServer = (
     for (const gameType of registry.registeredTypes()) {
       registry.moduleFor(gameType)?.registerHandlers(socket);
     }
+  });
+
+  // What the host polls to know the process is up and answering, before the
+  // SPA catch-all below would answer it with a page. The counts are what a
+  // glance at a running server wants, and nothing a lobby does not show.
+  app.get('/healthz', (_req: Request, res: Response) => {
+    res.json({
+      status: 'ok',
+      rooms: registry.count(),
+      connections: io.engine.clientsCount,
+    });
   });
 
   if (serveClient) {
