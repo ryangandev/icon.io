@@ -1,0 +1,4034 @@
+{
+  "format": 1,
+  "name": "Zumpo/Trios card",
+  "id": "45:63927",
+  "type": "COMPONENT_SET",
+  "key": "3554219fd0c4fead427a44f87e15fe7c014185fb",
+  "description": "A Trios card: one to three shapes (the Shape property sets all of them), its state, and an optional badge: Hint on a hinted card, the finder’s initials on a found one.",
+  "properties": {
+    "Shape": {
+      "type": "instance_swap",
+      "default": "Zumpo/Trios shape / Shape=Circle, Fill=Solid, Colour=Coral, Stripes=Fine"
+    },
+    "Show badge": {
+      "type": "boolean",
+      "default": false
+    },
+    "Badge": {
+      "type": "text",
+      "default": "Hint"
+    },
+    "Count": {
+      "type": "variant",
+      "default": "1",
+      "options": [
+        "1",
+        "2",
+        "3"
+      ]
+    },
+    "State": {
+      "type": "variant",
+      "default": "Default",
+      "options": [
+        "Default",
+        "Selected",
+        "Found",
+        "Wrong"
+      ]
+    },
+    "Size": {
+      "type": "variant",
+      "default": "Regular",
+      "options": [
+        "Regular",
+        "Compact",
+        "Mini"
+      ]
+    }
+  },
+  "defaultVariant": "Count=1, State=Default, Size=Regular",
+  "variants": [
+    {
+      "name": "Count=1, State=Default, Size=Regular",
+      "id": "45:63738",
+      "props": {
+        "Count": "1",
+        "State": "Default",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63738",
+        "name": "Count=1, State=Default, Size=Regular",
+        "x": 24,
+        "y": 24,
+        "w": 192,
+        "h": 128,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63739",
+            "name": "Shape 1",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63741",
+            "name": "Badge",
+            "visible": false,
+            "x": 142,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63742",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=2, State=Default, Size=Regular",
+      "id": "45:63743",
+      "props": {
+        "Count": "2",
+        "State": "Default",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63743",
+        "name": "Count=2, State=Default, Size=Regular",
+        "x": 240,
+        "y": 24,
+        "w": 192,
+        "h": 128,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63744",
+            "name": "Shape 1",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63746",
+            "name": "Shape 2",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63748",
+            "name": "Badge",
+            "visible": false,
+            "x": 142,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63749",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=3, State=Default, Size=Regular",
+      "id": "45:63750",
+      "props": {
+        "Count": "3",
+        "State": "Default",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63750",
+        "name": "Count=3, State=Default, Size=Regular",
+        "x": 456,
+        "y": 24,
+        "w": 192,
+        "h": 128,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63751",
+            "name": "Shape 1",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63753",
+            "name": "Shape 2",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63755",
+            "name": "Shape 3",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63757",
+            "name": "Badge",
+            "visible": false,
+            "x": 142,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63758",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=1, State=Selected, Size=Regular",
+      "id": "45:63759",
+      "props": {
+        "Count": "1",
+        "State": "Selected",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63759",
+        "name": "Count=1, State=Selected, Size=Regular",
+        "x": 24,
+        "y": 184,
+        "w": 192,
+        "h": 128,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "drop_shadow",
+            "color": "#282B2514",
+            "offset": [
+              0,
+              8
+            ],
+            "radius": 24
+          }
+        ],
+        "effectStyle": "Zumpo/Paper lift",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63760",
+            "name": "Shape 1",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63762",
+            "name": "Badge",
+            "visible": false,
+            "x": 142,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63763",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=2, State=Selected, Size=Regular",
+      "id": "45:63764",
+      "props": {
+        "Count": "2",
+        "State": "Selected",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63764",
+        "name": "Count=2, State=Selected, Size=Regular",
+        "x": 240,
+        "y": 184,
+        "w": 192,
+        "h": 128,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "drop_shadow",
+            "color": "#282B2514",
+            "offset": [
+              0,
+              8
+            ],
+            "radius": 24
+          }
+        ],
+        "effectStyle": "Zumpo/Paper lift",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63765",
+            "name": "Shape 1",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63767",
+            "name": "Shape 2",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63769",
+            "name": "Badge",
+            "visible": false,
+            "x": 142,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63770",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=3, State=Selected, Size=Regular",
+      "id": "45:63771",
+      "props": {
+        "Count": "3",
+        "State": "Selected",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63771",
+        "name": "Count=3, State=Selected, Size=Regular",
+        "x": 456,
+        "y": 184,
+        "w": 192,
+        "h": 128,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "drop_shadow",
+            "color": "#282B2514",
+            "offset": [
+              0,
+              8
+            ],
+            "radius": 24
+          }
+        ],
+        "effectStyle": "Zumpo/Paper lift",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63772",
+            "name": "Shape 1",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63774",
+            "name": "Shape 2",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63776",
+            "name": "Shape 3",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63778",
+            "name": "Badge",
+            "visible": false,
+            "x": 142,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63779",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=1, State=Found, Size=Regular",
+      "id": "45:63780",
+      "props": {
+        "Count": "1",
+        "State": "Found",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63780",
+        "name": "Count=1, State=Found, Size=Regular",
+        "x": 24,
+        "y": 344,
+        "w": 192,
+        "h": 128,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/green"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63781",
+            "name": "Shape 1",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63783",
+            "name": "Badge",
+            "visible": false,
+            "x": 147,
+            "y": -10,
+            "absolute": true,
+            "w": 35,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/green"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63784",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=2, State=Found, Size=Regular",
+      "id": "45:63785",
+      "props": {
+        "Count": "2",
+        "State": "Found",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63785",
+        "name": "Count=2, State=Found, Size=Regular",
+        "x": 240,
+        "y": 344,
+        "w": 192,
+        "h": 128,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/green"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63786",
+            "name": "Shape 1",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63788",
+            "name": "Shape 2",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63790",
+            "name": "Badge",
+            "visible": false,
+            "x": 147,
+            "y": -10,
+            "absolute": true,
+            "w": 35,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/green"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63791",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=3, State=Found, Size=Regular",
+      "id": "45:63792",
+      "props": {
+        "Count": "3",
+        "State": "Found",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63792",
+        "name": "Count=3, State=Found, Size=Regular",
+        "x": 456,
+        "y": 344,
+        "w": 192,
+        "h": 128,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/green"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63793",
+            "name": "Shape 1",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63795",
+            "name": "Shape 2",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63797",
+            "name": "Shape 3",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63799",
+            "name": "Badge",
+            "visible": false,
+            "x": 147,
+            "y": -10,
+            "absolute": true,
+            "w": 35,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/green"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63800",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=1, State=Wrong, Size=Regular",
+      "id": "45:63801",
+      "props": {
+        "Count": "1",
+        "State": "Wrong",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63801",
+        "name": "Count=1, State=Wrong, Size=Regular",
+        "x": 24,
+        "y": 504,
+        "w": 192,
+        "h": 128,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63802",
+            "name": "Shape 1",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63804",
+            "name": "Badge",
+            "visible": false,
+            "x": 142,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63805",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=2, State=Wrong, Size=Regular",
+      "id": "45:63806",
+      "props": {
+        "Count": "2",
+        "State": "Wrong",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63806",
+        "name": "Count=2, State=Wrong, Size=Regular",
+        "x": 240,
+        "y": 504,
+        "w": 192,
+        "h": 128,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63807",
+            "name": "Shape 1",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63809",
+            "name": "Shape 2",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63811",
+            "name": "Badge",
+            "visible": false,
+            "x": 142,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63812",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=3, State=Wrong, Size=Regular",
+      "id": "45:63813",
+      "props": {
+        "Count": "3",
+        "State": "Wrong",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63813",
+        "name": "Count=3, State=Wrong, Size=Regular",
+        "x": 456,
+        "y": 504,
+        "w": 192,
+        "h": 128,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63814",
+            "name": "Shape 1",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63816",
+            "name": "Shape 2",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63818",
+            "name": "Shape 3",
+            "w": 40,
+            "h": 40,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63820",
+            "name": "Badge",
+            "visible": false,
+            "x": 142,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63821",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=1, State=Default, Size=Compact",
+      "id": "45:63822",
+      "props": {
+        "Count": "1",
+        "State": "Default",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63822",
+        "name": "Count=1, State=Default, Size=Compact",
+        "x": 24,
+        "y": 664,
+        "w": 110,
+        "h": 76,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63823",
+            "name": "Shape 1",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63825",
+            "name": "Badge",
+            "visible": false,
+            "x": 60,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63826",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=2, State=Default, Size=Compact",
+      "id": "45:63827",
+      "props": {
+        "Count": "2",
+        "State": "Default",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63827",
+        "name": "Count=2, State=Default, Size=Compact",
+        "x": 240,
+        "y": 664,
+        "w": 110,
+        "h": 76,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63828",
+            "name": "Shape 1",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63830",
+            "name": "Shape 2",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63832",
+            "name": "Badge",
+            "visible": false,
+            "x": 60,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63833",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=3, State=Default, Size=Compact",
+      "id": "45:63834",
+      "props": {
+        "Count": "3",
+        "State": "Default",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63834",
+        "name": "Count=3, State=Default, Size=Compact",
+        "x": 456,
+        "y": 664,
+        "w": 110,
+        "h": 76,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63835",
+            "name": "Shape 1",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63837",
+            "name": "Shape 2",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63839",
+            "name": "Shape 3",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63841",
+            "name": "Badge",
+            "visible": false,
+            "x": 60,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63842",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=1, State=Selected, Size=Compact",
+      "id": "45:63843",
+      "props": {
+        "Count": "1",
+        "State": "Selected",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63843",
+        "name": "Count=1, State=Selected, Size=Compact",
+        "x": 24,
+        "y": 772,
+        "w": 110,
+        "h": 76,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "drop_shadow",
+            "color": "#282B2514",
+            "offset": [
+              0,
+              8
+            ],
+            "radius": 24
+          }
+        ],
+        "effectStyle": "Zumpo/Paper lift",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63844",
+            "name": "Shape 1",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63846",
+            "name": "Badge",
+            "visible": false,
+            "x": 60,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63847",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=2, State=Selected, Size=Compact",
+      "id": "45:63848",
+      "props": {
+        "Count": "2",
+        "State": "Selected",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63848",
+        "name": "Count=2, State=Selected, Size=Compact",
+        "x": 240,
+        "y": 772,
+        "w": 110,
+        "h": 76,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "drop_shadow",
+            "color": "#282B2514",
+            "offset": [
+              0,
+              8
+            ],
+            "radius": 24
+          }
+        ],
+        "effectStyle": "Zumpo/Paper lift",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63849",
+            "name": "Shape 1",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63851",
+            "name": "Shape 2",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63853",
+            "name": "Badge",
+            "visible": false,
+            "x": 60,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63854",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=3, State=Selected, Size=Compact",
+      "id": "45:63855",
+      "props": {
+        "Count": "3",
+        "State": "Selected",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63855",
+        "name": "Count=3, State=Selected, Size=Compact",
+        "x": 456,
+        "y": 772,
+        "w": 110,
+        "h": 76,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "drop_shadow",
+            "color": "#282B2514",
+            "offset": [
+              0,
+              8
+            ],
+            "radius": 24
+          }
+        ],
+        "effectStyle": "Zumpo/Paper lift",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63856",
+            "name": "Shape 1",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63858",
+            "name": "Shape 2",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63860",
+            "name": "Shape 3",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63862",
+            "name": "Badge",
+            "visible": false,
+            "x": 60,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63863",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=1, State=Found, Size=Compact",
+      "id": "45:63864",
+      "props": {
+        "Count": "1",
+        "State": "Found",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63864",
+        "name": "Count=1, State=Found, Size=Compact",
+        "x": 24,
+        "y": 880,
+        "w": 110,
+        "h": 76,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/green"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63865",
+            "name": "Shape 1",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63867",
+            "name": "Badge",
+            "visible": false,
+            "x": 65,
+            "y": -10,
+            "absolute": true,
+            "w": 35,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/green"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63868",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=2, State=Found, Size=Compact",
+      "id": "45:63869",
+      "props": {
+        "Count": "2",
+        "State": "Found",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63869",
+        "name": "Count=2, State=Found, Size=Compact",
+        "x": 240,
+        "y": 880,
+        "w": 110,
+        "h": 76,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/green"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63870",
+            "name": "Shape 1",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63872",
+            "name": "Shape 2",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63874",
+            "name": "Badge",
+            "visible": false,
+            "x": 65,
+            "y": -10,
+            "absolute": true,
+            "w": 35,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/green"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63875",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=3, State=Found, Size=Compact",
+      "id": "45:63876",
+      "props": {
+        "Count": "3",
+        "State": "Found",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63876",
+        "name": "Count=3, State=Found, Size=Compact",
+        "x": 456,
+        "y": 880,
+        "w": 110,
+        "h": 76,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/green"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63877",
+            "name": "Shape 1",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63879",
+            "name": "Shape 2",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63881",
+            "name": "Shape 3",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63883",
+            "name": "Badge",
+            "visible": false,
+            "x": 65,
+            "y": -10,
+            "absolute": true,
+            "w": 35,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/green"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63884",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=1, State=Wrong, Size=Compact",
+      "id": "45:63885",
+      "props": {
+        "Count": "1",
+        "State": "Wrong",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63885",
+        "name": "Count=1, State=Wrong, Size=Compact",
+        "x": 24,
+        "y": 988,
+        "w": 110,
+        "h": 76,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63886",
+            "name": "Shape 1",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63888",
+            "name": "Badge",
+            "visible": false,
+            "x": 60,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63889",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=2, State=Wrong, Size=Compact",
+      "id": "45:63890",
+      "props": {
+        "Count": "2",
+        "State": "Wrong",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63890",
+        "name": "Count=2, State=Wrong, Size=Compact",
+        "x": 240,
+        "y": 988,
+        "w": 110,
+        "h": 76,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63891",
+            "name": "Shape 1",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63893",
+            "name": "Shape 2",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63895",
+            "name": "Badge",
+            "visible": false,
+            "x": 60,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63896",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=3, State=Wrong, Size=Compact",
+      "id": "45:63897",
+      "props": {
+        "Count": "3",
+        "State": "Wrong",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63897",
+        "name": "Count=3, State=Wrong, Size=Compact",
+        "x": 456,
+        "y": 988,
+        "w": 110,
+        "h": 76,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63898",
+            "name": "Shape 1",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63900",
+            "name": "Shape 2",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63902",
+            "name": "Shape 3",
+            "w": 24,
+            "h": 24,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63904",
+            "name": "Badge",
+            "visible": false,
+            "x": 60,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63905",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=1, State=Default, Size=Mini",
+      "id": "45:63906",
+      "props": {
+        "Count": "1",
+        "State": "Default",
+        "Size": "Mini"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63906",
+        "name": "Count=1, State=Default, Size=Mini",
+        "x": 24,
+        "y": 1096,
+        "w": 72,
+        "h": 48,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/4",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63907",
+            "name": "Shape 1",
+            "w": 16,
+            "h": 16,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63909",
+            "name": "Badge",
+            "visible": false,
+            "x": 28,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63910",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=2, State=Default, Size=Mini",
+      "id": "45:63911",
+      "props": {
+        "Count": "2",
+        "State": "Default",
+        "Size": "Mini"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63911",
+        "name": "Count=2, State=Default, Size=Mini",
+        "x": 240,
+        "y": 1096,
+        "w": 72,
+        "h": 48,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/4",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63912",
+            "name": "Shape 1",
+            "w": 16,
+            "h": 16,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63914",
+            "name": "Shape 2",
+            "w": 16,
+            "h": 16,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63916",
+            "name": "Badge",
+            "visible": false,
+            "x": 28,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63917",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=3, State=Default, Size=Mini",
+      "id": "45:63918",
+      "props": {
+        "Count": "3",
+        "State": "Default",
+        "Size": "Mini"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "45:63918",
+        "name": "Count=3, State=Default, Size=Mini",
+        "x": 456,
+        "y": 1096,
+        "w": 72,
+        "h": 48,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/4",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "45:63919",
+            "name": "Shape 1",
+            "w": 16,
+            "h": 16,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63921",
+            "name": "Shape 2",
+            "w": 16,
+            "h": 16,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "45:63923",
+            "name": "Shape 3",
+            "w": 16,
+            "h": 16,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "45:63925",
+            "name": "Badge",
+            "visible": false,
+            "x": 28,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "45:63926",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=1, State=Found, Size=Mini",
+      "id": "79:89534",
+      "props": {
+        "Count": "1",
+        "State": "Found",
+        "Size": "Mini"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "79:89534",
+        "name": "Count=1, State=Found, Size=Mini",
+        "x": 24,
+        "y": 1168,
+        "w": 72,
+        "h": 48,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/green"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/4",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "79:89535",
+            "name": "Shape 1",
+            "w": 16,
+            "h": 16,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "79:89536",
+            "name": "Badge",
+            "visible": false,
+            "x": 28,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/green"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "79:89537",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=2, State=Found, Size=Mini",
+      "id": "79:89539",
+      "props": {
+        "Count": "2",
+        "State": "Found",
+        "Size": "Mini"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "79:89539",
+        "name": "Count=2, State=Found, Size=Mini",
+        "x": 240,
+        "y": 1168,
+        "w": 72,
+        "h": 48,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/green"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/4",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "79:89540",
+            "name": "Shape 1",
+            "w": 16,
+            "h": 16,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:89541",
+            "name": "Shape 2",
+            "w": 16,
+            "h": 16,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "79:89542",
+            "name": "Badge",
+            "visible": false,
+            "x": 28,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/green"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "79:89543",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Count=3, State=Found, Size=Mini",
+      "id": "79:89546",
+      "props": {
+        "Count": "3",
+        "State": "Found",
+        "Size": "Mini"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "79:89546",
+        "name": "Count=3, State=Found, Size=Mini",
+        "x": 456,
+        "y": 1168,
+        "w": 72,
+        "h": 48,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/green"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/4",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "79:89547",
+            "name": "Shape 1",
+            "w": 16,
+            "h": 16,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:89548",
+            "name": "Shape 2",
+            "w": 16,
+            "h": 16,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:89549",
+            "name": "Shape 3",
+            "w": 16,
+            "h": 16,
+            "propRefs": {
+              "mainComponent": "Shape"
+            },
+            "component": "Zumpo/Trios shape",
+            "variant": {
+              "Shape": "Circle",
+              "Fill": "Solid",
+              "Colour": "Coral",
+              "Stripes": "Fine"
+            },
+            "componentId": "44:61348"
+          },
+          {
+            "type": "FRAME",
+            "id": "79:89550",
+            "name": "Badge",
+            "visible": false,
+            "x": 28,
+            "y": -10,
+            "absolute": true,
+            "w": 40,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show badge"
+            },
+            "fills": [
+              "$Zumpo · UI:color/green"
+            ],
+            "radius": "$Zumpo · UI:radius/999",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "pad": [
+                1,
+                8
+              ],
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "79:89551",
+                "name": "Badge",
+                "w": 24,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Badge"
+                },
+                "text": "Hint",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

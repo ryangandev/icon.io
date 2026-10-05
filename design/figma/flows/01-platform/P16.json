@@ -12,7 +12,7 @@
     "id": "39:21404",
     "name": "P16 / Leave room between games",
     "x": 4660,
-    "y": 4014,
+    "y": 5391,
     "w": 1440,
     "h": 753,
     "hSize": "hug",
@@ -231,6 +231,7 @@
                   {
                     "path": "Player 1",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Waiting",
                       "Host": true,
@@ -251,6 +252,7 @@
                   {
                     "path": "Player 2",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Waiting",
                       "Host": false,
@@ -264,6 +266,7 @@
                   {
                     "path": "Player 3",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Waiting",
                       "Host": false,
@@ -277,6 +280,7 @@
                   {
                     "path": "Player 4",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Waiting",
                       "Host": false,
@@ -307,6 +311,7 @@
                   {
                     "path": "Messages / Message 1",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Name": "System",
                       "Message": "Ryan has joined the room.",
                       "Kind": "System"
@@ -315,6 +320,7 @@
                   {
                     "path": "Messages / Message 2",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Name": "System",
                       "Message": "Leo has joined the room.",
                       "Kind": "System"
@@ -323,6 +329,7 @@
                   {
                     "path": "Messages / Message 3",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Name": "System",
                       "Message": "Sam has joined the room.",
                       "Kind": "System"
@@ -331,6 +338,7 @@
                   {
                     "path": "Messages / Message 4",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "hi all",
                       "Name": "Sam",
                       "Kind": "Player"
@@ -445,7 +453,7 @@
           "Content": [
             {
               "type": "FRAME",
-              "id": "39:21454",
+              "id": "I39:21450;35:13437;39:21471",
               "name": "Actions",
               "w": 233,
               "h": 48,
@@ -461,7 +469,7 @@
               "children": [
                 {
                   "type": "INSTANCE",
-                  "id": "39:21455",
+                  "id": "I39:21450;35:13437;39:21472",
                   "name": "Action / Leave room",
                   "w": 148,
                   "h": 48,
@@ -478,7 +486,7 @@
                   },
                   "overrides": [
                     {
-                      "path": "",
+                      "path": ".",
                       "height": 48,
                       "width": 148
                     }
@@ -486,7 +494,7 @@
                 },
                 {
                   "type": "INSTANCE",
-                  "id": "39:21464",
+                  "id": "I39:21450;35:13437;39:21473",
                   "name": "Action / Stay",
                   "w": 73,
                   "h": 48,
@@ -502,7 +510,7 @@
                   },
                   "overrides": [
                     {
-                      "path": "",
+                      "path": ".",
                       "height": 48,
                       "width": 73
                     }

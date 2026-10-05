@@ -115,8 +115,8 @@
                 "componentId": "26:16856",
                 "props": {
                   "Meta": "10 mines · your pick locks when you click",
-                  "Main": "Pick a cell",
-                  "Label": "Round 1"
+                  "Label": "Round 1",
+                  "Main": "Pick a cell"
                 },
                 "overrides": [
                   {
@@ -261,6 +261,7 @@
                   {
                     "path": "Player 1",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": true,
                       "Status": "Locked in",
                       "Host": true,
@@ -281,6 +282,7 @@
                   {
                     "path": "Player 2",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Picking",
                       "Host": false,
@@ -294,6 +296,7 @@
                   {
                     "path": "Player 3",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": true,
                       "Status": "Locked in",
                       "Host": false,
@@ -307,6 +310,7 @@
                   {
                     "path": "Player 4",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Picking",
                       "Host": false,
@@ -337,6 +341,7 @@
                   {
                     "path": "Messages / Message 1",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Name": "System",
                       "Message": "Game has started! 10 mines on a 9×9 board.",
                       "Kind": "System"
@@ -345,6 +350,7 @@
                   {
                     "path": "Messages / Message 2",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "good luck",
                       "Name": "Ryan",
                       "Kind": "Player"
@@ -353,6 +359,7 @@
                   {
                     "path": "Messages / Message 3",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "no peeking",
                       "Name": "Leo",
                       "Kind": "Player"
