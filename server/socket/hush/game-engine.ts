@@ -1,7 +1,8 @@
 import type { HushDiscard } from '../../models/types.js';
 import { RequestError } from '../../models/error.js';
+import { seatCount } from '../../libs/rooms/seats.js';
 import type { GameContext, Room } from '../../libs/rooms/types.js';
-import { getRoomStatus, resetPoints } from '../../libs/utils.js';
+import { resetPoints } from '../../libs/utils.js';
 import {
   hushDurationsInSeconds as defaultDurations,
   reconnectGraceInSeconds,
@@ -44,43 +45,26 @@ const mayChat = (room: HushRoom) => !IN_LEVEL.has(room.game.phase);
  * Owns the level loop. Hush has no turns and, while a level is played, no
  * clock: anybody plays their lowest card at any moment, and the server decides
  * in arrival order whether it went over a card still held. Only the moments
- * around a level are timed, one timer a room.
+ * around a level are timed, on the room's one clock.
  */
 const createHushGameEngine = (
   ctx: GameContext,
   durations: HushDurationsInSeconds = defaultDurations,
   graceInSeconds: number = reconnectGraceInSeconds,
 ) => {
-  const timers = new Map<string, NodeJS.Timeout>();
-
   const roomOf = (roomId: string): HushRoom | undefined =>
     ctx.rooms.ofType<HushState>(roomId, 'hush');
 
-  const clearTimer = (roomId: string) => {
-    const pending = timers.get(roomId);
-    if (pending) {
-      clearTimeout(pending);
-      timers.delete(roomId);
-    }
+  /** Starts a timed phase on the room's clock, `onEnd` when it ends. */
+  const timed = (room: HushRoom, seconds: number, onEnd: () => void) => {
+    room.game.pausedUntil = 0;
+    ctx.rooms.startPhase(room, seconds, onEnd);
   };
 
-  /** Starts a timed phase, `onDue` when it ends. */
-  const timed = (
-    room: HushRoom,
-    seconds: number,
-    onDue: (room: HushRoom) => void,
-  ) => {
-    clearTimer(room.roomId);
-    room.phaseEndsAt = Date.now() + seconds * 1000;
-    timers.set(
-      room.roomId,
-      setTimeout(() => {
-        timers.delete(room.roomId);
-        // The room may have been emptied and deleted while we waited.
-        const current = roomOf(room.roomId);
-        if (current?.isGameStarted) onDue(current);
-      }, seconds * 1000),
-    );
+  /** Nothing is timed: a level is played, or waits for somebody. */
+  const untimed = (room: HushRoom) => {
+    room.game.pausedUntil = 0;
+    ctx.rooms.stopPhase(room);
   };
 
   const startGame = (room: HushRoom, playerId: string) => {
@@ -96,7 +80,7 @@ const createHushGameEngine = (
         'The game has already started.',
       );
     }
-    if (room.currentPlayerCount < MIN_PLAYERS) {
+    if (seatCount(room) < MIN_PLAYERS) {
       throw new RequestError(
         'notEnoughPlayers',
         `At least ${MIN_PLAYERS} players are required to start.`,
@@ -104,17 +88,12 @@ const createHushGameEngine = (
     }
 
     const game = room.game;
-    game.levels = levelsFor(room.currentPlayerCount);
+    game.levels = levelsFor(seatCount(room));
     game.lives = START_LIVES;
     game.history = [];
     game.lastGame = null;
     room.playerList = resetPoints(room.playerList);
     room.isGameStarted = true;
-    room.status = getRoomStatus(
-      room.currentPlayerCount,
-      room.maxPlayers,
-      room.isGameStarted,
-    );
 
     console.log(`Hush started in room ${room.roomId}, ${game.levels} levels.`);
 
@@ -130,7 +109,7 @@ const createHushGameEngine = (
 
   /** Level `level` waits for everybody to be ready. Nobody holds cards yet. */
   const beginReady = (room: HushRoom, level: number) => {
-    clearTimer(room.roomId);
+    untimed(room);
     const game = room.game;
     game.phase = 'ready';
     game.level = level;
@@ -141,7 +120,6 @@ const createHushGameEngine = (
     game.livesLost = 0;
     game.lastMistake = null;
     game.lastLevel = null;
-    room.phaseEndsAt = 0;
     ctx.rooms.emitState(room);
   };
 
@@ -176,24 +154,28 @@ const createHushGameEngine = (
       return;
     }
     room.game.phase = 'countdown';
-    timed(room, durations.countdown, (current) => {
-      if (awayHolders(current).length > 0) {
-        pause(current);
+    timed(room, durations.countdown, () => {
+      if (awayHolders(room).length > 0) {
+        pause(room);
         return;
       }
-      current.game.phase = 'playing';
-      current.phaseEndsAt = 0;
-      ctx.rooms.emitState(current);
+      room.game.phase = 'playing';
+      untimed(room);
+      ctx.rooms.emitState(room);
     });
     ctx.rooms.emitState(room);
   };
 
-  /** Waits for every dropped player who holds cards, until their seat goes. */
+  /**
+   * Waits for every dropped player who holds cards, until their seat goes.
+   * Nothing here ends the pause: the room layer's seat expiry does, by way of
+   * a departure. Its clock is the last of those seats to go.
+   */
   const pause = (room: HushRoom) => {
-    clearTimer(room.roomId);
+    untimed(room);
     const game = room.game;
     game.phase = 'paused';
-    room.phaseEndsAt = Math.max(
+    game.pausedUntil = Math.max(
       0,
       ...awayHolders(room).map(
         (playerId) => game.seatEndsAt.get(playerId) ?? 0,
@@ -267,10 +249,10 @@ const createHushGameEngine = (
       return;
     }
     game.phase = 'mistake';
-    timed(room, durations.mistake, (current) => {
-      current.game.lastMistake = null;
-      if (cardsLeft(current) === 0) clearLevel(current);
-      else goOn(current);
+    timed(room, durations.mistake, () => {
+      game.lastMistake = null;
+      if (cardsLeft(room) === 0) clearLevel(room);
+      else goOn(room);
     });
     ctx.rooms.emitState(room);
   };
@@ -282,13 +264,13 @@ const createHushGameEngine = (
       return;
     }
     room.game.phase = 'playing';
-    room.phaseEndsAt = 0;
+    untimed(room);
     ctx.rooms.emitState(room);
   };
 
   /** Every card is played or discarded. A level that cost no life wins one back. */
   const clearLevel = (room: HushRoom) => {
-    clearTimer(room.roomId);
+    untimed(room);
     const game = room.game;
     const clean = game.livesLost === 0;
     const lifeBack = clean && game.lives < START_LIVES;
@@ -320,9 +302,7 @@ const createHushGameEngine = (
     );
     game.phase = 'cleared';
     game.lastLevel = record;
-    timed(room, durations.cleared, (current) =>
-      beginReady(current, current.game.level + 1),
-    );
+    timed(room, durations.cleared, () => beginReady(room, room.game.level + 1));
     ctx.rooms.emitState(room);
   };
 
@@ -334,7 +314,7 @@ const createHushGameEngine = (
     room: HushRoom,
     { won, endedEarly }: { won: boolean; endedEarly: boolean },
   ) => {
-    clearTimer(room.roomId);
+    untimed(room);
     const game = room.game;
     // A level cut short goes into the record as not cleared; the last level,
     // just won, is in it already.
@@ -383,12 +363,6 @@ const createHushGameEngine = (
     game.lastMistake = null;
     game.lastLevel = null;
     game.history = [];
-    room.phaseEndsAt = 0;
-    room.status = getRoomStatus(
-      room.currentPlayerCount,
-      room.maxPlayers,
-      room.isGameStarted,
-    );
 
     ctx.rooms.emitState(room);
     if (won) {
@@ -450,7 +424,7 @@ const createHushGameEngine = (
       ].toSorted((a, b) => a.card - b.card);
     }
 
-    if (room.currentPlayerCount < MIN_PLAYERS) {
+    if (seatCount(room) < MIN_PLAYERS) {
       ctx.rooms.announce(
         room.roomId,
         'alert',
@@ -487,12 +461,6 @@ const createHushGameEngine = (
     }
   };
 
-  const disposeRoom = (roomId: string) => clearTimer(roomId);
-
-  const dispose = () => {
-    for (const roomId of new Set(timers.keys())) clearTimer(roomId);
-  };
-
   return {
     startGame,
     ready,
@@ -501,8 +469,6 @@ const createHushGameEngine = (
     handleDisconnect,
     handleReturn,
     handlePlayerDeparture,
-    disposeRoom,
-    dispose,
   };
 };
 

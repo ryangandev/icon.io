@@ -37,8 +37,7 @@ const whiteboardCanvasEventHandler = (socket: IoSocket, ctx: GameContext) => {
    */
   const pencilRoomOf = (roomId: string): Room<DrawAndGuessState> | null => {
     // Identity comes from the connection, never from the payload.
-    const playerId = ctx.sessions.playerIdFor(socket.id);
-    if (!playerId) return null;
+    const playerId = socket.data.playerId;
 
     // Also: the room has to be a Draw & Guess room. A room id off any lobby
     // broadcast is a valid id; it is not necessarily a valid id *here*.

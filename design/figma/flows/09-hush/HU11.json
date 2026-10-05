@@ -1,0 +1,420 @@
+{
+  "format": 1,
+  "code": "HU11",
+  "title": "Phone · getting ready",
+  "id": "74:82191",
+  "section": "09 / Hush / complete flow",
+  "reviewNotes": [
+    "HU11 · Before a level on a phone: Maya and Leo are ready, Sam is next. Nothing is dealt until all four are."
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "74:82191",
+    "name": "HU11 / Phone · getting ready",
+    "x": 2070,
+    "y": 2965,
+    "w": 390,
+    "h": 851,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        "$Zumpo · UI:space/20",
+        "$Zumpo · UI:space/20",
+        32,
+        "$Zumpo · UI:space/20"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "74:82192",
+        "name": "Zumpo/Room bar",
+        "w": 350,
+        "h": 68,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Phone"
+        },
+        "componentId": "39:19277",
+        "props": {
+          "Game": "Hush"
+        },
+        "overrides": [
+          {
+            "path": "Room identity / Room context / Room",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Maya’s room",
+              "Tone": "Sand"
+            }
+          },
+          {
+            "path": "Room identity / Room context / Phase",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Level 2 of 5",
+              "Tone": "Blue"
+            }
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "74:82193",
+        "name": "Zumpo/Mobile tabs",
+        "w": 350,
+        "h": 34,
+        "hSize": "hug",
+        "component": "Zumpo/Mobile tabs",
+        "variant": {
+          "View": "Board"
+        },
+        "componentId": "9:416",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 34,
+            "width": 350
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "74:82194",
+        "name": "Zumpo/Turn bar",
+        "w": 350,
+        "h": 88,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Turn bar",
+        "variant": {
+          "Kind": "Status",
+          "Layout": "Phone"
+        },
+        "componentId": "27:22192",
+        "props": {
+          "Top row": false,
+          "Countdown": false,
+          "Main": "Get ready",
+          "Category": false,
+          "Meta": "Maya and Leo are ready.",
+          "Label": "Level 2 of 5"
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 88,
+            "width": 350
+          },
+          {
+            "path": "Top / Eyebrow / Category",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Small · 9 × 9",
+              "Tone": "Sand"
+            }
+          },
+          {
+            "path": "Top / Countdown",
+            "componentProperties": {
+              "Label": "to flip",
+              "Time": "00:07",
+              "Tone": "Running"
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "74:82292",
+        "name": "Board panel",
+        "w": 350,
+        "h": 495,
+        "wSize": "fill",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/24",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/24",
+          "pad": "$Zumpo · UI:space/16",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "74:82314",
+            "name": "Table head",
+            "w": 316,
+            "h": 30,
+            "wSize": "fill",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/16",
+              "justify": "space_between",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "FRAME",
+                "id": "74:82315",
+                "name": "Title",
+                "w": 197,
+                "h": 30,
+                "wSize": "fill",
+                "hSize": "hug",
+                "clip": true,
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/12",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/4",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "TEXT",
+                    "id": "74:82316",
+                    "name": "Heading",
+                    "w": 83,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "Level 2",
+                    "textStyle": "Zumpo/Heading",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "74:82317",
+                    "name": "Note",
+                    "w": 73,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "2 cards each",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "74:82318",
+                "name": "Zumpo/Lives",
+                "w": 119,
+                "h": 20,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Lives",
+                "variant": {
+                  "Lives": "3"
+                },
+                "componentId": "44:61119"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "74:82324",
+            "name": "Pile",
+            "w": 316,
+            "h": 216,
+            "wSize": "fill",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/16",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "FRAME",
+                "id": "74:82325",
+                "name": "Empty pile",
+                "w": 168,
+                "h": 216,
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeWeight": 2,
+                "strokeAlign": "inside",
+                "dash": [
+                  8,
+                  6
+                ],
+                "radius": "$Zumpo · UI:radius/24",
+                "clip": true,
+                "layout": {
+                  "mode": "column",
+                  "pad": "$Zumpo · UI:space/16",
+                  "justify": "center",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "TEXT",
+                    "id": "74:82326",
+                    "name": "Text",
+                    "w": 132,
+                    "h": 36,
+                    "wSize": "fill",
+                    "hSize": "hug",
+                    "text": "Cards are dealt when everyone is ready",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ],
+                    "alignH": "center",
+                    "autoResize": "height"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "RECTANGLE",
+            "id": "74:82327",
+            "name": "Divider",
+            "w": 316,
+            "h": 1,
+            "wSize": "fill",
+            "fills": [
+              "$Zumpo · UI:color/line"
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "74:82328",
+            "name": "Your hand",
+            "w": 316,
+            "h": 142,
+            "wSize": "fill",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/12",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "74:82329",
+                "name": "Label",
+                "w": 138,
+                "h": 20,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Ready when you are",
+                "textStyle": "Zumpo/Label",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "74:82330",
+                "name": "Message",
+                "w": 316,
+                "h": 50,
+                "wSize": "fill",
+                "hSize": "hug",
+                "text": "The chat locks when the level starts, and opens when it ends.",
+                "textStyle": "Zumpo/Body",
+                "fills": [
+                  "$Zumpo · UI:color/muted"
+                ],
+                "autoResize": "height"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "74:82331",
+                "name": "Action / I’m ready",
+                "w": 316,
+                "h": 48,
+                "wSize": "fill",
+                "component": "Zumpo/Button",
+                "variant": {
+                  "Style": "Primary",
+                  "State": "Default"
+                },
+                "componentId": "4:15",
+                "props": {
+                  "Label": "I’m ready"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 48,
+                    "primaryAxisSizingMode": "FIXED",
+                    "width": 316
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "74:82239",
+        "name": "Footer",
+        "w": 350,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "74:82240",
+            "w": 350,
+            "h": 18,
+            "hSize": "hug",
+            "text": "A little play. Good company.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    ]
+  }
+}

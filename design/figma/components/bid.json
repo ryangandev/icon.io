@@ -1,0 +1,240 @@
+{
+  "format": 1,
+  "name": "Zumpo/Bid",
+  "id": "44:62002",
+  "type": "COMPONENT_SET",
+  "key": "d7503c9b3ea040c14d261289e2697b4ebb40e0d2",
+  "description": "One bid: who made it, then at least Count dice showing Face. Latest is the bid in front of the player whose turn it is; Earlier are the round's bids before it.",
+  "properties": {
+    "Name": {
+      "type": "text",
+      "default": "Leo"
+    },
+    "Count": {
+      "type": "text",
+      "default": "5"
+    },
+    "Face": {
+      "type": "instance_swap",
+      "default": "Zumpo/Die / Face=5, State=Default, Size=Compact"
+    },
+    "Kind": {
+      "type": "variant",
+      "default": "Latest",
+      "options": [
+        "Latest",
+        "Earlier"
+      ]
+    }
+  },
+  "defaultVariant": "Kind=Latest",
+  "variants": [
+    {
+      "name": "Kind=Latest",
+      "id": "44:61982",
+      "props": {
+        "Kind": "Latest"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61982",
+        "name": "Kind=Latest",
+        "w": 128,
+        "h": 48,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/999",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            6,
+            6,
+            6,
+            "$Zumpo · UI:space/16"
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:61983",
+            "name": "Name",
+            "w": 25,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Name"
+            },
+            "text": "Leo",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "44:61984",
+            "name": "Count",
+            "w": 12,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Count"
+            },
+            "text": "5",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "44:61985",
+            "name": "Times",
+            "w": 9,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "×",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "44:61986",
+            "name": "Face",
+            "w": 32,
+            "h": 32,
+            "propRefs": {
+              "mainComponent": "Face"
+            },
+            "component": "Zumpo/Die",
+            "variant": {
+              "Face": "5",
+              "State": "Default",
+              "Size": "Compact"
+            },
+            "componentId": "44:61270"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Kind=Earlier",
+      "id": "44:61992",
+      "props": {
+        "Kind": "Earlier"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61992",
+        "name": "Kind=Earlier",
+        "w": 126,
+        "h": 46,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/999",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            6,
+            6,
+            6,
+            "$Zumpo · UI:space/16"
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:61993",
+            "name": "Name",
+            "w": 25,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Name"
+            },
+            "text": "Leo",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "44:61994",
+            "name": "Count",
+            "w": 12,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Count"
+            },
+            "text": "5",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "44:61995",
+            "name": "Times",
+            "w": 9,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "×",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "44:61996",
+            "name": "Face",
+            "w": 32,
+            "h": 32,
+            "propRefs": {
+              "mainComponent": "Face"
+            },
+            "component": "Zumpo/Die",
+            "variant": {
+              "Face": "5",
+              "State": "Default",
+              "Size": "Compact"
+            },
+            "componentId": "44:61270"
+          }
+        ]
+      }
+    }
+  ]
+}

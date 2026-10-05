@@ -43,26 +43,19 @@ const createHushModule = (
     onDisconnect: (room, playerId) => engine.handleDisconnect(room, playerId),
     onReturn: (room, playerId) => engine.handleReturn(room, playerId),
 
-    disposeRoom: (roomId) => engine.disposeRoom(roomId),
-    dispose: () => engine.dispose(),
-
     registerHandlers: (socket: IoSocket) => {
       // Identity comes from the connection, never from the payload.
       onClientEvent(socket, 'hush:ready', (...rawArgs: unknown[]) => {
         const validated = parseArgs(readyRequest, rawArgs, 'hush:ready');
         if (!validated) return;
-        const playerId = ctx.sessions.playerIdFor(socket.id);
-        if (!playerId) return;
-        engine.ready(validated[0], playerId);
+        engine.ready(validated[0], socket.data.playerId);
       });
 
       onClientEvent(socket, 'hush:play', (...rawArgs: unknown[]) => {
         const validated = parseArgs(playRequest, rawArgs, 'hush:play');
         if (!validated) return;
-        const playerId = ctx.sessions.playerIdFor(socket.id);
-        if (!playerId) return;
         const [roomId, card] = validated;
-        engine.play(roomId, playerId, card);
+        engine.play(roomId, socket.data.playerId, card);
       });
     },
   };

@@ -43,9 +43,6 @@ const createMake24Module = (
     onDisconnect: (room) => engine.handleDisconnect(room),
     onReturn: () => {},
 
-    disposeRoom: (roomId) => engine.disposeRoom(roomId),
-    dispose: () => engine.dispose(),
-
     registerHandlers: (socket: IoSocket) => {
       onClientEvent(socket, 't24:solve', (...rawArgs: unknown[]) => {
         const validated = parseArgs(solveRequest, rawArgs, 't24:solve');
@@ -53,8 +50,7 @@ const createMake24Module = (
         const [roomId, steps] = validated;
 
         // Identity comes from the connection, never from the payload.
-        const playerId = ctx.sessions.playerIdFor(socket.id);
-        if (!playerId) return;
+        const playerId = socket.data.playerId;
 
         engine.submitSolve(roomId, playerId, steps as Make24Step[]);
       });

@@ -1,4 +1,11 @@
-import { createRoom, dropConnection, expect, joinRoom, test } from './fixtures';
+import {
+  createRoom,
+  dropConnection,
+  duplicateTab,
+  expect,
+  joinRoom,
+  test,
+} from './fixtures';
 
 test('a refresh keeps the seat and the score', async ({ player }) => {
   const maya = await player('Maya');
@@ -53,4 +60,29 @@ test('a lobby lists rooms again after a dropped connection', async ({
   await expect(sam.getByRole('article', { name: roomName })).toBeVisible({
     timeout: 20_000,
   });
+});
+
+test('a duplicated tab takes the seat, and the first tab can take it back', async ({
+  player,
+}) => {
+  const maya = await player('Maya');
+  const leo = await player('Leo');
+  const link = await createRoom(maya, 'minesweeper');
+  await joinRoom(leo, link);
+
+  const copy = await duplicateTab(leo);
+  await joinRoom(copy, link);
+
+  await expect(leo.getByText('Zumpo is open in another tab.')).toBeVisible();
+  const players = maya.getByRole('region', { name: 'Players' });
+  await expect(players.getByText('Leo')).toBeVisible();
+  await expect(players.getByText('Away')).toBeHidden();
+  await expect(maya.getByText('Leo reconnected.')).toBeHidden();
+
+  await maya.getByRole('button', { name: 'Start game' }).click();
+  await expect(copy.getByText('Pick a cell')).toBeVisible();
+
+  await leo.getByRole('button', { name: 'Use this tab' }).click();
+  await expect(leo.getByText('Pick a cell')).toBeVisible();
+  await expect(copy.getByText('Zumpo is open in another tab.')).toBeVisible();
 });

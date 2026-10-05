@@ -4,12 +4,14 @@ import type { Locator, Page } from '@playwright/test';
 import {
   createRoom,
   dropConnection,
+  duplicateTab,
   expect,
   holdConnection,
   joinRoom,
   test,
   type PlayerOptions,
 } from '../fixtures';
+import { startServer } from '../own-server';
 import { missHand, solveHand, startHand } from '../play/make-24';
 import {
   clearABoard,
@@ -171,6 +173,40 @@ test('before a connection, and when it fails', async ({ player }) => {
     timeout: 60_000,
   });
   await shot(maya, 'P06');
+});
+
+test('a tab taken over, and a room closed by a restart', async ({ player }) => {
+  for (const [name, options, code] of [
+    ['Maya', desktop, 'P17'],
+    ['Sam', phone, 'MO17'],
+  ] as const) {
+    const page = await player(name, options);
+    const link = await createRoom(page, 'minesweeper');
+    const copy = await duplicateTab(page);
+    await joinRoom(copy, link);
+    await expect(page.getByText('Zumpo is open in another tab.')).toBeVisible();
+    await shot(page, code);
+  }
+
+  // A server of this test's own, so stopping it leaves the others alone.
+  const port = Number(process.env.SCREENS_PORT ?? 3320) + 1;
+  const server = await startServer(port);
+  try {
+    const own = { server: `http://localhost:${port}` };
+    const maya = await player('Maya', { ...desktop, ...own });
+    const sam = await player('Sam', { ...phone, ...own });
+    await joinRoom(sam, await createRoom(maya, 'minesweeper'));
+    server.kill('SIGTERM');
+    for (const [page, code] of [
+      [maya, 'P18'],
+      [sam, 'MO18'],
+    ] as const) {
+      await expect(page.getByText('Zumpo just restarted.')).toBeVisible();
+      await shot(page, code);
+    }
+  } finally {
+    server.kill('SIGKILL');
+  }
 });
 
 /** The lobby pages of one game, empty and then with a room in each state. */
@@ -887,12 +923,19 @@ test('a Pairs game', async ({ player }) => {
     }
     const samIsNext =
       mover !== sam && (await samTurn.getByText('You’re next.').isVisible());
-    await playTurn(mover, memory, async () => {
-      if (later && mover === leo && !shown.phone) {
-        await shot(leo, 'PR10');
-        shown.phone = true;
-      }
-    });
+    // Once a few pairs are in, turns pass on until every shot is taken.
+    const exploring = later && Object.values(shown).includes(false);
+    await playTurn(
+      mover,
+      memory,
+      async () => {
+        if (later && mover === leo && !shown.phone) {
+          await shot(leo, 'PR10');
+          shown.phone = true;
+        }
+      },
+      exploring,
+    );
     if (later && samIsNext && !shown.miss) {
       shown.miss = await shotWhile(
         sam,

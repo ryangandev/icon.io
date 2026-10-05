@@ -21,10 +21,12 @@
   box-shadow: var(--zumpo-shadow-cell-edge);
 }
 
-.pickable:hover {
-  box-shadow:
-    var(--zumpo-shadow-cell-edge),
-    inset 0 0 0 2px var(--zumpo-ink);
+@media (hover: hover) {
+  .pickable:hover {
+    box-shadow:
+      var(--zumpo-shadow-cell-edge),
+      inset 0 0 0 2px var(--zumpo-ink);
+  }
 }
 
 /* Strokes sit inside, as in Figma, so every state keeps the card's size. */

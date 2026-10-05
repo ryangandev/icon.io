@@ -10,6 +10,7 @@ import type {
   HushSeat,
   HushSettings,
 } from '../../models/types.js';
+import { roomStatus, seatCount } from '../../libs/rooms/seats.js';
 import type { Room } from '../../libs/rooms/types.js';
 import { getRemainingPhaseMs } from '../../libs/utils.js';
 import { levelsFor, START_LIVES } from '../../../shared/hush.js';
@@ -43,6 +44,12 @@ interface HushState {
    * its clock.
    */
   seatEndsAt: Map<string, number>;
+  /**
+   * While a level waits for the away, when the last of their seats goes, in
+   * epoch ms; 0 otherwise. The room's clock stays stopped, since nothing the
+   * game times ends a pause.
+   */
+  pausedUntil: number;
   lastGame: HushGameSummary | null;
 }
 
@@ -60,6 +67,7 @@ const createState = (_settings: HushSettings): HushState => ({
   lastLevel: null,
   history: [],
   seatEndsAt: new Map(),
+  pausedUntil: 0,
   lastGame: null,
 });
 
@@ -68,8 +76,8 @@ const toLobbyInfo = (room: Room<HushState>): HushLobbyRoomInfo => ({
   roomId: room.roomId,
   roomName: room.roomName,
   owner: room.owner,
-  status: room.status,
-  currentPlayerCount: room.currentPlayerCount,
+  status: roomStatus(room),
+  currentPlayerCount: seatCount(room),
   maxPlayers: room.maxPlayers,
   hasPassword: room.password !== '',
 });
@@ -97,12 +105,13 @@ const toRoomState = (
     ...toLobbyInfo(room),
     playerList: room.playerList,
     isGameStarted: room.isGameStarted,
-    phaseEndsInMs: getRemainingPhaseMs(room),
+    phaseEndsInMs:
+      game.phase === 'paused'
+        ? Math.max(0, game.pausedUntil - Date.now())
+        : getRemainingPhaseMs(room),
     phase: game.phase,
     level: game.level,
-    levels: room.isGameStarted
-      ? game.levels
-      : levelsFor(room.currentPlayerCount),
+    levels: room.isGameStarted ? game.levels : levelsFor(seatCount(room)),
     lives: game.lives,
     hand: [...(game.hands[viewerId] ?? [])],
     table,

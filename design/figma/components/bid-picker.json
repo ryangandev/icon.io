@@ -1,0 +1,762 @@
+{
+  "format": 1,
+  "name": "Zumpo/Bid picker",
+  "id": "44:62898",
+  "type": "COMPONENT_SET",
+  "key": "40ff483acceb532a2156924da9da6b8b315b6b6c",
+  "description": "Your turn: how many dice, showing which face (2 to 6; the picked face is Counted), then Bid or Call Liar. It opens on the smallest raise; Fewer is disabled at the smallest count the face allows. With no bid yet there is nothing to call, so Liar is hidden.",
+  "properties": {
+    "Count": {
+      "type": "text",
+      "default": "5"
+    },
+    "Show Liar": {
+      "type": "boolean",
+      "default": true
+    },
+    "Layout": {
+      "type": "variant",
+      "default": "Desktop",
+      "options": [
+        "Desktop",
+        "Phone"
+      ]
+    }
+  },
+  "defaultVariant": "Layout=Desktop",
+  "variants": [
+    {
+      "name": "Layout=Desktop",
+      "id": "44:62778",
+      "props": {
+        "Layout": "Desktop"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62778",
+        "name": "Layout=Desktop",
+        "w": 518,
+        "h": 152,
+        "wSize": "hug",
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/20",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "44:62779",
+            "name": "Controls",
+            "w": 518,
+            "h": 84,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/32",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "FRAME",
+                "id": "44:62780",
+                "name": "How many",
+                "w": 174,
+                "h": 76,
+                "wSize": "hug",
+                "hSize": "hug",
+                "clip": true,
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/8",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "TEXT",
+                    "id": "44:62781",
+                    "name": "Label",
+                    "w": 72,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "How many",
+                    "textStyle": "Zumpo/Label",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "44:62782",
+                    "name": "Stepper",
+                    "w": 174,
+                    "h": 48,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "row",
+                      "gap": "$Zumpo · UI:space/8",
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "INSTANCE",
+                        "id": "44:62783",
+                        "name": "Fewer",
+                        "w": 51,
+                        "h": 48,
+                        "wSize": "hug",
+                        "component": "Zumpo/Button",
+                        "variant": {
+                          "Style": "Secondary",
+                          "State": "Disabled"
+                        },
+                        "componentId": "4:20",
+                        "props": {
+                          "Label": "−"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 48,
+                            "width": 51
+                          },
+                          {
+                            "path": "Let’s play",
+                            "fontName": "DM Sans Bold",
+                            "fontSize": 14,
+                            "letterSpacing": 0,
+                            "lineHeight": "20px",
+                            "openTypeFeatures": "changed",
+                            "textDecorationSkipInk": null,
+                            "textStyleId": null
+                          }
+                        ]
+                      },
+                      {
+                        "type": "FRAME",
+                        "id": "44:62789",
+                        "name": "Count box",
+                        "w": 56,
+                        "h": 42,
+                        "clip": true,
+                        "layout": {
+                          "mode": "row",
+                          "justify": "center",
+                          "align": "center",
+                          "strokesIncluded": true
+                        },
+                        "children": [
+                          {
+                            "type": "TEXT",
+                            "id": "44:62790",
+                            "name": "Count",
+                            "w": 22,
+                            "h": 42,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "propRefs": {
+                              "characters": "Count"
+                            },
+                            "text": "5",
+                            "textStyle": "Zumpo/Title",
+                            "fills": [
+                              "$Zumpo · UI:color/ink"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "44:62791",
+                        "name": "More",
+                        "w": 51,
+                        "h": 48,
+                        "wSize": "hug",
+                        "component": "Zumpo/Button",
+                        "variant": {
+                          "Style": "Secondary",
+                          "State": "Default"
+                        },
+                        "componentId": "4:18",
+                        "props": {
+                          "Label": "+"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 48,
+                            "width": 51
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "44:62797",
+                "name": "Face",
+                "w": 312,
+                "h": 84,
+                "wSize": "hug",
+                "hSize": "hug",
+                "clip": true,
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/8",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "TEXT",
+                    "id": "44:62798",
+                    "name": "Label",
+                    "w": 58,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "Showing",
+                    "textStyle": "Zumpo/Label",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "44:62799",
+                    "name": "Faces",
+                    "w": 312,
+                    "h": 56,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "row",
+                      "gap": "$Zumpo · UI:space/8",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "INSTANCE",
+                        "id": "44:62800",
+                        "name": "Face 2",
+                        "w": 56,
+                        "h": 56,
+                        "component": "Zumpo/Die",
+                        "variant": {
+                          "Face": "2",
+                          "State": "Default",
+                          "Size": "Regular"
+                        },
+                        "componentId": "44:61151"
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "44:62803",
+                        "name": "Face 3",
+                        "w": 56,
+                        "h": 56,
+                        "component": "Zumpo/Die",
+                        "variant": {
+                          "Face": "3",
+                          "State": "Default",
+                          "Size": "Regular"
+                        },
+                        "componentId": "44:61160"
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "44:62807",
+                        "name": "Face 4",
+                        "w": 56,
+                        "h": 56,
+                        "component": "Zumpo/Die",
+                        "variant": {
+                          "Face": "4",
+                          "State": "Default",
+                          "Size": "Regular"
+                        },
+                        "componentId": "44:61172"
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "44:62812",
+                        "name": "Face 5",
+                        "w": 56,
+                        "h": 56,
+                        "component": "Zumpo/Die",
+                        "variant": {
+                          "Face": "5",
+                          "State": "Default",
+                          "Size": "Regular"
+                        },
+                        "componentId": "44:61187"
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "44:62818",
+                        "name": "Face 6",
+                        "w": 56,
+                        "h": 56,
+                        "component": "Zumpo/Die",
+                        "variant": {
+                          "Face": "6",
+                          "State": "Counted",
+                          "Size": "Regular"
+                        },
+                        "componentId": "44:61212"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62825",
+            "name": "Actions",
+            "w": 217,
+            "h": 48,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62826",
+                "name": "Bid",
+                "w": 110,
+                "h": 48,
+                "wSize": "hug",
+                "component": "Zumpo/Button",
+                "variant": {
+                  "Style": "Primary",
+                  "State": "Default"
+                },
+                "componentId": "4:15",
+                "props": {
+                  "Label": "Bid five 6s"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 48,
+                    "width": 110
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62832",
+                "name": "Liar",
+                "w": 95,
+                "h": 48,
+                "wSize": "hug",
+                "propRefs": {
+                  "visible": "Show Liar"
+                },
+                "component": "Zumpo/Button",
+                "variant": {
+                  "Style": "Danger",
+                  "State": "Default"
+                },
+                "componentId": "24:5351",
+                "props": {
+                  "Label": "Call Liar"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 48,
+                    "width": 95
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Layout=Phone",
+      "id": "44:62838",
+      "props": {
+        "Layout": "Phone"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62838",
+        "name": "Layout=Phone",
+        "w": 342,
+        "h": 244,
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/20",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "44:62839",
+            "name": "Controls",
+            "w": 342,
+            "h": 176,
+            "wSize": "fill",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/16",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "FRAME",
+                "id": "44:62840",
+                "name": "How many",
+                "w": 174,
+                "h": 76,
+                "wSize": "hug",
+                "hSize": "hug",
+                "clip": true,
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/8",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "TEXT",
+                    "id": "44:62841",
+                    "name": "Label",
+                    "w": 72,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "How many",
+                    "textStyle": "Zumpo/Label",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "44:62842",
+                    "name": "Stepper",
+                    "w": 174,
+                    "h": 48,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "row",
+                      "gap": "$Zumpo · UI:space/8",
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "INSTANCE",
+                        "id": "44:62843",
+                        "name": "Fewer",
+                        "w": 51,
+                        "h": 48,
+                        "wSize": "hug",
+                        "component": "Zumpo/Button",
+                        "variant": {
+                          "Style": "Secondary",
+                          "State": "Disabled"
+                        },
+                        "componentId": "4:20",
+                        "props": {
+                          "Label": "−"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 48,
+                            "width": 51
+                          },
+                          {
+                            "path": "Let’s play",
+                            "fontName": "DM Sans Bold",
+                            "fontSize": 14,
+                            "letterSpacing": 0,
+                            "lineHeight": "20px",
+                            "openTypeFeatures": "changed",
+                            "textDecorationSkipInk": null,
+                            "textStyleId": null
+                          }
+                        ]
+                      },
+                      {
+                        "type": "FRAME",
+                        "id": "44:62849",
+                        "name": "Count box",
+                        "w": 56,
+                        "h": 42,
+                        "clip": true,
+                        "layout": {
+                          "mode": "row",
+                          "justify": "center",
+                          "align": "center",
+                          "strokesIncluded": true
+                        },
+                        "children": [
+                          {
+                            "type": "TEXT",
+                            "id": "44:62850",
+                            "name": "Count",
+                            "w": 22,
+                            "h": 42,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "propRefs": {
+                              "characters": "Count"
+                            },
+                            "text": "5",
+                            "textStyle": "Zumpo/Title",
+                            "fills": [
+                              "$Zumpo · UI:color/ink"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "44:62851",
+                        "name": "More",
+                        "w": 51,
+                        "h": 48,
+                        "wSize": "hug",
+                        "component": "Zumpo/Button",
+                        "variant": {
+                          "Style": "Secondary",
+                          "State": "Default"
+                        },
+                        "componentId": "4:18",
+                        "props": {
+                          "Label": "+"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 48,
+                            "width": 51
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "44:62857",
+                "name": "Face",
+                "w": 312,
+                "h": 84,
+                "wSize": "hug",
+                "hSize": "hug",
+                "clip": true,
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/8",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "TEXT",
+                    "id": "44:62858",
+                    "name": "Label",
+                    "w": 58,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "Showing",
+                    "textStyle": "Zumpo/Label",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "44:62859",
+                    "name": "Faces",
+                    "w": 312,
+                    "h": 56,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "row",
+                      "gap": "$Zumpo · UI:space/8",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "INSTANCE",
+                        "id": "44:62860",
+                        "name": "Face 2",
+                        "w": 56,
+                        "h": 56,
+                        "component": "Zumpo/Die",
+                        "variant": {
+                          "Face": "2",
+                          "State": "Default",
+                          "Size": "Regular"
+                        },
+                        "componentId": "44:61151"
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "44:62863",
+                        "name": "Face 3",
+                        "w": 56,
+                        "h": 56,
+                        "component": "Zumpo/Die",
+                        "variant": {
+                          "Face": "3",
+                          "State": "Default",
+                          "Size": "Regular"
+                        },
+                        "componentId": "44:61160"
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "44:62867",
+                        "name": "Face 4",
+                        "w": 56,
+                        "h": 56,
+                        "component": "Zumpo/Die",
+                        "variant": {
+                          "Face": "4",
+                          "State": "Default",
+                          "Size": "Regular"
+                        },
+                        "componentId": "44:61172"
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "44:62872",
+                        "name": "Face 5",
+                        "w": 56,
+                        "h": 56,
+                        "component": "Zumpo/Die",
+                        "variant": {
+                          "Face": "5",
+                          "State": "Default",
+                          "Size": "Regular"
+                        },
+                        "componentId": "44:61187"
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "44:62878",
+                        "name": "Face 6",
+                        "w": 56,
+                        "h": 56,
+                        "component": "Zumpo/Die",
+                        "variant": {
+                          "Face": "6",
+                          "State": "Counted",
+                          "Size": "Regular"
+                        },
+                        "componentId": "44:61212"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62885",
+            "name": "Actions",
+            "w": 342,
+            "h": 48,
+            "wSize": "fill",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62886",
+                "name": "Bid",
+                "w": 165,
+                "h": 48,
+                "wSize": "fill",
+                "component": "Zumpo/Button",
+                "variant": {
+                  "Style": "Primary",
+                  "State": "Default"
+                },
+                "componentId": "4:15",
+                "props": {
+                  "Label": "Bid five 6s"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 48,
+                    "primaryAxisSizingMode": "FIXED",
+                    "width": 165
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62892",
+                "name": "Liar",
+                "w": 165,
+                "h": 48,
+                "wSize": "fill",
+                "propRefs": {
+                  "visible": "Show Liar"
+                },
+                "component": "Zumpo/Button",
+                "variant": {
+                  "Style": "Danger",
+                  "State": "Default"
+                },
+                "componentId": "24:5351",
+                "props": {
+                  "Label": "Call Liar"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 48,
+                    "primaryAxisSizingMode": "FIXED",
+                    "width": 165
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

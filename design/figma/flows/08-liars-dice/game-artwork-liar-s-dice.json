@@ -1,0 +1,135 @@
+{
+  "format": 1,
+  "code": "game-artwork-liar-s-dice",
+  "title": "Game artwork / Liar’s Dice",
+  "id": "79:84247",
+  "section": "08 / Liar's Dice / complete flow",
+  "reviewNotes": [
+    "Game artwork · The game card on the hub, lime: a hidden die, the count of a call (two 5s counted, a wild 1 counted with them, a 2 that does not), and another hidden die, which the phone card drops. Tagline: Roll in secret. Bid on the whole table. Call the bluff. Phone tagline: Roll in secret. Bid. Call the bluff. Facts: Solo or 2–6 players."
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "79:84247",
+    "name": "Game artwork / Liar’s Dice",
+    "x": 1600,
+    "y": 4350,
+    "w": 580,
+    "h": 120,
+    "fills": [
+      "$Zumpo · UI:color/paper"
+    ],
+    "radius": "$Zumpo · UI:radius/16",
+    "clip": true,
+    "layout": {
+      "mode": "row",
+      "gap": "$Zumpo · UI:space/8",
+      "justify": "center",
+      "align": "center",
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "FRAME",
+        "id": "79:84248",
+        "name": "Dice",
+        "w": 376,
+        "h": 56,
+        "wSize": "hug",
+        "hSize": "hug",
+        "clip": true,
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "79:84249",
+            "name": "Die 1",
+            "w": 56,
+            "h": 56,
+            "component": "Zumpo/Die",
+            "variant": {
+              "Face": "Hidden",
+              "State": "Default",
+              "Size": "Regular"
+            },
+            "componentId": "44:61226"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:84250",
+            "name": "Die 2",
+            "w": 56,
+            "h": 56,
+            "component": "Zumpo/Die",
+            "variant": {
+              "Face": "5",
+              "State": "Counted",
+              "Size": "Regular"
+            },
+            "componentId": "44:61193"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:84256",
+            "name": "Die 3",
+            "w": 56,
+            "h": 56,
+            "component": "Zumpo/Die",
+            "variant": {
+              "Face": "1",
+              "State": "Wild",
+              "Size": "Regular"
+            },
+            "componentId": "44:61147"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:84258",
+            "name": "Die 4",
+            "w": 56,
+            "h": 56,
+            "component": "Zumpo/Die",
+            "variant": {
+              "Face": "5",
+              "State": "Counted",
+              "Size": "Regular"
+            },
+            "componentId": "44:61193"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:84264",
+            "name": "Die 5",
+            "w": 56,
+            "h": 56,
+            "component": "Zumpo/Die",
+            "variant": {
+              "Face": "2",
+              "State": "Dim",
+              "Size": "Regular"
+            },
+            "componentId": "44:61157"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:84267",
+            "name": "Last die (desktop only)",
+            "w": 56,
+            "h": 56,
+            "component": "Zumpo/Die",
+            "variant": {
+              "Face": "Hidden",
+              "State": "Default",
+              "Size": "Regular"
+            },
+            "componentId": "44:61226"
+          }
+        ]
+      }
+    ]
+  }
+}

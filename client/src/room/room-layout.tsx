@@ -9,6 +9,7 @@ import {
   RoomBar,
   Scoreboard,
   type PlayerRowProps,
+  type GlyphName,
   type TagTone,
 } from '../ui';
 import { gameInfo } from '../games/catalog';
@@ -35,7 +36,12 @@ export interface RoomLayoutProps {
   /** The game: turn bar and canvas or board, or a panel between games. */
   stage: ReactNode;
   players: readonly PlayerLine[];
-  chat: { placeholder: string; lockedReason?: string };
+  chat: {
+    placeholder: string;
+    lockedReason?: string;
+    /** The game's own Alert icon in the chat, as Chat message allows. */
+    alertIcon?: GlyphName;
+  };
   /**
    * On a phone, the chat input repeated under the board, so a guess needs no
    * switch to the Chat tab: its accessible name, or nothing for no input.
@@ -103,6 +109,7 @@ export function RoomLayout({
         <ChatMessage
           key={message.id}
           kind={message.kind}
+          alertIcon={chat.alertIcon}
           name={
             message.playerId === room.playerId
               ? `${message.username} (you)`

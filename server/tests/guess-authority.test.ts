@@ -54,7 +54,7 @@ const playToDrawingPhaseWithThree = async (harness: TestServer) => {
 };
 
 const pointsOf = (harness: TestServer, roomId: string) =>
-  Object.values(harness.server.rooms[roomId]!.playerList).map(
+  Object.values(harness.server.rooms.get(roomId)!.playerList).map(
     (player) => player.points,
   );
 
@@ -221,7 +221,7 @@ describe('guess authority', () => {
     expect(successes.filter((m) => m.kind === 'success')).toHaveLength(1);
     expect(successes.filter((m) => m.playerId === scorer.playerId)).toEqual([]);
     expect(
-      harness.server.rooms[roomId]!.playerList[scorer.playerId]!.points,
+      harness.server.rooms.get(roomId)!.playerList[scorer.playerId]!.points,
     ).toBeLessThanOrEqual(150);
 
     // Somebody still guessing is unaffected.
@@ -359,7 +359,7 @@ describe('guess authority', () => {
     await settle(100);
     // Still seated, just away, and so still in the room's player list.
     expect(
-      harness.server.rooms[roomId]?.playerList[guessers[1]!.playerId]
+      harness.server.rooms.get(roomId)?.playerList[guessers[1]!.playerId]
         ?.isConnected,
     ).toBe(false);
 
