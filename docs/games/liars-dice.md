@@ -47,7 +47,7 @@ Liar's Dice is complete without it; leaving it out keeps every turn a choice of 
 
 ### How long a game takes
 
-One die is lost a round, so a game is one round fewer than the dice on the table: four players with 3 dice each play 11 rounds, about six to eight minutes.
+One die is lost a round, so a game is at most one round fewer than the dice on the table: four players with 3 dice each play at most 11 rounds, about six to eight minutes.
 3 dice each is the default and the quick game; 5 is the classic game, best with two to four players.
 
 ## On your own
@@ -96,8 +96,8 @@ Between games the room is in `waiting`.
   A call rather than the smallest raise, because a raise would be a bet the player never chose, pushed onto whoever comes next, while a call ends the round at once with a real count: a room is never held up by somebody who is not there, and the risk stays with the player who ran out.
 
 A player who is out stays in the room, watching, and sees no more of the cups than anybody else.
-When one player is left with dice the game ends, and the room reopens for a new one.
-The last reveal stays on the table under the results until the next game starts.
+When a call leaves one player with dice the game ends at once, and the room reopens for a new one.
+That last reveal stays on the table under the results until the next game starts.
 
 ### Places
 
@@ -113,7 +113,7 @@ Everybody may chat at any time: table talk is part of bluffing.
 ## Rules the server enforces
 
 - **The dice are the server's.**
-  They are rolled on the server, and a client is sent only its own until a call; the reveal sends every cup, and a player who is out sees no more than anybody else.
+  They are rolled on the server, from the operating system's generator rather than one whose state a player could work out from their own dice, and a client is sent only its own until a call; the reveal sends every cup, and a player who is out sees no more than anybody else.
 - **Only the player whose turn it is may bid or call,** and only during `bidding`.
 - **A bid must be a raise:** a face from 2 to 6, a count from 1 to the dice on the table, higher than the bid in front of it.
   Liar needs a bid to call.

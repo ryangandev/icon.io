@@ -42,6 +42,36 @@ const secureRandom = (): number => randomInt(0, 2 ** 32) / 2 ** 32;
 
 const diceWord = (count: number) => (count === 1 ? 'die' : 'dice');
 
+const nameOf = (room: LiarsDiceRoom, playerId: string) =>
+  room.playerList[playerId]?.username ?? 'Somebody';
+
+const isTurnOf = (room: LiarsDiceRoom, playerId: string) =>
+  room.isGameStarted &&
+  room.game.phase === 'bidding' &&
+  room.game.turnPlayerId === playerId;
+
+/**
+ * Winner first, then everybody else by how long they lasted. Ended early,
+ * those left are placed by the dice they hold.
+ */
+const standingsOf = (room: LiarsDiceRoom): LiarsDiceStanding[] => {
+  const outRound = new Map(
+    room.game.outs.map(({ playerId, round }) => [playerId, round]),
+  );
+  return Object.entries(room.playerList)
+    .map(([playerId, player]) => ({
+      playerId,
+      username: player.username,
+      points: player.points,
+      outInRound: outRound.get(playerId) ?? null,
+    }))
+    .toSorted(
+      (a, b) =>
+        b.points - a.points ||
+        (b.outInRound ?? STILL_IN) - (a.outInRound ?? STILL_IN),
+    );
+};
+
 /**
  * Owns the round loop. One player at a time raises the bid or calls Liar; a
  * call opens every cup for the reveal, somebody loses a die, and the loser
@@ -81,9 +111,6 @@ const createLiarsDiceGameEngine = (
       }, durationInSeconds * 1000),
     );
   };
-
-  const nameOf = (room: LiarsDiceRoom, playerId: string) =>
-    room.playerList[playerId]?.username ?? 'Somebody';
 
   const startGame = (room: LiarsDiceRoom, playerId: string) => {
     if (room.owner.playerId !== playerId) {
@@ -195,11 +222,6 @@ const createLiarsDiceGameEngine = (
     settleCall(room, playerId);
   };
 
-  const isTurnOf = (room: LiarsDiceRoom, playerId: string) =>
-    room.isGameStarted &&
-    room.game.phase === 'bidding' &&
-    room.game.turnPlayerId === playerId;
-
   /** A raise, on your turn; anything that is not a raise is ignored. */
   const bid = (
     roomId: string,
@@ -292,28 +314,6 @@ const createLiarsDiceGameEngine = (
     const starter = isIn(room, loserId) ? loserId : playerAfter(room, loserId);
     if (starter === null) return;
     beginRound(room, starter, { next: true });
-  };
-
-  /**
-   * Winner first, then everybody else by how long they lasted. Ended early,
-   * those left are placed by the dice they hold.
-   */
-  const standingsOf = (room: LiarsDiceRoom): LiarsDiceStanding[] => {
-    const outRound = new Map(
-      room.game.outs.map(({ playerId, round }) => [playerId, round]),
-    );
-    return Object.entries(room.playerList)
-      .map(([playerId, player]) => ({
-        playerId,
-        username: player.username,
-        points: player.points,
-        outInRound: outRound.get(playerId) ?? null,
-      }))
-      .toSorted(
-        (a, b) =>
-          b.points - a.points ||
-          (b.outInRound ?? STILL_IN) - (a.outInRound ?? STILL_IN),
-      );
   };
 
   /** The last summary stays, for the results screen and a refresh. */

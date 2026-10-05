@@ -2,6 +2,7 @@ import type { AddressInfo } from 'node:net';
 import { io as createClient, type Socket } from 'socket.io-client';
 import { createZumpoServer, type ZumpoServer } from '../../app.js';
 import type {
+  LiarsDiceDurationsInSeconds,
   Make24DurationsInSeconds,
   MinesweeperDurationsInSeconds,
   PairsDurationsInSeconds,
@@ -10,6 +11,7 @@ import type {
 import type { MinesweeperState } from '../../socket/minesweeper/index.js';
 import type { Make24State } from '../../socket/make-24/index.js';
 import type { PairsState } from '../../socket/pairs/index.js';
+import type { LiarsDiceState } from '../../socket/liars-dice/index.js';
 import type {
   AnyLobbyRoomInfo,
   AnyRoomState,
@@ -19,6 +21,7 @@ import type {
   DrawAndGuessState,
   GameType,
   HandshakeAuth,
+  LiarsDiceRoomState,
   Make24RoomState,
   MinesweeperDifficulty,
   MinesweeperRoomState,
@@ -74,6 +77,15 @@ const FAST_PAIRS: PairsDurationsInSeconds = {
   show: 0.3,
 };
 
+/**
+ * A turn long enough to bid or call deliberately inside it, and a reveal long
+ * enough to assert on before the next round is rolled.
+ */
+const FAST_LIARS_DICE: LiarsDiceDurationsInSeconds = {
+  turn: 1,
+  reveal: 0.3,
+};
+
 /** A client socket typed on the contract, from the client's side of it. */
 type ClientSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -116,6 +128,7 @@ const startTestServer = async (
   minesweeperDurations: MinesweeperDurationsInSeconds = FAST_MINESWEEPER,
   make24Durations: Make24DurationsInSeconds = FAST_MAKE24,
   pairsDurations: PairsDurationsInSeconds = FAST_PAIRS,
+  liarsDiceDurations: LiarsDiceDurationsInSeconds = FAST_LIARS_DICE,
 ): Promise<TestServer> => {
   const server = createZumpoServer({
     serveClient: false,
@@ -123,6 +136,7 @@ const startTestServer = async (
     minesweeperDurations,
     make24Durations,
     pairsDurations,
+    liarsDiceDurations,
     graceInSeconds,
   });
 
@@ -260,6 +274,13 @@ const waitForPairsState = (
   predicate: (state: PairsRoomState) => boolean = () => true,
   timeoutMs = 3000,
 ) => waitForState<PairsRoomState>(client, predicate, timeoutMs);
+
+/** And for Liar's Dice. */
+const waitForLiarsDiceState = (
+  client: ClientSocket,
+  predicate: (state: LiarsDiceRoomState) => boolean = () => true,
+  timeoutMs = 3000,
+) => waitForState<LiarsDiceRoomState>(client, predicate, timeoutMs);
 
 /** Resolves with the next chat message that satisfies `predicate`. */
 const waitForChat = async (
@@ -418,6 +439,27 @@ const createPairsRoom = async (
   return answer.roomId;
 };
 
+/** Creates a Liar's Dice room, with its creator seated, and returns its id. */
+const createLiarsDiceRoom = async (
+  client: ClientSocket,
+  options: {
+    username?: string;
+    dicePerPlayer?: number;
+    maxPlayers?: number;
+  } = {},
+): Promise<string> => {
+  const answer = await client.timeout(3000).emitWithAck('room:create', {
+    gameType: 'liars-dice',
+    roomName: 'Tavern',
+    username: options.username ?? 'Owner',
+    maxPlayers: options.maxPlayers ?? 4,
+    password: '',
+    settings: { dicePerPlayer: options.dicePerPlayer ?? 3 },
+  });
+  if (!answer.ok) throw new Error(`room:create refused: ${answer.error.type}`);
+  return answer.roomId;
+};
+
 /** Takes a seat, and fails the test if the server refuses it. */
 const joinRoom = async (
   client: ClientSocket,
@@ -569,6 +611,16 @@ const playToFirstHand = async (harness: TestServer, hands = 5) => {
 const pairsRoom = (harness: TestServer, roomId: string): Room<PairsState> =>
   harness.server.rooms[roomId] as Room<PairsState>;
 
+/**
+ * The server's own Liar's Dice room. Tests read and set the dice through it on
+ * purpose: a call can only be played deliberately by knowing what the cups
+ * hold, which is exactly what a client is never sent.
+ */
+const liarsDiceRoom = (
+  harness: TestServer,
+  roomId: string,
+): Room<LiarsDiceState> => harness.server.rooms[roomId] as Room<LiarsDiceState>;
+
 /** Seats two players in a Minesweeper room and opens the first round. */
 const playToFirstRound = async (harness: TestServer) => {
   const alice = await harness.connect();
@@ -594,6 +646,7 @@ export {
   FAST_MINESWEEPER,
   FAST_MAKE24,
   FAST_PAIRS,
+  FAST_LIARS_DICE,
   startTestServer,
   waitFor,
   waitForState,
@@ -601,6 +654,7 @@ export {
   waitForMineState,
   waitForMake24State,
   waitForPairsState,
+  waitForLiarsDiceState,
   waitForChat,
   collect,
   collectChat,
@@ -611,6 +665,7 @@ export {
   createMinesweeperRoom,
   createMake24Room,
   createPairsRoom,
+  createLiarsDiceRoom,
   joinRoom,
   startGame,
   syncRoom,
@@ -623,5 +678,6 @@ export {
   make24Room,
   playToFirstHand,
   pairsRoom,
+  liarsDiceRoom,
 };
 export type { TestServer, TestClient, ClientSocket };
