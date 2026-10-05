@@ -16,16 +16,15 @@
   fill: none;
 }
 
-/* The three colours are color/trios/*; until the Figma export generates
-   them, each falls back to the colour it aliases. */
+/* The three colours are color/trios/*, so the cards can change on their own. */
 .coral {
-  color: var(--zumpo-trios-coral, var(--zumpo-coral));
+  color: var(--zumpo-trios-coral);
 }
 
 .blue {
-  color: var(--zumpo-trios-blue, var(--zumpo-number-1));
+  color: var(--zumpo-trios-blue);
 }
 
 .ink {
-  color: var(--zumpo-trios-ink, var(--zumpo-ink));
+  color: var(--zumpo-trios-ink);
 }
