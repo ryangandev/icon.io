@@ -14,7 +14,7 @@
     "x": 3560,
     "y": 3050,
     "w": 390,
-    "h": 834,
+    "h": 860,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -94,7 +94,7 @@
         "id": "79:89114",
         "name": "Zumpo/Turn bar",
         "w": 350,
-        "h": 166,
+        "h": 196,
         "wSize": "fill",
         "hSize": "hug",
         "component": "Zumpo/Turn bar",
@@ -112,7 +112,8 @@
         "overrides": [
           {
             "path": ".",
-            "height": 166,
+            "height": 196,
+            "paddingBottom": 31,
             "width": 350
           },
           {
@@ -123,6 +124,11 @@
               "Label": "Small · 9 × 9",
               "Tone": "Sand"
             }
+          },
+          {
+            "path": "Answer",
+            "counterAxisSizingMode": "AUTO",
+            "counterAxisSpacing": 19
           },
           {
             "path": "Top / Countdown",
@@ -137,14 +143,16 @@
       {
         "type": "FRAME",
         "id": "79:89115",
-        "name": "Board alignment",
+        "name": "Table",
         "w": 350,
-        "h": 328,
+        "h": 396,
         "wSize": "fill",
         "hSize": "hug",
         "layout": {
-          "mode": "row",
+          "mode": "column",
+          "gap": 20,
           "justify": "center",
+          "align": "center",
           "strokesIncluded": true
         },
         "children": [
@@ -431,98 +439,99 @@
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "type": "FRAME",
-        "id": "79:89421",
-        "name": "Last trio",
-        "w": 331,
-        "h": 48,
-        "wSize": "hug",
-        "hSize": "hug",
-        "layout": {
-          "mode": "row",
-          "gap": "$Zumpo · UI:space/12",
-          "align": "center",
-          "strokesIncluded": true
-        },
-        "children": [
-          {
-            "type": "TEXT",
-            "id": "79:89422",
-            "w": 95,
-            "h": 25,
-            "wSize": "hug",
-            "hSize": "hug",
-            "text": "Last trio: Leo",
-            "textStyle": "Zumpo/Body",
-            "fills": [
-              "$Zumpo · UI:color/muted"
-            ]
           },
           {
             "type": "FRAME",
-            "id": "79:89423",
-            "name": "Cards",
-            "w": 224,
+            "id": "79:89421",
+            "name": "Last trio",
+            "w": 350,
             "h": 48,
-            "wSize": "hug",
+            "wSize": "fill",
             "hSize": "hug",
             "layout": {
               "mode": "row",
-              "gap": "$Zumpo · UI:space/4",
+              "gap": "$Zumpo · UI:space/12",
+              "justify": "center",
+              "align": "center",
               "strokesIncluded": true
             },
             "children": [
               {
-                "type": "INSTANCE",
-                "id": "79:89424",
-                "name": "Trios card / Default / Two coral solid circles",
-                "w": 72,
-                "h": 48,
-                "component": "Zumpo/Trios card",
-                "variant": {
-                  "Count": "2",
-                  "State": "Default",
-                  "Size": "Mini"
-                },
-                "componentId": "45:63911"
+                "type": "TEXT",
+                "id": "79:89422",
+                "w": 95,
+                "h": 25,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Last trio: Leo",
+                "textStyle": "Zumpo/Body",
+                "fills": [
+                  "$Zumpo · UI:color/muted"
+                ]
               },
               {
-                "type": "INSTANCE",
-                "id": "79:89433",
-                "name": "Trios card / Default / Two blue striped circles",
-                "w": 72,
+                "type": "FRAME",
+                "id": "79:89423",
+                "name": "Cards",
+                "w": 224,
                 "h": 48,
-                "component": "Zumpo/Trios card",
-                "variant": {
-                  "Count": "2",
-                  "State": "Default",
-                  "Size": "Mini"
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/4",
+                  "strokesIncluded": true
                 },
-                "componentId": "45:63911",
-                "props": {
-                  "Shape": "Zumpo/Trios shape / Shape=Circle, Fill=Striped, Colour=Blue, Stripes=Coarse"
-                }
-              },
-              {
-                "type": "INSTANCE",
-                "id": "79:89456",
-                "name": "Trios card / Default / Two ink outlined circles",
-                "w": 72,
-                "h": 48,
-                "component": "Zumpo/Trios card",
-                "variant": {
-                  "Count": "2",
-                  "State": "Default",
-                  "Size": "Mini"
-                },
-                "componentId": "45:63911",
-                "props": {
-                  "Shape": "Zumpo/Trios shape / Shape=Circle, Fill=Outline, Colour=Ink, Stripes=Fine"
-                }
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "79:89424",
+                    "name": "Trios card / Default / Two coral solid circles",
+                    "w": 72,
+                    "h": 48,
+                    "component": "Zumpo/Trios card",
+                    "variant": {
+                      "Count": "2",
+                      "State": "Default",
+                      "Size": "Mini"
+                    },
+                    "componentId": "45:63911"
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "79:89433",
+                    "name": "Trios card / Default / Two blue striped circles",
+                    "w": 72,
+                    "h": 48,
+                    "component": "Zumpo/Trios card",
+                    "variant": {
+                      "Count": "2",
+                      "State": "Default",
+                      "Size": "Mini"
+                    },
+                    "componentId": "45:63911",
+                    "props": {
+                      "Shape": "Zumpo/Trios shape / Shape=Circle, Fill=Striped, Colour=Blue, Stripes=Coarse"
+                    }
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "79:89456",
+                    "name": "Trios card / Default / Two ink outlined circles",
+                    "w": 72,
+                    "h": 48,
+                    "component": "Zumpo/Trios card",
+                    "variant": {
+                      "Count": "2",
+                      "State": "Default",
+                      "Size": "Mini"
+                    },
+                    "componentId": "45:63911",
+                    "props": {
+                      "Shape": "Zumpo/Trios shape / Shape=Circle, Fill=Outline, Colour=Ink, Stripes=Fine"
+                    }
+                  }
+                ]
               }
             ]
           }

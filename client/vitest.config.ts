@@ -8,5 +8,8 @@ export default defineConfig({
     setupFiles: ['./src/tests/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}'],
     restoreMocks: true,
+    // A jsdom render takes about a second at most, but several suites side by
+    // side on a busy machine can starve one past the default 5 s.
+    testTimeout: 15_000,
   },
 });

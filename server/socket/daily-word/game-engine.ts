@@ -15,6 +15,7 @@ import {
   pointsForFind,
   roomWords,
 } from '../../../shared/daily-word.js';
+import { seededRandom, seedNumber } from '../../../shared/seed.js';
 import {
   boardStatus,
   boardView,
@@ -45,11 +46,18 @@ const mayChat = (room: DailyWordRoom, playerId: string) => {
  * Owns the round loop. Like a Make 24 hand, a round belongs to everybody at
  * once: the same word for every player, one clock, and a round that ends
  * early once everybody still connected has found it or run out of guesses.
+ *
+ * A game's words are drawn at random, or, given a seed (a test run's), from
+ * that seed afresh for every game, so each deals the same words. Either way
+ * they are drawn by `roomWords`, so its rules hold.
  */
 const createDailyWordGameEngine = (
   ctx: GameContext,
   durations: DailyWordDurationsInSeconds = defaultDurations,
+  seed?: string,
 ) => {
+  const random = () => (seed ? seededRandom(seedNumber(seed)) : Math.random);
+
   const roomOf = (roomId: string): DailyWordRoom | undefined =>
     ctx.rooms.ofType<DailyWordState>(roomId, 'daily-word');
 
@@ -74,7 +82,7 @@ const createDailyWordGameEngine = (
     }
 
     const game = room.game;
-    game.words = roomWords(Math.random, game.rounds, new Date());
+    game.words = roomWords(random(), game.rounds, new Date());
     game.round = 0;
     game.boards.clear();
     game.found.clear();
