@@ -44,35 +44,8 @@ const createMake24GameEngine = (
   ctx: GameContext,
   durations: Make24DurationsInSeconds = defaultDurations,
 ) => {
-  /** One per room: either the open hand or its results. */
-  const handTimers = new Map<string, NodeJS.Timeout>();
-
   const roomOf = (roomId: string): Make24Room | undefined =>
     ctx.rooms.ofType<Make24State>(roomId, 'make-24');
-
-  const clearHandTimer = (roomId: string) => {
-    const pending = handTimers.get(roomId);
-    if (pending) {
-      clearTimeout(pending);
-      handTimers.delete(roomId);
-    }
-  };
-
-  const schedule = (
-    roomId: string,
-    durationInSeconds: number,
-    onDue: () => void,
-  ) => {
-    clearHandTimer(roomId);
-    handTimers.set(
-      roomId,
-      setTimeout(() => {
-        handTimers.delete(roomId);
-        // The room may have been emptied and deleted while we waited.
-        if (roomOf(roomId)) onDue();
-      }, durationInSeconds * 1000),
-    );
-  };
 
   const startGame = (room: Make24Room, playerId: string) => {
     if (room.owner.playerId !== playerId) {
@@ -122,11 +95,8 @@ const createMake24GameEngine = (
     game.phase = 'solving';
     game.hand += 1;
     game.solves.clear();
-    room.phaseEndsAt = Date.now() + durations.hand * 1000;
-
+    ctx.rooms.startPhase(room, durations.hand, () => endHand(room));
     ctx.rooms.emitState(room);
-
-    schedule(room.roomId, durations.hand, () => endHand(room));
   };
 
   /**
@@ -188,7 +158,7 @@ const createMake24GameEngine = (
   };
 
   const endHand = (room: Make24Room) => {
-    clearHandTimer(room.roomId);
+    ctx.rooms.stopPhase(room);
     const game = room.game;
     if (!room.isGameStarted) return;
 
@@ -212,17 +182,11 @@ const createMake24GameEngine = (
     game.lastSolution = formatExpression(solve(currentDeal(game))!);
     game.solves.clear();
     game.phase = 'reveal';
-    room.phaseEndsAt = Date.now() + durations.reveal * 1000;
-
+    const lastHand = game.hand >= game.hands;
+    ctx.rooms.startPhase(room, durations.reveal, () =>
+      lastHand ? endGame(room, { endedEarly: false }) : beginHand(room),
+    );
     ctx.rooms.emitState(room);
-
-    if (game.hand >= game.hands) {
-      schedule(room.roomId, durations.reveal, () =>
-        endGame(room, { endedEarly: false }),
-      );
-      return;
-    }
-    schedule(room.roomId, durations.reveal, () => beginHand(room));
   };
 
   /** The last hand's results stay, for the results screen and a refresh. */
@@ -230,7 +194,7 @@ const createMake24GameEngine = (
     room: Make24Room,
     { endedEarly }: { endedEarly: boolean },
   ) => {
-    clearHandTimer(room.roomId);
+    ctx.rooms.stopPhase(room);
     const game = room.game;
 
     const standings = Object.entries(room.playerList)
@@ -253,7 +217,6 @@ const createMake24GameEngine = (
     game.hand = 0;
     game.deals = [];
     game.solves.clear();
-    room.phaseEndsAt = 0;
 
     ctx.rooms.emitState(room);
     ctx.rooms.announce(room.roomId, 'system', gameOverMessage(standings));
@@ -286,20 +249,12 @@ const createMake24GameEngine = (
     maybeEndEarly(room);
   };
 
-  const disposeRoom = (roomId: string) => clearHandTimer(roomId);
-
-  const dispose = () => {
-    for (const roomId of new Set(handTimers.keys())) clearHandTimer(roomId);
-  };
-
   return {
     startGame,
     submitSolve,
     mayChat,
     handlePlayerDeparture,
     handleDisconnect,
-    disposeRoom,
-    dispose,
   };
 };
 

@@ -1,4 +1,5 @@
 import type { ChatMessage, GameType } from '../../../shared/wire-types.js';
+import { createRoomTimers, type RoomTimerSet } from './timers.js';
 import type { GameContext, GameModule, Room, RoomLookup } from './types.js';
 import {
   emitToLobby,
@@ -26,6 +27,18 @@ const CHAT_HISTORY_LIMIT = 100;
 const createRoomRegistry = (io: IoServer) => {
   const rooms = new Map<string, Room>();
   const modules = new Map<GameType, GameModule>();
+
+  /**
+   * Every set of room timers handed out, so that a room's go with it. The
+   * first is the rooms' phase clocks.
+   */
+  const timerSets: RoomTimerSet[] = [];
+  const createTimers = (): RoomTimerSet => {
+    const timers = createRoomTimers((roomId) => rooms.has(roomId));
+    timerSets.push(timers);
+    return timers;
+  };
+  const phaseClocks = createTimers();
 
   /** Rooms with a snapshot owed to their players at the end of this run. */
   const staleRooms = new Set<string>();
@@ -101,6 +114,15 @@ const createRoomRegistry = (io: IoServer) => {
       const room = rooms.get(roomId);
       if (room) post(room, { kind, text });
     },
+    startPhase: (room, seconds, onEnd) => {
+      room.phaseEndsAt = Date.now() + seconds * 1000;
+      phaseClocks.set(room.roomId, seconds * 1000, onEnd);
+    },
+    stopPhase: (room) => {
+      room.phaseEndsAt = 0;
+      phaseClocks.clear(room.roomId);
+    },
+    timers: createTimers,
   };
 
   /**
@@ -121,12 +143,12 @@ const createRoomRegistry = (io: IoServer) => {
   };
 
   /**
-   * A room the last player has left. Its game's timers go with it, and its
+   * A room the last player has left. Its clock and timers go with it, and its
    * lobby stops listing it. The one way a room ends, so none is ever deleted
    * with a clock still running for it.
    */
   const remove = (room: Room): void => {
-    modules.get(room.gameType)?.disposeRoom(room.roomId);
+    for (const timers of timerSets) timers.clear(room.roomId);
     rooms.delete(room.roomId);
     lookup.emitLobby(room.gameType);
   };
@@ -152,7 +174,7 @@ const createRoomRegistry = (io: IoServer) => {
 
   const dispose = (): void => {
     staleRooms.clear();
-    for (const module of modules.values()) module.dispose();
+    for (const timers of timerSets) timers.clearAll();
   };
 
   return {

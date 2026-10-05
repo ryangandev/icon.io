@@ -43,9 +43,6 @@ const createMake24Module = (
     onDisconnect: (room) => engine.handleDisconnect(room),
     onReturn: () => {},
 
-    disposeRoom: (roomId) => engine.disposeRoom(roomId),
-    dispose: () => engine.dispose(),
-
     registerHandlers: (socket: IoSocket) => {
       onClientEvent(socket, 't24:solve', (...rawArgs: unknown[]) => {
         const validated = parseArgs(solveRequest, rawArgs, 't24:solve');

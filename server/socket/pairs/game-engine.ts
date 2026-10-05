@@ -23,35 +23,8 @@ const createPairsGameEngine = (
   ctx: GameContext,
   durations: PairsDurationsInSeconds = defaultDurations,
 ) => {
-  /** One per room: either the open turn or a miss on show. */
-  const turnTimers = new Map<string, NodeJS.Timeout>();
-
   const roomOf = (roomId: string): PairsRoom | undefined =>
     ctx.rooms.ofType<PairsState>(roomId, 'pairs');
-
-  const clearTurnTimer = (roomId: string) => {
-    const pending = turnTimers.get(roomId);
-    if (pending) {
-      clearTimeout(pending);
-      turnTimers.delete(roomId);
-    }
-  };
-
-  const schedule = (
-    roomId: string,
-    durationInSeconds: number,
-    onDue: () => void,
-  ) => {
-    clearTurnTimer(roomId);
-    turnTimers.set(
-      roomId,
-      setTimeout(() => {
-        turnTimers.delete(roomId);
-        // The room may have been emptied and deleted while we waited.
-        if (roomOf(roomId)) onDue();
-      }, durationInSeconds * 1000),
-    );
-  };
 
   const startGame = (room: PairsRoom, playerId: string) => {
     if (room.owner.playerId !== playerId) {
@@ -106,11 +79,8 @@ const createPairsGameEngine = (
     game.phase = 'flipping';
     game.turnPlayerId = playerId;
     game.up = [];
-    room.phaseEndsAt = Date.now() + durations.turn * 1000;
-
+    ctx.rooms.startPhase(room, durations.turn, () => passTurn(room));
     ctx.rooms.emitState(room);
-
-    schedule(room.roomId, durations.turn, () => passTurn(room));
   };
 
   /** The turn goes to the next player, and any card still up turns back. */
@@ -146,9 +116,8 @@ const createPairsGameEngine = (
     if (game.deck[first] !== game.deck[second]) {
       // A miss stays up for everybody to remember, then the turn passes.
       game.phase = 'showing';
-      room.phaseEndsAt = Date.now() + durations.show * 1000;
+      ctx.rooms.startPhase(room, durations.show, () => passTurn(room));
       ctx.rooms.emitState(room);
-      schedule(room.roomId, durations.show, () => passTurn(room));
       return;
     }
 
@@ -175,7 +144,7 @@ const createPairsGameEngine = (
     room: PairsRoom,
     { endedEarly }: { endedEarly: boolean },
   ) => {
-    clearTurnTimer(room.roomId);
+    ctx.rooms.stopPhase(room);
     const game = room.game;
 
     const standings = Object.entries(room.playerList)
@@ -199,7 +168,6 @@ const createPairsGameEngine = (
     game.up = [];
     game.order = [];
     game.turnPlayerId = null;
-    room.phaseEndsAt = 0;
 
     ctx.rooms.emitState(room);
     ctx.rooms.announce(
@@ -231,18 +199,10 @@ const createPairsGameEngine = (
     }
   };
 
-  const disposeRoom = (roomId: string) => clearTurnTimer(roomId);
-
-  const dispose = () => {
-    for (const roomId of new Set(turnTimers.keys())) clearTurnTimer(roomId);
-  };
-
   return {
     startGame,
     flip,
     handlePlayerDeparture,
-    disposeRoom,
-    dispose,
   };
 };
 

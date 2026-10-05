@@ -8,6 +8,7 @@ import type {
   PlayerInfo,
 } from '../../../shared/wire-types.js';
 import type { IoServer, IoSocket } from './emit.js';
+import type { RoomTimers } from './timers.js';
 
 /**
  * A room's chat: the messages a page arriving now is sent as `chat:history`,
@@ -41,7 +42,10 @@ interface Room<TGameState = unknown> {
   password: string;
   playerList: Record<string, PlayerInfo>;
   isGameStarted: boolean;
-  /** Epoch ms the current phase ends; 0 when idle. */
+  /**
+   * Epoch ms the current phase ends; 0 when idle. Set only by `startPhase`
+   * and `stopPhase`, with the timer that ends it.
+   */
   phaseEndsAt: number;
   chat: RoomChat;
   game: TGameState;
@@ -51,9 +55,9 @@ interface Room<TGameState = unknown> {
  * What a game module is handed, and all it is handed.
  *
  * Deliberately small. A module gets the socket server and a way to look rooms
- * up, to tell their players something changed and to announce things. Who
- * sent an event it reads off the socket (`socket.data.playerId`). It does not
- * get the room layer's timers, and the room layer does not get its.
+ * up, to tell their players something changed, to announce things, and to
+ * run the room's clock and timers. Who sent an event it reads off the socket
+ * (`socket.data.playerId`).
  */
 interface GameContext {
   io: IoServer;
@@ -90,6 +94,19 @@ interface RoomLookup {
     kind: Exclude<ChatMessageKind, 'player'>,
     text: string,
   ): void;
+  /**
+   * Starts the room's one clock: what its players count down from and what
+   * ends the phase, set together so they cannot disagree. Replaces a phase
+   * still running. `onEnd` runs only if the room is still there.
+   */
+  startPhase(room: Room, seconds: number, onEnd: () => void): void;
+  /** Stops the room's clock, for a game that ended or no longer waits. */
+  stopPhase(room: Room): void;
+  /**
+   * A set of timers for anything else a game waits on (a letter to reveal, a
+   * drawer to come back), one per room or several. They go with their room.
+   */
+  timers(): RoomTimers;
 }
 
 /**
@@ -108,9 +125,12 @@ type ChatVerdict = 'chat' | 'consumed' | 'blocked';
  * The two halves of the split are worth stating, because getting them wrong is
  * what an abstraction with a single consumer usually gets wrong:
  *
- * - **Timers.** The room layer owns exactly one kind, the seat expiry that
- *   holds a disconnected player's place. Every other timer belongs to a module,
- *   which keeps its own registry and is told to empty it by `disposeRoom`.
+ * - **Timers.** A module decides when its timers run and what they do; the
+ *   room layer keeps them, so they end with their room. A room has one clock
+ *   (`startPhase`), which is what its players count down from, and a module
+ *   asks for further sets of timers (`timers()`) for anything else it waits
+ *   on. The layer's own are the seat expiries that hold a dropped player's
+ *   place.
  * - **Per-player state.** `PlayerInfo` carries what every game has: a name, a
  *   score, whether they are still connected. Anything else about a player
  *   belongs in the module's own state, keyed by the same player id.
@@ -162,11 +182,6 @@ interface GameModule<TGameState = unknown, TSettings = unknown> {
   onDisconnect(room: Room<TGameState>, playerId: string): void;
   /** They proved who they were inside the grace period. */
   onReturn(room: Room<TGameState>, playerId: string): void;
-
-  /** Drop this room's pending timers; the room itself is going away. */
-  disposeRoom(roomId: string): void;
-  /** Drop every room's timers; the server is closing. */
-  dispose(): void;
 
   /** Wire up this game's own inbound events on a new connection. */
   registerHandlers(socket: IoSocket): void;

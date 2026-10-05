@@ -9,7 +9,7 @@ Game rules live in [games/](games/), one document per game; this document is abo
 client/  React SPA (Vite) ──── socket.io ────► server/  Express + Socket.io
                                                │
                                                ├── room layer: seats, lobbies, chat
-                                               │     └── game modules: own their clocks
+                                               │     └── game modules: decide when time runs out
                                                └── all state in memory, one registry
 shared/  wire-types.d.ts, and rule code both sides run
 tools/   figma-export, figma-bridge, design-tokens: Figma into the repo (see design.md)
@@ -20,7 +20,7 @@ tools/   figma-export, figma-bridge, design-tokens: Figma into the repo (see des
 | `server/app.ts`                              | `createZumpoServer()`: builds a fully wired server without a port    |
 | `server/server.ts`                           | Entry point that binds the port                                      |
 | `server/libs/rooms/`                         | The generic room layer (table below)                                 |
-| `server/socket/<game>/`                      | Each game's module: its engine, state, clock and validation          |
+| `server/socket/<game>/`                      | Each game's module: its engine, state, phases and validation         |
 | `server/socket/player-session-handler.ts`    | The identity handshake                                               |
 | `server/socket/client-disconnect-handler.ts` | Hands a dropped socket to `membership.ts`                            |
 | `server/libs/validation.ts`, `rate-limit.ts` | Inbound validation and per-socket token buckets                      |
@@ -56,12 +56,13 @@ Each game registers a module implementing `GameModule` in [`libs/rooms/types.ts`
 | `registry.ts`               | Every room and its module, added and removed only here; snapshots, chat |
 | `membership.ts`             | Seats, departures and the reconnect grace                               |
 | `seats.ts`                  | Seats taken and the lobby status, worked out rather than stored         |
+| `timers.ts`                 | Timers kept per room, which go when their room does                     |
 | `lobby-events.ts`           | List rooms, create a room and seat its creator                          |
 | `room-events.ts`            | Join, leave, sync and start, answered through acknowledgements          |
 | `chat-events.ts`            | Talking in a room, after the game has had its say                       |
 | `emit.ts`                   | Typed emit helpers, and `onClientRequest` for acknowledged requests     |
 
-A module reaches the layer through the `GameContext` it is handed: the typed Socket.IO server and a `RoomLookup` that finds rooms (`ofType` refuses a room of another game), rebroadcasts a lobby (`emitLobby`), sends snapshots (`emitState`) and posts to the chat (`announce`).
+A module reaches the layer through the `GameContext` it is handed: the typed Socket.IO server and a `RoomLookup` that finds rooms (`ofType` refuses a room of another game), rebroadcasts a lobby (`emitLobby`), sends snapshots (`emitState`), posts to the chat (`announce`), and runs the room's clock (`startPhase`, `stopPhase`) and any other timers (`timers()`).
 `GameModule` is what the layer calls back:
 
 | Member                                    | Called when                                                         |
@@ -73,7 +74,6 @@ A module reaches the layer through the `GameContext` it is handed: the typed Soc
 | `handleChat?(room, playerId, text)`       | A seated player sends chat; answers `chat`, `consumed` or `blocked` |
 | `startGame(room, playerId)`               | The owner presses start; throws a `RequestError` to refuse          |
 | `onDeparture`, `onDisconnect`, `onReturn` | A seat is given up, held, or taken back                             |
-| `disposeRoom`, `dispose`                  | A room, or the server, is going away: drop timers                   |
 | `registerHandlers(socket)`                | A connection arrives: wire up the game's own events                 |
 
 A room's chat is a log on the room (`Room.chat`), not a stream: every message gets the next id in that room, the last 100 are kept, and a page that syncs is sent them as `chat:history`.
@@ -81,8 +81,11 @@ A player's message is posted under the name on their seat; anything else is an a
 
 Two boundaries had to be drawn for the layer to be an abstraction rather than Draw & Guess wearing a hat:
 
-- **Timers.** The layer owns exactly one kind, the seat expiry that holds a disconnected player's place.
-  Every other timer belongs to a module, which keeps its own registry and empties it when told to by `disposeRoom`.
+- **Timers.** A module decides when its timers run and what they do; the layer keeps them, so they go with their room.
+  A room has one clock, started by `startPhase`, which sets `phaseEndsAt` and the timer that ends the phase together so the countdown players see cannot disagree with it.
+  Anything else a game waits on (a hint to reveal, a drawer to come back) is a set from `timers()`.
+  The registry clears a room's timers from every set when it removes the room, and checks the room is still there when one fires, so a timer cannot outlive its room because a game forgot it.
+  The layer's own timers are the seat expiries that hold a disconnected player's place.
 - **Per-player state.** `PlayerInfo` carries what every game has: a name, a score, whether they are connected.
   Anything else lives in the module's own state, keyed by the same player id.
 
@@ -107,7 +110,7 @@ The client leaves a room on its way out, but only while connected, so without th
 
 The server decides everything a player could gain by lying about.
 
-- **The clock lives in each module's `game-engine.ts`,** one `setTimeout` per room.
+- **The clock lives on the server,** one per room: each module's `game-engine.ts` decides what a phase is and how long it runs, and starts it with `rooms.startPhase`.
   Clients are told how much time is left and render a countdown; nothing they send advances a phase.
   When the drawer's browser used to end each phase, closing that tab hung the room forever.
 - **Time is sent as a remaining duration, not a timestamp,** so a client whose clock disagrees with the server's still counts down correctly.

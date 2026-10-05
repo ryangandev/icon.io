@@ -40,9 +40,6 @@ const createPairsModule = (
     onDisconnect: () => {},
     onReturn: () => {},
 
-    disposeRoom: (roomId) => engine.disposeRoom(roomId),
-    dispose: () => engine.dispose(),
-
     registerHandlers: (socket: IoSocket) => {
       onClientEvent(socket, 'pairs:flip', (...rawArgs: unknown[]) => {
         const validated = parseArgs(flipRequest, rawArgs, 'pairs:flip');

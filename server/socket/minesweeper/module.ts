@@ -48,9 +48,6 @@ const createMinesweeperModule = (
     onDisconnect: (room) => engine.handleDisconnect(room),
     onReturn: () => {},
 
-    disposeRoom: (roomId) => engine.disposeRoom(roomId),
-    dispose: () => engine.dispose(),
-
     registerHandlers: (socket: IoSocket) => {
       onClientEvent(socket, 'ms:pick', (...rawArgs: unknown[]) => {
         const validated = parseArgs(pickRequest, rawArgs, 'ms:pick');

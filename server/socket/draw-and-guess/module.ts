@@ -20,9 +20,9 @@ import { roundsSetting } from './validation.js';
  *
  * This is also where the abstraction is either right or wrong, and it is worth
  * being able to point at: the room layer calls the members below and nothing
- * else. It never sees a drawer queue, a word, a canvas or a phase, and it holds
- * none of this game's timers; `disposeRoom` and `dispose` are how it asks for
- * them to be dropped without knowing what they are.
+ * else. It never sees a drawer queue, a word, a canvas or a phase. It keeps
+ * this game's clock and timers, so they end with the room, but what they wait
+ * for and what happens when they fire is decided here.
  */
 const createDrawAndGuessModule = (
   ctx: GameContext,
@@ -63,9 +63,6 @@ const createDrawAndGuessModule = (
     onDisconnect: (room, playerId) =>
       engine.handleDrawerDisconnect(room, playerId),
     onReturn: (room, playerId) => engine.handleDrawerReturn(room, playerId),
-
-    disposeRoom: (roomId) => engine.disposeRoom(roomId),
-    dispose: () => engine.dispose(),
 
     registerHandlers: (socket: IoSocket) => {
       gameEventsHandler(socket, engine);
