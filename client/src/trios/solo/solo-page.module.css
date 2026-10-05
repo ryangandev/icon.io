@@ -1,0 +1,99 @@
+/* A card's rows span it. */
+.stats {
+  align-self: stretch;
+}
+
+/* TS01: three mini cards that make a trio, and what makes them one. */
+.example {
+  display: flex;
+  align-items: center;
+  gap: var(--zumpo-space-12);
+}
+
+.exampleText {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-body);
+  letter-spacing: var(--zumpo-text-body-tracking);
+}
+
+/* TS04: every trio of a finished run. */
+.trios {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  gap: var(--zumpo-space-8);
+}
+
+.heading {
+  margin: 0;
+  padding-bottom: var(--zumpo-space-8);
+  font: var(--zumpo-text-heading);
+  letter-spacing: var(--zumpo-text-heading-tracking);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trio {
+  display: grid;
+  grid-template-columns: 20px auto minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--zumpo-space-16);
+  padding: var(--zumpo-space-12) var(--zumpo-space-16);
+  border-radius: var(--zumpo-radius-12);
+  background: var(--zumpo-cream);
+}
+
+.number {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+}
+
+.note {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-body);
+  letter-spacing: var(--zumpo-text-body-tracking);
+}
+
+.time {
+  font: var(--zumpo-text-number);
+  letter-spacing: var(--zumpo-text-number-tracking);
+}
+
+/* A phone puts how it went under the cards. */
+@media (max-width: 640px) {
+  .trio {
+    grid-template-columns: 20px minmax(0, 1fr) auto;
+    grid-template-areas:
+      'number cards time'
+      '. note note';
+    row-gap: var(--zumpo-space-4);
+  }
+
+  .number {
+    grid-area: number;
+  }
+
+  .time {
+    grid-area: time;
+  }
+
+  .trio > :nth-child(2) {
+    grid-area: cards;
+  }
+
+  .note {
+    grid-area: note;
+  }
+
+  .note:empty {
+    display: none;
+  }
+}

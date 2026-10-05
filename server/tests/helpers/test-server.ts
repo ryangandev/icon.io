@@ -13,10 +13,12 @@ import type {
   MinesweeperDurationsInSeconds,
   PairsDurationsInSeconds,
   PhaseDurationsInSeconds,
+  TriosDurationsInSeconds,
 } from '../../libs/game-clock.js';
 import type { MinesweeperState } from '../../socket/minesweeper/index.js';
 import type { Make24State } from '../../socket/make-24/index.js';
 import type { PairsState } from '../../socket/pairs/index.js';
+import type { TriosState } from '../../socket/trios/index.js';
 import type { LiarsDiceState } from '../../socket/liars-dice/index.js';
 import type { HushState } from '../../socket/hush/index.js';
 import type { DailyWordState } from '../../socket/daily-word/index.js';
@@ -38,6 +40,7 @@ import type {
   PairsBoard,
   PairsRoomState,
   PlayerIdentity,
+  TriosRoomState,
   ServerToClientEvent,
   ServerToClientEvents,
 } from '../../models/types.js';
@@ -85,6 +88,16 @@ const FAST_MAKE24: Make24DurationsInSeconds = {
 const FAST_PAIRS: PairsDurationsInSeconds = {
   turn: 1,
   show: 0.3,
+};
+
+/**
+ * A taken trio on show long enough to assert on, a lockout that outlasts a
+ * second claim, and hints that come quickly but not before a test can claim.
+ */
+const FAST_TRIOS: TriosDurationsInSeconds = {
+  taken: 0.3,
+  lockout: 0.5,
+  hint: 0.8,
 };
 
 /**
@@ -165,6 +178,7 @@ const startTestServer = async (
     minesweeperDurations,
     make24Durations,
     pairsDurations,
+    triosDurations: FAST_TRIOS,
     liarsDiceDurations: FAST_LIARS_DICE,
     hushDurations: FAST_HUSH,
     dailyWordDurations: FAST_DAILY_WORD,
@@ -306,6 +320,13 @@ const waitForPairsState = (
   predicate: (state: PairsRoomState) => boolean = () => true,
   timeoutMs = 3000,
 ) => waitForState<PairsRoomState>(client, predicate, timeoutMs);
+
+/** And for Trios. */
+const waitForTriosState = (
+  client: ClientSocket,
+  predicate: (state: TriosRoomState) => boolean = () => true,
+  timeoutMs = 3000,
+) => waitForState<TriosRoomState>(client, predicate, timeoutMs);
 
 /** And for Liar's Dice. */
 const waitForLiarsDiceState = (
@@ -480,6 +501,23 @@ const createPairsRoom = async (
     maxPlayers: options.maxPlayers ?? 4,
     password: '',
     settings: { board: options.board ?? 'Small' },
+  });
+  if (!answer.ok) throw new Error(`room:create refused: ${answer.error.type}`);
+  return answer.roomId;
+};
+
+/** Creates a Trios room, with its creator seated, and returns its id. */
+const createTriosRoom = async (
+  client: ClientSocket,
+  options: { username?: string; trios?: number; maxPlayers?: number } = {},
+): Promise<string> => {
+  const answer = await client.timeout(3000).emitWithAck('room:create', {
+    gameType: 'trios',
+    roomName: 'Odd ones in',
+    username: options.username ?? 'Owner',
+    maxPlayers: options.maxPlayers ?? 4,
+    password: '',
+    settings: { trios: options.trios ?? 10 },
   });
   if (!answer.ok) throw new Error(`room:create refused: ${answer.error.type}`);
   return answer.roomId;
@@ -675,6 +713,13 @@ const pairsRoom = (harness: TestServer, roomId: string): Room<PairsState> =>
   harness.server.rooms.get(roomId) as Room<PairsState>;
 
 /**
+ * The server's own Trios room. Tests read the deck through it to know what is
+ * coming; the table they can read off any snapshot, as a player could.
+ */
+const triosRoom = (harness: TestServer, roomId: string): Room<TriosState> =>
+  harness.server.rooms.get(roomId) as Room<TriosState>;
+
+/**
  * The server's own Liar's Dice room. Tests read and set the dice through it on
  * purpose: a call can only be played deliberately by knowing what the cups
  * hold, which is exactly what a client is never sent.
@@ -768,6 +813,7 @@ export {
   FAST_MINESWEEPER,
   FAST_MAKE24,
   FAST_PAIRS,
+  FAST_TRIOS,
   FAST_LIARS_DICE,
   FAST_HUSH,
   FAST_DAILY_WORD,
@@ -778,6 +824,7 @@ export {
   waitForMineState,
   waitForMake24State,
   waitForPairsState,
+  waitForTriosState,
   waitForLiarsDiceState,
   waitForHushState,
   waitForDailyWordState,
@@ -791,6 +838,7 @@ export {
   createMinesweeperRoom,
   createMake24Room,
   createPairsRoom,
+  createTriosRoom,
   createLiarsDiceRoom,
   createHushRoom,
   createDailyWordRoom,
@@ -806,6 +854,7 @@ export {
   make24Room,
   playToFirstHand,
   pairsRoom,
+  triosRoom,
   liarsDiceRoom,
   hushRoom,
   dailyWordRoom,

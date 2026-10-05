@@ -47,6 +47,8 @@ import {
   StatList,
   Tag,
   TextField,
+  TriosCard,
+  TriosShape,
   TurnBar,
   WordBoard,
   WordChoice,
@@ -62,6 +64,16 @@ import { Specimen } from './specimen';
 import styles from './gallery.module.css';
 
 const noop = () => {};
+
+/** Trios cards for the gallery, with how many shapes each shows. */
+const TRIOS_SPECIMENS = [
+  [40, 2],
+  [0, 1],
+  [80, 3],
+  [41, 2],
+] as const;
+
+const cap = (word: string) => `${word[0].toUpperCase()}${word.slice(1)}`;
 
 const BID_TEXT =
   'Figma rounds each of the three text runs up to a whole pixel, 2 px in all; the stroke and spacing match.';
@@ -907,6 +919,70 @@ export default function Gallery() {
             </Specimen>
           ))}
         </div>
+      </Family>
+
+      <Family name="Trios card" file="trios-card">
+        {(
+          [
+            ['regular', 'Regular', ['Default', 'Selected', 'Found', 'Wrong']],
+            ['compact', 'Compact', ['Default', 'Selected', 'Found', 'Wrong']],
+            ['mini', 'Mini', ['Default', 'Found']],
+          ] as const
+        ).map(([cardSize, sizeName, states]) => (
+          <div key={cardSize} className={styles.cellRow}>
+            {states.map((state, index) => {
+              // Every count, colour, shape and fill appears in a row.
+              const [card, count] = TRIOS_SPECIMENS[index];
+              return (
+                <Specimen
+                  key={state}
+                  family="trios-card"
+                  variant={`Count=${count}, State=${state}, Size=${sizeName}`}
+                  label={`${state}, ${sizeName}`}
+                >
+                  <TriosCard
+                    card={card}
+                    state={state.toLowerCase() as Lowercase<typeof state>}
+                    size={cardSize}
+                    badge={
+                      state === 'Found' && cardSize !== 'mini'
+                        ? 'MA'
+                        : undefined
+                    }
+                  />
+                </Specimen>
+              );
+            })}
+            {cardSize !== 'mini' && (
+              <Specimen label={`Hinted, ${sizeName}`}>
+                <TriosCard card={62} size={cardSize} badge="Hint" />
+              </Specimen>
+            )}
+          </div>
+        ))}
+      </Family>
+
+      <Family
+        name="Trios shape"
+        file="trios-shape"
+        note="Three shapes, three fills, three colours: 27 in all, scaled as a whole on smaller cards."
+      >
+        {(['circle', 'triangle', 'square'] as const).map((shape) => (
+          <div key={shape} className={styles.cellRow}>
+            {(['solid', 'striped', 'outline'] as const).flatMap((fill) =>
+              (['coral', 'blue', 'ink'] as const).map((tone) => (
+                <Specimen
+                  key={`${fill}-${tone}`}
+                  family="trios-shape"
+                  variant={`Shape=${cap(shape)}, Fill=${cap(fill)}, Colour=${cap(tone)}`}
+                  label={`${cap(tone)} ${fill}`}
+                >
+                  <TriosShape shape={shape} fill={fill} colour={tone} />
+                </Specimen>
+              )),
+            )}
+          </div>
+        ))}
       </Family>
 
       <Family

@@ -132,6 +132,26 @@ const dailyWordDurationsInSeconds: DailyWordDurationsInSeconds = {
 };
 
 /**
+ * Trios' clock. A table has no deadline of its own: nothing ends while
+ * everybody looks, so these are the pause after a trio, the cost of a wrong
+ * claim, and how long a silence lasts before a hint breaks it.
+ */
+interface TriosDurationsInSeconds {
+  /** How long a taken trio stays on the table before new cards come. */
+  taken: number;
+  /** How long a wrong claim locks its player out. */
+  lockout: number;
+  /** How long a table goes without a trio before each hint. */
+  hint: number;
+}
+
+const triosDurationsInSeconds: TriosDurationsInSeconds = {
+  taken: readSecondsFromEnv('TRIOS_TAKEN_SECONDS', 2),
+  lockout: readSecondsFromEnv('TRIOS_LOCKOUT_SECONDS', 3),
+  hint: readSecondsFromEnv('TRIOS_HINT_SECONDS', 30),
+};
+
+/**
  * How long a disconnected player keeps their seat, their score and their place
  * in the round before the room gives up on them.
  *
@@ -150,6 +170,7 @@ export {
   minesweeperDurationsInSeconds,
   make24DurationsInSeconds,
   pairsDurationsInSeconds,
+  triosDurationsInSeconds,
   liarsDiceDurationsInSeconds,
   hushDurationsInSeconds,
   dailyWordDurationsInSeconds,
@@ -160,6 +181,7 @@ export type {
   MinesweeperDurationsInSeconds,
   Make24DurationsInSeconds,
   PairsDurationsInSeconds,
+  TriosDurationsInSeconds,
   LiarsDiceDurationsInSeconds,
   HushDurationsInSeconds,
   DailyWordDurationsInSeconds,

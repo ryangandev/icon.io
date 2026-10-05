@@ -9,6 +9,7 @@ import {
   PickMarker,
   symbolNamed,
   Tag,
+  TriosCard,
 } from '../ui';
 import { cx } from '../ui/cx';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
@@ -34,6 +35,8 @@ export function GameArtwork({ type }: { type: GameType }) {
         <DiceArtwork />
       ) : type === 'pairs' ? (
         <PairsArtwork />
+      ) : type === 'trios' ? (
+        <TriosArtwork />
       ) : type === 'hush' ? (
         <PileArtwork />
       ) : (
@@ -175,6 +178,21 @@ function BoardArtwork() {
       <span className={styles.lastCell}>
         <MineCell state={{ kind: 'open', adjacent: 1 }} row={0} column={5} />
       </span>
+    </div>
+  );
+}
+
+/** A card that is not in it, and a trio found: every feature different. */
+function TriosArtwork() {
+  // A phone's narrower card shows only the trio, as mini cards.
+  const phone = useMediaQuery(PHONE);
+  const size = phone ? 'mini' : 'compact';
+  return (
+    <div className={styles.trios}>
+      {!phone && <TriosCard card={37} size={size} />}
+      {[0, 40, 80].map((card) => (
+        <TriosCard key={card} card={card} state="found" size={size} />
+      ))}
     </div>
   );
 }

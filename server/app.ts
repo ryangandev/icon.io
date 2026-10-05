@@ -11,6 +11,7 @@ import type {
   MinesweeperDurationsInSeconds,
   PairsDurationsInSeconds,
   PhaseDurationsInSeconds,
+  TriosDurationsInSeconds,
 } from './libs/game-clock.js';
 import { createRoomRegistry } from './libs/rooms/registry.js';
 import { createRoomMembership } from './libs/rooms/membership.js';
@@ -22,6 +23,7 @@ import { createDrawAndGuessModule } from './socket/draw-and-guess/index.js';
 import { createMinesweeperModule } from './socket/minesweeper/index.js';
 import { createMake24Module } from './socket/make-24/index.js';
 import { createPairsModule } from './socket/pairs/index.js';
+import { createTriosModule } from './socket/trios/index.js';
 import { createLiarsDiceModule } from './socket/liars-dice/index.js';
 import { createHushModule } from './socket/hush/index.js';
 import { createDailyWordModule } from './socket/daily-word/index.js';
@@ -71,6 +73,8 @@ interface CreateZumpoServerOptions {
   make24Durations?: Make24DurationsInSeconds;
   /** A Pairs turn and a miss on show. Shortened by tests. */
   pairsDurations?: PairsDurationsInSeconds;
+  /** A taken trio's pause, a lockout and the hint clock. Shortened by tests. */
+  triosDurations?: TriosDurationsInSeconds;
   /** A Liar's Dice turn and a call's reveal. Shortened by tests. */
   liarsDiceDurations?: LiarsDiceDurationsInSeconds;
   /** Hush's countdown, mistake pause and cleared level. Shortened by tests. */
@@ -115,6 +119,7 @@ const createZumpoServer = (
     minesweeperDurations,
     make24Durations,
     pairsDurations,
+    triosDurations,
     liarsDiceDurations,
     hushDurations,
     dailyWordDurations,
@@ -154,6 +159,7 @@ const createZumpoServer = (
   );
   registry.register(createMake24Module(registry.context, make24Durations));
   registry.register(createPairsModule(registry.context, pairsDurations));
+  registry.register(createTriosModule(registry.context, triosDurations));
   // A Hush level waits for a dropped player as long as their seat is held,
   // and shows that wait as its clock.
   registry.register(

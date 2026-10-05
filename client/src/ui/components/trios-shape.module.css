@@ -1,0 +1,30 @@
+/* Zumpo/Trios shape. Every part takes the card's colour from `color`. */
+.shape {
+  flex: none;
+  fill: currentColor;
+  overflow: visible;
+}
+
+.solid,
+.outline {
+  stroke: currentColor;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.outline {
+  fill: none;
+}
+
+/* The three colours are color/trios/*, so the cards can change on their own. */
+.coral {
+  color: var(--zumpo-trios-coral);
+}
+
+.blue {
+  color: var(--zumpo-trios-blue);
+}
+
+.ink {
+  color: var(--zumpo-trios-ink);
+}

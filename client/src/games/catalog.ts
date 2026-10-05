@@ -168,6 +168,48 @@ On your own, clear the board in as few turns as you can; your time breaks a tie.
     },
   },
   {
+    type: 'trios',
+    name: 'Trios',
+    tone: 'peach',
+    tagline:
+      'Spot three cards that are all the same or all different, in every way.',
+    phoneTagline: 'Spot three that are all the same or all different.',
+    facts: 'Solo or 2–8 players',
+    maxPlayers: 8,
+    scoreUnit: 'trio',
+    lobbySummary:
+      'Everybody looks at the same twelve cards at once. Pick three that are all the same or all different in every feature, and the trio is yours.',
+    lobbyFacts: [
+      '2–8 players',
+      '10 or 20 trios a game',
+      'A wrong trio locks you out for 3s',
+      'No trio for 30s? A card is marked',
+    ],
+    rules: `2–8 players · 10 or 20 trios
+
+Every card has four features: its colour (coral, blue or ink), its shape (circle, triangle or square), how many shapes it shows (one, two or three) and its fill (solid, striped or outlined). Three cards are a trio when, for each feature on its own, they are all the same or all different. Two circles and a square are never a trio.
+
+Twelve cards are on the table, always with a trio among them. Everyone looks at the same table at the same time, and there are no turns. Pick three cards; your third pick claims them, and nobody sees your picks before then.
+
+The first trio claimed is taken, for 1 point: everyone sees it, and who found it, for 2 seconds, then three new cards take its place. Three that are not a trio lock you out for 3 seconds, and never cost a point. If nobody finds a trio for 30 seconds, one card of a trio is marked for everyone, and 30 seconds later a second.
+
+The game ends after its 10 or 20 trios. Whoever found the most wins.
+
+On your own, a run is ten trios against one clock. A wrong pick adds 5 seconds; Hint marks a card of a trio for 10 seconds, twice at most. Your best time is kept on this device, and Challenge a friend sends them the same deal.`,
+    createDescription:
+      'Everybody looks at the same twelve cards, and the first to pick a trio takes it. 10 trios is about three minutes.',
+    solo: {
+      summary:
+        'Twelve cards on the table, and three of them make a trio. Find ten as fast as you can.',
+      facts: [
+        'Ten trios against one clock',
+        'Colour, shape, count and fill: each all the same or all different',
+        'A wrong pick adds 5 seconds; a hint adds 10',
+        'Your best time is kept on this device',
+      ],
+    },
+  },
+  {
     type: 'liars-dice',
     name: 'Liar’s Dice',
     tone: 'lime',

@@ -1,0 +1,83 @@
+/* Four columns of three regular cards, 816 × 416 with their gaps. */
+.table {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  gap: var(--zumpo-space-16);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--zumpo-space-20);
+  padding: var(--zumpo-space-24);
+  border: 1px solid var(--zumpo-line);
+  border-radius: var(--zumpo-radius-24);
+  background: var(--zumpo-paper);
+}
+
+.mini {
+  display: inline-flex;
+  gap: var(--zumpo-space-4);
+}
+
+.lastTrio {
+  display: flex;
+  align-items: center;
+  gap: var(--zumpo-space-12);
+}
+
+.lastLabel {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-body);
+  letter-spacing: var(--zumpo-text-body-tracking);
+}
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--zumpo-space-12);
+}
+
+/* The turn bar's lines: what it says, and the meta under it. */
+.turnBar {
+  --lines: 1;
+}
+
+.twoLines {
+  --lines: 2;
+}
+
+/* Stacked, as on a phone, the turn bar's answer keeps room for its longest
+   line; the 4 px is the answer's own gap between its lines. */
+@container (max-width: 560px) {
+  .turnBar p {
+    min-height: calc(
+      var(--lines) * var(--zumpo-text-heading-line) + var(--zumpo-space-4) +
+        var(--zumpo-text-small-line)
+    );
+  }
+}
+
+/* Narrower still, the longest of "why not a trio" takes three lines. */
+@container (max-width: 309px) {
+  .twoLines p {
+    --lines: 3;
+  }
+}
+
+/* On a phone: three columns of four compact cards, on the page itself. */
+@media (max-width: 640px) {
+  .table {
+    grid-template-columns: repeat(3, auto);
+    gap: var(--zumpo-space-8);
+  }
+
+  .panel {
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+}
