@@ -29,6 +29,7 @@ Where to find the answer, without searching the repository.
 | Exporting Figma into the repo                          | [design.md#figma-export](design.md#figma-export), then [the plugin README](../tools/figma-export/README.md)                     |
 | Editing the Figma file safely                          | [design.md#editing-the-figma-file](design.md#editing-the-figma-file), then [the bridge README](../tools/figma-bridge/README.md) |
 | Running and deploying the app                          | [README.md](../README.md), [server/README.md](../server/README.md), [client/README.md](../client/README.md)                     |
+| Where it is hosted, and why                            | [architecture.md#deployment](architecture.md#deployment), then [the README](../README.md#deployment)                            |
 
 ## Ownership
 

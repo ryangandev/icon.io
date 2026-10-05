@@ -1,0 +1,18 @@
+# Render Blueprint: the whole app as one free web service.
+# One instance only: rooms and their clocks live in the server's memory.
+# See docs/architecture.md#deployment.
+services:
+  - type: web
+    name: zumpo
+    runtime: node
+    plan: free
+    region: oregon
+    # Node comes from .nvmrc. The build needs dev dependencies (TypeScript,
+    # Vite), so it installs everything; npm start sets NODE_ENV=production.
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    # Deploy a commit on main only once CI has passed on it.
+    autoDeployTrigger: checksPass
+    domains:
+      - zumpo.ryangan.me
