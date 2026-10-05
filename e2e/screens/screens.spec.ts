@@ -887,12 +887,19 @@ test('a Pairs game', async ({ player }) => {
     }
     const samIsNext =
       mover !== sam && (await samTurn.getByText('You’re next.').isVisible());
-    await playTurn(mover, memory, async () => {
-      if (later && mover === leo && !shown.phone) {
-        await shot(leo, 'PR10');
-        shown.phone = true;
-      }
-    });
+    // Once a few pairs are in, turns pass on until every shot is taken.
+    const exploring = later && Object.values(shown).includes(false);
+    await playTurn(
+      mover,
+      memory,
+      async () => {
+        if (later && mover === leo && !shown.phone) {
+          await shot(leo, 'PR10');
+          shown.phone = true;
+        }
+      },
+      exploring,
+    );
     if (later && samIsNext && !shown.miss) {
       shown.miss = await shotWhile(
         sam,
