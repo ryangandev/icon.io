@@ -6,7 +6,6 @@ import type {
   GameType,
   OwnerInfo,
   PlayerInfo,
-  RoomStatus,
 } from '../../../shared/wire-types.js';
 import type { IoServer, IoSocket } from './emit.js';
 
@@ -37,8 +36,6 @@ interface Room<TGameState = unknown> {
   roomId: string;
   roomName: string;
   owner: OwnerInfo;
-  status: RoomStatus;
-  currentPlayerCount: number;
   maxPlayers: number;
   /** Never leaves the process. The wire carries `hasPassword`. */
   password: string;

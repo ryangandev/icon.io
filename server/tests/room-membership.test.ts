@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { seatCount } from '../libs/rooms/seats.js';
 import {
   collect,
   collectChat,
@@ -130,7 +131,7 @@ describe('joining and leaving a room', () => {
     await expect(joinRoom(owner, roomId, 'Renamed')).resolves.toBeUndefined();
 
     const room = harness.server.rooms[roomId];
-    expect(room?.currentPlayerCount).toBe(2);
+    expect(seatCount(room!)).toBe(2);
     expect(room?.playerList[owner.playerId]?.username).toBe('Ada');
   });
 
@@ -307,7 +308,7 @@ describe('joining and leaving a room', () => {
       stranger.emit('room:leave', roomId);
       await settle();
 
-      expect(harness.server.rooms[roomId]?.currentPlayerCount).toBe(2);
+      expect(seatCount(harness.server.rooms[roomId]!)).toBe(2);
       expect(harness.server.rooms[roomId]?.owner.username).toBe('Ada');
       expect(messages).toEqual([]);
       expect(states).toEqual([]);
@@ -325,7 +326,7 @@ describe('joining and leaving a room', () => {
       guest.emit('room:leave', roomId);
       await settle();
 
-      expect(harness.server.rooms[roomId]?.currentPlayerCount).toBe(1);
+      expect(seatCount(harness.server.rooms[roomId]!)).toBe(1);
     });
   });
 });

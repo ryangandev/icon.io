@@ -1,13 +1,13 @@
 import type { ChatMessageKind } from '../../../shared/wire-types.js';
 import type { DrawAndGuessState } from '../../models/types.js';
 import { RequestError } from '../../models/error.js';
+import { seatCount } from '../../libs/rooms/seats.js';
 import type { ChatVerdict, GameContext, Room } from '../../libs/rooms/types.js';
 import { emitToRoom } from '../../libs/rooms/emit.js';
 import {
   getRandomInt,
   getRandomElementFromSet,
   getRemainingPhaseMs,
-  getRoomStatus,
   resetPoints,
 } from '../../libs/utils.js';
 import {
@@ -233,7 +233,7 @@ const createDrawAndGuessGameEngine = (
         'The game has already started.',
       );
     }
-    if (room.currentPlayerCount < MIN_PLAYERS_TO_START) {
+    if (seatCount(room) < MIN_PLAYERS_TO_START) {
       throw new RequestError(
         'notEnoughPlayers',
         `At least ${MIN_PLAYERS_TO_START} players are required to start.`,
@@ -242,11 +242,6 @@ const createDrawAndGuessGameEngine = (
 
     room.playerList = resetPoints(room.playerList);
     room.isGameStarted = true;
-    room.status = getRoomStatus(
-      room.currentPlayerCount,
-      room.maxPlayers,
-      room.isGameStarted,
-    );
     room.game.currentRound = 0;
     room.game.turn = 0;
     room.game.lastGame = null;
@@ -424,11 +419,6 @@ const createDrawAndGuessGameEngine = (
     game.turnPoints.clear();
     game.wordCategory = '';
     room.phaseEndsAt = 0;
-    room.status = getRoomStatus(
-      room.currentPlayerCount,
-      room.maxPlayers,
-      room.isGameStarted,
-    );
 
     emitState(room);
     announce(room.roomId, 'system', 'Game has ended!');
@@ -448,7 +438,7 @@ const createDrawAndGuessGameEngine = (
 
     if (!room.isGameStarted) return;
 
-    if (room.currentPlayerCount < MIN_PLAYERS_TO_START) {
+    if (seatCount(room) < MIN_PLAYERS_TO_START) {
       announce(
         room.roomId,
         'alert',

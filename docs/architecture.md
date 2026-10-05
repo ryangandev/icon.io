@@ -55,6 +55,7 @@ Each game registers a module implementing `GameModule` in [`libs/rooms/types.ts`
 | `types.ts`                  | `Room<TGameState>` and the `GameModule` interface                    |
 | `registry.ts`               | Every room, which module speaks for each, the snapshots and the chat |
 | `membership.ts`             | Seats, departures and the reconnect grace                            |
+| `seats.ts`                  | Seats taken and the lobby status, worked out rather than stored      |
 | `lobby-events.ts`           | List rooms, create a room and seat its creator                       |
 | `room-events.ts`            | Join, leave, sync and start, answered through acknowledgements       |
 | `chat-events.ts`            | Talking in a room, after the game has had its say                    |

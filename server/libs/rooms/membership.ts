@@ -1,22 +1,13 @@
 import type { OwnerInfo } from '../../../shared/wire-types.js';
-import { getRoomStatus } from '../utils.js';
 import { reconnectGraceInSeconds } from '../game-clock.js';
 import type { PlayerSessionRegistry } from '../player-session.js';
 import type { RoomRegistry } from './registry.js';
+import { seatCount } from './seats.js';
 import type { Room } from './types.js';
 import { playerChannel, type IoServer } from './emit.js';
 
 /** Pending seat expiries are keyed by the pair, not by either half. */
 const graceKey = (roomId: string, playerId: string) => `${roomId}:${playerId}`;
-
-const recount = (room: Room) => {
-  room.currentPlayerCount = Object.keys(room.playerList).length;
-  room.status = getRoomStatus(
-    room.currentPlayerCount,
-    room.maxPlayers,
-    room.isGameStarted,
-  );
-};
 
 /**
  * Who is in a room, and for how long after they stop answering.
@@ -87,9 +78,8 @@ const createRoomMembership = (
     const username = room.playerList[playerId]?.username ?? 'A player';
 
     delete room.playerList[playerId];
-    recount(room);
 
-    if (room.currentPlayerCount === 0) {
+    if (seatCount(room) === 0) {
       module?.disposeRoom(roomId);
       delete registry.all[roomId];
       registry.lookup.emitLobby(gameType);

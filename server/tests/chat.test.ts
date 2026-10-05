@@ -140,8 +140,6 @@ const makeRoom = (): Room => ({
   roomId: 'room-1',
   roomName: 'Room One',
   owner: { username: 'Owner', playerId: 'player-owner' },
-  status: 'Open',
-  currentPlayerCount: 1,
   maxPlayers: 4,
   password: '',
   playerList: {

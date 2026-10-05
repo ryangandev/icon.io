@@ -31,8 +31,6 @@ const makeRoom = (
   roomId: 'room-1',
   roomName: 'Room One',
   owner: { username: 'Owner', playerId: 'player-owner' },
-  status: 'Open',
-  currentPlayerCount: 2,
   maxPlayers: 4,
   password: '',
   playerList: {

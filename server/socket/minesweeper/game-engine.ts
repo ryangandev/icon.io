@@ -3,12 +3,9 @@ import type {
   MinesweeperSettings,
 } from '../../models/types.js';
 import { RequestError } from '../../models/error.js';
+import { seatCount } from '../../libs/rooms/seats.js';
 import type { GameContext, Room } from '../../libs/rooms/types.js';
-import {
-  gameOverMessage,
-  getRoomStatus,
-  resetPoints,
-} from '../../libs/utils.js';
+import { gameOverMessage, resetPoints } from '../../libs/utils.js';
 import {
   minesweeperDurationsInSeconds as defaultDurations,
   type MinesweeperDurationsInSeconds,
@@ -110,7 +107,7 @@ const createMinesweeperGameEngine = (
         'The game has already started.',
       );
     }
-    if (room.currentPlayerCount < MIN_PLAYERS_TO_START) {
+    if (seatCount(room) < MIN_PLAYERS_TO_START) {
       throw new RequestError(
         'notEnoughPlayers',
         `At least ${MIN_PLAYERS_TO_START} players are required to start.`,
@@ -126,11 +123,6 @@ const createMinesweeperGameEngine = (
     room.game.lastGame = null;
     room.playerList = resetPoints(room.playerList);
     room.isGameStarted = true;
-    room.status = getRoomStatus(
-      room.currentPlayerCount,
-      room.maxPlayers,
-      room.isGameStarted,
-    );
 
     console.log(
       `Minesweeper started in room ${room.roomId} on ${room.game.difficulty}.`,
@@ -330,11 +322,6 @@ const createMinesweeperGameEngine = (
     game.round = 0;
     game.picks.clear();
     room.phaseEndsAt = 0;
-    room.status = getRoomStatus(
-      room.currentPlayerCount,
-      room.maxPlayers,
-      room.isGameStarted,
-    );
 
     ctx.rooms.emitState(room);
     ctx.rooms.announce(room.roomId, 'system', gameOverMessage(standings));
@@ -347,7 +334,7 @@ const createMinesweeperGameEngine = (
 
     if (!room.isGameStarted) return;
 
-    if (room.currentPlayerCount < MIN_PLAYERS_TO_START) {
+    if (seatCount(room) < MIN_PLAYERS_TO_START) {
       ctx.rooms.announce(
         room.roomId,
         'alert',

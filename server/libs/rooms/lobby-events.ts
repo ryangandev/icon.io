@@ -1,5 +1,5 @@
 import { failure, invalidRequest } from '../../models/error.js';
-import { generateRoomId, getRoomStatus } from '../utils.js';
+import { generateRoomId } from '../utils.js';
 import { parseArgs, roomCreateRequest, gameTypeOnly } from '../validation.js';
 import type { RoomMembership } from './membership.js';
 import type { RoomRegistry } from './registry.js';
@@ -108,8 +108,6 @@ const lobbyEventsHandler = (
       roomId,
       roomName,
       owner: { username, playerId },
-      status: getRoomStatus(1, maxPlayers),
-      currentPlayerCount: 1,
       maxPlayers,
       password,
       playerList: {

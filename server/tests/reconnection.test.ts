@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { io as createClient } from 'socket.io-client';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { seatCount } from '../libs/rooms/seats.js';
 import type { DrawAndGuessRoomState } from '../models/types.js';
 import {
   collectChat,
@@ -282,7 +283,7 @@ describe('reconnecting to a room', () => {
 
     const room = harness.server.rooms[roomId];
     expect(room?.playerList[bob.playerId]).toBeUndefined();
-    expect(room?.currentPlayerCount).toBe(1);
+    expect(seatCount(room!)).toBe(1);
   });
 
   it('tells the room when a player drops and when they come back', async () => {

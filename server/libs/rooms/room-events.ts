@@ -1,5 +1,5 @@
 import { asFailure, failure, invalidRequest } from '../../models/error.js';
-import { getRoomStatus } from '../utils.js';
+import { roomStatus } from './seats.js';
 import { joinRoomRequest, parseArgs, roomIdOnly } from '../validation.js';
 import type { RoomMembership } from './membership.js';
 import type { RoomRegistry } from './registry.js';
@@ -51,7 +51,7 @@ const roomEventsHandler = (
       // A player already holding a seat is returning to it, so a full room or
       // a game in progress is no reason to turn them away, and the seat they
       // hold is all the proof a locked room asks for.
-      if (room.status !== 'Open') {
+      if (roomStatus(room) !== 'Open') {
         reply(failure('roomNotOpen', 'Room is not open.'));
         return;
       }
@@ -64,12 +64,6 @@ const roomEventsHandler = (
 
       membership.leaveAllBut(playerId, roomId);
       room.playerList[playerId] = { username, points: 0, isConnected: true };
-      room.currentPlayerCount = Object.keys(room.playerList).length;
-      room.status = getRoomStatus(
-        room.currentPlayerCount,
-        room.maxPlayers,
-        room.isGameStarted,
-      );
     }
     // A seat already held keeps the name it was taken with: standings,
     // ownership and the chat all know the player by it.
