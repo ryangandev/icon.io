@@ -938,14 +938,14 @@ export default function Gallery() {
         {(['circle', 'triangle', 'square'] as const).map((shape) => (
           <div key={shape} className={styles.cellRow}>
             {(['solid', 'striped', 'outline'] as const).flatMap((fill) =>
-              (['coral', 'blue', 'ink'] as const).map((colour) => (
+              (['coral', 'blue', 'ink'] as const).map((tone) => (
                 <Specimen
-                  key={`${fill}-${colour}`}
+                  key={`${fill}-${tone}`}
                   family="trios-shape"
-                  variant={`Shape=${cap(shape)}, Fill=${cap(fill)}, Colour=${cap(colour)}`}
-                  label={`${cap(colour)} ${fill}`}
+                  variant={`Shape=${cap(shape)}, Fill=${cap(fill)}, Colour=${cap(tone)}`}
+                  label={`${cap(tone)} ${fill}`}
                 >
-                  <TriosShape shape={shape} fill={fill} colour={colour} />
+                  <TriosShape shape={shape} fill={fill} colour={tone} />
                 </Specimen>
               )),
             )}
