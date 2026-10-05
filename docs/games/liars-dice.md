@@ -172,6 +172,8 @@ Liar's Dice's two events of its own are `ld:bid`, with the room, the count and t
 | [`game-engine.ts`](../../server/socket/liars-dice/game-engine.ts) | Rounds, turns, calls and who loses a die                      |
 | [`state.ts`](../../server/socket/liars-dice/state.ts)             | The game's state, and the snapshot each player is sent        |
 | [`liars-dice/solo/`](../../client/src/liars-dice/solo/)           | A game on your own, and the bots                              |
+| [`liars-dice/table.tsx`](../../client/src/liars-dice/table.tsx)   | The cups, the bids and the count, for a room and on your own  |
+| [`liars-dice/words.ts`](../../client/src/liars-dice/words.ts)     | How the screens say a bid, a count and who was right          |
 | [`liars-dice/room.tsx`](../../client/src/liars-dice/room.tsx)     | A room's screens                                              |
 
 The rules are covered by [`liars-dice-rules.test.ts`](../../server/tests/liars-dice-rules.test.ts) and [`liars-dice-flow.test.ts`](../../server/tests/liars-dice-flow.test.ts).
