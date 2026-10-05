@@ -6,6 +6,10 @@ import type {
   PairsBoard,
   RoomCreateRequest,
 } from '../../../shared/wire-types';
+import {
+  DICE_PER_PLAYER,
+  type DicePerPlayer,
+} from '../../../shared/liars-dice';
 import { Button, ButtonLink, Notice, SelectField, TextField } from '../ui';
 import { GAME_LENGTHS as TRIOS_LENGTHS } from '../../../shared/trios';
 import { gameInfo, lobbyPath, roomPath } from '../games/catalog';
@@ -31,10 +35,17 @@ const PASSWORD_MAX_LENGTH = 20;
 const ROUNDS = [1, 2, 3, 4] as const;
 const HANDS = [5, 10] as const;
 const WORDS = [3, 5] as const;
+/** What each Liar's Dice game is like. */
+const DICE_DETAIL: Record<DicePerPlayer, string> = {
+  3: 'The quick game, and the usual one.',
+  5: 'The classic: longer, best with 2–4 players.',
+};
 
 /**
  * DL04-DL06, DL10, DL11, ML04-ML06, ML10, MO05, T10, PR08, TS10, HU09, DW11: a
  * new room, with its settings.
+ * DL04-DL06, DL10, DL11, ML04-ML06, ML10, MO05, T10, PR08, LD07, HU09, DW11:
+ * a new room, with its settings.
  */
 export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   const game = gameInfo(gameType);
@@ -52,6 +63,7 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   const [hands, setHands] = useState(5);
   const [pairsBoard, setPairsBoard] = useState<PairsBoard>('Small');
   const [trios, setTrios] = useState<number>(TRIOS_LENGTHS[0]);
+  const [dicePerPlayer, setDicePerPlayer] = useState<DicePerPlayer>(3);
   const [words, setWords] = useState(3);
   const [password, setPassword] = useState('');
   const [pending, setPending] = useState(false);
@@ -83,9 +95,11 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
                 ? { board: pairsBoard }
                 : gameType === 'trios'
                   ? { trios }
-                  : gameType === 'daily-word'
-                    ? { rounds: words }
-                    : {},
+                  : gameType === 'liars-dice'
+                    ? { dicePerPlayer }
+                    : gameType === 'daily-word'
+                      ? { rounds: words }
+                      : {},
     };
     setPending(true);
     setFailed(null);
@@ -202,6 +216,19 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
           value={hands}
           onValueChange={setHands}
           name="hands"
+        />
+      ) : gameType === 'liars-dice' ? (
+        <SelectField
+          label="Dice each"
+          helper={DICE_DETAIL[dicePerPlayer]}
+          options={DICE_PER_PLAYER.map((count) => ({
+            value: count,
+            label: `${count} dice`,
+            detail: DICE_DETAIL[count],
+          }))}
+          value={dicePerPlayer}
+          onValueChange={setDicePerPlayer}
+          name="dicePerPlayer"
         />
       ) : gameType === 'pairs' ? (
         <SelectField

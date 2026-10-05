@@ -1,0 +1,87 @@
+.cup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-12);
+  min-width: 0;
+  padding: var(--zumpo-space-16);
+  border: 1px solid var(--zumpo-line);
+  border-radius: var(--zumpo-radius-16);
+  background: var(--zumpo-cream);
+  color: var(--zumpo-ink);
+}
+
+/* Figma counts the stroke in the size, so a marked cup is 2px larger. */
+.turn {
+  border: 2px solid var(--zumpo-ink);
+  background: var(--zumpo-paper);
+}
+
+.lost {
+  border: 2px solid var(--zumpo-danger);
+  background: var(--zumpo-paper);
+}
+
+/* A row: the player, then their dice at the end, so a table of cups stays short. */
+.row {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--zumpo-space-12) var(--zumpo-space-16);
+}
+
+.player {
+  display: flex;
+  align-items: center;
+  gap: var(--zumpo-space-12);
+  min-width: 0;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nameLine {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.name {
+  overflow: hidden;
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detail {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-small);
+  letter-spacing: var(--zumpo-text-small-tracking);
+  white-space: nowrap;
+}
+
+.lost .detail {
+  color: var(--zumpo-ink);
+}
+
+.dice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--zumpo-space-8);
+}
+
+/* Five regular dice keep to one row on a phone. */
+@media (max-width: 640px) {
+  .regular {
+    gap: var(--zumpo-space-4);
+  }
+}
+
+.slot {
+  display: flex;
+}

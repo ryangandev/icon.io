@@ -297,6 +297,10 @@ describe('canvas authority', () => {
   });
 
   it('ignores canvas events from the drawer once their turn is over', async () => {
+    // A reveal long enough to outlast the storm: a short one hands the turn on
+    // mid-storm, and the next turn's own canvas clear reads as a leak.
+    await harness.teardown();
+    harness = await startTestServer({ ...SLOW_DRAWING, reviewing: 5 });
     const { drawer, guesser, roomId } = await playToDrawingPhase(harness);
 
     // The reveal is not a drawing phase, and neither is anything after it.

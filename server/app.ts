@@ -4,6 +4,7 @@ import { Server } from 'socket.io';
 import * as url from 'node:url';
 import path from 'node:path';
 import type {
+  LiarsDiceDurationsInSeconds,
   DailyWordDurationsInSeconds,
   HushDurationsInSeconds,
   Make24DurationsInSeconds,
@@ -23,6 +24,7 @@ import { createMinesweeperModule } from './socket/minesweeper/index.js';
 import { createMake24Module } from './socket/make-24/index.js';
 import { createPairsModule } from './socket/pairs/index.js';
 import { createTriosModule } from './socket/trios/index.js';
+import { createLiarsDiceModule } from './socket/liars-dice/index.js';
 import { createHushModule } from './socket/hush/index.js';
 import { createDailyWordModule } from './socket/daily-word/index.js';
 import { clientDepartureOnDisconnectHandler } from './socket/client-disconnect-handler.js';
@@ -73,6 +75,8 @@ interface CreateZumpoServerOptions {
   pairsDurations?: PairsDurationsInSeconds;
   /** A taken trio's pause, a lockout and the hint clock. Shortened by tests. */
   triosDurations?: TriosDurationsInSeconds;
+  /** A Liar's Dice turn and a call's reveal. Shortened by tests. */
+  liarsDiceDurations?: LiarsDiceDurationsInSeconds;
   /** Hush's countdown, mistake pause and cleared level. Shortened by tests. */
   hushDurations?: HushDurationsInSeconds;
   /** A Daily Word round and its results. Shortened by tests. */
@@ -116,6 +120,7 @@ const createZumpoServer = (
     make24Durations,
     pairsDurations,
     triosDurations,
+    liarsDiceDurations,
     hushDurations,
     dailyWordDurations,
     graceInSeconds,
@@ -159,6 +164,9 @@ const createZumpoServer = (
   // and shows that wait as its clock.
   registry.register(
     createHushModule(registry.context, hushDurations, graceInSeconds),
+  );
+  registry.register(
+    createLiarsDiceModule(registry.context, liarsDiceDurations),
   );
   registry.register(
     createDailyWordModule(registry.context, dailyWordDurations),

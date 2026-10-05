@@ -7,6 +7,8 @@ export {
   type AvatarProps,
   type AvatarTone,
 } from './components/avatar';
+export { Bid, type BidProps } from './components/bid';
+export { BidPicker, type BidPickerProps } from './components/bid-picker';
 export {
   Button,
   ButtonLink,
@@ -33,6 +35,13 @@ export {
   URGENT_SECONDS,
   type CountdownProps,
 } from './components/countdown';
+export { Cup, type CupProps, type CupState } from './components/cup';
+export {
+  Die,
+  type DieFace,
+  type DieProps,
+  type DieState,
+} from './components/die';
 export { Dialog, DialogClose, type DialogProps } from './components/dialog';
 export {
   BRUSH_SIZES,

@@ -48,6 +48,17 @@ import {
   turnOf as triosTurnOf,
   twoBesides,
 } from '../play/trios';
+import {
+  bidCount,
+  bidsOf,
+  bidSurelyStands,
+  pickBid,
+  bluff,
+  callLiar,
+  move,
+  whoseTurn as whoseLiarsDiceTurn,
+  yourTurn as yourLiarsDiceTurn,
+} from '../play/liars-dice';
 import { COMPARE_DIR, figmaSize, writeReport } from './report';
 
 /*
@@ -1106,6 +1117,199 @@ test('a Trios game', async ({ player }) => {
   await pickTrio(maya);
   await expect(sam.getByText('Game over', { exact: true })).toBeVisible();
   await shot(sam, 'TS09');
+});
+
+/** What a table of bots keeps on this device before each game: 5 of 10 won. */
+const LIARS_DICE_RECORD = {
+  'record:liars-dice': JSON.stringify({ wins: 5, games: 10, run: 2 }),
+  'picks:liars-dice': JSON.stringify({ bots: 3, dicePerPlayer: 3 }),
+};
+
+test('Liar’s Dice on your own', async ({ player }) => {
+  test.setTimeout(600_000);
+  const maya = await player('Maya', desktop);
+  await keepOnDevice(maya, LIARS_DICE_RECORD);
+  // A bot takes a second over its turn; the clock skips it.
+  await maya.clock.install();
+  await maya.goto('/games/liars-dice/solo');
+  await shot(maya, 'LD01');
+  await maya.getByRole('button', { name: 'Start' }).click();
+
+  const won = maya.getByRole('heading', { name: /^You won in \d+ rounds?\.$/ });
+  const out = maya.getByRole('heading', { name: /^Out in \d\w\w of 4\.$/ });
+  const nextRound = maya.getByRole('button', { name: 'Next round' });
+  const thinking = maya
+    .getByRole('region', { name: 'Turn' })
+    .getByText(/ is thinking$/);
+  const shown = new Set<string>();
+  let calledToLose = false;
+  for (let games = 1; !(shown.has('LD05') && shown.has('LD06')); games++) {
+    // Last of four is a long shot for a player this plain: a game takes a
+    // second or two on the fast clock, so it can afford many tries.
+    expect(games, 'a game won and a game lost').toBeLessThanOrEqual(100);
+    while (!(await won.isVisible()) && !(await out.isVisible())) {
+      if (await nextRound.isVisible()) {
+        if (calledToLose && !shown.has('LD04')) {
+          await shot(maya, 'LD04');
+          shown.add('LD04');
+        }
+        calledToLose = false;
+        await nextRound.click();
+      } else if (await yourLiarsDiceTurn(maya).isVisible()) {
+        const opening = !(await bidsOf(maya).isVisible());
+        if (opening && !shown.has('LD02')) {
+          // Figma's opening bid: three 4s.
+          await pickBid(maya, 3, 4);
+          await shot(maya, 'LD02');
+          shown.add('LD02');
+        }
+        // Liar on a bid your own dice already make: a mistake, on purpose.
+        if (!shown.has('LD04') && (await bidSurelyStands(maya))) {
+          calledToLose = true;
+          await callLiar(maya);
+        } else {
+          await move(maya);
+        }
+      } else if (await thinking.isVisible()) {
+        // A round two bids in, as Figma's is.
+        if (!shown.has('LD03') && (await bidCount(maya)) >= 2) {
+          if (await paused(maya, () => shotWhile(maya, 'LD03', thinking))) {
+            shown.add('LD03');
+          }
+        }
+        await maya.clock.fastForward(1000);
+      } else {
+        await maya.clock.fastForward(100);
+      }
+    }
+    const code = (await won.isVisible()) ? 'LD05' : 'LD06';
+    if (!shown.has(code)) {
+      await shot(maya, code);
+      shown.add(code);
+    }
+    // The record as Figma's next game starts from.
+    await maya.evaluate((entries) => {
+      for (const [key, value] of Object.entries(entries)) {
+        localStorage.setItem(`zumpo:solo:${key}`, value);
+      }
+    }, LIARS_DICE_RECORD);
+    await maya.getByRole('button', { name: 'Play again' }).click();
+  }
+  expect(shown).toEqual(new Set(['LD02', 'LD03', 'LD04', 'LD05', 'LD06']));
+
+  const onPhone = await player('Maya', phone);
+  await onPhone.clock.install();
+  await onPhone.goto('/games/liars-dice/solo');
+  await onPhone.getByRole('button', { name: 'Start' }).click();
+  const phoneNext = onPhone.getByRole('button', { name: 'Next round' });
+  const phoneAgain = onPhone.getByRole('button', { name: 'Play again' });
+  // Three or four bids in, so they wrap onto a second row as Figma's do.
+  const twoRows = async () => [3, 4].includes(await bidCount(onPhone));
+  while (!(
+    (await yourLiarsDiceTurn(onPhone).isVisible()) && (await twoRows())
+  )) {
+    if (await phoneNext.isVisible()) await phoneNext.click();
+    else if (await phoneAgain.isVisible()) await phoneAgain.click();
+    else if (await yourLiarsDiceTurn(onPhone).isVisible()) await move(onPhone);
+    else await onPhone.clock.fastForward(1000);
+  }
+  await shot(onPhone, 'LD13');
+});
+
+/** A phone's width for the same page, as Figma draws a screen again for one. */
+async function narrow<T>(page: Page, capture: () => Promise<T>): Promise<T> {
+  const viewport = page.viewportSize()!;
+  await page.setViewportSize({ width: 390, height: 844 });
+  try {
+    return await capture();
+  } finally {
+    await page.setViewportSize(viewport);
+  }
+}
+
+test('a Liar’s Dice game', async ({ player }) => {
+  test.setTimeout(600_000);
+  const maya = await player('Maya', desktop);
+  const sam = await player('Sam', desktop);
+  const ryan = await player('Ryan', desktop);
+  const leo = await player('Leo', desktop);
+  const seats = [maya, sam, ryan, leo];
+
+  const shown = new Set<string>();
+  const capture = async (page: Page, code: string) => {
+    await shot(page, code);
+    shown.add(code);
+  };
+
+  await maya.goto('/games/liars-dice/new');
+  const password = maya.getByLabel('Password (optional)');
+  await password.fill('otters');
+  await password.blur();
+  await capture(maya, 'LD07');
+  const link = await createRoom(maya, 'liars-dice', { dice: 3 });
+  for (const seat of [sam, ryan, leo]) await joinRoom(seat, link);
+  await startGame(maya);
+
+  // Figma follows Sam, on a desktop and again on a phone (LD14, LD15).
+  const samNext = sam
+    .getByRole('region', { name: 'Sam (you)' })
+    .getByText('You go next');
+  const ryanOut = ryan.getByText(/^You are out of dice\./);
+  const samCalled = sam
+    .getByRole('region', { name: 'Turn' })
+    .getByText('You called Liar');
+  const over = sam.getByText('Game over', { exact: true });
+  while (!(await over.isVisible())) {
+    await expect
+      .poll(
+        async () =>
+          (await whoseLiarsDiceTurn(seats)) !== null || over.isVisible(),
+        { timeout: 30_000 },
+      )
+      .toBe(true);
+    const mover = await whoseLiarsDiceTurn(seats);
+    if (!mover) break;
+    // A round some bids in, as Figma's are: one row of them on a desktop,
+    // three on a phone.
+    const bids = await bidCount(mover);
+    if (mover !== sam && bids >= 4 && bids <= 5 && !shown.has('LD08')) {
+      if (await samNext.isVisible()) await capture(sam, 'LD08');
+    }
+    if (mover === sam && bids >= 5 && bids <= 6 && !shown.has('LD09')) {
+      await capture(sam, 'LD09');
+      await narrow(sam, () => capture(sam, 'LD14'));
+    }
+    if (mover !== ryan && bids > 0 && !shown.has('LD11')) {
+      if (await ryanOut.isVisible()) await capture(ryan, 'LD11');
+    }
+
+    // Sam calls a bid his own dice already make, and loses a die over it.
+    if (
+      mover === sam &&
+      shown.has('LD09') &&
+      !shown.has('LD10') &&
+      (await bidSurelyStands(sam))
+    ) {
+      await callLiar(sam);
+      if (await shotWhile(sam, 'LD10', samCalled)) {
+        shown.add('LD10');
+        await narrow(sam, async () => {
+          if (await shotWhile(sam, 'LD15', samCalled)) shown.add('LD15');
+        });
+      }
+      continue;
+    }
+    // Then Ryan bids every die on the table until he is out.
+    if (mover === ryan && shown.has('LD10')) {
+      await bluff(ryan);
+      continue;
+    }
+    await move(mover);
+  }
+  expect(shown).toEqual(
+    new Set(['LD07', 'LD08', 'LD09', 'LD10', 'LD11', 'LD14', 'LD15']),
+  );
+  await shot(sam, 'LD12');
 });
 
 test('a Hush game', async ({ player }) => {

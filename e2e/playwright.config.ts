@@ -35,6 +35,7 @@ export default defineConfig({
       MAKE24_REVEAL_SECONDS: '0.5',
       PAIRS_SHOW_SECONDS: '1',
       TRIOS_TAKEN_SECONDS: '0.5',
+      LIARS_DICE_REVEAL_SECONDS: '2',
       HUSH_COUNTDOWN_SECONDS: '1',
       HUSH_MISTAKE_SECONDS: '1',
       HUSH_CLEARED_SECONDS: '1',

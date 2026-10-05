@@ -181,24 +181,35 @@ export function ResultsFrame({
  * D13, D14, M14, M15: the final standings. The host can play again; a guest
  * waits for them.
  */
-export function ResultsPanel({
+export function ResultsPanel<Summary extends GameSummary>({
   summary,
   detail,
   standingDetail,
   onPlayAgain,
   starting,
+  ranked = false,
+  statusOf,
 }: {
-  summary: GameSummary;
+  summary: Summary;
   /** "2 rounds of Animals, 8 turns." */
   detail: string;
   /** More about each player's game after their place: "3 words found". */
   standingDetail?: (playerId: string) => string;
   onPlayAgain: () => void;
   starting: boolean;
+  /**
+   * The standings are in finishing order and no two share a place, as in
+   * Liar's Dice; otherwise an equal score shares one.
+   */
+  ranked?: boolean;
+  /** Under each name; "Winner", then "2nd place" and so on, unless given. */
+  statusOf?: (standing: Summary['standings'][number], place: number) => string;
 }) {
   const { state, playerId } = useRoomContext();
   const { standings } = summary;
-  const places = placesOf(standings);
+  const places = ranked
+    ? standings.map((_, index) => index + 1)
+    : placesOf(standings);
   const winners = standings.filter((_, index) => places[index] === 1);
   const place = places[standings.findIndex((s) => s.playerId === playerId)];
 
@@ -229,9 +240,11 @@ export function ResultsPanel({
                 initials={initialsOf(standing.username)}
                 tone={toneOf(standing.username)}
                 status={[
-                  standingPlace === 1
-                    ? 'Winner'
-                    : `${ordinal(standingPlace)} place`,
+                  statusOf
+                    ? statusOf(standing, standingPlace)
+                    : standingPlace === 1
+                      ? 'Winner'
+                      : `${ordinal(standingPlace)} place`,
                   standingDetail?.(standing.playerId),
                 ]
                   .filter(Boolean)

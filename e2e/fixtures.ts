@@ -14,6 +14,7 @@ export type GameType =
   | 'make-24'
   | 'pairs'
   | 'trios'
+  | 'liars-dice'
   | 'hush'
   | 'daily-word';
 
@@ -100,6 +101,8 @@ export interface RoomSettings {
   hands?: 5 | 10;
   /** Trios: how many trios a game takes. */
   trios?: 10 | 20;
+  /** Liar's Dice: how many dice each player starts with. */
+  dice?: 3 | 5;
   /** Daily Word: how many words. */
   words?: 3 | 5;
 }
@@ -126,6 +129,9 @@ export async function createRoom(
   }
   if (settings.trios) {
     await choose(page, 'Trios', new RegExp(`^${settings.trios} trios$`));
+  }
+  if (settings.dice) {
+    await choose(page, 'Dice each', new RegExp(`^${settings.dice} dice`));
   }
   if (settings.words) {
     await choose(page, 'Words', new RegExp(`^${settings.words} words$`));

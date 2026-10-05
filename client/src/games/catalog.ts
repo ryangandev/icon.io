@@ -15,8 +15,8 @@ export interface GameInfo {
   facts: string;
   /** The most seats a room may have; every game needs two to start. */
   maxPlayers: number;
-  /** What a score counts, when it is not points. */
-  scoreUnit?: string;
+  /** What a score counts, when it is not points: one, and many when not one plus "s". */
+  scoreUnit?: string | readonly [one: string, many: string];
   /** The lobby's "How to play" card: a summary, then one fact per line. */
   lobbySummary: string;
   lobbyFacts: readonly string[];
@@ -210,6 +210,44 @@ On your own, a run is ten trios against one clock. A wrong pick adds 5 seconds; 
     },
   },
   {
+    type: 'liars-dice',
+    name: 'Liar’s Dice',
+    tone: 'lime',
+    tagline: 'Roll in secret. Bid on the whole table. Call the bluff.',
+    phoneTagline: 'Roll in secret. Bid. Call the bluff.',
+    facts: 'Solo or 2–6 players',
+    maxPlayers: 6,
+    scoreUnit: ['die', 'dice'],
+    lobbySummary:
+      'Everybody rolls dice nobody else can see, then bids on what the whole table holds. Call Liar on a bid you doubt: whoever was wrong loses a die. The last player with dice wins.',
+    lobbyFacts: [
+      '2–6 players',
+      '3 or 5 dice each',
+      '20s a turn · 5s reveal',
+      'Ones are wild',
+    ],
+    rules: `2–6 players · 3 or 5 dice each
+
+Everybody rolls their dice in secret, then takes turns bidding on the whole table: at least so many dice showing one face. Ones are wild: they count as any face, so nobody bids on them. About a third of the dice show any face, ones included.
+
+On your turn, raise the bid or call Liar. A raise is more dice of any face, or as many dice of a higher face. You have 20 seconds; run out and Liar is called for you, or one 2 is bid if nobody has bid yet.
+
+Call Liar and every cup opens for 5 seconds. If the table holds at least as many as the bid said, the caller loses a die; if not, the bidder does. Whoever lost a die opens the next round. Lose your last die and you are out; the last player with dice wins.
+
+On your own, play 1 to 5 bots with no clock, and go on to the next round when you are ready. Your wins are kept on this device.`,
+    createDescription:
+      'Take turns bidding on everybody’s dice. 3 dice each is a quick game; 5 is the classic.',
+    solo: {
+      summary: 'Roll in secret. Bid on the whole table. Call the bluff.',
+      facts: [
+        '1 to 5 bots, 3 or 5 dice each',
+        'No clock: your turn waits for you',
+        'Ones are wild, so nobody bids on them',
+        'Your wins are kept on this device',
+      ],
+    },
+  },
+  {
     type: 'hush',
     name: 'Hush',
     tone: 'sand',
@@ -296,5 +334,9 @@ export const roomPath = (type: GameType, roomId: string) =>
   `/games/${type}/rooms/${roomId}`;
 
 /** "3 points", "1 pair": a score in its game's own unit. */
-export const scoreOf = (gameType: GameType, score: number): string =>
-  plural(score, gameInfo(gameType).scoreUnit ?? 'point');
+export function scoreOf(gameType: GameType, score: number): string {
+  const unit = gameInfo(gameType).scoreUnit ?? 'point';
+  return typeof unit === 'string'
+    ? plural(score, unit)
+    : plural(score, unit[0], unit[1]);
+}
