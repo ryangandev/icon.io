@@ -14,6 +14,10 @@ Every page, desktop and phone, is rebuilt on the Zumpo design system in `client/
 Both sides speak the snapshot-driven wire contract in `shared/wire-types.d.ts` ([architecture](architecture.md#the-wire-contract)).
 `npm run e2e` plays the main flows with two players, and `npm run design:compare` captures every Figma screen's state beside its preview; where code differs on purpose, [design.md](design.md#on-purpose) says so.
 
+Four more games, chosen by Ryan on 2026-10-05, were designed in Figma (sections 07-10) and merged the same day ([#34](https://github.com/ryangandev/zumpo/pull/34)-[#38](https://github.com/ryangandev/zumpo/pull/38)): Trios, Liar's Dice, Hush and Daily Word, eight games in all.
+Trios, Liar's Dice and Daily Word play on your own and in rooms; Hush is rooms only, because it needs at least two players.
+Their behaviour contracts are in `docs/games/`.
+
 On 2026-10-05 Ryan chose to host it for a few testers on Render's free plan, and it is live at `zumpo.ryangan.me` ([architecture](architecture.md#deployment)).
 The server was hardened for that the same day ([#30](https://github.com/ryangandev/zumpo/pull/30)): a restart tells each room it closed, a duplicated tab takes over its player, what a client can make the server hold is bounded, and Render checks `/healthz`.
 
@@ -35,10 +39,7 @@ Decided by Ryan, and the frame for every design and implementation choice:
 
 ## Next
 
-Four more games, chosen by Ryan on 2026-10-05, are designed in Figma: Trios (section 07), Liar's Dice (08), Hush (09) and Daily Word (10).
-All four new games are merged.
-Trios, Liar's Dice and Daily Word play on your own and in rooms; Hush is rooms only, because it needs at least two players.
-Their behaviour contracts are in `docs/games/`.
+Nothing is queued; the [backlog](#backlog) is what comes next unless Ryan picks otherwise.
 
 ## Open decisions
 
