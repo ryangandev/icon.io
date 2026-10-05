@@ -1,7 +1,7 @@
 # Architecture
 
 How the code is put together, why, and where it bites.
-Game rules live in [games/draw-and-guess.md](games/draw-and-guess.md) and [games/minesweeper.md](games/minesweeper.md); this document is about the machinery under them.
+Game rules live in [games/](games/), one document per game; this document is about the machinery under them.
 
 ## Code map
 
@@ -15,25 +15,26 @@ shared/  wire-types.d.ts, and rule code both sides run
 tools/   figma-export, figma-bridge, design-tokens: Figma into the repo (see design.md)
 ```
 
-| Path                                         | What it is                                                         |
-| -------------------------------------------- | ------------------------------------------------------------------ |
-| `server/app.ts`                              | `createZumpoServer()`: builds a fully wired server without a port  |
-| `server/server.ts`                           | Entry point that binds the port                                    |
-| `server/libs/rooms/`                         | The generic room layer (table below)                               |
-| `server/socket/draw-and-guess/`              | Draw & Guess module                                                |
-| `server/socket/minesweeper/`                 | Minesweeper module, board, solver and scoring                      |
-| `server/socket/player-session-handler.ts`    | The identity handshake                                             |
-| `server/socket/client-disconnect-handler.ts` | Hands a dropped socket to `membership.ts`                          |
-| `server/libs/validation.ts`, `rate-limit.ts` | Inbound validation and per-socket token buckets                    |
-| `shared/wire-types.d.ts`                     | Every event name and payload shape                                 |
-| `shared/*.ts`                                | Rule code both sides run: board sizes, deals, arithmetic           |
-| `client/src/app.tsx`                         | Routes and their guards                                            |
-| `client/src/net/`                            | The socket, the session, and the lobby and room hooks              |
-| `client/src/shell/`, `client/src/pages/`     | The page frame and the platform pages                              |
-| `client/src/room/`                           | What both rooms share: seating, layout, panels, dialogs            |
-| `client/src/draw-and-guess/`, `minesweeper/` | Each game's room view                                              |
-| `client/src/ui/`                             | The Zumpo design system: components, base styles, generated tokens |
-| `client/src/ui/gallery/`                     | The development-only `/design` page that reviews it against Figma  |
+| Path                                         | What it is                                                           |
+| -------------------------------------------- | -------------------------------------------------------------------- |
+| `server/app.ts`                              | `createZumpoServer()`: builds a fully wired server without a port    |
+| `server/server.ts`                           | Entry point that binds the port                                      |
+| `server/libs/rooms/`                         | The generic room layer (table below)                                 |
+| `server/socket/<game>/`                      | Each game's module: its engine, state, clock and validation          |
+| `server/socket/player-session-handler.ts`    | The identity handshake                                               |
+| `server/socket/client-disconnect-handler.ts` | Hands a dropped socket to `membership.ts`                            |
+| `server/libs/validation.ts`, `rate-limit.ts` | Inbound validation and per-socket token buckets                      |
+| `shared/wire-types.d.ts`                     | Every event name and payload shape                                   |
+| `shared/*.ts`                                | Rule code both sides run: board sizes, deals, arithmetic             |
+| `client/src/games/`                          | The game catalog, and the cards and artwork that present each game   |
+| `client/src/app.tsx`                         | Routes and their guards                                              |
+| `client/src/net/`                            | The socket, the session, and the lobby and room hooks                |
+| `client/src/shell/`, `client/src/pages/`     | The page frame and the platform pages                                |
+| `client/src/room/`                           | What every room shares: seating, layout, panels, dialogs             |
+| `client/src/solo/`                           | What every game on your own shares: layout, clock, bests             |
+| `client/src/<game>/`                         | Each game's room view, and its solo page under `solo/` if it has one |
+| `client/src/ui/`                             | The Zumpo design system: components, base styles, generated tokens   |
+| `client/src/ui/gallery/`                     | The development-only `/design` page that reviews it against Figma    |
 
 There is no database and no business HTTP API.
 Everything except serving static files happens over Socket.io, and server state is one flat registry of rooms of every game, owned by [`server/libs/rooms/registry.ts`](../server/libs/rooms/registry.ts).
@@ -137,7 +138,7 @@ It is types only, imported with `import type`, so nothing resolves at runtime.
 
 Beside it, `shared/*.ts` holds rule code that both sides run: board sizes, card deals, the arithmetic of a hand.
 A game you play on your own runs in the browser and a room runs on the server, and both import the same file, so the two cannot drift apart.
-The backend compiles `shared/` along with its own sources (`rootDir` is the repository root), which is why the server starts from `server/build/server/server.js` and its runtime copy lands in `server/build/shared/`; Vite bundles the same files into the client.
+The server compiles `shared/` along with its own sources (`rootDir` is the repository root), which is why the server starts from `server/build/server/server.js` and its runtime copy lands in `server/build/shared/`; Vite bundles the same files into the client.
 `shared/package.json` only marks the folder as ES modules; it is never installed.
 Nothing in `shared/` may import from `server/` or `client/`, or reach for Node or the DOM.
 Inbound arguments are still handled as `unknown` and parsed with zod: a type says what a well-behaved client sends, not what arrives.
@@ -156,7 +157,7 @@ A request dropped by the rate limiter is answered `invalidRequest` too, so a pag
 Names are namespaced by concern, not by game: `room:`, `lobby:`, `chat:` and `game:start` belong to the layer; `dg:` to Draw & Guess and `ms:` to Minesweeper.
 `LobbyRoomInfo` and `RoomState` are the generic halves, and each game extends them (`DrawAndGuessLobbyRoomInfo` adds `rounds`) rather than carrying an untyped settings blob.
 
-## Frontend
+## Client
 
 React 19 on the Zumpo design system, with no component library.
 Ant Design was removed, decided by Ryan: Paper Pop shares nothing with antd's look, so theming it would have been a permanent fight, and it was most of a 1 MB main bundle.
@@ -217,7 +218,7 @@ Only Leave room between games goes at once; it marks its navigation with `state.
 Leaving is never done in an effect's cleanup, where React's development double-mount would give the seat up on arrival.
 
 In production the client connects to the origin that served the page and ignores `VITE_SOCKET_URL` ([`socket.ts`](../client/src/net/socket.ts)).
-Serving the frontend from a different host than the backend needs that changed first, plus CORS.
+Serving the client from a different host than the server needs that changed first, plus CORS.
 
 ### The drawing canvas
 
@@ -249,9 +250,9 @@ If it does, the abstraction is wrong rather than the game unusual, and that is w
 ## Testing
 
 Vitest on both sides.
-The backend suite runs real Socket.IO clients against a real server on an ephemeral port per suite, because that is where the interesting behaviour lives, and phase durations are parameters so a whole game runs in milliseconds.
+The server suite runs real Socket.IO clients against a real server on an ephemeral port per suite, because that is where the interesting behaviour lives, and phase durations are parameters so a whole game runs in milliseconds.
 Because it binds ports, it times out in sandboxes that forbid listening on localhost; run it where that is allowed before concluding a test is broken.
-The frontend suite renders the whole app in jsdom against a fake socket ([`tests/fake-socket.ts`](../client/src/tests/fake-socket.ts)), with each test playing the server; jsdom has no 2D context, so canvas rendering is verified in a browser only.
+The client suite renders the whole app in jsdom against a fake socket ([`tests/fake-socket.ts`](../client/src/tests/fake-socket.ts)), with each test playing the server; jsdom has no 2D context, so canvas rendering is verified in a browser only.
 
 Two serious bugs were found only by playing in a browser (a redundant hint, and the lost identity under [pitfalls](#pitfalls)), so UI and flow changes are verified end to end, not just by the suites.
 `npm run e2e` does the repeatable part: [Playwright](../e2e/) builds the app, serves it as production does on port 3310 (`E2E_PORT`), and plays the main flows with each player in a browser context of their own.

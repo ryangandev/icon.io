@@ -1,7 +1,7 @@
 # Zumpo client
 
 The React SPA: the platform pages, each game's room and solo views, and the Zumpo design system in `src/ui/`.
-How it works is in [docs/architecture.md](../docs/architecture.md#frontend); run it from the repository root with `npm run dev` (see the [root README](../README.md)).
+How it works is in [docs/architecture.md](../docs/architecture.md#client); run it from the repository root with `npm run dev` (see the [root README](../README.md)).
 
 ## Stack
 

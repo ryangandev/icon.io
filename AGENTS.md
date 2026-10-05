@@ -31,5 +31,5 @@ Run one package's script with `-w`, for example `npm test -w server`.
 - `docs/games/` is the behaviour contract for each game; UI work must not change a rule or timing by accident ([design](docs/design.md#what-the-screens-are-and-are-not)).
 - Figma is the design source of truth and `design/figma/` and `client/src/ui/generated/` are generated from it; never hand-edit either ([why](docs/design.md#figma-export)).
 - Zumpo UI takes every colour, size, font and shadow from the generated `--zumpo-*` tokens; a value missing there is added in Figma, not typed into CSS ([design system](docs/design.md#in-code)).
-- Backend tests bind real localhost ports; a sandbox that forbids listening makes them time out, which is not a test failure ([testing](docs/architecture.md#testing)).
+- Server tests bind real localhost ports; a sandbox that forbids listening makes them time out, which is not a test failure ([testing](docs/architecture.md#testing)).
 - Verify UI and flow changes in a real browser with two players, not just with the suites ([why](docs/architecture.md#testing)).

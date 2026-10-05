@@ -9,12 +9,12 @@ Where to find the answer, without searching the repository.
 | What is happening now, what is next, what is undecided | [status.md](status.md)                                                                                                          |
 | Product direction                                      | [status.md#product-direction](status.md#product-direction)                                                                      |
 | Known bugs and gaps                                    | [status.md#known-issues](status.md#known-issues)                                                                                |
-| How front, back and shared fit together                | [architecture.md#code-map](architecture.md#code-map)                                                                            |
+| How client, server and shared fit together             | [architecture.md#code-map](architecture.md#code-map)                                                                            |
 | Rooms, seats, lobbies, game modules                    | [architecture.md#the-room-layer](architecture.md#the-room-layer)                                                                |
 | What the server enforces and why                       | [architecture.md#server-authority](architecture.md#server-authority)                                                            |
 | Player identity, refresh and disconnects               | [architecture.md#identity-and-reconnection](architecture.md#identity-and-reconnection)                                          |
 | Event names and payload types                          | [architecture.md#the-wire-contract](architecture.md#the-wire-contract)                                                          |
-| Routes, guards and the socket on the client            | [architecture.md#frontend](architecture.md#frontend)                                                                            |
+| Routes, guards and the socket on the client            | [architecture.md#client](architecture.md#client)                                                                                |
 | Environment variables, production build                | [architecture.md#configuration](architecture.md#configuration)                                                                  |
 | Adding a new game                                      | [architecture.md#adding-a-game](architecture.md#adding-a-game)                                                                  |
 | How to test, and what the suites cannot see            | [architecture.md#testing](architecture.md#testing)                                                                              |
@@ -24,7 +24,7 @@ Where to find the answer, without searching the repository.
 | Make 24 rules, scoring, solo runs, code                | [games/make-24.md](games/make-24.md)                                                                                            |
 | Pairs rules, turns, solo games, code                   | [games/pairs.md](games/pairs.md)                                                                                                |
 | Brand, visual direction, the Figma file                | [design.md](design.md)                                                                                                          |
-| The design system in code, reviewing it against Figma  | [design.md#in-code](design.md#in-code), then [architecture.md#frontend](architecture.md#frontend)                               |
+| The design system in code, reviewing it against Figma  | [design.md#in-code](design.md#in-code), then [architecture.md#client](architecture.md#client)                                   |
 | What the Figma screens do and do not promise           | [design.md#what-the-screens-are-and-are-not](design.md#what-the-screens-are-and-are-not)                                        |
 | Exporting Figma into the repo                          | [design.md#figma-export](design.md#figma-export), then [the plugin README](../tools/figma-export/README.md)                     |
 | Editing the Figma file safely                          | [design.md#editing-the-figma-file](design.md#editing-the-figma-file), then [the bridge README](../tools/figma-bridge/README.md) |
