@@ -133,10 +133,8 @@ Code differs from Figma on purpose in a few places:
   The invite link's box grows to the whole link: two lines at P12's width, three on a phone, which Figma does not draw.
 - A game that ends while the room is open bursts into confetti in the brand accents and the sun brush's gold, at Ryan's request; Figma draws the results still, and a game found finished on arrival or after a refresh is not celebrated.
   It stays off when the system asks for reduced motion, and a Hush game the team lost is not celebrated.
-- On a narrow screen the Trios room's turn bar keeps room for two lines of what it says, the longest any phase needs, so the table under it never moves mid-pick; TS12 draws one line.
 - The phone name page (MO02) keeps the desktop's Back home button beside Let’s play, as the other phone forms (MO05, MO06) lay out their buttons; MO02 stacks a Cancel under it.
-- Daily Word on your own keeps the line under the board as tall as its "Not in the word list" note, so the keyboard never moves when a row is turned back; DW01 and DW02 are 27 px shorter than DW03.
-  Where there is no line, on a phone and in a room while guessing, as Figma draws them, the note is said over the board instead, across the row under the one being fixed.
+- Where Daily Word has no line under the board, on a phone and in a room while guessing, as Figma draws them, the "Not in the word list" note is said over the board instead, across the row under the one being fixed; Figma draws it only on your own (DW03).
 - The others' boards in a Daily Word room stand 12 px apart, not DW07's 16 px: three at 16 px are 2 px wider than the panel holds beside the Desktop keyboard, which Figma lets overflow.
 
 ## Editing the Figma file
@@ -158,6 +156,7 @@ When editing through the Plugin API:
 - The file loads pages dynamically: use `getMainComponentAsync`, not `mainComponent`.
 - An override on an instance's inner layers is keyed to those layers, so swapping the instance to another variant drops it; a Player row's muted status icon is set on every glyph's own layers for that reason.
 - `findAll` throws on a slot's unreadable sublayers; walk the tree yourself and skip a node whose children cannot be read.
+- An instance's inner auto layout frame ignores `minHeight` and will not take a fixed height; make room with its spacing and padding overrides, as TS12's turn bar does for two lines.
 - Cloning a variant inside its set drops the clone's `componentPropertyReferences`; rebind them, and only on the clone's own text, never on a nested instance's.
 - `findOne` by name also matches layers inside nested instances; filter by `id` (instance sublayers start with `I`) when you mean the component's own layer.
 - `resize()` fixes a frame's sizing modes; set them back to `AUTO` afterwards where the frame should hug.
