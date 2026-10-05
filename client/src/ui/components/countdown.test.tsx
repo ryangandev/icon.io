@@ -26,14 +26,15 @@ describe('Countdown', () => {
   });
 });
 
-describe('Countdown tones', () => {
-  const classOf = (props: { deadline?: boolean; seconds: number }) => {
-    const { unmount } = render(<Countdown label="to a hint" {...props} />);
-    const name = screen.getByRole('timer').className;
-    unmount();
-    return name;
-  };
+/** The timer's classes, for comparing its tones. */
+const classOf = (props: { deadline?: boolean; seconds: number }) => {
+  const { unmount } = render(<Countdown label="to a hint" {...props} />);
+  const name = screen.getByRole('timer').className;
+  unmount();
+  return name;
+};
 
+describe('Countdown tones', () => {
   it('turns urgent in the last seconds of a deadline', () => {
     expect(classOf({ seconds: 3 })).not.toBe(classOf({ seconds: 12 }));
   });
