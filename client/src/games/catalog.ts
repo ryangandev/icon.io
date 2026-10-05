@@ -195,6 +195,43 @@ Clear the last level to win together. Two players play 7 levels, three play 6 an
     createDescription:
       'Play every card in order, together, without a word. Fewer players play more levels.',
   },
+  {
+    type: 'daily-word',
+    name: 'Daily Word',
+    tone: 'blue',
+    tagline: 'Five letters, six guesses. A new word every day.',
+    facts: 'Solo or 2–8 players',
+    maxPlayers: 8,
+    lobbySummary:
+      'Everyone gets the same hidden five-letter word at once, with six guesses each. Fewer guesses score more.',
+    lobbyFacts: [
+      '2–8 players',
+      '3 or 5 words',
+      '2 minutes for each word',
+      'Others see your marks, never your letters',
+    ],
+    rules: `2–8 players · 3 or 5 words
+
+Find a hidden five-letter word in six guesses. Every guess must be a real word. After each one, every letter is marked: a green square is in the right place, a coral circle is in the word but somewhere else, and a flat grey tile is not in the word.
+
+A letter is marked only as many times as it is in the word, and a letter in its right place counts first. A guess that is not a word, or one you already made, is turned back and costs nothing.
+
+Everyone guesses the same word at the same time, with 2 minutes for each. Finding it pays 100 points for every guess you had left over, plus up to 50 for the time left. Others see your marks as you go, never your letters, and once you find it your chat waits until the word is revealed.
+
+On your own, there is one word a day, the same for everybody, and a new one at your midnight. Your stats and streak are kept on this device. After it, play practice words as long as you like, and Challenge a friend sends them the same word.`,
+    createDescription:
+      'Every word is two minutes. Three words is a quick game.',
+    solo: {
+      summary:
+        'One word a day, the same for everybody. Six guesses to find it.',
+      facts: [
+        'Every guess must be a real five-letter word',
+        'Green square: right place. Coral circle: somewhere else. Grey: not in it',
+        'A new word at your midnight; your streak is kept on this device',
+        'Practice words after it, as many as you like',
+      ],
+    },
+  },
 ];
 
 export function gameInfo(type: GameType): GameInfo {

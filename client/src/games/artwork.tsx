@@ -1,5 +1,6 @@
 import {
   HushCard,
+  LetterTile,
   Lives,
   MineCell,
   NumberCard,
@@ -30,8 +31,10 @@ export function GameArtwork({ type }: { type: GameType }) {
         <HandArtwork />
       ) : type === 'pairs' ? (
         <PairsArtwork />
-      ) : (
+      ) : type === 'hush' ? (
         <PileArtwork />
+      ) : (
+        <WordArtwork />
       )}
     </div>
   );
@@ -174,6 +177,26 @@ function PileArtwork() {
         showLabel={false}
         className={cx(styles.lives, styles.wideOnly)}
       />
+    </div>
+  );
+}
+
+/** A guess against PLANT: two letters elsewhere, one in place, two not in it.
+    The phone card keeps the first three, as MO03 does. */
+function WordArtwork() {
+  const marks = ['present', 'absent', 'correct', 'absent', 'present'] as const;
+  const tiles = [...'TRAIL'].map((letter, index) => (
+    <LetterTile
+      key={index}
+      letter={letter}
+      state={marks[index]}
+      size="regular"
+    />
+  ));
+  return (
+    <div className={styles.word}>
+      {tiles.slice(0, 3)}
+      <span className={styles.wordTail}>{tiles.slice(3)}</span>
     </div>
   );
 }

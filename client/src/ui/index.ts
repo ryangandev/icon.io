@@ -53,6 +53,19 @@ export {
   type HushCardState,
 } from './components/hush-card';
 export { Icon, type GlyphName, type IconProps } from './components/icon';
+export { Keyboard, type KeyboardProps } from './components/keyboard';
+export {
+  LetterKey,
+  type LetterKeyProps,
+  type LetterKeyState,
+} from './components/letter-key';
+export {
+  LetterTile,
+  MARK_WORDS,
+  type LetterTileProps,
+  type LetterTileSize,
+  type LetterTileState,
+} from './components/letter-tile';
 export { Lives, livesLabel, type LivesProps } from './components/lives';
 export {
   MineCell,
@@ -94,6 +107,11 @@ export {
   type PlayerRowProps,
   type PlayerRowState,
 } from './components/player-row';
+export {
+  RaceBoard,
+  type RaceBoardProps,
+  type RaceBoardState,
+} from './components/race-board';
 export { RoomBar, type RoomBarProps } from './components/room-bar';
 export {
   RoomRow,
@@ -114,6 +132,11 @@ export {
   type TurnBarKind,
   type TurnBarProps,
 } from './components/turn-bar';
+export {
+  WordBoard,
+  type WordBoardProps,
+  type WordBoardRow,
+} from './components/word-board';
 export { WordChoice, type WordChoiceProps } from './components/word-choice';
 export { Wordmark } from './components/wordmark';
 export { brushes, type BrushName } from './generated/brushes';

@@ -42,28 +42,26 @@
   display: contents;
 }
 
-.pairs {
+.pairs,
+.pile,
+.word,
+.wordTail {
   display: flex;
   align-items: center;
   gap: var(--zumpo-space-8);
 }
 
-/* Hush's pile, and the team's lives beside it. */
-.pile {
-  display: flex;
-  align-items: center;
-  gap: var(--zumpo-space-8);
-}
-
+/* The team's lives, beside Hush's pile. */
 .lives {
   margin-left: var(--zumpo-space-16);
 }
 
-/* The phone card drops the last cell to fit, a hand's answer, and Hush's
-   lowest card and lives; its cards are smaller than any card in play, as in
-   the mobile cards. */
+/* The phone card drops the last cell, the last two letters, a hand's answer,
+   and Hush's lowest card and lives to fit; its cards are smaller than any card
+   in play, as in the mobile cards. */
 @media (max-width: 640px) {
   .lastCell,
+  .wordTail,
   .answer,
   /* Two classes, to outrank the display a component gives its own root. */
   .pile > .wideOnly {

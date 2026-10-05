@@ -74,6 +74,8 @@ const BUCKET_FOR_EVENT: Record<ClientToServerEvent, BucketName> = {
   // cards in a row stays inside the burst.
   'hush:ready': 'room',
   'hush:play': 'room',
+  // Six guesses a word, typed out a letter at a time.
+  'dw:guess': 'room',
 };
 
 /**

@@ -19,6 +19,9 @@ import {
   DrawingToolbar,
   Header,
   Icon,
+  Keyboard,
+  LetterKey,
+  LetterTile,
   MineCell,
   MobileTabs,
   Notice,
@@ -32,6 +35,7 @@ import {
   PickMarker,
   PickResult,
   PlayerRow,
+  RaceBoard,
   RoomBar,
   RoomRow,
   Scoreboard,
@@ -40,6 +44,7 @@ import {
   Tag,
   TextField,
   TurnBar,
+  WordBoard,
   WordChoice,
   Wordmark,
   type BrushName,
@@ -878,6 +883,25 @@ export default function Gallery() {
       </Family>
 
       <Family
+        name="Pairs symbol"
+        file="pairs-symbol"
+        note="Nine shapes in two brush colours each; a Small board draws eight of them."
+      >
+        <div className={styles.cellRow}>
+          {pairsSymbols.map((_, symbol) => (
+            <Specimen
+              key={symbol}
+              family="pairs-symbol"
+              variant={`Symbol=${symbolName(symbol)}`}
+              label={symbolName(symbol)}
+            >
+              <PairsSymbol symbol={symbol} />
+            </Specimen>
+          ))}
+        </div>
+      </Family>
+
+      <Family
         name="Hush card"
         file="hush-card"
         note="Hush's numbered cards: in a hand, next to play, on top of the pile, played under it, or discarded by a mistake."
@@ -929,23 +953,178 @@ export default function Gallery() {
         </Specimen>
       </Family>
 
-      <Family
-        name="Pairs symbol"
-        file="pairs-symbol"
-        note="Nine shapes in two brush colours each; a Small board draws eight of them."
-      >
+      <Family name="Letter tile" file="letter-tile">
+        {(
+          [
+            ['regular', 'Regular'],
+            ['compact', 'Compact'],
+            ['small', 'Small'],
+            ['mini', 'Mini'],
+          ] as const
+        ).map(([tileSize, sizeName]) => (
+          <div key={tileSize} className={styles.cellRow}>
+            {(
+              [
+                ['Empty', 'empty'],
+                ['Typed', 'typed'],
+                ['Correct', 'correct'],
+                ['Present', 'present'],
+                ['Absent', 'absent'],
+              ] as const
+            )
+              // A Mini tile is another player's, marks only: never typed into.
+              .filter(([, state]) => tileSize !== 'mini' || state !== 'typed')
+              .map(([stateName, state]) => (
+                <Specimen
+                  key={state}
+                  family="letter-tile"
+                  variant={`State=${stateName}, Size=${sizeName}`}
+                  label={`${stateName} · ${sizeName}`}
+                >
+                  <LetterTile
+                    letter={state === 'empty' ? undefined : 'A'}
+                    state={state}
+                    size={tileSize}
+                  />
+                </Specimen>
+              ))}
+          </div>
+        ))}
+      </Family>
+
+      <Family name="Letter key" file="letter-key">
+        {(
+          [
+            ['regular', 'Regular'],
+            ['compact', 'Compact'],
+          ] as const
+        ).map(([keySize, sizeName]) => (
+          <div key={keySize} className={styles.cellRow}>
+            {(
+              [
+                ['Plain', 'plain'],
+                ['Correct', 'correct'],
+                ['Present', 'present'],
+                ['Absent', 'absent'],
+              ] as const
+            ).map(([stateName, state]) => (
+              <Specimen
+                key={state}
+                family="letter-key"
+                variant={`Kind=Letter, State=${stateName}, Size=${sizeName}`}
+                label={`${stateName} · ${sizeName}`}
+              >
+                <LetterKey
+                  letter="q"
+                  state={state}
+                  size={keySize}
+                  onPress={noop}
+                />
+              </Specimen>
+            ))}
+            {(
+              [
+                ['Enter', 'enter'],
+                ['Delete', 'delete'],
+              ] as const
+            ).map(([kindName, kind]) => (
+              <Specimen
+                key={kind}
+                family="letter-key"
+                variant={`Kind=${kindName}, State=Plain, Size=${sizeName}`}
+                label={`${kindName} · ${sizeName}`}
+              >
+                <LetterKey kind={kind} size={keySize} onPress={noop} />
+              </Specimen>
+            ))}
+          </div>
+        ))}
         <div className={styles.cellRow}>
-          {pairsSymbols.map((_, symbol) => (
+          <Specimen label="Disabled">
+            <LetterKey letter="q" onPress={noop} disabled />
+          </Specimen>
+        </div>
+      </Family>
+
+      <Family
+        name="Keyboard"
+        file="keyboard"
+        note="One component: it takes the Phone layout in a container narrower than the Desktop one."
+      >
+        {(
+          [
+            ['Desktop', 472],
+            ['Phone', 336],
+          ] as const
+        ).map(([layout, width]) => (
+          <Specimen
+            key={layout}
+            family="keyboard"
+            variant={`Layout=${layout}`}
+            width={width}
+          >
+            <Keyboard onLetter={noop} onEnter={noop} onDelete={noop} />
+          </Specimen>
+        ))}
+      </Family>
+
+      <Family name="Word board" file="word-board">
+        <div className={styles.cellRow}>
+          {(
+            [
+              ['regular', 'Regular'],
+              ['compact', 'Compact'],
+              ['small', 'Small'],
+              ['mini', 'Mini'],
+            ] as const
+          ).map(([boardSize, sizeName]) => (
             <Specimen
-              key={symbol}
-              family="pairs-symbol"
-              variant={`Symbol=${symbolName(symbol)}`}
-              label={symbolName(symbol)}
+              key={boardSize}
+              family="word-board"
+              variant={`Size=${sizeName}`}
             >
-              <PairsSymbol symbol={symbol} />
+              <WordBoard
+                rows={[]}
+                size={boardSize}
+                label={`${sizeName} board`}
+              />
             </Specimen>
           ))}
         </div>
+      </Family>
+
+      <Family name="Race board" file="race-board">
+        {(
+          [
+            ['mini', 'Mini'],
+            ['small', 'Small'],
+          ] as const
+        ).map(([boardSize, boardName]) => (
+          <div key={boardSize} className={styles.cellRow}>
+            {(
+              [
+                ['Guessing', 'guessing'],
+                ['Found', 'found'],
+                ['Out', 'out'],
+              ] as const
+            ).map(([stateName, state]) => (
+              <Specimen
+                key={state}
+                family="race-board"
+                variant={`State=${stateName}, Board=${boardName}`}
+                label={`${stateName} · ${boardName}`}
+              >
+                <RaceBoard
+                  name="Maya"
+                  status="Found · +431"
+                  state={state}
+                  board={boardSize}
+                  rows={[]}
+                />
+              </Specimen>
+            ))}
+          </div>
+        ))}
       </Family>
 
       <Family name="Pick result" file="pick-result">

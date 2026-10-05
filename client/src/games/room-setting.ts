@@ -5,7 +5,7 @@ import { levelsFor } from '../../../shared/hush';
 import { plural } from './plural';
 
 /** The setting a room was made with: "2 rounds", "Small 9 × 9", "10 hands",
- * "Large 6 × 6", "7 levels". */
+ * "Large 6 × 6", "7 levels", "3 words". */
 export function roomSetting(room: AnyLobbyRoomInfo): string {
   switch (room.gameType) {
     case 'draw-and-guess':
@@ -19,5 +19,7 @@ export function roomSetting(room: AnyLobbyRoomInfo): string {
     case 'hush':
       // Nothing is chosen; the level count follows who is seated.
       return plural(levelsFor(room.currentPlayerCount), 'level');
+    case 'daily-word':
+      return plural(room.rounds, 'word');
   }
 }

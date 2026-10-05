@@ -52,6 +52,8 @@ export interface RoomLayoutProps {
    * whose team scores together and whose rows say what each player holds.
    */
   showScores?: boolean;
+  /** On a phone, more under the scoreboard on the Players tab: the race. */
+  playersAside?: ReactNode;
 }
 
 type View = 'board' | 'players' | 'chat';
@@ -69,6 +71,7 @@ export function RoomLayout({
   chat,
   boardInput,
   showScores = true,
+  playersAside,
 }: RoomLayoutProps) {
   const room = useRoomContext();
   const { state, reconnecting, reconnectGraceMs } = room;
@@ -165,7 +168,14 @@ export function RoomLayout({
             {
               value: 'players',
               label: `Players · ${players.length}`,
-              panel: scoreboard,
+              panel: playersAside ? (
+                <div className={styles.side}>
+                  {scoreboard}
+                  {playersAside}
+                </div>
+              ) : (
+                scoreboard
+              ),
             },
             { value: 'chat', label: 'Chat', panel: chatPanel },
           ]}

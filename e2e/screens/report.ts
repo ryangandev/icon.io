@@ -36,6 +36,9 @@ const CONTENT: Record<string, string> = {
   HU06: 'The chat holds the game so far, from the join messages on; Figma’s example has one level’s worth.',
   HU08: 'Every player still holds cards; Figma’s Ryan holds nothing, a shorter row.',
   PR08: 'Pairs’ description takes a second line; Figma keeps the frame at the Make 24 form’s height and moves the card up.',
+  DW07: 'The chat holds the game so far, from the start and the first word on; Figma’s example has two lines.',
+  DW08: 'The chat holds the game so far, from the start and the first word on; Figma’s example has a few lines.',
+  DW09: 'The chat holds the game so far, from the start and the first word on; Figma’s example has the second word only.',
 };
 
 interface Screen {
