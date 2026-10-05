@@ -61,9 +61,9 @@ export function HushRoom() {
   );
 }
 
-/** A player by name, or "You". */
-function nameIn(room: Room, playerId: string): string {
-  if (playerId === room.playerId) return 'You';
+/** A player by name, or "You" ("you" inside a sentence). */
+function nameIn(room: Room, playerId: string, first = true): string {
+  if (playerId === room.playerId) return first ? 'You' : 'you';
   return room.state.playerList[playerId]?.username ?? 'A player';
 }
 
@@ -292,7 +292,12 @@ function tableHead(state: HushRoomState) {
   const left = cardsLeft(state);
   return {
     title: 'The pile',
-    note: pile.length === 0 ? 'Lowest first' : `${plural(left, 'card')} to go`,
+    note:
+      pile.length === 0
+        ? 'Lowest first'
+        : left === 0
+          ? 'No cards left'
+          : `${plural(left, 'card')} to go`,
     lives,
   };
 }
@@ -422,8 +427,8 @@ function turnBar(room: Room, seconds: number): TurnBarProps {
       if (!mistake) break;
       const holders = [...new Set(mistake.discarded.map((d) => d.playerId))];
       const held = holders.map(
-        (holder) =>
-          `${nameIn(room, holder)} still held ${cardsOf(
+        (holder, index) =>
+          `${nameIn(room, holder, index === 0)} still held ${cardsOf(
             mistake.discarded
               .filter((d) => d.playerId === holder)
               .map((d) => d.card),
@@ -507,7 +512,10 @@ function playerLine(state: HushRoomState, seat: Seat): PlayerLine {
       if (lost.length > 0) {
         return {
           seat,
-          status: `Lost ${cardsOf(lost)}, ${plural(held, 'card')} left`,
+          status:
+            held === 0
+              ? `Lost ${cardsOf(lost)}, no cards left`
+              : `Lost ${cardsOf(lost)}, ${plural(held, 'card')} left`,
           statusIcon: 'alert',
         };
       }

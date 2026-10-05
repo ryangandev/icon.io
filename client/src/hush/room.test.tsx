@@ -28,6 +28,9 @@ const scoreboard = () =>
   within(screen.getByRole('region', { name: /^Players/ }));
 const chatBox = () => screen.getByRole('textbox', { name: 'Message' });
 
+/** The celebration's canvas; the room has no other. */
+const confetti = () => document.querySelector('canvas[aria-hidden]');
+
 describe('a Hush room', () => {
   it('lets the host start, and says how long the game is', async () => {
     const user = userEvent.setup();
@@ -254,6 +257,45 @@ describe('a Hush room', () => {
     expect(screen.getByText('Level 2: clean, a life back')).toBeInTheDocument();
     expect(screen.queryByText('Winner')).toBeNull();
     expect(screen.getByRole('img', { name: '58' })).toBeInTheDocument();
+  });
+
+  it('celebrates a win together, but not a loss', async () => {
+    const summary = {
+      endedEarly: false,
+      standings: [
+        { playerId: ME, username: 'Ryan', points: 0 },
+        { playerId: 'p2', username: 'Maya', points: 0 },
+      ],
+      levels: 7,
+      levelsCleared: 0,
+      won: false,
+      lives: 0,
+      history: [{ level: 1, livesLost: 3, lifeBack: false, cleared: false }],
+      held: [],
+    };
+    const { update } = await renderSeated(playing);
+    update(hushState({ lastGame: summary }));
+    expect(
+      screen.getByRole('heading', { name: 'Out of lives on level 1.' }),
+    ).toBeInTheDocument();
+    expect(confetti()).toBeNull();
+
+    update(playing);
+    update(
+      hushState({
+        lastGame: {
+          ...summary,
+          won: true,
+          lives: 1,
+          levels: 1,
+          levelsCleared: 1,
+        },
+      }),
+    );
+    expect(
+      screen.getByRole('heading', { name: 'All 1 level cleared.' }),
+    ).toBeInTheDocument();
+    expect(confetti()).not.toBeNull();
   });
 
   it('shows every card still held when the lives run out', async () => {

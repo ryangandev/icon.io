@@ -178,6 +178,7 @@ Hush's two events of its own are `hush:ready`, with the room, and `hush:play`, w
 | [`game-engine.ts`](../../server/socket/hush/game-engine.ts) | Levels, plays, mistakes, pauses and lives                   |
 | [`state.ts`](../../server/socket/hush/state.ts)             | The game's state, and the snapshot each player is sent      |
 | [`hush/room.tsx`](../../client/src/hush/room.tsx)           | A room's screens                                            |
+| [`hush/table.tsx`](../../client/src/hush/table.tsx)         | The table: the pile, the lives and the viewer's hand        |
 
 The rules are covered by [`hush-rules.test.ts`](../../server/tests/hush-rules.test.ts) and [`hush-flow.test.ts`](../../server/tests/hush-flow.test.ts).
 The screens are HU01-HU12 in [the Figma file](../design.md).
