@@ -1,0 +1,263 @@
+{
+  "format": 1,
+  "code": "MO17",
+  "title": "Tab taken over",
+  "id": "79:104808",
+  "section": "04 / Mobile / 390px flow adaptations",
+  "frame": {
+    "type": "FRAME",
+    "id": "79:104808",
+    "name": "MO17 / Tab taken over",
+    "x": 40,
+    "y": 8047,
+    "w": 390,
+    "h": 494,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        "$Zumpo · UI:space/20",
+        "$Zumpo · UI:space/20",
+        32,
+        "$Zumpo · UI:space/20"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "FRAME",
+        "id": "79:104809",
+        "name": "Mobile navigation",
+        "w": 350,
+        "h": 44,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "79:104810",
+            "name": "Zumpo/Wordmark",
+            "w": 140,
+            "h": 44,
+            "wSize": "hug",
+            "component": "Zumpo/Wordmark",
+            "componentId": "4:36"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:104811",
+            "name": "Player / YO",
+            "w": 32,
+            "h": 32,
+            "component": "Zumpo/Avatar",
+            "variant": {
+              "Tone": "Sand"
+            },
+            "componentId": "26:10572",
+            "props": {
+              "Initials": "SA"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 32,
+                "width": 32
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "79:104828",
+        "name": "Zumpo is open in another tab.",
+        "w": 350,
+        "h": 332,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Card",
+        "variant": {
+          "Kind": "Focused"
+        },
+        "componentId": "9:400",
+        "props": {
+          "Description": "You’re playing there now. Use this tab instead, and the other one will wait.",
+          "Title": "Zumpo is open in another tab."
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 332,
+            "width": 350
+          }
+        ],
+        "slots": {
+          "Content": [
+            {
+              "type": "FRAME",
+              "id": "I79:104828;35:13433;79:104830",
+              "name": "Actions",
+              "w": 284,
+              "h": 108,
+              "wSize": "fill",
+              "hSize": "hug",
+              "layout": {
+                "mode": "row",
+                "gap": "$Zumpo · UI:space/12",
+                "wrap": true,
+                "crossGap": 12,
+                "align": "center",
+                "strokesIncluded": true
+              },
+              "children": [
+                {
+                  "type": "INSTANCE",
+                  "id": "I79:104828;35:13433;79:104831",
+                  "name": "Action / Use this tab",
+                  "w": 122,
+                  "h": 48,
+                  "wSize": "hug",
+                  "component": "Zumpo/Button",
+                  "variant": {
+                    "Style": "Primary",
+                    "State": "Default"
+                  },
+                  "componentId": "4:15",
+                  "props": {
+                    "Label": "Use this tab"
+                  },
+                  "overrides": [
+                    {
+                      "path": ".",
+                      "height": 48,
+                      "reactions": [
+                        {
+                          "on": "on_click",
+                          "do": [
+                            {
+                              "nav": "navigate",
+                              "to": "9:583",
+                              "toName": "P05 / Connecting",
+                              "transition": "dissolve"
+                            }
+                          ]
+                        }
+                      ],
+                      "width": 122
+                    }
+                  ],
+                  "reactions": [
+                    {
+                      "on": "on_click",
+                      "do": [
+                        {
+                          "nav": "navigate",
+                          "to": "9:583",
+                          "toName": "P05 / Connecting",
+                          "transition": "dissolve"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "INSTANCE",
+                  "id": "I79:104828;35:13433;79:104832",
+                  "name": "Action / Back to games",
+                  "w": 171,
+                  "h": 48,
+                  "wSize": "hug",
+                  "component": "Zumpo/Button",
+                  "variant": {
+                    "Style": "Secondary",
+                    "State": "Default"
+                  },
+                  "componentId": "4:18",
+                  "props": {
+                    "Icon": "Zumpo/Icon / Glyph=back",
+                    "Show icon": true,
+                    "Label": "Back to games"
+                  },
+                  "overrides": [
+                    {
+                      "path": ".",
+                      "height": 48,
+                      "reactions": [
+                        {
+                          "on": "on_click",
+                          "do": [
+                            {
+                              "nav": "navigate",
+                              "to": "40:22071",
+                              "toName": "P04 / Games hub",
+                              "transition": "dissolve"
+                            }
+                          ]
+                        }
+                      ],
+                      "width": 171
+                    }
+                  ],
+                  "reactions": [
+                    {
+                      "on": "on_click",
+                      "do": [
+                        {
+                          "nav": "navigate",
+                          "to": "40:22071",
+                          "toName": "P04 / Games hub",
+                          "transition": "dissolve"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "type": "FRAME",
+        "id": "79:104820",
+        "name": "Footer",
+        "w": 350,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "79:104821",
+            "w": 350,
+            "h": 18,
+            "hSize": "hug",
+            "text": "A little play. Good company.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    ]
+  }
+}

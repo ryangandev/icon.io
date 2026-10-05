@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "exportedAt": "2026-10-05T16:48:26.030Z",
+  "exportedAt": "2026-10-05T17:26:33.390Z",
   "file": {
     "key": "pd5Hgp7zbT2cMqQNan35uY",
     "name": "Zumpo · Paper Pop flows",
@@ -13,13 +13,13 @@
     "previews": true
   },
   "counts": {
-    "flows": 163,
+    "flows": 167,
     "componentFamilies": 47,
     "outsideComponents": 0,
     "svgs": 83,
-    "seconds": 25,
-    "nodes": 10075,
-    "instances": 5581,
+    "seconds": 27,
+    "nodes": 10113,
+    "instances": 5597,
     "grids": 66,
     "gridCells": 2207
   },
@@ -606,6 +606,30 @@
           ],
           "file": "flows/01-platform/P16.json",
           "preview": "previews/01-platform/P16.png",
+          "isFlow": true
+        },
+        {
+          "code": "P17",
+          "title": "Tab taken over",
+          "id": "79:104767",
+          "size": [
+            1440,
+            580
+          ],
+          "file": "flows/01-platform/P17.json",
+          "preview": "previews/01-platform/P17.png",
+          "isFlow": true
+        },
+        {
+          "code": "P18",
+          "title": "Room closed by a restart",
+          "id": "79:104852",
+          "size": [
+            1440,
+            580
+          ],
+          "file": "flows/01-platform/P18.json",
+          "preview": "previews/01-platform/P18.png",
           "isFlow": true
         }
       ],
@@ -1507,10 +1531,36 @@
           "file": "flows/04-mobile/MO16.json",
           "preview": "previews/04-mobile/MO16.png",
           "isFlow": true
+        },
+        {
+          "code": "MO17",
+          "title": "Tab taken over",
+          "id": "79:104808",
+          "size": [
+            390,
+            494
+          ],
+          "file": "flows/04-mobile/MO17.json",
+          "preview": "previews/04-mobile/MO17.png",
+          "isFlow": true
+        },
+        {
+          "code": "MO18",
+          "title": "Room closed by a restart",
+          "id": "79:104881",
+          "size": [
+            390,
+            429
+          ],
+          "file": "flows/04-mobile/MO18.json",
+          "preview": "previews/04-mobile/MO18.png",
+          "isFlow": true
         }
       ],
       "notes": [
-        "MO03 · 390px / responsive redesign Each card says how it can be played: Play solo starts at once, without a name; Find a room is the room flow."
+        "MO03 · 390px / responsive redesign Each card says how it can be played: Play solo starts at once, without a name; Find a room is the room flow.",
+        "MO17 · A second tab with the same player took over. This one waits until Use this tab takes the player back; the other tab then shows this card.",
+        "MO18 · Zumpo restarted for an update, which closes every room. Everyone in the room sees this card in place of the game."
       ]
     },
     {

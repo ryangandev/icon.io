@@ -30,7 +30,7 @@ const FLOW_SECTIONS = [
   { id: '43:61073', prefix: '10', dir: '10-daily-word' },
 ];
 const SHARED_SECTION = { id: '9:198', name: 'Shared pieces' };
-const EXPECTED_FLOWS = 163;
+const EXPECTED_FLOWS = 167;
 const EXPECTED_FAMILIES = 47;
 
 const FLOW_CODE = /^([A-Z]{1,2}\d{2})\b/;

@@ -6,7 +6,7 @@ Resolved items are deleted, not archived; history is in git.
 ## Now
 
 The project is rebranded and redesigned as **Zumpo**; the code, packages, folder and repository carry the name.
-The redesign is an editable Figma file of 163 screens and its shared component families (see [design.md](design.md)), with a snapshot in `design/figma/`.
+The redesign is an editable Figma file of 167 screens and its shared component families (see [design.md](design.md)), with a snapshot in `design/figma/`.
 Ryan approved it in review round two on 2026-10-03, after one fix (icons centred on their line of text).
 
 The implementation was built on `rework` and merged into `main` on 2026-10-05 ([#26](https://github.com/ryangandev/zumpo/pull/26)).
@@ -39,11 +39,6 @@ Four more games, chosen by Ryan on 2026-10-05, are designed in Figma and being b
 Trios, Liar's Dice and Daily Word play on your own and in rooms; Hush is rooms only, because it needs at least two players.
 Their behaviour contracts land in `docs/games/` with each game.
 The hub, home and How to play screens (P01, P04, P13, P14, MO01, MO03) already show all eight games, so until every game is merged, `npm run design:compare` finds those screens with more cards than the code.
-
-What is left in Figma, for the server hardening:
-
-1. Draw the room state for a server restart ("Zumpo just restarted.", desktop and phone) beside P09, whose card code reuses for it ([design](design.md#on-purpose)).
-2. Draw the state of a tab another tab took over ("Zumpo is open in another tab.", desktop and phone) beside P06, whose card code reuses for it.
 
 ## Open decisions
 
