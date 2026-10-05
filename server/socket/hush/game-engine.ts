@@ -336,7 +336,9 @@ const createHushGameEngine = (
   ) => {
     clearTimer(room.roomId);
     const game = room.game;
-    if (IN_LEVEL.has(game.phase)) {
+    // A level cut short goes into the record as not cleared; the last level,
+    // just won, is in it already.
+    if (IN_LEVEL.has(game.phase) && game.history.at(-1)?.level !== game.level) {
       game.history.push({
         level: game.level,
         livesLost: game.livesLost,
