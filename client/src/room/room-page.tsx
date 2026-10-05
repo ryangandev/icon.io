@@ -15,6 +15,7 @@ import { DrawAndGuessRoom } from '../draw-and-guess/room';
 import { MinesweeperRoom } from '../minesweeper/room';
 import { Make24Room } from '../make-24/room';
 import { PairsRoom } from '../pairs/room';
+import { HushRoom } from '../hush/room';
 import { useSession } from '../net/session';
 import { REQUEST_TIMEOUT_MS } from '../net/socket';
 import { useLobby } from '../net/use-lobby';
@@ -276,11 +277,17 @@ function SeatedRoom({
 
   // A game that ends while the room is open is celebrated; a finished game
   // found on arrival or after a refresh is not. Each one gets its own burst.
+  // A Hush team can lose together, and a loss is not celebrated.
   const [wasPlaying, setWasPlaying] = useState(state.isGameStarted);
   const [celebrations, setCelebrations] = useState(0);
   if (state.isGameStarted !== wasPlaying) {
     setWasPlaying(state.isGameStarted);
-    if (!state.isGameStarted && state.lastGame && !state.lastGame.endedEarly) {
+    if (
+      !state.isGameStarted &&
+      state.lastGame &&
+      !state.lastGame.endedEarly &&
+      !(state.gameType === 'hush' && !state.lastGame.won)
+    ) {
       setCelebrations((count) => count + 1);
     }
   }
@@ -369,6 +376,8 @@ function SeatedRoom({
         <Make24Room />
       ) : state.gameType === 'pairs' ? (
         <PairsRoom />
+      ) : state.gameType === 'hush' ? (
+        <HushRoom />
       ) : (
         <Suspense>
           <DailyWordRoom />

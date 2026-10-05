@@ -132,7 +132,7 @@ Code differs from Figma on purpose in a few places:
 - Dialogs are centred in the window, so they sit a few pixels from where each Figma screen places them.
   The invite link's box grows to the whole link: two lines at P12's width, three on a phone, which Figma does not draw.
 - A game that ends while the room is open bursts into confetti in the brand accents and the sun brush's gold, at Ryan's request; Figma draws the results still, and a game found finished on arrival or after a refresh is not celebrated.
-  It stays off when the system asks for reduced motion.
+  It stays off when the system asks for reduced motion, and a Hush game the team lost is not celebrated.
 - The phone name page (MO02) keeps the desktop's Back home button beside Let’s play, as the other phone forms (MO05, MO06) lay out their buttons; MO02 stacks a Cancel under it.
 - Daily Word on your own keeps the line under the board as tall as its "Not in the word list" note, so the keyboard never moves when a row is turned back; DW01 and DW02 are 27 px shorter than DW03.
   Where there is no line, on a phone and in a room while guessing, as Figma draws them, the note is said over the board instead, across the row under the one being fixed.

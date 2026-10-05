@@ -1,5 +1,7 @@
 import {
+  HushCard,
   LetterTile,
+  Lives,
   MineCell,
   NumberCard,
   PairsCard,
@@ -7,6 +9,7 @@ import {
   symbolNamed,
   Tag,
 } from '../ui';
+import { cx } from '../ui/cx';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import {
   turtle,
@@ -28,6 +31,8 @@ export function GameArtwork({ type }: { type: GameType }) {
         <HandArtwork />
       ) : type === 'pairs' ? (
         <PairsArtwork />
+      ) : type === 'hush' ? (
+        <PileArtwork />
       ) : (
         <WordArtwork />
       )}
@@ -146,6 +151,32 @@ function BoardArtwork() {
       <span className={styles.lastCell}>
         <MineCell state={{ kind: 'open', adjacent: 1 }} row={0} column={5} />
       </span>
+    </div>
+  );
+}
+
+/**
+ * A pile mid-level: three cards played, the top one, and two lives left. A
+ * phone keeps the pile's top three, as MO03 draws it.
+ */
+function PileArtwork() {
+  return (
+    <div className={styles.pile}>
+      {[12, 27, 45].map((value, index) => (
+        <HushCard
+          key={value}
+          value={value}
+          state="played"
+          size="small"
+          className={index === 0 ? styles.wideOnly : undefined}
+        />
+      ))}
+      <HushCard value={58} state="pile" size="small" />
+      <Lives
+        lives={2}
+        showLabel={false}
+        className={cx(styles.lives, styles.wideOnly)}
+      />
     </div>
   );
 }

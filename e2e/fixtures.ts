@@ -9,7 +9,12 @@ import {
 export { expect };
 
 export type GameType =
-  'draw-and-guess' | 'minesweeper' | 'make-24' | 'pairs' | 'daily-word';
+  | 'draw-and-guess'
+  | 'minesweeper'
+  | 'make-24'
+  | 'pairs'
+  | 'hush'
+  | 'daily-word';
 
 export interface PlayerOptions {
   /** A 390 px touch screen, as Figma's mobile frames. */

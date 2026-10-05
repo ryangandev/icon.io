@@ -47,6 +47,11 @@ export interface RoomLayoutProps {
    * switch to the Chat tab: its accessible name, or nothing for no input.
    */
   boardInput?: string;
+  /**
+   * The scoreboard's points; off where everybody's are the same, as in Hush,
+   * whose team scores together and whose rows say what each player holds.
+   */
+  showScores?: boolean;
   /** On a phone, more under the scoreboard on the Players tab: the race. */
   playersAside?: ReactNode;
 }
@@ -65,6 +70,7 @@ export function RoomLayout({
   players,
   chat,
   boardInput,
+  showScores = true,
   playersAside,
 }: RoomLayoutProps) {
   const room = useRoomContext();
@@ -91,7 +97,7 @@ export function RoomLayout({
           tone={toneOf(seat.username)}
           status={status}
           statusIcon={statusIcon}
-          score={seat.points}
+          score={showScores ? seat.points : undefined}
           host={seat.playerId === state.owner.playerId}
           you={seat.playerId === room.playerId}
           state={rowState}

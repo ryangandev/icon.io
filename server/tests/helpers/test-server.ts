@@ -7,6 +7,7 @@ import {
 } from '../../app.js';
 import type {
   DailyWordDurationsInSeconds,
+  HushDurationsInSeconds,
   Make24DurationsInSeconds,
   MinesweeperDurationsInSeconds,
   PairsDurationsInSeconds,
@@ -15,6 +16,7 @@ import type {
 import type { MinesweeperState } from '../../socket/minesweeper/index.js';
 import type { Make24State } from '../../socket/make-24/index.js';
 import type { PairsState } from '../../socket/pairs/index.js';
+import type { HushState } from '../../socket/hush/index.js';
 import type { DailyWordState } from '../../socket/daily-word/index.js';
 import type {
   AnyLobbyRoomInfo,
@@ -26,6 +28,7 @@ import type {
   DrawAndGuessState,
   GameType,
   HandshakeAuth,
+  HushRoomState,
   Make24RoomState,
   MinesweeperDifficulty,
   MinesweeperRoomState,
@@ -79,6 +82,16 @@ const FAST_MAKE24: Make24DurationsInSeconds = {
 const FAST_PAIRS: PairsDurationsInSeconds = {
   turn: 1,
   show: 0.3,
+};
+
+/**
+ * A countdown and a mistake long enough to assert on inside them, and a
+ * cleared level short enough that a game of several levels fits in a test.
+ */
+const FAST_HUSH: HushDurationsInSeconds = {
+  countdown: 0.2,
+  mistake: 0.3,
+  cleared: 0.2,
 };
 
 /**
@@ -140,6 +153,7 @@ const startTestServer = async (
     minesweeperDurations,
     make24Durations,
     pairsDurations,
+    hushDurations: FAST_HUSH,
     dailyWordDurations: FAST_DAILY_WORD,
     graceInSeconds,
     ...overrides,
@@ -279,6 +293,13 @@ const waitForPairsState = (
   predicate: (state: PairsRoomState) => boolean = () => true,
   timeoutMs = 3000,
 ) => waitForState<PairsRoomState>(client, predicate, timeoutMs);
+
+/** And for Hush. */
+const waitForHushState = (
+  client: ClientSocket,
+  predicate: (state: HushRoomState) => boolean = () => true,
+  timeoutMs = 3000,
+) => waitForState<HushRoomState>(client, predicate, timeoutMs);
 
 /** And for Daily Word. */
 const waitForDailyWordState = (
@@ -444,6 +465,23 @@ const createPairsRoom = async (
   return answer.roomId;
 };
 
+/** Creates a Hush room, with its creator seated, and returns its id. */
+const createHushRoom = async (
+  client: ClientSocket,
+  options: { username?: string; maxPlayers?: number } = {},
+): Promise<string> => {
+  const answer = await client.timeout(3000).emitWithAck('room:create', {
+    gameType: 'hush',
+    roomName: 'Quiet corner',
+    username: options.username ?? 'Owner',
+    maxPlayers: options.maxPlayers ?? 4,
+    password: '',
+    settings: {},
+  });
+  if (!answer.ok) throw new Error(`room:create refused: ${answer.error.type}`);
+  return answer.roomId;
+};
+
 /** Takes a seat, and fails the test if the server refuses it. */
 const joinRoom = async (
   client: ClientSocket,
@@ -595,6 +633,14 @@ const playToFirstHand = async (harness: TestServer, hands = 5) => {
 const pairsRoom = (harness: TestServer, roomId: string): Room<PairsState> =>
   harness.server.rooms.get(roomId) as Room<PairsState>;
 
+/**
+ * The server's own Hush room. Tests read the hands through it on purpose:
+ * knowing who holds what is the only way to play a mistake deliberately, and
+ * it is exactly what a client is never sent.
+ */
+const hushRoom = (harness: TestServer, roomId: string): Room<HushState> =>
+  harness.server.rooms.get(roomId) as Room<HushState>;
+
 /** Creates a Daily Word room, with its creator seated, and returns its id. */
 const createDailyWordRoom = async (
   client: ClientSocket,
@@ -670,6 +716,7 @@ export {
   FAST_MINESWEEPER,
   FAST_MAKE24,
   FAST_PAIRS,
+  FAST_HUSH,
   FAST_DAILY_WORD,
   startTestServer,
   waitFor,
@@ -678,6 +725,7 @@ export {
   waitForMineState,
   waitForMake24State,
   waitForPairsState,
+  waitForHushState,
   waitForDailyWordState,
   waitForChat,
   collect,
@@ -689,6 +737,7 @@ export {
   createMinesweeperRoom,
   createMake24Room,
   createPairsRoom,
+  createHushRoom,
   createDailyWordRoom,
   joinRoom,
   startGame,
@@ -702,6 +751,7 @@ export {
   make24Room,
   playToFirstHand,
   pairsRoom,
+  hushRoom,
   dailyWordRoom,
   playToFirstWord,
 };
