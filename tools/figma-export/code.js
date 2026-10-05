@@ -24,6 +24,10 @@ const FLOW_SECTIONS = [
   { id: '9:10060', prefix: '04', dir: '04-mobile' },
   { id: '40:60741', prefix: '05', dir: '05-make-24' },
   { id: '40:60743', prefix: '06', dir: '06-pairs' },
+  { id: '43:61070', prefix: '07', dir: '07-trios' },
+  { id: '43:61071', prefix: '08', dir: '08-liars-dice' },
+  { id: '43:61072', prefix: '09', dir: '09-hush' },
+  { id: '43:61073', prefix: '10', dir: '10-daily-word' },
 ];
 const SHARED_SECTION = { id: '9:198', name: 'Shared pieces' };
 const EXPECTED_FLOWS = 111;
