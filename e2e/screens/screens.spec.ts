@@ -28,7 +28,7 @@ import {
   yourTurn,
   type Memory,
 } from '../play/pairs';
-import { deal, handOf, play, readyUp } from '../play/hush';
+import { deal, handOf, play, pressReady, readyUp } from '../play/hush';
 import { COMPARE_DIR, figmaSize, writeReport } from './report';
 
 /*
@@ -967,11 +967,6 @@ test('a Hush game', async ({ player }) => {
   for (const seat of [sam, ryan, leo]) await joinRoom(seat, link);
   await startGame(maya);
 
-  const ready = async (pages: readonly Page[]) => {
-    for (const page of pages) {
-      await page.getByRole('button', { name: 'I’m ready' }).click();
-    }
-  };
   const levelOn = async (level: number) => {
     for (const seat of seats) {
       await expect(
@@ -1009,7 +1004,7 @@ test('a Hush game', async ({ player }) => {
   await readyUp(seats);
   await playOut();
   await levelOn(2);
-  await ready([maya]);
+  await pressReady([maya]);
   await expect(turnOf(leo).getByText('Maya is ready.')).toBeVisible();
   await shot(leo, 'HU11');
   await readyUp(seats.filter((seat) => seat !== maya));
@@ -1019,10 +1014,10 @@ test('a Hush game', async ({ player }) => {
 
   // Level 3: Maya and Ryan are ready, then the rest, and the cards are dealt.
   await levelOn(3);
-  await ready([maya, ryan]);
+  await pressReady([maya, ryan]);
   await expect(turnOf(sam).getByText('Maya and Ryan are ready.')).toBeVisible();
   await shot(sam, 'HU01');
-  await ready([leo, sam]);
+  await pressReady([leo, sam]);
   const counting = turnOf(sam).getByText('Everybody holds 3 cards.');
   await expect(counting).toBeVisible();
   expect(await shotWhile(sam, 'HU02', counting), 'the countdown captured').toBe(

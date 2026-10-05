@@ -12,11 +12,16 @@ export async function handOf(page: Page): Promise<number[]> {
   return cards.map(Number);
 }
 
-/** Everybody presses Ready, and the level opens after its countdown. */
-export async function readyUp(pages: readonly Page[]) {
+/** Each of `pages` presses Ready, in order. */
+export async function pressReady(pages: readonly Page[]) {
   for (const page of pages) {
     await page.getByRole('button', { name: 'I’m ready' }).click();
   }
+}
+
+/** Everybody presses Ready, and the level opens after its countdown. */
+export async function readyUp(pages: readonly Page[]) {
+  await pressReady(pages);
   // Every hand is dealt; play opens for whoever holds the lowest card.
   for (const page of pages) {
     await expect(page.getByRole('region', { name: 'Your hand' })).toBeVisible();
