@@ -60,7 +60,7 @@ describe('Liar’s Dice on your own', () => {
       name: /^(Pip|Juno|Otto|Remy|Wren)$/,
     });
     expect(cups).toHaveLength(3);
-    const yours = within(screen.getByRole('region', { name: 'You (you)' }));
+    const yours = within(screen.getByRole('region', { name: 'You' }));
     expect(yours.getAllByRole('img', { name: /^[1-6]$/ })).toHaveLength(3);
     for (const cup of cups) {
       expect(

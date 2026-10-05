@@ -35,11 +35,7 @@ export {
   URGENT_SECONDS,
   type CountdownProps,
 } from './components/countdown';
-export {
-  Cup,
-  type CupProps,
-  type CupState,
-} from './components/cup';
+export { Cup, type CupProps, type CupState } from './components/cup';
 export {
   Die,
   type DieFace,

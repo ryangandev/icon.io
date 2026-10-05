@@ -17,6 +17,8 @@ export interface CupProps {
   state?: CupState;
   /** Regular dice for your own cup; Compact for everybody else's. */
   size?: 'regular' | 'compact';
+  /** Stack puts the dice under the player; Row beside them, as on a phone's narrow table. */
+  layout?: 'stack' | 'row';
   /** Every die the player started with: their own face up, others Hidden until a call, lost ones Empty. */
   dice: readonly Pick<DieProps, 'face' | 'state'>[];
   className?: string;
@@ -31,6 +33,7 @@ export function Cup({
   you = false,
   state = 'default',
   size = 'compact',
+  layout = 'stack',
   dice,
   className,
 }: CupProps) {
@@ -38,6 +41,7 @@ export function Cup({
     <section
       className={cx(
         styles.cup,
+        layout === 'row' && styles.row,
         state !== 'default' && styles[state],
         className,
       )}
@@ -57,7 +61,11 @@ export function Cup({
           <span className={styles.detail}>{detail}</span>
         </div>
       </div>
-      <div className={styles.dice} role="list" aria-label="Dice">
+      <div
+        className={cx(styles.dice, size === 'regular' && styles.regular)}
+        role="list"
+        aria-label="Dice"
+      >
         {dice.map((die, index) => (
           <span key={index} role="listitem" className={styles.slot}>
             <Die face={die.face} state={die.state} size={size} />

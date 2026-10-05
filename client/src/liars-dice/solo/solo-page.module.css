@@ -7,3 +7,14 @@
   display: flex;
   align-self: center;
 }
+
+/* On a phone it spans the width under your cup, as the bid picker's actions do. */
+@media (max-width: 640px) {
+  .next {
+    align-self: stretch;
+  }
+
+  .next > * {
+    flex: 1;
+  }
+}

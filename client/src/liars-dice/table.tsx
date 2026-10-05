@@ -15,6 +15,8 @@ import {
   type DieProps,
 } from '../ui';
 import { initialsOf, toneOf } from '../players/avatar';
+import { cx } from '../ui/cx';
+import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import { countDetail, diceWord, verdict, type Naming } from './words';
 import styles from './table.module.css';
 
@@ -118,7 +120,8 @@ function cupProps(
     name: seat.name,
     initials: initialsOf(seat.name),
     tone: toneOf(seat.name),
-    you: seat.id === props.youId,
+    // On your own without a name you are just "You", which needs no tag.
+    you: seat.id === props.youId && seat.name !== 'You',
     size,
     dice: diceOf(seat, props.dicePerPlayer, props.reveal),
     ...line,
@@ -145,14 +148,18 @@ export function Table(props: TableProps) {
       seat.id !== youId && (seat.diceLeft > 0 || seat.id === reveal?.loserId),
   );
   const you = seats.find((seat) => seat.id === youId);
+  const phone = useMediaQuery(PHONE);
+  // A phone's row has room for a player and three dice whatever the cup
+  // says, but not for five, so five-dice cups keep their dice underneath.
+  const fiveDice = props.dicePerPlayer > 3;
   return (
     <div className={styles.table}>
       {others.length > 0 && (
-        <div className={styles.others}>
+        <div className={cx(styles.others, fiveDice && styles.fiveDice)}>
           {others.map((seat) => (
             <Cup
               key={seat.id}
-              className={styles.cup}
+              layout={phone && !fiveDice ? 'row' : 'stack'}
               {...cupProps(seat, props, 'compact')}
             />
           ))}

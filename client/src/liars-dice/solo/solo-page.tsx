@@ -306,12 +306,22 @@ function SoloTable({
               stats={[
                 {
                   label: 'Games won',
-                  value: `${shown.wins} of ${shown.games}`,
+                  value:
+                    shown.games === 0
+                      ? 'Not yet'
+                      : `${shown.wins} of ${shown.games}`,
+                  tone: shown.games === 0 ? 'muted' : undefined,
                 },
                 {
                   label: 'Current run',
-                  value: plural(shown.run, 'win'),
-                  tone: record && youWon(game) ? 'green' : undefined,
+                  value:
+                    shown.games === 0 ? 'Not yet' : plural(shown.run, 'win'),
+                  tone:
+                    shown.games === 0
+                      ? 'muted'
+                      : record && youWon(game)
+                        ? 'green'
+                        : undefined,
                 },
               ]}
             />
