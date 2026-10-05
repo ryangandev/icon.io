@@ -37,7 +37,7 @@ import type {
 /** At most one "you are being throttled" line per socket per this long. */
 const THROTTLE_LOG_INTERVAL_MS = 5000;
 
-interface CreateIconIoServerOptions {
+interface CreateZumpoServerOptions {
   /** Defaults to `process.env.CORS_ORIGIN`, then the Vite dev server. */
   corsOrigin?: string;
   /** Serve the built SPA and route unknown paths to it. */
@@ -54,7 +54,7 @@ interface CreateIconIoServerOptions {
   graceInSeconds?: number;
 }
 
-interface IconIoServer {
+interface ZumpoServer {
   httpServer: HttpServer;
   io: IoServer;
   /** The live room registry, exposed so tests can assert on server state. */
@@ -76,9 +76,9 @@ interface IconIoServer {
  * after Draw & Guess and handed the single `drawAndGuessDetailRoomInfoList`
  * that was the server's entire idea of state.
  */
-const createIconIoServer = (
-  options: CreateIconIoServerOptions = {},
-): IconIoServer => {
+const createZumpoServer = (
+  options: CreateZumpoServerOptions = {},
+): ZumpoServer => {
   const {
     corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:3001',
     serveClient = process.env.NODE_ENV === 'production',
@@ -195,7 +195,7 @@ const createIconIoServer = (
     console.log('Running in development mode.');
     app.get('/{*splat}', (_req: Request, res: Response) => {
       res.send(
-        `Hello, welcome to the Icon.io development server! 🚀\n` +
+        `Hello, welcome to the Zumpo development server! 🚀\n` +
           `In development mode, the frontend server also needs to be started.\n` +
           `Please ensure it's running and accessible at http://localhost:3001.\n` +
           `Happy coding! 🎉`,
@@ -224,5 +224,5 @@ const createIconIoServer = (
   return { httpServer, io, rooms: registry.all, sessions, close };
 };
 
-export { createIconIoServer };
-export type { CreateIconIoServerOptions, IconIoServer };
+export { createZumpoServer };
+export type { CreateZumpoServerOptions, ZumpoServer };

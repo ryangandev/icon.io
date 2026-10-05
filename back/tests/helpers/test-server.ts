@@ -1,6 +1,6 @@
 import type { AddressInfo } from 'node:net';
 import { io as createClient, type Socket } from 'socket.io-client';
-import { createIconIoServer, type IconIoServer } from '../../app.js';
+import { createZumpoServer, type ZumpoServer } from '../../app.js';
 import type {
   Make24DurationsInSeconds,
   MinesweeperDurationsInSeconds,
@@ -93,7 +93,7 @@ interface TestClient extends ClientSocket {
 
 interface TestServer {
   url: string;
-  server: IconIoServer;
+  server: ZumpoServer;
   /** Opens a client, connects it, and completes the identity handshake. */
   connect: (identity?: PlayerIdentity) => Promise<TestClient>;
   /**
@@ -117,7 +117,7 @@ const startTestServer = async (
   make24Durations: Make24DurationsInSeconds = FAST_MAKE24,
   pairsDurations: PairsDurationsInSeconds = FAST_PAIRS,
 ): Promise<TestServer> => {
-  const server = createIconIoServer({
+  const server = createZumpoServer({
     serveClient: false,
     phaseDurations,
     minesweeperDurations,

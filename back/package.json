@@ -1,5 +1,5 @@
 {
-  "name": "icon.io-back",
+  "name": "zumpo-back",
   "version": "0.2.0",
   "private": true,
   "type": "module",
@@ -12,7 +12,7 @@
     "start:dev": "cross-env NODE_ENV=development node build/back/server.js",
     "build:deploy": "npm run build && (cd ../front && npm run build)",
     "start:prod": "cross-env NODE_ENV=production node build/back/server.js",
-    "start:deploy": "cross-env NODE_ENV=production pm2 start build/back/server.js --name icon-io",
+    "start:deploy": "cross-env NODE_ENV=production pm2 start build/back/server.js --name zumpo",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"

@@ -17,7 +17,7 @@ tools/   figma-export, figma-bridge, design-tokens: Figma into the repo (see des
 
 | Path                                        | What it is                                                         |
 | ------------------------------------------- | ------------------------------------------------------------------ |
-| `back/app.ts`                               | `createIconIoServer()`: builds a fully wired server without a port |
+| `back/app.ts`                               | `createZumpoServer()`: builds a fully wired server without a port  |
 | `back/server.ts`                            | Entry point that binds the port                                    |
 | `back/libs/rooms/`                          | The generic room layer (table below)                               |
 | `back/socket/draw-and-guess/`               | Draw & Guess module                                                |
@@ -40,7 +40,7 @@ Everything except serving static files happens over Socket.io, and server state 
 Restarting the server drops every room.
 That is a conscious trade for a hobby project, and it also means one process: scaling out needs a decision about where each room's state and clock live, which a Socket.IO Redis adapter alone does not answer.
 
-`createIconIoServer()` exists so the server is testable: when these objects were module-level, importing anything meant taking port 3000.
+`createZumpoServer()` exists so the server is testable: when these objects were module-level, importing anything meant taking port 3000.
 
 ## The room layer
 
@@ -229,7 +229,7 @@ The server never echoes a drawer's own strokes, so the drawer's input is applied
 
 Environment variables for the server are listed in [`back/README.md`](../back/README.md) and for the client in [`front/README.md`](../front/README.md).
 Phase lengths are server settings because the server owns the clock; each game documents its own under "Configuration".
-The test suite passes durations straight to `createIconIoServer()`, so an environment variable cannot change a suite's timing.
+The test suite passes durations straight to `createZumpoServer()`, so an environment variable cannot change a suite's timing.
 
 Production is one Node process: Vite builds into `back/build/public` and Express serves it, with Socket.IO on the same HTTP server.
 `npm --prefix back run build` empties `back/build/` including the frontend bundle, so the backend must build first; the root `npm run build` does it in that order.
