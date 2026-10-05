@@ -1,0 +1,101 @@
+/* The table on its paper panel, as a Pairs board sits on a desktop. */
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-24);
+  padding: var(--zumpo-space-24);
+  border: 1px solid var(--zumpo-line);
+  border-radius: var(--zumpo-radius-24);
+  background: var(--zumpo-paper);
+  color: var(--zumpo-ink);
+}
+
+.others {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--zumpo-space-16);
+}
+
+/* Everybody else's cups share the row; five of them wrap. */
+.cup {
+  flex: 1 1 180px;
+}
+
+.label {
+  margin: 0;
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+}
+
+.bids,
+.count {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-8);
+}
+
+.bidList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--zumpo-space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.countLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--zumpo-space-12);
+  margin: 0;
+}
+
+.matched {
+  font: var(--zumpo-text-heading);
+  letter-spacing: var(--zumpo-text-heading-tracking);
+  white-space: nowrap;
+}
+
+.detail {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-body);
+  letter-spacing: var(--zumpo-text-body-tracking);
+}
+
+.verdict {
+  font: var(--zumpo-text-body);
+  letter-spacing: var(--zumpo-text-body-tracking);
+}
+
+/* Your cup, and what you can do beside it. */
+.yours {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--zumpo-space-32);
+}
+
+.yours > :last-child:not(:first-child) {
+  flex: 1 1 280px;
+}
+
+/* On a phone the table sits on the page, and your cup stacks over its actions. */
+@media (max-width: 640px) {
+  .table {
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  .yours {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--zumpo-space-20);
+  }
+
+  .cup {
+    flex-basis: 140px;
+  }
+}
