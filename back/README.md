@@ -1,8 +1,8 @@
 <p align="center">
-    <img alt="Icon.io Logo" src="https://github.com/ryangandev/icon.io/blob/main/front/public/favicon.ico" height="auto" width="200">
+    <img alt="Zumpo Logo" src="../front/public/favicon.svg" height="auto" width="200">
 </p>
 
-<h1 align="center">Icon.io [Backend]</h1>
+<h1 align="center">Zumpo [Backend]</h1>
 
 ## ✨ Technology Stack
 
@@ -43,7 +43,7 @@
   npm run watch
   ```
 
-- The above steps start the server on port 3000. You will also need to start the frontend in another terminal to use the application. Refer to the [Front README](https://github.com/ryangandev/icon.io/blob/main/front/README.md) for instructions on how to start the frontend.
+- The above steps start the server on port 3000. You will also need to start the frontend in another terminal to use the application. Refer to the [Front README](../front/README.md) for instructions on how to start the frontend.
 
 - If both the frontend and backend are running, you can access the application at `http://localhost:3001`.
 
@@ -88,4 +88,4 @@ Shorten them to play through a whole game quickly while developing:
 
 ## 🛠️ Set Up - Deployment
 
-- If you want to deploy the application, the setup is a bit different. Refer to the [Root README](https://github.com/ryangandev/icon.io/blob/main/README.md)
+- If you want to deploy the application, the setup is a bit different. Refer to the [Root README](../README.md)

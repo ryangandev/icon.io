@@ -5,11 +5,11 @@ Resolved items are deleted, not archived; history is in git.
 
 ## Now
 
-Icon.io is being rebranded and redesigned as **Zumpo** on the `rework` branch.
+The project is being rebranded and redesigned as **Zumpo** on the `rework` branch; the code, packages, folder and repository already carry the name.
 The redesign is an editable Figma file of 111 screens and its shared component families (see [design.md](design.md)), with a snapshot in `design/figma/`.
 Ryan approved it in review round two on 2026-10-03, after one fix (icons centred on their line of text); Claude's round 1 changes are in the [round 1 report](../design/reviews/2026-10-03-round-1.md).
 
-The implementation is built on `rework`, which is not pushed or merged yet.
+The implementation is built on `rework`, which is pushed but not merged.
 Every page, desktop and phone, is rebuilt on the Zumpo design system in `front/src/ui/`, and Ant Design is gone ([architecture](architecture.md#frontend)).
 Both sides speak the snapshot-driven wire contract in `shared/wire-types.d.ts` ([architecture](architecture.md#the-wire-contract)).
 `npm run e2e` plays the main flows with two players, and `npm run design:compare` captures every Figma screen's state beside its preview; where code differs on purpose, [design.md](design.md#on-purpose) says so.
@@ -26,7 +26,7 @@ Decided by Ryan, and the frame for every design and implementation choice:
 
 ## Waiting on Ryan
 
-- Review `rework` in the browser, then whether to push it and open a pull request.
+- Review `rework` in the browser, then whether to open a pull request.
 - Whether a Minesweeper refresh should hold the round.
   A refresh drops the connection for a moment, and the room does not wait for a disconnected player, so if everyone else has already locked in, the round resolves without the refreshing player's pick.
   That contradicts the rule "A refresh loses nothing" in [minesweeper.md](games/minesweeper.md); the rules are kept as they are until you decide.
@@ -47,7 +47,6 @@ What is left needs the Figma file, which Claude could not reach this time:
 | Decision             | Where it stands                                                                                                                                                                                                                                                     |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Deployment           | Deferred by Ryan. Constraints: free to start, pay only once there is real demand, not all-Vercel. One Node service works as is; a split static frontend was discussed, not chosen. Re-check providers' current terms when this resumes; earlier findings are stale. |
-| Code and repo naming | When the code, package names and repository move from Icon.io to Zumpo.                                                                                                                                                                                             |
 | Domain and trademark | Availability for Zumpo not checked. A Chinese name is deliberately undecided.                                                                                                                                                                                       |
 
 ## Known issues

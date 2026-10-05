@@ -1,7 +1,7 @@
-# Icon.io, becoming Zumpo
+# Zumpo
 
-Real-time multiplayer browser games (Draw & Guess, Minesweeper): a React SPA in `front/`, an Express + Socket.IO server in `back/`, shared wire types in `shared/`, all game state in server memory.
-It is being rebranded and redesigned as Zumpo; [docs/status.md](docs/status.md) says where that stands.
+Little browser games, on your own or in real-time rooms (Draw & Guess, Minesweeper, Make 24, Pairs): a React SPA in `front/`, an Express + Socket.IO server in `back/`, shared wire types in `shared/`, all room state in server memory.
+It is being redesigned on the `rework` branch; [docs/status.md](docs/status.md) says where that stands.
 
 Find anything else through [docs/README.md](docs/README.md), and read only the section it points to.
 
