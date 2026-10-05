@@ -1,4 +1,6 @@
 import {
+  HushCard,
+  Lives,
   MineCell,
   NumberCard,
   PairsCard,
@@ -25,8 +27,10 @@ export function GameArtwork({ type }: { type: GameType }) {
         <BoardArtwork />
       ) : type === 'make-24' ? (
         <HandArtwork />
-      ) : (
+      ) : type === 'pairs' ? (
         <PairsArtwork />
+      ) : (
+        <PileArtwork />
       )}
     </div>
   );
@@ -143,6 +147,19 @@ function BoardArtwork() {
       <span className={styles.lastCell}>
         <MineCell state={{ kind: 'open', adjacent: 1 }} row={0} column={5} />
       </span>
+    </div>
+  );
+}
+
+/** A pile mid-level: three cards played, the top one, and two lives left. */
+function PileArtwork() {
+  return (
+    <div className={styles.pile}>
+      {[12, 27, 45].map((value) => (
+        <HushCard key={value} value={value} state="played" size="small" />
+      ))}
+      <HushCard value={58} state="pile" size="small" />
+      <Lives lives={2} showLabel={false} className={styles.lives} />
     </div>
   );
 }
