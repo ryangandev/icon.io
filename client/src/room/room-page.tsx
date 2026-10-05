@@ -7,6 +7,7 @@ import { DrawAndGuessRoom } from '../draw-and-guess/room';
 import { MinesweeperRoom } from '../minesweeper/room';
 import { Make24Room } from '../make-24/room';
 import { PairsRoom } from '../pairs/room';
+import { TriosRoom } from '../trios/room';
 import { useSession } from '../net/session';
 import { REQUEST_TIMEOUT_MS } from '../net/socket';
 import { useLobby } from '../net/use-lobby';
@@ -342,8 +343,10 @@ function SeatedRoom({
         <MinesweeperRoom />
       ) : state.gameType === 'make-24' ? (
         <Make24Room />
-      ) : (
+      ) : state.gameType === 'pairs' ? (
         <PairsRoom />
+      ) : (
+        <TriosRoom />
       )}
       {celebrations > 0 && <Confetti key={celebrations} />}
       <InviteDialog

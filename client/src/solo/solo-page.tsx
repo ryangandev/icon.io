@@ -2,6 +2,7 @@ import type { GameType } from '../../../shared/wire-types';
 import { Make24Solo } from '../make-24/solo/solo-page';
 import { MinesweeperSolo } from '../minesweeper/solo/solo-page';
 import { PairsSolo } from '../pairs/solo/solo-page';
+import { TriosSolo } from '../trios/solo/solo-page';
 import NotFoundPage from '../pages/not-found';
 
 /** /games/:game/solo: a game on your own, for the games that have one. */
@@ -13,6 +14,8 @@ export default function SoloPage({ gameType }: { gameType: GameType }) {
       return <Make24Solo />;
     case 'pairs':
       return <PairsSolo />;
+    case 'trios':
+      return <TriosSolo />;
     default:
       return <NotFoundPage />;
   }

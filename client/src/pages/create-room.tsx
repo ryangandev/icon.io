@@ -7,6 +7,7 @@ import type {
   RoomCreateRequest,
 } from '../../../shared/wire-types';
 import { Button, ButtonLink, Notice, SelectField, TextField } from '../ui';
+import { GAME_LENGTHS as TRIOS_LENGTHS } from '../../../shared/trios';
 import { gameInfo, lobbyPath, roomPath } from '../games/catalog';
 import { plural } from '../games/plural';
 import { DIFFICULTIES, boardDetail } from '../minesweeper/boards';
@@ -30,7 +31,7 @@ const ROUNDS = [1, 2, 3, 4] as const;
 const HANDS = [5, 10] as const;
 
 /**
- * DL04-DL06, DL10, DL11, ML04-ML06, ML10, MO05, T10, PR08: a new room, with
+ * DL04-DL06, DL10, DL11, ML04-ML06, ML10, MO05, T10, PR08, TS10: a new room, with
  * its settings.
  */
 export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
@@ -48,6 +49,7 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   const [difficulty, setDifficulty] = useState<MinesweeperDifficulty>('Small');
   const [hands, setHands] = useState(5);
   const [pairsBoard, setPairsBoard] = useState<PairsBoard>('Small');
+  const [trios, setTrios] = useState<number>(TRIOS_LENGTHS[0]);
   const [password, setPassword] = useState('');
   const [pending, setPending] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -74,7 +76,9 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
             ? { difficulty }
             : gameType === 'make-24'
               ? { hands }
-              : { board: pairsBoard },
+              : gameType === 'pairs'
+                ? { board: pairsBoard }
+                : { trios },
     };
     setPending(true);
     setFailed(false);
@@ -197,6 +201,18 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
           value={pairsBoard}
           onValueChange={setPairsBoard}
           name="board"
+        />
+      ) : gameType === 'trios' ? (
+        <SelectField
+          label="Trios"
+          helper="10 or 20 trios a game."
+          options={TRIOS_LENGTHS.map((count) => ({
+            value: count,
+            label: plural(count, 'trio'),
+          }))}
+          value={trios}
+          onValueChange={setTrios}
+          name="trios"
         />
       ) : (
         <SelectField
