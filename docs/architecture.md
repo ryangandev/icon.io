@@ -50,16 +50,16 @@ That is a conscious trade for a hobby project, and it also means one process: sc
 A room is `Room<TGameState>`: a name, an owner, a password, seats keyed by player id, one clock, and a `game` field the room layer never looks inside.
 Each game registers a module implementing `GameModule` in [`libs/rooms/types.ts`](../server/libs/rooms/types.ts), and the layer reaches a game only through it.
 
-| File (`server/libs/rooms/`) | Responsibility                                                       |
-| --------------------------- | -------------------------------------------------------------------- |
-| `types.ts`                  | `Room<TGameState>` and the `GameModule` interface                    |
-| `registry.ts`               | Every room, which module speaks for each, the snapshots and the chat |
-| `membership.ts`             | Seats, departures and the reconnect grace                            |
-| `seats.ts`                  | Seats taken and the lobby status, worked out rather than stored      |
-| `lobby-events.ts`           | List rooms, create a room and seat its creator                       |
-| `room-events.ts`            | Join, leave, sync and start, answered through acknowledgements       |
-| `chat-events.ts`            | Talking in a room, after the game has had its say                    |
-| `emit.ts`                   | Typed emit helpers, and `onClientRequest` for acknowledged requests  |
+| File (`server/libs/rooms/`) | Responsibility                                                          |
+| --------------------------- | ----------------------------------------------------------------------- |
+| `types.ts`                  | `Room<TGameState>` and the `GameModule` interface                       |
+| `registry.ts`               | Every room and its module, added and removed only here; snapshots, chat |
+| `membership.ts`             | Seats, departures and the reconnect grace                               |
+| `seats.ts`                  | Seats taken and the lobby status, worked out rather than stored         |
+| `lobby-events.ts`           | List rooms, create a room and seat its creator                          |
+| `room-events.ts`            | Join, leave, sync and start, answered through acknowledgements          |
+| `chat-events.ts`            | Talking in a room, after the game has had its say                       |
+| `emit.ts`                   | Typed emit helpers, and `onClientRequest` for acknowledged requests     |
 
 A module reaches the layer through the `GameContext` it is handed: the typed Socket.IO server and a `RoomLookup` that finds rooms (`ofType` refuses a room of another game), rebroadcasts a lobby (`emitLobby`), sends snapshots (`emitState`) and posts to the chat (`announce`).
 `GameModule` is what the layer calls back:

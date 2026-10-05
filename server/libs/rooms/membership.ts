@@ -80,9 +80,7 @@ const createRoomMembership = (
     delete room.playerList[playerId];
 
     if (seatCount(room) === 0) {
-      module?.disposeRoom(roomId);
-      delete registry.all[roomId];
-      registry.lookup.emitLobby(gameType);
+      registry.remove(room);
       return;
     }
 

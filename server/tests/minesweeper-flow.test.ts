@@ -73,7 +73,7 @@ describe('a Minesweeper room', () => {
     });
 
     expect(answer.error?.type).toBe('invalidRequest');
-    expect(Object.keys(harness.server.rooms)).toEqual([]);
+    expect(harness.server.rooms.size).toBe(0);
   });
 
   it('waits in its own phase before the first game', async () => {

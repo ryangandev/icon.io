@@ -61,8 +61,6 @@ interface GameContext {
 }
 
 interface RoomLookup {
-  /** Every room on the server, of every game, keyed by id. */
-  readonly all: Record<string, Room>;
   get(roomId: string): Room | undefined;
   /**
    * The room, but only if it is playing this game. A room id is public (it

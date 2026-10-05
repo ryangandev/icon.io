@@ -75,8 +75,8 @@ interface CreateZumpoServerOptions {
 interface ZumpoServer {
   httpServer: HttpServer;
   io: IoServer;
-  /** The live room registry, exposed so tests can assert on server state. */
-  rooms: Record<string, Room>;
+  /** Every room by id, exposed so tests can assert on server state. */
+  rooms: ReadonlyMap<string, Room>;
   /** Exposed so tests can assert on identities outliving their sockets. */
   sessions: PlayerSessionRegistry;
   close: () => Promise<void>;
@@ -260,7 +260,7 @@ const createZumpoServer = (
     });
   };
 
-  return { httpServer, io, rooms: registry.all, sessions, close };
+  return { httpServer, io, rooms: registry.rooms, sessions, close };
 };
 
 export { createZumpoServer };

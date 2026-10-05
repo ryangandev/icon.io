@@ -155,7 +155,7 @@ describe('the chat log', () => {
   it(`keeps the last ${CHAT_HISTORY_LIMIT} messages, and never reuses an id`, () => {
     const registry = makeRegistry();
     const room = makeRoom();
-    registry.all[room.roomId] = room;
+    registry.add(room);
 
     for (let i = 1; i <= CHAT_HISTORY_LIMIT + 5; i++) {
       registry.lookup.announce(room.roomId, 'system', `message ${i}`);
@@ -174,7 +174,7 @@ describe('the chat log', () => {
   it('posts a player’s message under the name on their seat', () => {
     const registry = makeRegistry();
     const room = makeRoom();
-    registry.all[room.roomId] = room;
+    registry.add(room);
 
     registry.say(room, 'player-owner', 'hi');
     registry.say(room, 'player-nobody', 'not seated');

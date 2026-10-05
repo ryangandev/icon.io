@@ -531,7 +531,7 @@ const serverRoom = (
   harness: TestServer,
   roomId: string,
 ): Room<DrawAndGuessState> =>
-  harness.server.rooms[roomId] as Room<DrawAndGuessState>;
+  harness.server.rooms.get(roomId) as Room<DrawAndGuessState>;
 
 /**
  * The same, for Minesweeper. Tests reach through to the hidden layout on
@@ -542,11 +542,11 @@ const minesweeperRoom = (
   harness: TestServer,
   roomId: string,
 ): Room<MinesweeperState> =>
-  harness.server.rooms[roomId] as Room<MinesweeperState>;
+  harness.server.rooms.get(roomId) as Room<MinesweeperState>;
 
 /** The server's own Make 24 room, with every hand of the game in it. */
 const make24Room = (harness: TestServer, roomId: string): Room<Make24State> =>
-  harness.server.rooms[roomId] as Room<Make24State>;
+  harness.server.rooms.get(roomId) as Room<Make24State>;
 
 /** Seats Alice and Bob in a Make 24 room and deals the first hand. */
 const playToFirstHand = async (harness: TestServer, hands = 5) => {
@@ -573,7 +573,7 @@ const playToFirstHand = async (harness: TestServer, hands = 5) => {
  * deliberately, and it is exactly what a client is never sent.
  */
 const pairsRoom = (harness: TestServer, roomId: string): Room<PairsState> =>
-  harness.server.rooms[roomId] as Room<PairsState>;
+  harness.server.rooms.get(roomId) as Room<PairsState>;
 
 /** Seats two players in a Minesweeper room and opens the first round. */
 const playToFirstRound = async (harness: TestServer) => {

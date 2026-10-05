@@ -31,9 +31,9 @@ describe('what one player and one server may hold', () => {
     await settle();
 
     const rooms = harness.server.rooms;
-    expect(Object.keys(rooms[first]!.playerList)).toEqual([carol.playerId]);
-    expect(rooms[first]!.owner.playerId).toBe(carol.playerId);
-    expect(Object.keys(rooms[second]!.playerList)).toEqual([
+    expect(Object.keys(rooms.get(first)!.playerList)).toEqual([carol.playerId]);
+    expect(rooms.get(first)!.owner.playerId).toBe(carol.playerId);
+    expect(Object.keys(rooms.get(second)!.playerList)).toEqual([
       bob.playerId,
       alice.playerId,
     ]);
@@ -47,9 +47,9 @@ describe('what one player and one server may hold', () => {
     const second = await createRoom(alice, { username: 'Alice' });
     await settle();
 
-    expect(harness.server.rooms[first]).toBeUndefined();
+    expect(harness.server.rooms.get(first)).toBeUndefined();
     expect(
-      harness.server.rooms[second]?.playerList[alice.playerId],
+      harness.server.rooms.get(second)?.playerList[alice.playerId],
     ).toBeDefined();
   });
 
@@ -83,7 +83,7 @@ describe('what one player and one server may hold', () => {
       ok: false,
       error: { type: 'tooManyRooms' },
     });
-    expect(Object.keys(harness.server.rooms)).toHaveLength(2);
+    expect(harness.server.rooms.size).toBe(2);
   });
 
   it('drops a connection that sends an oversized packet', async () => {

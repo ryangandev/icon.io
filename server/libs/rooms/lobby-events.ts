@@ -37,8 +37,8 @@ const lobbyEventsHandler = (
     socket.join(lobbyChannel(gameType));
 
     // The subscriber wants the list now, not at the next change.
-    const rooms = Object.values(registry.all)
-      .filter((room) => room.gameType === gameType)
+    const rooms = registry
+      .ofGame(gameType)
       .map((room) => module.toLobbyInfo(room));
 
     emitToSocket(socket, 'lobby:rooms', gameType, rooms);
@@ -88,7 +88,7 @@ const lobbyEventsHandler = (
 
     // Rooms live in memory, and one player holds one seat, but nothing stops
     // somebody opening connection after connection to make room after room.
-    if (Object.keys(registry.all).length >= maxRooms) {
+    if (registry.count() >= maxRooms) {
       reply(
         failure(
           'tooManyRooms',
@@ -119,7 +119,7 @@ const lobbyEventsHandler = (
       game: module.createState(gameSettings),
     };
 
-    registry.all[roomId] = room;
+    registry.add(room);
     socket.join(roomId);
 
     // The password is deliberately not echoed back: the creator already has

@@ -187,7 +187,8 @@ describe('reconnecting to a room', () => {
     guesser.emit('chat:send', roomId, word);
     await scored;
 
-    const before = harness.server.rooms[roomId]!.playerList[guesser.playerId];
+    const before =
+      harness.server.rooms.get(roomId)!.playerList[guesser.playerId];
     const scoreBefore = before!.points;
     expect(scoreBefore).toBeGreaterThan(0);
 
@@ -234,7 +235,7 @@ describe('reconnecting to a room', () => {
     bob.close();
 
     expect((await gone).currentPlayerCount).toBe(1);
-    expect(harness.server.rooms[roomId]?.playerList[bob.playerId]).toBe(
+    expect(harness.server.rooms.get(roomId)?.playerList[bob.playerId]).toBe(
       undefined,
     );
   });
@@ -262,10 +263,10 @@ describe('reconnecting to a room', () => {
 
     owner.close();
     await settle(200);
-    expect(harness.server.rooms[roomId]?.owner.username).toBe('Ada');
+    expect(harness.server.rooms.get(roomId)?.owner.username).toBe('Ada');
 
     await settle(GRACE_MS + 400);
-    expect(harness.server.rooms[roomId]?.owner.username).toBe('Grace');
+    expect(harness.server.rooms.get(roomId)?.owner.username).toBe('Grace');
   });
 
   /*
@@ -281,7 +282,7 @@ describe('reconnecting to a room', () => {
     bob.emit('room:leave', roomId);
     await settle(200);
 
-    const room = harness.server.rooms[roomId];
+    const room = harness.server.rooms.get(roomId);
     expect(room?.playerList[bob.playerId]).toBeUndefined();
     expect(seatCount(room!)).toBe(1);
   });
@@ -387,7 +388,7 @@ describe('reconnecting to a room', () => {
     expect((await gaveUp).kind).toBe('alert');
     // The seat is still theirs; only the turn is gone.
     expect(
-      harness.server.rooms[roomId]?.playerList[drawer.playerId],
+      harness.server.rooms.get(roomId)?.playerList[drawer.playerId],
     ).toBeDefined();
   });
 
@@ -425,7 +426,7 @@ describe('reconnecting to a room', () => {
     await turnMovedOn;
 
     // Turn moved on, but the seat is still theirs while they might return.
-    const room = harness.server.rooms[roomId];
+    const room = harness.server.rooms.get(roomId);
     expect(room?.playerList[currentDrawer]).toBeDefined();
     expect(room?.playerList[currentDrawer]?.isConnected).toBe(false);
     expect(room?.isGameStarted).toBe(true);
@@ -501,7 +502,7 @@ describe('reconnecting to a room', () => {
     await settle(200);
     expect(announced).toEqual([]);
     expect(
-      harness.server.rooms[roomId]?.playerList[bob.playerId]?.isConnected,
+      harness.server.rooms.get(roomId)?.playerList[bob.playerId]?.isConnected,
     ).toBe(true);
 
     // The duplicate is the player now: it is sent the room and can talk in it.
@@ -537,9 +538,11 @@ describe('reconnecting to a room', () => {
 
     expect(impostor.playerId).not.toBe(alice.playerId);
     expect(heard).toEqual([]);
-    expect(harness.server.rooms[roomId]?.owner.playerId).toBe(alice.playerId);
+    expect(harness.server.rooms.get(roomId)?.owner.playerId).toBe(
+      alice.playerId,
+    );
     expect(
-      harness.server.rooms[roomId]?.playerList[alice.playerId]?.isConnected,
+      harness.server.rooms.get(roomId)?.playerList[alice.playerId]?.isConnected,
     ).toBe(true);
   });
 });
