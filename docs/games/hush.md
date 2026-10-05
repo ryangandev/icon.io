@@ -181,4 +181,4 @@ Hush's two events of its own are `hush:ready`, with the room, and `hush:play`, w
 | [`hush/table.tsx`](../../client/src/hush/table.tsx)         | The table: the pile, the lives and the viewer's hand        |
 
 The rules are covered by [`hush-rules.test.ts`](../../server/tests/hush-rules.test.ts) and [`hush-flow.test.ts`](../../server/tests/hush-flow.test.ts).
-The screens are HU01-HU12 in [the Figma file](../design.md).
+The screens are HU01-HU11 in [the Figma file](../design.md).
