@@ -1,0 +1,42 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--zumpo-ink);
+  opacity: 0.4;
+  transition: opacity 150ms ease-out;
+}
+
+.backdrop[data-starting-style],
+.backdrop[data-ending-style] {
+  opacity: 0;
+}
+
+.viewport {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--zumpo-space-16);
+  overflow-y: auto;
+}
+
+.popup {
+  box-shadow: var(--zumpo-shadow-dialog-lift);
+  outline: none;
+  transition:
+    opacity 150ms ease-out,
+    transform 150ms ease-out;
+}
+
+.popup[data-starting-style],
+.popup[data-ending-style] {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop,
+  .popup {
+    transition: none;
+  }
+}

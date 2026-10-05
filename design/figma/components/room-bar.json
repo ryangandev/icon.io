@@ -1,0 +1,448 @@
+{
+  "format": 1,
+  "name": "Zumpo/Room bar",
+  "id": "39:19319",
+  "type": "COMPONENT_SET",
+  "key": "2248d763590acc6af76a92430d06294fbbeeba65",
+  "description": "A seated room's one row: the game, the room and its phase, then How to play, Leave room and you. Replaces the header and the room heading in every room; nothing in it leads out of the room without asking.",
+  "properties": {
+    "Game": {
+      "type": "text",
+      "default": "Minesweeper"
+    },
+    "Layout": {
+      "type": "variant",
+      "default": "Desktop",
+      "options": [
+        "Desktop",
+        "Phone"
+      ]
+    }
+  },
+  "defaultVariant": "Layout=Desktop",
+  "variants": [
+    {
+      "name": "Layout=Desktop",
+      "id": "39:19276",
+      "props": {
+        "Layout": "Desktop"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "39:19276",
+        "name": "Layout=Desktop",
+        "w": 1312,
+        "h": 48,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/16",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "39:19278",
+            "name": "Zumpo/Wordmark",
+            "w": 140,
+            "h": 44,
+            "wSize": "hug",
+            "component": "Zumpo/Wordmark",
+            "componentId": "4:36"
+          },
+          {
+            "type": "RECTANGLE",
+            "id": "39:19281",
+            "name": "Divider",
+            "w": 1,
+            "h": 28,
+            "fills": [
+              "$Zumpo · Primitives:color/line"
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "39:19282",
+            "name": "Room identity",
+            "w": 750,
+            "h": 30,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "39:19283",
+                "name": "Game",
+                "w": 154,
+                "h": 30,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Game"
+                },
+                "text": "Minesweeper",
+                "textStyle": "Zumpo/Heading",
+                "fills": [
+                  "$Zumpo · Primitives:color/ink"
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "39:19284",
+                "name": "Room",
+                "w": 95,
+                "h": 30,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Tag",
+                "variant": {
+                  "Tone": "Sand"
+                },
+                "componentId": "24:6511",
+                "props": {
+                  "Label": "Maya's room"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 30,
+                    "width": 95
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "39:19285",
+                "name": "Phase",
+                "w": 70,
+                "h": 30,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Tag",
+                "variant": {
+                  "Tone": "Blue"
+                },
+                "componentId": "24:6516",
+                "props": {
+                  "Label": "Round 2"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 30,
+                    "width": 70
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "39:19286",
+            "name": "Action / How to play",
+            "w": 151,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Secondary",
+              "State": "Default"
+            },
+            "componentId": "4:18",
+            "props": {
+              "Icon": "Zumpo/Icon / Glyph=info",
+              "Show icon": true,
+              "Label": "How to play"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "reactions": [],
+                "width": 151
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "39:19292",
+            "name": "Action / Leave room",
+            "w": 150,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Secondary",
+              "State": "Default"
+            },
+            "componentId": "4:18",
+            "props": {
+              "Show icon": true,
+              "Label": "Leave room"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "reactions": [
+                  {
+                    "on": "on_click",
+                    "do": [
+                      {
+                        "nav": "navigate",
+                        "to": "9:2528",
+                        "toName": "ML01 / Room list · open, private, full and playing states",
+                        "transition": "dissolve"
+                      }
+                    ]
+                  }
+                ],
+                "width": 150
+              }
+            ],
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "9:2528",
+                    "toName": "ML01 / Room list · open, private, full and playing states",
+                    "transition": "dissolve"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "39:19298",
+            "name": "You",
+            "w": 40,
+            "h": 40,
+            "component": "Zumpo/Avatar",
+            "variant": {
+              "Tone": "Sand"
+            },
+            "componentId": "26:10572",
+            "props": {
+              "Initials": "SA"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Layout=Phone",
+      "id": "39:19277",
+      "props": {
+        "Layout": "Phone"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "39:19277",
+        "name": "Layout=Phone",
+        "w": 350,
+        "h": 68,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "39:19300",
+            "name": "Room identity",
+            "w": 202,
+            "h": 68,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "39:19301",
+                "name": "Game",
+                "w": 154,
+                "h": 30,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Game"
+                },
+                "text": "Minesweeper",
+                "textStyle": "Zumpo/Heading",
+                "fills": [
+                  "$Zumpo · Primitives:color/ink"
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "39:19302",
+                "name": "Room context",
+                "w": 174,
+                "h": 30,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "39:19303",
+                    "name": "Room",
+                    "w": 95,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Sand"
+                    },
+                    "componentId": "24:6511",
+                    "props": {
+                      "Label": "Maya's room"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 95
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "39:19304",
+                    "name": "Phase",
+                    "w": 71,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Blue"
+                    },
+                    "componentId": "24:6516",
+                    "props": {
+                      "Label": "Round 4"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 71
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "39:19305",
+            "name": "Action / How to play (icon)",
+            "w": 46,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Secondary",
+              "State": "Default"
+            },
+            "componentId": "4:18",
+            "props": {
+              "Icon": "Zumpo/Icon / Glyph=info",
+              "Show icon": true,
+              "Label": "How to play"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "paddingLeft": 12,
+                "paddingRight": 12,
+                "width": 46
+              },
+              {
+                "path": "Let’s play",
+                "visible": false
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "39:19311",
+            "name": "Action / Leave room (icon)",
+            "w": 46,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Secondary",
+              "State": "Default"
+            },
+            "componentId": "4:18",
+            "props": {
+              "Show icon": true,
+              "Label": "Leave room"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "paddingLeft": 12,
+                "paddingRight": 12,
+                "width": 46
+              },
+              {
+                "path": "Let’s play",
+                "visible": false
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "39:19317",
+            "name": "You",
+            "w": 32,
+            "h": 32,
+            "component": "Zumpo/Avatar",
+            "variant": {
+              "Tone": "Sand"
+            },
+            "componentId": "26:10572",
+            "props": {
+              "Initials": "SA"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 32,
+                "width": 32
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

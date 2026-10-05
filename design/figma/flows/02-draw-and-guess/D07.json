@@ -1,0 +1,313 @@
+{
+  "format": 1,
+  "code": "D07",
+  "title": "Guesser · live canvas & hint",
+  "id": "9:1777",
+  "section": "02 / Draw & Guess / complete flow",
+  "reviewNotes": [
+    "D07 · Guesser · live canvas & hint"
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "9:1777",
+    "name": "D07 / Guesser · live canvas & hint",
+    "x": 4660,
+    "y": 4061,
+    "w": 1440,
+    "h": 1008,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        24,
+        "$Zumpo · UI:space/64",
+        32,
+        "$Zumpo · UI:space/64"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "39:19628",
+        "name": "Zumpo/Room bar",
+        "w": 1312,
+        "h": 48,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Desktop"
+        },
+        "componentId": "39:19276",
+        "props": {
+          "Game": "Draw & Guess"
+        },
+        "overrides": [
+          {
+            "path": "Room identity / Phase",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Round 2 of 2",
+              "Tone": "Blue"
+            }
+          },
+          {
+            "path": "Action / Leave room",
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "9:769",
+                    "toName": "P11 / Leave room confirmation",
+                    "transition": "dissolve"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:1802",
+        "name": "Game & room",
+        "w": 1312,
+        "h": 838,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/24",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "9:1803",
+            "name": "Game stage",
+            "w": 944,
+            "h": 838,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/16",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "27:18337",
+                "name": "Zumpo/Turn bar",
+                "w": 944,
+                "h": 114,
+                "wSize": "fill",
+                "hSize": "hug",
+                "component": "Zumpo/Turn bar",
+                "variant": {
+                  "Kind": "Hint",
+                  "Layout": "Desktop"
+                },
+                "componentId": "26:16839",
+                "props": {
+                  "Meta": "6 letters · type your guess in the chat"
+                }
+              },
+              {
+                "type": "FRAME",
+                "id": "27:18355",
+                "name": "Canvas",
+                "w": 944,
+                "h": 708,
+                "fills": [
+                  "$Zumpo · UI:color/white"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside",
+                "radius": "$Zumpo · UI:radius/24",
+                "clip": true,
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/16",
+                  "justify": "center",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "27:18356",
+                    "name": "Drawing / Turtle",
+                    "w": 672,
+                    "h": 448,
+                    "component": "Sample / Turtle drawing",
+                    "variant": {
+                      "Stage": "Head"
+                    },
+                    "componentId": "27:17560"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "9:1816",
+            "name": "Room sidebar",
+            "w": 344,
+            "h": 678,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/24",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "9:1817",
+                "name": "Zumpo/Scoreboard",
+                "w": 344,
+                "h": 304,
+                "hSize": "hug",
+                "component": "Zumpo/Scoreboard",
+                "componentId": "9:320",
+                "overrides": [
+                  {
+                    "path": "Player 1",
+                    "componentProperties": {
+                      "Icon": "24:5053",
+                      "Status icon": true,
+                      "You": false,
+                      "Name": "Maya",
+                      "Status": "Drawing",
+                      "Host": true,
+                      "Score": "460",
+                      "State": "Highlight"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "9:1847",
+                "name": "Zumpo/Chat",
+                "w": 344,
+                "h": 350,
+                "hSize": "hug",
+                "component": "Zumpo/Chat",
+                "componentId": "9:334",
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 350,
+                    "width": 344
+                  },
+                  {
+                    "path": "Messages / Message 1",
+                    "componentProperties": {
+                      "Message": "my turn, brace yourselves",
+                      "Name": "Maya",
+                      "Kind": "Player"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 3",
+                    "componentProperties": {
+                      "Message": "a hat",
+                      "Name": "Leo",
+                      "Kind": "Player"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 4",
+                    "componentProperties": {
+                      "Message": "shell",
+                      "Name": "Ryan",
+                      "Kind": "Player"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 5",
+                    "componentProperties": {
+                      "Message": "tortoise",
+                      "Name": "Leo",
+                      "Kind": "Player"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 6",
+                    "componentProperties": {
+                      "Message": "snail?",
+                      "Name": "Sam",
+                      "Kind": "Player"
+                    }
+                  },
+                  {
+                    "path": "Chat input",
+                    "componentProperties": {
+                      "Placeholder": "Type your guess…",
+                      "State": "Default"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:1860",
+        "name": "Footer",
+        "w": 1312,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:1861",
+            "w": 650,
+            "h": 18,
+            "hSize": "hug",
+            "text": "Good company. One more round.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:1862",
+            "w": 115,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "zumpo. / play a little",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

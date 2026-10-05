@@ -1,0 +1,37 @@
+.avatar {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--zumpo-avatar-size, 40px);
+  height: var(--zumpo-avatar-size, 40px);
+  border-radius: var(--zumpo-radius-999);
+  color: var(--zumpo-ink);
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+  user-select: none;
+}
+
+.peach {
+  background: var(--zumpo-peach);
+}
+
+.blue {
+  background: var(--zumpo-blue);
+}
+
+.lime {
+  background: var(--zumpo-lime);
+}
+
+.sand {
+  background: var(--zumpo-sand);
+}
+
+.coral {
+  background: var(--zumpo-coral);
+}
+
+.small {
+  --zumpo-avatar-size: 32px;
+}

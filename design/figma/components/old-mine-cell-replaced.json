@@ -1,0 +1,164 @@
+{
+  "format": 1,
+  "name": "Old/Mine cell (replaced)",
+  "id": "4:52",
+  "type": "COMPONENT_SET",
+  "key": "45231c6dca1d1a1f98fda85633f3cd57676140a8",
+  "description": "Editable Minesweeper cell states. Number is exposed as text.",
+  "properties": {
+    "Number": {
+      "type": "text",
+      "default": "1"
+    },
+    "State": {
+      "type": "variant",
+      "default": "Closed",
+      "options": [
+        "Closed",
+        "Open",
+        "Selected",
+        "Flagged"
+      ]
+    }
+  },
+  "defaultVariant": "State=Closed",
+  "variants": [
+    {
+      "name": "State=Closed",
+      "id": "4:48",
+      "props": {
+        "State": "Closed"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:48",
+        "name": "State=Closed",
+        "x": 0,
+        "y": 0,
+        "w": 44,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/sand"
+        ],
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        }
+      }
+    },
+    {
+      "name": "State=Open",
+      "id": "4:49",
+      "props": {
+        "State": "Open"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:49",
+        "name": "State=Open",
+        "x": 60,
+        "y": 0,
+        "w": 44,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "4:53",
+            "w": 7,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Number"
+            },
+            "text": "1",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/green"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Selected",
+      "id": "4:50",
+      "props": {
+        "State": "Selected"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:50",
+        "name": "State=Selected",
+        "x": 120,
+        "y": 0,
+        "w": 44,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        }
+      }
+    },
+    {
+      "name": "State=Flagged",
+      "id": "4:51",
+      "props": {
+        "State": "Flagged"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:51",
+        "name": "State=Flagged",
+        "x": 180,
+        "y": 0,
+        "w": 44,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/sand"
+        ],
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "4:54",
+            "name": "Flag",
+            "w": 18,
+            "h": 18,
+            "svg": "svg/flag-659a53.svg"
+          }
+        ]
+      }
+    }
+  ]
+}

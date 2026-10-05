@@ -1,0 +1,347 @@
+{
+  "format": 1,
+  "code": "ML06",
+  "title": "Create room · pending request",
+  "id": "9:2780",
+  "section": "03 / Minesweeper / complete flow",
+  "reviewNotes": [
+    "ML06 · Create room · pending request"
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "9:2780",
+    "name": "ML06 / Create room · pending request",
+    "x": 1580,
+    "y": 1542,
+    "w": 1440,
+    "h": 1220,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        24,
+        "$Zumpo · UI:space/64",
+        32,
+        "$Zumpo · UI:space/64"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "9:2781",
+        "name": "Zumpo/Header",
+        "w": 1312,
+        "h": 104,
+        "component": "Zumpo/Header",
+        "componentId": "4:39",
+        "overrides": [
+          {
+            "path": "Navigation / Games",
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "40:22071",
+                    "toName": "P04 / Games hub"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "path": "Navigation / You",
+            "componentProperties": {
+              "Initials": "MA",
+              "Tone": "Peach"
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:2791",
+        "name": "Page heading",
+        "w": 1312,
+        "h": 121,
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/12",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:6840",
+            "name": "Tag / PLAY TOGETHER",
+            "w": 117,
+            "h": 30,
+            "wSize": "hug",
+            "hSize": "hug",
+            "component": "Zumpo/Tag",
+            "variant": {
+              "Tone": "Sand"
+            },
+            "componentId": "24:6511",
+            "props": {
+              "Label": "PLAY TOGETHER"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 30,
+                "width": 117
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:2794",
+            "w": 1312,
+            "h": 42,
+            "hSize": "hug",
+            "text": "Minesweeper rooms",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:2795",
+            "w": 1312,
+            "h": 25,
+            "hSize": "hug",
+            "text": "Make a little space for your next game.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:2796",
+        "name": "Dialog stage",
+        "w": 1312,
+        "h": 849,
+        "layout": {
+          "mode": "row",
+          "pad": [
+            56,
+            0
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "35:13650",
+            "name": "A little room for you.",
+            "w": 560,
+            "h": 737,
+            "hSize": "hug",
+            "component": "Zumpo/Card",
+            "variant": {
+              "Kind": "Focused"
+            },
+            "componentId": "9:400",
+            "props": {
+              "Description": "Pick a board. Small is a quick game; Large takes a while."
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 737,
+                "width": 560
+              }
+            ],
+            "slots": {
+              "Content": [
+                {
+                  "type": "INSTANCE",
+                  "id": "36:14394",
+                  "name": "Zumpo/Input",
+                  "w": 496,
+                  "h": 113,
+                  "hSize": "hug",
+                  "component": "Zumpo/Input",
+                  "variant": {
+                    "State": "Default"
+                  },
+                  "componentId": "9:204",
+                  "props": {
+                    "Helper": "Up to 40 characters.",
+                    "Value": "Maya’s room",
+                    "Label": "Room name"
+                  }
+                },
+                {
+                  "type": "INSTANCE",
+                  "id": "36:14402",
+                  "name": "Zumpo/Input",
+                  "w": 496,
+                  "h": 113,
+                  "hSize": "hug",
+                  "component": "Zumpo/Input",
+                  "variant": {
+                    "State": "Default"
+                  },
+                  "componentId": "9:204",
+                  "props": {
+                    "Select": true,
+                    "Helper": "Choose 2–8 seats.",
+                    "Value": "8 players",
+                    "Label": "Seats"
+                  }
+                },
+                {
+                  "type": "INSTANCE",
+                  "id": "36:14410",
+                  "name": "Zumpo/Input",
+                  "w": 496,
+                  "h": 113,
+                  "hSize": "hug",
+                  "component": "Zumpo/Input",
+                  "variant": {
+                    "State": "Default"
+                  },
+                  "componentId": "9:204",
+                  "props": {
+                    "Select": true,
+                    "Helper": "16 × 16 · 40 mines",
+                    "Value": "Medium",
+                    "Label": "Board"
+                  }
+                },
+                {
+                  "type": "INSTANCE",
+                  "id": "36:14418",
+                  "name": "Zumpo/Input",
+                  "w": 496,
+                  "h": 113,
+                  "hSize": "hug",
+                  "component": "Zumpo/Input",
+                  "variant": {
+                    "State": "Default"
+                  },
+                  "componentId": "9:204",
+                  "props": {
+                    "Helper": "Leave blank for an open room. Up to 20 characters.",
+                    "Value": "••••••",
+                    "Label": "Password (optional)"
+                  }
+                },
+                {
+                  "type": "FRAME",
+                  "id": "36:14426",
+                  "name": "Status",
+                  "w": 496,
+                  "h": 20,
+                  "hSize": "hug",
+                  "layout": {
+                    "mode": "row",
+                    "gap": 8,
+                    "align": "center",
+                    "strokesIncluded": true
+                  },
+                  "children": [
+                    {
+                      "type": "INSTANCE",
+                      "id": "I35:13650;35:13433;36:14430",
+                      "name": "Zumpo/Icon",
+                      "w": 20,
+                      "h": 20,
+                      "component": "Zumpo/Icon",
+                      "variant": {
+                        "Glyph": "pending"
+                      },
+                      "componentId": "24:5002",
+                      "overrides": [
+                        {
+                          "path": "pending",
+                          "strokes": [
+                            "$Zumpo · UI:color/muted"
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "TEXT",
+                      "id": "I35:13650;35:13433;36:14431",
+                      "w": 143,
+                      "h": 20,
+                      "wSize": "hug",
+                      "hSize": "hug",
+                      "text": "Creating your room…",
+                      "textStyle": "Zumpo/Label",
+                      "fills": [
+                        "$Zumpo · UI:color/muted"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:2833",
+        "name": "Footer",
+        "w": 1312,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:2834",
+            "w": 650,
+            "h": 18,
+            "hSize": "hug",
+            "text": "Good company. One more round.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:2835",
+            "w": 115,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "zumpo. / play a little",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

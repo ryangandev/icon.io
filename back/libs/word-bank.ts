@@ -1,5 +1,5 @@
-// The category names are part of the wire contract — a room snapshot carries
-// the one in play — so they are declared there, and this record has to cover
+// The category names are part of the wire contract - a room snapshot carries
+// the one in play - so they are declared there, and this record has to cover
 // exactly them.
 import type { WordCategory } from '../../shared/wire-types.js';
 
@@ -70,7 +70,7 @@ const wordBank: WordBank = {
     'Tiger',
     'Elephant',
   ],
-  'League Of Legends': [
+  'League of Legends': [
     // Tanks
     'Alistar',
     'Amumu',

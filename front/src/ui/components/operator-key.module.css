@@ -1,0 +1,43 @@
+/* Zumpo/Operator key. */
+.key {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--zumpo-radius-999);
+  box-shadow:
+    var(--zumpo-shadow-cell-edge),
+    inset 0 0 0 1px var(--zumpo-line);
+  background: var(--zumpo-paper);
+  color: var(--zumpo-ink);
+  font: var(--zumpo-text-title);
+  letter-spacing: var(--zumpo-text-title-tracking);
+  cursor: pointer;
+}
+
+.key:hover:not(:disabled, .selected) {
+  box-shadow:
+    var(--zumpo-shadow-cell-edge),
+    inset 0 0 0 2px var(--zumpo-ink);
+}
+
+.key:focus-visible {
+  outline: 2px solid var(--zumpo-ink);
+  outline-offset: 2px;
+}
+
+.key:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.selected {
+  box-shadow: none;
+  background: var(--zumpo-ink);
+  color: var(--zumpo-paper);
+}

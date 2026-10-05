@@ -1,0 +1,128 @@
+{
+  "format": 1,
+  "name": "Zumpo/Select menu / Board",
+  "id": "9:427",
+  "type": "COMPONENT",
+  "key": "ee3e3839af912ea4978079fe98d3e7ec45c32ce2",
+  "description": "Board options. Medium is current default. No difficulty or mine count is user-editable outside these presets.",
+  "node": {
+    "type": "COMPONENT",
+    "id": "9:427",
+    "name": "Zumpo/Select menu / Board",
+    "x": 2692,
+    "y": 478,
+    "w": 496,
+    "h": 186,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/paper"
+    ],
+    "strokes": [
+      "$Zumpo · UI:color/line"
+    ],
+    "strokeAlign": "inside",
+    "radius": "$Zumpo · UI:radius/12",
+    "effects": [
+      {
+        "type": "drop_shadow",
+        "color": "#282B251F",
+        "offset": [
+          0,
+          8
+        ],
+        "radius": 24
+      }
+    ],
+    "effectStyle": "Zumpo/Menu lift",
+    "layout": {
+      "mode": "column",
+      "pad": 8,
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "24:6263",
+        "name": "Option / Small",
+        "w": 478,
+        "h": 56,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Select option",
+        "variant": {
+          "Selected": "False"
+        },
+        "componentId": "24:6171",
+        "props": {
+          "Show detail": true,
+          "Detail": "9 × 9 · 10 mines",
+          "Label": "Small"
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 56,
+            "paddingBottom": 8,
+            "paddingTop": 8,
+            "width": 478
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "24:6270",
+        "name": "Option / Medium",
+        "w": 478,
+        "h": 56,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Select option",
+        "variant": {
+          "Selected": "True"
+        },
+        "componentId": "24:6178",
+        "props": {
+          "Show detail": true,
+          "Label": "Medium"
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 56,
+            "paddingBottom": 8,
+            "paddingTop": 8,
+            "width": 478
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "24:6277",
+        "name": "Option / Large",
+        "w": 478,
+        "h": 56,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Select option",
+        "variant": {
+          "Selected": "False"
+        },
+        "componentId": "24:6171",
+        "props": {
+          "Show detail": true,
+          "Detail": "30 × 16 · 99 mines",
+          "Label": "Large"
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 56,
+            "paddingBottom": 8,
+            "paddingTop": 8,
+            "width": 478
+          }
+        ]
+      }
+    ]
+  }
+}

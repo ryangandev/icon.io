@@ -1,0 +1,178 @@
+import { screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it } from 'vitest';
+import { drawAndGuessState, ME } from '../tests/fixtures';
+import { onPhone } from '../tests/phone';
+import { renderSeated } from '../tests/seated';
+
+/** The phone's Board tab. */
+const board = () => within(screen.getByRole('tabpanel', { name: 'Board' }));
+
+const turn = {
+  isGameStarted: true,
+  currentRound: 1,
+  turn: 1,
+  wordCategory: 'Animals' as const,
+  phaseEndsInMs: 60_000,
+};
+
+describe('a Draw & Guess room', () => {
+  it('offers the drawer their words, and only the drawer', async () => {
+    const user = userEvent.setup();
+    const { fake } = await renderSeated(
+      drawAndGuessState({
+        ...turn,
+        phase: 'choosing',
+        currentDrawer: ME,
+        wordChoices: ['turtle', 'zebra', 'owl'],
+      }),
+    );
+
+    expect(screen.getByText('Pick a word')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /zebra/ }));
+    expect(fake.sentArgs('dg:select-word')).toEqual([['r1', 'zebra']]);
+  });
+
+  it('tells a guesser who is choosing', async () => {
+    await renderSeated(
+      drawAndGuessState({ ...turn, phase: 'choosing', currentDrawer: 'p2' }),
+    );
+    expect(screen.getByText('Maya is choosing a word')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /turtle/ })).toBeNull();
+  });
+
+  it('keeps the drawer out of the chat while they draw', async () => {
+    await renderSeated(
+      drawAndGuessState({
+        ...turn,
+        phase: 'drawing',
+        currentDrawer: ME,
+        word: 'turtle',
+        hint: '_ _ _ _ _ _',
+      }),
+    );
+    expect(screen.getByText('turtle')).toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toBeDisabled();
+    expect(screen.getByRole('textbox')).toHaveAttribute(
+      'placeholder',
+      'You’re drawing. Chat opens after your turn.',
+    );
+  });
+
+  it('sends a guess through the chat', async () => {
+    const user = userEvent.setup();
+    const { fake } = await renderSeated(
+      drawAndGuessState({
+        ...turn,
+        phase: 'drawing',
+        currentDrawer: 'p2',
+        hint: '_ _ _ _ _ _',
+      }),
+    );
+    const input = screen.getByPlaceholderText('Type your guess…');
+    await user.type(input, 'turtle{Enter}');
+    expect(fake.sentArgs('chat:send')).toEqual([['r1', 'turtle']]);
+  });
+
+  it('keeps a player who scored quiet through the review', async () => {
+    await renderSeated(
+      drawAndGuessState({
+        ...turn,
+        phase: 'reveal',
+        currentDrawer: 'p2',
+        word: 'turtle',
+        scoredThisTurn: [ME],
+        turnPoints: { [ME]: 120, p2: 48 },
+      }),
+    );
+    expect(screen.getByRole('textbox')).toHaveAttribute(
+      'placeholder',
+      'You got it. Chat opens next turn.',
+    );
+  });
+
+  it('shares first place in a tie', async () => {
+    await renderSeated(
+      drawAndGuessState({
+        playerList: {
+          p1: { username: 'Ryan', points: 414, isConnected: true },
+          p2: { username: 'Maya', points: 414, isConnected: true },
+          p3: { username: 'Sam', points: 90, isConnected: true },
+        },
+        lastGame: {
+          endedEarly: false,
+          standings: [
+            { playerId: 'p1', username: 'Ryan', points: 414 },
+            { playerId: 'p2', username: 'Maya', points: 414 },
+            { playerId: 'p3', username: 'Sam', points: 90 },
+          ],
+          wordCategory: 'Food',
+          rounds: 2,
+          turns: 6,
+        },
+      }),
+    );
+    expect(
+      screen.getByRole('heading', {
+        name: 'Ryan and Maya tie with 414 points.',
+      }),
+    ).toBeInTheDocument();
+    const places = within(screen.getByRole('list', { name: 'Standings' }))
+      .getAllByRole('listitem')
+      .filter((item) => item.parentElement?.tagName === 'OL')
+      .map((item) => item.textContent);
+    expect(places).toEqual([
+      expect.stringMatching(/^1.*Ryan.*Winner/),
+      expect.stringMatching(/^1.*Maya.*Winner/),
+      expect.stringMatching(/^3.*Sam.*3rd place/),
+    ]);
+  });
+
+  describe('on a phone', () => {
+    it('takes a guess under the board', async () => {
+      onPhone();
+      await renderSeated(
+        drawAndGuessState({
+          ...turn,
+          phase: 'drawing',
+          currentDrawer: 'p2',
+          hint: '______',
+        }),
+      );
+      expect(board().getByText('6 letters')).toBeInTheDocument();
+      expect(board().getByRole('textbox', { name: 'Guess' })).toBeEnabled();
+    });
+
+    it('keeps the locked input under the board through the review', async () => {
+      onPhone();
+      await renderSeated(
+        drawAndGuessState({
+          ...turn,
+          phase: 'reveal',
+          currentDrawer: 'p2',
+          word: 'turtle',
+          scoredThisTurn: [ME],
+          turnPoints: { [ME]: 120, p2: 48 },
+        }),
+      );
+      expect(board().getByRole('textbox', { name: 'Message' })).toHaveAttribute(
+        'placeholder',
+        'You got it. Chat opens next turn.',
+      );
+    });
+
+    it('gives the drawer no input under the board', async () => {
+      onPhone();
+      await renderSeated(
+        drawAndGuessState({
+          ...turn,
+          phase: 'drawing',
+          currentDrawer: ME,
+          word: 'turtle',
+          hint: '______',
+        }),
+      );
+      expect(board().queryByRole('textbox')).toBeNull();
+    });
+  });
+});

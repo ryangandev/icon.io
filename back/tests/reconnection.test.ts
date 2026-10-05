@@ -1,17 +1,21 @@
 import { randomUUID } from 'node:crypto';
+import { io as createClient } from 'socket.io-client';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import type { CanvasStroke, DrawAndGuessRoomState } from '../models/types.js';
+import type { DrawAndGuessRoomState } from '../models/types.js';
 import {
-  collect,
+  collectChat,
+  collectStates,
   createRoom,
   joinRoom,
   playToDrawingPhase,
-  serverRoom,
   settle,
+  SLOW_DRAWING,
+  startGame,
   startTestServer,
+  syncRoom,
   waitFor,
-  type ScoresPayload,
-  waitUntil,
+  waitForChat,
+  waitForDrawState,
   type TestServer,
 } from './helpers/test-server.js';
 
@@ -36,6 +40,12 @@ describe('player identity', () => {
     expect(client.token).toMatch(/^[0-9a-f]{64}$/);
   });
 
+  it('says how long a dropped connection keeps its seats', async () => {
+    const client = await harness.connect();
+
+    expect(client.reconnectGraceMs).toBe(GRACE_MS);
+  });
+
   it('gives two clients different identities', async () => {
     const [first, second] = await Promise.all([
       harness.connect(),
@@ -51,6 +61,7 @@ describe('player identity', () => {
     const returned = await harness.reload(original);
 
     expect(returned.playerId).toBe(original.playerId);
+    expect(returned.token).toBe(original.token);
     expect(returned.id).not.toBe(original.id);
   });
 
@@ -83,10 +94,53 @@ describe('player identity', () => {
     const client = await harness.connect({
       playerId: 'not-a-uuid',
       token: 'short',
-    } as never);
+    });
 
     expect(client.connected).toBe(true);
     expect(client.playerId).toMatch(/^[0-9a-f-]{36}$/);
+  });
+
+  it('identifies a connection before reading anything it buffered offline', async () => {
+    // A client sends what it was asked to while offline the moment it
+    // connects, ahead of its own connect handler. Identity must already be
+    // settled by then, or a quick first click is refused.
+    const client = createClient(harness.url, {
+      transports: ['websocket'],
+      forceNew: true,
+      autoConnect: false,
+      auth: { identity: null },
+    });
+    const answer = client.timeout(2000).emitWithAck('room:create', {
+      gameType: 'minesweeper',
+      roomName: 'Early',
+      username: 'Ryan',
+      maxPlayers: 2,
+      password: '',
+      settings: { difficulty: 'Small' },
+    });
+    client.connect();
+
+    try {
+      await expect(answer).resolves.toMatchObject({ ok: true });
+    } finally {
+      client.close();
+    }
+  });
+
+  it('ignores handshake auth that is not a claim at all', async () => {
+    const client = createClient(harness.url, {
+      transports: ['websocket'],
+      forceNew: true,
+      auth: { identity: 'me, honestly' },
+    });
+    try {
+      const session = await new Promise<{ playerId: string }>((resolve) =>
+        client.once('session:ready', resolve),
+      );
+      expect(session.playerId).toMatch(/^[0-9a-f-]{36}$/);
+    } finally {
+      client.close();
+    }
   });
 
   it('forgets an identity once nobody could still be using it', async () => {
@@ -122,17 +176,14 @@ describe('reconnecting to a room', () => {
   it('keeps a player and their points across a reload', async () => {
     // A longer drawing phase, so the turn does not end mid-assertion.
     await harness.teardown();
-    harness = await startTestServer({
-      wordSelecting: 0.2,
-      drawing: 5,
-      reviewing: 0.2,
-    });
+    harness = await startTestServer(SLOW_DRAWING);
 
-    const { roomId, guesser, guesserName, word } =
-      await playToDrawingPhase(harness);
+    const { roomId, guesser, word } = await playToDrawingPhase(harness);
 
-    const scored = waitFor<ScoresPayload>(guesser, 'dg:scores');
-    guesser.emit('dg:guess', roomId, guesserName, word);
+    const scored = waitForDrawState(guesser, (s) =>
+      s.scoredThisTurn.includes(guesser.playerId),
+    );
+    guesser.emit('chat:send', roomId, word);
     await scored;
 
     const before = harness.server.rooms[roomId]!.playerList[guesser.playerId];
@@ -140,27 +191,24 @@ describe('reconnecting to a room', () => {
     expect(scoreBefore).toBeGreaterThan(0);
 
     const returned = await harness.reload(guesser);
-    await settle(200);
+    const { state } = await syncRoom(returned, roomId);
 
-    const after = harness.server.rooms[roomId]!.playerList[returned.playerId];
     expect(returned.playerId).toBe(guesser.playerId);
-    expect(after?.points).toBe(scoreBefore);
-    expect(after?.isConnected).toBe(true);
-    expect(harness.server.rooms[roomId]?.currentPlayerCount).toBe(2);
+    expect(state.playerList[returned.playerId]).toMatchObject({
+      points: scoreBefore,
+      isConnected: true,
+    });
+    expect(state.currentPlayerCount).toBe(2);
   });
 
   it('holds the seat while the player is away rather than removing them', async () => {
     const alice = await harness.connect();
     const bob = await harness.connect();
-    const roomId = await createRoom(alice, { ownerUsername: 'Alice' });
-    await joinRoom(alice, roomId, 'Alice');
+    const roomId = await createRoom(alice, { username: 'Alice' });
     await joinRoom(bob, roomId, 'Bob');
 
-    // The snapshot that says Bob is away, rather than whichever one arrives
-    // next: joining and disconnecting both broadcast `room:state` now.
-    const seen = waitUntil<DrawAndGuessRoomState>(
+    const seen = waitForDrawState(
       alice,
-      'room:state',
       (state) => state.playerList[bob.playerId]?.isConnected === false,
     );
     bob.close();
@@ -174,39 +222,41 @@ describe('reconnecting to a room', () => {
   it('gives the seat up once the grace period runs out', async () => {
     const alice = await harness.connect();
     const bob = await harness.connect();
-    const roomId = await createRoom(alice, { ownerUsername: 'Alice' });
-    await joinRoom(alice, roomId, 'Alice');
+    const roomId = await createRoom(alice, { username: 'Alice' });
     await joinRoom(bob, roomId, 'Bob');
 
+    const gone = waitForDrawState(
+      alice,
+      (state) => !state.playerList[bob.playerId],
+      GRACE_MS + 1500,
+    );
     bob.close();
-    await settle(GRACE_MS + 400);
 
-    const room = harness.server.rooms[roomId];
-    expect(room?.playerList[bob.playerId]).toBeUndefined();
-    expect(room?.currentPlayerCount).toBe(1);
+    expect((await gone).currentPlayerCount).toBe(1);
+    expect(harness.server.rooms[roomId]?.playerList[bob.playerId]).toBe(
+      undefined,
+    );
   });
 
   it('keeps ownership with a player who is only away', async () => {
     const owner = await harness.connect();
     const guest = await harness.connect();
-    const roomId = await createRoom(owner, { ownerUsername: 'Ada' });
-    await joinRoom(owner, roomId, 'Ada');
+    const roomId = await createRoom(owner, { username: 'Ada' });
     await joinRoom(guest, roomId, 'Grace');
 
     const returned = await harness.reload(owner);
-    await settle(200);
+    const { state } = await syncRoom(returned, roomId);
 
-    expect(harness.server.rooms[roomId]?.owner.playerId).toBe(
-      returned.playerId,
-    );
-    expect(harness.server.rooms[roomId]?.owner.username).toBe('Ada');
+    expect(state.owner).toEqual({
+      playerId: returned.playerId,
+      username: 'Ada',
+    });
   });
 
   it('hands ownership on only once the grace period expires', async () => {
     const owner = await harness.connect();
     const guest = await harness.connect();
-    const roomId = await createRoom(owner, { ownerUsername: 'Ada' });
-    await joinRoom(owner, roomId, 'Ada');
+    const roomId = await createRoom(owner, { username: 'Ada' });
     await joinRoom(guest, roomId, 'Grace');
 
     owner.close();
@@ -224,11 +274,10 @@ describe('reconnecting to a room', () => {
   it('does not hold a seat for a player who leaves deliberately', async () => {
     const alice = await harness.connect();
     const bob = await harness.connect();
-    const roomId = await createRoom(alice, { ownerUsername: 'Alice' });
-    await joinRoom(alice, roomId, 'Alice');
+    const roomId = await createRoom(alice, { username: 'Alice' });
     await joinRoom(bob, roomId, 'Bob');
 
-    bob.emit('room:leave', roomId, 'Bob');
+    bob.emit('room:leave', roomId);
     await settle(200);
 
     const room = harness.server.rooms[roomId];
@@ -239,65 +288,80 @@ describe('reconnecting to a room', () => {
   it('tells the room when a player drops and when they come back', async () => {
     const alice = await harness.connect();
     const bob = await harness.connect();
-    const roomId = await createRoom(alice, { ownerUsername: 'Alice' });
-    await joinRoom(alice, roomId, 'Alice');
+    const roomId = await createRoom(alice, { username: 'Alice' });
     await joinRoom(bob, roomId, 'Bob');
     await settle();
 
-    const messages = collect<[string, string]>(alice, 'chat:message');
+    const messages = collectChat(alice);
+    const states = collectStates(alice);
     await harness.reload(bob);
     await settle(200);
 
-    const text = messages.map(([, message]) => message).join(' | ');
-    expect(text).toContain('Bob lost connection');
-    expect(text).toContain('Bob reconnected');
-    // Not a departure: nobody should be told Bob left.
-    expect(text).not.toContain('has left the room');
+    expect(messages.map(({ kind, text }) => ({ kind, text }))).toEqual([
+      { kind: 'alert', text: 'Bob lost connection.' },
+      { kind: 'system', text: 'Bob reconnected.' },
+    ]);
+    expect(states.at(-1)?.playerList[bob.playerId]?.isConnected).toBe(true);
   });
 
   /*
-   * A drawer who reloads used to lose their turn, and had to: the canvas lived
-   * only in the clients' memory, so they would have come back to a blank board
-   * with nothing worth resuming. The drawing is on the server now, so the turn
-   * waits — briefly — and they pick up where they left off, word and all.
+   * The drawing is on the server, so a drawer's turn waits for them briefly,
+   * and they pick up where they left off: word, drawing and all.
    */
   it('gives a reloaded drawer their turn, their word and their drawing back', async () => {
     await harness.teardown();
-    harness = await startTestServer({
-      wordSelecting: 0.2,
-      drawing: 5,
-      reviewing: 0.2,
-    });
+    harness = await startTestServer(SLOW_DRAWING);
 
-    const { roomId, drawer, word } = await playToDrawingPhase(harness);
+    const { roomId, drawer, guesser, word } = await playToDrawingPhase(harness);
     drawer.emit('dg:draw:start', roomId, { x: 4, y: 4 }, '#123456', 8);
     drawer.emit('dg:draw:move', roomId, { x: 40, y: 40 }, '#123456', 8);
     await settle(50);
 
+    const holding = waitForDrawState(guesser, (s) => s.drawerHoldEndsInMs > 0);
     const returned = await harness.reload(drawer);
-    const wordAgain = waitFor<string>(returned, 'dg:word', 2000);
-    const canvasAgain = waitFor<CanvasStroke[]>(
-      returned,
-      'dg:canvas:sync',
-      2000,
-    );
-    returned.emit('room:sync', roomId);
+    // The room said it was waiting for them, and for how long.
+    expect((await holding).drawerHoldEndsInMs).toBeLessThanOrEqual(10_000);
 
-    expect(await wordAgain).toBe(word);
+    const canvasAgain = waitFor(returned, 'dg:canvas:sync');
+    const state = (await syncRoom(returned, roomId))
+      .state as DrawAndGuessRoomState;
+
+    expect(state.word).toBe(word);
+    expect(state.phase).toBe('drawing');
+    expect(state.currentDrawer).toBe(drawer.playerId);
+    expect(state.drawerHoldEndsInMs).toBe(0);
     expect(await canvasAgain).toEqual([
-      {
-        color: '#123456',
-        size: 8,
-        points: [
-          { x: 4, y: 4 },
-          { x: 40, y: 40 },
-        ],
-      },
+      roomId,
+      [
+        {
+          color: '#123456',
+          size: 8,
+          points: [
+            { x: 4, y: 4 },
+            { x: 40, y: 40 },
+          ],
+        },
+      ],
     ]);
-    expect(serverRoom(harness, roomId).game.currentDrawer).toBe(
-      drawer.playerId,
+  });
+
+  it('tells the room when the drawer is back', async () => {
+    await harness.teardown();
+    harness = await startTestServer(SLOW_DRAWING);
+
+    const { drawer, guesser } = await playToDrawingPhase(harness);
+    const back = waitForChat(guesser, (m) => m.text.includes('drawer is back'));
+    const resumed = waitForDrawState(
+      guesser,
+      (s) =>
+        s.playerList[drawer.playerId]?.isConnected === true &&
+        s.drawerHoldEndsInMs === 0,
     );
-    expect(serverRoom(harness, roomId).game.isDrawingPhase).toBe(true);
+    await settle(50);
+    await harness.reload(drawer);
+
+    expect((await back).kind).toBe('system');
+    expect((await resumed).phase).toBe('drawing');
   });
 
   /*
@@ -306,23 +370,20 @@ describe('reconnecting to a room', () => {
    */
   it('gives up on a drawer who does not come back inside the hold', async () => {
     await harness.teardown();
-    harness = await startTestServer({
-      wordSelecting: 0.2,
-      drawing: 5,
-      reviewing: 0.2,
-      drawerHold: 0.3,
-    });
+    harness = await startTestServer({ ...SLOW_DRAWING, drawerHold: 0.3 });
 
     const { roomId, drawer, guesser } = await playToDrawingPhase(harness);
 
-    const turnEnded = waitFor(guesser, 'dg:phase:idle', 3000);
-    const messages = collect<[string, string]>(guesser, 'chat:message');
+    const nextTurn = waitForDrawState(guesser, (s) => s.turn === 2, 3000);
+    const gaveUp = waitForChat(guesser, (m) =>
+      m.text.includes('did not come back'),
+    );
     drawer.close();
 
-    await turnEnded;
-    expect(
-      messages.some(([, text]) => text.includes('did not come back')),
-    ).toBe(true);
+    const next = await nextTurn;
+    expect(next.currentDrawer).toBe(guesser.playerId);
+    expect(next.drawerHoldEndsInMs).toBe(0);
+    expect((await gaveUp).kind).toBe('alert');
     // The seat is still theirs; only the turn is gone.
     expect(
       harness.server.rooms[roomId]?.playerList[drawer.playerId],
@@ -331,22 +392,17 @@ describe('reconnecting to a room', () => {
 
   /*
    * Nothing has been invested in a turn whose word has not been chosen yet, and
-   * an absent drawer will not be choosing one — so that case is still skipped
-   * on the spot rather than held.
+   * an absent drawer will not be choosing one, so that case is skipped on the
+   * spot rather than held.
    */
   it('skips the turn of a drawer who drops before choosing a word', async () => {
     await harness.teardown();
-    harness = await startTestServer({
-      wordSelecting: 0.2,
-      drawing: 5,
-      reviewing: 0.2,
-    });
+    harness = await startTestServer(SLOW_DRAWING);
 
     const alice = await harness.connect();
     const bob = await harness.connect();
     const carol = await harness.connect();
-    const roomId = await createRoom(alice, { rounds: 1 });
-    await joinRoom(alice, roomId, 'Alice');
+    const roomId = await createRoom(alice, { username: 'Alice', rounds: 1 });
     await joinRoom(bob, roomId, 'Bob');
     await joinRoom(carol, roomId, 'Carol');
 
@@ -356,19 +412,16 @@ describe('reconnecting to a room', () => {
       [carol.playerId, carol],
     ]);
 
-    const firstTurn = waitFor<{ currentDrawer: string }>(
-      alice,
-      'dg:phase:word-select',
-    );
-    alice.emit('game:start', roomId);
+    const firstTurn = waitForDrawState(alice, (s) => s.phase === 'choosing');
+    await startGame(alice, roomId);
     const { currentDrawer } = await firstTurn;
 
     const drawer = byId.get(currentDrawer)!;
     const witness = drawer === alice ? bob : alice;
 
-    const turnEnded = waitFor(witness, 'dg:phase:idle');
+    const turnMovedOn = waitForDrawState(witness, (s) => s.turn === 2);
     drawer.close();
-    await turnEnded;
+    await turnMovedOn;
 
     // Turn moved on, but the seat is still theirs while they might return.
     const room = harness.server.rooms[roomId];
@@ -381,60 +434,62 @@ describe('reconnecting to a room', () => {
     const alice = await harness.connect();
     const bob = await harness.connect();
     const carol = await harness.connect();
-    const roomId = await createRoom(alice, { rounds: 1 });
-    await joinRoom(alice, roomId, 'Alice');
+    const roomId = await createRoom(alice, { username: 'Alice', rounds: 1 });
     await joinRoom(bob, roomId, 'Bob');
     await joinRoom(carol, roomId, 'Carol');
 
-    const drawers = collect<{ currentDrawer: string }>(
-      alice,
-      'dg:phase:word-select',
-    );
+    const states = collectStates(alice);
 
     // Carol drops before the game starts and never comes back.
     carol.close();
     await settle(100);
 
-    alice.emit('game:start', roomId);
-    await waitFor(alice, 'dg:game:ended', 9000);
+    const ended = waitForDrawState(alice, (s) => s.lastGame !== null, 9000);
+    await startGame(alice, roomId);
+    await ended;
 
-    expect(drawers.map((turn) => turn.currentDrawer)).not.toContain(
-      carol.playerId,
-    );
+    expect(
+      states.filter((s) => s.phase === 'choosing').map((s) => s.currentDrawer),
+    ).not.toContain(carol.playerId);
   });
 
   it('lets a returning player chat and guess again', async () => {
     const alice = await harness.connect();
     const bob = await harness.connect();
-    const roomId = await createRoom(alice, { ownerUsername: 'Alice' });
-    await joinRoom(alice, roomId, 'Alice');
+    const roomId = await createRoom(alice, { username: 'Alice' });
     await joinRoom(bob, roomId, 'Bob');
 
     const returned = await harness.reload(bob);
     await settle(200);
 
-    const heard = waitFor<[string, string]>(alice, 'chat:message');
-    returned.emit('chat:send', roomId, 'Bob', 'back again');
+    const heard = waitForChat(alice, (m) => m.kind === 'player');
+    returned.emit('chat:send', roomId, 'back again');
 
-    expect(await heard).toEqual(['Bob', 'back again']);
+    expect(await heard).toMatchObject({
+      playerId: bob.playerId,
+      username: 'Bob',
+      text: 'back again',
+    });
   });
 
   it('does not let a returning player take somebody else s seat', async () => {
     const alice = await harness.connect();
     const bob = await harness.connect();
-    const roomId = await createRoom(alice, { ownerUsername: 'Alice' });
-    await joinRoom(alice, roomId, 'Alice');
+    const roomId = await createRoom(alice, { username: 'Alice' });
     await joinRoom(bob, roomId, 'Bob');
+    await settle();
 
     // A third client claims Alice's id with a token it invented.
+    const heard = collectChat(bob);
     const impostor = await harness.connect({
       playerId: alice.playerId,
       token: '0'.repeat(64),
     });
-    impostor.emit('chat:send', roomId, 'Alice', 'I am Alice');
+    impostor.emit('chat:send', roomId, 'I am Alice');
     await settle();
 
     expect(impostor.playerId).not.toBe(alice.playerId);
+    expect(heard).toEqual([]);
     expect(harness.server.rooms[roomId]?.owner.playerId).toBe(alice.playerId);
     expect(
       harness.server.rooms[roomId]?.playerList[alice.playerId]?.isConnected,

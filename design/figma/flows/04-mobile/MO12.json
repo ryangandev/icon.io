@@ -1,0 +1,959 @@
+{
+  "format": 1,
+  "code": "MO12",
+  "title": "Mines · locked",
+  "id": "9:10773",
+  "section": "04 / Mobile / 390px flow adaptations",
+  "reviewNotes": [
+    "MO12 · 390px / responsive redesign"
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "9:10773",
+    "name": "MO12 / Mines · locked",
+    "x": 1510,
+    "y": 2640,
+    "w": 390,
+    "h": 760,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        "$Zumpo · UI:space/20",
+        "$Zumpo · UI:space/20",
+        32,
+        "$Zumpo · UI:space/20"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "39:20599",
+        "name": "Zumpo/Room bar",
+        "w": 350,
+        "h": 68,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Phone"
+        },
+        "componentId": "39:19277"
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:10786",
+        "name": "Zumpo/Mobile tabs",
+        "w": 350,
+        "h": 34,
+        "hSize": "hug",
+        "component": "Zumpo/Mobile tabs",
+        "variant": {
+          "View": "Board"
+        },
+        "componentId": "9:416",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 34,
+            "width": 350
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "27:22532",
+        "name": "Zumpo/Turn bar",
+        "w": 350,
+        "h": 144,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Turn bar",
+        "variant": {
+          "Kind": "Status",
+          "Layout": "Phone"
+        },
+        "componentId": "27:22192",
+        "props": {
+          "Main": "Locked in",
+          "Meta": "Waiting for Ryan and Maya",
+          "Label": "Round 4"
+        },
+        "overrides": [
+          {
+            "path": "Top / Eyebrow / Category",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Small · 9 × 9",
+              "Tone": "Sand"
+            }
+          },
+          {
+            "path": "Top / Countdown",
+            "componentProperties": {
+              "Label": "to pick",
+              "Time": "00:09",
+              "Tone": "Running"
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:10796",
+        "name": "Board viewport",
+        "w": 350,
+        "h": 348,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "radius": "$Zumpo · UI:radius/16",
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "9:10797",
+            "name": "Minefield / 9 × 9",
+            "x": 1,
+            "y": 0,
+            "w": 348,
+            "h": 348,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": 3,
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "GRID",
+                "rows": 4,
+                "cols": 9,
+                "count": 36,
+                "kind": "Zumpo/Mine cell",
+                "firstId": "26:9599",
+                "rowFrame": {
+                  "type": "FRAME",
+                  "name": "Row 1",
+                  "w": 348,
+                  "h": 36,
+                  "wSize": "hug",
+                  "hSize": "hug",
+                  "layout": {
+                    "mode": "row",
+                    "gap": 3,
+                    "strokesIncluded": true
+                  }
+                },
+                "pitch": [
+                  39,
+                  39
+                ],
+                "cell": {
+                  "type": "INSTANCE",
+                  "name": "Zumpo/Mine cell",
+                  "w": 36,
+                  "h": 36,
+                  "component": "Zumpo/Mine cell",
+                  "variant": {
+                    "State": "Hidden",
+                    "Size": "Regular"
+                  },
+                  "componentId": "24:7235",
+                  "overrides": [
+                    {
+                      "path": ".",
+                      "height": 36,
+                      "width": 36
+                    }
+                  ]
+                },
+                "special": [
+                  {
+                    "r": 0,
+                    "c": 0,
+                    "id": "26:9599",
+                    "variant": {
+                      "State": "Empty",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7240"
+                  },
+                  {
+                    "r": 0,
+                    "c": 1,
+                    "id": "26:9600",
+                    "variant": {
+                      "State": "Empty",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7240"
+                  },
+                  {
+                    "r": 0,
+                    "c": 2,
+                    "id": "26:9601",
+                    "variant": {
+                      "State": "1",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7241"
+                  },
+                  {
+                    "r": 0,
+                    "c": 7,
+                    "id": "26:9607",
+                    "variant": {
+                      "State": "1",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7241"
+                  },
+                  {
+                    "r": 1,
+                    "c": 0,
+                    "id": "26:9611",
+                    "variant": {
+                      "State": "Empty",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7240"
+                  },
+                  {
+                    "r": 1,
+                    "c": 1,
+                    "id": "26:9612",
+                    "variant": {
+                      "State": "Empty",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7240"
+                  },
+                  {
+                    "r": 1,
+                    "c": 2,
+                    "id": "26:9613",
+                    "variant": {
+                      "State": "2",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7243"
+                  },
+                  {
+                    "r": 1,
+                    "c": 4,
+                    "id": "26:9616",
+                    "variant": {
+                      "State": "3",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7245"
+                  },
+                  {
+                    "r": 1,
+                    "c": 7,
+                    "id": "26:9620",
+                    "variant": {
+                      "State": "1",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7241"
+                  },
+                  {
+                    "r": 2,
+                    "c": 0,
+                    "id": "26:9624",
+                    "variant": {
+                      "State": "Empty",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7240"
+                  },
+                  {
+                    "r": 2,
+                    "c": 1,
+                    "id": "26:9625",
+                    "variant": {
+                      "State": "Empty",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7240"
+                  },
+                  {
+                    "r": 2,
+                    "c": 2,
+                    "id": "26:9626",
+                    "variant": {
+                      "State": "2",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7243"
+                  },
+                  {
+                    "r": 2,
+                    "c": 5,
+                    "id": "26:9630",
+                    "variant": {
+                      "State": "1",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7241"
+                  },
+                  {
+                    "r": 3,
+                    "c": 2,
+                    "id": "26:9663",
+                    "variant": {
+                      "State": "1",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7241"
+                  },
+                  {
+                    "r": 3,
+                    "c": 3,
+                    "id": "26:9665",
+                    "variant": {
+                      "State": "Empty",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7240"
+                  },
+                  {
+                    "r": 3,
+                    "c": 4,
+                    "id": "26:9666",
+                    "variant": {
+                      "State": "2",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7243"
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "26:9635",
+                "name": "Row 4",
+                "w": 348,
+                "h": 36,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": 3,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:9636",
+                    "name": "Zumpo/Mine cell",
+                    "w": 36,
+                    "h": 36,
+                    "component": "Zumpo/Mine cell",
+                    "variant": {
+                      "State": "1",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7241",
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 36,
+                        "width": 36
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:9638",
+                    "name": "Zumpo/Mine cell",
+                    "w": 36,
+                    "h": 36,
+                    "component": "Zumpo/Mine cell",
+                    "variant": {
+                      "State": "1",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7241",
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 36,
+                        "width": 36
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:9640",
+                    "name": "Zumpo/Mine cell",
+                    "w": 36,
+                    "h": 36,
+                    "component": "Zumpo/Mine cell",
+                    "variant": {
+                      "State": "2",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7243",
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 36,
+                        "width": 36
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:9642",
+                    "name": "Zumpo/Mine cell",
+                    "w": 36,
+                    "h": 36,
+                    "component": "Zumpo/Mine cell",
+                    "variant": {
+                      "State": "1",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7241",
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 36,
+                        "width": 36
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:9644",
+                    "name": "Zumpo/Mine cell",
+                    "w": 36,
+                    "h": 36,
+                    "component": "Zumpo/Mine cell",
+                    "variant": {
+                      "State": "3",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7245",
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 36,
+                        "width": 36
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:9646",
+                    "name": "Zumpo/Mine cell",
+                    "w": 36,
+                    "h": 36,
+                    "component": "Zumpo/Mine cell",
+                    "variant": {
+                      "State": "Mine",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7257",
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 36,
+                        "width": 36
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:9657",
+                    "name": "Zumpo/Mine cell",
+                    "w": 36,
+                    "h": 36,
+                    "component": "Zumpo/Mine cell",
+                    "variant": {
+                      "State": "Hidden",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7235",
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 36,
+                        "width": 36
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:9658",
+                    "name": "Zumpo/Mine cell",
+                    "w": 36,
+                    "h": 36,
+                    "component": "Zumpo/Mine cell",
+                    "variant": {
+                      "State": "Hidden",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7235",
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 36,
+                        "width": 36
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:9659",
+                    "name": "Zumpo/Mine cell",
+                    "w": 36,
+                    "h": 36,
+                    "component": "Zumpo/Mine cell",
+                    "variant": {
+                      "State": "Hidden",
+                      "Size": "Regular"
+                    },
+                    "componentId": "24:7235",
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 36,
+                        "width": 36
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "26:9672",
+                "name": "Row 6",
+                "w": 348,
+                "h": 36,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": 3,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "GRID",
+                    "rows": 1,
+                    "cols": 9,
+                    "count": 9,
+                    "kind": "Zumpo/Mine cell",
+                    "firstId": "26:9673",
+                    "pitch": [
+                      39,
+                      0
+                    ],
+                    "cell": {
+                      "type": "INSTANCE",
+                      "name": "Zumpo/Mine cell",
+                      "w": 36,
+                      "h": 36,
+                      "component": "Zumpo/Mine cell",
+                      "variant": {
+                        "State": "1",
+                        "Size": "Regular"
+                      },
+                      "componentId": "24:7241",
+                      "overrides": [
+                        {
+                          "path": ".",
+                          "height": 36,
+                          "width": 36
+                        }
+                      ]
+                    },
+                    "special": [
+                      {
+                        "r": 0,
+                        "c": 3,
+                        "id": "26:9679",
+                        "variant": {
+                          "State": "Empty",
+                          "Size": "Regular"
+                        },
+                        "componentId": "24:7240"
+                      },
+                      {
+                        "r": 0,
+                        "c": 5,
+                        "id": "26:9682",
+                        "variant": {
+                          "State": "Hidden",
+                          "Size": "Regular"
+                        },
+                        "componentId": "24:7235"
+                      },
+                      {
+                        "r": 0,
+                        "c": 6,
+                        "id": "26:9683",
+                        "variant": {
+                          "State": "Hidden",
+                          "Size": "Regular"
+                        },
+                        "componentId": "24:7235"
+                      },
+                      {
+                        "r": 0,
+                        "c": 8,
+                        "id": "26:9686",
+                        "variant": {
+                          "State": "Hidden",
+                          "Size": "Regular"
+                        },
+                        "componentId": "24:7235"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "26:9687",
+                "name": "Row 7",
+                "w": 348,
+                "h": 36,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": 3,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "GRID",
+                    "rows": 1,
+                    "cols": 9,
+                    "count": 9,
+                    "kind": "Zumpo/Mine cell",
+                    "firstId": "26:9688",
+                    "pitch": [
+                      39,
+                      0
+                    ],
+                    "cell": {
+                      "type": "INSTANCE",
+                      "name": "Zumpo/Mine cell",
+                      "w": 36,
+                      "h": 36,
+                      "component": "Zumpo/Mine cell",
+                      "variant": {
+                        "State": "Empty",
+                        "Size": "Regular"
+                      },
+                      "componentId": "24:7240",
+                      "overrides": [
+                        {
+                          "path": ".",
+                          "height": 36,
+                          "width": 36
+                        }
+                      ]
+                    },
+                    "special": [
+                      {
+                        "r": 0,
+                        "c": 4,
+                        "id": "26:9692",
+                        "variant": {
+                          "State": "1",
+                          "Size": "Regular"
+                        },
+                        "componentId": "24:7241"
+                      },
+                      {
+                        "r": 0,
+                        "c": 5,
+                        "id": "26:9694",
+                        "variant": {
+                          "State": "2",
+                          "Size": "Regular"
+                        },
+                        "componentId": "24:7243"
+                      },
+                      {
+                        "r": 0,
+                        "c": 6,
+                        "id": "26:9696",
+                        "variant": {
+                          "State": "Hidden",
+                          "Size": "Regular"
+                        },
+                        "componentId": "24:7235"
+                      },
+                      {
+                        "r": 0,
+                        "c": 7,
+                        "id": "26:9697",
+                        "variant": {
+                          "State": "1",
+                          "Size": "Regular"
+                        },
+                        "componentId": "24:7241"
+                      },
+                      {
+                        "r": 0,
+                        "c": 8,
+                        "id": "26:9699",
+                        "variant": {
+                          "State": "Hidden",
+                          "Size": "Regular"
+                        },
+                        "componentId": "24:7235"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "26:9700",
+                "name": "Row 8",
+                "w": 348,
+                "h": 36,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": 3,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "GRID",
+                    "rows": 1,
+                    "cols": 9,
+                    "count": 9,
+                    "kind": "Zumpo/Mine cell",
+                    "firstId": "26:9701",
+                    "pitch": [
+                      39,
+                      0
+                    ],
+                    "cell": {
+                      "type": "INSTANCE",
+                      "name": "Zumpo/Mine cell",
+                      "w": 36,
+                      "h": 36,
+                      "component": "Zumpo/Mine cell",
+                      "variant": {
+                        "State": "Empty",
+                        "Size": "Regular"
+                      },
+                      "componentId": "24:7240",
+                      "overrides": [
+                        {
+                          "path": ".",
+                          "height": 36,
+                          "width": 36
+                        }
+                      ]
+                    },
+                    "special": [
+                      {
+                        "r": 0,
+                        "c": 4,
+                        "id": "26:9705",
+                        "variant": {
+                          "State": "1",
+                          "Size": "Regular"
+                        },
+                        "componentId": "24:7241"
+                      },
+                      {
+                        "r": 0,
+                        "c": 5,
+                        "id": "26:9707",
+                        "variant": {
+                          "State": "Hidden",
+                          "Size": "Regular"
+                        },
+                        "componentId": "24:7235"
+                      },
+                      {
+                        "r": 0,
+                        "c": 6,
+                        "id": "26:9708",
+                        "variant": {
+                          "State": "Picked",
+                          "Size": "Regular"
+                        },
+                        "componentId": "24:7236"
+                      },
+                      {
+                        "r": 0,
+                        "c": 7,
+                        "id": "26:9712",
+                        "variant": {
+                          "State": "Hidden",
+                          "Size": "Regular"
+                        },
+                        "componentId": "24:7235"
+                      },
+                      {
+                        "r": 0,
+                        "c": 8,
+                        "id": "26:9713",
+                        "variant": {
+                          "State": "Hidden",
+                          "Size": "Regular"
+                        },
+                        "componentId": "24:7235"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "26:9714",
+                "name": "Row 9",
+                "w": 348,
+                "h": 36,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": 3,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "GRID",
+                    "rows": 1,
+                    "cols": 9,
+                    "count": 9,
+                    "kind": "Zumpo/Mine cell",
+                    "firstId": "26:9715",
+                    "pitch": [
+                      39,
+                      0
+                    ],
+                    "cell": {
+                      "type": "INSTANCE",
+                      "name": "Zumpo/Mine cell",
+                      "w": 36,
+                      "h": 36,
+                      "component": "Zumpo/Mine cell",
+                      "variant": {
+                        "State": "Empty",
+                        "Size": "Regular"
+                      },
+                      "componentId": "24:7240",
+                      "overrides": [
+                        {
+                          "path": ".",
+                          "height": 36,
+                          "width": 36
+                        }
+                      ]
+                    },
+                    "special": [
+                      {
+                        "r": 0,
+                        "c": 4,
+                        "id": "26:9719",
+                        "variant": {
+                          "State": "1",
+                          "Size": "Regular"
+                        },
+                        "componentId": "24:7241"
+                      },
+                      {
+                        "r": 0,
+                        "c": 5,
+                        "id": "26:9721",
+                        "variant": {
+                          "State": "Hidden",
+                          "Size": "Regular"
+                        },
+                        "componentId": "24:7235"
+                      },
+                      {
+                        "r": 0,
+                        "c": 6,
+                        "id": "26:9722",
+                        "variant": {
+                          "State": "Hidden",
+                          "Size": "Regular"
+                        },
+                        "componentId": "24:7235"
+                      },
+                      {
+                        "r": 0,
+                        "c": 7,
+                        "id": "26:9723",
+                        "variant": {
+                          "State": "Hidden",
+                          "Size": "Regular"
+                        },
+                        "componentId": "24:7235"
+                      },
+                      {
+                        "r": 0,
+                        "c": 8,
+                        "id": "26:9724",
+                        "variant": {
+                          "State": "Hidden",
+                          "Size": "Regular"
+                        },
+                        "componentId": "24:7235"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:11132",
+        "name": "Footer",
+        "w": 350,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:11133",
+            "w": 350,
+            "h": 18,
+            "hSize": "hug",
+            "text": "A little play. Good company.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,342 @@
+{
+  "format": 1,
+  "code": "MO05",
+  "title": "Create room",
+  "id": "9:10193",
+  "section": "04 / Mobile / 390px flow adaptations",
+  "reviewNotes": [
+    "MO05 · 390px / responsive redesign"
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "9:10193",
+    "name": "MO05 / Create room",
+    "x": 40,
+    "y": 1551,
+    "w": 390,
+    "h": 945,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        "$Zumpo · UI:space/20",
+        "$Zumpo · UI:space/20",
+        32,
+        "$Zumpo · UI:space/20"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "FRAME",
+        "id": "9:10194",
+        "name": "Mobile navigation",
+        "w": 350,
+        "h": 44,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "9:10195",
+            "name": "Zumpo/Wordmark",
+            "w": 140,
+            "h": 44,
+            "wSize": "hug",
+            "component": "Zumpo/Wordmark",
+            "componentId": "4:36"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "9:10198",
+            "name": "Zumpo/Avatar",
+            "w": 40,
+            "h": 40,
+            "component": "Zumpo/Avatar",
+            "variant": {
+              "Tone": "Peach"
+            },
+            "componentId": "4:34",
+            "props": {
+              "Initials": "MA"
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:10201",
+        "name": "Page heading",
+        "w": 350,
+        "h": 163,
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/12",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:7145",
+            "name": "Tag / MAKE A ROOM",
+            "w": 107,
+            "h": 30,
+            "wSize": "hug",
+            "hSize": "hug",
+            "component": "Zumpo/Tag",
+            "variant": {
+              "Tone": "Sand"
+            },
+            "componentId": "24:6511",
+            "props": {
+              "Label": "MAKE A ROOM"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 30,
+                "width": 107
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:10204",
+            "name": "A little room for you.",
+            "w": 350,
+            "h": 84,
+            "hSize": "hug",
+            "text": "A little room\nfor you.",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:10205",
+            "w": 350,
+            "h": 25,
+            "hSize": "hug",
+            "text": "Minesweeper · room settings",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:10206",
+        "name": "Zumpo/Input",
+        "w": 350,
+        "h": 113,
+        "hSize": "hug",
+        "component": "Zumpo/Input",
+        "variant": {
+          "State": "Default"
+        },
+        "componentId": "9:204",
+        "props": {
+          "Helper": "Up to 40 characters.",
+          "Value": "Maya’s room",
+          "Label": "Room name"
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 113,
+            "width": 350
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:10211",
+        "name": "Zumpo/Input",
+        "w": 350,
+        "h": 113,
+        "hSize": "hug",
+        "component": "Zumpo/Input",
+        "variant": {
+          "State": "Default"
+        },
+        "componentId": "9:204",
+        "props": {
+          "Select": true,
+          "Helper": "Choose 2–8 seats.",
+          "Value": "8 players",
+          "Label": "Seats"
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 113,
+            "width": 350
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:10216",
+        "name": "Zumpo/Input",
+        "w": 350,
+        "h": 113,
+        "hSize": "hug",
+        "component": "Zumpo/Input",
+        "variant": {
+          "State": "Default"
+        },
+        "componentId": "9:204",
+        "props": {
+          "Select": true,
+          "Helper": "16 × 16 · 40 mines",
+          "Value": "Medium",
+          "Label": "Board"
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 113,
+            "width": 350
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:10226",
+        "name": "Zumpo/Input",
+        "w": 350,
+        "h": 113,
+        "hSize": "hug",
+        "component": "Zumpo/Input",
+        "variant": {
+          "State": "Default"
+        },
+        "componentId": "9:204",
+        "props": {
+          "Helper": "Leave blank for an open room. Up to 20 characters.",
+          "Value": "",
+          "Label": "Password (optional)"
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 113,
+            "width": 350
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "28:23976",
+        "name": "Actions",
+        "w": 228,
+        "h": 48,
+        "wSize": "hug",
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "9:10231",
+            "name": "Action / Create room",
+            "w": 126,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Primary",
+              "State": "Default"
+            },
+            "componentId": "4:15",
+            "props": {
+              "Label": "Create room"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "reactions": [],
+                "width": 126
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "9:10233",
+            "name": "Action / Cancel",
+            "w": 90,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Secondary",
+              "State": "Default"
+            },
+            "componentId": "4:18",
+            "props": {
+              "Label": "Cancel"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "width": 90
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:10235",
+        "name": "Footer",
+        "w": 350,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:10236",
+            "w": 350,
+            "h": 18,
+            "hSize": "hug",
+            "text": "A little play. Good company.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    ]
+  }
+}

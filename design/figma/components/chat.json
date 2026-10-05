@@ -1,0 +1,249 @@
+{
+  "format": 1,
+  "name": "Zumpo/Chat",
+  "id": "9:334",
+  "type": "COMPONENT",
+  "key": "d5ccc7e5daec2bebfff613180e22a64e134afde7",
+  "description": "Room chat: up to six Zumpo/Chat messages, newest last, then the Zumpo/Chat input. In Draw & Guess the same box takes guesses.",
+  "node": {
+    "type": "COMPONENT",
+    "id": "9:334",
+    "name": "Zumpo/Chat",
+    "x": 1568,
+    "y": 2088,
+    "w": 344,
+    "h": 354,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/paper"
+    ],
+    "strokes": [
+      "$Zumpo · UI:color/line"
+    ],
+    "strokeAlign": "inside",
+    "radius": "$Zumpo · UI:radius/24",
+    "layout": {
+      "mode": "column",
+      "gap": 12,
+      "pad": [
+        20,
+        "$Zumpo · UI:space/24"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "FRAME",
+        "id": "26:16255",
+        "name": "Heading",
+        "w": 55,
+        "h": 30,
+        "wSize": "hug",
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "26:16256",
+            "name": "Title",
+            "w": 55,
+            "h": 30,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "Chat",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "26:16257",
+        "name": "Messages",
+        "w": 294,
+        "h": 214,
+        "wSize": "fill",
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/12",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "26:16258",
+            "name": "Message 1",
+            "w": 294,
+            "h": 18,
+            "wSize": "fill",
+            "hSize": "hug",
+            "component": "Zumpo/Chat message",
+            "variant": {
+              "Kind": "System"
+            },
+            "componentId": "26:16219",
+            "props": {
+              "Message": "Game has started! The category is Animals."
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 18,
+                "width": 294
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "26:16264",
+            "name": "Message 2",
+            "w": 294,
+            "h": 25,
+            "wSize": "fill",
+            "hSize": "hug",
+            "component": "Zumpo/Chat message",
+            "variant": {
+              "Kind": "Player"
+            },
+            "componentId": "26:16216",
+            "props": {
+              "Message": "a rock?"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 25,
+                "width": 294
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "26:16267",
+            "name": "Message 3",
+            "w": 294,
+            "h": 25,
+            "wSize": "fill",
+            "hSize": "hug",
+            "component": "Zumpo/Chat message",
+            "variant": {
+              "Kind": "Player"
+            },
+            "componentId": "26:16216",
+            "props": {
+              "Message": "tortoise",
+              "Name": "Leo"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 25,
+                "width": 294
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "26:16270",
+            "name": "Message 4",
+            "w": 294,
+            "h": 36,
+            "wSize": "fill",
+            "hSize": "hug",
+            "component": "Zumpo/Chat message",
+            "variant": {
+              "Kind": "Success"
+            },
+            "componentId": "26:16225",
+            "props": {
+              "Message": "Sam guessed the word! +112"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 36,
+                "width": 294
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "26:16275",
+            "name": "Message 5",
+            "w": 294,
+            "h": 25,
+            "wSize": "fill",
+            "hSize": "hug",
+            "component": "Zumpo/Chat message",
+            "variant": {
+              "Kind": "Player"
+            },
+            "componentId": "26:16216",
+            "props": {
+              "Message": "a shell with legs"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 25,
+                "width": 294
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "26:16278",
+            "name": "Message 6",
+            "w": 294,
+            "h": 25,
+            "wSize": "fill",
+            "hSize": "hug",
+            "component": "Zumpo/Chat message",
+            "variant": {
+              "Kind": "Player"
+            },
+            "componentId": "26:16216",
+            "props": {
+              "Message": "snail?",
+              "Name": "Leo"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 25,
+                "width": 294
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "26:16281",
+        "name": "Chat input",
+        "w": 294,
+        "h": 44,
+        "wSize": "fill",
+        "component": "Zumpo/Chat input",
+        "variant": {
+          "State": "Default"
+        },
+        "componentId": "26:16243",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 44,
+            "width": 294
+          }
+        ]
+      }
+    ]
+  }
+}

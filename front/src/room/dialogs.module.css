@@ -1,0 +1,19 @@
+/*
+ * A link breaks anywhere; it has no spaces to wrap at. The box grows to the
+ * whole link, so a narrow phone shows three lines; a browser without
+ * field-sizing keeps the two rows Figma draws and scrolls the rest.
+ */
+.link {
+  resize: none;
+  overflow-wrap: anywhere;
+  field-sizing: content;
+}
+
+/* P15's facts: one to a line, in ink under the muted summary. */
+.facts {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: var(--zumpo-text-body);
+  letter-spacing: var(--zumpo-text-body-tracking);
+}

@@ -1,0 +1,37 @@
+/* The tabs and the open panel sit straight in the page's own column, so the
+   page's gap spaces them. */
+.root {
+  display: contents;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  gap: var(--zumpo-space-12);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: var(--zumpo-space-8);
+  margin: 0;
+  padding: var(--zumpo-space-8);
+  border: 0;
+  border-radius: var(--zumpo-radius-999);
+  background: var(--zumpo-paper);
+  color: var(--zumpo-ink);
+  font: var(--zumpo-text-small);
+  letter-spacing: var(--zumpo-text-small-tracking);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tab[data-active] {
+  background: var(--zumpo-ink);
+  color: var(--zumpo-white);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--zumpo-ink);
+  outline-offset: 2px;
+}

@@ -1,11 +1,22 @@
 {
-  "include": ["**/*.ts"],
-  "exclude": ["node_modules", "build"],
+  // The source folders by name, not "**/*.ts": TypeScript 7's watcher reacts
+  // to any change under a folder it watches, and `npm run build` rewrites
+  // build/ while a dev watcher may be running.
+  "include": [
+    "*.ts",
+    "libs/**/*.ts",
+    "models/**/*.ts",
+    "socket/**/*.ts",
+    "tests/**/*.ts",
+    // Rule code the browser runs too: a game on your own and a room follow
+    // the same rules. It compiles into build/shared/, beside build/back/.
+    "../shared/**/*.ts"
+  ],
   "compilerOptions": {
     "outDir": "build",
-    "rootDir": "./",
+    "rootDir": "..",
 
-    // Node 20+ ESM: top-level await, import/export, .js specifiers
+    // Node 22+ ESM: top-level await, import/export, .js specifiers
     "target": "es2022",
     "lib": ["es2023"],
     "module": "nodenext",

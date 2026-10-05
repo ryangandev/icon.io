@@ -1,0 +1,105 @@
+/* A hand on the table: the paper panel, the cards, the signs and the steps. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--zumpo-space-20);
+  padding: var(--zumpo-space-24);
+  border: 1px solid var(--zumpo-line);
+  border-radius: var(--zumpo-radius-24);
+  background: var(--zumpo-paper);
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--zumpo-space-24);
+  padding: var(--zumpo-space-24) 0;
+}
+
+.cards {
+  display: flex;
+  align-items: center;
+  gap: var(--zumpo-space-16);
+}
+
+.compactCards {
+  gap: var(--zumpo-space-12);
+}
+
+.prompt {
+  margin: 0;
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-body);
+  letter-spacing: var(--zumpo-text-body-tracking);
+  text-align: center;
+  /* "7 − ?  Pick the second number." keeps its two spaces. */
+  white-space: pre-wrap;
+}
+
+.operators,
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--zumpo-space-12);
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  gap: var(--zumpo-space-8);
+}
+
+.heading {
+  margin: 0;
+  padding-bottom: var(--zumpo-space-8);
+  font: var(--zumpo-text-heading);
+  letter-spacing: var(--zumpo-text-heading-tracking);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: var(--zumpo-space-12);
+  padding: var(--zumpo-space-12) var(--zumpo-space-16);
+  border-radius: var(--zumpo-radius-12);
+  background: var(--zumpo-cream);
+}
+
+.number {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+}
+
+.sum {
+  font: var(--zumpo-text-number);
+  letter-spacing: var(--zumpo-text-number-tracking);
+}
+
+/* T11, T12: on a phone the hand sits straight on the page. */
+@media (max-width: 640px) {
+  .panel {
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  .table {
+    gap: var(--zumpo-space-20);
+    padding: var(--zumpo-space-8) 0;
+  }
+}

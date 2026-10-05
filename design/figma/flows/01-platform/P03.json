@@ -1,0 +1,306 @@
+{
+  "format": 1,
+  "code": "P03",
+  "title": "Name validation",
+  "id": "9:512",
+  "section": "01 / Platform & shared flows",
+  "reviewNotes": [
+    "P03 · Empty or whitespace-only name"
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "9:512",
+    "name": "P03 / Name validation",
+    "x": 3120,
+    "y": 150,
+    "w": 1440,
+    "h": 837,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        24,
+        "$Zumpo · UI:space/64",
+        32,
+        "$Zumpo · UI:space/64"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "9:513",
+        "name": "Zumpo/Header",
+        "w": 1312,
+        "h": 104,
+        "component": "Zumpo/Header",
+        "componentId": "4:39",
+        "overrides": [
+          {
+            "path": "Navigation / Games",
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "40:22071",
+                    "toName": "P04 / Games hub"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "path": "Navigation / You",
+            "componentProperties": {
+              "Initials": "MA",
+              "Tone": "Peach"
+            },
+            "visible": false
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:523",
+        "name": "Page heading",
+        "w": 1312,
+        "h": 121,
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/12",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:6565",
+            "name": "Tag / COME ON IN",
+            "w": 95,
+            "h": 30,
+            "wSize": "hug",
+            "hSize": "hug",
+            "component": "Zumpo/Tag",
+            "variant": {
+              "Tone": "Sand"
+            },
+            "componentId": "24:6511",
+            "props": {
+              "Label": "COME ON IN"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 30,
+                "width": 95
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:526",
+            "w": 1312,
+            "h": 42,
+            "hSize": "hug",
+            "text": "Every good game starts with a name.",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:527",
+            "w": 1312,
+            "h": 25,
+            "hSize": "hug",
+            "text": "No signup. Just pick a name your friends will recognize.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:528",
+        "name": "Dialog stage",
+        "w": 1312,
+        "h": 466,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "pad": [
+            56,
+            0
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "35:13452",
+            "name": "What should we call you?",
+            "w": 560,
+            "h": 354,
+            "hSize": "hug",
+            "component": "Zumpo/Card",
+            "variant": {
+              "Kind": "Focused"
+            },
+            "componentId": "9:400",
+            "props": {
+              "Description": "Your name will appear in rooms, chat, and scores.",
+              "Title": "What should we call you?"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 354,
+                "width": 560
+              }
+            ],
+            "slots": {
+              "Content": [
+                {
+                  "type": "INSTANCE",
+                  "id": "36:14062",
+                  "name": "Zumpo/Input",
+                  "w": 496,
+                  "h": 113,
+                  "hSize": "hug",
+                  "component": "Zumpo/Input",
+                  "variant": {
+                    "State": "Error"
+                  },
+                  "componentId": "9:216",
+                  "props": {
+                    "Helper": "Enter a name with at least one visible character.",
+                    "Value": ""
+                  }
+                },
+                {
+                  "type": "FRAME",
+                  "id": "36:14070",
+                  "name": "Actions",
+                  "w": 496,
+                  "h": 48,
+                  "hSize": "hug",
+                  "layout": {
+                    "mode": "row",
+                    "gap": "$Zumpo · UI:space/12",
+                    "align": "center",
+                    "strokesIncluded": true
+                  },
+                  "children": [
+                    {
+                      "type": "INSTANCE",
+                      "id": "I35:13452;35:13433;36:14074",
+                      "name": "Action / Let’s play",
+                      "w": 105,
+                      "h": 48,
+                      "wSize": "hug",
+                      "component": "Zumpo/Button",
+                      "variant": {
+                        "Style": "Primary",
+                        "State": "Default"
+                      },
+                      "componentId": "4:15",
+                      "overrides": [
+                        {
+                          "path": ".",
+                          "reactions": []
+                        }
+                      ]
+                    },
+                    {
+                      "type": "INSTANCE",
+                      "id": "I35:13452;35:13433;36:14075",
+                      "name": "Action / Back home",
+                      "w": 146,
+                      "h": 48,
+                      "wSize": "hug",
+                      "component": "Zumpo/Button",
+                      "variant": {
+                        "Style": "Secondary",
+                        "State": "Default"
+                      },
+                      "componentId": "4:18",
+                      "props": {
+                        "Icon": "Zumpo/Icon / Glyph=back",
+                        "Show icon": true,
+                        "Label": "Back home"
+                      },
+                      "overrides": [
+                        {
+                          "path": ".",
+                          "height": 48,
+                          "width": 146
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:542",
+        "name": "Footer",
+        "w": 1312,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:543",
+            "w": 650,
+            "h": 18,
+            "hSize": "hug",
+            "text": "Good company. One more round.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:544",
+            "w": 115,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "zumpo. / play a little",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

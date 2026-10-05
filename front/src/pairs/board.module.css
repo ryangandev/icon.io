@@ -1,0 +1,37 @@
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-8);
+}
+
+.row {
+  display: flex;
+  gap: var(--zumpo-space-8);
+}
+
+/* Compact cards sit 6 px apart, so a 6 × 6 board fits a phone. */
+.compact,
+.compact .row {
+  gap: 6px;
+}
+
+/* The board on its paper panel, as a Minesweeper board sits on a desktop. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--zumpo-space-20);
+  padding: var(--zumpo-space-24);
+  border: 1px solid var(--zumpo-line);
+  border-radius: var(--zumpo-radius-24);
+  background: var(--zumpo-paper);
+}
+
+/* On a phone the board sits on the page. */
+@media (max-width: 640px) {
+  .panel {
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+}

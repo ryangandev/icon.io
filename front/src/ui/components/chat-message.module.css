@@ -1,0 +1,66 @@
+.message {
+  display: flex;
+  gap: 8px;
+  overflow-wrap: anywhere;
+}
+
+.player {
+  align-items: baseline;
+}
+
+.name {
+  flex: none;
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+}
+
+.player .text {
+  font: var(--zumpo-text-body);
+  letter-spacing: var(--zumpo-text-body-tracking);
+}
+
+/* A leading icon sits in a slot one line tall, so it stays on the first line. */
+.iconSlot {
+  display: flex;
+  flex: none;
+  align-items: center;
+  height: var(--zumpo-text-label-line);
+}
+
+.system {
+  color: var(--zumpo-muted);
+}
+
+.system .text {
+  font: var(--zumpo-text-small);
+  letter-spacing: var(--zumpo-text-small-tracking);
+}
+
+.system .iconSlot {
+  height: var(--zumpo-text-small-line);
+}
+
+.success,
+.alert {
+  padding: 8px 10px;
+  border-radius: var(--zumpo-radius-12);
+}
+
+.success .text,
+.alert .text {
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+}
+
+.success {
+  background: var(--zumpo-lime);
+}
+
+.alert {
+  background: var(--zumpo-peach);
+}

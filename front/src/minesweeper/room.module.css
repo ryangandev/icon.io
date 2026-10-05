@@ -1,0 +1,60 @@
+/* The board and the latest results, in one paper panel on a desktop. */
+.minefield {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-20);
+  padding: var(--zumpo-space-24);
+  border: 1px solid var(--zumpo-line);
+  border-radius: var(--zumpo-radius-24);
+  background: var(--zumpo-paper);
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-4);
+}
+
+.resultsTitle {
+  padding-bottom: var(--zumpo-space-8);
+  font: var(--zumpo-text-heading);
+  letter-spacing: var(--zumpo-text-heading-tracking);
+}
+
+.resultList {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* On a phone the board fills the width on its own paper, and the results
+   are a card of their own under it. */
+@media (max-width: 640px) {
+  .minefield {
+    gap: var(--zumpo-space-24);
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  .boardPanel {
+    overflow: hidden;
+    border-radius: var(--zumpo-radius-16);
+    background: var(--zumpo-paper);
+  }
+
+  .results {
+    padding: var(--zumpo-space-16);
+    border: 1px solid var(--zumpo-line);
+    border-radius: 20px;
+    background: var(--zumpo-paper);
+  }
+
+  .resultsTitle {
+    padding-left: var(--zumpo-space-4);
+  }
+}

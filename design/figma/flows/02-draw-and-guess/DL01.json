@@ -1,0 +1,559 @@
+{
+  "format": 1,
+  "code": "DL01",
+  "title": "Room list · open, private, full and playing states",
+  "id": "9:868",
+  "section": "02 / Draw & Guess / complete flow",
+  "reviewNotes": [
+    "DL01 · Room list · open, private, full and playing states"
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "9:868",
+    "name": "DL01 / Room list · open, private, full and playing states",
+    "x": 40,
+    "y": 150,
+    "w": 1440,
+    "h": 885,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        24,
+        "$Zumpo · UI:space/64",
+        32,
+        "$Zumpo · UI:space/64"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "9:869",
+        "name": "Zumpo/Header",
+        "w": 1312,
+        "h": 104,
+        "component": "Zumpo/Header",
+        "componentId": "4:39",
+        "overrides": [
+          {
+            "path": "Navigation / Games",
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "40:22071",
+                    "toName": "P04 / Games hub"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "path": "Navigation / You",
+            "componentProperties": {
+              "Initials": "SA",
+              "Tone": "Sand"
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:879",
+        "name": "Page heading",
+        "w": 1312,
+        "h": 121,
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/12",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:6610",
+            "name": "Tag / PLAY TOGETHER",
+            "w": 117,
+            "h": 30,
+            "wSize": "hug",
+            "hSize": "hug",
+            "component": "Zumpo/Tag",
+            "variant": {
+              "Tone": "Sand"
+            },
+            "componentId": "24:6511",
+            "props": {
+              "Label": "PLAY TOGETHER"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 30,
+                "width": 117
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:882",
+            "w": 1312,
+            "h": 42,
+            "hSize": "hug",
+            "text": "Draw & Guess rooms",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:883",
+            "w": 1312,
+            "h": 25,
+            "hSize": "hug",
+            "text": "Join a room or make one for your friends.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:884",
+        "name": "Lobby actions",
+        "w": 1312,
+        "h": 48,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/16",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "9:885",
+            "name": "Action / Back to games",
+            "w": 171,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Secondary",
+              "State": "Default"
+            },
+            "componentId": "4:18",
+            "props": {
+              "Icon": "Zumpo/Icon / Glyph=back",
+              "Show icon": true,
+              "Label": "Back to games"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "reactions": [
+                  {
+                    "on": "on_click",
+                    "do": [
+                      {
+                        "nav": "navigate",
+                        "to": "40:22071",
+                        "toName": "P04 / Games hub",
+                        "transition": "dissolve"
+                      }
+                    ]
+                  }
+                ],
+                "width": 171
+              }
+            ],
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "40:22071",
+                    "toName": "P04 / Games hub",
+                    "transition": "dissolve"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "9:887",
+            "name": "Action / Create a room",
+            "w": 138,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Primary",
+              "State": "Default"
+            },
+            "componentId": "4:15",
+            "props": {
+              "Label": "Create a room"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "reactions": [
+                  {
+                    "on": "on_click",
+                    "do": [
+                      {
+                        "nav": "navigate",
+                        "to": "9:1014",
+                        "toName": "DL04 / Create room · game-specific settings",
+                        "transition": "dissolve"
+                      }
+                    ]
+                  }
+                ],
+                "width": 138
+              }
+            ],
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "9:1014",
+                    "toName": "DL04 / Create room · game-specific settings",
+                    "transition": "dissolve"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:889",
+        "name": "Lobby layout",
+        "w": 1312,
+        "h": 442,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/24",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "9:890",
+            "name": "Rooms",
+            "w": 920,
+            "h": 442,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/16",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "9:891",
+                "name": "Zumpo/Room row",
+                "w": 920,
+                "h": 90,
+                "hSize": "hug",
+                "component": "Zumpo/Room row",
+                "variant": {
+                  "Status": "Open",
+                  "Layout": "Desktop"
+                },
+                "componentId": "9:252",
+                "props": {
+                  "Players": "3 / 8",
+                  "Details": "Hosted by Maya · 2 rounds"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 90,
+                    "width": 920
+                  },
+                  {
+                    "path": "Action / Action / Join",
+                    "reactions": [
+                      {
+                        "on": "on_click",
+                        "do": [
+                          {
+                            "nav": "navigate",
+                            "to": "9:1431",
+                            "toName": "D03 / Guest · waiting for host"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "9:902",
+                "name": "Zumpo/Room row",
+                "w": 920,
+                "h": 90,
+                "hSize": "hug",
+                "component": "Zumpo/Room row",
+                "variant": {
+                  "Status": "Private",
+                  "Layout": "Desktop"
+                },
+                "componentId": "9:264",
+                "props": {
+                  "Players": "2 / 6",
+                  "Details": "Hosted by Leo · 3 rounds",
+                  "Room name": "Friday doodles"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 90,
+                    "width": 920
+                  },
+                  {
+                    "path": "Host",
+                    "componentProperties": {
+                      "Initials": "LE",
+                      "Tone": "Lime"
+                    }
+                  },
+                  {
+                    "path": "Action / Action / Join",
+                    "reactions": [
+                      {
+                        "on": "on_click",
+                        "do": [
+                          {
+                            "nav": "navigate",
+                            "to": "9:1176",
+                            "toName": "DL07 / Password-protected room"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "9:913",
+                "name": "Zumpo/Room row",
+                "w": 920,
+                "h": 90,
+                "hSize": "hug",
+                "component": "Zumpo/Room row",
+                "variant": {
+                  "Status": "Full",
+                  "Layout": "Desktop"
+                },
+                "componentId": "9:276",
+                "props": {
+                  "Players": "4 / 4",
+                  "Details": "Hosted by Ryan · 1 round",
+                  "Room name": "The full house"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 90,
+                    "width": 920
+                  },
+                  {
+                    "path": "Host",
+                    "componentProperties": {
+                      "Initials": "RG",
+                      "Tone": "Blue"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "9:924",
+                "name": "Zumpo/Room row",
+                "w": 920,
+                "h": 90,
+                "hSize": "hug",
+                "component": "Zumpo/Room row",
+                "variant": {
+                  "Status": "Playing",
+                  "Layout": "Desktop"
+                },
+                "componentId": "9:288",
+                "props": {
+                  "Players": "5 / 8",
+                  "Details": "Hosted by Sam · 4 rounds",
+                  "Room name": "Sketch club"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 90,
+                    "width": 920
+                  },
+                  {
+                    "path": "Host",
+                    "componentProperties": {
+                      "Initials": "SA",
+                      "Tone": "Sand"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "9:935",
+                "w": 126,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "4 rooms · Updates live",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/muted"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "9:936",
+            "name": "How to play",
+            "w": 368,
+            "h": 328,
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/lime"
+            ],
+            "strokes": [
+              "$Zumpo · UI:color/line"
+            ],
+            "strokeAlign": "inside",
+            "radius": "$Zumpo · UI:radius/24",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/16",
+              "pad": "$Zumpo · UI:space/32",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:937",
+                "w": 304,
+                "h": 30,
+                "hSize": "hug",
+                "text": "How to play",
+                "textStyle": "Zumpo/Heading",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "autoResize": "height"
+              },
+              {
+                "type": "TEXT",
+                "id": "9:938",
+                "name": "Choose a word, draw it, and race to guess. Fast guesses earn more poin",
+                "w": 304,
+                "h": 75,
+                "hSize": "hug",
+                "text": "Take turns drawing a word while everyone else races to guess it in the chat. Faster guesses score more.",
+                "textStyle": "Zumpo/Body",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "autoResize": "height"
+              },
+              {
+                "type": "TEXT",
+                "id": "9:939",
+                "name": "2–8 players Host chooses 1–4 rounds 15s to choose a word 90s to draw ·",
+                "w": 304,
+                "h": 125,
+                "hSize": "hug",
+                "text": "2–8 players\n1–4 rounds, everyone draws once a round\n15s to pick a word · 90s to draw\nThe answer shows for 10s",
+                "textStyle": "Zumpo/Body",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "autoResize": "height"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:940",
+        "name": "Footer",
+        "w": 1312,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:941",
+            "w": 650,
+            "h": 18,
+            "hSize": "hug",
+            "text": "Good company. One more round.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:942",
+            "w": 115,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "zumpo. / play a little",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

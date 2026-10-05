@@ -1,0 +1,68 @@
+/* Shared by TextField and SelectField: Zumpo/Input. */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-8);
+  min-width: 0;
+}
+
+.label {
+  color: var(--zumpo-ink);
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+}
+
+.box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+  padding: var(--zumpo-space-16);
+  border: 1px solid var(--zumpo-line);
+  border-radius: var(--zumpo-radius-12);
+  background: var(--zumpo-paper);
+  color: var(--zumpo-ink);
+  font: var(--zumpo-text-body);
+  letter-spacing: var(--zumpo-text-body-tracking);
+  text-align: left;
+  outline: none;
+}
+
+.box::placeholder {
+  color: var(--zumpo-muted);
+  opacity: 1;
+}
+
+/* Focus is a 2 px ink border, drawn inside so the field keeps its size. */
+.box:focus-visible,
+.box[data-popup-open] {
+  border-color: var(--zumpo-ink);
+  box-shadow: inset 0 0 0 1px var(--zumpo-ink);
+}
+
+.field[data-invalid] .box {
+  border-color: var(--zumpo-danger);
+}
+
+.field[data-invalid] .box:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--zumpo-danger);
+}
+
+.box[data-disabled],
+.box:disabled {
+  background: var(--zumpo-sand);
+  color: var(--zumpo-muted);
+  cursor: not-allowed;
+}
+
+.helper {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-small);
+  letter-spacing: var(--zumpo-text-small-tracking);
+}
+
+.field[data-invalid] .helper {
+  color: var(--zumpo-danger);
+}

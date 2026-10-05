@@ -1,11 +1,10 @@
-import type { Server } from 'socket.io';
 import type { OwnerInfo } from '../../../shared/wire-types.js';
 import { getRoomStatus } from '../utils.js';
 import { reconnectGraceInSeconds } from '../game-clock.js';
 import type { PlayerSessionRegistry } from '../player-session.js';
 import type { RoomRegistry } from './registry.js';
 import type { Room } from './types.js';
-import { emitToRoom } from './emit.js';
+import type { IoServer } from './emit.js';
 
 /** Pending seat expiries are keyed by the pair, not by either half. */
 const graceKey = (roomId: string, playerId: string) => `${roomId}:${playerId}`;
@@ -23,8 +22,8 @@ const recount = (room: Room) => {
  * Who is in a room, and for how long after they stop answering.
  *
  * The leave handler and the disconnect handler used to carry near-identical
- * copies of the departure logic — recount, transfer ownership, delete the room
- * if empty, tell the engine — which is how they came to disagree about whether
+ * copies of the departure logic - recount, transfer ownership, delete the room
+ * if empty, tell the engine - which is how they came to disagree about whether
  * to check membership first. They are one code path now, with one difference
  * that matters:
  *
@@ -35,12 +34,12 @@ const recount = (room: Room) => {
  *
  * None of that has anything to do with what is being played, which is why this
  * moved out of `socket/draw-and-guess/` unchanged in behaviour. What used to be
- * three direct calls into the Draw & Guess engine — a stranded turn, a drawer
- * who dropped, a drawer who came back — are three calls on whatever module owns
+ * three direct calls into the Draw & Guess engine - a stranded turn, a drawer
+ * who dropped, a drawer who came back - are three calls on whatever module owns
  * the room.
  */
 const createRoomMembership = (
-  io: Server,
+  io: IoServer,
   registry: RoomRegistry,
   sessions: PlayerSessionRegistry,
   graceInSeconds: number = reconnectGraceInSeconds,
@@ -76,22 +75,16 @@ const createRoomMembership = (
     );
   };
 
-  /** The room snapshot, built by whichever game the room belongs to. */
-  const emitRoomState = (room: Room) => {
-    const module = registry.moduleOf(room);
-    if (!module) return;
-    emitToRoom(io, room.roomId, 'room:state', module.toRoomState(room));
-  };
-
   /**
    * Removes the seat for good and lets the game deal with a stranded turn.
    * Shared by an explicit leave and by a grace period running out.
    */
-  const releaseSeat = (room: Room, playerId: string, username: string) => {
+  const releaseSeat = (room: Room, playerId: string) => {
     const roomId = room.roomId;
     const gameType = room.gameType;
     const module = registry.moduleOf(room);
     const wasOwner = room.owner.playerId === playerId;
+    const username = room.playerList[playerId]?.username ?? 'A player';
 
     delete room.playerList[playerId];
     recount(room);
@@ -112,18 +105,22 @@ const createRoomMembership = (
       room.owner = nextOwner;
       registry.lookup.announce(
         roomId,
+        'alert',
         `Previous owner ${username} has left the room. ${nextOwner.username} is now the owner.`,
       );
     } else {
-      registry.lookup.announce(roomId, `${username} has left the room.`);
+      registry.lookup.announce(
+        roomId,
+        'alert',
+        `${username} has left the room.`,
+      );
     }
 
-    emitRoomState(room);
-
-    // A departure can strand a turn — the player may have been the one whose
+    // A departure can strand a turn: the player may have been the one whose
     // move the room was waiting on, or the room may have dropped below the
     // game's minimum.
     module?.onDeparture(room, playerId);
+    registry.lookup.emitState(room);
 
     // Built after the departure is handled, so an ended game shows as 'Open'
     // rather than a stale 'In Progress'.
@@ -131,7 +128,7 @@ const createRoomMembership = (
   };
 
   /** Somebody clicked Leave. No grace: they meant it. */
-  const leave = (roomId: string, playerId: string, username: string) => {
+  const leave = (roomId: string, playerId: string) => {
     const room = registry.lookup.get(roomId);
     if (!room) return;
     // Leaving a room you were never in used to run the whole departure anyway.
@@ -142,7 +139,7 @@ const createRoomMembership = (
     const socketId = sessions.socketIdFor(playerId);
     if (socketId) io.sockets.sockets.get(socketId)?.leave(roomId);
 
-    releaseSeat(room, playerId, username);
+    releaseSeat(room, playerId);
     scheduleSessionExpiry(playerId);
   };
 
@@ -156,7 +153,7 @@ const createRoomMembership = (
 
     const held = registry.roomsHeldBy(playerId);
     if (held.length === 0) {
-      // Not in a room, so there is no seat to hold — but the identity still
+      // Not in a room, so there is no seat to hold - but the identity still
       // outlives the connection for the same grace period. Forgetting it here
       // would mean a reload from the lobby came back as a stranger, and would
       // race a reconnection that has already landed.
@@ -170,13 +167,14 @@ const createRoomMembership = (
       const player = room.playerList[playerId];
       player.isConnected = false;
 
-      emitRoomState(room);
+      registry.lookup.emitState(room);
       registry.lookup.announce(
         room.roomId,
+        'alert',
         `${player.username} lost connection.`,
       );
 
-      // The seat waits for them. So, briefly, may their turn — that decision
+      // The seat waits for them. So, briefly, may their turn - that decision
       // belongs to the game, which is the only thing that knows whether there
       // is anything worth coming back to.
       registry.moduleOf(room)?.onDisconnect(room, playerId);
@@ -193,7 +191,7 @@ const createRoomMembership = (
           const seat = current?.playerList[playerId];
           if (!current || !seat || seat.isConnected) return;
 
-          releaseSeat(current, playerId, seat.username);
+          releaseSeat(current, playerId);
           scheduleSessionExpiry(playerId);
         }, graceInSeconds * 1000),
       );
@@ -204,7 +202,7 @@ const createRoomMembership = (
 
   /**
    * A player proved they are who they were. Any seat still being held for them
-   * becomes theirs again — score, ownership and place in the round intact.
+   * becomes theirs again - score, ownership and place in the round intact.
    */
   const handleResume = (playerId: string) => {
     cancelGrace('session', playerId);
@@ -223,8 +221,12 @@ const createRoomMembership = (
       player.isConnected = true;
       socket?.join(room.roomId);
 
-      emitRoomState(room);
-      registry.lookup.announce(room.roomId, `${player.username} reconnected.`);
+      registry.lookup.emitState(room);
+      registry.lookup.announce(
+        room.roomId,
+        'system',
+        `${player.username} reconnected.`,
+      );
 
       // If the room was holding a turn open for them, it can stop.
       registry.moduleOf(room)?.onReturn(room, playerId);
@@ -240,6 +242,8 @@ const createRoomMembership = (
   };
 
   return {
+    /** How long a dropped connection keeps its seats. */
+    graceMs: graceInSeconds * 1000,
     leave,
     handleDisconnect,
     handleResume,

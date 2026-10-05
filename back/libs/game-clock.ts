@@ -1,6 +1,6 @@
 /**
  * How long each phase of a turn lasts. These live on the server because the
- * server is what enforces them — clients are told how much time is left, they
+ * server is what enforces them - clients are told how much time is left, they
  * do not decide it.
  *
  * Overridable so a game can be sped up for local play or an integration run
@@ -60,13 +60,39 @@ const minesweeperDurationsInSeconds: MinesweeperDurationsInSeconds = {
   reveal: readSecondsFromEnv('MINESWEEPER_REVEAL_SECONDS', 4),
 };
 
+/** Make 24's clock: one hand for everybody at once, then its results. */
+interface Make24DurationsInSeconds {
+  /** How long everybody has to solve a hand. */
+  hand: number;
+  /** How long a hand's results stay up before the next is dealt. */
+  reveal: number;
+}
+
+const make24DurationsInSeconds: Make24DurationsInSeconds = {
+  hand: readSecondsFromEnv('MAKE24_HAND_SECONDS', 60),
+  reveal: readSecondsFromEnv('MAKE24_REVEAL_SECONDS', 5),
+};
+
+/** Pairs' clock: one player's turn, and a miss left up for everybody. */
+interface PairsDurationsInSeconds {
+  /** How long a player has to turn over two cards. */
+  turn: number;
+  /** How long two cards that did not match stay up before they turn back. */
+  show: number;
+}
+
+const pairsDurationsInSeconds: PairsDurationsInSeconds = {
+  turn: readSecondsFromEnv('PAIRS_TURN_SECONDS', 10),
+  show: readSecondsFromEnv('PAIRS_SHOW_SECONDS', 2),
+};
+
 /**
  * How long a disconnected player keeps their seat, their score and their place
  * in the round before the room gives up on them.
  *
  * Long enough to cover a refresh, a tab restore or a brief network blip; short
  * enough that a room is not held up by somebody who has actually gone. A player
- * who leaves deliberately is removed at once — this is only for connections
+ * who leaves deliberately is removed at once - this is only for connections
  * that drop.
  */
 const reconnectGraceInSeconds = readSecondsFromEnv(
@@ -77,6 +103,13 @@ const reconnectGraceInSeconds = readSecondsFromEnv(
 export {
   phaseDurationsInSeconds,
   minesweeperDurationsInSeconds,
+  make24DurationsInSeconds,
+  pairsDurationsInSeconds,
   reconnectGraceInSeconds,
 };
-export type { PhaseDurationsInSeconds, MinesweeperDurationsInSeconds };
+export type {
+  PhaseDurationsInSeconds,
+  MinesweeperDurationsInSeconds,
+  Make24DurationsInSeconds,
+  PairsDurationsInSeconds,
+};

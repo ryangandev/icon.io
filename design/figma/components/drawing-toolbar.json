@@ -1,0 +1,924 @@
+{
+  "format": 1,
+  "name": "Zumpo/Drawing toolbar",
+  "id": "26:16591",
+  "type": "COMPONENT_SET",
+  "key": "cd536ac660626ed58420bf3b608f94b311ecfbbf",
+  "description": "Drawer only, during the drawing phase. Twelve brush colours (color/brush/*), four brush sizes (4, 10, 18, 28 px, as the canvas uses), Undo and Clear. Selected colour: ink ring; selected size: sand with an ink outline.",
+  "properties": {
+    "Layout": {
+      "type": "variant",
+      "default": "Desktop",
+      "options": [
+        "Desktop",
+        "Phone"
+      ]
+    }
+  },
+  "defaultVariant": "Layout=Desktop",
+  "variants": [
+    {
+      "name": "Layout=Desktop",
+      "id": "9:355",
+      "props": {
+        "Layout": "Desktop"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "9:355",
+        "name": "Layout=Desktop",
+        "w": 944,
+        "h": 74,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/24",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/16",
+          "pad": [
+            12,
+            "$Zumpo · UI:space/16"
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "26:16503",
+            "name": "Colours",
+            "w": 424,
+            "h": 28,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "ELLIPSE",
+                "id": "26:16504",
+                "name": "ink (selected)",
+                "w": 28,
+                "h": 28,
+                "fills": [
+                  "$Zumpo · UI:color/brush/ink"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/paper"
+                ],
+                "strokeWeight": 2,
+                "strokeAlign": "inside",
+                "effects": [
+                  {
+                    "type": "drop_shadow",
+                    "color": "#282B25",
+                    "offset": [
+                      0,
+                      0
+                    ],
+                    "radius": 0,
+                    "spread": 2
+                  }
+                ]
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16505",
+                "name": "graphite",
+                "w": 28,
+                "h": 28,
+                "fills": [
+                  "$Zumpo · UI:color/brush/graphite"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16506",
+                "name": "white",
+                "w": 28,
+                "h": 28,
+                "fills": [
+                  "$Zumpo · UI:color/brush/white"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16507",
+                "name": "coral",
+                "w": 28,
+                "h": 28,
+                "fills": [
+                  "$Zumpo · UI:color/brush/coral"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16508",
+                "name": "red",
+                "w": 28,
+                "h": 28,
+                "fills": [
+                  "$Zumpo · UI:color/brush/red"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16509",
+                "name": "orange",
+                "w": 28,
+                "h": 28,
+                "fills": [
+                  "$Zumpo · UI:color/brush/orange"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16510",
+                "name": "sun",
+                "w": 28,
+                "h": 28,
+                "fills": [
+                  "$Zumpo · UI:color/brush/sun"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16511",
+                "name": "leaf",
+                "w": 28,
+                "h": 28,
+                "fills": [
+                  "$Zumpo · UI:color/brush/leaf"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16512",
+                "name": "green",
+                "w": 28,
+                "h": 28,
+                "fills": [
+                  "$Zumpo · UI:color/brush/green"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16513",
+                "name": "sky",
+                "w": 28,
+                "h": 28,
+                "fills": [
+                  "$Zumpo · UI:color/brush/sky"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16514",
+                "name": "violet",
+                "w": 28,
+                "h": 28,
+                "fills": [
+                  "$Zumpo · UI:color/brush/violet"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16515",
+                "name": "brown",
+                "w": 28,
+                "h": 28,
+                "fills": [
+                  "$Zumpo · UI:color/brush/brown"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              }
+            ]
+          },
+          {
+            "type": "RECTANGLE",
+            "id": "26:16545",
+            "name": "Divider",
+            "w": 1,
+            "h": 32,
+            "fills": [
+              "$Zumpo · UI:color/line"
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "26:16516",
+            "name": "Brush sizes",
+            "w": 172,
+            "h": 40,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "FRAME",
+                "id": "26:16517",
+                "name": "Brush 4",
+                "w": 40,
+                "h": 40,
+                "radius": "$Zumpo · UI:radius/8",
+                "layout": {
+                  "mode": "row",
+                  "justify": "center",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "ELLIPSE",
+                    "id": "26:16518",
+                    "name": "Ellipse",
+                    "w": 4,
+                    "h": 4,
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "26:16519",
+                "name": "Brush 10",
+                "w": 40,
+                "h": 40,
+                "fills": [
+                  "$Zumpo · UI:color/sand"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "strokeWeight": 2,
+                "strokeAlign": "inside",
+                "radius": "$Zumpo · UI:radius/8",
+                "layout": {
+                  "mode": "row",
+                  "justify": "center",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "ELLIPSE",
+                    "id": "26:16520",
+                    "name": "Ellipse",
+                    "w": 10,
+                    "h": 10,
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "26:16521",
+                "name": "Brush 18",
+                "w": 40,
+                "h": 40,
+                "radius": "$Zumpo · UI:radius/8",
+                "layout": {
+                  "mode": "row",
+                  "justify": "center",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "ELLIPSE",
+                    "id": "26:16522",
+                    "name": "Ellipse",
+                    "w": 18,
+                    "h": 18,
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "26:16523",
+                "name": "Brush 28",
+                "w": 40,
+                "h": 40,
+                "radius": "$Zumpo · UI:radius/8",
+                "layout": {
+                  "mode": "row",
+                  "justify": "center",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "ELLIPSE",
+                    "id": "26:16524",
+                    "name": "Ellipse",
+                    "w": 28,
+                    "h": 28,
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "26:16546",
+            "name": "Spacer",
+            "w": 28,
+            "h": 1,
+            "wSize": "fill",
+            "layout": {
+              "mode": "row",
+              "strokesIncluded": true
+            }
+          },
+          {
+            "type": "FRAME",
+            "id": "26:16525",
+            "name": "Actions",
+            "w": 221,
+            "h": 48,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "26:16526",
+                "name": "Action / Undo",
+                "w": 106,
+                "h": 48,
+                "wSize": "hug",
+                "component": "Zumpo/Button",
+                "variant": {
+                  "Style": "Secondary",
+                  "State": "Default"
+                },
+                "componentId": "4:18",
+                "props": {
+                  "Icon": "Zumpo/Icon / Glyph=undo",
+                  "Show icon": true,
+                  "Label": "Undo"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 48,
+                    "width": 106
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "26:16534",
+                "name": "Action / Clear",
+                "w": 107,
+                "h": 48,
+                "wSize": "hug",
+                "component": "Zumpo/Button",
+                "variant": {
+                  "Style": "Secondary",
+                  "State": "Default"
+                },
+                "componentId": "4:18",
+                "props": {
+                  "Icon": "Zumpo/Icon / Glyph=trash",
+                  "Show icon": true,
+                  "Label": "Clear"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Layout=Phone",
+      "id": "26:16547",
+      "props": {
+        "Layout": "Phone"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "26:16547",
+        "name": "Layout=Phone",
+        "w": 358,
+        "h": 108,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "column",
+          "gap": 12,
+          "pad": 12,
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "26:16548",
+            "name": "Colours",
+            "w": 332,
+            "h": 22,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "justify": "space_between",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "ELLIPSE",
+                "id": "26:16549",
+                "name": "ink (selected)",
+                "w": 22,
+                "h": 22,
+                "fills": [
+                  "$Zumpo · UI:color/brush/ink"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/paper"
+                ],
+                "strokeWeight": 2,
+                "strokeAlign": "inside",
+                "effects": [
+                  {
+                    "type": "drop_shadow",
+                    "color": "#282B25",
+                    "offset": [
+                      0,
+                      0
+                    ],
+                    "radius": 0,
+                    "spread": 2
+                  }
+                ]
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16550",
+                "name": "graphite",
+                "w": 22,
+                "h": 22,
+                "fills": [
+                  "$Zumpo · UI:color/brush/graphite"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16551",
+                "name": "white",
+                "w": 22,
+                "h": 22,
+                "fills": [
+                  "$Zumpo · UI:color/brush/white"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16552",
+                "name": "coral",
+                "w": 22,
+                "h": 22,
+                "fills": [
+                  "$Zumpo · UI:color/brush/coral"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16553",
+                "name": "red",
+                "w": 22,
+                "h": 22,
+                "fills": [
+                  "$Zumpo · UI:color/brush/red"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16554",
+                "name": "orange",
+                "w": 22,
+                "h": 22,
+                "fills": [
+                  "$Zumpo · UI:color/brush/orange"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16555",
+                "name": "sun",
+                "w": 22,
+                "h": 22,
+                "fills": [
+                  "$Zumpo · UI:color/brush/sun"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16556",
+                "name": "leaf",
+                "w": 22,
+                "h": 22,
+                "fills": [
+                  "$Zumpo · UI:color/brush/leaf"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16557",
+                "name": "green",
+                "w": 22,
+                "h": 22,
+                "fills": [
+                  "$Zumpo · UI:color/brush/green"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16558",
+                "name": "sky",
+                "w": 22,
+                "h": 22,
+                "fills": [
+                  "$Zumpo · UI:color/brush/sky"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16559",
+                "name": "violet",
+                "w": 22,
+                "h": 22,
+                "fills": [
+                  "$Zumpo · UI:color/brush/violet"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "26:16560",
+                "name": "brown",
+                "w": 22,
+                "h": 22,
+                "fills": [
+                  "$Zumpo · UI:color/brush/brown"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "26:16590",
+            "name": "Tools",
+            "w": 332,
+            "h": 48,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "justify": "space_between",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "FRAME",
+                "id": "26:16561",
+                "name": "Brush sizes",
+                "w": 156,
+                "h": 36,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/4",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "26:16562",
+                    "name": "Brush 4",
+                    "w": 36,
+                    "h": 36,
+                    "radius": "$Zumpo · UI:radius/8",
+                    "layout": {
+                      "mode": "row",
+                      "justify": "center",
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "ELLIPSE",
+                        "id": "26:16563",
+                        "name": "Ellipse",
+                        "w": 4,
+                        "h": 4,
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "26:16564",
+                    "name": "Brush 10",
+                    "w": 36,
+                    "h": 36,
+                    "fills": [
+                      "$Zumpo · UI:color/sand"
+                    ],
+                    "strokes": [
+                      "$Zumpo · UI:color/ink"
+                    ],
+                    "strokeWeight": 2,
+                    "strokeAlign": "inside",
+                    "radius": "$Zumpo · UI:radius/8",
+                    "layout": {
+                      "mode": "row",
+                      "justify": "center",
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "ELLIPSE",
+                        "id": "26:16565",
+                        "name": "Ellipse",
+                        "w": 10,
+                        "h": 10,
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "26:16566",
+                    "name": "Brush 18",
+                    "w": 36,
+                    "h": 36,
+                    "radius": "$Zumpo · UI:radius/8",
+                    "layout": {
+                      "mode": "row",
+                      "justify": "center",
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "ELLIPSE",
+                        "id": "26:16567",
+                        "name": "Ellipse",
+                        "w": 18,
+                        "h": 18,
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "26:16568",
+                    "name": "Brush 28",
+                    "w": 36,
+                    "h": 36,
+                    "radius": "$Zumpo · UI:radius/8",
+                    "layout": {
+                      "mode": "row",
+                      "justify": "center",
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "ELLIPSE",
+                        "id": "26:16569",
+                        "name": "Ellipse",
+                        "w": 24,
+                        "h": 24,
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "26:16570",
+                "name": "Actions",
+                "w": 100,
+                "h": 48,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:16571",
+                    "name": "Action / Undo",
+                    "w": 46,
+                    "h": 48,
+                    "wSize": "hug",
+                    "component": "Zumpo/Button",
+                    "variant": {
+                      "Style": "Secondary",
+                      "State": "Default"
+                    },
+                    "componentId": "4:18",
+                    "props": {
+                      "Icon": "Zumpo/Icon / Glyph=undo",
+                      "Show icon": true,
+                      "Label": ""
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 48,
+                        "paddingLeft": 12,
+                        "paddingRight": 12,
+                        "width": 46
+                      },
+                      {
+                        "path": "Let’s play",
+                        "visible": false
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:16579",
+                    "name": "Action / Clear",
+                    "w": 46,
+                    "h": 48,
+                    "wSize": "hug",
+                    "component": "Zumpo/Button",
+                    "variant": {
+                      "Style": "Secondary",
+                      "State": "Default"
+                    },
+                    "componentId": "4:18",
+                    "props": {
+                      "Icon": "Zumpo/Icon / Glyph=trash",
+                      "Show icon": true,
+                      "Label": ""
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 48,
+                        "paddingLeft": 12,
+                        "paddingRight": 12,
+                        "width": 46
+                      },
+                      {
+                        "path": "Let’s play",
+                        "visible": false
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,210 @@
+{
+  "format": 1,
+  "code": "P05",
+  "title": "Connecting",
+  "id": "9:583",
+  "section": "01 / Platform & shared flows",
+  "reviewNotes": [
+    "P05 · Socket connection before entering lobby"
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "9:583",
+    "name": "P05 / Connecting",
+    "x": 40,
+    "y": 1310,
+    "w": 1440,
+    "h": 527,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        24,
+        "$Zumpo · UI:space/64",
+        32,
+        "$Zumpo · UI:space/64"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "9:584",
+        "name": "Zumpo/Header",
+        "w": 1312,
+        "h": 104,
+        "component": "Zumpo/Header",
+        "componentId": "4:39",
+        "overrides": [
+          {
+            "path": "Navigation / Games",
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "40:22071",
+                    "toName": "P04 / Games hub"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "path": "Navigation / You",
+            "componentProperties": {
+              "Initials": "MA",
+              "Tone": "Peach"
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:594",
+        "name": "Dialog stage",
+        "w": 1312,
+        "h": 301,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "pad": [
+            56,
+            0
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "35:13461",
+            "name": "Getting the room ready…",
+            "w": 560,
+            "h": 189,
+            "hSize": "hug",
+            "component": "Zumpo/Card",
+            "variant": {
+              "Kind": "Focused"
+            },
+            "componentId": "9:400",
+            "props": {
+              "Description": "Connecting to Zumpo. This normally takes a moment.",
+              "Title": "Getting the room ready…"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 189,
+                "width": 560
+              }
+            ],
+            "slots": {
+              "Content": [
+                {
+                  "type": "FRAME",
+                  "id": "36:13775",
+                  "name": "Status",
+                  "w": 496,
+                  "h": 20,
+                  "hSize": "hug",
+                  "layout": {
+                    "mode": "row",
+                    "gap": 8,
+                    "align": "center",
+                    "strokesIncluded": true
+                  },
+                  "children": [
+                    {
+                      "type": "INSTANCE",
+                      "id": "I35:13461;35:13433;36:13779",
+                      "name": "Zumpo/Icon",
+                      "w": 20,
+                      "h": 20,
+                      "component": "Zumpo/Icon",
+                      "variant": {
+                        "Glyph": "pending"
+                      },
+                      "componentId": "24:5002",
+                      "overrides": [
+                        {
+                          "path": "pending",
+                          "strokes": [
+                            "$Zumpo · UI:color/muted"
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "TEXT",
+                      "id": "I35:13461;35:13433;36:13780",
+                      "w": 90,
+                      "h": 20,
+                      "wSize": "hug",
+                      "hSize": "hug",
+                      "text": "Connecting…",
+                      "textStyle": "Zumpo/Label",
+                      "fills": [
+                        "$Zumpo · UI:color/muted"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:601",
+        "name": "Footer",
+        "w": 1312,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:602",
+            "w": 650,
+            "h": 18,
+            "hSize": "hug",
+            "text": "Good company. One more round.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:603",
+            "w": 115,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "zumpo. / play a little",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

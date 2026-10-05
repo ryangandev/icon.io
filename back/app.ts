@@ -5,7 +5,9 @@ import cors from 'cors';
 import * as url from 'node:url';
 import path from 'node:path';
 import type {
+  Make24DurationsInSeconds,
   MinesweeperDurationsInSeconds,
+  PairsDurationsInSeconds,
   PhaseDurationsInSeconds,
 } from './libs/game-clock.js';
 import { createRoomRegistry } from './libs/rooms/registry.js';
@@ -16,6 +18,8 @@ import { chatEventsHandler } from './libs/rooms/chat-events.js';
 import type { Room } from './libs/rooms/types.js';
 import { createDrawAndGuessModule } from './socket/draw-and-guess/index.js';
 import { createMinesweeperModule } from './socket/minesweeper/index.js';
+import { createMake24Module } from './socket/make-24/index.js';
+import { createPairsModule } from './socket/pairs/index.js';
 import { clientDepartureOnDisconnectHandler } from './socket/client-disconnect-handler.js';
 import { playerSessionHandler } from './socket/player-session-handler.js';
 import {
@@ -23,11 +27,17 @@ import {
   type PlayerSessionRegistry,
 } from './libs/player-session.js';
 import { createRateLimiter } from './libs/rate-limit.js';
+import { splitAck, type IoServer } from './libs/rooms/emit.js';
+import { invalidRequest } from './models/error.js';
+import type {
+  ClientToServerEvents,
+  ServerToClientEvents,
+} from '../shared/wire-types.js';
 
 /** At most one "you are being throttled" line per socket per this long. */
 const THROTTLE_LOG_INTERVAL_MS = 5000;
 
-interface CreateIconIoServerOptions {
+interface CreateZumpoServerOptions {
   /** Defaults to `process.env.CORS_ORIGIN`, then the Vite dev server. */
   corsOrigin?: string;
   /** Serve the built SPA and route unknown paths to it. */
@@ -36,13 +46,17 @@ interface CreateIconIoServerOptions {
   phaseDurations?: PhaseDurationsInSeconds;
   /** Minesweeper's round window and reveal pause. Shortened by tests. */
   minesweeperDurations?: MinesweeperDurationsInSeconds;
+  /** Make 24's hand and its results. Shortened by tests. */
+  make24Durations?: Make24DurationsInSeconds;
+  /** A Pairs turn and a miss on show. Shortened by tests. */
+  pairsDurations?: PairsDurationsInSeconds;
   /** How long a dropped player keeps their seat. Shortened by tests. */
   graceInSeconds?: number;
 }
 
-interface IconIoServer {
+interface ZumpoServer {
   httpServer: HttpServer;
-  io: Server;
+  io: IoServer;
   /** The live room registry, exposed so tests can assert on server state. */
   rooms: Record<string, Room>;
   /** Exposed so tests can assert on identities outliving their sockets. */
@@ -54,7 +68,7 @@ interface IconIoServer {
  * Builds a fully wired server without starting it.
  *
  * This used to all happen at module scope in `server.ts`, which meant importing
- * the server was the same thing as binding a port — so the only way to exercise
+ * the server was the same thing as binding a port - so the only way to exercise
  * any of it was to spawn a process and talk to a fixed port.
  *
  * The connection block below is now three generic handlers plus a loop over
@@ -62,31 +76,37 @@ interface IconIoServer {
  * after Draw & Guess and handed the single `drawAndGuessDetailRoomInfoList`
  * that was the server's entire idea of state.
  */
-const createIconIoServer = (
-  options: CreateIconIoServerOptions = {},
-): IconIoServer => {
+const createZumpoServer = (
+  options: CreateZumpoServerOptions = {},
+): ZumpoServer => {
   const {
     corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:3001',
     serveClient = process.env.NODE_ENV === 'production',
     phaseDurations,
     minesweeperDurations,
+    make24Durations,
+    pairsDurations,
     graceInSeconds,
   } = options;
 
   const app = express();
   const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-  const publicStaticFolder = path.join(__dirname, 'public');
+  // build/back/app.js serves the SPA that Vite builds into build/public.
+  const publicStaticFolder = path.join(__dirname, '..', 'public');
 
   app.use(express.json());
   app.use(cors());
   app.use(express.static(publicStaticFolder));
 
   const httpServer = createServer(app);
-  const io = new Server(httpServer, {
-    cors: {
-      origin: corsOrigin,
+  const io: IoServer = new Server<ClientToServerEvents, ServerToClientEvents>(
+    httpServer,
+    {
+      cors: {
+        origin: corsOrigin,
+      },
     },
-  });
+  );
 
   // All of these are created once for the server rather than per connection:
   // they own timers and identities that outlive any single socket.
@@ -94,12 +114,14 @@ const createIconIoServer = (
   const registry = createRoomRegistry(io, sessions);
 
   // Every game the server knows how to run. A module is registered once and
-  // then reached only through the registry — the room layer below never names
+  // then reached only through the registry - the room layer below never names
   // one, and adding the second took this line and nothing else here.
   registry.register(createDrawAndGuessModule(registry.context, phaseDurations));
   registry.register(
     createMinesweeperModule(registry.context, minesweeperDurations),
   );
+  registry.register(createMake24Module(registry.context, make24Durations));
+  registry.register(createPairsModule(registry.context, pairsDurations));
 
   const membership = createRoomMembership(
     io,
@@ -113,15 +135,21 @@ const createIconIoServer = (
 
     // Before anything else looks at a packet: how often may this socket speak?
     // Every handler below checks the *shape* of what it is sent; this is what
-    // bounds how much of it arrives. A dropped packet is simply never handed
-    // on — the same silent drop an invalid payload gets, for the same reason.
+    // bounds how much of it arrives. A dropped packet is never handed on. A
+    // request is told so, so that a client waiting on its answer is not left
+    // waiting forever; anything else is dropped silently.
     const rateLimiter = createRateLimiter();
     let lastThrottleWarningMs = 0;
 
-    socket.use(([eventName], next) => {
+    socket.use(([eventName, ...rawArgs], next) => {
       if (rateLimiter.allow(String(eventName))) {
         next();
         return;
+      }
+
+      const { ack } = splitAck(rawArgs);
+      if (ack) {
+        ack(invalidRequest('Too many requests. Try again in a moment.'));
       }
 
       // Logging every dropped packet would be its own flood.
@@ -134,15 +162,20 @@ const createIconIoServer = (
       }
     });
 
-    // Identity first: every handler below reads the player id off the
-    // connection, so nothing can happen until the client has identified.
-    playerSessionHandler(socket, sessions, membership.handleResume);
+    // Identity first, from the handshake: every handler below reads the player
+    // id off the connection, and this runs before any event from it is read.
+    playerSessionHandler(
+      socket,
+      sessions,
+      membership.graceMs,
+      membership.handleResume,
+    );
     clientDepartureOnDisconnectHandler(socket, membership);
 
     // The room layer: lobbies, seats, ownership, chat. None of it knows which
     // game it is running.
     lobbyEventsHandler(socket, registry, sessions);
-    roomEventsHandler(io, socket, registry, sessions, membership);
+    roomEventsHandler(socket, registry, sessions, membership);
     chatEventsHandler(socket, registry, sessions);
 
     // And then each game's own events.
@@ -154,7 +187,7 @@ const createIconIoServer = (
   if (serveClient) {
     console.log('Serving the built client.');
     // Express 5 / path-to-regexp v8: a bare '*' is no longer a valid path.
-    // Wildcards must be named — '/{*splat}' matches the root as well as any subpath.
+    // Wildcards must be named - '/{*splat}' matches the root as well as any subpath.
     app.get('/{*splat}', (_req: Request, res: Response) => {
       res.sendFile('index.html', { root: publicStaticFolder });
     });
@@ -162,7 +195,7 @@ const createIconIoServer = (
     console.log('Running in development mode.');
     app.get('/{*splat}', (_req: Request, res: Response) => {
       res.send(
-        `Hello, welcome to the Icon.io development server! 🚀\n` +
+        `Hello, welcome to the Zumpo development server! 🚀\n` +
           `In development mode, the frontend server also needs to be started.\n` +
           `Please ensure it's running and accessible at http://localhost:3001.\n` +
           `Happy coding! 🎉`,
@@ -191,5 +224,5 @@ const createIconIoServer = (
   return { httpServer, io, rooms: registry.all, sessions, close };
 };
 
-export { createIconIoServer };
-export type { CreateIconIoServerOptions, IconIoServer };
+export { createZumpoServer };
+export type { CreateZumpoServerOptions, ZumpoServer };

@@ -1,0 +1,46 @@
+.viewport {
+  display: flex;
+  justify-content: center;
+}
+
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-4);
+}
+
+.row {
+  display: flex;
+  gap: var(--zumpo-space-4);
+}
+
+/* Compact cells sit 3 px apart. */
+.compact .board,
+.compact .row {
+  gap: 3px;
+}
+
+@media (max-width: 640px) {
+  /* A Small board fits: 36 px cells, 3 px apart. */
+  .board,
+  .row {
+    gap: 3px;
+  }
+
+  /* Wider boards keep full-size cells and pan sideways. */
+  .pans {
+    justify-content: flex-start;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  .pans .board,
+  .pans .row {
+    gap: var(--zumpo-space-4);
+  }
+
+  /* Specific enough to beat the cells' own 36 px phone size. */
+  .pans span[role='gridcell'] {
+    --zumpo-cell-size: 44px;
+  }
+}

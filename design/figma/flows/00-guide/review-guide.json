@@ -1,0 +1,458 @@
+{
+  "format": 1,
+  "code": "review-guide",
+  "title": "Review guide",
+  "id": "9:14702",
+  "section": "00 / Review guide & flow map",
+  "frame": {
+    "type": "FRAME",
+    "id": "9:14702",
+    "name": "Review guide",
+    "x": 40,
+    "y": 150,
+    "w": 1440,
+    "h": 1138,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/paper"
+    ],
+    "radius": "$Zumpo · UI:radius/24",
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/32",
+      "pad": "$Zumpo · UI:space/48",
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "TEXT",
+        "id": "9:14703",
+        "w": 703,
+        "h": 78,
+        "wSize": "hug",
+        "hSize": "hug",
+        "text": "Zumpo / Paper Pop",
+        "textStyle": "Zumpo/Hero",
+        "fills": [
+          "$Zumpo · UI:color/ink"
+        ]
+      },
+      {
+        "type": "TEXT",
+        "id": "9:14704",
+        "w": 612,
+        "h": 42,
+        "wSize": "hug",
+        "hSize": "hug",
+        "text": "One direction. Every little moment.",
+        "textStyle": "Zumpo/Title",
+        "fills": [
+          "$Zumpo · UI:color/ink"
+        ]
+      },
+      {
+        "type": "TEXT",
+        "id": "9:14705",
+        "name": "Review screens left to right, then top to bottom. Desktop uses 1440px;",
+        "w": 1344,
+        "h": 50,
+        "hSize": "hug",
+        "text": "Review screens left to right, then top to bottom. Desktop uses 1440px; mobile uses 390px. Source behavior stays the same. New presentations are labelled in review notes above each screen. What changed in each review round, and what is still open, is in the repository under design/reviews/.",
+        "textStyle": "Zumpo/Body",
+        "fills": [
+          "$Zumpo · UI:color/muted"
+        ],
+        "autoResize": "height"
+      },
+      {
+        "type": "FRAME",
+        "id": "9:14706",
+        "name": "01 Platform",
+        "w": 1344,
+        "h": 50,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/32",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:14707",
+            "w": 220,
+            "h": 30,
+            "hSize": "hug",
+            "text": "01 Platform",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:14708",
+            "name": "P01 Home → P02 Name → P04 Games → Choose a game. P05–P10 cover connect",
+            "w": 1092,
+            "h": 50,
+            "hSize": "hug",
+            "text": "P01 Home → P02 Name → P04 Games → Choose a game, and Play solo or Find a room. P05–P10 cover connection and missing-page states. P11–P13 cover leaving, sharing and session menu. P14 covers the game rules.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:14709",
+        "name": "02 Draw & Guess",
+        "w": 1344,
+        "h": 50,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/32",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:14710",
+            "w": 220,
+            "h": 30,
+            "hSize": "hug",
+            "text": "02 Draw & Guess",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:14711",
+            "name": "DL01–DL09 Rooms, creation, password and failure states. D01–D03 Waitin",
+            "w": 1092,
+            "h": 50,
+            "hSize": "hug",
+            "text": "DL01–DL09 Rooms, creation, password and failure states. D01–D03 Waiting room. D04–D05 Word selection by role. D06–D08 Drawing / guessing / correct guess. D09 Reveal. D10–D12 interruption and timeout. D13–D15 end / replay / early end. DL10–DL11 show seats and rounds menus.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:14712",
+        "name": "03 Minesweeper",
+        "w": 1344,
+        "h": 75,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/32",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:14713",
+            "w": 220,
+            "h": 30,
+            "hSize": "hug",
+            "text": "03 Minesweeper",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:14714",
+            "name": "ML01–ML09 Rooms, creation, password and failure states. M01–M03 Waitin",
+            "w": 1092,
+            "h": 75,
+            "hSize": "hug",
+            "text": "ML01–ML09 Rooms, creation, password and failure states. M01–M03 Waiting room. M04–M06 simultaneous picks / lock / reveal. M07–M10 safe / mine / shared / auto. M11–M13 next round and board sizes. M14–M16 end / replay / early end. ML10 shows the board menu. MS01–MS05 play on your own: flags, a mine, a cleared board, phone.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:14715",
+        "name": "04 Mobile",
+        "w": 1344,
+        "h": 30,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/32",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:14716",
+            "w": 220,
+            "h": 30,
+            "hSize": "hug",
+            "text": "04 Mobile",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:14717",
+            "name": "MO01–MO16 adapt main screens and room tabs at 390px. Large boards pres",
+            "w": 1092,
+            "h": 25,
+            "hSize": "hug",
+            "text": "MO01–MO16 adapt main screens and room tabs at 390px. Large boards preserve tap targets with a horizontal viewport.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "40:60745",
+        "name": "05 Make 24",
+        "w": 1344,
+        "h": 50,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/32",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "40:60746",
+            "name": "04 Mobile",
+            "w": 220,
+            "h": 30,
+            "hSize": "hug",
+            "text": "05 Make 24",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "40:60747",
+            "name": "MO01–MO16 adapt main screens and room tabs at 390px. Large boards pres",
+            "w": 1092,
+            "h": 50,
+            "hSize": "hug",
+            "text": "T01–T05 on your own: a run of ten hands, merging, solved, not 24, results. T06–T10 rooms: solving, solved, reveal, final scores, settings. T11–T12 phone.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "40:60748",
+        "name": "06 Pairs",
+        "w": 1344,
+        "h": 50,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/32",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "40:60749",
+            "name": "04 Mobile",
+            "w": 220,
+            "h": 30,
+            "hSize": "hug",
+            "text": "06 Pairs",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "40:60750",
+            "name": "MO01–MO16 adapt main screens and room tabs at 390px. Large boards pres",
+            "w": 1092,
+            "h": 50,
+            "hSize": "hug",
+            "text": "PR01–PR04 on your own: choose a board, flip, a miss, cleared. PR05–PR08 rooms: a miss passes the turn, your turn, final scores, settings. PR09–PR10 phone.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:14718",
+        "name": "Shared pieces",
+        "w": 1344,
+        "h": 75,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/32",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:14719",
+            "w": 220,
+            "h": 30,
+            "hSize": "hug",
+            "text": "Shared pieces",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:14720",
+            "name": "Buttons, avatar, wordmark, header, cells, forms, notices, room rows, s",
+            "w": 1092,
+            "h": 75,
+            "hSize": "hug",
+            "text": "Buttons, avatar, wordmark, header, tags, icons, forms, select menus, notices, room rows, scores, chat, turn bar, drawing toolbar, word choices, mine cells, pick markers, pick results, mobile tabs, number cards, operator keys, pairs cards and pairs symbols. Native editable layers; colour, radius and spacing bindings.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:14721",
+        "name": "Review notes",
+        "w": 1344,
+        "h": 50,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/32",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:14722",
+            "w": 220,
+            "h": 30,
+            "hSize": "hug",
+            "text": "Review notes",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:14723",
+            "name": "Proposed UX: dedicated final result panels, leave confirmation, share ",
+            "w": 1092,
+            "h": 50,
+            "hSize": "hug",
+            "text": "Proposed UX: dedicated final result panels, leave confirmation, share dialog and mobile tabs and a rules view. They present existing actions/events. Make 24, Pairs and Minesweeper can also be played on your own, without a name; Draw & Guess needs a room.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:14724",
+        "name": "Read before reviewing Minesweeper",
+        "w": 1344,
+        "h": 90,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/32",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:14725",
+            "w": 220,
+            "h": 90,
+            "hSize": "hug",
+            "text": "Read before reviewing Minesweeper",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:14726",
+            "name": "Everybody picks simultaneously. Clicking locks once. Other picks are h",
+            "w": 1092,
+            "h": 50,
+            "hSize": "hug",
+            "text": "Everybody picks simultaneously. Clicking locks once. Other picks are hidden until reveal. A safe 20% pick scores +28; a 20% mine loses 100. Two people on one safe cell split its reward. Timeout auto-picks and forfeits base points.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    ]
+  }
+}

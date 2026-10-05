@@ -55,7 +55,7 @@ const buildWordHint = (
     .join('');
 };
 
-/** The positions in a word that a hint could reveal — everything but spaces. */
+/** The positions in a word that a hint could reveal - everything but spaces. */
 const revealablePositions = (word: string): number[] => {
   return [...word].flatMap((character, index) =>
     /\s/.test(character) ? [] : [index],

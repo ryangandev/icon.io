@@ -1,0 +1,39 @@
+.countdown {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 10px 18px 10px 14px;
+  border-radius: var(--zumpo-radius-999);
+  background: var(--zumpo-lime);
+  color: var(--zumpo-ink);
+  white-space: nowrap;
+}
+
+.time {
+  font: var(--zumpo-text-number);
+  letter-spacing: var(--zumpo-text-number-tracking);
+}
+
+/* DM Sans has no tabular figures, so each digit gets a cell as wide as the
+   widest one, 0, and the clock keeps its width as it ticks. */
+.digit {
+  display: inline-block;
+  width: 1ch;
+  text-align: center;
+}
+
+.label {
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+}
+
+.waiting {
+  background: var(--zumpo-sand);
+}
+
+.urgent {
+  background: var(--zumpo-peach);
+  color: var(--zumpo-danger);
+}

@@ -1,0 +1,145 @@
+{
+  "format": 1,
+  "code": "MO15",
+  "title": "Room · players tab",
+  "id": "9:13463",
+  "section": "04 / Mobile / 390px flow adaptations",
+  "reviewNotes": [
+    "MO15 · 390px / responsive redesign"
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "9:13463",
+    "name": "MO15 / Room · players tab",
+    "x": 1020,
+    "y": 3624,
+    "w": 390,
+    "h": 548,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        "$Zumpo · UI:space/20",
+        "$Zumpo · UI:space/20",
+        32,
+        "$Zumpo · UI:space/20"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "39:20683",
+        "name": "Zumpo/Room bar",
+        "w": 350,
+        "h": 68,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Phone"
+        },
+        "componentId": "39:19277",
+        "props": {
+          "Game": "Draw & Guess"
+        },
+        "overrides": [
+          {
+            "path": "Room identity / Room context / Phase",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Round 2 of 2",
+              "Tone": "Blue"
+            }
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:13476",
+        "name": "Zumpo/Mobile tabs",
+        "w": 350,
+        "h": 34,
+        "hSize": "hug",
+        "component": "Zumpo/Mobile tabs",
+        "variant": {
+          "View": "Players"
+        },
+        "componentId": "9:16075",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 34,
+            "width": 350
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:13483",
+        "name": "Zumpo/Scoreboard",
+        "w": 350,
+        "h": 304,
+        "hSize": "hug",
+        "component": "Zumpo/Scoreboard",
+        "componentId": "9:320",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 304,
+            "width": 350
+          },
+          {
+            "path": "Player 1",
+            "componentProperties": {
+              "Icon": "24:5053",
+              "Status icon": true,
+              "You": false,
+              "Name": "Maya",
+              "Status": "Drawing",
+              "Host": true,
+              "Score": "460",
+              "State": "Highlight"
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:13515",
+        "name": "Footer",
+        "w": 350,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:13516",
+            "w": 350,
+            "h": 18,
+            "hSize": "hug",
+            "text": "A little play. Good company.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    ]
+  }
+}

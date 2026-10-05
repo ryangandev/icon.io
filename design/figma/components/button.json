@@ -1,0 +1,1557 @@
+{
+  "format": 1,
+  "name": "Zumpo/Button",
+  "id": "4:24",
+  "type": "COMPONENT_SET",
+  "key": "b7b8977fbcea2806ba40d516e012f7ca00a7fae1",
+  "description": "Primary starts or confirms the main action (one per view). Secondary: other actions. Quiet: low-emphasis navigation. Danger: destructive confirmation, like leaving a game in progress. Disabled is for an action that will become available; never use a disabled button as a status label.",
+  "properties": {
+    "Label": {
+      "type": "text",
+      "default": "Let’s play"
+    },
+    "Show icon": {
+      "type": "boolean",
+      "default": false
+    },
+    "Icon": {
+      "type": "instance_swap",
+      "default": "Zumpo/Icon / Glyph=leave"
+    },
+    "Style": {
+      "type": "variant",
+      "default": "Primary",
+      "options": [
+        "Primary",
+        "Secondary",
+        "Quiet",
+        "Danger"
+      ]
+    },
+    "State": {
+      "type": "variant",
+      "default": "Default",
+      "options": [
+        "Default",
+        "Hover",
+        "Disabled",
+        "Focus"
+      ]
+    }
+  },
+  "defaultVariant": "Style=Primary, State=Default",
+  "variants": [
+    {
+      "name": "Style=Primary, State=Default",
+      "id": "4:15",
+      "props": {
+        "Style": "Primary",
+        "State": "Default"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:15",
+        "name": "Style=Primary, State=Default",
+        "x": 24,
+        "y": 24,
+        "w": 105,
+        "h": 48,
+        "wSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/coral"
+        ],
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:5365",
+            "name": "Icon",
+            "visible": false,
+            "w": 20,
+            "h": 20,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "leave"
+            },
+            "componentId": "24:5041",
+            "overrides": [
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "4:25",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Primary, State=Hover",
+      "id": "4:16",
+      "props": {
+        "Style": "Primary",
+        "State": "Hover"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:16",
+        "name": "Style=Primary, State=Hover",
+        "x": 220,
+        "y": 24,
+        "w": 109,
+        "h": 48,
+        "wSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/coral"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:5393",
+            "name": "Icon",
+            "visible": false,
+            "w": 20,
+            "h": 20,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "leave"
+            },
+            "componentId": "24:5041",
+            "overrides": [
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "4:26",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Primary, State=Disabled",
+      "id": "4:17",
+      "props": {
+        "Style": "Primary",
+        "State": "Disabled"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:17",
+        "name": "Style=Primary, State=Disabled",
+        "x": 416,
+        "y": 24,
+        "w": 105,
+        "h": 48,
+        "wSize": "hug",
+        "opacity": 0.45,
+        "fills": [
+          "$Zumpo · UI:color/coral"
+        ],
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:5397",
+            "name": "Icon",
+            "visible": false,
+            "w": 20,
+            "h": 20,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "leave"
+            },
+            "componentId": "24:5041",
+            "overrides": [
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "4:27",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Secondary, State=Default",
+      "id": "4:18",
+      "props": {
+        "Style": "Secondary",
+        "State": "Default"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:18",
+        "name": "Style=Secondary, State=Default",
+        "x": 24,
+        "y": 88,
+        "w": 107,
+        "h": 48,
+        "wSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:5409",
+            "name": "Icon",
+            "visible": false,
+            "w": 20,
+            "h": 20,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "leave"
+            },
+            "componentId": "24:5041",
+            "overrides": [
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "4:28",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Secondary, State=Hover",
+      "id": "4:19",
+      "props": {
+        "Style": "Secondary",
+        "State": "Hover"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:19",
+        "name": "Style=Secondary, State=Hover",
+        "x": 220,
+        "y": 88,
+        "w": 109,
+        "h": 48,
+        "wSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:5433",
+            "name": "Icon",
+            "visible": false,
+            "w": 20,
+            "h": 20,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "leave"
+            },
+            "componentId": "24:5041",
+            "overrides": [
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "4:29",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Secondary, State=Disabled",
+      "id": "4:20",
+      "props": {
+        "Style": "Secondary",
+        "State": "Disabled"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:20",
+        "name": "Style=Secondary, State=Disabled",
+        "x": 416,
+        "y": 88,
+        "w": 107,
+        "h": 48,
+        "wSize": "hug",
+        "opacity": 0.45,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:5437",
+            "name": "Icon",
+            "visible": false,
+            "w": 20,
+            "h": 20,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "leave"
+            },
+            "componentId": "24:5041",
+            "overrides": [
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "4:30",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Quiet, State=Default",
+      "id": "4:21",
+      "props": {
+        "Style": "Quiet",
+        "State": "Default"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:21",
+        "name": "Style=Quiet, State=Default",
+        "x": 24,
+        "y": 152,
+        "w": 105,
+        "h": 48,
+        "wSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:5441",
+            "name": "Icon",
+            "visible": false,
+            "w": 20,
+            "h": 20,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "leave"
+            },
+            "componentId": "24:5041",
+            "overrides": [
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "4:31",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Quiet, State=Hover",
+      "id": "4:22",
+      "props": {
+        "Style": "Quiet",
+        "State": "Hover"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:22",
+        "name": "Style=Quiet, State=Hover",
+        "x": 220,
+        "y": 152,
+        "w": 109,
+        "h": 48,
+        "wSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:5457",
+            "name": "Icon",
+            "visible": false,
+            "w": 20,
+            "h": 20,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "leave"
+            },
+            "componentId": "24:5041",
+            "overrides": [
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "4:32",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Quiet, State=Disabled",
+      "id": "4:23",
+      "props": {
+        "Style": "Quiet",
+        "State": "Disabled"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "4:23",
+        "name": "Style=Quiet, State=Disabled",
+        "x": 416,
+        "y": 152,
+        "w": 105,
+        "h": 48,
+        "wSize": "hug",
+        "opacity": 0.45,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:5461",
+            "name": "Icon",
+            "visible": false,
+            "w": 20,
+            "h": 20,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "leave"
+            },
+            "componentId": "24:5041",
+            "overrides": [
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "4:33",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Danger, State=Default",
+      "id": "24:5351",
+      "props": {
+        "Style": "Danger",
+        "State": "Default"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:5351",
+        "name": "Style=Danger, State=Default",
+        "x": 24,
+        "y": 216,
+        "w": 105,
+        "h": 48,
+        "wSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:5465",
+            "name": "Icon",
+            "visible": false,
+            "w": 20,
+            "h": 20,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "leave"
+            },
+            "componentId": "24:5041",
+            "overrides": [
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "24:5352",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/paper"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Danger, State=Hover",
+      "id": "24:5353",
+      "props": {
+        "Style": "Danger",
+        "State": "Hover"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:5353",
+        "name": "Style=Danger, State=Hover",
+        "x": 220,
+        "y": 216,
+        "w": 109,
+        "h": 48,
+        "wSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:5469",
+            "name": "Icon",
+            "visible": false,
+            "w": 20,
+            "h": 20,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "leave"
+            },
+            "componentId": "24:5041",
+            "overrides": [
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "24:5354",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/paper"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Danger, State=Disabled",
+      "id": "24:5355",
+      "props": {
+        "Style": "Danger",
+        "State": "Disabled"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:5355",
+        "name": "Style=Danger, State=Disabled",
+        "x": 416,
+        "y": 216,
+        "w": 105,
+        "h": 48,
+        "wSize": "hug",
+        "opacity": 0.45,
+        "fills": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:5473",
+            "name": "Icon",
+            "visible": false,
+            "w": 20,
+            "h": 20,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "leave"
+            },
+            "componentId": "24:5041",
+            "overrides": [
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "24:5356",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/paper"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Primary, State=Focus",
+      "id": "29:24089",
+      "props": {
+        "Style": "Primary",
+        "State": "Focus"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "29:24089",
+        "name": "Style=Primary, State=Focus",
+        "x": 612,
+        "y": 24,
+        "w": 105,
+        "h": 48,
+        "wSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/coral"
+        ],
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "29:24090",
+            "name": "Icon",
+            "visible": false,
+            "w": 20,
+            "h": 20,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "leave"
+            },
+            "componentId": "24:5041",
+            "overrides": [
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "29:24091",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "29:24113",
+            "name": "Focus ring",
+            "x": -4,
+            "y": -4,
+            "absolute": true,
+            "w": 113,
+            "h": 56,
+            "strokes": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "strokeWeight": 2,
+            "strokeAlign": "inside",
+            "radius": 20,
+            "clip": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Secondary, State=Focus",
+      "id": "29:24095",
+      "props": {
+        "Style": "Secondary",
+        "State": "Focus"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "29:24095",
+        "name": "Style=Secondary, State=Focus",
+        "x": 612,
+        "y": 88,
+        "w": 107,
+        "h": 48,
+        "wSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "29:24096",
+            "name": "Icon",
+            "visible": false,
+            "w": 20,
+            "h": 20,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "leave"
+            },
+            "componentId": "24:5041",
+            "overrides": [
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "29:24097",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "29:24114",
+            "name": "Focus ring",
+            "x": -4,
+            "y": -4,
+            "absolute": true,
+            "w": 115,
+            "h": 56,
+            "strokes": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "strokeWeight": 2,
+            "strokeAlign": "inside",
+            "radius": 20,
+            "clip": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Quiet, State=Focus",
+      "id": "29:24101",
+      "props": {
+        "Style": "Quiet",
+        "State": "Focus"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "29:24101",
+        "name": "Style=Quiet, State=Focus",
+        "x": 612,
+        "y": 152,
+        "w": 105,
+        "h": 48,
+        "wSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "29:24102",
+            "name": "Icon",
+            "visible": false,
+            "w": 20,
+            "h": 20,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "leave"
+            },
+            "componentId": "24:5041",
+            "overrides": [
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "29:24103",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "29:24115",
+            "name": "Focus ring",
+            "x": -4,
+            "y": -4,
+            "absolute": true,
+            "w": 113,
+            "h": 56,
+            "strokes": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "strokeWeight": 2,
+            "strokeAlign": "inside",
+            "radius": 20,
+            "clip": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "Style=Danger, State=Focus",
+      "id": "29:24107",
+      "props": {
+        "Style": "Danger",
+        "State": "Focus"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "29:24107",
+        "name": "Style=Danger, State=Focus",
+        "x": 612,
+        "y": 216,
+        "w": 105,
+        "h": 48,
+        "wSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            12,
+            20
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "29:24108",
+            "name": "Icon",
+            "visible": false,
+            "w": 20,
+            "h": 20,
+            "propRefs": {
+              "visible": "Show icon",
+              "mainComponent": "Icon"
+            },
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "leave"
+            },
+            "componentId": "24:5041",
+            "overrides": [
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              },
+              {
+                "path": "leave",
+                "strokes": [
+                  "$Zumpo · UI:color/paper"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "29:24109",
+            "w": 65,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Let’s play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/paper"
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "29:24116",
+            "name": "Focus ring",
+            "x": -4,
+            "y": -4,
+            "absolute": true,
+            "w": 113,
+            "h": 56,
+            "strokes": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "strokeWeight": 2,
+            "strokeAlign": "inside",
+            "radius": 20,
+            "clip": true
+          }
+        ]
+      }
+    }
+  ]
+}

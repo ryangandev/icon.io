@@ -1,0 +1,511 @@
+{
+  "format": 1,
+  "code": "PR09",
+  "title": "Phone · solo, small board",
+  "id": "40:53550",
+  "section": "06 / Pairs / complete flow",
+  "reviewNotes": [
+    "PR09 · 390 px, Small board at full size. Solo has no tabs."
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "40:53550",
+    "name": "PR09 / Phone · solo, small board",
+    "x": 40,
+    "y": 2930,
+    "w": 390,
+    "h": 698,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        "$Zumpo · UI:space/20",
+        "$Zumpo · UI:space/20",
+        32,
+        "$Zumpo · UI:space/20"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "40:53551",
+        "name": "Zumpo/Room bar",
+        "w": 350,
+        "h": 68,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Phone"
+        },
+        "componentId": "39:19277",
+        "props": {
+          "Game": "Pairs"
+        },
+        "overrides": [
+          {
+            "path": "Room identity / Room context / Room",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "On your own",
+              "Tone": "Sand"
+            }
+          },
+          {
+            "path": "Room identity / Room context / Phase",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Small · 4 × 4",
+              "Tone": "Blue"
+            }
+          },
+          {
+            "path": "You",
+            "componentProperties": {
+              "Initials": "MA",
+              "Tone": "Peach"
+            },
+            "height": 32,
+            "width": 32
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "40:53552",
+        "name": "Zumpo/Mobile tabs",
+        "visible": false,
+        "w": 350,
+        "h": 34,
+        "hSize": "hug",
+        "component": "Zumpo/Mobile tabs",
+        "variant": {
+          "View": "Board"
+        },
+        "componentId": "9:416",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 34,
+            "width": 350
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "40:53553",
+        "name": "Zumpo/Turn bar",
+        "w": 350,
+        "h": 144,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Turn bar",
+        "variant": {
+          "Kind": "Status",
+          "Layout": "Phone"
+        },
+        "componentId": "27:22192",
+        "props": {
+          "Main": "Find its pair",
+          "Meta": "2 of 8 pairs",
+          "Label": "Turn 6"
+        },
+        "overrides": [
+          {
+            "path": "Top / Eyebrow / Category",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Small · 9 × 9",
+              "Tone": "Sand"
+            },
+            "visible": false
+          },
+          {
+            "path": "Top / Countdown",
+            "componentProperties": {
+              "Label": "run time",
+              "Time": "00:24",
+              "Tone": "Waiting"
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "40:53704",
+        "name": "Board alignment",
+        "w": 350,
+        "h": 344,
+        "wSize": "fill",
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "40:53492",
+            "name": "Board / 4 × 4",
+            "w": 344,
+            "h": 344,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": 8,
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "FRAME",
+                "id": "40:53493",
+                "name": "Row 1",
+                "w": 344,
+                "h": 80,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": 8,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "40:53494",
+                    "name": "Pairs card / Matched / Ring Sky",
+                    "w": 80,
+                    "h": 80,
+                    "component": "Zumpo/Pairs card",
+                    "variant": {
+                      "State": "Matched",
+                      "Size": "Regular"
+                    },
+                    "componentId": "40:22019",
+                    "props": {
+                      "Symbol": "Zumpo/Pairs symbol / Symbol=Ring Sky"
+                    },
+                    "overrides": [
+                      {
+                        "path": "Symbol",
+                        "opacity": 0.35
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "40:53498",
+                    "name": "Pairs card / Down",
+                    "w": 80,
+                    "h": 80,
+                    "component": "Zumpo/Pairs card",
+                    "variant": {
+                      "State": "Down",
+                      "Size": "Regular"
+                    },
+                    "componentId": "40:22013"
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "40:53501",
+                    "name": "Pairs card / Down",
+                    "w": 80,
+                    "h": 80,
+                    "component": "Zumpo/Pairs card",
+                    "variant": {
+                      "State": "Down",
+                      "Size": "Regular"
+                    },
+                    "componentId": "40:22013"
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "40:53504",
+                    "name": "Pairs card / Matched / Ring Sky",
+                    "w": 80,
+                    "h": 80,
+                    "component": "Zumpo/Pairs card",
+                    "variant": {
+                      "State": "Matched",
+                      "Size": "Regular"
+                    },
+                    "componentId": "40:22019",
+                    "props": {
+                      "Symbol": "Zumpo/Pairs symbol / Symbol=Ring Sky"
+                    },
+                    "overrides": [
+                      {
+                        "path": "Symbol",
+                        "opacity": 0.35
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "40:53508",
+                "name": "Row 2",
+                "w": 344,
+                "h": 80,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": 8,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "40:53509",
+                    "name": "Pairs card / Matched / Circle Coral",
+                    "w": 80,
+                    "h": 80,
+                    "component": "Zumpo/Pairs card",
+                    "variant": {
+                      "State": "Matched",
+                      "Size": "Regular"
+                    },
+                    "componentId": "40:22019",
+                    "overrides": [
+                      {
+                        "path": "Zumpo/Pairs symbol",
+                        "opacity": 0.35
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "40:53513",
+                    "name": "Pairs card / Down",
+                    "w": 80,
+                    "h": 80,
+                    "component": "Zumpo/Pairs card",
+                    "variant": {
+                      "State": "Down",
+                      "Size": "Regular"
+                    },
+                    "componentId": "40:22013"
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "40:53516",
+                    "name": "Pairs card / Down",
+                    "w": 80,
+                    "h": 80,
+                    "component": "Zumpo/Pairs card",
+                    "variant": {
+                      "State": "Down",
+                      "Size": "Regular"
+                    },
+                    "componentId": "40:22013"
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "40:53519",
+                    "name": "Pairs card / Matched / Circle Coral",
+                    "w": 80,
+                    "h": 80,
+                    "component": "Zumpo/Pairs card",
+                    "variant": {
+                      "State": "Matched",
+                      "Size": "Regular"
+                    },
+                    "componentId": "40:22019",
+                    "overrides": [
+                      {
+                        "path": "Zumpo/Pairs symbol",
+                        "opacity": 0.35
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "40:53523",
+                "name": "Row 3",
+                "w": 344,
+                "h": 80,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": 8,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "40:53524",
+                    "name": "Pairs card / Down",
+                    "w": 80,
+                    "h": 80,
+                    "component": "Zumpo/Pairs card",
+                    "variant": {
+                      "State": "Down",
+                      "Size": "Regular"
+                    },
+                    "componentId": "40:22013"
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "40:53527",
+                    "name": "Pairs card / Down",
+                    "w": 80,
+                    "h": 80,
+                    "component": "Zumpo/Pairs card",
+                    "variant": {
+                      "State": "Down",
+                      "Size": "Regular"
+                    },
+                    "componentId": "40:22013"
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "40:53530",
+                    "name": "Pairs card / Down",
+                    "w": 80,
+                    "h": 80,
+                    "component": "Zumpo/Pairs card",
+                    "variant": {
+                      "State": "Down",
+                      "Size": "Regular"
+                    },
+                    "componentId": "40:22013"
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "40:53533",
+                    "name": "Pairs card / Down",
+                    "w": 80,
+                    "h": 80,
+                    "component": "Zumpo/Pairs card",
+                    "variant": {
+                      "State": "Down",
+                      "Size": "Regular"
+                    },
+                    "componentId": "40:22013"
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "40:53536",
+                "name": "Row 4",
+                "w": 344,
+                "h": 80,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": 8,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "40:53537",
+                    "name": "Pairs card / Down",
+                    "w": 80,
+                    "h": 80,
+                    "component": "Zumpo/Pairs card",
+                    "variant": {
+                      "State": "Down",
+                      "Size": "Regular"
+                    },
+                    "componentId": "40:22013"
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "40:53540",
+                    "name": "Pairs card / Up / Triangle Green",
+                    "w": 80,
+                    "h": 80,
+                    "component": "Zumpo/Pairs card",
+                    "variant": {
+                      "State": "Up",
+                      "Size": "Regular"
+                    },
+                    "componentId": "40:22016",
+                    "props": {
+                      "Symbol": "Zumpo/Pairs symbol / Symbol=Triangle Green"
+                    }
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "40:53544",
+                    "name": "Pairs card / Down",
+                    "w": 80,
+                    "h": 80,
+                    "component": "Zumpo/Pairs card",
+                    "variant": {
+                      "State": "Down",
+                      "Size": "Regular"
+                    },
+                    "componentId": "40:22013"
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "40:53547",
+                    "name": "Pairs card / Down",
+                    "w": 80,
+                    "h": 80,
+                    "component": "Zumpo/Pairs card",
+                    "variant": {
+                      "State": "Down",
+                      "Size": "Regular"
+                    },
+                    "componentId": "40:22013"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "40:53646",
+        "name": "Footer",
+        "w": 350,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "40:53647",
+            "w": 350,
+            "h": 18,
+            "hSize": "hug",
+            "text": "A little play. Good company.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    ]
+  }
+}

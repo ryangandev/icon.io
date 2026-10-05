@@ -19,7 +19,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: |
             package-lock.json
@@ -33,7 +33,7 @@ jobs:
 
       # One linter for the whole repo. oxlint rather than ESLint because
       # typescript-eslint still caps TypeScript below 6.1 and this project is
-      # on 7 — see docs/ANALYSIS.md.
+      # on 7; see docs/architecture.md#tooling.
       - name: Lint
         run: npm run lint
 
@@ -45,6 +45,11 @@ jobs:
       - name: Format
         run: npm run format:check
 
+      # The code tokens are generated from the Figma export; this fails when
+      # one was edited by hand or the export changed without regenerating.
+      - name: Design tokens
+        run: npm run design:tokens -- --check
+
       # The backend suite binds ephemeral ports and drives real socket.io
       # clients, so it needs no services — but it is timing-sensitive, and a
       # loaded runner is exactly where that shows up.
@@ -53,3 +58,36 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  # Two players in real browsers against the production build: the flows the
+  # unit suites stub out, like a dropped connection or a whole game.
+  e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            back/package-lock.json
+            front/package-lock.json
+
+      - name: Install
+        run: |
+          npm ci
+          npm run install:all
+          npx playwright install --with-deps chromium
+
+      - name: Browser checks
+        run: npm run e2e
+
+      - name: Keep the traces of failed checks
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-traces
+          path: test-results/

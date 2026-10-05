@@ -1,0 +1,130 @@
+{
+  "format": 1,
+  "name": "Zumpo/Operator key",
+  "id": "40:22069",
+  "type": "COMPONENT_SET",
+  "key": "a0bc23a5fb2d083981b5cf71994314c86259b545",
+  "properties": {
+    "Symbol": {
+      "type": "text",
+      "default": "×"
+    },
+    "State": {
+      "type": "variant",
+      "default": "Default",
+      "options": [
+        "Default",
+        "Selected"
+      ]
+    }
+  },
+  "defaultVariant": "State=Default",
+  "variants": [
+    {
+      "name": "State=Default",
+      "id": "40:22065",
+      "props": {
+        "State": "Default"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "40:22065",
+        "name": "State=Default",
+        "x": 24,
+        "y": 24,
+        "w": 64,
+        "h": 64,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/999",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "40:22066",
+            "name": "Symbol",
+            "w": 22,
+            "h": 42,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Symbol"
+            },
+            "text": "×",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Selected",
+      "id": "40:22067",
+      "props": {
+        "State": "Selected"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "40:22067",
+        "name": "State=Selected",
+        "x": 112,
+        "y": 24,
+        "w": 64,
+        "h": 64,
+        "fills": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "radius": "$Zumpo · UI:radius/999",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "40:22068",
+            "name": "Symbol",
+            "w": 22,
+            "h": 42,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Symbol"
+            },
+            "text": "×",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/paper"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

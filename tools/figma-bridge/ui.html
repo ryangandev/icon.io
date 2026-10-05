@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      body {
+        margin: 0;
+        padding: 16px;
+        font:
+          12px/1.5 Inter,
+          system-ui,
+          sans-serif;
+        color: var(--figma-color-text, #222);
+        background: var(--figma-color-bg, #fff);
+      }
+      h1 {
+        margin: 0 0 4px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      p {
+        margin: 0 0 12px;
+        color: var(--figma-color-text-secondary, #666);
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--figma-color-icon-danger, #d00);
+      }
+      .dot.on {
+        background: var(--figma-color-icon-success, #14ae5c);
+      }
+      #state {
+        font-weight: 600;
+      }
+      button {
+        margin-left: auto;
+        padding: 6px 12px;
+        font: inherit;
+        font-weight: 600;
+        border-radius: 6px;
+        border: 1px solid var(--figma-color-border, #ccc);
+        background: var(--figma-color-bg, #fff);
+        color: inherit;
+        cursor: pointer;
+      }
+      #log {
+        height: 300px;
+        overflow: auto;
+        padding: 8px;
+        border-radius: 6px;
+        background: var(--figma-color-bg-secondary, #f5f5f5);
+        font:
+          11px/1.45 ui-monospace,
+          Menlo,
+          monospace;
+        white-space: pre-wrap;
+      }
+      .error {
+        color: var(--figma-color-text-danger, #d00);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Zumpo bridge</h1>
+    <p>
+      Runs scripts queued on this machine's bridge server. Each script is one
+      undo step.
+    </p>
+    <div class="row">
+      <span class="dot" id="dot"></span>
+      <span id="state">Looking for the bridge server…</span>
+      <button id="pause">Pause</button>
+    </div>
+    <div id="log"></div>
+    <script>
+      const SERVER = 'http://localhost:7799';
+      const $ = (id) => document.getElementById(id);
+      let paused = false;
+      let busy = false;
+      let online = null;
+
+      function log(text, cls) {
+        const line = document.createElement('div');
+        line.textContent = new Date().toLocaleTimeString() + '  ' + text;
+        if (cls) line.className = cls;
+        $('log').prepend(line);
+      }
+
+      function setOnline(value) {
+        if (online === value) return;
+        online = value;
+        $('dot').className = value ? 'dot on' : 'dot';
+        render();
+      }
+
+      function render() {
+        $('state').textContent = !online
+          ? 'Bridge server not running'
+          : paused
+            ? 'Paused'
+            : busy
+              ? 'Running a script…'
+              : 'Connected, waiting for scripts';
+        $('pause').textContent = paused ? 'Resume' : 'Pause';
+      }
+
+      $('pause').onclick = () => {
+        paused = !paused;
+        render();
+      };
+
+      function base64(bytes) {
+        let text = '';
+        for (let i = 0; i < bytes.length; i += 0x8000) {
+          text += String.fromCharCode.apply(
+            null,
+            bytes.subarray(i, i + 0x8000),
+          );
+        }
+        return btoa(text);
+      }
+
+      // text/plain keeps the requests "simple", so there is no CORS preflight.
+      async function send(path, body) {
+        await fetch(SERVER + path, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify(body),
+        });
+      }
+
+      async function poll() {
+        if (busy) return;
+        try {
+          const res = await fetch(
+            SERVER + '/next' + (paused ? '?paused=1' : ''),
+          );
+          setOnline(true);
+          if (res.status !== 200) return;
+          const job = await res.json();
+          busy = true;
+          render();
+          log('▶ ' + (job.label || job.id));
+          parent.postMessage(
+            { pluginMessage: { type: 'job', id: job.id, code: job.code } },
+            '*',
+          );
+        } catch (e) {
+          setOnline(false);
+        }
+      }
+
+      window.onmessage = async (event) => {
+        const msg = event.data.pluginMessage;
+        if (!msg || msg.type !== 'result') return;
+        const files = msg.files.map((f) =>
+          f.bytes
+            ? { path: f.path, base64: base64(f.bytes) }
+            : { path: f.path, text: f.text },
+        );
+        log(
+          (msg.ok ? '✓ ' : '✗ ') +
+            msg.ms +
+            ' ms' +
+            (msg.ok ? '' : '  ' + msg.error),
+          msg.ok ? '' : 'error',
+        );
+        try {
+          await send('/result', {
+            id: msg.id,
+            ok: msg.ok,
+            value: msg.value,
+            error: msg.error,
+            stack: msg.stack,
+            logs: msg.logs,
+            ms: msg.ms,
+            files,
+          });
+        } catch (e) {
+          log('Could not deliver the result: ' + e.message, 'error');
+        }
+        busy = false;
+        render();
+      };
+
+      setInterval(poll, 400);
+      poll();
+    </script>
+  </body>
+</html>

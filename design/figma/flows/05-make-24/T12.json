@@ -1,0 +1,407 @@
+{
+  "format": 1,
+  "code": "T12",
+  "title": "Phone · room hand",
+  "id": "40:44375",
+  "section": "05 / Make 24 / complete flow",
+  "reviewNotes": [
+    "T12 · 390 px room: Players and Chat tabs as in MO11."
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "40:44375",
+    "name": "T12 / Phone · room hand",
+    "x": 3610,
+    "y": 2965,
+    "w": 390,
+    "h": 725,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        "$Zumpo · UI:space/20",
+        "$Zumpo · UI:space/20",
+        32,
+        "$Zumpo · UI:space/20"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "40:44376",
+        "name": "Zumpo/Room bar",
+        "w": 350,
+        "h": 68,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Phone"
+        },
+        "componentId": "39:19277",
+        "props": {
+          "Game": "Make 24"
+        },
+        "overrides": [
+          {
+            "path": "Room identity / Room context / Room",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Maya’s room",
+              "Tone": "Sand"
+            }
+          },
+          {
+            "path": "Room identity / Room context / Phase",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Hand 3 of 5",
+              "Tone": "Blue"
+            }
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "40:44377",
+        "name": "Zumpo/Mobile tabs",
+        "w": 350,
+        "h": 34,
+        "hSize": "hug",
+        "component": "Zumpo/Mobile tabs",
+        "variant": {
+          "View": "Board"
+        },
+        "componentId": "9:416",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 34,
+            "width": 350
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "40:44378",
+        "name": "Zumpo/Turn bar",
+        "w": 350,
+        "h": 144,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Turn bar",
+        "variant": {
+          "Kind": "Status",
+          "Layout": "Phone"
+        },
+        "componentId": "27:22192",
+        "props": {
+          "Main": "Make 24",
+          "Meta": "Maya solved it",
+          "Label": "Hand 3 of 5"
+        },
+        "overrides": [
+          {
+            "path": "Top / Eyebrow / Category",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Small · 9 × 9",
+              "Tone": "Sand"
+            },
+            "visible": false
+          },
+          {
+            "path": "Top / Countdown",
+            "componentProperties": {
+              "Label": "to solve",
+              "Time": "00:31",
+              "Tone": "Running"
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "40:44523",
+        "name": "Table",
+        "w": 350,
+        "h": 313,
+        "wSize": "fill",
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/20",
+          "pad": [
+            "$Zumpo · UI:space/8",
+            0
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "40:44524",
+            "name": "Cards",
+            "w": 252,
+            "h": 100,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "40:44525",
+                "name": "Number card / 2",
+                "w": 76,
+                "h": 100,
+                "component": "Zumpo/Number card",
+                "variant": {
+                  "State": "Made",
+                  "Size": "Compact"
+                },
+                "componentId": "40:22054",
+                "props": {
+                  "Formula": "8 − 6",
+                  "Show formula": true,
+                  "Value": "2"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "40:44528",
+                "name": "Number card / 4",
+                "w": 76,
+                "h": 100,
+                "component": "Zumpo/Number card",
+                "variant": {
+                  "State": "Selected",
+                  "Size": "Compact"
+                },
+                "componentId": "40:22051",
+                "props": {
+                  "Value": "4"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "40:44531",
+                "name": "Number card / 3",
+                "w": 76,
+                "h": 100,
+                "component": "Zumpo/Number card",
+                "variant": {
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "40:22048",
+                "props": {
+                  "Value": "3"
+                }
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "40:44534",
+            "name": "Prompt",
+            "w": 227,
+            "h": 25,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "4 × ?  Pick the second number.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "40:44535",
+            "name": "Operators",
+            "w": 292,
+            "h": 64,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "40:44536",
+                "name": "Operator / +",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Operator key",
+                "variant": {
+                  "State": "Default"
+                },
+                "componentId": "40:22065",
+                "props": {
+                  "Symbol": "+"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "40:44538",
+                "name": "Operator / −",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Operator key",
+                "variant": {
+                  "State": "Default"
+                },
+                "componentId": "40:22065",
+                "props": {
+                  "Symbol": "−"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "40:44540",
+                "name": "Operator / ×",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Operator key",
+                "variant": {
+                  "State": "Selected"
+                },
+                "componentId": "40:22067"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "40:44542",
+                "name": "Operator / ÷",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Operator key",
+                "variant": {
+                  "State": "Default"
+                },
+                "componentId": "40:22065",
+                "props": {
+                  "Symbol": "÷"
+                }
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "40:44544",
+            "name": "Tools",
+            "w": 228,
+            "h": 48,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "40:44545",
+                "name": "Action / Undo",
+                "w": 106,
+                "h": 48,
+                "wSize": "hug",
+                "component": "Zumpo/Button",
+                "variant": {
+                  "Style": "Secondary",
+                  "State": "Default"
+                },
+                "componentId": "4:18",
+                "props": {
+                  "Icon": "Zumpo/Icon / Glyph=undo",
+                  "Show icon": true,
+                  "Label": "Undo"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 48,
+                    "width": 106
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "40:44553",
+                "name": "Action / Start over",
+                "w": 110,
+                "h": 48,
+                "wSize": "hug",
+                "component": "Zumpo/Button",
+                "variant": {
+                  "Style": "Secondary",
+                  "State": "Default"
+                },
+                "componentId": "4:18",
+                "props": {
+                  "Label": "Start over"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 48,
+                    "width": 110
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "40:44471",
+        "name": "Footer",
+        "w": 350,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "40:44472",
+            "w": 350,
+            "h": 18,
+            "hSize": "hug",
+            "text": "A little play. Good company.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    ]
+  }
+}

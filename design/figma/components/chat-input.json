@@ -1,0 +1,194 @@
+{
+  "format": 1,
+  "name": "Zumpo/Chat input",
+  "id": "26:16254",
+  "type": "COMPONENT_SET",
+  "key": "a3872b32b0251ea33f4b58d91d533ae5279c3c90",
+  "description": "The one box for chat and guesses. Default placeholder in Draw & Guess while drawing: “Type a guess or say hi…”. Disabled for the drawer and for anyone who already scored this turn, with the reason as the placeholder. Up to 40 characters.",
+  "properties": {
+    "Placeholder": {
+      "type": "text",
+      "default": "Type a guess or say hi…"
+    },
+    "State": {
+      "type": "variant",
+      "default": "Default",
+      "options": [
+        "Default",
+        "Disabled"
+      ]
+    }
+  },
+  "defaultVariant": "State=Default",
+  "variants": [
+    {
+      "name": "State=Default",
+      "id": "26:16243",
+      "props": {
+        "State": "Default"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "26:16243",
+        "name": "State=Default",
+        "w": 296,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "layout": {
+          "mode": "row",
+          "gap": 8,
+          "pad": [
+            6,
+            8,
+            6,
+            14
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "26:16244",
+            "name": "Placeholder",
+            "w": 236,
+            "h": 18,
+            "wSize": "fill",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Placeholder"
+            },
+            "text": "Type a guess or say hi…",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "FRAME",
+            "id": "26:16245",
+            "name": "Send",
+            "w": 28,
+            "h": 28,
+            "wSize": "hug",
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/coral"
+            ],
+            "radius": "$Zumpo · UI:radius/8",
+            "layout": {
+              "mode": "row",
+              "pad": 6,
+              "justify": "center",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "26:16246",
+                "name": "Zumpo/Icon",
+                "w": 16,
+                "h": 16,
+                "rotation": 180,
+                "component": "Zumpo/Icon",
+                "variant": {
+                  "Glyph": "back"
+                },
+                "componentId": "24:5045"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Disabled",
+      "id": "26:16249",
+      "props": {
+        "State": "Disabled"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "26:16249",
+        "name": "State=Disabled",
+        "w": 296,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/sand"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "layout": {
+          "mode": "row",
+          "gap": 8,
+          "pad": [
+            6,
+            8,
+            6,
+            14
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "26:16250",
+            "name": "Icon",
+            "w": 16,
+            "h": 16,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "lock"
+            },
+            "componentId": "24:5010",
+            "overrides": [
+              {
+                "path": "lock",
+                "strokes": [
+                  "$Zumpo · UI:color/muted"
+                ]
+              },
+              {
+                "path": "lock",
+                "strokes": [
+                  "$Zumpo · UI:color/muted"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "26:16253",
+            "name": "Placeholder",
+            "w": 248,
+            "h": 18,
+            "wSize": "fill",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Placeholder"
+            },
+            "text": "Type a guess or say hi…",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,390 @@
+{
+  "format": 1,
+  "code": "MS01",
+  "title": "Solo · choose a board",
+  "id": "40:57385",
+  "section": "03 / Minesweeper / complete flow",
+  "reviewNotes": [
+    "MS01 · Play solo from the hub, no name needed (so no avatar in the header). The last board is remembered."
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "40:57385",
+    "name": "MS01 / Solo · choose a board",
+    "x": 3120,
+    "y": 8552,
+    "w": 1440,
+    "h": 920,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        24,
+        "$Zumpo · UI:space/64",
+        32,
+        "$Zumpo · UI:space/64"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "40:57386",
+        "name": "Zumpo/Header",
+        "w": 1312,
+        "h": 104,
+        "component": "Zumpo/Header",
+        "componentId": "4:39",
+        "overrides": [
+          {
+            "path": "Navigation / Games",
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "40:22071",
+                    "toName": "P04 / Games hub"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "path": "Navigation / You",
+            "componentProperties": {
+              "Initials": "MA",
+              "Tone": "Peach"
+            },
+            "visible": false
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "40:57387",
+        "name": "Page heading",
+        "w": 1312,
+        "h": 121,
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/12",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "40:57388",
+            "name": "Tag / COME ON IN",
+            "w": 109,
+            "h": 30,
+            "wSize": "hug",
+            "hSize": "hug",
+            "component": "Zumpo/Tag",
+            "variant": {
+              "Tone": "Sand"
+            },
+            "componentId": "24:6511",
+            "props": {
+              "Label": "ON YOUR OWN"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 30,
+                "width": 109
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "40:57389",
+            "name": "Every good game starts with a name.",
+            "w": 1312,
+            "h": 42,
+            "hSize": "hug",
+            "text": "Minesweeper",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "40:57390",
+            "name": "No signup. Just pick a name your friends will recognize.",
+            "w": 1312,
+            "h": 25,
+            "hSize": "hug",
+            "text": "Open every safe cell. The numbers count the mines next door.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "40:57391",
+        "name": "Dialog stage",
+        "w": 1312,
+        "h": 549,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "pad": [
+            56,
+            0
+          ],
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "40:57392",
+            "name": "Pick a board.",
+            "w": 560,
+            "h": 437,
+            "hSize": "hug",
+            "component": "Zumpo/Card",
+            "variant": {
+              "Kind": "Focused"
+            },
+            "componentId": "9:400",
+            "props": {
+              "Description": "Your first click is always safe. The clock starts with it.",
+              "Title": "Pick a board."
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 437,
+                "width": 560
+              }
+            ],
+            "slots": {
+              "Content": [
+                {
+                  "type": "FRAME",
+                  "id": "40:57472",
+                  "name": "Boards",
+                  "w": 494,
+                  "h": 196,
+                  "wSize": "fill",
+                  "hSize": "hug",
+                  "layout": {
+                    "mode": "column",
+                    "gap": "$Zumpo · UI:space/8",
+                    "strokesIncluded": true
+                  },
+                  "children": [
+                    {
+                      "type": "INSTANCE",
+                      "id": "I40:57392;35:13433;40:57477",
+                      "name": "Zumpo/Select option",
+                      "w": 494,
+                      "h": 60,
+                      "wSize": "fill",
+                      "hSize": "hug",
+                      "component": "Zumpo/Select option",
+                      "variant": {
+                        "Selected": "False"
+                      },
+                      "componentId": "24:6171",
+                      "props": {
+                        "Show detail": true,
+                        "Detail": "10 mines. Best: 0:48",
+                        "Label": "Small · 9 × 9"
+                      },
+                      "overrides": [
+                        {
+                          "path": ".",
+                          "height": 60,
+                          "width": 494
+                        }
+                      ]
+                    },
+                    {
+                      "type": "INSTANCE",
+                      "id": "I40:57392;35:13433;40:57478",
+                      "name": "Zumpo/Select option",
+                      "w": 494,
+                      "h": 60,
+                      "wSize": "fill",
+                      "hSize": "hug",
+                      "component": "Zumpo/Select option",
+                      "variant": {
+                        "Selected": "True"
+                      },
+                      "componentId": "24:6178",
+                      "props": {
+                        "Detail": "40 mines. Best: 3:12",
+                        "Show detail": true,
+                        "Label": "Medium · 16 × 16"
+                      },
+                      "overrides": [
+                        {
+                          "path": ".",
+                          "height": 60,
+                          "width": 494
+                        }
+                      ]
+                    },
+                    {
+                      "type": "INSTANCE",
+                      "id": "I40:57392;35:13433;40:57479",
+                      "name": "Zumpo/Select option",
+                      "w": 494,
+                      "h": 60,
+                      "wSize": "fill",
+                      "hSize": "hug",
+                      "component": "Zumpo/Select option",
+                      "variant": {
+                        "Selected": "False"
+                      },
+                      "componentId": "24:6171",
+                      "props": {
+                        "Show detail": true,
+                        "Detail": "99 mines. No best yet",
+                        "Label": "Large · 30 × 16"
+                      },
+                      "overrides": [
+                        {
+                          "path": ".",
+                          "height": 60,
+                          "width": 494
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "FRAME",
+                  "id": "40:57498",
+                  "name": "Actions",
+                  "w": 494,
+                  "h": 48,
+                  "wSize": "fill",
+                  "hSize": "hug",
+                  "layout": {
+                    "mode": "row",
+                    "gap": "$Zumpo · UI:space/12",
+                    "align": "center",
+                    "strokesIncluded": true
+                  },
+                  "children": [
+                    {
+                      "type": "INSTANCE",
+                      "id": "I40:57392;35:13433;40:57502",
+                      "name": "Action / Start",
+                      "w": 75,
+                      "h": 48,
+                      "wSize": "hug",
+                      "component": "Zumpo/Button",
+                      "variant": {
+                        "Style": "Primary",
+                        "State": "Default"
+                      },
+                      "componentId": "4:15",
+                      "props": {
+                        "Label": "Start"
+                      },
+                      "overrides": [
+                        {
+                          "path": ".",
+                          "height": 48,
+                          "width": 75
+                        }
+                      ]
+                    },
+                    {
+                      "type": "INSTANCE",
+                      "id": "I40:57392;35:13433;40:57503",
+                      "name": "Action / Back to games",
+                      "w": 171,
+                      "h": 48,
+                      "wSize": "hug",
+                      "component": "Zumpo/Button",
+                      "variant": {
+                        "Style": "Secondary",
+                        "State": "Default"
+                      },
+                      "componentId": "4:18",
+                      "props": {
+                        "Icon": "Zumpo/Icon / Glyph=back",
+                        "Show icon": true,
+                        "Label": "Back to games"
+                      },
+                      "overrides": [
+                        {
+                          "path": ".",
+                          "height": 48,
+                          "width": 171
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "40:57393",
+        "name": "Footer",
+        "w": 1312,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "40:57394",
+            "w": 650,
+            "h": 18,
+            "hSize": "hug",
+            "text": "Good company. One more round.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "40:57395",
+            "w": 115,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "zumpo. / play a little",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

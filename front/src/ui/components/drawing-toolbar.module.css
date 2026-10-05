@@ -1,0 +1,149 @@
+.container {
+  container-type: inline-size;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--zumpo-space-16);
+  padding: 12px var(--zumpo-space-16);
+  border: 1px solid var(--zumpo-line);
+  border-radius: var(--zumpo-radius-24);
+  background: var(--zumpo-paper);
+}
+
+.colours {
+  display: flex;
+  align-items: center;
+  gap: var(--zumpo-space-8);
+}
+
+.swatch {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--zumpo-line);
+  cursor: pointer;
+}
+
+/* The chosen colour: a 2 px paper ring inside a 2 px ink ring. */
+.swatch[data-checked] {
+  box-shadow:
+    inset 0 0 0 2px var(--zumpo-paper),
+    0 0 0 2px var(--zumpo-ink);
+}
+
+.swatch:focus-visible {
+  outline: 2px solid var(--zumpo-ink);
+  outline-offset: 4px;
+}
+
+.divider {
+  flex: none;
+  width: 1px;
+  height: 32px;
+  background: var(--zumpo-line);
+}
+
+.tools {
+  display: contents;
+}
+
+.sizes {
+  display: flex;
+  align-items: center;
+  gap: var(--zumpo-space-4);
+}
+
+.size {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--zumpo-radius-8);
+  background: transparent;
+  cursor: pointer;
+}
+
+.size:hover {
+  background: var(--zumpo-cream);
+}
+
+.size[data-checked] {
+  background: var(--zumpo-sand);
+  box-shadow: inset 0 0 0 2px var(--zumpo-ink);
+}
+
+.size:focus-visible {
+  outline: 2px solid var(--zumpo-ink);
+  outline-offset: 2px;
+}
+
+.dot {
+  width: var(--dot);
+  height: var(--dot);
+  border-radius: 50%;
+  background: var(--zumpo-ink);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--zumpo-space-8);
+}
+
+/* Phone: the colours across the top, sizes and icon-only actions under them. */
+@container (max-width: 560px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 12px;
+    border-radius: var(--zumpo-radius-16);
+  }
+
+  .colours {
+    justify-content: space-between;
+    gap: 0;
+  }
+
+  .swatch {
+    width: 22px;
+    height: 22px;
+  }
+
+  .divider,
+  .spacer {
+    display: none;
+  }
+
+  .tools {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--zumpo-space-8);
+  }
+
+  .size {
+    width: 36px;
+    height: 36px;
+  }
+
+  .dot {
+    max-width: 24px;
+    max-height: 24px;
+  }
+}

@@ -1,18 +1,18 @@
 {
-  "name": "icon.io-back",
+  "name": "zumpo-back",
   "version": "0.2.0",
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": ">=22.12"
   },
   "scripts": {
-    "build": "rimraf build && tsc -p tsconfig.build.json",
+    "build": "rimraf --glob \"build/*\" && tsc -p tsconfig.build.json",
     "watch": "tsc-watch --onSuccess \"npm run start:dev\"",
-    "start:dev": "cross-env NODE_ENV=development node build/server.js",
+    "start:dev": "cross-env NODE_ENV=development node build/back/server.js",
     "build:deploy": "npm run build && (cd ../front && npm run build)",
-    "start:prod": "cross-env NODE_ENV=production node build/server.js",
-    "start:deploy": "cross-env NODE_ENV=production pm2 start build/server.js --name icon-io",
+    "start:prod": "cross-env NODE_ENV=production node build/back/server.js",
+    "start:deploy": "cross-env NODE_ENV=production pm2 start build/back/server.js --name zumpo",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"
@@ -32,6 +32,6 @@
     "socket.io-client": "^4.8.3",
     "tsc-watch": "^7.2.1",
     "typescript": "^7.0.2",
-    "vitest": "^4.1.10"
+    "vitest": "^5.0.3"
   }
 }

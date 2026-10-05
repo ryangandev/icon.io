@@ -1,36 +1,31 @@
 /**
- * The contract between the two halves: every shape that crosses the socket,
- * defined once.
+ * The contract between the two halves: every event that crosses the socket,
+ * with its payload, defined once.
  *
- * `front/src/models/types.ts` and `back/models/types.ts` used to hold
- * near-identical copies of all of this, edited in lockstep — and by the time
- * this was extracted they had already stopped matching. The client declared
- * `currentWord` as a required string where the server omits it while a word is
- * in play, typed `wordCategory` as a plain string where the server has a union,
- * and its `ErrorType` was missing a member the server had been sending for a
- * pass and a half. None of that was caught, because nothing compared the two.
- *
- * Now the client's idea of a payload *is* the server's definition of it, and a
- * field added to one side without the other stops the build.
+ * Both sides type their Socket.IO objects on the two event maps at the bottom,
+ * so an event renamed or reshaped on one side stops the other side's build
+ * rather than silently never arriving. The server still validates everything
+ * it receives with zod: a type says what a well-behaved client sends, not what
+ * arrives.
  *
  * A declaration file rather than a module, because these are types and only
  * types. Both packages import them with `import type`, which erases at compile
- * time, so nothing is resolved at runtime, no bundler alias is needed, and the
- * backend's build output keeps its shape — a `.ts` here would land outside
- * `rootDir` and break `tsc -p tsconfig.build.json`. The cost is that a shared
- * *value* cannot live here, which is why the event names below are a union of
- * string literals rather than a frozen object of constants: a type still makes
- * one side's typo fail the other side's build, and it costs no build config.
+ * time, so nothing is resolved at runtime and the backend's build output keeps
+ * its shape.
+ *
+ * The protocol is snapshot-driven. Whenever anything in a room changes, every
+ * seated player is sent `room:state`: the whole room as that player may see it.
+ * A client renders the latest snapshot and keeps no game state of its own, so
+ * a refresh, a reconnect or a missed event can never leave it out of step.
+ * Only two things travel as increments, because they are streams: the drawing
+ * (`dg:canvas:*`) and the chat.
  */
 
 /**
- * Which game a room is playing.
- *
- * Every room-layer payload carries this, because one lobby subscription, one
- * join and one departure now have to say which game they mean. It is also the
- * key the server's module registry is keyed by.
+ * Which game a room is playing. Every room-layer payload carries it, and it is
+ * the key the server's module registry is keyed by.
  */
-type GameType = 'draw-and-guess' | 'minesweeper';
+type GameType = 'draw-and-guess' | 'minesweeper' | 'make-24' | 'pairs';
 
 type RoomStatus = 'Open' | 'Full' | 'In Progress';
 
@@ -38,26 +33,19 @@ type RoomStatus = 'Open' | 'Full' | 'In Progress';
 type WordCategory =
   | 'Fruits'
   | 'Animals'
-  | 'League Of Legends'
+  | 'League of Legends'
   | 'Electronics'
   | 'Sports'
   | 'Food';
 
-/**
- * What every game knows about a player, and nothing more.
- *
- * `receivedPointsThisTurn` used to live here, which made the shared shape carry
- * a field that means nothing outside a Draw & Guess turn. Per-game facts about
- * a player belong to the game — Draw & Guess reports the same information as
- * `scoredThisTurn` on its own room state.
- */
+/** What every game knows about a player, and nothing more. */
 interface PlayerInfo {
   username: string;
   points: number;
   /**
    * False while the player is disconnected but still holding their seat. The
-   * room keeps them for a grace period so that a refresh — which takes about a
-   * second — does not cost them their score or their place in the round.
+   * room keeps them for a grace period so that a refresh does not cost them
+   * their score or their place in the round.
    */
   isConnected: boolean;
 }
@@ -67,38 +55,104 @@ interface OwnerInfo {
   playerId: string;
 }
 
+/** Who a connection is: a server-issued id, and the secret that proves it. */
+interface PlayerIdentity {
+  playerId: string;
+  token: string;
+}
+
 /**
- * The half of a create request every game shares. The other half — rounds,
- * board size — is `settings`, which only the game's own module can read.
+ * What a client presents in the Socket.IO handshake (`auth`), on every
+ * connection: nothing, or the identity it was issued before. A claim that does
+ * not check out simply gets a new identity.
+ *
+ * Identity travels in the handshake rather than as an event so that the server
+ * knows who a connection is before it reads a single event from it. The client
+ * buffers what it sends while offline and flushes it the moment it connects,
+ * ahead of anything its own `connect` handler could say first.
  */
-interface RoomCreateRequestBody {
+interface HandshakeAuth {
+  identity: PlayerIdentity | null;
+}
+
+/** Sent as `session:ready` once the handshake has settled who a connection is. */
+interface SessionInfo extends PlayerIdentity {
+  /** How long a dropped connection keeps its seats, for the reconnecting notice. */
+  reconnectGraceMs: number;
+}
+
+// ---------------------------------------------------------------------------
+// Requests and their answers
+
+/**
+ * Why a request was refused.
+ *
+ * `notRoomMember` is not an error the UI shows: it is how a room page learns
+ * it arrived without a seat, and its cue to ask for one.
+ */
+type ErrorType =
+  | 'roomNotExist'
+  | 'roomNotOpen'
+  | 'incorrectPassword'
+  | 'notEnoughPlayers'
+  | 'gameAlreadyStarted'
+  | 'notRoomOwner'
+  | 'notRoomMember'
+  | 'invalidRequest';
+
+interface RoomError {
+  type: ErrorType;
+  message: string;
+}
+
+/** What an acknowledged request answers: success with its value, or why not. */
+type Result<T extends object = object> =
+  ({ ok: true } & T) | { ok: false; error: RoomError };
+
+/**
+ * A new room. The creator takes the first seat and becomes its owner, so a
+ * room never exists without somebody in it.
+ */
+interface RoomCreateRequest {
   gameType: GameType;
   roomName: string;
-  ownerUsername: string;
+  username: string;
   maxPlayers: number;
+  /** '' for an open room. */
   password: string;
-  settings: unknown;
+  /** The game's own half, which only its module can read. */
+  settings:
+    DrawAndGuessSettings | MinesweeperSettings | Make24Settings | PairsSettings;
 }
 
-interface Coordinate {
-  x: number;
-  y: number;
+interface DrawAndGuessSettings {
+  rounds: number;
 }
 
-/** One continuous line, from mouse-down to mouse-up. */
-interface CanvasStroke {
-  color: string;
-  size: number;
-  points: Coordinate[];
+type MinesweeperDifficulty = 'Small' | 'Medium' | 'Large';
+
+interface MinesweeperSettings {
+  difficulty: MinesweeperDifficulty;
 }
+
+interface Make24Settings {
+  /** Hands in a game: 5 or 10. */
+  hands: number;
+}
+
+/** Small is 4 × 4, 8 pairs; Large is 6 × 6, 18 pairs. */
+type PairsBoard = 'Small' | 'Large';
+
+interface PairsSettings {
+  board: PairsBoard;
+}
+
+// ---------------------------------------------------------------------------
+// Lobbies
 
 /**
  * The room summary shown in a lobby. Broadcast to everyone subscribed to that
  * game's lobby, so it carries `hasPassword` rather than the password itself.
- *
- * Games extend this with whatever their lobby table needs a column for. A
- * stringly-typed `settings` blob would have saved the two interfaces below and
- * cost the lobby its types.
  */
 interface LobbyRoomInfo {
   gameType: GameType;
@@ -111,9 +165,38 @@ interface LobbyRoomInfo {
   hasPassword: boolean;
 }
 
+interface DrawAndGuessLobbyRoomInfo extends LobbyRoomInfo {
+  gameType: 'draw-and-guess';
+  rounds: number;
+}
+
+interface MinesweeperLobbyRoomInfo extends LobbyRoomInfo {
+  gameType: 'minesweeper';
+  difficulty: MinesweeperDifficulty;
+}
+
+interface Make24LobbyRoomInfo extends LobbyRoomInfo {
+  gameType: 'make-24';
+  hands: number;
+}
+
+interface PairsLobbyRoomInfo extends LobbyRoomInfo {
+  gameType: 'pairs';
+  board: PairsBoard;
+}
+
+type AnyLobbyRoomInfo =
+  | DrawAndGuessLobbyRoomInfo
+  | MinesweeperLobbyRoomInfo
+  | Make24LobbyRoomInfo
+  | PairsLobbyRoomInfo;
+
+// ---------------------------------------------------------------------------
+// Rooms
+
 /**
- * The full snapshot sent to the players inside a room — the generic half. Every
- * game has players, a start, and a clock; everything else is the game's own.
+ * The generic half of a room snapshot. Every game has players, a start, and a
+ * clock; everything else is the game's own.
  */
 interface RoomState extends LobbyRoomInfo {
   playerList: Record<string, PlayerInfo>;
@@ -121,56 +204,80 @@ interface RoomState extends LobbyRoomInfo {
   /**
    * Time left in the current phase, relative rather than absolute so that a
    * client whose clock disagrees with the server's still counts down right.
+   * 0 when nothing is running.
    */
   phaseEndsInMs: number;
 }
 
-interface DrawAndGuessLobbyRoomInfo extends LobbyRoomInfo {
-  gameType: 'draw-and-guess';
-  rounds: number;
+/** One player's place when a game ended. */
+interface Standing {
+  playerId: string;
+  username: string;
+  points: number;
 }
 
+/**
+ * How the last game in a room ended, kept until the next one starts so the
+ * results stay on screen, and survive a refresh.
+ */
+interface GameSummary {
+  /** True when too few players were left to carry on. */
+  endedEarly: boolean;
+  /** Highest score first. */
+  standings: Standing[];
+}
+
+/** waiting: no game; choosing: the drawer picks a word; reveal: the word is shown. */
+type DrawAndGuessPhase = 'waiting' | 'choosing' | 'drawing' | 'reveal';
+
+interface DrawAndGuessGameSummary extends GameSummary {
+  wordCategory: WordCategory;
+  rounds: number;
+  turns: number;
+}
+
+/**
+ * A Draw & Guess room, as one player may see it.
+ *
+ * The word is never in another player's snapshot while it is in play: the
+ * drawer is sent `word` while drawing and `wordChoices` while choosing, and
+ * everybody is sent `word` once it is revealed.
+ */
 interface DrawAndGuessRoomState extends RoomState {
   gameType: 'draw-and-guess';
   rounds: number;
-  /** The current drawer's player id, not their name. */
-  currentDrawer: string;
-  currentWordHint: string;
+  phase: DrawAndGuessPhase;
+  /** 1-based; 0 when no game is running. */
   currentRound: number;
-  isWordSelectingPhase: boolean;
-  isDrawingPhase: boolean;
-  isReviewingPhase: boolean;
-  drawerQueue: string[]; // a Set does not survive JSON serialization
-  /** Player ids that have already scored this turn, and so cannot guess again. */
-  scoredThisTurn: string[];
-  wordCategory: WordCategory | ''; // '' when no game is in progress
-  // Drawer-private while the word is in play; omitted rather than blanked so
-  // that merging this snapshot never clobbers the drawer's own copy.
-  currentWord?: string;
+  /** Turns played so far in this game, including the current one. */
+  turn: number;
+  /** The drawer's player id; '' when nobody is drawing. */
+  currentDrawer: string;
+  wordCategory: WordCategory | '';
+  /** The word with its unrevealed letters as underscores; '' outside a turn. */
+  hint: string;
+  word?: string;
   wordChoices?: string[];
-}
-
-/** What a Draw & Guess room is created with. */
-interface DrawAndGuessSettings {
-  rounds: number;
-}
-
-type MinesweeperDifficulty = 'Small' | 'Medium' | 'Large';
-
-/** What a Minesweeper room is created with. */
-interface MinesweeperSettings {
-  difficulty: MinesweeperDifficulty;
+  /** True when the clock chose the drawer's word for them. */
+  wordAutoPicked: boolean;
+  /** Player ids that have scored this turn, and so cannot guess again. */
+  scoredThisTurn: string[];
+  /** What each player has gained this turn, the drawer included. */
+  turnPoints: Record<string, number>;
+  /**
+   * How long the turn still waits for a drawer whose connection dropped; 0
+   * when it is not waiting.
+   */
+  drawerHoldEndsInMs: number;
+  lastGame: DrawAndGuessGameSummary | null;
 }
 
 /**
  * One cell, as everybody is allowed to see it:
  *
  * - `-1` hidden
- * - `0`–`8` revealed, with that many mines among its eight neighbours
+ * - `0`-`8` revealed, with that many mines among its eight neighbours
  * - `9` a mine somebody hit, now common knowledge
- *
- * A number per cell rather than an object, because the whole board goes out
- * every round and a 16×30 board is 480 of them.
  */
 type MinesweeperCellView = number;
 
@@ -182,8 +289,7 @@ interface MinesweeperPickResult {
   index: number;
   /**
    * The cell's mine probability immediately before the round, computed from
-   * public information alone — which is why it can be shown to everyone
-   * afterwards without giving anything away.
+   * public information alone, which is why it can be shown afterwards.
    */
   risk: number;
   hitMine: boolean;
@@ -194,11 +300,15 @@ interface MinesweeperPickResult {
   autoPlayed: boolean;
 }
 
-interface MinesweeperLobbyRoomInfo extends LobbyRoomInfo {
-  gameType: 'minesweeper';
+/** waiting: no game; picking: the round is open; reveal: its outcome is shown. */
+type MinesweeperPhase = 'waiting' | 'picking' | 'reveal';
+
+interface MinesweeperGameSummary extends GameSummary {
   difficulty: MinesweeperDifficulty;
+  rounds: number;
 }
 
+/** A Minesweeper room, as one player may see it. */
 interface MinesweeperRoomState extends RoomState {
   gameType: 'minesweeper';
   difficulty: MinesweeperDifficulty;
@@ -207,105 +317,258 @@ interface MinesweeperRoomState extends RoomState {
   totalMines: number;
   /** Row-major, `width * height` entries. Never the hidden layout. */
   board: MinesweeperCellView[];
+  phase: MinesweeperPhase;
+  /** The round open or being revealed; 0 before the first. */
   round: number;
-  /** Player ids that have locked a pick in this round — never which cell. */
+  /** Player ids that have locked a pick in this round, never which cell. */
   lockedIn: string[];
-  /** How many mines have been hit, so a client can show mines remaining. */
+  /** This player's own pick in the open round, and nobody else's. */
+  myPick: number | null;
+  /** How many mines have been hit. */
   minesFound: number;
-  /** What the previous round resolved to; empty before the first one ends. */
+  /** What the latest resolved round came to; empty before the first. */
   lastRound: MinesweeperPickResult[];
+  lastGame: MinesweeperGameSummary | null;
 }
 
-type ErrorType =
-  | 'roomNotExist'
-  | 'roomNotOpen'
-  | 'incorrectPassword'
-  | 'notEnoughPlayers'
-  | 'gameAlreadyStarted'
-  | 'notRoomOwner'
-  // Not an error the UI shows: it is how the room page learns it arrived
-  // without a seat, and its cue to ask for one.
-  | 'notRoomMember';
+/** On the wire, plain ASCII; a screen shows + − × ÷. */
+type Make24Operator = '+' | '-' | '*' | '/';
 
-/** What a `room:error` event actually carries. */
-interface RoomErrorPayload {
-  status: boolean;
-  message: string;
-  errorType: ErrorType;
+/**
+ * One step towards 24: the cards at `left` and `right`, as they stand after
+ * the steps before, make a new card in the left card's place.
+ */
+interface Make24Step {
+  left: number;
+  op: Make24Operator;
+  right: number;
+}
+
+/** waiting: no game; solving: the hand is open; reveal: its results are shown. */
+type Make24Phase = 'waiting' | 'solving' | 'reveal';
+
+/** Somebody has solved the open hand: who, and for what. Never how. */
+interface Make24Solve {
+  playerId: string;
+  username: string;
+  points: number;
+  /** Whole seconds that were left on the hand's clock. */
+  secondsLeft: number;
+}
+
+/** One player's part in a finished hand. */
+interface Make24HandResult extends Make24Solve {
+  solved: boolean;
+  /** How they made 24, "(8 − 4) × (7 − 1)"; '' when they did not. */
+  expression: string;
+}
+
+interface Make24GameSummary extends GameSummary {
+  /** Hands played; fewer than the game's when it ended early. */
+  hands: number;
 }
 
 /**
- * Every event name, in one place.
+ * A Make 24 room, as one player may see it.
  *
- * The old names spelled their game into themselves —
- * `clientJoinDrawAndGuessRoomRequest`, `updateDrawAndGuessLobbyRoomList` — so
- * adding a second game meant either a second near-identical set or a second
- * game answering to the first one's name. What is generic is now namespaced by
- * concern (`room:`, `lobby:`, `chat:`) and what belongs to a game is prefixed
- * with that game's short tag (`dg:`).
- *
- * These are types, not constants, for the reason at the top of this file. Both
- * halves route their emits and listeners through helpers typed on these unions,
- * so a name that exists on only one side does not compile on either.
+ * While a hand is open, `solved` says who has made 24 and nobody's way of
+ * doing it, which would give the hand away; the viewer's own is in `mySolve`.
  */
-type ClientToServerEvent =
-  // Identity, before anything else.
-  | 'identifyPlayer'
-  // The generic room layer.
-  | 'lobby:subscribe'
-  | 'lobby:unsubscribe'
-  | 'room:create'
-  | 'room:join'
-  | 'room:leave'
-  | 'room:sync'
-  | 'game:start'
-  | 'chat:send'
-  // Draw & Guess.
-  | 'dg:guess'
-  | 'dg:select-word'
-  | 'dg:draw:start'
-  | 'dg:draw:move'
-  | 'dg:draw:end'
-  | 'dg:draw:undo'
-  | 'dg:draw:clear'
-  // Minesweeper.
-  | 'ms:pick';
+interface Make24RoomState extends RoomState {
+  gameType: 'make-24';
+  hands: number;
+  phase: Make24Phase;
+  /** The hand open or being revealed, from 1; 0 between games. */
+  hand: number;
+  /** The hand's four cards, smallest first; empty between games. */
+  deal: number[];
+  /** Who has solved the open hand, first first. */
+  solved: Make24Solve[];
+  /** This player's own solve of the open hand, and nobody else's. */
+  mySolve: Make24HandResult | null;
+  /** Every player's result for the latest finished hand, best first. */
+  lastHand: Make24HandResult[];
+  /** That hand's cards, which stay on the table after the game ends. */
+  lastDeal: number[];
+  /** One way to make 24 from the latest finished hand's cards; '' before one. */
+  lastSolution: string;
+  lastGame: Make24GameSummary | null;
+}
 
-type ServerToClientEvent =
-  | 'playerIdentity'
-  // The generic room layer.
-  | 'lobby:rooms'
-  | 'room:created'
-  | 'room:joined'
-  | 'room:join:denied'
-  | 'room:state'
-  | 'room:error'
-  | 'chat:message'
-  // Draw & Guess.
-  | 'dg:game:started'
-  | 'dg:game:ended'
-  | 'dg:round'
-  | 'dg:phase:word-select'
-  | 'dg:phase:drawing'
-  | 'dg:phase:review'
-  | 'dg:phase:idle'
-  | 'dg:word-choices'
-  | 'dg:word'
-  | 'dg:hint'
-  | 'dg:scores'
-  | 'dg:guess:correct'
-  | 'dg:canvas:sync'
-  | 'dg:canvas:start'
-  | 'dg:canvas:move'
-  | 'dg:canvas:end'
-  | 'dg:canvas:undo'
-  | 'dg:canvas:clear'
-  // Minesweeper.
-  | 'ms:game:started'
-  | 'ms:game:ended'
-  | 'ms:round'
-  | 'ms:locked'
-  | 'ms:resolve';
+/**
+ * waiting: no game; flipping: a player is turning over two cards; showing:
+ * two that did not match are up for everybody, before they turn back.
+ */
+type PairsPhase = 'waiting' | 'flipping' | 'showing';
+
+/**
+ * A card in its place. Its symbol, an index into the Pairs symbols, is sent
+ * only while it is up or matched, so where the others lie never leaves the
+ * server.
+ */
+interface PairsCardView {
+  state: 'down' | 'up' | 'matched';
+  symbol: number | null;
+}
+
+interface PairsGameSummary extends GameSummary {
+  board: PairsBoard;
+  /** Pairs found; fewer than the board's when the game ended early. */
+  pairs: number;
+}
+
+/** A Pairs room, as one player may see it. Points are pairs found. */
+interface PairsRoomState extends RoomState {
+  gameType: 'pairs';
+  board: PairsBoard;
+  phase: PairsPhase;
+  /**
+   * Every card in its place, row by row: the board in play, or the last
+   * game's as it ended; empty before the first game.
+   */
+  cards: PairsCardView[];
+  pairsFound: number;
+  /** Whose turn it is; null between games. */
+  turnPlayerId: string | null;
+  /** Whose turn comes next, skipping anybody not connected. */
+  nextPlayerId: string | null;
+  /** The places of the two cards that just did not match, while they show. */
+  lastMiss: number[];
+  lastGame: PairsGameSummary | null;
+}
+
+type AnyRoomState =
+  | DrawAndGuessRoomState
+  | MinesweeperRoomState
+  | Make24RoomState
+  | PairsRoomState;
+
+// ---------------------------------------------------------------------------
+// Chat and the drawing
+
+/**
+ * player: somebody talking (or guessing wrong); system: neutral news, like a
+ * join; alert: something went wrong for somebody, like a departure or a mine;
+ * success: somebody scored.
+ */
+type ChatMessageKind = 'player' | 'system' | 'alert' | 'success';
+
+interface ChatMessage {
+  /** Unique within the room, in order. */
+  id: number;
+  kind: ChatMessageKind;
+  /** The speaker, for player messages. */
+  playerId?: string;
+  username?: string;
+  text: string;
+}
+
+interface Coordinate {
+  x: number;
+  y: number;
+}
+
+/** One continuous line, from pointer down to pointer up. */
+interface CanvasStroke {
+  color: string;
+  size: number;
+  points: Coordinate[];
+}
+
+// ---------------------------------------------------------------------------
+// The events
+
+type Ack<T> = (answer: T) => void;
+
+interface ClientToServerEvents {
+  'lobby:subscribe': (gameType: GameType) => void;
+  'lobby:unsubscribe': (gameType: GameType) => void;
+
+  'room:create': (
+    request: RoomCreateRequest,
+    ack: Ack<Result<{ roomId: string }>>,
+  ) => void;
+  /** Taking a seat, or taking back one this player still holds. */
+  'room:join': (
+    roomId: string,
+    username: string,
+    password: string,
+    ack: Ack<Result>,
+  ) => void;
+  /**
+   * Asked for by a room page once its listeners are live: answered with
+   * `room:state`, the chat so far and anything else the game streams, or with
+   * an error when this player holds no seat.
+   */
+  'room:sync': (roomId: string, ack: Ack<Result>) => void;
+  'room:leave': (roomId: string) => void;
+  'game:start': (roomId: string, ack: Ack<Result>) => void;
+
+  /** Talking, and in Draw & Guess also guessing: the game decides which. */
+  'chat:send': (roomId: string, text: string) => void;
+
+  'dg:select-word': (roomId: string, word: string) => void;
+  /** A stroke is described in full from its first point. */
+  'dg:draw:start': (
+    roomId: string,
+    point: Coordinate,
+    color: string,
+    size: number,
+  ) => void;
+  'dg:draw:move': (
+    roomId: string,
+    point: Coordinate,
+    color: string,
+    size: number,
+  ) => void;
+  'dg:draw:end': (roomId: string) => void;
+  'dg:draw:undo': (roomId: string) => void;
+  'dg:draw:clear': (roomId: string) => void;
+
+  'ms:pick': (roomId: string, index: number) => void;
+
+  /** A solution to the open hand, as the steps that made it. */
+  't24:solve': (roomId: string, steps: Make24Step[]) => void;
+
+  /** Turning over the card at `index`, on your turn. */
+  'pairs:flip': (roomId: string, index: number) => void;
+}
+
+interface ServerToClientEvents {
+  /**
+   * The first thing the server says on every connection: who this connection
+   * is, which the client stores for the next one.
+   */
+  'session:ready': (session: SessionInfo) => void;
+
+  'lobby:rooms': (gameType: GameType, rooms: AnyLobbyRoomInfo[]) => void;
+
+  'room:state': (state: AnyRoomState) => void;
+
+  'chat:history': (roomId: string, messages: ChatMessage[]) => void;
+  'chat:message': (roomId: string, message: ChatMessage) => void;
+
+  /** The whole drawing, for a player arriving mid-turn. */
+  'dg:canvas:sync': (roomId: string, strokes: CanvasStroke[]) => void;
+  'dg:canvas:start': (
+    roomId: string,
+    point: Coordinate,
+    color: string,
+    size: number,
+  ) => void;
+  'dg:canvas:move': (
+    roomId: string,
+    point: Coordinate,
+    color: string,
+    size: number,
+  ) => void;
+  'dg:canvas:end': (roomId: string) => void;
+  'dg:canvas:undo': (roomId: string) => void;
+  'dg:canvas:clear': (roomId: string) => void;
+}
+
+type ClientToServerEvent = keyof ClientToServerEvents;
+type ServerToClientEvent = keyof ServerToClientEvents;
 
 export type {
   GameType,
@@ -313,22 +576,55 @@ export type {
   WordCategory,
   PlayerInfo,
   OwnerInfo,
-  RoomCreateRequestBody,
-  Coordinate,
-  CanvasStroke,
-  LobbyRoomInfo,
-  RoomState,
-  DrawAndGuessLobbyRoomInfo,
-  DrawAndGuessRoomState,
+  PlayerIdentity,
+  HandshakeAuth,
+  SessionInfo,
+  ErrorType,
+  RoomError,
+  Result,
+  RoomCreateRequest,
   DrawAndGuessSettings,
   MinesweeperDifficulty,
   MinesweeperSettings,
+  LobbyRoomInfo,
+  DrawAndGuessLobbyRoomInfo,
+  MinesweeperLobbyRoomInfo,
+  AnyLobbyRoomInfo,
+  RoomState,
+  Standing,
+  GameSummary,
+  DrawAndGuessPhase,
+  DrawAndGuessGameSummary,
+  DrawAndGuessRoomState,
   MinesweeperCellView,
   MinesweeperPickResult,
-  MinesweeperLobbyRoomInfo,
+  MinesweeperPhase,
+  MinesweeperGameSummary,
   MinesweeperRoomState,
-  ErrorType,
-  RoomErrorPayload,
+  Make24Settings,
+  Make24LobbyRoomInfo,
+  Make24Operator,
+  Make24Step,
+  Make24Phase,
+  Make24Solve,
+  Make24HandResult,
+  Make24GameSummary,
+  Make24RoomState,
+  PairsBoard,
+  PairsSettings,
+  PairsLobbyRoomInfo,
+  PairsPhase,
+  PairsCardView,
+  PairsGameSummary,
+  PairsRoomState,
+  AnyRoomState,
+  ChatMessageKind,
+  ChatMessage,
+  Coordinate,
+  CanvasStroke,
+  Ack,
+  ClientToServerEvents,
+  ServerToClientEvents,
   ClientToServerEvent,
   ServerToClientEvent,
 };

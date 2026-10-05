@@ -11,25 +11,27 @@ import { createRoomCanvas } from './canvas.js';
 /** A room that has been created but not yet played in. */
 const createState = (settings: DrawAndGuessSettings): DrawAndGuessState => ({
   rounds: settings.rounds,
-  currentDrawer: '',
-  currentWord: '',
-  currentWordHint: '',
+  phase: 'waiting',
   currentRound: 0,
-  isWordSelectingPhase: false,
-  isDrawingPhase: false,
-  isReviewingPhase: false,
+  turn: 0,
+  currentDrawer: '',
+  word: '',
+  hint: '',
+  wordChoices: [],
+  wordAutoPicked: false,
   drawerQueue: new Set(),
   wordCategory: '',
-  wordChoices: [],
   scoredThisTurn: new Set(),
+  turnPoints: new Map(),
+  drawerHoldEndsAt: 0,
+  lastGame: null,
   canvas: createRoomCanvas(),
 });
 
 /**
  * The room summary shown in the lobby. This payload goes to everyone watching
  * the Draw & Guess lobby, so it carries `hasPassword` rather than the password
- * itself — the frontend only ever used the field as a boolean to pick a lock
- * icon, while the raw value was readable by anyone who opened the lobby.
+ * itself.
  */
 const toLobbyInfo = (
   room: Room<DrawAndGuessState>,
@@ -46,39 +48,52 @@ const toLobbyInfo = (
 });
 
 /**
- * The full room snapshot broadcast to the players inside a room. Emitting the
- * internal room object directly leaked the password, and — during the drawing
- * phase — the very word everyone else is supposed to be guessing.
+ * The room as one player may see it.
  *
- * `currentWord` and `wordChoices` are drawer-private while the word is in play,
- * so they are omitted from the broadcast rather than blanked: the client merges
- * this snapshot over its existing state, and an omitted key leaves the drawer's
- * own copy intact. Both are delivered to the drawer alone, by `dg:word-choices`
- * and `dg:word`, and revealed to the whole room by `dg:phase:review`.
+ * The word is the secret, and who may know it depends on the phase and on who
+ * is looking:
+ *
+ * - **choosing:** the drawer is sent the three `wordChoices`; nobody else is
+ *   sent anything about them.
+ * - **drawing:** the drawer is sent the `word`; everybody else the `hint`.
+ * - **reveal:** everybody is sent the `word`.
+ *
+ * Fields a viewer may not see are left out of their snapshot altogether, so
+ * nothing about the word can leak through a value that was merely blanked.
  */
-const toRoomState = (room: Room<DrawAndGuessState>): DrawAndGuessRoomState => {
+const toRoomState = (
+  room: Room<DrawAndGuessState>,
+  viewerId: string,
+): DrawAndGuessRoomState => {
   const game = room.game;
-  const isWordInPlay = game.isWordSelectingPhase || game.isDrawingPhase;
+  const isDrawer = viewerId !== '' && game.currentDrawer === viewerId;
 
   const roomState: DrawAndGuessRoomState = {
     ...toLobbyInfo(room),
     playerList: room.playerList,
     isGameStarted: room.isGameStarted,
     phaseEndsInMs: getRemainingPhaseMs(room),
-    currentDrawer: game.currentDrawer,
-    currentWordHint: game.currentWordHint,
+    phase: game.phase,
     currentRound: game.currentRound,
-    isWordSelectingPhase: game.isWordSelectingPhase,
-    isDrawingPhase: game.isDrawingPhase,
-    isReviewingPhase: game.isReviewingPhase,
-    drawerQueue: [...game.drawerQueue],
-    scoredThisTurn: [...game.scoredThisTurn],
+    turn: game.turn,
+    currentDrawer: game.currentDrawer,
     wordCategory: game.wordCategory,
+    hint: game.hint,
+    wordAutoPicked: game.wordAutoPicked,
+    scoredThisTurn: [...game.scoredThisTurn],
+    turnPoints: Object.fromEntries(game.turnPoints),
+    drawerHoldEndsInMs: Math.max(0, game.drawerHoldEndsAt - Date.now()),
+    lastGame: game.lastGame,
   };
 
-  if (!isWordInPlay) {
-    roomState.currentWord = game.currentWord;
-    roomState.wordChoices = game.wordChoices;
+  if (game.phase === 'choosing' && isDrawer) {
+    roomState.wordChoices = [...game.wordChoices];
+  }
+  if (
+    (game.phase === 'drawing' && isDrawer) ||
+    (game.phase === 'reveal' && game.word !== '')
+  ) {
+    roomState.word = game.word;
   }
 
   return roomState;

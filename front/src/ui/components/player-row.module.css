@@ -1,0 +1,83 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 6px 8px;
+  border-radius: var(--zumpo-radius-12);
+  color: var(--zumpo-ink);
+}
+
+.highlight {
+  background: var(--zumpo-sand);
+}
+
+.details {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nameLine,
+.statusLine {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.nameLine {
+  gap: 6px;
+}
+
+.statusLine {
+  gap: var(--zumpo-space-4);
+  color: var(--zumpo-muted);
+}
+
+.name {
+  overflow: hidden;
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.host {
+  flex: none;
+}
+
+.status {
+  font: var(--zumpo-text-small);
+  letter-spacing: var(--zumpo-text-small-tracking);
+  white-space: nowrap;
+}
+
+.statusIcon {
+  flex: none;
+}
+
+.score {
+  flex: none;
+  font: var(--zumpo-text-number);
+  letter-spacing: var(--zumpo-text-number-tracking);
+  text-align: right;
+}
+
+.scored .status {
+  color: var(--zumpo-green);
+}
+
+.scored .statusIcon {
+  color: var(--zumpo-ink);
+}
+
+.away .avatar {
+  opacity: 0.45;
+}
+
+.away .name,
+.away .score {
+  color: var(--zumpo-muted);
+}

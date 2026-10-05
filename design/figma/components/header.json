@@ -1,0 +1,118 @@
+{
+  "format": 1,
+  "name": "Zumpo/Header",
+  "id": "4:39",
+  "type": "COMPONENT",
+  "key": "4c5f04b71b5cca50bafdad3269ee6e53d2aae2f0",
+  "description": "Shared navigation for the lobby and game rooms.",
+  "node": {
+    "type": "COMPONENT",
+    "id": "4:39",
+    "name": "Zumpo/Header",
+    "x": 32,
+    "y": 1316,
+    "w": 1312,
+    "h": 104,
+    "layout": {
+      "mode": "row",
+      "justify": "space_between",
+      "align": "center",
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "4:40",
+        "name": "Zumpo/Wordmark",
+        "w": 140,
+        "h": 44,
+        "wSize": "hug",
+        "component": "Zumpo/Wordmark",
+        "componentId": "4:36"
+      },
+      {
+        "type": "FRAME",
+        "id": "4:43",
+        "name": "Navigation",
+        "w": 234,
+        "h": 40,
+        "wSize": "hug",
+        "hSize": "hug",
+        "clip": true,
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/32",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "4:44",
+            "w": 49,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "Games",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "40:22071",
+                    "toName": "P04 / Games hub"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "4:45",
+            "w": 81,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "How to play",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "9:16004",
+                    "toName": "P14 / How to play"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "4:46",
+            "name": "You",
+            "w": 40,
+            "h": 40,
+            "component": "Zumpo/Avatar",
+            "variant": {
+              "Tone": "Peach"
+            },
+            "componentId": "4:34",
+            "props": {
+              "Initials": "MA"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

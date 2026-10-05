@@ -1,0 +1,14 @@
+{
+  "name": "Zumpo design export",
+  "id": "zumpo-design-export-local",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "enablePrivatePluginApi": true,
+  "networkAccess": {
+    "allowedDomains": ["none"],
+    "reasoning": "Everything stays local: the export is built in the plugin window and saved as a download."
+  }
+}

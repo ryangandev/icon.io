@@ -1,0 +1,82 @@
+/* A card's rows span it. */
+.stats {
+  align-self: stretch;
+}
+
+/* T05: every hand of a finished run. */
+.hands {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  gap: var(--zumpo-space-8);
+}
+
+.heading {
+  margin: 0;
+  padding-bottom: var(--zumpo-space-8);
+  font: var(--zumpo-text-heading);
+  letter-spacing: var(--zumpo-text-heading-tracking);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hand {
+  display: grid;
+  grid-template-columns: 20px 120px minmax(0, 1fr) auto;
+  grid-template-areas: 'number deal expression time';
+  align-items: center;
+  column-gap: var(--zumpo-space-16);
+  padding: var(--zumpo-space-12) var(--zumpo-space-16);
+  border-radius: var(--zumpo-radius-12);
+  background: var(--zumpo-cream);
+}
+
+.number {
+  grid-area: number;
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+}
+
+.deal,
+.time {
+  font: var(--zumpo-text-number);
+  letter-spacing: var(--zumpo-text-number-tracking);
+}
+
+.deal {
+  grid-area: deal;
+}
+
+.time {
+  grid-area: time;
+}
+
+.expression,
+.skipped {
+  grid-area: expression;
+  font: var(--zumpo-text-body);
+  letter-spacing: var(--zumpo-text-body-tracking);
+}
+
+.skipped {
+  color: var(--zumpo-muted);
+}
+
+/* A phone puts how it went under the cards. */
+@media (max-width: 640px) {
+  .hand {
+    grid-template-columns: 20px minmax(0, 1fr) auto;
+    grid-template-areas:
+      'number deal time'
+      '. expression expression';
+    row-gap: var(--zumpo-space-4);
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "format": 1,
+  "code": "MO09",
+  "title": "Guesser · canvas & guess input",
+  "id": "9:10340",
+  "section": "04 / Mobile / 390px flow adaptations",
+  "reviewNotes": [
+    "MO09 · 390px / responsive redesign"
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "9:10340",
+    "name": "MO09 / Guesser · canvas & guess input",
+    "x": 40,
+    "y": 2640,
+    "w": 390,
+    "h": 754,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        "$Zumpo · UI:space/20",
+        "$Zumpo · UI:space/20",
+        32,
+        "$Zumpo · UI:space/20"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "39:20515",
+        "name": "Zumpo/Room bar",
+        "w": 350,
+        "h": 68,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Phone"
+        },
+        "componentId": "39:19277",
+        "props": {
+          "Game": "Draw & Guess"
+        },
+        "overrides": [
+          {
+            "path": "Room identity / Room context / Phase",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Round 2 of 2",
+              "Tone": "Blue"
+            }
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:10353",
+        "name": "Zumpo/Mobile tabs",
+        "w": 350,
+        "h": 34,
+        "hSize": "hug",
+        "component": "Zumpo/Mobile tabs",
+        "variant": {
+          "View": "Board"
+        },
+        "componentId": "9:416",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 34,
+            "width": 350
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "27:22370",
+        "name": "Zumpo/Turn bar",
+        "w": 350,
+        "h": 156,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Turn bar",
+        "variant": {
+          "Kind": "Hint",
+          "Layout": "Phone"
+        },
+        "componentId": "27:22173"
+      },
+      {
+        "type": "FRAME",
+        "id": "27:22388",
+        "name": "Canvas",
+        "w": 350,
+        "h": 262,
+        "wSize": "fill",
+        "fills": [
+          "$Zumpo · UI:color/white"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/24",
+        "clip": true,
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/16",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "27:22389",
+            "name": "Drawing / Turtle",
+            "w": 297.6,
+            "h": 198.4,
+            "component": "Sample / Turtle drawing",
+            "variant": {
+              "Stage": "Head"
+            },
+            "componentId": "27:17560"
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "27:22395",
+        "name": "Chat input",
+        "w": 350,
+        "h": 44,
+        "wSize": "fill",
+        "component": "Zumpo/Chat input",
+        "variant": {
+          "State": "Default"
+        },
+        "componentId": "26:16243",
+        "props": {
+          "Placeholder": "Type your guess…"
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 44,
+            "width": 350
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:10375",
+        "name": "Footer",
+        "w": 350,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:10376",
+            "w": 350,
+            "h": 18,
+            "hSize": "hug",
+            "text": "A little play. Good company.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    ]
+  }
+}

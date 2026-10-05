@@ -1,119 +1,173 @@
-import { vi } from 'vitest';
+import type {
+  ClientToServerEvents,
+  ServerToClientEvents,
+  SessionInfo,
+} from '../../../shared/wire-types';
+import type { ZumpoSocket } from '../net/socket';
 
-type Listener = (...args: unknown[]) => void;
+type Listener = (...args: never[]) => void;
+type ClientEvent = keyof ClientToServerEvents;
+type ServerEvent = keyof ServerToClientEvents;
 
-const addListener = (
-  map: Map<string, Listener[]>,
-  event: string,
-  fn: Listener,
-) => {
-  map.set(event, [...(map.get(event) ?? []), fn]);
-};
+/** The arguments a client event carries, without its ack. */
+type RequestArgs<E extends ClientEvent> =
+  Parameters<ClientToServerEvents[E]> extends [...infer Args, infer Last]
+    ? Last extends (answer: never) => void
+      ? Args
+      : Parameters<ClientToServerEvents[E]>
+    : never;
 
-interface FakeSocket {
-  connected: boolean;
-  on: (event: string, listener: Listener) => FakeSocket;
-  off: (event: string, listener?: Listener) => FakeSocket;
-  emit: (event: string, ...args: unknown[]) => FakeSocket;
-  connect: () => void;
-  disconnect: () => void;
-  io: {
-    on: (event: string, listener: Listener) => void;
-    off: (event: string, listener?: Listener) => void;
-  };
-  /** Delivers a server event to whatever the component subscribed with. */
-  serverEmits: (event: string, ...args: unknown[]) => void;
-  /** Every event the component sent, in order. */
-  sent: Array<{ event: string; args: unknown[] }>;
-  /** The arguments of each `event` the component sent. */
-  sentArgs: (event: string) => unknown[][];
-}
+/** What a client event's ack is called with. */
+type AnswerOf<E extends ClientEvent> =
+  Parameters<ClientToServerEvents[E]> extends [...unknown[], infer Last]
+    ? Last extends (answer: infer A) => void
+      ? A
+      : never
+    : never;
+
+type Responder = (...args: never[]) => unknown;
 
 /**
- * A stand-in for a socket.io client.
+ * A stand-in for the socket.io client: the tests play the server.
  *
- * The real one needs a server, and these tests are about what the components do
- * with what arrives — the transport itself is covered by the backend suite,
- * which runs real clients against a real server.
+ * The real transport is covered by the backend suite, which runs real clients
+ * against a real server; these tests are about what the app does with what
+ * arrives.
  */
-const createFakeSocket = ({
-  connected = true,
-}: { connected?: boolean } = {}): FakeSocket => {
-  const listeners = new Map<string, Listener[]>();
-  const managerListeners = new Map<string, Listener[]>();
-  const sent: Array<{ event: string; args: unknown[] }> = [];
+export class FakeSocket {
+  connected = false;
+  active = false;
+  /** Who the server says each connection is, once the handshake is done. */
+  session: SessionInfo = {
+    playerId: 'p1',
+    token: 't1',
+    reconnectGraceMs: 30_000,
+  };
+  /** Every plain emit the app made, in order. */
+  readonly sent: { event: ClientEvent; args: unknown[] }[] = [];
+  /** Every request the app made, answered or not. */
+  readonly requests: { event: ClientEvent; args: unknown[] }[] = [];
 
-  const socket: FakeSocket = {
-    connected,
+  private readonly listeners = new Map<string, Set<Listener>>();
+  private readonly managerListeners = new Map<string, Set<Listener>>();
+  private readonly responders = new Map<string, Responder>();
 
-    on: (event, fn) => {
-      addListener(listeners, event, fn);
-      return socket;
+  readonly io = {
+    on: (event: string, listener: Listener) => {
+      add(this.managerListeners, event, listener);
     },
-
-    // socket.io removes every listener for an event when given no function.
-    off: (event, fn) => {
-      if (!fn) {
-        listeners.delete(event);
-      } else {
-        listeners.set(
-          event,
-          (listeners.get(event) ?? []).filter((listener) => listener !== fn),
-        );
-      }
-      return socket;
+    off: (event: string, listener: Listener) => {
+      this.managerListeners.get(event)?.delete(listener);
     },
-
-    emit: (event, ...args) => {
-      sent.push({ event, args });
-      return socket;
-    },
-
-    // The real `connect()` starts a handshake; it does not make the socket
-    // connected. Only the `connect` event does, which is why `serverEmits`
-    // below is what flips the flag.
-    connect: vi.fn<() => void>(),
-
-    disconnect: vi.fn<() => void>(() => {
-      socket.connected = false;
-    }),
-
-    io: {
-      on: (event, fn) => addListener(managerListeners, event, fn),
-      off: (event, fn) => {
-        if (!fn) {
-          managerListeners.delete(event);
-          return;
-        }
-        managerListeners.set(
-          event,
-          (managerListeners.get(event) ?? []).filter(
-            (listener) => listener !== fn,
-          ),
-        );
-      },
-    },
-
-    serverEmits: (event, ...args) => {
-      if (event === 'connect') socket.connected = true;
-      if (event === 'disconnect') socket.connected = false;
-
-      for (const listener of [
-        ...(listeners.get(event) ?? []),
-        ...(managerListeners.get(event) ?? []),
-      ]) {
-        listener(...args);
-      }
-    },
-
-    sent,
-
-    sentArgs: (event) =>
-      sent.filter((entry) => entry.event === event).map((entry) => entry.args),
   };
 
-  return socket;
-};
+  on(event: string, listener: Listener): this {
+    add(this.listeners, event, listener);
+    return this;
+  }
 
-export { createFakeSocket };
-export type { FakeSocket };
+  off(event: string, listener?: Listener): this {
+    // The real client drops every listener when given none, which the app
+    // must never rely on; failing loudly keeps that out of the code.
+    if (!listener) throw new Error(`off('${event}') without a handler`);
+    this.listeners.get(event)?.delete(listener);
+    return this;
+  }
+
+  emit(event: ClientEvent, ...args: unknown[]): this {
+    this.sent.push({ event, args });
+    return this;
+  }
+
+  timeout(_ms: number) {
+    return {
+      emitWithAck: (event: ClientEvent, ...args: unknown[]) => {
+        this.requests.push({ event, args });
+        const responder = this.responders.get(event);
+        if (!responder) return new Promise(() => {});
+        return Promise.resolve().then(() =>
+          (responder as (...a: unknown[]) => unknown)(...args),
+        );
+      },
+    };
+  }
+
+  connect(): this {
+    this.active = true;
+    return this;
+  }
+
+  disconnect(): this {
+    const was = this.connected;
+    this.connected = false;
+    this.active = false;
+    if (was) this.fire('disconnect', 'io client disconnect');
+    return this;
+  }
+
+  /** How the server answers a request from now on. */
+  answer<E extends ClientEvent>(
+    event: E,
+    respond: (...args: RequestArgs<E>) => AnswerOf<E>,
+  ): void {
+    this.responders.set(event, respond as Responder);
+  }
+
+  /** The handshake completes, and the server says who the connection is. */
+  open(): void {
+    this.connected = true;
+    this.active = true;
+    this.fire('connect');
+    this.fire('session:ready', this.session);
+  }
+
+  /** The connection drops, and the client starts retrying. */
+  drop(reason = 'transport close'): void {
+    this.connected = false;
+    this.fire('disconnect', reason);
+  }
+
+  /** The client ran out of retries. */
+  giveUp(): void {
+    this.active = false;
+    for (const listener of this.managerListeners.get('reconnect_failed') ??
+      []) {
+      (listener as () => void)();
+    }
+  }
+
+  /** The server sends an event. */
+  serverEmits<E extends ServerEvent>(
+    event: E,
+    ...args: Parameters<ServerToClientEvents[E]>
+  ): void {
+    this.fire(event, ...args);
+  }
+
+  /** The arguments of each `event` the app sent. */
+  sentArgs(event: ClientEvent): unknown[][] {
+    return this.sent.filter((s) => s.event === event).map((s) => s.args);
+  }
+
+  /** How many listeners are attached to `event`. */
+  listenerCount(event: string): number {
+    return this.listeners.get(event)?.size ?? 0;
+  }
+
+  asSocket(): ZumpoSocket {
+    return this as unknown as ZumpoSocket;
+  }
+
+  private fire(event: string, ...args: unknown[]): void {
+    // A copy, as socket.io takes: a listener may remove itself as it runs.
+    for (const listener of Array.from(this.listeners.get(event) ?? [])) {
+      (listener as (...a: unknown[]) => void)(...args);
+    }
+  }
+}
+
+function add(map: Map<string, Set<Listener>>, event: string, fn: Listener) {
+  const set = map.get(event) ?? new Set();
+  set.add(fn);
+  map.set(event, set);
+}

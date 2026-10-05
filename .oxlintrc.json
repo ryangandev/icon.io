@@ -12,26 +12,50 @@
     "react/react-in-jsx-scope": "off",
     "typescript/no-explicit-any": "warn"
   },
-  "ignorePatterns": ["**/node_modules", "**/build", "**/dist"],
+  "ignorePatterns": [
+    "**/node_modules",
+    "**/build",
+    "**/dist",
+    "front/src/ui/generated"
+  ],
   "overrides": [
     {
       "files": ["back/**/*.ts"],
-      "env": { "node": true },
+      "env": {
+        "node": true
+      },
       "rules": {
         "no-underscore-dangle": [
           "warn",
-          { "allow": ["__dirname", "__filename"] }
+          {
+            "allow": ["__dirname", "__filename"]
+          }
         ]
       }
     },
     {
       "files": ["front/**/*.{ts,tsx}"],
-      "env": { "browser": true }
+      "env": {
+        "browser": true
+      }
     },
     {
       "files": ["**/*.test.{ts,tsx}", "**/tests/**/*.{ts,tsx}"],
       "rules": {
         "typescript/no-non-null-assertion": "off"
+      }
+    },
+    {
+      "files": ["tools/figma-export/code.js", "tools/figma-bridge/code.js"],
+      "rules": {
+        "no-unused-vars": [
+          "error",
+          {
+            "caughtErrors": "none"
+          }
+        ],
+        "unicorn/no-array-sort": "off",
+        "unicorn/require-post-message-target-origin": "off"
       }
     }
   ]

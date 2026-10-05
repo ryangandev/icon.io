@@ -1,0 +1,61 @@
+.card {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: var(--zumpo-radius-12);
+}
+
+.compact {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--zumpo-radius-8);
+}
+
+/* Face down reads as a Minesweeper cell nobody has opened. */
+.down {
+  background: var(--zumpo-blue);
+  box-shadow: var(--zumpo-shadow-cell-edge);
+}
+
+.pickable:hover {
+  box-shadow:
+    var(--zumpo-shadow-cell-edge),
+    inset 0 0 0 2px var(--zumpo-ink);
+}
+
+/* Strokes sit inside, as in Figma, so every state keeps the card's size. */
+.up {
+  box-shadow: inset 0 0 0 2px var(--zumpo-ink);
+  background: var(--zumpo-paper);
+}
+
+.matched {
+  box-shadow: inset 0 0 0 1px var(--zumpo-line);
+  background: var(--zumpo-cream);
+}
+
+.matched .symbol {
+  opacity: 0.35;
+}
+
+.hit {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.hit:focus-visible {
+  z-index: 1;
+  outline: 2px solid var(--zumpo-ink);
+  outline-offset: 2px;
+}

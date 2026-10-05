@@ -1,0 +1,325 @@
+{
+  "format": 1,
+  "name": "Zumpo/Notice",
+  "id": "9:240",
+  "type": "COMPONENT_SET",
+  "key": "281a96909a6f4e16ac3e89e88d8828c672d28177",
+  "description": "Page-level status. Use it for things that are not shown anywhere else on the screen; never repeat an inline field error or a card’s own message. Set the Message property.",
+  "properties": {
+    "Message": {
+      "type": "text",
+      "default": "Connection restored. Welcome back!"
+    },
+    "Tone": {
+      "type": "variant",
+      "default": "Info",
+      "options": [
+        "Info",
+        "Success",
+        "Error",
+        "Pending"
+      ]
+    }
+  },
+  "defaultVariant": "Tone=Info",
+  "variants": [
+    {
+      "name": "Tone=Info",
+      "id": "9:227",
+      "props": {
+        "Tone": "Info"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "9:227",
+        "name": "Tone=Info",
+        "x": 24,
+        "y": 48,
+        "w": 560,
+        "h": 52,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/blue"
+        ],
+        "radius": "$Zumpo · UI:radius/12",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "pad": "$Zumpo · UI:space/16",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:5087",
+            "name": "Icon",
+            "w": 20,
+            "h": 20,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "info"
+            },
+            "componentId": "24:4990",
+            "overrides": [
+              {
+                "path": "info",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "info",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "info",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:226",
+            "name": "Message",
+            "w": 496,
+            "h": 20,
+            "wSize": "fill",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Message"
+            },
+            "text": "Connection restored. Welcome back!",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tone=Success",
+      "id": "9:231",
+      "props": {
+        "Tone": "Success"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "9:231",
+        "name": "Tone=Success",
+        "x": 608,
+        "y": 48,
+        "w": 560,
+        "h": 52,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "radius": "$Zumpo · UI:radius/12",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "pad": "$Zumpo · UI:space/16",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:5091",
+            "name": "Icon",
+            "w": 20,
+            "h": 20,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "check"
+            },
+            "componentId": "24:4994",
+            "overrides": [
+              {
+                "path": "check",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "check",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:230",
+            "name": "Message",
+            "w": 496,
+            "h": 20,
+            "wSize": "fill",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Message"
+            },
+            "text": "Connection restored. Welcome back!",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tone=Error",
+      "id": "9:235",
+      "props": {
+        "Tone": "Error"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "9:235",
+        "name": "Tone=Error",
+        "x": 24,
+        "y": 160,
+        "w": 560,
+        "h": 52,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/peach"
+        ],
+        "radius": "$Zumpo · UI:radius/12",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "pad": "$Zumpo · UI:space/16",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:5094",
+            "name": "Icon",
+            "w": 20,
+            "h": 20,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "alert"
+            },
+            "componentId": "24:4999",
+            "overrides": [
+              {
+                "path": "alert",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "alert",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "alert",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:234",
+            "name": "Message",
+            "w": 496,
+            "h": 20,
+            "wSize": "fill",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Message"
+            },
+            "text": "Connection restored. Welcome back!",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tone=Pending",
+      "id": "9:239",
+      "props": {
+        "Tone": "Pending"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "9:239",
+        "name": "Tone=Pending",
+        "x": 608,
+        "y": 160,
+        "w": 560,
+        "h": 52,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/sand"
+        ],
+        "radius": "$Zumpo · UI:radius/12",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "pad": "$Zumpo · UI:space/16",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:5098",
+            "name": "Icon",
+            "w": 20,
+            "h": 20,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "pending"
+            },
+            "componentId": "24:5002",
+            "overrides": [
+              {
+                "path": "pending",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:238",
+            "name": "Message",
+            "w": 496,
+            "h": 20,
+            "wSize": "fill",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Message"
+            },
+            "text": "Connection restored. Welcome back!",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    }
+  ]
+}

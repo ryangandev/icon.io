@@ -1,32 +1,36 @@
 <p align="center">
-    <img alt="Icon.io Logo" src="https://github.com/ryangandev/icon.io/blob/main/front/public/favicon.ico" height="auto" width="200">
+    <img alt="Zumpo Logo" src="front/public/favicon.svg" height="auto" width="200">
 </p>
 
-<h1 align="center">Icon.io</h1>
+<h1 align="center">Zumpo</h1>
 
 ## 🚀 About
 
-[**Icon.io**](https://icon.ryiscrispy.com/) is a web-based, online multiplayer gaming platform developed using React and Node.js with TypeScript. It currently hosts Draw & Guess and Minesweeper, which you can enjoy with your friends, and more games are on the way! Check it out [here](https://icon.ryiscrispy.com/)!
+**Zumpo** is a home for little browser games, alone or together, built with React and Node.js in TypeScript.
+It hosts Draw & Guess, Minesweeper, Make 24 and Pairs: play on your own straight away, or open a room and send your friends the link.
+Every game is short, easy to start and easy to share, and more are on the way.
 
-Icon.io is an evolved version of my original project, [**Icon**](https://github.com/ryangandev/icon.io/tree/old-version), initially built as my final project for a Web Development class in a team of three at Drexel University. This refined version retains the same core technologies as the original, while incorporating bug fixes and adhering to best practices.
+Zumpo began as [**Icon**](https://github.com/ryangandev/zumpo/tree/old-version), my final project for a Web Development class at Drexel University, built in a team of three.
 
 ## 🧱 Stack
 
-| Layer    | Tech                                                        |
-| -------- | ----------------------------------------------------------- |
-| Frontend | React 19 · TypeScript 7 · Vite 8 · Ant Design 6 · Socket.io |
-| Backend  | Node.js 20+ · TypeScript 7 · Express 5 · Socket.io          |
+| Layer    | Tech                                                   |
+| -------- | ------------------------------------------------------ |
+| Frontend | React 19 · TypeScript 7 · Vite 8 · Base UI · Socket.io |
+| Backend  | Node.js 22.12+ · TypeScript 7 · Express 5 · Socket.io  |
 
 ## 🎮 Games
 
-| Game                                   | Players | What it is                                                      |
-| -------------------------------------- | ------- | --------------------------------------------------------------- |
-| [Draw & Guess](docs/DRAW-AND-GUESS.md) | 2–8     | One player draws a word, everyone else races to type it         |
-| [Minesweeper](docs/MINESWEEPER.md)     | 2–8     | A shared minefield; each pick pays exactly how dangerous it was |
+| Game                                         | Players     | What it is                                                     |
+| -------------------------------------------- | ----------- | -------------------------------------------------------------- |
+| [Draw & Guess](docs/games/draw-and-guess.md) | 2–8         | One player draws a word, everyone else races to type it        |
+| [Minesweeper](docs/games/minesweeper.md)     | Solo or 2–8 | Classic on your own; together, a shared board picked in secret |
+| [Make 24](docs/games/make-24.md)             | Solo or 2–8 | Four numbers and plus, minus, times, divide: make 24           |
+| [Pairs](docs/games/pairs.md)                 | Solo or 2–6 | Flip two cards, remember where everything is, find every pair  |
 
 Each game is a module on a shared room layer that owns seats, ownership, the
-reconnect grace and the lobby. See [`docs/ANALYSIS.md`](docs/ANALYSIS.md) for the
-architecture, a feature inventory, known issues, and the roadmap.
+reconnect grace and the lobby. See [`docs/README.md`](docs/README.md) for the
+architecture, current status, known issues, and the roadmap.
 
 ## ✅ Checks
 
@@ -37,21 +41,21 @@ npm ci && npm run install:all
 npm run verify
 ```
 
-`verify` is lint → typecheck → test → build, which is exactly what CI runs on every pull request. The individual steps are `npm run lint`, `npm run typecheck`, `npm test` and `npm run build`.
+`verify` is lint → typecheck → format check → design token check → test → build, which is exactly what CI runs on every pull request. The individual steps are `npm run lint`, `npm run typecheck`, `npm run format:check`, `npm run design:tokens -- --check`, `npm test` and `npm run build`.
 
-Linting and formatting are root-level commands with one shared config each — [`.oxlintrc.json`](.oxlintrc.json) and [`.prettierrc.json`](.prettierrc.json) — covering both packages. `npm run format` rewrites; CI runs `npm run format:check`.
+Linting and formatting are root-level commands with one shared config each, [`.oxlintrc.json`](.oxlintrc.json) and [`.prettierrc.json`](.prettierrc.json), covering both packages. `npm run format` rewrites; CI runs `npm run format:check`.
 
 ## 🛠️ How To Run - Development
 
-Icon.io is built using React for the frontend and Node.js for the backend, each located within its respective directory: `front` and `back`. To run the app in development, follow the instructions provided below.
+Zumpo is built using React for the frontend and Node.js for the backend, each located within its respective directory: `front` and `back`. To run the app in development, follow the instructions provided below.
 
 ### Frontend
 
-- For frontend setup, follow the instructions in the [Front README](https://github.com/ryangandev/icon.io/blob/main/front/README.md).
+- For frontend setup, follow the instructions in the [Front README](front/README.md).
 
 ### Backend
 
-- For backend setup, follow the instructions in the [Back README](https://github.com/ryangandev/icon.io/blob/main/back/README.md).
+- For backend setup, follow the instructions in the [Back README](back/README.md).
 
 ## 🛠️ How To Run - Deployment
 
@@ -121,8 +125,8 @@ http://localhost:3000
 
 ## 🗃️ Old Version
 
-If you are interested in the old version of Icon.io, you can find it in the [old-version](https://github.com/ryangandev/icon.io/blob/old-version/README.md) branch.
+If you are interested in the original Icon, you can find it in the [old-version](https://github.com/ryangandev/zumpo/blob/old-version/README.md) branch.
 
 ## 📝 License
 
-This project is [MIT](https://github.com/ryangandev/icon.io/blob/main/LICENSE) licensed.
+This project is [MIT](LICENSE) licensed.

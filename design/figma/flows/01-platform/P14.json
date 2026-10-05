@@ -1,0 +1,453 @@
+{
+  "format": 1,
+  "code": "P14",
+  "title": "How to play",
+  "id": "9:16004",
+  "section": "01 / Platform & shared flows",
+  "reviewNotes": [
+    "P14 · Proposed rules view / current game rules"
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "9:16004",
+    "name": "P14 / How to play",
+    "x": 1580,
+    "y": 4014,
+    "w": 1440,
+    "h": 969,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        24,
+        "$Zumpo · UI:space/64",
+        32,
+        "$Zumpo · UI:space/64"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "9:16005",
+        "name": "Zumpo/Header",
+        "w": 1312,
+        "h": 104,
+        "component": "Zumpo/Header",
+        "componentId": "4:39",
+        "overrides": [
+          {
+            "path": "Navigation / Games",
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "40:22071",
+                    "toName": "P04 / Games hub"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "path": "Navigation / You",
+            "componentProperties": {
+              "Initials": "MA",
+              "Tone": "Peach"
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:16015",
+        "name": "Page heading",
+        "w": 1312,
+        "h": 121,
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/12",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:6605",
+            "name": "Tag / A LITTLE HELP",
+            "w": 104,
+            "h": 30,
+            "wSize": "hug",
+            "hSize": "hug",
+            "component": "Zumpo/Tag",
+            "variant": {
+              "Tone": "Sand"
+            },
+            "componentId": "24:6511",
+            "props": {
+              "Label": "A LITTLE HELP"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 30,
+                "width": 104
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:16018",
+            "w": 1312,
+            "h": 42,
+            "hSize": "hug",
+            "text": "Easy to learn. Hard to leave.",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:16019",
+            "w": 1312,
+            "h": 25,
+            "hSize": "hug",
+            "text": "Pick a game. A few little rules, then you’re ready.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:16020",
+        "name": "Game rules",
+        "w": 1312,
+        "h": 526,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/24",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "9:16021",
+            "name": "Draw & Guess",
+            "w": 644,
+            "h": 526,
+            "hSize": "fill",
+            "fills": [
+              "$Zumpo · UI:color/peach"
+            ],
+            "strokes": [
+              "$Zumpo · UI:color/line"
+            ],
+            "strokeAlign": "inside",
+            "radius": "$Zumpo · UI:radius/24",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/16",
+              "pad": "$Zumpo · UI:space/32",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:16022",
+                "w": 580,
+                "h": 30,
+                "hSize": "hug",
+                "text": "Draw & Guess",
+                "textStyle": "Zumpo/Heading",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "autoResize": "height"
+              },
+              {
+                "type": "TEXT",
+                "id": "9:16023",
+                "name": "2–8 players · 1–4 rounds  One person draws. Everyone else guesses. The",
+                "w": 580,
+                "h": 325,
+                "hSize": "hug",
+                "text": "2–8 players · 1–4 rounds\n\nEveryone takes a turn to draw. One word category is used for the whole game, and everyone can see it.\nThe drawer has 15 seconds to pick one of 3 words. If time runs out, the first one is picked.\n\nEveryone else has 90 seconds to type the word into the chat. Letters are revealed as the clock runs down. Once you get it, your chat locks until the next turn.\n\nFaster guesses earn more, from 50 to 150 points, and the drawer gets two fifths of each. The answer is shown for 10 seconds, then the next turn starts.",
+                "textStyle": "Zumpo/Body",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "autoResize": "height"
+              },
+              {
+                "type": "FRAME",
+                "id": "28:23156",
+                "name": "Push",
+                "w": 10,
+                "h": 9,
+                "hSize": "fill",
+                "layout": {
+                  "mode": "row",
+                  "strokesIncluded": true
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "9:16024",
+                "name": "Action / Find a room",
+                "w": 121,
+                "h": 48,
+                "wSize": "hug",
+                "component": "Zumpo/Button",
+                "variant": {
+                  "Style": "Primary",
+                  "State": "Default"
+                },
+                "componentId": "4:15",
+                "props": {
+                  "Label": "Find a room"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 48,
+                    "reactions": [
+                      {
+                        "on": "on_click",
+                        "do": [
+                          {
+                            "nav": "navigate",
+                            "to": "9:868",
+                            "toName": "DL01 / Room list · open, private, full and playing states"
+                          }
+                        ]
+                      }
+                    ],
+                    "width": 121
+                  }
+                ],
+                "reactions": [
+                  {
+                    "on": "on_click",
+                    "do": [
+                      {
+                        "nav": "navigate",
+                        "to": "9:868",
+                        "toName": "DL01 / Room list · open, private, full and playing states"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "9:16026",
+            "name": "Minesweeper",
+            "w": 644,
+            "h": 526,
+            "hSize": "hug",
+            "fills": [
+              "$Zumpo · UI:color/blue"
+            ],
+            "strokes": [
+              "$Zumpo · UI:color/line"
+            ],
+            "strokeAlign": "inside",
+            "radius": "$Zumpo · UI:radius/24",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/16",
+              "pad": "$Zumpo · UI:space/32",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "9:16027",
+                "w": 580,
+                "h": 30,
+                "hSize": "hug",
+                "text": "Minesweeper",
+                "textStyle": "Zumpo/Heading",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "autoResize": "height"
+              },
+              {
+                "type": "TEXT",
+                "id": "9:16028",
+                "name": "2–8 players · one shared board  Everybody chooses one covered cell at ",
+                "w": 580,
+                "h": 350,
+                "hSize": "hug",
+                "text": "2–8 players · one shared board\n\nEveryone picks one hidden cell at the same time. Your click locks your pick, and nobody sees which cell you chose.\n\nYou have 15 seconds to pick, then 4 seconds to see what everyone picked. A safe pick pays 10 points, plus more the riskier it was. A mine costs points, and costs more the safer the cell looked.\n\nPick the same safe cell as someone else? You split the reward. Run out of time? The safest cell is picked for you, without the 10-point base.\n\nThe board is Small, Medium or Large, chosen when the room is created. The game ends when the board is resolved or fewer than 2 players remain.",
+                "textStyle": "Zumpo/Body",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "autoResize": "height"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "9:16029",
+                "name": "Action / Find a room",
+                "w": 121,
+                "h": 48,
+                "wSize": "hug",
+                "component": "Zumpo/Button",
+                "variant": {
+                  "Style": "Primary",
+                  "State": "Default"
+                },
+                "componentId": "4:15",
+                "props": {
+                  "Label": "Find a room"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 48,
+                    "reactions": [
+                      {
+                        "on": "on_click",
+                        "do": [
+                          {
+                            "nav": "navigate",
+                            "to": "9:2528",
+                            "toName": "ML01 / Room list · open, private, full and playing states"
+                          }
+                        ]
+                      }
+                    ],
+                    "width": 121
+                  }
+                ],
+                "reactions": [
+                  {
+                    "on": "on_click",
+                    "do": [
+                      {
+                        "nav": "navigate",
+                        "to": "9:2528",
+                        "toName": "ML01 / Room list · open, private, full and playing states"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "9:16031",
+        "name": "Action / Back to games",
+        "w": 171,
+        "h": 48,
+        "wSize": "hug",
+        "component": "Zumpo/Button",
+        "variant": {
+          "Style": "Secondary",
+          "State": "Default"
+        },
+        "componentId": "4:18",
+        "props": {
+          "Icon": "Zumpo/Icon / Glyph=back",
+          "Show icon": true,
+          "Label": "Back to games"
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 48,
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "40:22071",
+                    "toName": "P04 / Games hub"
+                  }
+                ]
+              }
+            ],
+            "width": 171
+          }
+        ],
+        "reactions": [
+          {
+            "on": "on_click",
+            "do": [
+              {
+                "nav": "navigate",
+                "to": "40:22071",
+                "toName": "P04 / Games hub"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "9:16033",
+        "name": "Footer",
+        "w": 1312,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "9:16034",
+            "w": 650,
+            "h": 18,
+            "hSize": "hug",
+            "text": "Good company. One more round.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "9:16035",
+            "w": 115,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "zumpo. / play a little",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -147,3 +147,18 @@ dist
 
 # Claude Code local config (launch targets, settings, session state)
 .claude/
+
+# Figma export previews: regenerated on every export, too heavy for history.
+# The JSON and SVG beside them are committed. See docs/design.md.
+design/figma/previews/
+
+# Playwright: traces and screenshots of failed browser checks.
+test-results/
+playwright-report/
+
+# Captures from npm run design:compare, beside the Figma previews they match.
+design/compare/
+
+# shared/ is TypeScript only; the backend compiles it into back/build/shared/.
+# A stray .js here would shadow the .ts for Vite, so it is never committed.
+shared/**/*.js

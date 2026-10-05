@@ -1,0 +1,36 @@
+.heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--zumpo-space-12);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+}
+
+.title {
+  font: var(--zumpo-text-title);
+  letter-spacing: var(--zumpo-text-title-tracking);
+  overflow-wrap: anywhere;
+}
+
+.hero {
+  font: var(--zumpo-text-hero);
+  letter-spacing: var(--zumpo-text-hero-tracking);
+  white-space: pre-line;
+}
+
+.subtitle {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-body);
+  letter-spacing: var(--zumpo-text-body-tracking);
+}
+
+/* The phone home page sets its title at Title size. */
+@media (max-width: 640px) {
+  .hero {
+    font: var(--zumpo-text-title);
+    letter-spacing: var(--zumpo-text-title-tracking);
+  }
+}

@@ -1,0 +1,908 @@
+{
+  "format": 1,
+  "name": "Zumpo/Player row",
+  "id": "26:10660",
+  "type": "COMPONENT_SET",
+  "key": "b19be0b9e519dcfaa8886fe7e682ac0c48531f8b",
+  "description": "One player in the room list. The list is always sorted by score. Host shows the crown (it passes on when the host leaves); You marks the viewer. Status says what the player is doing right now, never a generic “Connected”. Highlight: the player whose turn it is. Scored: guessed this turn. Away: dropped, seat held for 30 s.",
+  "properties": {
+    "Name": {
+      "type": "text",
+      "default": "Maya"
+    },
+    "Status": {
+      "type": "text",
+      "default": "Drawing"
+    },
+    "Score": {
+      "type": "text",
+      "default": "460"
+    },
+    "Host": {
+      "type": "boolean",
+      "default": false
+    },
+    "You": {
+      "type": "boolean",
+      "default": false
+    },
+    "Status icon": {
+      "type": "boolean",
+      "default": true
+    },
+    "Icon": {
+      "type": "instance_swap",
+      "default": "Zumpo/Icon / Glyph=brush"
+    },
+    "State": {
+      "type": "variant",
+      "default": "Default",
+      "options": [
+        "Default",
+        "Highlight",
+        "Scored",
+        "Away"
+      ]
+    }
+  },
+  "defaultVariant": "State=Default",
+  "variants": [
+    {
+      "name": "State=Default",
+      "id": "26:10577",
+      "props": {
+        "State": "Default"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "26:10577",
+        "name": "State=Default",
+        "w": 312,
+        "h": 52,
+        "radius": "$Zumpo · UI:radius/12",
+        "layout": {
+          "mode": "row",
+          "gap": 12,
+          "pad": [
+            6,
+            8
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "26:10578",
+            "name": "Avatar",
+            "w": 40,
+            "h": 40,
+            "component": "Zumpo/Avatar",
+            "variant": {
+              "Tone": "Peach"
+            },
+            "componentId": "4:34"
+          },
+          {
+            "type": "FRAME",
+            "id": "26:10580",
+            "name": "Details",
+            "w": 196,
+            "h": 40,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": 2,
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "FRAME",
+                "id": "26:10581",
+                "name": "Name line",
+                "w": 37,
+                "h": 20,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": 6,
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "TEXT",
+                    "id": "26:10582",
+                    "name": "Name",
+                    "w": 37,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Name"
+                    },
+                    "text": "Maya",
+                    "textStyle": "Zumpo/Label",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:10583",
+                    "name": "Host",
+                    "visible": false,
+                    "w": 16,
+                    "h": 16,
+                    "propRefs": {
+                      "visible": "Host"
+                    },
+                    "component": "Zumpo/Icon",
+                    "variant": {
+                      "Glyph": "crown"
+                    },
+                    "componentId": "24:5014"
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:10586",
+                    "name": "You",
+                    "visible": false,
+                    "w": 37,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "visible": "You"
+                    },
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Sand"
+                    },
+                    "componentId": "24:6511",
+                    "props": {
+                      "Label": "You"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 20,
+                        "paddingBottom": 1,
+                        "paddingLeft": 8,
+                        "paddingRight": 8,
+                        "paddingTop": 1,
+                        "width": 37
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "26:10591",
+                "name": "Status line",
+                "w": 64,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/4",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:10592",
+                    "name": "Status icon",
+                    "w": 14,
+                    "h": 14,
+                    "propRefs": {
+                      "visible": "Status icon",
+                      "mainComponent": "Icon"
+                    },
+                    "component": "Zumpo/Icon",
+                    "variant": {
+                      "Glyph": "brush"
+                    },
+                    "componentId": "24:5053",
+                    "overrides": [
+                      {
+                        "path": "brush",
+                        "strokes": [
+                          "$Zumpo · UI:color/muted"
+                        ]
+                      },
+                      {
+                        "path": "brush",
+                        "strokes": [
+                          "$Zumpo · UI:color/muted"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "26:10595",
+                    "name": "Status",
+                    "w": 46,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Status"
+                    },
+                    "text": "Drawing",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "26:10596",
+            "name": "Score",
+            "w": 36,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Score"
+            },
+            "text": "460",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "right"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Highlight",
+      "id": "26:10597",
+      "props": {
+        "State": "Highlight"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "26:10597",
+        "name": "State=Highlight",
+        "w": 312,
+        "h": 52,
+        "fills": [
+          "$Zumpo · UI:color/sand"
+        ],
+        "radius": "$Zumpo · UI:radius/12",
+        "layout": {
+          "mode": "row",
+          "gap": 12,
+          "pad": [
+            6,
+            8
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "26:10598",
+            "name": "Avatar",
+            "w": 40,
+            "h": 40,
+            "component": "Zumpo/Avatar",
+            "variant": {
+              "Tone": "Peach"
+            },
+            "componentId": "4:34"
+          },
+          {
+            "type": "FRAME",
+            "id": "26:10600",
+            "name": "Details",
+            "w": 196,
+            "h": 40,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": 2,
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "FRAME",
+                "id": "26:10601",
+                "name": "Name line",
+                "w": 37,
+                "h": 20,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": 6,
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "TEXT",
+                    "id": "26:10602",
+                    "name": "Name",
+                    "w": 37,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Name"
+                    },
+                    "text": "Maya",
+                    "textStyle": "Zumpo/Label",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:10603",
+                    "name": "Host",
+                    "visible": false,
+                    "w": 16,
+                    "h": 16,
+                    "propRefs": {
+                      "visible": "Host"
+                    },
+                    "component": "Zumpo/Icon",
+                    "variant": {
+                      "Glyph": "crown"
+                    },
+                    "componentId": "24:5014"
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:10606",
+                    "name": "You",
+                    "visible": false,
+                    "w": 37,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "visible": "You"
+                    },
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "You"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 20,
+                        "paddingBottom": 1,
+                        "paddingLeft": 8,
+                        "paddingRight": 8,
+                        "paddingTop": 1,
+                        "width": 37
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "26:10611",
+                "name": "Status line",
+                "w": 64,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/4",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:10612",
+                    "name": "Status icon",
+                    "w": 14,
+                    "h": 14,
+                    "propRefs": {
+                      "visible": "Status icon",
+                      "mainComponent": "Icon"
+                    },
+                    "component": "Zumpo/Icon",
+                    "variant": {
+                      "Glyph": "brush"
+                    },
+                    "componentId": "24:5053",
+                    "overrides": [
+                      {
+                        "path": "brush",
+                        "strokes": [
+                          "$Zumpo · UI:color/muted"
+                        ]
+                      },
+                      {
+                        "path": "brush",
+                        "strokes": [
+                          "$Zumpo · UI:color/muted"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "26:10615",
+                    "name": "Status",
+                    "w": 46,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Status"
+                    },
+                    "text": "Drawing",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "26:10616",
+            "name": "Score",
+            "w": 36,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Score"
+            },
+            "text": "460",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "right"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Scored",
+      "id": "26:10617",
+      "props": {
+        "State": "Scored"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "26:10617",
+        "name": "State=Scored",
+        "w": 312,
+        "h": 52,
+        "radius": "$Zumpo · UI:radius/12",
+        "layout": {
+          "mode": "row",
+          "gap": 12,
+          "pad": [
+            6,
+            8
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "26:10618",
+            "name": "Avatar",
+            "w": 40,
+            "h": 40,
+            "component": "Zumpo/Avatar",
+            "variant": {
+              "Tone": "Peach"
+            },
+            "componentId": "4:34"
+          },
+          {
+            "type": "FRAME",
+            "id": "26:10620",
+            "name": "Details",
+            "w": 196,
+            "h": 40,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": 2,
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "FRAME",
+                "id": "26:10621",
+                "name": "Name line",
+                "w": 37,
+                "h": 20,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": 6,
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "TEXT",
+                    "id": "26:10622",
+                    "name": "Name",
+                    "w": 37,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Name"
+                    },
+                    "text": "Maya",
+                    "textStyle": "Zumpo/Label",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:10623",
+                    "name": "Host",
+                    "visible": false,
+                    "w": 16,
+                    "h": 16,
+                    "propRefs": {
+                      "visible": "Host"
+                    },
+                    "component": "Zumpo/Icon",
+                    "variant": {
+                      "Glyph": "crown"
+                    },
+                    "componentId": "24:5014"
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:10626",
+                    "name": "You",
+                    "visible": false,
+                    "w": 37,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "visible": "You"
+                    },
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Sand"
+                    },
+                    "componentId": "24:6511",
+                    "props": {
+                      "Label": "You"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 20,
+                        "paddingBottom": 1,
+                        "paddingLeft": 8,
+                        "paddingRight": 8,
+                        "paddingTop": 1,
+                        "width": 37
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "26:10631",
+                "name": "Status line",
+                "w": 64,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/4",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:10632",
+                    "name": "Status icon",
+                    "w": 14,
+                    "h": 14,
+                    "propRefs": {
+                      "visible": "Status icon",
+                      "mainComponent": "Icon"
+                    },
+                    "component": "Zumpo/Icon",
+                    "variant": {
+                      "Glyph": "brush"
+                    },
+                    "componentId": "24:5053"
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "26:10635",
+                    "name": "Status",
+                    "w": 46,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Status"
+                    },
+                    "text": "Drawing",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/green"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "26:10636",
+            "name": "Score",
+            "w": 36,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Score"
+            },
+            "text": "460",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "right"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Away",
+      "id": "26:10637",
+      "props": {
+        "State": "Away"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "26:10637",
+        "name": "State=Away",
+        "w": 312,
+        "h": 52,
+        "radius": "$Zumpo · UI:radius/12",
+        "layout": {
+          "mode": "row",
+          "gap": 12,
+          "pad": [
+            6,
+            8
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "26:10638",
+            "name": "Avatar",
+            "w": 40,
+            "h": 40,
+            "component": "Zumpo/Avatar",
+            "variant": {
+              "Tone": "Peach"
+            },
+            "componentId": "4:34",
+            "overrides": [
+              {
+                "path": ".",
+                "opacity": 0.45
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "26:10640",
+            "name": "Details",
+            "w": 196,
+            "h": 40,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": 2,
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "FRAME",
+                "id": "26:10641",
+                "name": "Name line",
+                "w": 37,
+                "h": 20,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": 6,
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "TEXT",
+                    "id": "26:10642",
+                    "name": "Name",
+                    "w": 37,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Name"
+                    },
+                    "text": "Maya",
+                    "textStyle": "Zumpo/Label",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:10643",
+                    "name": "Host",
+                    "visible": false,
+                    "w": 16,
+                    "h": 16,
+                    "propRefs": {
+                      "visible": "Host"
+                    },
+                    "component": "Zumpo/Icon",
+                    "variant": {
+                      "Glyph": "crown"
+                    },
+                    "componentId": "24:5014"
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:10646",
+                    "name": "You",
+                    "visible": false,
+                    "w": 37,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "visible": "You"
+                    },
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Sand"
+                    },
+                    "componentId": "24:6511",
+                    "props": {
+                      "Label": "You"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 20,
+                        "paddingBottom": 1,
+                        "paddingLeft": 8,
+                        "paddingRight": 8,
+                        "paddingTop": 1,
+                        "width": 37
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "26:10651",
+                "name": "Status line",
+                "w": 64,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/4",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "26:10652",
+                    "name": "Status icon",
+                    "w": 14,
+                    "h": 14,
+                    "propRefs": {
+                      "visible": "Status icon",
+                      "mainComponent": "Icon"
+                    },
+                    "component": "Zumpo/Icon",
+                    "variant": {
+                      "Glyph": "brush"
+                    },
+                    "componentId": "24:5053"
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "26:10658",
+                    "name": "Status",
+                    "w": 46,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Status"
+                    },
+                    "text": "Drawing",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "26:10659",
+            "name": "Score",
+            "w": 36,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Score"
+            },
+            "text": "460",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "alignH": "right"
+          }
+        ]
+      }
+    }
+  ]
+}

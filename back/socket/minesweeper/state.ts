@@ -1,13 +1,16 @@
 import type {
   MinesweeperDifficulty,
+  MinesweeperGameSummary,
   MinesweeperLobbyRoomInfo,
+  MinesweeperPhase,
   MinesweeperPickResult,
   MinesweeperRoomState,
   MinesweeperSettings,
 } from '../../models/types.js';
 import type { Room } from '../../libs/rooms/types.js';
 import { getRemainingPhaseMs } from '../../libs/utils.js';
-import { DIFFICULTIES, createBoard, minesFound, publicView } from './board.js';
+import { BOARD_SIZES } from '../../../shared/minesweeper.js';
+import { createBoard, minesFound, publicView } from './board.js';
 import type { Board } from './board.js';
 
 /**
@@ -22,6 +25,8 @@ interface MinesweeperState {
   difficulty: MinesweeperDifficulty;
   /** Server-private layout lives in here; `publicView` is what leaves. */
   board: Board;
+  phase: MinesweeperPhase;
+  /** The round open or being revealed; 0 when no game is running. */
   round: number;
   /** This round's picks, player id to cell index. One each, and final. */
   picks: Map<string, number>;
@@ -34,19 +39,21 @@ interface MinesweeperState {
    * reveals would score people on information they did not have.
    */
   risk: number[];
-  /** True while the previous round's outcome is still on screen. */
-  isRevealing: boolean;
+  /** What the latest resolved round came to; kept after the game ends. */
   lastRound: MinesweeperPickResult[];
+  /** How the last game ended, until the next one starts. */
+  lastGame: MinesweeperGameSummary | null;
 }
 
 const createState = (settings: MinesweeperSettings): MinesweeperState => ({
   difficulty: settings.difficulty,
   board: createBoard(settings.difficulty),
+  phase: 'waiting',
   round: 0,
   picks: new Map(),
   risk: [],
-  isRevealing: false,
   lastRound: [],
+  lastGame: null,
 });
 
 const toLobbyInfo = (
@@ -64,16 +71,21 @@ const toLobbyInfo = (
 });
 
 /**
- * The room as its players see it.
+ * The room as one player may see it.
  *
- * `lockedIn` says *who* has chosen, never *what* they chose. Publishing the
- * cells would hand everyone else a free read on the board — and worse, would
- * let a player wait to see where the crowd went before choosing, which is the
- * whole reason the picks are simultaneous.
+ * `lockedIn` says *who* has chosen, never *what* they chose, and `myPick` is
+ * the viewer's own cell and nobody else's. Publishing the cells would hand
+ * everyone else a free read on the board and, worse, let a player wait to see
+ * where the crowd went before choosing, which is the whole reason the picks
+ * are simultaneous. A player's own pick is in their own snapshot so that a
+ * refresh mid-round still shows what they locked in.
  */
-const toRoomState = (room: Room<MinesweeperState>): MinesweeperRoomState => {
+const toRoomState = (
+  room: Room<MinesweeperState>,
+  viewerId: string,
+): MinesweeperRoomState => {
   const game = room.game;
-  const { width, height } = DIFFICULTIES[game.difficulty];
+  const { width, height } = BOARD_SIZES[game.difficulty];
 
   return {
     ...toLobbyInfo(room),
@@ -85,10 +97,14 @@ const toRoomState = (room: Room<MinesweeperState>): MinesweeperRoomState => {
     height,
     totalMines: game.board.totalMines,
     board: publicView(game.board),
+    phase: game.phase,
     round: game.round,
     lockedIn: [...game.picks.keys()],
+    myPick:
+      game.phase === 'picking' ? (game.picks.get(viewerId) ?? null) : null,
     minesFound: minesFound(game.board),
     lastRound: game.lastRound,
+    lastGame: game.lastGame,
   };
 };
 

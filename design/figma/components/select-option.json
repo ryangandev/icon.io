@@ -1,0 +1,248 @@
+{
+  "format": 1,
+  "name": "Zumpo/Select option",
+  "id": "24:6185",
+  "type": "COMPONENT_SET",
+  "key": "52de7eb085dc53626474b8d851ae629fd7275cff",
+  "description": "One option in an open select list. Selected shows lime and a tick. Detail is an optional second line (board size and mines).",
+  "properties": {
+    "Label": {
+      "type": "text",
+      "default": "8 players"
+    },
+    "Detail": {
+      "type": "text",
+      "default": "16 × 16 · 40 mines"
+    },
+    "Show detail": {
+      "type": "boolean",
+      "default": false
+    },
+    "Selected": {
+      "type": "variant",
+      "default": "False",
+      "options": [
+        "False",
+        "True"
+      ]
+    }
+  },
+  "defaultVariant": "Selected=False",
+  "variants": [
+    {
+      "name": "Selected=False",
+      "id": "24:6171",
+      "props": {
+        "Selected": "False"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:6171",
+        "name": "Selected=False",
+        "w": 380,
+        "h": 40,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "row",
+          "gap": 12,
+          "pad": [
+            10,
+            12
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "24:6172",
+            "name": "Text",
+            "w": 356,
+            "h": 20,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": 2,
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "24:6173",
+                "name": "Label",
+                "w": 63,
+                "h": 20,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Label"
+                },
+                "text": "8 players",
+                "textStyle": "Zumpo/Label",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "24:6174",
+                "name": "Detail",
+                "visible": false,
+                "w": 98,
+                "h": 18,
+                "propRefs": {
+                  "visible": "Show detail",
+                  "characters": "Detail"
+                },
+                "text": "16 × 16 · 40 mines",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/muted"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "24:6175",
+            "name": "Check",
+            "visible": false,
+            "w": 20,
+            "h": 20,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "check"
+            },
+            "componentId": "24:4994",
+            "overrides": [
+              {
+                "path": "check",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "check",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Selected=True",
+      "id": "24:6178",
+      "props": {
+        "Selected": "True"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:6178",
+        "name": "Selected=True",
+        "w": 380,
+        "h": 40,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "row",
+          "gap": 12,
+          "pad": [
+            10,
+            12
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "24:6179",
+            "name": "Text",
+            "w": 324,
+            "h": 20,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": 2,
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "24:6180",
+                "name": "Label",
+                "w": 63,
+                "h": 20,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Label"
+                },
+                "text": "8 players",
+                "textStyle": "Zumpo/Label",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "24:6181",
+                "name": "Detail",
+                "visible": false,
+                "w": 98,
+                "h": 18,
+                "propRefs": {
+                  "visible": "Show detail",
+                  "characters": "Detail"
+                },
+                "text": "16 × 16 · 40 mines",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "24:6182",
+            "name": "Check",
+            "w": 20,
+            "h": 20,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "check"
+            },
+            "componentId": "24:4994",
+            "overrides": [
+              {
+                "path": "check",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "check",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,312 @@
+{
+  "format": 1,
+  "name": "Zumpo/Countdown",
+  "id": "24:5284",
+  "type": "COMPONENT_SET",
+  "key": "5e3befb7e3da3f8c2819b9525c23cc9c152ec4e2",
+  "description": "Server-driven phase clock (the client only renders the time it is sent). Running: a phase you act in. Waiting: someone else is acting, or a reveal. Urgent: the last 5 seconds. Time is mm:ss; Label says what the clock is for.",
+  "properties": {
+    "Time": {
+      "type": "text",
+      "default": "00:15"
+    },
+    "Label": {
+      "type": "text",
+      "default": "to pick"
+    },
+    "Tone": {
+      "type": "variant",
+      "default": "Running",
+      "options": [
+        "Running",
+        "Waiting",
+        "Urgent"
+      ]
+    }
+  },
+  "defaultVariant": "Tone=Running",
+  "variants": [
+    {
+      "name": "Tone=Running",
+      "id": "9:404",
+      "props": {
+        "Tone": "Running"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "9:404",
+        "name": "Tone=Running",
+        "w": 164,
+        "h": 44,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "radius": "$Zumpo · UI:radius/999",
+        "layout": {
+          "mode": "row",
+          "gap": 8,
+          "pad": [
+            10,
+            18,
+            10,
+            14
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:5270",
+            "name": "Icon",
+            "w": 20,
+            "h": 20,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "clock"
+            },
+            "componentId": "24:5006",
+            "overrides": [
+              {
+                "path": "clock",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "clock",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "9:403",
+            "name": "Time",
+            "w": 48,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Time"
+            },
+            "text": "00:15",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "24:5273",
+            "name": "Label",
+            "w": 48,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "to pick",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tone=Waiting",
+      "id": "24:5274",
+      "props": {
+        "Tone": "Waiting"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:5274",
+        "name": "Tone=Waiting",
+        "w": 164,
+        "h": 44,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/sand"
+        ],
+        "radius": "$Zumpo · UI:radius/999",
+        "layout": {
+          "mode": "row",
+          "gap": 8,
+          "pad": [
+            10,
+            18,
+            10,
+            14
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:5275",
+            "name": "Icon",
+            "w": 20,
+            "h": 20,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "clock"
+            },
+            "componentId": "24:5006",
+            "overrides": [
+              {
+                "path": "clock",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "clock",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "24:5276",
+            "name": "Time",
+            "w": 48,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Time"
+            },
+            "text": "00:15",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "24:5277",
+            "name": "Label",
+            "w": 48,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "to pick",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tone=Urgent",
+      "id": "24:5278",
+      "props": {
+        "Tone": "Urgent"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "24:5278",
+        "name": "Tone=Urgent",
+        "w": 164,
+        "h": 44,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/peach"
+        ],
+        "radius": "$Zumpo · UI:radius/999",
+        "layout": {
+          "mode": "row",
+          "gap": 8,
+          "pad": [
+            10,
+            18,
+            10,
+            14
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "24:5279",
+            "name": "Icon",
+            "w": 20,
+            "h": 20,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "clock"
+            },
+            "componentId": "24:5006",
+            "overrides": [
+              {
+                "path": "clock",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              },
+              {
+                "path": "clock",
+                "strokes": [
+                  "$Zumpo · UI:color/danger"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "24:5280",
+            "name": "Time",
+            "w": 48,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Time"
+            },
+            "text": "00:15",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/danger"
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "24:5281",
+            "name": "Label",
+            "w": 48,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "to pick",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/danger"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

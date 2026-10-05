@@ -1,0 +1,869 @@
+{
+  "format": 1,
+  "name": "Zumpo/Number card",
+  "id": "40:22063",
+  "type": "COMPONENT_SET",
+  "key": "f61e5d134a96e0af4a31efa88f2d14ff1e26d343",
+  "properties": {
+    "Value": {
+      "type": "text",
+      "default": "8"
+    },
+    "Formula": {
+      "type": "text",
+      "default": "8 − 4"
+    },
+    "Show formula": {
+      "type": "boolean",
+      "default": false
+    },
+    "State": {
+      "type": "variant",
+      "default": "Default",
+      "options": [
+        "Default",
+        "Selected",
+        "Made",
+        "Solved",
+        "Not 24"
+      ]
+    },
+    "Size": {
+      "type": "variant",
+      "default": "Regular",
+      "options": [
+        "Regular",
+        "Compact"
+      ]
+    }
+  },
+  "defaultVariant": "State=Default, Size=Regular",
+  "variants": [
+    {
+      "name": "State=Default, Size=Regular",
+      "id": "40:22033",
+      "props": {
+        "State": "Default",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "40:22033",
+        "name": "State=Default, Size=Regular",
+        "x": 24,
+        "y": 24,
+        "w": 112,
+        "h": 144,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/4",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "40:22034",
+            "name": "Value",
+            "w": 46,
+            "h": 78,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "8",
+            "textStyle": "Zumpo/Hero",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          },
+          {
+            "type": "TEXT",
+            "id": "40:22035",
+            "name": "Formula",
+            "visible": false,
+            "w": 28,
+            "h": 18,
+            "propRefs": {
+              "visible": "Show formula",
+              "characters": "Formula"
+            },
+            "text": "8 − 4",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Selected, Size=Regular",
+      "id": "40:22036",
+      "props": {
+        "State": "Selected",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "40:22036",
+        "name": "State=Selected, Size=Regular",
+        "x": 160,
+        "y": 24,
+        "w": 112,
+        "h": 144,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/4",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "40:22037",
+            "name": "Value",
+            "w": 46,
+            "h": 78,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "8",
+            "textStyle": "Zumpo/Hero",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          },
+          {
+            "type": "TEXT",
+            "id": "40:22038",
+            "name": "Formula",
+            "visible": false,
+            "w": 28,
+            "h": 18,
+            "propRefs": {
+              "visible": "Show formula",
+              "characters": "Formula"
+            },
+            "text": "8 − 4",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Made, Size=Regular",
+      "id": "40:22039",
+      "props": {
+        "State": "Made",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "40:22039",
+        "name": "State=Made, Size=Regular",
+        "x": 296,
+        "y": 24,
+        "w": 112,
+        "h": 144,
+        "fills": [
+          "$Zumpo · UI:color/peach"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/4",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "40:22040",
+            "name": "Value",
+            "w": 46,
+            "h": 78,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "8",
+            "textStyle": "Zumpo/Hero",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          },
+          {
+            "type": "TEXT",
+            "id": "40:22041",
+            "name": "Formula",
+            "visible": false,
+            "w": 28,
+            "h": 18,
+            "propRefs": {
+              "visible": "Show formula",
+              "characters": "Formula"
+            },
+            "text": "8 − 4",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Solved, Size=Regular",
+      "id": "40:22042",
+      "props": {
+        "State": "Solved",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "40:22042",
+        "name": "State=Solved, Size=Regular",
+        "x": 432,
+        "y": 24,
+        "w": 112,
+        "h": 144,
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/green"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/4",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "40:22043",
+            "name": "Value",
+            "w": 46,
+            "h": 78,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "8",
+            "textStyle": "Zumpo/Hero",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          },
+          {
+            "type": "TEXT",
+            "id": "40:22044",
+            "name": "Formula",
+            "visible": false,
+            "w": 28,
+            "h": 18,
+            "propRefs": {
+              "visible": "Show formula",
+              "characters": "Formula"
+            },
+            "text": "8 − 4",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Not 24, Size=Regular",
+      "id": "40:22045",
+      "props": {
+        "State": "Not 24",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "40:22045",
+        "name": "State=Not 24, Size=Regular",
+        "x": 568,
+        "y": 24,
+        "w": 112,
+        "h": 144,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/4",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "40:22046",
+            "name": "Value",
+            "w": 46,
+            "h": 78,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "8",
+            "textStyle": "Zumpo/Hero",
+            "fills": [
+              "$Zumpo · UI:color/danger"
+            ],
+            "alignH": "center"
+          },
+          {
+            "type": "TEXT",
+            "id": "40:22047",
+            "name": "Formula",
+            "visible": false,
+            "w": 28,
+            "h": 18,
+            "propRefs": {
+              "visible": "Show formula",
+              "characters": "Formula"
+            },
+            "text": "8 − 4",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/danger"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Default, Size=Compact",
+      "id": "40:22048",
+      "props": {
+        "State": "Default",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "40:22048",
+        "name": "State=Default, Size=Compact",
+        "x": 24,
+        "y": 204,
+        "w": 76,
+        "h": 100,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/4",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "40:22049",
+            "name": "Value",
+            "w": 22,
+            "h": 42,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "8",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          },
+          {
+            "type": "TEXT",
+            "id": "40:22050",
+            "name": "Formula",
+            "visible": false,
+            "w": 28,
+            "h": 18,
+            "propRefs": {
+              "visible": "Show formula",
+              "characters": "Formula"
+            },
+            "text": "8 − 4",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Selected, Size=Compact",
+      "id": "40:22051",
+      "props": {
+        "State": "Selected",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "40:22051",
+        "name": "State=Selected, Size=Compact",
+        "x": 160,
+        "y": 204,
+        "w": 76,
+        "h": 100,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/4",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "40:22052",
+            "name": "Value",
+            "w": 22,
+            "h": 42,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "8",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          },
+          {
+            "type": "TEXT",
+            "id": "40:22053",
+            "name": "Formula",
+            "visible": false,
+            "w": 28,
+            "h": 18,
+            "propRefs": {
+              "visible": "Show formula",
+              "characters": "Formula"
+            },
+            "text": "8 − 4",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Made, Size=Compact",
+      "id": "40:22054",
+      "props": {
+        "State": "Made",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "40:22054",
+        "name": "State=Made, Size=Compact",
+        "x": 296,
+        "y": 204,
+        "w": 76,
+        "h": 100,
+        "fills": [
+          "$Zumpo · UI:color/peach"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/4",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "40:22055",
+            "name": "Value",
+            "w": 22,
+            "h": 42,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "8",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          },
+          {
+            "type": "TEXT",
+            "id": "40:22056",
+            "name": "Formula",
+            "visible": false,
+            "w": 28,
+            "h": 18,
+            "propRefs": {
+              "visible": "Show formula",
+              "characters": "Formula"
+            },
+            "text": "8 − 4",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Solved, Size=Compact",
+      "id": "40:22057",
+      "props": {
+        "State": "Solved",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "40:22057",
+        "name": "State=Solved, Size=Compact",
+        "x": 432,
+        "y": 204,
+        "w": 76,
+        "h": 100,
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/green"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/4",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "40:22058",
+            "name": "Value",
+            "w": 22,
+            "h": 42,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "8",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          },
+          {
+            "type": "TEXT",
+            "id": "40:22059",
+            "name": "Formula",
+            "visible": false,
+            "w": 28,
+            "h": 18,
+            "propRefs": {
+              "visible": "Show formula",
+              "characters": "Formula"
+            },
+            "text": "8 − 4",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Not 24, Size=Compact",
+      "id": "40:22060",
+      "props": {
+        "State": "Not 24",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "40:22060",
+        "name": "State=Not 24, Size=Compact",
+        "x": 568,
+        "y": 204,
+        "w": 76,
+        "h": 100,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/4",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "40:22061",
+            "name": "Value",
+            "w": 22,
+            "h": 42,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "8",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/danger"
+            ],
+            "alignH": "center"
+          },
+          {
+            "type": "TEXT",
+            "id": "40:22062",
+            "name": "Formula",
+            "visible": false,
+            "w": 28,
+            "h": 18,
+            "propRefs": {
+              "visible": "Show formula",
+              "characters": "Formula"
+            },
+            "text": "8 − 4",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/danger"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    }
+  ]
+}

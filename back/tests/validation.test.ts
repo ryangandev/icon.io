@@ -4,6 +4,7 @@ import {
   chatRequest,
   gameTypeOnly,
   joinRoomRequest,
+  identityClaim,
   roomCreateRequest,
   roomIdOnly,
 } from '../libs/validation.js';
@@ -17,7 +18,7 @@ const validRoomId = randomUUID();
 const validCreateRequest = {
   gameType: 'draw-and-guess',
   roomName: 'A Room',
-  ownerUsername: 'Owner',
+  username: 'Owner',
   maxPlayers: 4,
   password: '',
   settings: { rounds: 2 },
@@ -32,7 +33,7 @@ describe('roomCreateRequest', () => {
     const result = roomCreateRequest.safeParse({
       gameType: 'draw-and-guess',
       roomName: 'A Room',
-      ownerUsername: 'Owner',
+      username: 'Owner',
       maxPlayers: 4,
       settings: { rounds: 2 },
     });
@@ -68,7 +69,7 @@ describe('roomCreateRequest', () => {
   /*
    * The distinction this pins down is `.optional().default('')` versus
    * `.catch('')`. Both tolerate a missing password, but `.catch` also
-   * substitutes the default when the value is *present and invalid* — which
+   * substitutes the default when the value is *present and invalid*, which
    * silently turned a rejected 10KB password into an unlocked room that the
    * person creating it believed was locked.
    */
@@ -177,18 +178,47 @@ describe('joinRoomRequest', () => {
 
 describe('chatRequest', () => {
   it('bounds the message at the length of the chat input', () => {
-    expect(
-      chatRequest.safeParse([validRoomId, 'Alice', 'x'.repeat(40)]).success,
-    ).toBe(true);
-    expect(
-      chatRequest.safeParse([validRoomId, 'Alice', 'x'.repeat(41)]).success,
-    ).toBe(false);
+    expect(chatRequest.safeParse([validRoomId, 'x'.repeat(40)]).success).toBe(
+      true,
+    );
+    expect(chatRequest.safeParse([validRoomId, 'x'.repeat(41)]).success).toBe(
+      false,
+    );
   });
 
   it('rejects an empty message', () => {
-    expect(chatRequest.safeParse([validRoomId, 'Alice', '   ']).success).toBe(
+    expect(chatRequest.safeParse([validRoomId, '   ']).success).toBe(false);
+  });
+
+  /*
+   * The speaker is whoever holds the seat. A name in the payload was what
+   * once let a client post as anybody.
+   */
+  it('takes no name from the client', () => {
+    expect(chatRequest.safeParse([validRoomId, 'Alice', 'hello']).success).toBe(
       false,
     );
+  });
+});
+
+describe('identityClaim', () => {
+  const claim = { playerId: randomUUID(), token: 'a'.repeat(64) };
+
+  it('accepts exactly the shape the server issues', () => {
+    expect(identityClaim.safeParse(claim).success).toBe(true);
+  });
+
+  it('rejects anything else, before it reaches the token comparison', () => {
+    for (const candidate of [
+      { ...claim, playerId: 'player-1' },
+      { ...claim, token: 'A'.repeat(64) },
+      { ...claim, token: 'a'.repeat(63) },
+      { playerId: claim.playerId },
+      null,
+      'a string',
+    ]) {
+      expect(identityClaim.safeParse(candidate).success).toBe(false);
+    }
   });
 });
 

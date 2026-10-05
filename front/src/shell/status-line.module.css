@@ -1,0 +1,25 @@
+.status {
+  display: flex;
+  align-items: center;
+  gap: var(--zumpo-space-8);
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+}
+
+.icon {
+  flex: none;
+  animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon {
+    animation: none;
+  }
+}

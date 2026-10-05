@@ -1,0 +1,29 @@
+/* The white sheet: the bitmap's 798 × 598 proportions at any width. */
+.sheet {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--zumpo-line);
+  border-radius: var(--zumpo-radius-24);
+  background: var(--zumpo-white);
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 798 / 598;
+}
+
+/* While drawing, a finger draws instead of scrolling the page. */
+.drawable {
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--zumpo-space-24);
+}

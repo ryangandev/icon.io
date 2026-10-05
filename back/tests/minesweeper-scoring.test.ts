@@ -1,15 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { pointsForPick } from '../socket/minesweeper/scoring.js';
 import {
-  DIFFICULTIES,
   createBoard,
   hiddenIndexes,
   isResolved,
   markHitMine,
-  neighboursOf,
   publicView,
   revealFrom,
 } from '../socket/minesweeper/board.js';
+import { BOARD_SIZES, neighboursOf } from '../../shared/minesweeper.js';
 
 const safe = (
   risk: number,
@@ -70,15 +69,15 @@ describe('what a mine costs', () => {
   });
 });
 
-describe('the expected value of a pick', () => {
-  /*
-   * Safe play should be optimal and gambling should be what you do when you are
-   * behind: the leader consolidates, the trailer has to swing. That is the whole
-   * comeback structure, and it lives entirely in these two curves.
-   */
-  const expectedValue = (risk: number) =>
-    (1 - risk) * safe(risk) + risk * mine(risk);
+/*
+ * Safe play should be optimal and gambling should be what you do when you are
+ * behind: the leader consolidates, the trailer has to swing. That is the whole
+ * comeback structure, and it lives entirely in these two curves.
+ */
+const expectedValue = (risk: number) =>
+  (1 - risk) * safe(risk) + risk * mine(risk);
 
+describe('the expected value of a pick', () => {
   it('falls as the risk rises', () => {
     const values = [0, 0.1, 0.25, 0.5, 0.75, 0.9].map(expectedValue);
 
@@ -131,8 +130,8 @@ describe('a pick the server had to make for you', () => {
 
 describe('the board itself', () => {
   it('places exactly the mines each difficulty asks for', () => {
-    for (const [name, spec] of Object.entries(DIFFICULTIES)) {
-      const board = createBoard(name as keyof typeof DIFFICULTIES);
+    for (const [name, spec] of Object.entries(BOARD_SIZES)) {
+      const board = createBoard(name as keyof typeof BOARD_SIZES);
 
       expect(board.width).toBe(spec.width);
       expect(board.height).toBe(spec.height);
@@ -189,7 +188,7 @@ describe('the board itself', () => {
 
   /*
    * The game has to end. Every round resolves at least one cell, and a board is
-   * over when nothing is left to pick — so termination is a property of the
+   * over when nothing is left to pick - so termination is a property of the
    * board rather than a rule anybody has to enforce.
    */
   it('is resolved once nothing is left to pick', () => {

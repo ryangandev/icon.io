@@ -7,7 +7,8 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-// antd reads both of these on mount and jsdom implements neither.
+// jsdom implements neither; the shell reads the phone breakpoint and the
+// drawing canvas watches its own size.
 window.matchMedia ??= ((query: string) => ({
   matches: false,
   media: query,
@@ -25,8 +26,8 @@ globalThis.ResizeObserver ??= class {
   disconnect() {}
 };
 
-// antd queries pseudo-element styles, which jsdom does not implement and warns
-// loudly about on every render. Dropping the argument keeps the output readable
-// without changing what any component sees.
-const { getComputedStyle } = window;
-window.getComputedStyle = (element: Element) => getComputedStyle(element);
+// The router restores the scroll position on every navigation.
+window.scrollTo = () => {};
+
+// jsdom has no 2D canvas; the drawing canvas draws nothing without one.
+HTMLCanvasElement.prototype.getContext = () => null;

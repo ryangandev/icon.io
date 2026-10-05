@@ -1,0 +1,39 @@
+/* The board and what a click does, on one paper panel on a desktop. */
+.boardPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--zumpo-space-20);
+  padding: var(--zumpo-space-24);
+  border: 1px solid var(--zumpo-line);
+  border-radius: var(--zumpo-radius-24);
+  background: var(--zumpo-paper);
+}
+
+/* A board that pans needs the panel's whole width to pan in. */
+.boardPanel > * {
+  max-width: 100%;
+}
+
+.mode {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--zumpo-space-12);
+}
+
+/* A panel card lines its content up at the start; the rows span it. */
+.stats {
+  align-self: stretch;
+}
+
+/* On a phone the board sits on the page, with what a tap does under it. */
+@media (max-width: 640px) {
+  .boardPanel {
+    gap: var(--zumpo-space-16);
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+}
