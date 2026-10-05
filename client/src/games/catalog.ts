@@ -170,7 +170,6 @@ On your own, clear the board in as few turns as you can; your time breaks a tie.
   {
     type: 'trios',
     name: 'Trios',
-    // Provisional: the hub tones of the new games are settled together.
     tone: 'peach',
     tagline:
       'Spot three cards that are all the same or all different, in every way.',
