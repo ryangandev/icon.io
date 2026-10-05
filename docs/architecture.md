@@ -236,6 +236,24 @@ Production is one Node process: Vite builds into `server/build/public` and Expre
 `npm run build -w server` empties `server/build/` including the client bundle, so the server must build first; the root `npm run build` does it in that order.
 It empties the folder rather than deleting it, and `server/tsconfig.json` names its source folders instead of `**/*.ts`, because TypeScript 7's watcher restarts on any change under a folder it watches: otherwise every e2e or design run restarts a running `npm run dev` server and loses its rooms.
 
+### Deployment
+
+Zumpo runs on [Render](https://render.com) as one free web service, described by [`render.yaml`](../render.yaml), at `zumpo.ryangan.me`; the steps are in the [README](../README.md#deployment).
+Chosen by Ryan on 2026-10-05 to put it in front of a few testers.
+The host has to keep one Node process running with open WebSockets, so serverless platforms such as Vercel or Lambda do not fit, and there must be exactly one instance, because rooms and clocks live in its memory.
+Render's free plan does that with a custom domain, managed TLS and deploys from GitHub, for no money and no server to run.
+
+What the free plan costs in behaviour:
+
+- **It sleeps after 15 minutes without traffic**, and the next visitor waits about a minute while it starts.
+  Socket.IO traffic counts as activity, so a room in play keeps it awake.
+- **Every deploy and restart drops every room**, as any restart does; avoid deploying while people are playing.
+- **750 instance hours a month**, enough for one service running all month.
+
+`autoDeployTrigger: checksPass` deploys a commit on `main` only after CI has passed on it.
+The Node version comes from `.nvmrc`, like CI's.
+Cloudflare serves the DNS for `ryangan.me`: the `zumpo` record is a CNAME to the service's `onrender.com` host, left "DNS only" so Render can issue its certificate.
+
 ## Adding a game
 
 1. One `createXModule(ctx, ...)` returning a `GameModule`, and one line in `app.ts` registering it.

@@ -83,6 +83,19 @@ npm start
 One Node process serves the built client and the Socket.IO server on port 3000 (`PORT` to change it).
 The server's environment variables are in [server/README.md](server/README.md).
 
+### Deployment
+
+Zumpo is hosted on [Render](https://render.com)'s free plan at https://zumpo.ryangan.me, as the one web service in [`render.yaml`](render.yaml).
+Why, and what the free plan means for players, is in [docs/architecture.md](docs/architecture.md#deployment).
+
+Setting it up, once:
+
+1. In Render: **New → Blueprint**, connect this repository, and apply `render.yaml`.
+   It builds with `npm ci && npm run build`, starts with `npm start`, and deploys each commit on `main` once CI passes.
+2. In Cloudflare, under DNS for `ryangan.me`: add a **CNAME** named `zumpo` pointing to the service's `onrender.com` host, with the proxy status **DNS only**.
+3. Wait for Render's custom domain page to show `zumpo.ryangan.me` verified, with its certificate issued.
+   The proxy can stay off; if it is turned on later, Cloudflare's SSL/TLS mode must be **Full**.
+
 ## 🗃️ Old Version
 
 If you are interested in the original Icon, you can find it in the [old-version](https://github.com/ryangandev/zumpo/blob/old-version/README.md) branch.

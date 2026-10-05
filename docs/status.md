@@ -14,6 +14,8 @@ Every page, desktop and phone, is rebuilt on the Zumpo design system in `client/
 Both sides speak the snapshot-driven wire contract in `shared/wire-types.d.ts` ([architecture](architecture.md#the-wire-contract)).
 `npm run e2e` plays the main flows with two players, and `npm run design:compare` captures every Figma screen's state beside its preview; where code differs on purpose, [design.md](design.md#on-purpose) says so.
 
+On 2026-10-05 Ryan chose to host it for a few testers on Render's free plan at `zumpo.ryangan.me` ([architecture](architecture.md#deployment)).
+
 ## Product direction
 
 Decided by Ryan, and the frame for every design and implementation choice:
@@ -26,6 +28,7 @@ Decided by Ryan, and the frame for every design and implementation choice:
 
 ## Waiting on Ryan
 
+- Going live at `zumpo.ryangan.me`, following [the README](../README.md#deployment): create the Render service from `render.yaml`, then add the `zumpo` CNAME in Cloudflare.
 - Whether a Minesweeper refresh should hold the round.
   A refresh drops the connection for a moment, and the room does not wait for a disconnected player, so if everyone else has already locked in, the round resolves without the refreshing player's pick.
   That contradicts the rule "A refresh loses nothing" in [minesweeper.md](games/minesweeper.md); the rules are kept as they are until you decide.
@@ -44,16 +47,15 @@ What is left needs the Figma file, which Claude could not reach this time:
 
 ## Open decisions
 
-| Decision             | Where it stands                                                                                                                                                                                                                                                   |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Deployment           | Deferred by Ryan. Constraints: free to start, pay only once there is real demand, not all-Vercel. One Node service works as is; a split static client was discussed, not chosen. Re-check providers' current terms when this resumes; earlier findings are stale. |
-| Domain and trademark | Availability for Zumpo not checked. A Chinese name is deliberately undecided.                                                                                                                                                                                     |
+| Decision             | Where it stands                                                                                                                                                                                                                                                                                         |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hosting past testing | Render's free plan is for testing ([architecture](architecture.md#deployment)). Ryan's constraints: free to start, pay only once there is real demand, not all-Vercel. Once people play regularly, an always-on instance (Render's paid plans, or Fly.io from about $3 a month) removes the cold start. |
+| Domain and trademark | Testing runs on Ryan's `zumpo.ryangan.me`; a domain of Zumpo's own is not checked. A Chinese name is deliberately undecided.                                                                                                                                                                            |
 
 ## Known issues
 
 | Issue                                             | Notes                                                                                                |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| Old public URL                                    | `icon.ryiscrispy.com` no longer resolves; nothing is deployed.                                       |
 | A drawer who vanishes freezes the canvas for 10 s | The deliberate bound of the drawer hold ([architecture](architecture.md#identity-and-reconnection)). |
 
 ## Backlog
