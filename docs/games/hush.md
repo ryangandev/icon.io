@@ -103,7 +103,7 @@ A play names the card it means (`hush:play` carries it), and the server accepts 
 Hush is won or lost together, so the score is the **team's**, not anybody's own:
 
 - Every player's points are the **levels the team has cleared**, the same for everybody.
-- The results say what the team did ("All 6 levels cleared, with 2 lives to spare." or "Out of lives on level 5: 4 of 6 levels cleared.") and list the players without ranks.
+- The results say what the team did ("All 6 levels cleared, with 2 lives to spare." or "Out of lives on level 5: 4 of 6 levels cleared.") show every level played with the lives it cost or won back, and list the players without ranks.
 - At the end of a lost game, the cards still held are shown to everybody: nothing is secret once the game is over.
 - The scoreboard during a game shows what each player holds (how many cards, or whether they are ready) instead of points, since everybody's points are the same.
 
@@ -142,19 +142,19 @@ If the room falls below two players the game ends, and its summary says it ended
 
 Every change reaches a player as `room:state`, the whole room as that player may see it ([the wire contract](../architecture.md#the-wire-contract)).
 
-| Field         | What it is                                                                                                      |
-| ------------- | --------------------------------------------------------------------------------------------------------------- |
-| `phase`       | `waiting`, `ready`, `countdown`, `playing`, `mistake`, `paused` or `cleared`                                    |
-| `level`       | The level being played, from 1; 0 between games                                                                 |
-| `levels`      | How many levels this game has; between games, how many a game would have with the players seated now            |
-| `lives`       | Lives left, from 3; 3 between games                                                                             |
-| `hand`        | Your own cards, lowest first; empty outside a level                                                             |
-| `table`       | For every player: how many cards they hold, and whether they are ready                                          |
-| `pile`        | The cards played this level, lowest first, each with who played it                                              |
-| `discards`    | The cards discarded this level, each with whose it was and why: a mistake, or a player who left                 |
-| `lastMistake` | While `mistake` shows: the card that cost a life, who played it, and what it discarded                          |
-| `lastLevel`   | While `cleared` shows: the level just cleared, whether it was clean, and whether it won a life back             |
-| `lastGame`    | The last finished game, until the next starts: levels, levels cleared, won or not, lives left, cards still held |
+| Field         | What it is                                                                                                                            |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `phase`       | `waiting`, `ready`, `countdown`, `playing`, `mistake`, `paused` or `cleared`                                                          |
+| `level`       | The level being played, from 1; 0 between games                                                                                       |
+| `levels`      | How many levels this game has; between games, how many a game would have with the players seated now                                  |
+| `lives`       | Lives left, from 3; 3 between games                                                                                                   |
+| `hand`        | Your own cards, lowest first; empty outside a level                                                                                   |
+| `table`       | For every player: how many cards they hold, and whether they are ready                                                                |
+| `pile`        | The cards played this level, lowest first, each with who played it                                                                    |
+| `discards`    | The cards discarded this level, each with whose it was and why: a mistake, or a player who left                                       |
+| `lastMistake` | While `mistake` shows: the card that cost a life, who played it, and what it discarded                                                |
+| `lastLevel`   | While `cleared` shows: the level just cleared, whether it was clean, and whether it won a life back                                   |
+| `lastGame`    | The last finished game, until the next starts: levels, levels cleared, won or not, lives left, what each level cost, cards still held |
 
 `phaseEndsInMs` counts down `countdown`, `mistake` and `cleared`, and in `paused` the seat of the player who dropped last; in `ready` and `playing` it is 0, and no clock is shown.
 
