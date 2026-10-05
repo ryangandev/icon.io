@@ -157,6 +157,8 @@ Every change reaches a player as `room:state`, the whole room as that player may
 | `lastGame`    | The last finished game, until the next starts: levels, levels cleared, won or not, lives left, what each level cost, cards still held |
 
 `phaseEndsInMs` counts down `countdown`, `mistake` and `cleared`, and in `paused` the seat of the player who dropped last; in `ready` and `playing` it is 0, and no clock is shown.
+The room layer keeps the clock of `countdown`, `mistake` and `cleared`.
+A pause has no timer of its own, because the seat's expiry ends it, so the game keeps when that is (`pausedUntil`), as Draw & Guess keeps the drawer's hold.
 
 Hush's two events of its own are `hush:ready`, with the room, and `hush:play`, with the room and the card.
 
