@@ -11,14 +11,15 @@ Solo, or 2–8 players with 10 or 20 trios a game.
 
 There are **81 cards**, one for every combination of four features with three values each:
 
-| Feature    | Values                                                            |
-| ---------- | ----------------------------------------------------------------- |
-| **Colour** | Coral (`color/coral`), Blue (`color/number/1`), Ink (`color/ink`) |
-| **Shape**  | Circle, Triangle, Square                                          |
-| **Count**  | One, two or three shapes, side by side                            |
-| **Fill**   | Solid, Striped (stripes inside the outline), Outline              |
+| Feature    | Values                                                                          |
+| ---------- | ------------------------------------------------------------------------------- |
+| **Colour** | Coral (`color/trios/coral`), Blue (`color/trios/blue`), Ink (`color/trios/ink`) |
+| **Shape**  | Circle, Triangle, Square                                                        |
+| **Count**  | One, two or three shapes, side by side                                          |
+| **Fill**   | Solid, Striped (stripes inside the outline), Outline                            |
 
 Coral is the brand's accent; the pale accents (lime, blue, peach) would vanish as an outline on a paper card, so the other two colours are the brand's deep blue and its ink.
+The three `color/trios/*` tokens alias `color/coral`, `color/number/1` and `color/ink`, so the cards name what they mean and can change on their own.
 The three are far apart in lightness as well as in hue (light, middle, dark), so they stay apart for colour-blind players and even in greyscale.
 
 A card is a number from 0 to 80, its four features read as base-3 digits: `card = colour × 27 + shape × 9 + (count − 1) × 3 + fill`, each value counted from 0 in the order of the table above.
