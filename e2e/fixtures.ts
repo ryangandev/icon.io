@@ -8,7 +8,8 @@ import {
 
 export { expect };
 
-export type GameType = 'draw-and-guess' | 'minesweeper' | 'make-24' | 'pairs';
+export type GameType =
+  'draw-and-guess' | 'minesweeper' | 'make-24' | 'pairs' | 'trios';
 
 export interface PlayerOptions {
   /** A 390 px touch screen, as Figma's mobile frames. */
@@ -84,6 +85,8 @@ export interface RoomSettings {
   board?: 'Small' | 'Medium' | 'Large';
   /** Make 24: how many hands. */
   hands?: 5 | 10;
+  /** Trios: how many trios a game takes. */
+  trios?: 10 | 20;
 }
 
 /** Makes a room through the create page and returns its link. */
@@ -105,6 +108,9 @@ export async function createRoom(
   }
   if (settings.hands) {
     await choose(page, 'Hands', new RegExp(`^${settings.hands} hands$`));
+  }
+  if (settings.trios) {
+    await choose(page, 'Trios', new RegExp(`^${settings.trios} trios$`));
   }
   if (settings.password) {
     await page.getByLabel('Password (optional)').fill(settings.password);

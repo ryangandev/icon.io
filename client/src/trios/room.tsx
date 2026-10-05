@@ -48,7 +48,7 @@ function finderOf(state: TriosRoomState, playerId: string) {
   return {
     initials: initialsOf(trio.username),
     name: trio.playerId === playerId ? 'you' : trio.username,
-    label: `found by ${trio.playerId === playerId ? 'you' : trio.username}`,
+    label: `by ${trio.playerId === playerId ? 'you' : trio.username}`,
   };
 }
 

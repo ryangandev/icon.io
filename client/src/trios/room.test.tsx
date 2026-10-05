@@ -85,7 +85,7 @@ describe('a Trios room', () => {
     expect(turn().getByText('Maya found a trio')).toBeInTheDocument();
     expect(turn().getByText('new cards')).toBeInTheDocument();
     expect(
-      screen.getByRole('img', { name: `${cardName(2)}, found, found by Maya` }),
+      screen.getByRole('img', { name: `${cardName(2)}, found, by Maya` }),
     ).toBeInTheDocument();
     expect(scoreboard().getByText('Found a trio')).toBeInTheDocument();
     expect(screen.getByText('Last trio: Maya')).toBeInTheDocument();
