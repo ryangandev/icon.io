@@ -150,20 +150,22 @@ function BoardArtwork() {
   );
 }
 
-/** A guess against PLANT: two letters elsewhere, one in place, two not in it. */
+/** A guess against PLANT: two letters elsewhere, one in place, two not in it.
+    The phone card keeps the first three, as MO03 does. */
 function WordArtwork() {
-  const phone = useMediaQuery(PHONE);
   const marks = ['present', 'absent', 'correct', 'absent', 'present'] as const;
+  const tiles = [...'TRAIL'].map((letter, index) => (
+    <LetterTile
+      key={index}
+      letter={letter}
+      state={marks[index]}
+      size="regular"
+    />
+  ));
   return (
     <div className={styles.word}>
-      {[...'TRAIL'].map((letter, index) => (
-        <LetterTile
-          key={index}
-          letter={letter}
-          state={marks[index]}
-          size={phone ? 'compact' : 'regular'}
-        />
-      ))}
+      {tiles.slice(0, 3)}
+      <span className={styles.wordTail}>{tiles.slice(3)}</span>
     </div>
   );
 }
