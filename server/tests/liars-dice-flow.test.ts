@@ -144,14 +144,11 @@ describe('a Liar’s Dice room', () => {
     expect(first.cups.every((cup) => cup.diceLeft === 5)).toBe(true);
     for (const player of players) {
       const view = player.state as LiarsDiceRoomState;
-      for (const cup of view.cups) {
-        if (cup.playerId === player.playerId) {
-          expect(cup.dice).toHaveLength(5);
-          expect(cup.dice!.every((die) => die >= 1 && die <= 6)).toBe(true);
-        } else {
-          expect(cup.dice).toBeNull();
-        }
-      }
+      const own = cupOf(view, player).dice!;
+      expect(own).toHaveLength(5);
+      expect(own.every((die) => die >= 1 && die <= 6)).toBe(true);
+      const others = view.cups.filter((cup) => cup !== cupOf(view, player));
+      expect(others.map((cup) => cup.dice)).toEqual([null, null]);
       expect(view.playerList[player.playerId].points).toBe(5);
     }
     // The table is in turn order, and the first in it opens.
