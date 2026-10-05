@@ -63,10 +63,11 @@ They are loaded only with the game: the client imports them in the game's own la
 
 - **Valid guesses: every five-letter word of [ENABLE](https://github.com/dolph/dictionary)** (the Enhanced North American Benchmark Lexicon, about 8,600 five-letter words), plus every answer.
   ENABLE is in the public domain.
-- **Answers: about 2,000 common words**, the five-letter words of [SCOWL](http://wordlist.aspell.net/) up to size 35 (its common-word levels, American and shared English spellings) that are also in ENABLE, without plurals of shorter words (BOATS), past tenses (BAKED), proper nouns, abbreviations and a short list of offensive words.
+- **Answers: 1,982 common words**, the five-letter words of [SCOWL](http://wordlist.aspell.net/) up to size 35 (its common-word levels, American and shared English spellings) that are also in ENABLE, without plurals of shorter words (BOATS), past tenses (BAKED), proper nouns, abbreviations and a short list of offensive words.
   SCOWL is © Kevin Atkinson and others, under a permissive licence that allows copying, changing and redistributing it with its copyright notice; the notice is kept in a comment beside the list.
 
-The source and licence of each list sit in a comment at its top.
+The source and licence of each list sit in a comment at its top, and [the build script](../../tools/daily-word-words/build.mjs) says where to download the sources.
+The valid guesses are generated output; the answers were made once, by the same script, and are data from then on.
 The answer list is stored **in puzzle order**: it is the calendar of daily words, so its order never changes once a day has been played.
 A word found unfit later is replaced in place by another, never removed, so no other day moves.
 
@@ -141,7 +142,7 @@ Between games the room is in `waiting`.
 A round ends early once every connected player has found the word or used all six guesses.
 After the last word's reveal the game ends, and the room reopens for a new one.
 
-Each round's word is drawn at random from the answer list, never twice in a game, and never the daily word of yesterday, today or tomorrow by the server's date, so a room cannot spoil anybody's daily word in any time zone.
+Each round's word is drawn at random from the answer list, never twice in a game, and never the daily word of yesterday, today or tomorrow by the UTC date, which covers every time zone's today, so a room cannot spoil anybody's daily word.
 
 **The race view.**
 While a round runs, every player sees everybody else's board as marks only: the colours and shapes of each row, how many guesses they have made, and whether they have found the word or are out of guesses, never a letter.
@@ -214,15 +215,17 @@ The client checks the word list before sending, so only a stale or modified clie
 
 ## Where the code lives
 
-| File                                                              | Responsibility                                                                                |
-| ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| [`shared/daily-word.ts`](../../shared/daily-word.ts)              | Marks, guess checks, puzzle numbers, the practice deal and the share grid: the rules both run |
-| [`shared/daily-word-words.ts`](../../shared/daily-word-words.ts)  | The answer list in puzzle order and the valid guesses, with their sources and licences        |
-| [`module.ts`](../../server/socket/daily-word/module.ts)           | What the room layer calls, and all it calls                                                   |
-| [`game-engine.ts`](../../server/socket/daily-word/game-engine.ts) | The round loop, guesses and scores                                                            |
-| [`state.ts`](../../server/socket/daily-word/state.ts)             | The game's state, and the snapshot each player is sent                                        |
-| [`daily-word/solo/`](../../client/src/daily-word/solo/)           | The daily word and practice words on your own                                                 |
-| [`daily-word/room.tsx`](../../client/src/daily-word/room.tsx)     | A room's screens                                                                              |
+| File                                                                 | Responsibility                                                                                |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| [`shared/daily-word.ts`](../../shared/daily-word.ts)                 | Marks, guess checks, puzzle numbers, the practice deal and the share grid: the rules both run |
+| [`shared/daily-word-answers.ts`](../../shared/daily-word-answers.ts) | The answers in puzzle order, with SCOWL's notice                                              |
+| [`shared/daily-word-guesses.ts`](../../shared/daily-word-guesses.ts) | The valid guesses, generated from ENABLE                                                      |
+| [`tools/daily-word-words/`](../../tools/daily-word-words/build.mjs)  | Builds the guesses from their sources, and made the answers once                              |
+| [`module.ts`](../../server/socket/daily-word/module.ts)              | What the room layer calls, and all it calls                                                   |
+| [`game-engine.ts`](../../server/socket/daily-word/game-engine.ts)    | The round loop, guesses and scores                                                            |
+| [`state.ts`](../../server/socket/daily-word/state.ts)                | The game's state, and the snapshot each player is sent                                        |
+| [`daily-word/solo/`](../../client/src/daily-word/solo/)              | The daily word and practice words on your own                                                 |
+| [`daily-word/room.tsx`](../../client/src/daily-word/room.tsx)        | A room's screens                                                                              |
 
 The rules are covered by `daily-word-rules.test.ts` and `daily-word-flow.test.ts` in `server/tests/`.
 The screens are DW01-DW14 in [the Figma file](../design.md).
