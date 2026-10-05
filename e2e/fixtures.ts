@@ -211,3 +211,18 @@ export function holdConnection(page: Page): () => void {
     link.down = false;
   };
 }
+
+/**
+ * What the browser's Duplicate does: a new tab with this one's storage, so
+ * the same player, which opens once it goes somewhere.
+ */
+export async function duplicateTab(page: Page): Promise<Page> {
+  const storage = await page.evaluate(() => ({ ...sessionStorage }));
+  const copy = await page.context().newPage();
+  await copy.addInitScript((entries) => {
+    for (const [key, value] of Object.entries(entries)) {
+      sessionStorage.setItem(key, value);
+    }
+  }, storage);
+  return copy;
+}
