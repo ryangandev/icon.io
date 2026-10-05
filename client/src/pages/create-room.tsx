@@ -16,7 +16,7 @@ import {
 } from '../pairs/boards';
 import { useConnectedSession } from '../net/session';
 import { REQUEST_TIMEOUT_MS } from '../net/socket';
-import { ConnectionFailed } from '../shell/connection-failed';
+import { ConnectionLost } from '../shell/connection-lost';
 import { FormPage } from '../shell/form-page';
 import { Page } from '../shell/page';
 import { Stage } from '../shell/stage';
@@ -35,7 +35,7 @@ const HANDS = [5, 10] as const;
  */
 export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   const game = gameInfo(gameType);
-  const { socket, status, name } = useConnectedSession();
+  const { socket, lost, name } = useConnectedSession();
   const navigate = useNavigate();
 
   const [roomName, setRoomName] = useState(() =>
@@ -94,12 +94,12 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   };
 
   const subtitle = 'Make a little space for your next game.';
-  if (status === 'failed') {
+  if (lost) {
     return (
       <Page>
         <LobbyHeading game={game} subtitle={subtitle} />
         <Stage>
-          <ConnectionFailed />
+          <ConnectionLost />
         </Stage>
       </Page>
     );

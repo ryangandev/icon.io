@@ -8,7 +8,6 @@ import type {
   PlayerInfo,
   RoomStatus,
 } from '../../../shared/wire-types.js';
-import type { PlayerSessionRegistry } from '../player-session.js';
 import type { IoServer, IoSocket } from './emit.js';
 
 /**
@@ -54,14 +53,13 @@ interface Room<TGameState = unknown> {
 /**
  * What a game module is handed, and all it is handed.
  *
- * Deliberately small. A module gets the socket server, the identity registry,
- * and a way to look rooms up, to tell their players something changed and to
- * announce things. It does not get the room layer's timers, and the room layer
- * does not get its.
+ * Deliberately small. A module gets the socket server and a way to look rooms
+ * up, to tell their players something changed and to announce things. Who
+ * sent an event it reads off the socket (`socket.data.playerId`). It does not
+ * get the room layer's timers, and the room layer does not get its.
  */
 interface GameContext {
   io: IoServer;
-  sessions: PlayerSessionRegistry;
   rooms: RoomLookup;
 }
 

@@ -68,7 +68,7 @@ const createDrawAndGuessModule = (
     dispose: () => engine.dispose(),
 
     registerHandlers: (socket: IoSocket) => {
-      gameEventsHandler(socket, ctx, engine);
+      gameEventsHandler(socket, engine);
       whiteboardCanvasEventHandler(socket, ctx);
     },
   };

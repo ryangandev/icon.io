@@ -472,6 +472,52 @@ describe('reconnecting to a room', () => {
     });
   });
 
+  /*
+   * A duplicated tab copies the tab's identity along with the rest of its
+   * session storage. The newer tab takes the seat; the older one is closed
+   * rather than left in the room's channel, hearing the chat and nothing else.
+   */
+  it('moves a player to a duplicated tab and closes the old one', async () => {
+    const alice = await harness.connect();
+    const bob = await harness.connect();
+    const roomId = await createRoom(alice, { username: 'Alice' });
+    await joinRoom(bob, roomId, 'Bob');
+    await settle();
+
+    const announced = collectChat(alice);
+    const replaced = waitFor(bob, 'session:replaced');
+    const closed = new Promise<string>((resolve) =>
+      bob.once('disconnect', resolve),
+    );
+    const duplicate = await harness.connect({
+      playerId: bob.playerId,
+      token: bob.token,
+    });
+    await replaced;
+    expect(await closed).toBe('io server disconnect');
+
+    // Nobody went anywhere, so nobody is said to have come back.
+    await settle(200);
+    expect(announced).toEqual([]);
+    expect(
+      harness.server.rooms[roomId]?.playerList[bob.playerId]?.isConnected,
+    ).toBe(true);
+
+    // The duplicate is the player now: it is sent the room and can talk in it.
+    const { state } = await syncRoom(duplicate, roomId);
+    expect(state.playerList[bob.playerId]?.username).toBe('Bob');
+    const heard = waitForChat(alice, (message) => message.text === 'from here');
+    duplicate.emit('chat:send', roomId, 'from here');
+    expect(await heard).toMatchObject({ kind: 'player', username: 'Bob' });
+
+    // And a seat that moved is still dropped like any other.
+    const lost = waitForChat(alice, (message) =>
+      message.text.includes('lost connection'),
+    );
+    duplicate.close();
+    expect((await lost).text).toBe('Bob lost connection.');
+  });
+
   it('does not let a returning player take somebody else s seat', async () => {
     const alice = await harness.connect();
     const bob = await harness.connect();

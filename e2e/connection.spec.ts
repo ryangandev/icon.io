@@ -54,3 +54,35 @@ test('a lobby lists rooms again after a dropped connection', async ({
     timeout: 20_000,
   });
 });
+
+test('a duplicated tab takes the seat, and the first tab can take it back', async ({
+  player,
+}) => {
+  const maya = await player('Maya');
+  const leo = await player('Leo');
+  const link = await createRoom(maya, 'minesweeper');
+  await joinRoom(leo, link);
+
+  // What the browser's Duplicate does: a new tab with this one's storage.
+  const storage = await leo.evaluate(() => ({ ...sessionStorage }));
+  const copy = await leo.context().newPage();
+  await copy.addInitScript((entries) => {
+    for (const [key, value] of Object.entries(entries)) {
+      sessionStorage.setItem(key, value);
+    }
+  }, storage);
+  await joinRoom(copy, link);
+
+  await expect(leo.getByText('Zumpo is open in another tab.')).toBeVisible();
+  const players = maya.getByRole('region', { name: 'Players' });
+  await expect(players.getByText('Leo')).toBeVisible();
+  await expect(players.getByText('Away')).toBeHidden();
+  await expect(maya.getByText('Leo reconnected.')).toBeHidden();
+
+  await maya.getByRole('button', { name: 'Start game' }).click();
+  await expect(copy.getByText('Pick a cell')).toBeVisible();
+
+  await leo.getByRole('button', { name: 'Use this tab' }).click();
+  await expect(leo.getByText('Pick a cell')).toBeVisible();
+  await expect(copy.getByText('Zumpo is open in another tab.')).toBeVisible();
+});

@@ -1,4 +1,4 @@
-import type { Server, Socket } from 'socket.io';
+import type { DefaultEventsMap, Server, Socket } from 'socket.io';
 import type {
   Ack,
   ClientToServerEvent,
@@ -7,7 +7,6 @@ import type {
   ServerToClientEvent,
   ServerToClientEvents,
 } from '../../../shared/wire-types.js';
-import type { PlayerSessionRegistry } from '../player-session.js';
 
 /**
  * Every emit and every listener goes through here, so that an event name and
@@ -20,10 +19,29 @@ import type { PlayerSessionRegistry } from '../player-session.js';
  * is handed its arguments as `unknown` and validates them with zod.
  */
 
+/** What the server keeps on each connection. */
+interface SocketData {
+  /**
+   * The player this connection speaks for, settled from its handshake before
+   * any of its events are read. Identity comes from here, never a payload.
+   */
+  playerId: string;
+}
+
 /** The socket.io server, typed on the shared contract. */
-type IoServer = Server<ClientToServerEvents, ServerToClientEvents>;
+type IoServer = Server<
+  ClientToServerEvents,
+  ServerToClientEvents,
+  DefaultEventsMap,
+  SocketData
+>;
 /** One connection, typed on the shared contract. */
-type IoSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
+type IoSocket = Socket<
+  ClientToServerEvents,
+  ServerToClientEvents,
+  DefaultEventsMap,
+  SocketData
+>;
 
 type ServerArgs<E extends ServerToClientEvent> = Parameters<
   ServerToClientEvents[E]
@@ -31,6 +49,9 @@ type ServerArgs<E extends ServerToClientEvent> = Parameters<
 
 /** The socket.io room a lobby's subscribers sit in, one per game. */
 const lobbyChannel = (gameType: GameType): string => `lobby:${gameType}`;
+
+/** The socket.io room a player's own connection sits in. */
+const playerChannel = (playerId: string): string => `player:${playerId}`;
 
 /** Everyone whose socket is in the room's channel: its seated players. */
 const emitToRoom = <E extends ServerToClientEvent>(
@@ -70,18 +91,16 @@ const broadcastToRoom = <E extends ServerToClientEvent>(
 };
 
 /**
- * Sends to whichever socket a player is currently using. Room state is keyed
- * by player id; socket.io still addresses sockets.
+ * Sends to whichever socket a player is currently using, through the player's
+ * own channel. Room state is keyed by player id, not by socket.
  */
 const emitToPlayer = <E extends ServerToClientEvent>(
   io: IoServer,
-  sessions: PlayerSessionRegistry,
   playerId: string,
   event: E,
   ...args: ServerArgs<E>
 ): void => {
-  const socketId = sessions.socketIdFor(playerId);
-  if (socketId) io.to(socketId).emit(event, ...args);
+  io.to(playerChannel(playerId)).emit(event, ...args);
 };
 
 /** A fire-and-forget event: its arguments, unchecked, for zod to read. */
@@ -148,6 +167,7 @@ const onClientRequest = <E extends RequestEvent>(
 
 export {
   lobbyChannel,
+  playerChannel,
   emitToRoom,
   emitToLobby,
   emitToSocket,
@@ -157,4 +177,4 @@ export {
   onClientRequest,
   splitAck,
 };
-export type { IoServer, IoSocket, AnswerOf, RequestEvent };
+export type { IoServer, IoSocket, SocketData, AnswerOf, RequestEvent };

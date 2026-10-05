@@ -181,6 +181,27 @@ describe('a room page', () => {
     );
   });
 
+  it('hands the room to another tab, and takes it back on request', async () => {
+    const user = userEvent.setup();
+    const fake = server();
+    await renderApp(ROOM, { fake });
+    act(() => fake.serverEmits('room:state', minesweeperState()));
+
+    act(() => fake.serverEmits('session:replaced'));
+    act(() => fake.drop('io server disconnect'));
+    expect(
+      screen.getByText('Zumpo is open in another tab.'),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Leave room' })).toBeNull();
+
+    await user.click(screen.getByRole('button', { name: 'Use this tab' }));
+    await act(async () => fake.open());
+    expect(
+      screen.getByRole('button', { name: 'Leave room' }),
+    ).toBeInTheDocument();
+    expect(fake.sentArgs('room:leave')).toEqual([]);
+  });
+
   it('invites with the whole link, ready to copy', async () => {
     const user = userEvent.setup();
     const fake = server();

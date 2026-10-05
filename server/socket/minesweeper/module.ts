@@ -58,8 +58,7 @@ const createMinesweeperModule = (
         const [roomId, index] = validated;
 
         // Identity comes from the connection, never from the payload.
-        const playerId = ctx.sessions.playerIdFor(socket.id);
-        if (!playerId) return;
+        const playerId = socket.data.playerId;
 
         engine.pick(roomId, playerId, index);
       });

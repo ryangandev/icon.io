@@ -53,8 +53,7 @@ const createMake24Module = (
         const [roomId, steps] = validated;
 
         // Identity comes from the connection, never from the payload.
-        const playerId = ctx.sessions.playerIdFor(socket.id);
-        if (!playerId) return;
+        const playerId = socket.data.playerId;
 
         engine.submitSolve(roomId, playerId, steps as Make24Step[]);
       });

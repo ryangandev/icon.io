@@ -60,7 +60,7 @@ Each game registers a module implementing `GameModule` in [`libs/rooms/types.ts`
 | `chat-events.ts`            | Talking in a room, after the game has had its say                    |
 | `emit.ts`                   | Typed emit helpers, and `onClientRequest` for acknowledged requests  |
 
-A module reaches the layer through the `GameContext` it is handed: the typed Socket.IO server, the identity registry, and a `RoomLookup` that finds rooms (`ofType` refuses a room of another game), rebroadcasts a lobby (`emitLobby`), sends snapshots (`emitState`) and posts to the chat (`announce`).
+A module reaches the layer through the `GameContext` it is handed: the typed Socket.IO server and a `RoomLookup` that finds rooms (`ofType` refuses a room of another game), rebroadcasts a lobby (`emitLobby`), sends snapshots (`emitState`) and posts to the chat (`announce`).
 `GameModule` is what the layer calls back:
 
 | Member                                    | Called when                                                         |
@@ -127,6 +127,15 @@ Identity is part of the handshake rather than a first event because the client f
 Each id is paired with a secret token only its owner receives; without it any player could take any seat, because every id in a room is broadcast to everyone in it.
 The client keeps both in `sessionStorage`: per tab, surviving a reload, which is exactly the lifetime a seat should have.
 There are no accounts: this is a way to be the same player across a refresh, not the same person across a visit.
+
+Which player a connection speaks for is settled in the handshake and kept on the socket (`socket.data.playerId`), so every handler reads it from there and never from a payload.
+Each player's socket also sits in a channel of the player's own (`player:<id>`), which is how a snapshot reaches one player and how the room layer moves a player's connection into and out of rooms.
+[`player-session.ts`](../server/libs/player-session.ts) keeps only what outlives a socket: the token, and which socket is the current one.
+
+A player is in one place at a time.
+A browser's Duplicate tab copies `sessionStorage`, identity included, and the server cannot tell the copy from the original, so the newer connection takes the seat and the older one is sent `session:replaced` and closed.
+The seat never went away, so the room hears neither "lost connection" nor "reconnected".
+The older tab says the game is open in another tab and does not reconnect by itself, because it would take the identity back and the two tabs would trade it forever; "Use this tab" takes it back on purpose.
 
 A dropped connection is not a departure.
 The seat, score, ownership and place in the round are held for thirty seconds ([`membership.ts`](../server/libs/rooms/membership.ts)); leaving deliberately takes effect immediately, and that is the only difference between the two paths.

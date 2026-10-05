@@ -5,7 +5,6 @@ import {
   CHAT_HISTORY_LIMIT,
   createRoomRegistry,
 } from '../libs/rooms/registry.js';
-import { createPlayerSessionRegistry } from '../libs/player-session.js';
 import {
   collect,
   collectChat,
@@ -132,7 +131,7 @@ describe('room chat', () => {
 /** A registry whose sends go nowhere, to drive the log directly. */
 const makeRegistry = () => {
   const io = { to: () => ({ emit: () => true }) } as unknown as IoServer;
-  return createRoomRegistry(io, createPlayerSessionRegistry());
+  return createRoomRegistry(io);
 };
 
 const makeRoom = (): Room => ({

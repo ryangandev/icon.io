@@ -1,7 +1,6 @@
 import { invalidRequest } from '../../models/error.js';
 import { generateRoomId, getRoomStatus } from '../utils.js';
 import { parseArgs, roomCreateRequest, gameTypeOnly } from '../validation.js';
-import type { PlayerSessionRegistry } from '../player-session.js';
 import type { RoomRegistry } from './registry.js';
 import type { Room } from './types.js';
 import {
@@ -21,11 +20,7 @@ import {
  * `io.emit` to the whole server, so every Minesweeper room appearing does not
  * wake every client sitting in the Draw & Guess lobby.
  */
-const lobbyEventsHandler = (
-  socket: IoSocket,
-  registry: RoomRegistry,
-  sessions: PlayerSessionRegistry,
-) => {
+const lobbyEventsHandler = (socket: IoSocket, registry: RoomRegistry) => {
   onClientEvent(socket, 'lobby:subscribe', (...rawArgs: unknown[]) => {
     const validated = parseArgs(gameTypeOnly, rawArgs, 'lobby:subscribe');
     if (!validated) return;
@@ -86,11 +81,7 @@ const lobbyEventsHandler = (
     }
 
     // Identity comes from the connection, never from the payload.
-    const playerId = sessions.playerIdFor(socket.id);
-    if (!playerId) {
-      reply(invalidRequest('Identify before creating a room.'));
-      return;
-    }
+    const playerId = socket.data.playerId;
 
     const roomId = generateRoomId();
     const room: Room = {

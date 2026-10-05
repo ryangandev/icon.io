@@ -1,5 +1,4 @@
 import type { DrawAndGuessGameEngine } from './game-engine.js';
-import type { GameContext } from '../../libs/rooms/types.js';
 import { onClientEvent, type IoSocket } from '../../libs/rooms/emit.js';
 import { parseArgs } from '../../libs/validation.js';
 import { selectWordRequest } from './validation.js';
@@ -15,7 +14,6 @@ import { selectWordRequest } from './validation.js';
  */
 const gameEventsHandler = (
   socket: IoSocket,
-  ctx: GameContext,
   gameEngine: DrawAndGuessGameEngine,
 ) => {
   onClientEvent(socket, 'dg:select-word', (...rawArgs: unknown[]) => {
@@ -23,10 +21,7 @@ const gameEventsHandler = (
     if (!validated) return;
     const [roomId, word] = validated;
 
-    const playerId = ctx.sessions.playerIdFor(socket.id);
-    if (!playerId) return;
-
-    gameEngine.selectWord(roomId, playerId, word);
+    gameEngine.selectWord(roomId, socket.data.playerId, word);
   });
 };
 

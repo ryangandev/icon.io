@@ -1,7 +1,6 @@
 import { asFailure, failure, invalidRequest } from '../../models/error.js';
 import { getRoomStatus } from '../utils.js';
 import { joinRoomRequest, parseArgs, roomIdOnly } from '../validation.js';
-import type { PlayerSessionRegistry } from '../player-session.js';
 import type { RoomMembership } from './membership.js';
 import type { RoomRegistry } from './registry.js';
 import {
@@ -21,7 +20,6 @@ import {
 const roomEventsHandler = (
   socket: IoSocket,
   registry: RoomRegistry,
-  sessions: PlayerSessionRegistry,
   membership: RoomMembership,
 ) => {
   onClientRequest(socket, 'room:join', (args, reply) => {
@@ -39,11 +37,7 @@ const roomEventsHandler = (
 
     // Identity comes from the connection, never from the payload: the client
     // proved who it was during the handshake, and this is the result.
-    const playerId = sessions.playerIdFor(socket.id);
-    if (!playerId) {
-      reply(invalidRequest('Identify before joining a room.'));
-      return;
-    }
+    const playerId = socket.data.playerId;
 
     const room = registry.lookup.get(roomId);
     if (!room || !registry.moduleOf(room)) {
@@ -119,14 +113,14 @@ const roomEventsHandler = (
       return;
     }
 
-    const playerId = sessions.playerIdFor(socket.id);
-    if (!playerId || !room.playerList[playerId]) {
+    const playerId = socket.data.playerId;
+    if (!room.playerList[playerId]) {
       reply(failure('notRoomMember', 'You are not in this room.'));
       return;
     }
 
-    // Normally already a member of the channel; a second tab that took the
-    // identity over is the case where it is not.
+    // Normally already in the channel, from creating, joining or resuming;
+    // joining again costs nothing and makes sure.
     socket.join(roomId);
     reply({ ok: true });
 
@@ -144,8 +138,7 @@ const roomEventsHandler = (
     if (!validated) return;
     const [roomId] = validated;
 
-    const playerId = sessions.playerIdFor(socket.id);
-    if (!playerId) return;
+    const playerId = socket.data.playerId;
 
     // Leaving is deliberate, so the seat goes at once, with no grace period.
     // A stray or repeated leave is ignored inside `leave`, before any change.
@@ -160,11 +153,7 @@ const roomEventsHandler = (
     }
     const [roomId] = validated;
 
-    const playerId = sessions.playerIdFor(socket.id);
-    if (!playerId) {
-      reply(invalidRequest('Identify before starting a game.'));
-      return;
-    }
+    const playerId = socket.data.playerId;
 
     const room = registry.lookup.get(roomId);
     const module = room ? registry.moduleOf(room) : undefined;

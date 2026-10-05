@@ -541,6 +541,13 @@ interface ServerToClientEvents {
    */
   'session:ready': (session: SessionInfo) => void;
   /**
+   * Another connection presented this one's identity, a duplicated tab most
+   * likely, and took over; this one is closed next. A client that reconnected
+   * on its own would take the identity back, and the two would trade it
+   * forever, so it waits for the player to choose.
+   */
+  'session:replaced': () => void;
+  /**
    * The server is shutting down, for a deploy or a restart, and every room
    * goes with it. Sent to every connection just before it is closed, so a
    * room page can say why its room ended rather than find it missing later.

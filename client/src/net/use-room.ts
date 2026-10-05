@@ -21,7 +21,7 @@ export interface Snapshot {
  * What a room page shows.
  *
  * - connecting: the first connection or the first answer is on its way.
- * - failed: the server never answered.
+ * - failed: the server never answered, or another tab has the player now.
  * - password: the room is private; `rejected` once a password was wrong.
  * - unavailable: the room is full, playing, or would not take this player.
  * - not-found: the room does not exist, or no longer does.
@@ -277,6 +277,8 @@ function stageOf(
   if (status === 'failed') {
     return snapshot ? { kind: 'expired' } : { kind: 'failed' };
   }
+  // The seat is fine; it is in use in another tab, until this one is chosen.
+  if (status === 'replaced') return { kind: 'failed' };
   if (snapshot) {
     return { kind: 'seated', snapshot, reconnecting: status !== 'online' };
   }

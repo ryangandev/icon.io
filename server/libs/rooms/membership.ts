@@ -4,7 +4,7 @@ import { reconnectGraceInSeconds } from '../game-clock.js';
 import type { PlayerSessionRegistry } from '../player-session.js';
 import type { RoomRegistry } from './registry.js';
 import type { Room } from './types.js';
-import type { IoServer } from './emit.js';
+import { playerChannel, type IoServer } from './emit.js';
 
 /** Pending seat expiries are keyed by the pair, not by either half. */
 const graceKey = (roomId: string, playerId: string) => `${roomId}:${playerId}`;
@@ -136,8 +136,7 @@ const createRoomMembership = (
 
     cancelGrace(roomId, playerId);
 
-    const socketId = sessions.socketIdFor(playerId);
-    if (socketId) io.sockets.sockets.get(socketId)?.leave(roomId);
+    io.in(playerChannel(playerId)).socketsLeave(roomId);
 
     releaseSeat(room, playerId);
     scheduleSessionExpiry(playerId);
@@ -145,11 +144,11 @@ const createRoomMembership = (
 
   /**
    * A connection dropped. The player keeps their seat, marked away, until
-   * either they come back or the grace period expires.
+   * either they come back or the grace period expires. A connection that
+   * another had already taken over leaves nobody away.
    */
-  const handleDisconnect = (socketId: string) => {
-    const playerId = sessions.detach(socketId);
-    if (!playerId) return;
+  const handleDisconnect = (playerId: string, socketId: string) => {
+    if (!sessions.detach(playerId, socketId)) return;
 
     const held = registry.roomsHeldBy(playerId);
     if (held.length === 0) {
@@ -203,23 +202,29 @@ const createRoomMembership = (
   /**
    * A player proved they are who they were. Any seat still being held for them
    * becomes theirs again - score, ownership and place in the round intact.
+   *
+   * A seat that was never away, because this connection took over from one
+   * still open (a duplicated tab), only moves to the new connection: nobody
+   * reconnected, so nobody is told so.
    */
   const handleResume = (playerId: string) => {
     cancelGrace('session', playerId);
 
-    const socketId = sessions.socketIdFor(playerId);
-    if (!socketId) return;
-    const socket = io.sockets.sockets.get(socketId);
-
     const held = registry.roomsHeldBy(playerId);
-    const touchedGames = new Set(held.map((room) => room.gameType));
-
     for (const room of held) {
+      io.in(playerChannel(playerId)).socketsJoin(room.roomId);
+    }
+
+    const returning = held.filter(
+      (room) => !room.playerList[playerId].isConnected,
+    );
+    const touchedGames = new Set(returning.map((room) => room.gameType));
+
+    for (const room of returning) {
       cancelGrace(room.roomId, playerId);
 
       const player = room.playerList[playerId];
       player.isConnected = true;
-      socket?.join(room.roomId);
 
       registry.lookup.emitState(room);
       registry.lookup.announce(

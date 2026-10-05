@@ -114,7 +114,7 @@ const createZumpoServer = (
   // All of these are created once for the server rather than per connection:
   // they own timers and identities that outlive any single socket.
   const sessions = createPlayerSessionRegistry();
-  const registry = createRoomRegistry(io, sessions);
+  const registry = createRoomRegistry(io);
 
   // Every game the server knows how to run. A module is registered once and
   // then reached only through the registry - the room layer below never names
@@ -168,6 +168,7 @@ const createZumpoServer = (
     // Identity first, from the handshake: every handler below reads the player
     // id off the connection, and this runs before any event from it is read.
     playerSessionHandler(
+      io,
       socket,
       sessions,
       membership.graceMs,
@@ -177,9 +178,9 @@ const createZumpoServer = (
 
     // The room layer: lobbies, seats, ownership, chat. None of it knows which
     // game it is running.
-    lobbyEventsHandler(socket, registry, sessions);
-    roomEventsHandler(socket, registry, sessions, membership);
-    chatEventsHandler(socket, registry, sessions);
+    lobbyEventsHandler(socket, registry);
+    roomEventsHandler(socket, registry, membership);
+    chatEventsHandler(socket, registry);
 
     // And then each game's own events.
     for (const gameType of registry.registeredTypes()) {
