@@ -5,11 +5,11 @@ Resolved items are deleted, not archived; history is in git.
 
 ## Now
 
-The project is being rebranded and redesigned as **Zumpo** on the `rework` branch; the code, packages, folder and repository already carry the name.
+The project is rebranded and redesigned as **Zumpo**; the code, packages, folder and repository carry the name.
 The redesign is an editable Figma file of 111 screens and its shared component families (see [design.md](design.md)), with a snapshot in `design/figma/`.
 Ryan approved it in review round two on 2026-10-03, after one fix (icons centred on their line of text); Claude's round 1 changes are in the [round 1 report](../design/reviews/2026-10-03-round-1.md).
 
-The implementation is built on `rework`, which is pushed but not merged.
+The implementation was built on `rework` and merged into `main` on 2026-10-05 ([#26](https://github.com/ryangandev/zumpo/pull/26)).
 Every page, desktop and phone, is rebuilt on the Zumpo design system in `front/src/ui/`, and Ant Design is gone ([architecture](architecture.md#frontend)).
 Both sides speak the snapshot-driven wire contract in `shared/wire-types.d.ts` ([architecture](architecture.md#the-wire-contract)).
 `npm run e2e` plays the main flows with two players, and `npm run design:compare` captures every Figma screen's state beside its preview; where code differs on purpose, [design.md](design.md#on-purpose) says so.
@@ -26,14 +26,13 @@ Decided by Ryan, and the frame for every design and implementation choice:
 
 ## Waiting on Ryan
 
-- Review `rework` in the browser, then whether to open a pull request.
 - Whether a Minesweeper refresh should hold the round.
   A refresh drops the connection for a moment, and the room does not wait for a disconnected player, so if everyone else has already locked in, the round resolves without the refreshing player's pick.
   That contradicts the rule "A refresh loses nothing" in [minesweeper.md](games/minesweeper.md); the rules are kept as they are until you decide.
 
 ## Next
 
-Two new games and solo play, decided by Ryan on 2026-10-04 (see [the proposal](../design/reviews/2026-10-04-new-games-proposal.md)), are built on `rework`.
+Two new games and solo play, decided by Ryan on 2026-10-04 (see [the proposal](../design/reviews/2026-10-04-new-games-proposal.md)), are built and merged.
 Minesweeper, Make 24 and Pairs each play on your own with no name asked (`/games/<game>/solo`), Make 24 and Pairs play in rooms too, and every game card and How to play offer Play solo where the game has it.
 `npm run e2e` plays each new flow, and `npm run design:compare` captures every one of their Figma screens with no layout difference.
 What is left needs the Figma file, which Claude could not reach this time:
@@ -58,7 +57,7 @@ What is left needs the Figma file, which Claude could not reach this time:
 
 ## Backlog
 
-Ideas worth doing once the rework lands, roughly in order:
+Ideas worth doing next, roughly in order:
 
 - Spectators, or letting a latecomer in for the next round; the canvas is already server state.
 - A round summary and close-guess feedback ("Sam is close!"); the server knows what it awarded and does not say.
