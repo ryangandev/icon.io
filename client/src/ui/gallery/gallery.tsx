@@ -985,6 +985,143 @@ export default function Gallery() {
         ))}
       </Family>
 
+      <Family name="Die" file="die">
+        {(['regular', 'compact'] as const).map((dieSize) => {
+          const sizeName = dieSize === 'regular' ? 'Regular' : 'Compact';
+          return (
+            <div key={dieSize} className={styles.cellRow}>
+              {([1, 2, 3, 4, 5, 6] as const).map((face) => (
+                <Specimen
+                  key={face}
+                  family="die"
+                  variant={`Face=${face}, State=Default, Size=${sizeName}`}
+                  label={String(face)}
+                >
+                  <Die face={face} size={dieSize} />
+                </Specimen>
+              ))}
+              {(
+                [
+                  [5, 'counted', 'Counted'],
+                  [1, 'wild', 'Wild'],
+                  [2, 'dim', 'Dim'],
+                ] as const
+              ).map(([face, state, stateName]) => (
+                <Specimen
+                  key={state}
+                  family="die"
+                  variant={`Face=${face}, State=${stateName}, Size=${sizeName}`}
+                  label={stateName}
+                >
+                  <Die face={face} state={state} size={dieSize} />
+                </Specimen>
+              ))}
+              {(['hidden', 'empty'] as const).map((face) => (
+                <Specimen
+                  key={face}
+                  family="die"
+                  variant={`Face=${face === 'hidden' ? 'Hidden' : 'Empty'}, State=Default, Size=${sizeName}`}
+                  label={face === 'hidden' ? 'Hidden' : 'Empty'}
+                >
+                  <Die face={face} size={dieSize} />
+                </Specimen>
+              ))}
+            </div>
+          );
+        })}
+      </Family>
+
+      <Family name="Bid" file="bid">
+        <Specimen family="bid" variant="Kind=Latest" deviation={BID_TEXT}>
+          <Bid name="Leo" count={5} face={5} latest />
+        </Specimen>
+        <Specimen family="bid" variant="Kind=Earlier" deviation={BID_TEXT}>
+          <Bid name="Leo" count={5} face={5} />
+        </Specimen>
+      </Family>
+
+      <Family
+        name="Cup"
+        file="cup"
+        note="Row is the phone table's cup in a 3-dice game; it fills its row, 350 px in Figma."
+      >
+        {(
+          [
+            ['regular', 'stack'],
+            ['compact', 'stack'],
+            ['compact', 'row'],
+          ] as const
+        ).map(([cupSize, layout]) => (
+          <div key={`${cupSize}-${layout}`} className={styles.cellRow}>
+            {(
+              [
+                ['default', 'Default'],
+                ['turn', 'Turn'],
+                ['lost', 'Lost'],
+              ] as const
+            ).map(([state, stateName]) => (
+              <Specimen
+                key={state}
+                family="cup"
+                variant={`State=${stateName}, Dice=${cupSize === 'regular' ? 'Regular' : 'Compact'}, Layout=${layout === 'stack' ? 'Stack' : 'Row'}`}
+                width={layout === 'row' ? 350 : undefined}
+              >
+                <Cup
+                  name="Leo"
+                  initials="LE"
+                  tone="lime"
+                  detail="3 dice"
+                  state={state}
+                  size={cupSize}
+                  layout={layout}
+                  dice={
+                    cupSize === 'regular'
+                      ? ([5, 4, 1] as const).map((face: DieFace) => ({ face }))
+                      : [
+                          { face: 'hidden' },
+                          { face: 'hidden' },
+                          { face: 'hidden' },
+                        ]
+                  }
+                />
+              </Specimen>
+            ))}
+          </div>
+        ))}
+      </Family>
+
+      <Family
+        name="Bid picker"
+        file="bid-picker"
+        note="It takes the width it is given, as beside your cup; Phone is the same picker in a column narrower than its 518 px row."
+      >
+        {(
+          [
+            ['Desktop', 518],
+            ['Phone', 342],
+          ] as const
+        ).map(([layout, width]) => (
+          <Specimen
+            key={layout}
+            family="bid-picker"
+            variant={`Layout=${layout}`}
+            width={width}
+          >
+            <BidPicker
+              count={5}
+              face={6}
+              onCountChange={noop}
+              onFaceChange={noop}
+              canFewer={false}
+              canMore
+              bidLabel="Bid five 6s"
+              onBid={noop}
+              onCall={noop}
+            />
+          </Specimen>
+        ))}
+      </Family>
+
       <Family
         name="Hush card"
         file="hush-card"
@@ -1235,143 +1372,6 @@ export default function Gallery() {
                 points={outcome === 'mine' ? -20 : 31}
               />
             </ul>
-          </Specimen>
-        ))}
-      </Family>
-
-      <Family name="Die" file="die">
-        {(['regular', 'compact'] as const).map((dieSize) => {
-          const sizeName = dieSize === 'regular' ? 'Regular' : 'Compact';
-          return (
-            <div key={dieSize} className={styles.cellRow}>
-              {([1, 2, 3, 4, 5, 6] as const).map((face) => (
-                <Specimen
-                  key={face}
-                  family="die"
-                  variant={`Face=${face}, State=Default, Size=${sizeName}`}
-                  label={String(face)}
-                >
-                  <Die face={face} size={dieSize} />
-                </Specimen>
-              ))}
-              {(
-                [
-                  [5, 'counted', 'Counted'],
-                  [1, 'wild', 'Wild'],
-                  [2, 'dim', 'Dim'],
-                ] as const
-              ).map(([face, state, stateName]) => (
-                <Specimen
-                  key={state}
-                  family="die"
-                  variant={`Face=${face}, State=${stateName}, Size=${sizeName}`}
-                  label={stateName}
-                >
-                  <Die face={face} state={state} size={dieSize} />
-                </Specimen>
-              ))}
-              {(['hidden', 'empty'] as const).map((face) => (
-                <Specimen
-                  key={face}
-                  family="die"
-                  variant={`Face=${face === 'hidden' ? 'Hidden' : 'Empty'}, State=Default, Size=${sizeName}`}
-                  label={face === 'hidden' ? 'Hidden' : 'Empty'}
-                >
-                  <Die face={face} size={dieSize} />
-                </Specimen>
-              ))}
-            </div>
-          );
-        })}
-      </Family>
-
-      <Family name="Bid" file="bid">
-        <Specimen family="bid" variant="Kind=Latest" deviation={BID_TEXT}>
-          <Bid name="Leo" count={5} face={5} latest />
-        </Specimen>
-        <Specimen family="bid" variant="Kind=Earlier" deviation={BID_TEXT}>
-          <Bid name="Leo" count={5} face={5} />
-        </Specimen>
-      </Family>
-
-      <Family
-        name="Cup"
-        file="cup"
-        note="Row is the phone table's cup in a 3-dice game; it fills its row, 350 px in Figma."
-      >
-        {(
-          [
-            ['regular', 'stack'],
-            ['compact', 'stack'],
-            ['compact', 'row'],
-          ] as const
-        ).map(([cupSize, layout]) => (
-          <div key={`${cupSize}-${layout}`} className={styles.cellRow}>
-            {(
-              [
-                ['default', 'Default'],
-                ['turn', 'Turn'],
-                ['lost', 'Lost'],
-              ] as const
-            ).map(([state, stateName]) => (
-              <Specimen
-                key={state}
-                family="cup"
-                variant={`State=${stateName}, Dice=${cupSize === 'regular' ? 'Regular' : 'Compact'}, Layout=${layout === 'stack' ? 'Stack' : 'Row'}`}
-                width={layout === 'row' ? 350 : undefined}
-              >
-                <Cup
-                  name="Leo"
-                  initials="LE"
-                  tone="lime"
-                  detail="3 dice"
-                  state={state}
-                  size={cupSize}
-                  layout={layout}
-                  dice={
-                    cupSize === 'regular'
-                      ? ([5, 4, 1] as const).map((face: DieFace) => ({ face }))
-                      : [
-                          { face: 'hidden' },
-                          { face: 'hidden' },
-                          { face: 'hidden' },
-                        ]
-                  }
-                />
-              </Specimen>
-            ))}
-          </div>
-        ))}
-      </Family>
-
-      <Family
-        name="Bid picker"
-        file="bid-picker"
-        note="It takes the width it is given, as beside your cup; Phone is the same picker in a column narrower than its 518 px row."
-      >
-        {(
-          [
-            ['Desktop', 518],
-            ['Phone', 342],
-          ] as const
-        ).map(([layout, width]) => (
-          <Specimen
-            key={layout}
-            family="bid-picker"
-            variant={`Layout=${layout}`}
-            width={width}
-          >
-            <BidPicker
-              count={5}
-              face={6}
-              onCountChange={noop}
-              onFaceChange={noop}
-              canFewer={false}
-              canMore
-              bidLabel="Bid five 6s"
-              onBid={noop}
-              onCall={noop}
-            />
           </Specimen>
         ))}
       </Family>
