@@ -195,21 +195,20 @@ test('a tab taken over, and a room closed by a restart', async ({ player }) => {
     await joinRoom(copy, link);
     await expect(page.getByText('Zumpo is open in another tab.')).toBeVisible();
     await shot(page, code);
-    // Gone now, not after the seat's grace, so the Minesweeper lobby screens
-    // list only their own rooms.
+    // Leave from the tab that holds the seat, so the room closes now rather
+    // than waiting out the away grace on the shared server.
     await copy.getByRole('button', { name: 'Leave room' }).click();
     await expect(copy).toHaveURL(/\/games\/minesweeper$/);
   }
 
   // A server of this test's own, so stopping it leaves the others alone.
-  const port = Number(process.env.SCREENS_PORT ?? 3320) + 1;
-  const server = await startServer(port);
+  const server = await startServer();
   try {
-    const own = { server: `http://localhost:${port}` };
+    const own = { server: server.url };
     const maya = await player('Maya', { ...desktop, ...own });
     const sam = await player('Sam', { ...phone, ...own });
     await joinRoom(sam, await createRoom(maya, 'minesweeper'));
-    server.kill('SIGTERM');
+    server.process.kill('SIGTERM');
     for (const [page, code] of [
       [maya, 'P18'],
       [sam, 'MO18'],
@@ -218,7 +217,7 @@ test('a tab taken over, and a room closed by a restart', async ({ player }) => {
       await shot(page, code);
     }
   } finally {
-    server.kill('SIGKILL');
+    server.process.kill('SIGKILL');
   }
 });
 

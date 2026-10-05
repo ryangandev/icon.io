@@ -1,3 +1,4 @@
+import type { AddressInfo } from 'node:net';
 import { createZumpoServer } from './app.js';
 
 const port = process.env.PORT || 3000;
@@ -7,8 +8,10 @@ const SHUTDOWN_DEADLINE_MS = 5000;
 
 const zumpo = createZumpoServer();
 
+// The port it got, which differs from PORT when that is 0 (any free port).
 zumpo.httpServer.listen(port, () => {
-  console.log(`✅ Listening on port ${port}`);
+  const { port: bound } = zumpo.httpServer.address() as AddressInfo;
+  console.log(`✅ Listening on port ${bound}`);
 });
 
 /**
