@@ -1,6 +1,10 @@
 import type { AddressInfo } from 'node:net';
 import { io as createClient, type Socket } from 'socket.io-client';
-import { createZumpoServer, type ZumpoServer } from '../../app.js';
+import {
+  createZumpoServer,
+  type CreateZumpoServerOptions,
+  type ZumpoServer,
+} from '../../app.js';
 import type {
   DailyWordDurationsInSeconds,
   Make24DurationsInSeconds,
@@ -128,7 +132,7 @@ const startTestServer = async (
   minesweeperDurations: MinesweeperDurationsInSeconds = FAST_MINESWEEPER,
   make24Durations: Make24DurationsInSeconds = FAST_MAKE24,
   pairsDurations: PairsDurationsInSeconds = FAST_PAIRS,
-  dailyWordDurations: DailyWordDurationsInSeconds = FAST_DAILY_WORD,
+  overrides: CreateZumpoServerOptions = {},
 ): Promise<TestServer> => {
   const server = createZumpoServer({
     serveClient: false,
@@ -136,8 +140,9 @@ const startTestServer = async (
     minesweeperDurations,
     make24Durations,
     pairsDurations,
-    dailyWordDurations,
+    dailyWordDurations: FAST_DAILY_WORD,
     graceInSeconds,
+    ...overrides,
   });
 
   await new Promise<void>((resolve) => {
@@ -546,7 +551,7 @@ const serverRoom = (
   harness: TestServer,
   roomId: string,
 ): Room<DrawAndGuessState> =>
-  harness.server.rooms[roomId] as Room<DrawAndGuessState>;
+  harness.server.rooms.get(roomId) as Room<DrawAndGuessState>;
 
 /**
  * The same, for Minesweeper. Tests reach through to the hidden layout on
@@ -557,11 +562,11 @@ const minesweeperRoom = (
   harness: TestServer,
   roomId: string,
 ): Room<MinesweeperState> =>
-  harness.server.rooms[roomId] as Room<MinesweeperState>;
+  harness.server.rooms.get(roomId) as Room<MinesweeperState>;
 
 /** The server's own Make 24 room, with every hand of the game in it. */
 const make24Room = (harness: TestServer, roomId: string): Room<Make24State> =>
-  harness.server.rooms[roomId] as Room<Make24State>;
+  harness.server.rooms.get(roomId) as Room<Make24State>;
 
 /** Seats Alice and Bob in a Make 24 room and deals the first hand. */
 const playToFirstHand = async (harness: TestServer, hands = 5) => {
@@ -588,7 +593,7 @@ const playToFirstHand = async (harness: TestServer, hands = 5) => {
  * deliberately, and it is exactly what a client is never sent.
  */
 const pairsRoom = (harness: TestServer, roomId: string): Room<PairsState> =>
-  harness.server.rooms[roomId] as Room<PairsState>;
+  harness.server.rooms.get(roomId) as Room<PairsState>;
 
 /** Creates a Daily Word room, with its creator seated, and returns its id. */
 const createDailyWordRoom = async (
@@ -615,7 +620,8 @@ const createDailyWordRoom = async (
 const dailyWordRoom = (
   harness: TestServer,
   roomId: string,
-): Room<DailyWordState> => harness.server.rooms[roomId] as Room<DailyWordState>;
+): Room<DailyWordState> =>
+  harness.server.rooms.get(roomId) as Room<DailyWordState>;
 
 /** Seats Alice and Bob in a Daily Word room and opens the first word. */
 const playToFirstWord = async (harness: TestServer, rounds = 3) => {

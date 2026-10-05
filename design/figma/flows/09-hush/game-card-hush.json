@@ -1,0 +1,278 @@
+{
+  "format": 1,
+  "code": "game-card-hush",
+  "title": "Game card / Hush",
+  "id": "74:82337",
+  "section": "09 / Hush / complete flow",
+  "reviewNotes": [
+    "Game card · Hush on the hub, in sand: rooms only, so Find a room is its one, primary, action. The artwork is a pile in miniature, 12, 27, 45 under 58, with the team’s two lives."
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "74:82337",
+    "name": "Game card / Hush",
+    "x": 2560,
+    "y": 2965,
+    "w": 644,
+    "h": 383,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/sand"
+    ],
+    "strokes": [
+      "$Zumpo · UI:color/line"
+    ],
+    "strokeAlign": "inside",
+    "radius": "$Zumpo · UI:radius/24",
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/16",
+      "pad": "$Zumpo · UI:space/32",
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "TEXT",
+        "id": "74:82338",
+        "name": "Draw & Guess",
+        "w": 580,
+        "h": 30,
+        "hSize": "hug",
+        "text": "Hush",
+        "textStyle": "Zumpo/Heading",
+        "fills": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "autoResize": "height"
+      },
+      {
+        "type": "TEXT",
+        "id": "74:82339",
+        "name": "One draws. Everyone else tries to get there first.",
+        "w": 580,
+        "h": 25,
+        "hSize": "hug",
+        "text": "No turns, no talking. Play every card in order, together.",
+        "textStyle": "Zumpo/Body",
+        "fills": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "autoResize": "height"
+      },
+      {
+        "type": "INSTANCE",
+        "id": "74:82340",
+        "name": "Tag / 2–4 players",
+        "w": 91,
+        "h": 30,
+        "wSize": "hug",
+        "hSize": "hug",
+        "component": "Zumpo/Tag",
+        "variant": {
+          "Tone": "Paper"
+        },
+        "componentId": "24:6531",
+        "props": {
+          "Label": "2–4 players"
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 30,
+            "width": 91
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "74:82341",
+        "name": "Game artwork / Hush",
+        "w": 580,
+        "h": 120,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "radius": "$Zumpo · UI:radius/16",
+        "clip": true,
+        "layout": {
+          "mode": "row",
+          "gap": 16,
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "74:82380",
+            "name": "Pile",
+            "w": 356,
+            "h": 80,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "74:82381",
+                "name": "Hush card / 12",
+                "w": 60,
+                "h": 80,
+                "component": "Zumpo/Hush card",
+                "variant": {
+                  "State": "Played",
+                  "Size": "Small"
+                },
+                "componentId": "44:61114",
+                "props": {
+                  "Value": "12"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "74:82383",
+                "name": "Hush card / 27",
+                "w": 60,
+                "h": 80,
+                "component": "Zumpo/Hush card",
+                "variant": {
+                  "State": "Played",
+                  "Size": "Small"
+                },
+                "componentId": "44:61114",
+                "props": {
+                  "Value": "27"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "74:82385",
+                "name": "Hush card / 45",
+                "w": 60,
+                "h": 80,
+                "component": "Zumpo/Hush card",
+                "variant": {
+                  "State": "Played",
+                  "Size": "Small"
+                },
+                "componentId": "44:61114",
+                "props": {
+                  "Value": "45"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "74:82387",
+                "name": "Hush card / 58",
+                "w": 60,
+                "h": 80,
+                "component": "Zumpo/Hush card",
+                "variant": {
+                  "State": "Pile",
+                  "Size": "Small"
+                },
+                "componentId": "44:61112",
+                "props": {
+                  "Value": "58"
+                }
+              },
+              {
+                "type": "FRAME",
+                "id": "74:82395",
+                "name": "Lives",
+                "w": 84,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "clip": true,
+                "layout": {
+                  "mode": "row",
+                  "pad": [
+                    0,
+                    0,
+                    0,
+                    "$Zumpo · UI:space/16"
+                  ],
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "74:82389",
+                    "name": "Zumpo/Lives",
+                    "w": 68,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Lives",
+                    "variant": {
+                      "Lives": "2"
+                    },
+                    "componentId": "44:61125",
+                    "props": {
+                      "Show label": false
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 18,
+                        "width": 68
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "74:82348",
+        "name": "Actions",
+        "w": 121,
+        "h": 48,
+        "wSize": "hug",
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "74:82350",
+            "name": "Action / Find a room",
+            "w": 121,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Primary",
+              "State": "Default"
+            },
+            "componentId": "4:15",
+            "props": {
+              "Label": "Find a room"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "width": 121
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

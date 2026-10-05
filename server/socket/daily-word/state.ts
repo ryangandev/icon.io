@@ -8,6 +8,7 @@ import type {
   DailyWordRoundResult,
   DailyWordSettings,
 } from '../../models/types.js';
+import { roomStatus, seatCount } from '../../libs/rooms/seats.js';
 import type { Room } from '../../libs/rooms/types.js';
 import { getRemainingPhaseMs } from '../../libs/utils.js';
 import { isFound, MAX_GUESSES } from '../../../shared/daily-word.js';
@@ -93,8 +94,8 @@ const toLobbyInfo = (room: Room<DailyWordState>): DailyWordLobbyRoomInfo => ({
   roomId: room.roomId,
   roomName: room.roomName,
   owner: room.owner,
-  status: room.status,
-  currentPlayerCount: room.currentPlayerCount,
+  status: roomStatus(room),
+  currentPlayerCount: seatCount(room),
   maxPlayers: room.maxPlayers,
   hasPassword: room.password !== '',
   rounds: room.game.rounds,

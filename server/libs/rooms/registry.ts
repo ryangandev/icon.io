@@ -1,5 +1,5 @@
 import type { ChatMessage, GameType } from '../../../shared/wire-types.js';
-import type { PlayerSessionRegistry } from '../player-session.js';
+import { createRoomTimers, type RoomTimerSet } from './timers.js';
 import type { GameContext, GameModule, Room, RoomLookup } from './types.js';
 import {
   emitToLobby,
@@ -24,9 +24,21 @@ const CHAT_HISTORY_LIMIT = 100;
  * order rather than by a lazy reference: nothing is called on a module until
  * a connection arrives, which is long after every module is in place.
  */
-const createRoomRegistry = (io: IoServer, sessions: PlayerSessionRegistry) => {
-  const all: Record<string, Room> = {};
+const createRoomRegistry = (io: IoServer) => {
+  const rooms = new Map<string, Room>();
   const modules = new Map<GameType, GameModule>();
+
+  /**
+   * Every set of room timers handed out, so that a room's go with it. The
+   * first is the rooms' phase clocks.
+   */
+  const timerSets: RoomTimerSet[] = [];
+  const createTimers = (): RoomTimerSet => {
+    const timers = createRoomTimers((roomId) => rooms.has(roomId));
+    timerSets.push(timers);
+    return timers;
+  };
+  const phaseClocks = createTimers();
 
   /** Rooms with a snapshot owed to their players at the end of this run. */
   const staleRooms = new Set<string>();
@@ -43,7 +55,7 @@ const createRoomRegistry = (io: IoServer, sessions: PlayerSessionRegistry) => {
     staleRooms.clear();
 
     for (const roomId of roomIds) {
-      const room = all[roomId];
+      const room = rooms.get(roomId);
       // Emptied and deleted while the snapshot was pending: nobody to tell.
       if (!room) continue;
       const module = modules.get(room.gameType);
@@ -53,7 +65,6 @@ const createRoomRegistry = (io: IoServer, sessions: PlayerSessionRegistry) => {
         if (!seat.isConnected) continue;
         emitToPlayer(
           io,
-          sessions,
           playerId,
           'room:state',
           module.toRoomState(room, playerId),
@@ -76,11 +87,14 @@ const createRoomRegistry = (io: IoServer, sessions: PlayerSessionRegistry) => {
     emitToRoom(io, room.roomId, 'chat:message', room.roomId, posted);
   };
 
+  /** Every room playing this game, as its lobby lists them. */
+  const ofGame = (gameType: GameType): Room[] =>
+    [...rooms.values()].filter((room) => room.gameType === gameType);
+
   const lookup: RoomLookup = {
-    all,
-    get: (roomId) => all[roomId],
+    get: (roomId) => rooms.get(roomId),
     ofType: <TGameState>(roomId: string, gameType: GameType) => {
-      const room = all[roomId];
+      const room = rooms.get(roomId);
       if (!room) return undefined;
       if (room.gameType !== gameType) return undefined;
       return room as Room<TGameState>;
@@ -89,20 +103,26 @@ const createRoomRegistry = (io: IoServer, sessions: PlayerSessionRegistry) => {
       const module = modules.get(gameType);
       if (!module) return;
 
-      const rooms = Object.values(all)
-        .filter((room) => room.gameType === gameType)
-        .map((room) => module.toLobbyInfo(room));
-
-      emitToLobby(io, gameType, 'lobby:rooms', gameType, rooms);
+      const listed = ofGame(gameType).map((room) => module.toLobbyInfo(room));
+      emitToLobby(io, gameType, 'lobby:rooms', gameType, listed);
     },
     emitState: (room) => {
       if (staleRooms.size === 0) queueMicrotask(flushStates);
       staleRooms.add(room.roomId);
     },
     announce: (roomId, kind, text) => {
-      const room = all[roomId];
+      const room = rooms.get(roomId);
       if (room) post(room, { kind, text });
     },
+    startPhase: (room, seconds, onEnd) => {
+      room.phaseEndsAt = Date.now() + seconds * 1000;
+      phaseClocks.set(room.roomId, seconds * 1000, onEnd);
+    },
+    stopPhase: (room) => {
+      room.phaseEndsAt = 0;
+      phaseClocks.clear(room.roomId);
+    },
+    timers: createTimers,
   };
 
   /**
@@ -115,7 +135,25 @@ const createRoomRegistry = (io: IoServer, sessions: PlayerSessionRegistry) => {
     post(room, { kind: 'player', playerId, username: seat.username, text });
   };
 
-  const context: GameContext = { io, sessions, rooms: lookup };
+  const context: GameContext = { io, rooms: lookup };
+
+  /** A new room, its creator already seated. */
+  const add = (room: Room): void => {
+    rooms.set(room.roomId, room);
+  };
+
+  /**
+   * A room the last player has left. Its clock and timers go with it, and its
+   * lobby stops listing it. The one way a room ends, so none is ever deleted
+   * with a clock still running for it.
+   */
+  const remove = (room: Room): void => {
+    for (const timers of timerSets) timers.clear(room.roomId);
+    rooms.delete(room.roomId);
+    lookup.emitLobby(room.gameType);
+  };
+
+  const count = (): number => rooms.size;
 
   const register = (module: GameModule): void => {
     modules.set(module.gameType, module);
@@ -132,15 +170,19 @@ const createRoomRegistry = (io: IoServer, sessions: PlayerSessionRegistry) => {
 
   /** Rooms this player holds a seat in, connected or not, across every game. */
   const roomsHeldBy = (playerId: string): Room[] =>
-    Object.values(all).filter((room) => room.playerList[playerId]);
+    [...rooms.values()].filter((room) => room.playerList[playerId]);
 
   const dispose = (): void => {
     staleRooms.clear();
-    for (const module of modules.values()) module.dispose();
+    for (const timers of timerSets) timers.clearAll();
   };
 
   return {
-    all,
+    rooms: rooms as ReadonlyMap<string, Room>,
+    add,
+    remove,
+    count,
+    ofGame,
     lookup,
     context,
     say,

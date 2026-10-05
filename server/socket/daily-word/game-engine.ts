@@ -1,11 +1,8 @@
 import type { DailyWordBoard, DailyWordSettings } from '../../models/types.js';
 import { RequestError } from '../../models/error.js';
+import { seatCount } from '../../libs/rooms/seats.js';
 import type { GameContext, Room } from '../../libs/rooms/types.js';
-import {
-  gameOverMessage,
-  getRoomStatus,
-  resetPoints,
-} from '../../libs/utils.js';
+import { gameOverMessage, resetPoints } from '../../libs/utils.js';
 import {
   dailyWordDurationsInSeconds as defaultDurations,
   type DailyWordDurationsInSeconds,
@@ -53,35 +50,8 @@ const createDailyWordGameEngine = (
   ctx: GameContext,
   durations: DailyWordDurationsInSeconds = defaultDurations,
 ) => {
-  /** One per room: either the open round or its results. */
-  const roundTimers = new Map<string, NodeJS.Timeout>();
-
   const roomOf = (roomId: string): DailyWordRoom | undefined =>
     ctx.rooms.ofType<DailyWordState>(roomId, 'daily-word');
-
-  const clearRoundTimer = (roomId: string) => {
-    const pending = roundTimers.get(roomId);
-    if (pending) {
-      clearTimeout(pending);
-      roundTimers.delete(roomId);
-    }
-  };
-
-  const schedule = (
-    roomId: string,
-    durationInSeconds: number,
-    onDue: () => void,
-  ) => {
-    clearRoundTimer(roomId);
-    roundTimers.set(
-      roomId,
-      setTimeout(() => {
-        roundTimers.delete(roomId);
-        // The room may have been emptied and deleted while we waited.
-        if (roomOf(roomId)) onDue();
-      }, durationInSeconds * 1000),
-    );
-  };
 
   const startGame = (room: DailyWordRoom, playerId: string) => {
     if (room.owner.playerId !== playerId) {
@@ -96,7 +66,7 @@ const createDailyWordGameEngine = (
         'The game has already started.',
       );
     }
-    if (room.currentPlayerCount < MIN_PLAYERS_TO_START) {
+    if (seatCount(room) < MIN_PLAYERS_TO_START) {
       throw new RequestError(
         'notEnoughPlayers',
         `At least ${MIN_PLAYERS_TO_START} players are required to start.`,
@@ -112,11 +82,6 @@ const createDailyWordGameEngine = (
     game.lastGame = null;
     room.playerList = resetPoints(room.playerList);
     room.isGameStarted = true;
-    room.status = getRoomStatus(
-      room.currentPlayerCount,
-      room.maxPlayers,
-      room.isGameStarted,
-    );
 
     console.log(
       `Daily Word started in room ${room.roomId}, ${game.rounds} words.`,
@@ -137,11 +102,8 @@ const createDailyWordGameEngine = (
     game.phase = 'guessing';
     game.round += 1;
     game.boards.clear();
-    room.phaseEndsAt = Date.now() + durations.round * 1000;
-
+    ctx.rooms.startPhase(room, durations.round, () => endRound(room));
     ctx.rooms.emitState(room);
-
-    schedule(room.roomId, durations.round, () => endRound(room));
   };
 
   /**
@@ -213,7 +175,6 @@ const createDailyWordGameEngine = (
   };
 
   const endRound = (room: DailyWordRoom) => {
-    clearRoundTimer(room.roomId);
     const game = room.game;
     if (!room.isGameStarted) return;
 
@@ -234,7 +195,11 @@ const createDailyWordGameEngine = (
     };
     game.boards.clear();
     game.phase = 'reveal';
-    room.phaseEndsAt = Date.now() + durations.reveal * 1000;
+    // What comes after the reveal: the next word, or the final scores.
+    const last = game.round >= game.rounds;
+    ctx.rooms.startPhase(room, durations.reveal, () =>
+      last ? endGame(room, { endedEarly: false }) : beginRound(room),
+    );
 
     ctx.rooms.emitState(room);
     ctx.rooms.announce(
@@ -242,14 +207,6 @@ const createDailyWordGameEngine = (
       'system',
       `The word was ${word.toUpperCase()}.`,
     );
-
-    if (game.round >= game.rounds) {
-      schedule(room.roomId, durations.reveal, () =>
-        endGame(room, { endedEarly: false }),
-      );
-      return;
-    }
-    schedule(room.roomId, durations.reveal, () => beginRound(room));
   };
 
   /** The last round's results stay, for the results screen and a refresh. */
@@ -257,7 +214,7 @@ const createDailyWordGameEngine = (
     room: DailyWordRoom,
     { endedEarly }: { endedEarly: boolean },
   ) => {
-    clearRoundTimer(room.roomId);
+    ctx.rooms.stopPhase(room);
     const game = room.game;
 
     const standings = Object.entries(room.playerList)
@@ -286,12 +243,6 @@ const createDailyWordGameEngine = (
     game.round = 0;
     game.words = [];
     game.boards.clear();
-    room.phaseEndsAt = 0;
-    room.status = getRoomStatus(
-      room.currentPlayerCount,
-      room.maxPlayers,
-      room.isGameStarted,
-    );
 
     ctx.rooms.emitState(room);
     ctx.rooms.announce(room.roomId, 'system', gameOverMessage(standings));
@@ -305,7 +256,7 @@ const createDailyWordGameEngine = (
 
     if (!room.isGameStarted) return;
 
-    if (room.currentPlayerCount < MIN_PLAYERS_TO_START) {
+    if (seatCount(room) < MIN_PLAYERS_TO_START) {
       ctx.rooms.announce(
         room.roomId,
         'alert',
@@ -325,20 +276,12 @@ const createDailyWordGameEngine = (
     maybeEndEarly(room);
   };
 
-  const disposeRoom = (roomId: string) => clearRoundTimer(roomId);
-
-  const dispose = () => {
-    for (const roomId of new Set(roundTimers.keys())) clearRoundTimer(roomId);
-  };
-
   return {
     startGame,
     submitGuess,
     mayChat,
     handlePlayerDeparture,
     handleDisconnect,
-    disposeRoom,
-    dispose,
   };
 };
 

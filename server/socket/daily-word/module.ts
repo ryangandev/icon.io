@@ -43,9 +43,6 @@ const createDailyWordModule = (
     onDisconnect: (room) => engine.handleDisconnect(room),
     onReturn: () => {},
 
-    disposeRoom: (roomId) => engine.disposeRoom(roomId),
-    dispose: () => engine.dispose(),
-
     registerHandlers: (socket: IoSocket) => {
       onClientRequest(socket, 'dw:guess', (rawArgs, reply) => {
         const validated = parseArgs(guessRequest, rawArgs, 'dw:guess');
@@ -56,11 +53,7 @@ const createDailyWordModule = (
         const [roomId, word] = validated;
 
         // Identity comes from the connection, never from the payload.
-        const playerId = ctx.sessions.playerIdFor(socket.id);
-        if (!playerId) {
-          reply(invalidRequest('You are not in this room.'));
-          return;
-        }
+        const playerId = socket.data.playerId;
 
         const refusal = engine.submitGuess(roomId, playerId, word);
         reply(refusal ? invalidRequest(refusal) : { ok: true });

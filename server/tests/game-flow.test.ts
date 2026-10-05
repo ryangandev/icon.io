@@ -68,7 +68,7 @@ describe('the game engine', () => {
       ok: false,
       error: { type: 'notEnoughPlayers', message: expect.any(String) },
     });
-    expect(harness.server.rooms[roomId]?.isGameStarted).toBe(false);
+    expect(harness.server.rooms.get(roomId)?.isGameStarted).toBe(false);
   });
 
   /*
@@ -82,7 +82,7 @@ describe('the game engine', () => {
     const answer = await request(bob, 'game:start', roomId);
 
     expect(answer.error?.type).toBe('notRoomOwner');
-    expect(harness.server.rooms[roomId]?.isGameStarted).toBe(false);
+    expect(harness.server.rooms.get(roomId)?.isGameStarted).toBe(false);
   });
 
   it('refuses to start a game for a client that is not even in the room', async () => {
@@ -96,7 +96,7 @@ describe('the game engine', () => {
     expect(answer.error?.type).toBe('notRoomOwner');
     await settle();
     expect(states).toEqual([]);
-    expect(harness.server.rooms[roomId]?.isGameStarted).toBe(false);
+    expect(harness.server.rooms.get(roomId)?.isGameStarted).toBe(false);
   });
 
   it('refuses to start a game that is already running', async () => {
@@ -366,7 +366,7 @@ describe('the game engine', () => {
     });
     expect(finalState).not.toHaveProperty('word');
     expect((await announced).kind).toBe('system');
-    expect(harness.server.rooms[roomId]?.phaseEndsAt).toBe(0);
+    expect(harness.server.rooms.get(roomId)?.phaseEndsAt).toBe(0);
   });
 
   /*
@@ -405,7 +405,7 @@ describe('the game engine', () => {
 
       expect((await nextTurn).currentDrawer).not.toBe(currentDrawer);
       expect((await skipped).kind).toBe('alert');
-      expect(harness3.server.rooms[roomId]?.isGameStarted).toBe(true);
+      expect(harness3.server.rooms.get(roomId)?.isGameStarted).toBe(true);
     } finally {
       await harness3.teardown();
     }
@@ -423,7 +423,7 @@ describe('the game engine', () => {
     expect(finalState.currentDrawer).toBe('');
     expect(finalState.phase).toBe('waiting');
     expect(finalState.lastGame?.endedEarly).toBe(true);
-    expect(harness.server.rooms[roomId]?.phaseEndsAt).toBe(0);
+    expect(harness.server.rooms.get(roomId)?.phaseEndsAt).toBe(0);
     expect(
       messages.find((m) => m.text.startsWith('Not enough players')),
     ).toMatchObject({ kind: 'alert' });
@@ -442,7 +442,7 @@ describe('the game engine', () => {
     // Long enough for both seats to expire and the empty room to be collected.
     await settle(1200);
 
-    expect(harness.server.rooms[roomId]).toBeUndefined();
+    expect(harness.server.rooms.get(roomId)).toBeUndefined();
   });
 });
 

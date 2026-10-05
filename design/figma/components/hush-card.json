@@ -1,0 +1,991 @@
+{
+  "format": 1,
+  "name": "Zumpo/Hush card",
+  "id": "44:61118",
+  "type": "COMPONENT_SET",
+  "key": "91d726863517872f9e12800651e8c9fe50ce0209",
+  "description": "A Hush card, 1-100. Hand: in your hand. Next: your lowest, the one you can play. Pile: the top of the pile. Played: under it. Discarded: lost to a mistake, or to a player who left. Large is the top of the pile, Regular your hand, Small the played and discarded rows.",
+  "properties": {
+    "Value": {
+      "type": "text",
+      "default": "41"
+    },
+    "State": {
+      "type": "variant",
+      "default": "Hand",
+      "options": [
+        "Hand",
+        "Next",
+        "Pile",
+        "Played",
+        "Discarded"
+      ]
+    },
+    "Size": {
+      "type": "variant",
+      "default": "Large",
+      "options": [
+        "Large",
+        "Regular",
+        "Small"
+      ]
+    }
+  },
+  "defaultVariant": "State=Hand, Size=Large",
+  "variants": [
+    {
+      "name": "State=Hand, Size=Large",
+      "id": "44:61088",
+      "props": {
+        "State": "Hand",
+        "Size": "Large"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61088",
+        "name": "State=Hand, Size=Large",
+        "x": 24,
+        "y": 24,
+        "w": 168,
+        "h": 216,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/24",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:61089",
+            "name": "Value",
+            "w": 92,
+            "h": 78,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "41",
+            "textStyle": "Zumpo/Hero",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Next, Size=Large",
+      "id": "44:61090",
+      "props": {
+        "State": "Next",
+        "Size": "Large"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61090",
+        "name": "State=Next, Size=Large",
+        "x": 216,
+        "y": 24,
+        "w": 168,
+        "h": 216,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/24",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:61091",
+            "name": "Value",
+            "w": 92,
+            "h": 78,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "41",
+            "textStyle": "Zumpo/Hero",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Pile, Size=Large",
+      "id": "44:61092",
+      "props": {
+        "State": "Pile",
+        "Size": "Large"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61092",
+        "name": "State=Pile, Size=Large",
+        "x": 408,
+        "y": 24,
+        "w": 168,
+        "h": 216,
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/green"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/24",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:61093",
+            "name": "Value",
+            "w": 92,
+            "h": 78,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "41",
+            "textStyle": "Zumpo/Hero",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Played, Size=Large",
+      "id": "44:61094",
+      "props": {
+        "State": "Played",
+        "Size": "Large"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61094",
+        "name": "State=Played, Size=Large",
+        "x": 600,
+        "y": 24,
+        "w": 168,
+        "h": 216,
+        "fills": [
+          "$Zumpo · UI:color/sand"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/24",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:61095",
+            "name": "Value",
+            "w": 92,
+            "h": 78,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "41",
+            "textStyle": "Zumpo/Hero",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Discarded, Size=Large",
+      "id": "44:61096",
+      "props": {
+        "State": "Discarded",
+        "Size": "Large"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61096",
+        "name": "State=Discarded, Size=Large",
+        "x": 792,
+        "y": 24,
+        "w": 168,
+        "h": 216,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/24",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:61097",
+            "name": "Value",
+            "w": 92,
+            "h": 78,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "41",
+            "textStyle": "Zumpo/Hero",
+            "fills": [
+              "$Zumpo · UI:color/danger"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Hand, Size=Regular",
+      "id": "44:61098",
+      "props": {
+        "State": "Hand",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61098",
+        "name": "State=Hand, Size=Regular",
+        "x": 24,
+        "y": 264,
+        "w": 96,
+        "h": 128,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:61099",
+            "name": "Value",
+            "w": 44,
+            "h": 42,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "41",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Next, Size=Regular",
+      "id": "44:61100",
+      "props": {
+        "State": "Next",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61100",
+        "name": "State=Next, Size=Regular",
+        "x": 144,
+        "y": 264,
+        "w": 96,
+        "h": 128,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:61101",
+            "name": "Value",
+            "w": 44,
+            "h": 42,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "41",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Pile, Size=Regular",
+      "id": "44:61102",
+      "props": {
+        "State": "Pile",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61102",
+        "name": "State=Pile, Size=Regular",
+        "x": 264,
+        "y": 264,
+        "w": 96,
+        "h": 128,
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/green"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:61103",
+            "name": "Value",
+            "w": 44,
+            "h": 42,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "41",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Played, Size=Regular",
+      "id": "44:61104",
+      "props": {
+        "State": "Played",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61104",
+        "name": "State=Played, Size=Regular",
+        "x": 384,
+        "y": 264,
+        "w": 96,
+        "h": 128,
+        "fills": [
+          "$Zumpo · UI:color/sand"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:61105",
+            "name": "Value",
+            "w": 44,
+            "h": 42,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "41",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Discarded, Size=Regular",
+      "id": "44:61106",
+      "props": {
+        "State": "Discarded",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61106",
+        "name": "State=Discarded, Size=Regular",
+        "x": 504,
+        "y": 264,
+        "w": 96,
+        "h": 128,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "strokeWeight": 3,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:61107",
+            "name": "Value",
+            "w": 44,
+            "h": 42,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "41",
+            "textStyle": "Zumpo/Title",
+            "fills": [
+              "$Zumpo · UI:color/danger"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Hand, Size=Small",
+      "id": "44:61108",
+      "props": {
+        "State": "Hand",
+        "Size": "Small"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61108",
+        "name": "State=Hand, Size=Small",
+        "x": 24,
+        "y": 416,
+        "w": 60,
+        "h": 80,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:61109",
+            "name": "Value",
+            "w": 29,
+            "h": 30,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "41",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Next, Size=Small",
+      "id": "44:61110",
+      "props": {
+        "State": "Next",
+        "Size": "Small"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61110",
+        "name": "State=Next, Size=Small",
+        "x": 108,
+        "y": 416,
+        "w": 60,
+        "h": 80,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:61111",
+            "name": "Value",
+            "w": 29,
+            "h": 30,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "41",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Pile, Size=Small",
+      "id": "44:61112",
+      "props": {
+        "State": "Pile",
+        "Size": "Small"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61112",
+        "name": "State=Pile, Size=Small",
+        "x": 192,
+        "y": 416,
+        "w": 60,
+        "h": 80,
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/green"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:61113",
+            "name": "Value",
+            "w": 29,
+            "h": 30,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "41",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Played, Size=Small",
+      "id": "44:61114",
+      "props": {
+        "State": "Played",
+        "Size": "Small"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61114",
+        "name": "State=Played, Size=Small",
+        "x": 276,
+        "y": 416,
+        "w": 60,
+        "h": 80,
+        "fills": [
+          "$Zumpo · UI:color/sand"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:61115",
+            "name": "Value",
+            "w": 29,
+            "h": 30,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "41",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Discarded, Size=Small",
+      "id": "44:61116",
+      "props": {
+        "State": "Discarded",
+        "Size": "Small"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61116",
+        "name": "State=Discarded, Size=Small",
+        "x": 360,
+        "y": 416,
+        "w": 60,
+        "h": 80,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "column",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:61117",
+            "name": "Value",
+            "w": 29,
+            "h": 30,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Value"
+            },
+            "text": "41",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/danger"
+            ],
+            "alignH": "center"
+          }
+        ]
+      }
+    }
+  ]
+}

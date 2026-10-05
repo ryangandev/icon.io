@@ -4,7 +4,7 @@
   "id": "26:16242",
   "type": "COMPONENT_SET",
   "key": "845e8f9707a251d4e4158e3156c51e41b59ae056",
-  "description": "One line in the room chat. Player: what someone typed (in Draw & Guess a wrong guess is just this). System: joins, leaves, the game starting, the category. Success: a correct guess and what it paid. Alert: a mine hit. Use the player’s name with “(you)” for the viewer’s own lines.",
+  "description": "One line in the room chat. Player: what someone typed (in Draw & Guess a wrong guess is just this). System: joins, leaves, the game starting, the category. Success: a correct guess and what it paid. Alert: something went wrong, such as a mine hit or a mistake; Alert icon is the mine in Minesweeper. Use the player’s name with “(you)” for the viewer’s own lines.",
   "properties": {
     "Name": {
       "type": "text",
@@ -13,6 +13,14 @@
     "Message": {
       "type": "text",
       "default": "a turtle?"
+    },
+    "Alert icon": {
+      "type": "instance_swap",
+      "default": "Zumpo/Icon / Glyph=alert",
+      "preferred": [
+        "component:f357b41d0823329acaef1a3ea101fd6c29d2510a",
+        "component:13d6d2e5655233b4f17de5fd1326cdded1337374"
+      ]
     },
     "Kind": {
       "type": "variant",
@@ -302,11 +310,14 @@
                 "name": "Icon",
                 "w": 16,
                 "h": 16,
+                "propRefs": {
+                  "mainComponent": "Alert icon"
+                },
                 "component": "Zumpo/Icon",
                 "variant": {
-                  "Glyph": "mine"
+                  "Glyph": "alert"
                 },
-                "componentId": "24:5071"
+                "componentId": "24:4999"
               }
             ]
           },

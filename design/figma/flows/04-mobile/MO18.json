@@ -1,0 +1,208 @@
+{
+  "format": 1,
+  "code": "MO18",
+  "title": "Room closed by a restart",
+  "id": "79:104881",
+  "section": "04 / Mobile / 390px flow adaptations",
+  "frame": {
+    "type": "FRAME",
+    "id": "79:104881",
+    "name": "MO18 / Room closed by a restart",
+    "x": 530,
+    "y": 8047,
+    "w": 390,
+    "h": 429,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        "$Zumpo · UI:space/20",
+        "$Zumpo · UI:space/20",
+        32,
+        "$Zumpo · UI:space/20"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "FRAME",
+        "id": "79:104882",
+        "name": "Mobile navigation",
+        "w": 350,
+        "h": 44,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "79:104883",
+            "name": "Zumpo/Wordmark",
+            "w": 140,
+            "h": 44,
+            "wSize": "hug",
+            "component": "Zumpo/Wordmark",
+            "componentId": "4:36"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:104884",
+            "name": "Player / YO",
+            "w": 32,
+            "h": 32,
+            "component": "Zumpo/Avatar",
+            "variant": {
+              "Tone": "Sand"
+            },
+            "componentId": "26:10572",
+            "props": {
+              "Initials": "SA"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 32,
+                "width": 32
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "79:104901",
+        "name": "Zumpo just restarted.",
+        "w": 350,
+        "h": 267,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Card",
+        "variant": {
+          "Kind": "Focused"
+        },
+        "componentId": "9:400",
+        "props": {
+          "Description": "Rooms close when Zumpo restarts for an update, so this one has ended. Find another room or start your own.",
+          "Title": "Zumpo just restarted."
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 267,
+            "width": 350
+          }
+        ],
+        "slots": {
+          "Content": [
+            {
+              "type": "FRAME",
+              "id": "I79:104901;35:13433;79:104903",
+              "name": "Actions",
+              "w": 496,
+              "h": 48,
+              "hSize": "hug",
+              "layout": {
+                "mode": "row",
+                "gap": "$Zumpo · UI:space/12",
+                "align": "center",
+                "strokesIncluded": true
+              },
+              "children": [
+                {
+                  "type": "INSTANCE",
+                  "id": "I79:104901;35:13433;79:104904",
+                  "name": "Action / Back to rooms",
+                  "w": 139,
+                  "h": 48,
+                  "wSize": "hug",
+                  "component": "Zumpo/Button",
+                  "variant": {
+                    "Style": "Primary",
+                    "State": "Default"
+                  },
+                  "componentId": "4:15",
+                  "props": {
+                    "Label": "Back to rooms"
+                  },
+                  "overrides": [
+                    {
+                      "path": ".",
+                      "height": 48,
+                      "reactions": [
+                        {
+                          "on": "on_click",
+                          "do": [
+                            {
+                              "nav": "navigate",
+                              "to": "9:868",
+                              "toName": "DL01 / Room list · open, private, full and playing states",
+                              "transition": "dissolve"
+                            }
+                          ]
+                        }
+                      ],
+                      "width": 139
+                    }
+                  ],
+                  "reactions": [
+                    {
+                      "on": "on_click",
+                      "do": [
+                        {
+                          "nav": "navigate",
+                          "to": "9:868",
+                          "toName": "DL01 / Room list · open, private, full and playing states",
+                          "transition": "dissolve"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "type": "FRAME",
+        "id": "79:104893",
+        "name": "Footer",
+        "w": 350,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "79:104894",
+            "w": 350,
+            "h": 18,
+            "hSize": "hug",
+            "text": "A little play. Good company.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    ]
+  }
+}

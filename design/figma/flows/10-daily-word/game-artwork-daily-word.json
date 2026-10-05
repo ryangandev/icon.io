@@ -1,0 +1,123 @@
+{
+  "format": 1,
+  "code": "game-artwork-daily-word",
+  "title": "Game artwork / Daily Word",
+  "id": "79:95130",
+  "section": "10 / Daily Word / complete flow",
+  "frame": {
+    "type": "FRAME",
+    "id": "79:95130",
+    "name": "Game artwork / Daily Word",
+    "x": 40,
+    "y": 3940,
+    "w": 580,
+    "h": 120,
+    "fills": [
+      "$Zumpo · UI:color/paper"
+    ],
+    "radius": "$Zumpo · UI:radius/16",
+    "layout": {
+      "mode": "row",
+      "gap": 16,
+      "justify": "center",
+      "align": "center",
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "FRAME",
+        "id": "79:95131",
+        "name": "Tiles",
+        "w": 352,
+        "h": 64,
+        "wSize": "hug",
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "79:95132",
+            "name": "Tile / T",
+            "w": 64,
+            "h": 64,
+            "component": "Zumpo/Letter tile",
+            "variant": {
+              "State": "Present",
+              "Size": "Regular"
+            },
+            "componentId": "44:61318",
+            "props": {
+              "Letter": "T"
+            }
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:95134",
+            "name": "Tile / R",
+            "w": 64,
+            "h": 64,
+            "component": "Zumpo/Letter tile",
+            "variant": {
+              "State": "Absent",
+              "Size": "Regular"
+            },
+            "componentId": "44:61320",
+            "props": {
+              "Letter": "R"
+            }
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:95136",
+            "name": "Tile / A",
+            "w": 64,
+            "h": 64,
+            "component": "Zumpo/Letter tile",
+            "variant": {
+              "State": "Correct",
+              "Size": "Regular"
+            },
+            "componentId": "44:61316"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:95138",
+            "name": "Tile / I",
+            "w": 64,
+            "h": 64,
+            "component": "Zumpo/Letter tile",
+            "variant": {
+              "State": "Absent",
+              "Size": "Regular"
+            },
+            "componentId": "44:61320",
+            "props": {
+              "Letter": "I"
+            }
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:95140",
+            "name": "Tile / L",
+            "w": 64,
+            "h": 64,
+            "component": "Zumpo/Letter tile",
+            "variant": {
+              "State": "Present",
+              "Size": "Regular"
+            },
+            "componentId": "44:61318",
+            "props": {
+              "Letter": "L"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

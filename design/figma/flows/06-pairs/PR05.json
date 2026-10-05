@@ -127,8 +127,9 @@
                 "componentId": "26:16856",
                 "props": {
                   "Meta": "Both flip back. You’re next.",
+                  "Label": "Leo’s turn",
                   "Main": "Not a pair",
-                  "Label": "Leo’s turn"
+                  "Category": false
                 },
                 "overrides": [
                   {
@@ -143,8 +144,7 @@
                       "Show icon": false,
                       "Label": "Small · 9 × 9",
                       "Tone": "Sand"
-                    },
-                    "visible": false
+                    }
                   },
                   {
                     "path": "Countdown",
@@ -938,6 +938,7 @@
                   {
                     "path": "Player 1",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Waiting",
                       "Host": true,
@@ -958,6 +959,7 @@
                   {
                     "path": "Player 2",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Up next",
                       "Host": false,
@@ -978,6 +980,7 @@
                   {
                     "path": "Player 3",
                     "componentProperties": {
+                      "Show score": true,
                       "Icon": "24:5071",
                       "Status icon": false,
                       "You": false,
@@ -998,6 +1001,7 @@
                   {
                     "path": "Player 4",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Waiting",
                       "Host": false,
@@ -1035,6 +1039,7 @@
                   {
                     "path": "Messages / Message 1",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Name": "System",
                       "Message": "Maya found a pair! (+1)",
                       "Kind": "Success"
@@ -1043,6 +1048,7 @@
                   {
                     "path": "Messages / Message 2",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "I knew that hexagon was there",
                       "Name": "Ryan",
                       "Kind": "Player"
@@ -1051,6 +1057,7 @@
                   {
                     "path": "Messages / Message 3",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Name": "System",
                       "Message": "Sam found a pair! (+1)",
                       "Kind": "Success"
@@ -1059,6 +1066,7 @@
                   {
                     "path": "Messages / Message 4",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "ugh",
                       "Name": "Leo",
                       "Kind": "Player"
