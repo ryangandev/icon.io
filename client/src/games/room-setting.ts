@@ -4,7 +4,7 @@ import { boardName as pairsBoardName } from '../pairs/boards';
 import { plural } from './plural';
 
 /** The setting a room was made with: "2 rounds", "Small 9 × 9", "10 hands",
- * "Large 6 × 6". */
+ * "Large 6 × 6", "3 words". */
 export function roomSetting(room: AnyLobbyRoomInfo): string {
   switch (room.gameType) {
     case 'draw-and-guess':
@@ -15,5 +15,7 @@ export function roomSetting(room: AnyLobbyRoomInfo): string {
       return plural(room.hands, 'hand');
     case 'pairs':
       return pairsBoardName(room.board);
+    case 'daily-word':
+      return plural(room.rounds, 'word');
   }
 }
