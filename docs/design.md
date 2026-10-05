@@ -43,8 +43,8 @@ Three early Paper Pop concepts (`3:53`, `3:54`, `3:55`) sit above the flows for 
 - The shared canvas keeps the 798 × 598 bitmap's ratio; the Large Minesweeper board on mobile pans horizontally.
 - Some screens are UX the old app never had: the final results panel, the leave confirmation, the invite sheet, mobile tabs and the rules dialog; Ryan approved them with the rest of the file.
 - Mobile covers the main flows, not a mobile version of every desktop state.
-  Make 24 and Pairs keep their phone screens in their own sections, and Minesweeper solo's (MS05) in 03.
-- Solo screens show a visitor with no name where it matters (MS01-MS05: no avatar); a visitor who has a name sees it as usual (T01-T05, PR01-PR04).
+  Make 24, Pairs, Trios, Liar's Dice, Hush and Daily Word keep their phone screens in their own sections, and Minesweeper solo's (MS05) in 03.
+- Solo screens show a visitor with no name where it matters (MS01-MS05: no avatar); a visitor who has a name sees it as usual (T01-T05, PR01-PR04, TS01-TS04, LD01-LD06, DW01-DW06).
 - Prototype links are partial; this is a design, not a clickable spec of every control.
 
 Decisions from the design review rounds (their reports are in git history):
@@ -135,8 +135,6 @@ Code differs from Figma on purpose in a few places:
   It stays off when the system asks for reduced motion, and a Hush game the team lost is not celebrated.
 - On a narrow screen the Trios room's turn bar keeps room for two lines of what it says, the longest any phase needs, so the table under it never moves mid-pick; TS12 draws one line.
 - The phone name page (MO02) keeps the desktop's Back home button beside Let’s play, as the other phone forms (MO05, MO06) lay out their buttons; MO02 stacks a Cancel under it.
-- Liar’s Dice keeps the clock Waiting on another player’s turn, as the Countdown’s rule says (Running is for a phase you act in); LD08 and LD11 draw it Running.
-- Results seen by anyone but the room owner (LD12, as PR07) say whom they wait for to start another game, since only the owner may; Figma draws Play again there.
 - Daily Word on your own keeps the line under the board as tall as its "Not in the word list" note, so the keyboard never moves when a row is turned back; DW01 and DW02 are 27 px shorter than DW03.
   Where there is no line, on a phone and in a room while guessing, as Figma draws them, the note is said over the board instead, across the row under the one being fixed.
 - The others' boards in a Daily Word room stand 12 px apart, not DW07's 16 px: three at 16 px are 2 px wider than the panel holds beside the Desktop keyboard, which Figma lets overflow.
@@ -158,6 +156,8 @@ When editing through the Plugin API:
 - A script that fails halfway can leave orphaned nodes; remove only nodes you can prove the script created.
   Write scripts to be idempotent, so a failed one can simply be run again.
 - The file loads pages dynamically: use `getMainComponentAsync`, not `mainComponent`.
+- An override on an instance's inner layers is keyed to those layers, so swapping the instance to another variant drops it; a Player row's muted status icon is set on every glyph's own layers for that reason.
+- `findAll` throws on a slot's unreadable sublayers; walk the tree yourself and skip a node whose children cannot be read.
 - Cloning a variant inside its set drops the clone's `componentPropertyReferences`; rebind them, and only on the clone's own text, never on a nested instance's.
 - `findOne` by name also matches layers inside nested instances; filter by `id` (instance sublayers start with `I`) when you mean the component's own layer.
 - `resize()` fixes a frame's sizing modes; set them back to `AUTO` afterwards where the frame should hug.

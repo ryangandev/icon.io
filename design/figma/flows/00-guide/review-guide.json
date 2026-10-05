@@ -11,7 +11,7 @@
     "x": 40,
     "y": 150,
     "w": 1440,
-    "h": 1138,
+    "h": 1561,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/paper"
@@ -69,7 +69,7 @@
         "id": "9:14706",
         "name": "01 Platform",
         "w": 1344,
-        "h": 50,
+        "h": 75,
         "hSize": "hug",
         "layout": {
           "mode": "row",
@@ -96,9 +96,9 @@
             "id": "9:14708",
             "name": "P01 Home → P02 Name → P04 Games → Choose a game. P05–P10 cover connect",
             "w": 1092,
-            "h": 50,
+            "h": 75,
             "hSize": "hug",
-            "text": "P01 Home → P02 Name → P04 Games → Choose a game, and Play solo or Find a room. P05–P10 cover connection and missing-page states. P11–P13 cover leaving, sharing and session menu. P14 covers the game rules.",
+            "text": "P01 Home → P02 Name → P04 Games → Choose a game, and Play solo or Find a room. P05–P10 cover connection and missing-page states. P11–P13 cover leaving, sharing and session menu. P14–P15 cover the game rules. P16 leaving between games. P17 a tab another tab took over; P18 a room closed by a restart.",
             "textStyle": "Zumpo/Body",
             "fills": [
               "$Zumpo · UI:color/muted"
@@ -198,7 +198,7 @@
         "id": "9:14715",
         "name": "04 Mobile",
         "w": 1344,
-        "h": 30,
+        "h": 50,
         "hSize": "hug",
         "layout": {
           "mode": "row",
@@ -225,9 +225,9 @@
             "id": "9:14717",
             "name": "MO01–MO16 adapt main screens and room tabs at 390px. Large boards pres",
             "w": 1092,
-            "h": 25,
+            "h": 50,
             "hSize": "hug",
-            "text": "MO01–MO16 adapt main screens and room tabs at 390px. Large boards preserve tap targets with a horizontal viewport.",
+            "text": "MO01–MO16 adapt main screens and room tabs at 390px. Large boards preserve tap targets with a horizontal viewport. MO17–MO18 a tab taken over and a room closed by a restart.",
             "textStyle": "Zumpo/Body",
             "fills": [
               "$Zumpo · UI:color/muted"
@@ -326,10 +326,186 @@
       },
       {
         "type": "FRAME",
+        "id": "80:104919",
+        "name": "07 Trios",
+        "w": 1344,
+        "h": 50,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/32",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "80:104920",
+            "name": "04 Mobile",
+            "w": 220,
+            "h": 30,
+            "hSize": "hug",
+            "text": "07 Trios",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "80:104921",
+            "name": "MO01–MO16 adapt main screens and room tabs at 390px. Large boards pres",
+            "w": 1092,
+            "h": 50,
+            "hSize": "hug",
+            "text": "TS01–TS04 on your own: ready, two cards picked, not a trio, a run complete. TS05–TS10 rooms: finding a trio, a trio taken, locked out, a hint, final scores, settings. TS11–TS12 phone.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "80:104922",
+        "name": "08 Liar’s Dice",
+        "w": 1344,
+        "h": 50,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/32",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "80:104923",
+            "name": "04 Mobile",
+            "w": 220,
+            "h": 30,
+            "hSize": "hug",
+            "text": "08 Liar’s Dice",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "80:104924",
+            "name": "MO01–MO16 adapt main screens and room tabs at 390px. Large boards pres",
+            "w": 1092,
+            "h": 50,
+            "hSize": "hug",
+            "text": "LD01–LD06 on your own against bots: pick a table, your turn, a bot’s turn, the reveal, a win, out. LD07 settings. LD08–LD12 rooms: Leo’s turn, your turn, the reveal, out and watching, final results. LD13–LD15 phone.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "80:104925",
+        "name": "09 Hush",
+        "w": 1344,
+        "h": 50,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/32",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "80:104926",
+            "name": "04 Mobile",
+            "w": 220,
+            "h": 30,
+            "hSize": "hug",
+            "text": "09 Hush",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "80:104927",
+            "name": "MO01–MO16 adapt main screens and room tabs at 390px. Large boards pres",
+            "w": 1092,
+            "h": 50,
+            "hSize": "hug",
+            "text": "HU01–HU09 rooms only: getting ready, the countdown, a level in play, a mistake costs a life, paused, a life back, every level cleared, out of lives, settings. HU10–HU11 phone.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "80:104928",
+        "name": "10 Daily Word",
+        "w": 1344,
+        "h": 50,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/32",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "80:104929",
+            "name": "04 Mobile",
+            "w": 220,
+            "h": 30,
+            "hSize": "hug",
+            "text": "10 Daily Word",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "80:104930",
+            "name": "MO01–MO16 adapt main screens and room tabs at 390px. Large boards pres",
+            "w": 1092,
+            "h": 50,
+            "hSize": "hug",
+            "text": "DW01–DW06 on your own: today’s word, typing, not in the list, found, missed, a practice word. DW07–DW11 rooms: guessing beside the others’ marks, found, the reveal, game over, settings. DW12–DW14 phone.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
         "id": "9:14718",
         "name": "Shared pieces",
         "w": 1344,
-        "h": 75,
+        "h": 100,
         "hSize": "hug",
         "layout": {
           "mode": "row",
@@ -356,9 +532,9 @@
             "id": "9:14720",
             "name": "Buttons, avatar, wordmark, header, cells, forms, notices, room rows, s",
             "w": 1092,
-            "h": 75,
+            "h": 100,
             "hSize": "hug",
-            "text": "Buttons, avatar, wordmark, header, tags, icons, forms, select menus, notices, room rows, scores, chat, turn bar, drawing toolbar, word choices, mine cells, pick markers, pick results, mobile tabs, number cards, operator keys, pairs cards and pairs symbols. Native editable layers; colour, radius and spacing bindings.",
+            "text": "Buttons, avatar, wordmark, header, tags, icons, forms, select menus, notices, room rows, scores, chat, turn bar, drawing toolbar, word choices, mine cells, pick markers, pick results, mobile tabs, number cards, operator keys, pairs cards, pairs symbols, trios shapes and cards, dice, bids, cups, the bid picker, hush cards, lives, letter tiles and keys, the keyboard, word boards and race boards. Native editable layers; colour, radius and spacing bindings.",
             "textStyle": "Zumpo/Body",
             "fills": [
               "$Zumpo · UI:color/muted"
@@ -372,7 +548,7 @@
         "id": "9:14721",
         "name": "Review notes",
         "w": 1344,
-        "h": 50,
+        "h": 75,
         "hSize": "hug",
         "layout": {
           "mode": "row",
@@ -399,9 +575,9 @@
             "id": "9:14723",
             "name": "Proposed UX: dedicated final result panels, leave confirmation, share ",
             "w": 1092,
-            "h": 50,
+            "h": 75,
             "hSize": "hug",
-            "text": "Proposed UX: dedicated final result panels, leave confirmation, share dialog and mobile tabs and a rules view. They present existing actions/events. Make 24, Pairs and Minesweeper can also be played on your own, without a name; Draw & Guess needs a room.",
+            "text": "Proposed UX: dedicated final result panels, leave confirmation, share dialog and mobile tabs and a rules view. They present existing actions/events. Make 24, Pairs, Minesweeper, Trios, Daily Word and Liar’s Dice can also be played on your own, without a name; Draw & Guess and Hush need a room.",
             "textStyle": "Zumpo/Body",
             "fills": [
               "$Zumpo · UI:color/muted"
