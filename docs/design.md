@@ -90,7 +90,7 @@ Everything in `design/figma/` is generated; change the design in Figma and expor
 
 ## In code
 
-Each Shared pieces family is one component in [`front/src/ui/`](../front/src/ui/index.ts), named as in Figma without the `Zumpo/` prefix; [architecture.md](architecture.md#frontend) explains how the layer is built.
+Each Shared pieces family is one component in [`client/src/ui/`](../client/src/ui/index.ts), named as in Figma without the `Zumpo/` prefix; [architecture.md](architecture.md#frontend) explains how the layer is built.
 Variables, text styles and effect styles reach code only through the generated `--zumpo-*` tokens, so a value code needs and Figma lacks is a gap to fix in Figma first, as the menu, dialog and cell shadows were.
 
 To review the design system, run the frontend dev server and open [`/design`](http://localhost:3001/design).

@@ -6,37 +6,37 @@ Game rules live in [games/draw-and-guess.md](games/draw-and-guess.md) and [games
 ## Code map
 
 ```
-front/   React SPA (Vite) ──── socket.io ────► back/   Express + Socket.io
-                                                │
-                                                ├── room layer: seats, lobbies, chat
-                                                │     └── game modules: own their clocks
-                                                └── all state in memory, one registry
+client/  React SPA (Vite) ──── socket.io ────► server/  Express + Socket.io
+                                               │
+                                               ├── room layer: seats, lobbies, chat
+                                               │     └── game modules: own their clocks
+                                               └── all state in memory, one registry
 shared/  wire-types.d.ts, and rule code both sides run
 tools/   figma-export, figma-bridge, design-tokens: Figma into the repo (see design.md)
 ```
 
-| Path                                        | What it is                                                         |
-| ------------------------------------------- | ------------------------------------------------------------------ |
-| `back/app.ts`                               | `createZumpoServer()`: builds a fully wired server without a port  |
-| `back/server.ts`                            | Entry point that binds the port                                    |
-| `back/libs/rooms/`                          | The generic room layer (table below)                               |
-| `back/socket/draw-and-guess/`               | Draw & Guess module                                                |
-| `back/socket/minesweeper/`                  | Minesweeper module, board, solver and scoring                      |
-| `back/socket/player-session-handler.ts`     | The identity handshake                                             |
-| `back/socket/client-disconnect-handler.ts`  | Hands a dropped socket to `membership.ts`                          |
-| `back/libs/validation.ts`, `rate-limit.ts`  | Inbound validation and per-socket token buckets                    |
-| `shared/wire-types.d.ts`                    | Every event name and payload shape                                 |
-| `shared/*.ts`                               | Rule code both sides run: board sizes, deals, arithmetic           |
-| `front/src/app.tsx`                         | Routes and their guards                                            |
-| `front/src/net/`                            | The socket, the session, and the lobby and room hooks              |
-| `front/src/shell/`, `front/src/pages/`      | The page frame and the platform pages                              |
-| `front/src/room/`                           | What both rooms share: seating, layout, panels, dialogs            |
-| `front/src/draw-and-guess/`, `minesweeper/` | Each game's room view                                              |
-| `front/src/ui/`                             | The Zumpo design system: components, base styles, generated tokens |
-| `front/src/ui/gallery/`                     | The development-only `/design` page that reviews it against Figma  |
+| Path                                         | What it is                                                         |
+| -------------------------------------------- | ------------------------------------------------------------------ |
+| `server/app.ts`                              | `createZumpoServer()`: builds a fully wired server without a port  |
+| `server/server.ts`                           | Entry point that binds the port                                    |
+| `server/libs/rooms/`                         | The generic room layer (table below)                               |
+| `server/socket/draw-and-guess/`              | Draw & Guess module                                                |
+| `server/socket/minesweeper/`                 | Minesweeper module, board, solver and scoring                      |
+| `server/socket/player-session-handler.ts`    | The identity handshake                                             |
+| `server/socket/client-disconnect-handler.ts` | Hands a dropped socket to `membership.ts`                          |
+| `server/libs/validation.ts`, `rate-limit.ts` | Inbound validation and per-socket token buckets                    |
+| `shared/wire-types.d.ts`                     | Every event name and payload shape                                 |
+| `shared/*.ts`                                | Rule code both sides run: board sizes, deals, arithmetic           |
+| `client/src/app.tsx`                         | Routes and their guards                                            |
+| `client/src/net/`                            | The socket, the session, and the lobby and room hooks              |
+| `client/src/shell/`, `client/src/pages/`     | The page frame and the platform pages                              |
+| `client/src/room/`                           | What both rooms share: seating, layout, panels, dialogs            |
+| `client/src/draw-and-guess/`, `minesweeper/` | Each game's room view                                              |
+| `client/src/ui/`                             | The Zumpo design system: components, base styles, generated tokens |
+| `client/src/ui/gallery/`                     | The development-only `/design` page that reviews it against Figma  |
 
 There is no database and no business HTTP API.
-Everything except serving static files happens over Socket.io, and server state is one flat registry of rooms of every game, owned by [`back/libs/rooms/registry.ts`](../back/libs/rooms/registry.ts).
+Everything except serving static files happens over Socket.io, and server state is one flat registry of rooms of every game, owned by [`server/libs/rooms/registry.ts`](../server/libs/rooms/registry.ts).
 Restarting the server drops every room.
 That is a conscious trade for a hobby project, and it also means one process: scaling out needs a decision about where each room's state and clock live, which a Socket.IO Redis adapter alone does not answer.
 
@@ -45,17 +45,17 @@ That is a conscious trade for a hobby project, and it also means one process: sc
 ## The room layer
 
 A room is `Room<TGameState>`: a name, an owner, a password, seats keyed by player id, one clock, and a `game` field the room layer never looks inside.
-Each game registers a module implementing `GameModule` in [`libs/rooms/types.ts`](../back/libs/rooms/types.ts), and the layer reaches a game only through it.
+Each game registers a module implementing `GameModule` in [`libs/rooms/types.ts`](../server/libs/rooms/types.ts), and the layer reaches a game only through it.
 
-| File (`back/libs/rooms/`) | Responsibility                                                       |
-| ------------------------- | -------------------------------------------------------------------- |
-| `types.ts`                | `Room<TGameState>` and the `GameModule` interface                    |
-| `registry.ts`             | Every room, which module speaks for each, the snapshots and the chat |
-| `membership.ts`           | Seats, departures and the reconnect grace                            |
-| `lobby-events.ts`         | List rooms, create a room and seat its creator                       |
-| `room-events.ts`          | Join, leave, sync and start, answered through acknowledgements       |
-| `chat-events.ts`          | Talking in a room, after the game has had its say                    |
-| `emit.ts`                 | Typed emit helpers, and `onClientRequest` for acknowledged requests  |
+| File (`server/libs/rooms/`) | Responsibility                                                       |
+| --------------------------- | -------------------------------------------------------------------- |
+| `types.ts`                  | `Room<TGameState>` and the `GameModule` interface                    |
+| `registry.ts`               | Every room, which module speaks for each, the snapshots and the chat |
+| `membership.ts`             | Seats, departures and the reconnect grace                            |
+| `lobby-events.ts`           | List rooms, create a room and seat its creator                       |
+| `room-events.ts`            | Join, leave, sync and start, answered through acknowledgements       |
+| `chat-events.ts`            | Talking in a room, after the game has had its say                    |
+| `emit.ts`                   | Typed emit helpers, and `onClientRequest` for acknowledged requests  |
 
 A module reaches the layer through the `GameContext` it is handed: the typed Socket.IO server, the identity registry, and a `RoomLookup` that finds rooms (`ofType` refuses a room of another game), rebroadcasts a lobby (`emitLobby`), sends snapshots (`emitState`) and posts to the chat (`announce`).
 `GameModule` is what the layer calls back:
@@ -110,9 +110,9 @@ The server decides everything a player could gain by lying about.
 - **A snapshot is built per viewer.** `toRoomState(room, viewerId)` leaves out whatever that player may not know (the word for a guesser, another player's pick), and only the registry sends `room:state`, one player at a time.
   A module changes its state and calls `rooms.emitState(room)`; it never emits a snapshot itself, because a room-wide emit would send everybody the same view.
 - **A game on your own is the exception, and runs in the browser.**
-  With nobody else in it there is nothing to gain by lying, so solo play needs no name, opens no socket, and keeps its bests in the device's `localStorage` ([`solo/`](../front/src/solo/)).
+  With nobody else in it there is nothing to gain by lying, so solo play needs no name, opens no socket, and keeps its bests in the device's `localStorage` ([`solo/`](../client/src/solo/)).
   Its rules are still one copy: anything a room plays too, such as board sizes or a deal, comes from `shared/*.ts`.
-- **Every inbound event is validated** with zod ([`validation.ts`](../back/libs/validation.ts)) before it reaches game state, and **rate-limited** before that ([`rate-limit.ts`](../back/libs/rate-limit.ts)): one token bucket per kind of event, per socket, because a drawing phase is a stream of coordinates and joining a room is a click.
+- **Every inbound event is validated** with zod ([`validation.ts`](../server/libs/validation.ts)) before it reaches game state, and **rate-limited** before that ([`rate-limit.ts`](../server/libs/rate-limit.ts)): one token bucket per kind of event, per socket, because a drawing phase is a stream of coordinates and joining a room is a click.
 - **The UI's rules are enforced, not assumed.** Only the drawer may draw, and only while drawing; only the owner may start; only a seat-holder may read a room's state or talk in it; a guess is checked by the game's `handleChat` for phase, not-the-drawer and not-already-scored.
 - **The drawing is server state too.** The stroke list every client builds is built once more on the server, so a player arriving mid-turn gets the board, and undo is "drop the last stroke" rather than a full-canvas image.
 
@@ -126,20 +126,20 @@ The client keeps both in `sessionStorage`: per tab, surviving a reload, which is
 There are no accounts: this is a way to be the same player across a refresh, not the same person across a visit.
 
 A dropped connection is not a departure.
-The seat, score, ownership and place in the round are held for thirty seconds ([`membership.ts`](../back/libs/rooms/membership.ts)); leaving deliberately takes effect immediately, and that is the only difference between the two paths.
+The seat, score, ownership and place in the round are held for thirty seconds ([`membership.ts`](../server/libs/rooms/membership.ts)); leaving deliberately takes effect immediately, and that is the only difference between the two paths.
 A drawer's turn is held too, but only for ten seconds and only once drawing has started: long enough for a refresh, short enough that a room whose drawer has really gone is not left watching a frozen canvas.
 
 ## The wire contract
 
 Every event name and payload shape is declared once in [`shared/wire-types.d.ts`](../shared/wire-types.d.ts), as the two event maps `ClientToServerEvents` and `ServerToClientEvents`.
-The server is `Server<ClientToServerEvents, ServerToClientEvents>`, and its emit helpers in [`emit.ts`](../back/libs/rooms/emit.ts) are generic over the event name, so an event renamed or reshaped on one side stops compiling rather than silently never arriving.
+The server is `Server<ClientToServerEvents, ServerToClientEvents>`, and its emit helpers in [`emit.ts`](../server/libs/rooms/emit.ts) are generic over the event name, so an event renamed or reshaped on one side stops compiling rather than silently never arriving.
 It is types only, imported with `import type`, so nothing resolves at runtime.
 
 Beside it, `shared/*.ts` holds rule code that both sides run: board sizes, card deals, the arithmetic of a hand.
 A game you play on your own runs in the browser and a room runs on the server, and both import the same file, so the two cannot drift apart.
-The backend compiles `shared/` along with its own sources (`rootDir` is the repository root), which is why the server starts from `back/build/back/server.js` and its runtime copy lands in `back/build/shared/`; Vite bundles the same files into the client.
+The backend compiles `shared/` along with its own sources (`rootDir` is the repository root), which is why the server starts from `server/build/server/server.js` and its runtime copy lands in `server/build/shared/`; Vite bundles the same files into the client.
 `shared/package.json` only marks the folder as ES modules; it is never installed.
-Nothing in `shared/` may import from `back/` or `front/`, or reach for Node or the DOM.
+Nothing in `shared/` may import from `server/` or `client/`, or reach for Node or the DOM.
 Inbound arguments are still handled as `unknown` and parsed with zod: a type says what a well-behaved client sends, not what arrives.
 
 The protocol is snapshot-driven.
@@ -164,7 +164,7 @@ Zumpo components are built on headless primitives, which bring keyboard and scre
 
 ### The design system
 
-The design system lives in [`front/src/ui/`](../front/src/ui/index.ts), one component per Figma Shared pieces family:
+The design system lives in [`client/src/ui/`](../client/src/ui/index.ts), one component per Figma Shared pieces family:
 
 - **[Base UI](https://base-ui.com) for the primitives** (select, dialog, popover, tabs, radio groups, fields, buttons).
   Radix's maintenance has slowed since its authors moved to Base UI, and React Aria is heavier than these few widgets need.
@@ -182,7 +182,7 @@ The design system lives in [`front/src/ui/`](../front/src/ui/index.ts), one comp
 
 ### Routes
 
-Routes live in [`app.tsx`](../front/src/app.tsx), on a data router so a room can intercept navigation away from it:
+Routes live in [`app.tsx`](../client/src/app.tsx), on a data router so a room can intercept navigation away from it:
 
 | Path                         | Page                                                        |
 | ---------------------------- | ----------------------------------------------------------- |
@@ -200,7 +200,7 @@ The room URL carries the game so that a page which cannot reach the room (a pass
 
 ### Talking to the server
 
-[`net/`](../front/src/net/) is the only code that touches the socket, typed on the wire contract's two event maps:
+[`net/`](../client/src/net/) is the only code that touches the socket, typed on the wire contract's two event maps:
 
 - **`session.tsx`** owns the one socket.
   The first page that needs the server connects it; every handshake presents the stored identity, the session goes online at `session:ready`, and the identity and the chosen name are kept in `sessionStorage` (see [identity](#identity-and-reconnection)).
@@ -216,7 +216,7 @@ Leaving is routed through the navigation blocker, whatever started it (the Leave
 Only Leave room between games goes at once; it marks its navigation with `state.via`, and anything else asks first, mid-game or not ([design](design.md#the-room-bar)).
 Leaving is never done in an effect's cleanup, where React's development double-mount would give the seat up on arrival.
 
-In production the client connects to the origin that served the page and ignores `VITE_SOCKET_URL` ([`socket.ts`](../front/src/net/socket.ts)).
+In production the client connects to the origin that served the page and ignores `VITE_SOCKET_URL` ([`socket.ts`](../client/src/net/socket.ts)).
 Serving the frontend from a different host than the backend needs that changed first, plus CORS.
 
 ### The drawing canvas
@@ -227,21 +227,21 @@ The server never echoes a drawer's own strokes, so the drawer's input is applied
 
 ## Configuration
 
-Environment variables for the server are listed in [`back/README.md`](../back/README.md) and for the client in [`front/README.md`](../front/README.md).
+Environment variables for the server are listed in [`server/README.md`](../server/README.md) and for the client in [`client/README.md`](../client/README.md).
 Phase lengths are server settings because the server owns the clock; each game documents its own under "Configuration".
 The test suite passes durations straight to `createZumpoServer()`, so an environment variable cannot change a suite's timing.
 
-Production is one Node process: Vite builds into `back/build/public` and Express serves it, with Socket.IO on the same HTTP server.
-`npm --prefix back run build` empties `back/build/` including the frontend bundle, so the backend must build first; the root `npm run build` does it in that order.
-It empties the folder rather than deleting it, and `back/tsconfig.json` names its source folders instead of `**/*.ts`, because TypeScript 7's watcher restarts on any change under a folder it watches: otherwise every e2e or design run restarts a running `npm --prefix back run watch` and loses its rooms.
+Production is one Node process: Vite builds into `server/build/public` and Express serves it, with Socket.IO on the same HTTP server.
+`npm --prefix server run build` empties `server/build/` including the frontend bundle, so the backend must build first; the root `npm run build` does it in that order.
+It empties the folder rather than deleting it, and `server/tsconfig.json` names its source folders instead of `**/*.ts`, because TypeScript 7's watcher restarts on any change under a folder it watches: otherwise every e2e or design run restarts a running `npm --prefix server run watch` and loses its rooms.
 
 ## Adding a game
 
 1. One `createXModule(ctx, ...)` returning a `GameModule`, and one line in `app.ts` registering it.
    Its engine changes state and calls `ctx.rooms.emitState(room)`; its `toRoomState(room, viewerId)` decides what each player sees.
 2. A member added to `GameType`, the game's room state, lobby info and settings interfaces in the shared contract, and its event names in the two unions.
-3. An entry in [`games/catalog.ts`](../front/src/games/catalog.ts), the game's fields in [`create-room.tsx`](../front/src/pages/create-room.tsx), which puts them into `settings` (the only part of a create request the server hands to a module), and a room view rendered by [`room-page.tsx`](../front/src/room/room-page.tsx) inside the shared `RoomLayout`.
-4. For a game that can be played on your own: its `solo` rules in the catalog, a page in [`solo/solo-page.tsx`](../front/src/solo/solo-page.tsx) built on `SoloLayout`, and any rule code a room also runs in `shared/`.
+3. An entry in [`games/catalog.ts`](../client/src/games/catalog.ts), the game's fields in [`create-room.tsx`](../client/src/pages/create-room.tsx), which puts them into `settings` (the only part of a create request the server hands to a module), and a room view rendered by [`room-page.tsx`](../client/src/room/room-page.tsx) inside the shared `RoomLayout`.
+4. For a game that can be played on your own: its `solo` rules in the catalog, a page in [`solo/solo-page.tsx`](../client/src/solo/solo-page.tsx) built on `SoloLayout`, and any rule code a room also runs in `shared/`.
 
 Nothing in `libs/rooms/` should need editing.
 If it does, the abstraction is wrong rather than the game unusual, and that is worth fixing rather than working around.
@@ -251,7 +251,7 @@ If it does, the abstraction is wrong rather than the game unusual, and that is w
 Vitest on both sides.
 The backend suite runs real Socket.IO clients against a real server on an ephemeral port per suite, because that is where the interesting behaviour lives, and phase durations are parameters so a whole game runs in milliseconds.
 Because it binds ports, it times out in sandboxes that forbid listening on localhost; run it where that is allowed before concluding a test is broken.
-The frontend suite renders the whole app in jsdom against a fake socket ([`tests/fake-socket.ts`](../front/src/tests/fake-socket.ts)), with each test playing the server; jsdom has no 2D context, so canvas rendering is verified in a browser only.
+The frontend suite renders the whole app in jsdom against a fake socket ([`tests/fake-socket.ts`](../client/src/tests/fake-socket.ts)), with each test playing the server; jsdom has no 2D context, so canvas rendering is verified in a browser only.
 
 Two serious bugs were found only by playing in a browser (a redundant hint, and the lost identity under [pitfalls](#pitfalls)), so UI and flow changes are verified end to end, not just by the suites.
 `npm run e2e` does the repeatable part: [Playwright](../e2e/) builds the app, serves it as production does on port 3310 (`E2E_PORT`), and plays the main flows with each player in a browser context of their own.
@@ -266,7 +266,7 @@ It checks behaviour, not looks.
 - **oxlint, not ESLint:** `typescript-eslint` refuses TypeScript 7 (support tracked for TS ≥ 7.1 in typescript-eslint#10940).
   Keeping the Go compiler beats keeping a linter, `tsc --strict` already rejects what the type-aware rules would catch, and switching back is a config file because the rule names are ESLint's.
   Revisit when typescript-eslint supports TS 7.
-- **Root tooling, separate apps:** the root `package.json` carries lint, format and orchestration only; `back/` and `front/` keep their own dependencies and lockfiles.
+- **Root tooling, separate apps:** the root `package.json` carries lint, format and orchestration only; `server/` and `client/` keep their own dependencies and lockfiles.
   It is deliberately not an npm workspace.
 - **Strict TypeScript** with `noImplicitAny`, `verbatimModuleSyntax` and `noUnusedLocals`.
 

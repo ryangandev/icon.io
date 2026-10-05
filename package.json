@@ -2,16 +2,16 @@
   "name": "zumpo",
   "version": "0.2.0",
   "private": true,
-  "description": "Repo-level tooling. The two applications live in back/ and front/ and keep their own dependencies.",
+  "description": "Repo-level tooling. The two applications live in server/ and client/ and keep their own dependencies.",
   "engines": {
     "node": ">=22.12"
   },
   "scripts": {
-    "install:all": "npm --prefix back ci && npm --prefix front ci",
+    "install:all": "npm --prefix server ci && npm --prefix client ci",
     "lint": "oxlint",
-    "typecheck": "npm --prefix back run typecheck && npm --prefix front run typecheck && tsc -p e2e",
-    "test": "npm --prefix back test && npm --prefix front test",
-    "build": "npm --prefix back run build:deploy",
+    "typecheck": "npm --prefix server run typecheck && npm --prefix client run typecheck && tsc -p e2e",
+    "test": "npm --prefix server test && npm --prefix client test",
+    "build": "npm --prefix server run build:deploy",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "e2e": "npm run build && playwright test -c e2e",

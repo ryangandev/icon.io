@@ -29,7 +29,7 @@ type GameType = 'draw-and-guess' | 'minesweeper' | 'make-24' | 'pairs';
 
 type RoomStatus = 'Open' | 'Full' | 'In Progress';
 
-/** The word bank's categories. `back/libs/word-bank.ts` is keyed by these. */
+/** The word bank's categories. `server/libs/word-bank.ts` is keyed by these. */
 type WordCategory =
   | 'Fruits'
   | 'Animals'

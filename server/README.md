@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="Zumpo Logo" src="../front/public/favicon.svg" height="auto" width="200">
+    <img alt="Zumpo Logo" src="../client/public/favicon.svg" height="auto" width="200">
 </p>
 
 <h1 align="center">Zumpo [Backend]</h1>
@@ -43,7 +43,7 @@
   npm run watch
   ```
 
-- The above steps start the server on port 3000. You will also need to start the frontend in another terminal to use the application. Refer to the [Front README](../front/README.md) for instructions on how to start the frontend.
+- The above steps start the server on port 3000. You will also need to start the frontend in another terminal to use the application. Refer to the [Front README](../client/README.md) for instructions on how to start the frontend.
 
 - If both the frontend and backend are running, you can access the application at `http://localhost:3001`.
 

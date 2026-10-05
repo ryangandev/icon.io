@@ -143,7 +143,7 @@ The time is shown and kept as the best for that board **on this device** (in `lo
 
 There is no challenge link: the mines depend on where the first click lands, so two people could not play the same board.
 
-The rules are covered by [`game.test.ts`](../../front/src/minesweeper/solo/game.test.ts), and the screens are MS01-MS05 in [the Figma file](../design.md).
+The rules are covered by [`game.test.ts`](../../client/src/minesweeper/solo/game.test.ts), and the screens are MS01-MS05 in [the Figma file](../design.md).
 
 ## Rules the server enforces
 
@@ -200,20 +200,20 @@ When a game ends the final board and its last round stay up, for the results scr
 Minesweeper is a **game module** on the generic room layer: seats, ownership, the reconnect grace, chat and the lobby are not its code.
 See [the room layer](../architecture.md#the-room-layer).
 
-| File                                                             | Responsibility                                         |
-| ---------------------------------------------------------------- | ------------------------------------------------------ |
-| [`module.ts`](../../back/socket/minesweeper/module.ts)           | What the room layer calls, and all it calls            |
-| [`game-engine.ts`](../../back/socket/minesweeper/game-engine.ts) | The round loop, and what a round resolves to           |
-| [`probability.ts`](../../back/socket/minesweeper/probability.ts) | The exact solver: every score comes from it            |
-| [`scoring.ts`](../../back/socket/minesweeper/scoring.ts)         | The payout curves, and why they are that shape         |
-| [`board.ts`](../../back/socket/minesweeper/board.ts)             | The minefield, and the public view of it               |
-| [`state.ts`](../../back/socket/minesweeper/state.ts)             | The game's state, and the snapshot each player is sent |
+| File                                                               | Responsibility                                         |
+| ------------------------------------------------------------------ | ------------------------------------------------------ |
+| [`module.ts`](../../server/socket/minesweeper/module.ts)           | What the room layer calls, and all it calls            |
+| [`game-engine.ts`](../../server/socket/minesweeper/game-engine.ts) | The round loop, and what a round resolves to           |
+| [`probability.ts`](../../server/socket/minesweeper/probability.ts) | The exact solver: every score comes from it            |
+| [`scoring.ts`](../../server/socket/minesweeper/scoring.ts)         | The payout curves, and why they are that shape         |
+| [`board.ts`](../../server/socket/minesweeper/board.ts)             | The minefield, and the public view of it               |
+| [`state.ts`](../../server/socket/minesweeper/state.ts)             | The game's state, and the snapshot each player is sent |
 
 Its one event of its own is `ms:pick`.
 
 ### The solver
 
-[`probability.ts`](../../back/socket/minesweeper/probability.ts) computes the true posterior, not an estimate.
+[`probability.ts`](../../server/socket/minesweeper/probability.ts) computes the true posterior, not an estimate.
 Every revealed number constrains its hidden neighbours; the **frontier** (cells touching a number) splits into independent components, each component's satisfying assignments are enumerated by backtracking, and the **sea** (cells touching nothing) is folded in by weighting each frontier mine-count by `C(|sea|, remaining − t)`.
 
 The counts are `bigint` because they genuinely overflow: `C(300, 99)` has 82 digits, and on a Large board a double would turn every score into `NaN`.
@@ -221,4 +221,4 @@ The counts are `bigint` because they genuinely overflow: `C(300, 99)` has 82 dig
 It matters that this is exact rather than a per-constraint heuristic.
 The classic **1-2-1** pattern (three numbers reading 1, 2, 1 over three hidden cells) has exactly one solution, mine-safe-mine, and a local estimate puts the middle cell at 2/3 where the truth is 0.
 Getting that wrong would not crash anything; it would just quietly pay people the wrong amount forever.
-It is pinned down by [`minesweeper-probability.test.ts`](../../back/tests/minesweeper-probability.test.ts), including the invariant that the risks of all hidden cells must sum to the number of mines still out there, which they do, on hand-built boards and on real ones part-way through a game.
+It is pinned down by [`minesweeper-probability.test.ts`](../../server/tests/minesweeper-probability.test.ts), including the invariant that the risks of all hidden cells must sum to the number of mines still out there, which they do, on hand-built boards and on real ones part-way through a game.

@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="Zumpo Logo" src="front/public/favicon.svg" height="auto" width="200">
+    <img alt="Zumpo Logo" src="client/public/favicon.svg" height="auto" width="200">
 </p>
 
 <h1 align="center">Zumpo</h1>
@@ -51,11 +51,11 @@ Zumpo is built using React for the frontend and Node.js for the backend, each lo
 
 ### Frontend
 
-- For frontend setup, follow the instructions in the [Front README](front/README.md).
+- For frontend setup, follow the instructions in the [Front README](client/README.md).
 
 ### Backend
 
-- For backend setup, follow the instructions in the [Back README](back/README.md).
+- For backend setup, follow the instructions in the [Back README](server/README.md).
 
 ## 🛠️ How To Run - Deployment
 

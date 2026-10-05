@@ -28,7 +28,7 @@ Where to find the answer, without searching the repository.
 | What the Figma screens do and do not promise           | [design.md#what-the-screens-are-and-are-not](design.md#what-the-screens-are-and-are-not)                                        |
 | Exporting Figma into the repo                          | [design.md#figma-export](design.md#figma-export), then [the plugin README](../tools/figma-export/README.md)                     |
 | Editing the Figma file safely                          | [design.md#editing-the-figma-file](design.md#editing-the-figma-file), then [the bridge README](../tools/figma-bridge/README.md) |
-| Running and deploying the app                          | [README.md](../README.md), [back/README.md](../back/README.md), [front/README.md](../front/README.md)                           |
+| Running and deploying the app                          | [README.md](../README.md), [server/README.md](../server/README.md), [client/README.md](../client/README.md)                     |
 
 ## Ownership
 

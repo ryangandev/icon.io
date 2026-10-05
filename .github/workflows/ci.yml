@@ -23,8 +23,8 @@ jobs:
           cache: npm
           cache-dependency-path: |
             package-lock.json
-            back/package-lock.json
-            front/package-lock.json
+            server/package-lock.json
+            client/package-lock.json
 
       - name: Install
         run: |
@@ -73,8 +73,8 @@ jobs:
           cache: npm
           cache-dependency-path: |
             package-lock.json
-            back/package-lock.json
-            front/package-lock.json
+            server/package-lock.json
+            client/package-lock.json
 
       - name: Install
         run: |

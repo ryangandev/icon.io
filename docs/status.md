@@ -10,7 +10,7 @@ The redesign is an editable Figma file of 111 screens and its shared component f
 Ryan approved it in review round two on 2026-10-03, after one fix (icons centred on their line of text).
 
 The implementation was built on `rework` and merged into `main` on 2026-10-05 ([#26](https://github.com/ryangandev/zumpo/pull/26)).
-Every page, desktop and phone, is rebuilt on the Zumpo design system in `front/src/ui/`, and Ant Design is gone ([architecture](architecture.md#frontend)).
+Every page, desktop and phone, is rebuilt on the Zumpo design system in `client/src/ui/`, and Ant Design is gone ([architecture](architecture.md#frontend)).
 Both sides speak the snapshot-driven wire contract in `shared/wire-types.d.ts` ([architecture](architecture.md#the-wire-contract)).
 `npm run e2e` plays the main flows with two players, and `npm run design:compare` captures every Figma screen's state beside its preview; where code differs on purpose, [design.md](design.md#on-purpose) says so.
 

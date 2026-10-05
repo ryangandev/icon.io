@@ -16,11 +16,11 @@
     "**/node_modules",
     "**/build",
     "**/dist",
-    "front/src/ui/generated"
+    "client/src/ui/generated"
   ],
   "overrides": [
     {
-      "files": ["back/**/*.ts"],
+      "files": ["server/**/*.ts"],
       "env": {
         "node": true
       },
@@ -34,7 +34,7 @@
       }
     },
     {
-      "files": ["front/**/*.{ts,tsx}"],
+      "files": ["client/**/*.{ts,tsx}"],
       "env": {
         "browser": true
       }

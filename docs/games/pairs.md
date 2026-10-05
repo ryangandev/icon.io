@@ -111,14 +111,14 @@ Pairs' one event of its own is `pairs:flip`, with the room and the card's place.
 
 ## Where the code lives
 
-| File                                                       | Responsibility                                         |
-| ---------------------------------------------------------- | ------------------------------------------------------ |
-| [`shared/pairs.ts`](../../shared/pairs.ts)                 | Boards and the deal: the rules both sides run          |
-| [`module.ts`](../../back/socket/pairs/module.ts)           | What the room layer calls, and all it calls            |
-| [`game-engine.ts`](../../back/socket/pairs/game-engine.ts) | Turns, flips and scores                                |
-| [`state.ts`](../../back/socket/pairs/state.ts)             | The game's state, and the snapshot each player is sent |
-| [`pairs/solo/`](../../front/src/pairs/solo/)               | A game on your own                                     |
-| [`pairs/room.tsx`](../../front/src/pairs/room.tsx)         | A room's screens                                       |
+| File                                                         | Responsibility                                         |
+| ------------------------------------------------------------ | ------------------------------------------------------ |
+| [`shared/pairs.ts`](../../shared/pairs.ts)                   | Boards and the deal: the rules both sides run          |
+| [`module.ts`](../../server/socket/pairs/module.ts)           | What the room layer calls, and all it calls            |
+| [`game-engine.ts`](../../server/socket/pairs/game-engine.ts) | Turns, flips and scores                                |
+| [`state.ts`](../../server/socket/pairs/state.ts)             | The game's state, and the snapshot each player is sent |
+| [`pairs/solo/`](../../client/src/pairs/solo/)                | A game on your own                                     |
+| [`pairs/room.tsx`](../../client/src/pairs/room.tsx)          | A room's screens                                       |
 
-The rules are covered by [`pairs-rules.test.ts`](../../back/tests/pairs-rules.test.ts) and [`pairs-flow.test.ts`](../../back/tests/pairs-flow.test.ts).
+The rules are covered by [`pairs-rules.test.ts`](../../server/tests/pairs-rules.test.ts) and [`pairs-flow.test.ts`](../../server/tests/pairs-flow.test.ts).
 The screens are PR01-PR10 in [the Figma file](../design.md).

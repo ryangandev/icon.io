@@ -91,7 +91,7 @@ const createZumpoServer = (
 
   const app = express();
   const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-  // build/back/app.js serves the SPA that Vite builds into build/public.
+  // build/server/app.js serves the SPA that Vite builds into build/public.
   const publicStaticFolder = path.join(__dirname, '..', 'public');
 
   app.use(express.json());
