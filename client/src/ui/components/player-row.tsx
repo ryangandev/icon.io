@@ -13,7 +13,11 @@ export interface PlayerRowProps {
   /** What the player is doing right now; never a generic "Connected". */
   status: string;
   statusIcon?: GlyphName;
-  /** Left out where a score says nothing, as in Hush, where a team scores together. */
+  /**
+   * Left out where a score says nothing, as in Hush, where a team scores
+   * together. TODO(figma export): Figma hides the Score text by an override;
+   * the Player row needs a Show score property for the export to say so.
+   */
   score?: number;
   /** Shows the crown; it passes on when the host leaves. */
   host?: boolean;
