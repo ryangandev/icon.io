@@ -7,9 +7,9 @@ import { WordBoard } from './word-board';
 describe('Keyboard', () => {
   it('says what each letter is known to be, and presses keys', async () => {
     const user = userEvent.setup();
-    const onLetter = vi.fn();
-    const onEnter = vi.fn();
-    const onDelete = vi.fn();
+    const onLetter = vi.fn<(letter: string) => void>();
+    const onEnter = vi.fn<() => void>();
+    const onDelete = vi.fn<() => void>();
     render(
       <Keyboard
         marks={{ s: 'correct', t: 'present', e: 'absent' }}

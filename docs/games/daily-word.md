@@ -225,7 +225,9 @@ The client checks the word list before sending, so only a stale or modified clie
 | [`game-engine.ts`](../../server/socket/daily-word/game-engine.ts)    | The round loop, guesses and scores                                                            |
 | [`state.ts`](../../server/socket/daily-word/state.ts)                | The game's state, and the snapshot each player is sent                                        |
 | [`daily-word/solo/`](../../client/src/daily-word/solo/)              | The daily word and practice words on your own                                                 |
+| [`daily-word/play.tsx`](../../client/src/daily-word/play.tsx)        | Your board, the line under it, the keyboard, and typing on a real one                         |
 | [`daily-word/room.tsx`](../../client/src/daily-word/room.tsx)        | A room's screens                                                                              |
 
 The rules are covered by `daily-word-rules.test.ts` and `daily-word-flow.test.ts` in `server/tests/`.
+[`e2e/daily-word.spec.ts`](../../e2e/daily-word.spec.ts) plays a two-player game and a solo day in a browser, guessing as a player would, from the marks.
 The screens are DW01-DW14 in [the Figma file](../design.md).
