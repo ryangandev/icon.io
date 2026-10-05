@@ -1,0 +1,69 @@
+/* Your board and the others' side by side (DW07, DW08). */
+.table {
+  display: flex;
+  align-items: flex-start;
+  align-self: stretch;
+  gap: var(--zumpo-space-32);
+}
+
+.others,
+.results {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--zumpo-space-16);
+  min-width: 0;
+}
+
+.results {
+  align-self: stretch;
+  gap: var(--zumpo-space-20);
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-4);
+}
+
+.title {
+  margin: 0;
+  font: var(--zumpo-text-heading);
+  letter-spacing: var(--zumpo-text-heading-tracking);
+}
+
+.note,
+.body {
+  margin: 0;
+  color: var(--zumpo-muted);
+}
+
+.note {
+  font: var(--zumpo-text-small);
+  letter-spacing: var(--zumpo-text-small-tracking);
+}
+
+.body {
+  font: var(--zumpo-text-body);
+  letter-spacing: var(--zumpo-text-body-tracking);
+}
+
+.boards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--zumpo-space-16);
+}
+
+/* On a phone the others are on the Players tab, on a paper panel. */
+@media (max-width: 640px) {
+  .others {
+    padding: var(--zumpo-space-20);
+    border: 1px solid var(--zumpo-line);
+    border-radius: var(--zumpo-radius-24);
+    background: var(--zumpo-paper);
+  }
+
+  .boards {
+    gap: var(--zumpo-space-12);
+  }
+}
