@@ -99,6 +99,7 @@ describe('how to play', () => {
       ['Minesweeper', 'minesweeper'],
       ['Make 24', 'make-24'],
       ['Pairs', 'pairs'],
+      ['Trios', 'trios'],
     ]) {
       expect(
         rules(name).getByRole('link', { name: 'Play solo' }),
@@ -141,6 +142,30 @@ describe('making a room', () => {
             gameType: 'pairs',
             maxPlayers: 6,
             settings: { board: 'Large' },
+          }),
+        ],
+      }),
+    );
+  });
+
+  it('makes a Trios room of the length picked, with up to eight seats', async () => {
+    const user = userEvent.setup();
+    const { fake } = await renderApp('/games/trios/new');
+    expect(screen.getByText('Choose 2–8 seats.')).toBeInTheDocument();
+    expect(screen.getByText('10 or 20 trios a game.')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('combobox', { name: 'Trios' }));
+    await user.click(await screen.findByRole('option', { name: '20 trios' }));
+    await user.click(screen.getByRole('button', { name: 'Create room' }));
+
+    await waitFor(() =>
+      expect(fake.requests).toContainEqual({
+        event: 'room:create',
+        args: [
+          expect.objectContaining({
+            gameType: 'trios',
+            maxPlayers: 8,
+            settings: { trios: 20 },
           }),
         ],
       }),

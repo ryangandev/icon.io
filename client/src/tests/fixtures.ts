@@ -4,6 +4,7 @@ import type {
   MinesweeperRoomState,
   PairsRoomState,
   PlayerInfo,
+  TriosRoomState,
 } from '../../../shared/wire-types';
 
 /** The viewer in every fixture, and the room's host unless a test says not. */
@@ -105,6 +106,26 @@ export function pairsState(
     turnPlayerId: null,
     nextPlayerId: null,
     lastMiss: [],
+    lastGame: null,
+    ...overrides,
+  };
+}
+
+export function triosState(
+  overrides: Partial<TriosRoomState> = {},
+): TriosRoomState {
+  return {
+    ...room,
+    gameType: 'trios',
+    trios: 10,
+    phase: 'waiting',
+    found: 0,
+    table: [],
+    deckLeft: 0,
+    lastTrio: null,
+    hint: [],
+    lockedOutMs: 0,
+    myMiss: [],
     lastGame: null,
     ...overrides,
   };
