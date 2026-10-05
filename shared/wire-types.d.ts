@@ -25,7 +25,8 @@
  * Which game a room is playing. Every room-layer payload carries it, and it is
  * the key the server's module registry is keyed by.
  */
-type GameType = 'draw-and-guess' | 'minesweeper' | 'make-24' | 'pairs';
+type GameType =
+  'draw-and-guess' | 'minesweeper' | 'make-24' | 'pairs' | 'trios';
 
 type RoomStatus = 'Open' | 'Full' | 'In Progress';
 
@@ -122,7 +123,11 @@ interface RoomCreateRequest {
   password: string;
   /** The game's own half, which only its module can read. */
   settings:
-    DrawAndGuessSettings | MinesweeperSettings | Make24Settings | PairsSettings;
+    | DrawAndGuessSettings
+    | MinesweeperSettings
+    | Make24Settings
+    | PairsSettings
+    | TriosSettings;
 }
 
 interface DrawAndGuessSettings {
@@ -145,6 +150,11 @@ type PairsBoard = 'Small' | 'Large';
 
 interface PairsSettings {
   board: PairsBoard;
+}
+
+interface TriosSettings {
+  /** Trios in a game: 10 or 20. */
+  trios: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -185,11 +195,17 @@ interface PairsLobbyRoomInfo extends LobbyRoomInfo {
   board: PairsBoard;
 }
 
+interface TriosLobbyRoomInfo extends LobbyRoomInfo {
+  gameType: 'trios';
+  trios: number;
+}
+
 type AnyLobbyRoomInfo =
   | DrawAndGuessLobbyRoomInfo
   | MinesweeperLobbyRoomInfo
   | Make24LobbyRoomInfo
-  | PairsLobbyRoomInfo;
+  | PairsLobbyRoomInfo
+  | TriosLobbyRoomInfo;
 
 // ---------------------------------------------------------------------------
 // Rooms
@@ -437,11 +453,61 @@ interface PairsRoomState extends RoomState {
   lastGame: PairsGameSummary | null;
 }
 
+/**
+ * waiting: no game; finding: everybody looks for a trio; taken: a trio just
+ * taken stays on the table for everybody, before new cards are dealt.
+ */
+type TriosPhase = 'waiting' | 'finding' | 'taken';
+
+/** A trio somebody took: who, and the three cards from where they lay. */
+interface TriosTrio {
+  playerId: string;
+  username: string;
+  /** The three cards, from 0 to 80, in the order of `places`. */
+  cards: number[];
+  /** Where on the table they lay, in order. */
+  places: number[];
+}
+
+interface TriosGameSummary extends GameSummary {
+  /** Trios a game has: 10 or 20. */
+  trios: number;
+  /** Trios found; fewer when the game ended early. */
+  found: number;
+}
+
+/**
+ * A Trios room, as one player may see it. Points are trios found. The deck's
+ * order never leaves the server; a lockout and its cards are the viewer's own.
+ */
+interface TriosRoomState extends RoomState {
+  gameType: 'trios';
+  trios: number;
+  phase: TriosPhase;
+  found: number;
+  /**
+   * The twelve cards in their places, row by row: the table in play, or the
+   * last game's as it ended; empty before the first game.
+   */
+  table: number[];
+  deckLeft: number;
+  /** The latest trio taken this game, kept after the refill. */
+  lastTrio: TriosTrio | null;
+  /** The places the hints have marked, in order: none, one or two. */
+  hint: number[];
+  /** How long this player is still locked out after a wrong claim; 0 if not. */
+  lockedOutMs: number;
+  /** This player's three cards that were not a trio, while locked out. */
+  myMiss: number[];
+  lastGame: TriosGameSummary | null;
+}
+
 type AnyRoomState =
   | DrawAndGuessRoomState
   | MinesweeperRoomState
   | Make24RoomState
-  | PairsRoomState;
+  | PairsRoomState
+  | TriosRoomState;
 
 // ---------------------------------------------------------------------------
 // Chat and the drawing
@@ -532,6 +598,9 @@ interface ClientToServerEvents {
 
   /** Turning over the card at `index`, on your turn. */
   'pairs:flip': (roomId: string, index: number) => void;
+
+  /** Three cards claimed as a trio, by their numbers, on the third pick. */
+  'trios:claim': (roomId: string, cards: number[]) => void;
 }
 
 interface ServerToClientEvents {
@@ -617,6 +686,12 @@ export type {
   PairsCardView,
   PairsGameSummary,
   PairsRoomState,
+  TriosSettings,
+  TriosLobbyRoomInfo,
+  TriosPhase,
+  TriosTrio,
+  TriosGameSummary,
+  TriosRoomState,
   AnyRoomState,
   ChatMessageKind,
   ChatMessage,

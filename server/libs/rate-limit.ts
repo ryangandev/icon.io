@@ -70,6 +70,8 @@ const BUCKET_FOR_EVENT: Record<ClientToServerEvent, BucketName> = {
   't24:solve': 'room',
   // Two flips a turn, and the engine ignores the rest.
   'pairs:flip': 'room',
+  // A claim is three picks, so a human makes one a second at most.
+  'trios:claim': 'room',
 };
 
 /**

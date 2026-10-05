@@ -64,6 +64,9 @@ Which trios you take decides which cards stay, and so the tables that follow, as
 
 Everything before the third pick is yours alone and never leaves your screen.
 
+Three cards that are not a trio are told why, by the first feature that breaks it, in the order colour, shape, count, fill: "Two are striped and one is solid."
+A feature breaks a trio when exactly two of the three cards share it.
+
 ## On your own
 
 A **run** is **ten trios** against one clock, with no name, no room and no server: it runs in the browser.
@@ -88,7 +91,7 @@ A run without a link gets a new seed, and Play again starts another.
 
 The room owner picks, when creating the room, **10 or 20 trios** a game and 2–8 seats.
 A game of 10 is about three minutes; one of 20, about six.
-At the start of a game the server deals a new table from a seed of its own.
+At the start of a game the server shuffles a new deck and deals the table.
 
 There are no turns: everybody looks at the same table at the same time.
 
@@ -164,7 +167,7 @@ Every change reaches a player as `room:state`, the whole room as that player may
 | Field         | What it is                                                                                                      |
 | ------------- | --------------------------------------------------------------------------------------------------------------- |
 | `phase`       | `waiting`, `finding` or `taken`                                                                                 |
-| `target`      | How many trios a game has: 10 or 20                                                                             |
+| `trios`       | How many trios a game has: 10 or 20                                                                             |
 | `found`       | How many trios have been found this game                                                                        |
 | `table`       | The twelve cards in their places, row by row; between games, the last table as it ended; empty before the first |
 | `deckLeft`    | How many cards are left in the deck                                                                             |
