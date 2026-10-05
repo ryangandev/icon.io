@@ -9,6 +9,7 @@ import type {
   MinesweeperDurationsInSeconds,
   PairsDurationsInSeconds,
   PhaseDurationsInSeconds,
+  TriosDurationsInSeconds,
 } from './libs/game-clock.js';
 import { createRoomRegistry } from './libs/rooms/registry.js';
 import { createRoomMembership } from './libs/rooms/membership.js';
@@ -20,6 +21,7 @@ import { createDrawAndGuessModule } from './socket/draw-and-guess/index.js';
 import { createMinesweeperModule } from './socket/minesweeper/index.js';
 import { createMake24Module } from './socket/make-24/index.js';
 import { createPairsModule } from './socket/pairs/index.js';
+import { createTriosModule } from './socket/trios/index.js';
 import { clientDepartureOnDisconnectHandler } from './socket/client-disconnect-handler.js';
 import { playerSessionHandler } from './socket/player-session-handler.js';
 import {
@@ -50,6 +52,8 @@ interface CreateZumpoServerOptions {
   make24Durations?: Make24DurationsInSeconds;
   /** A Pairs turn and a miss on show. Shortened by tests. */
   pairsDurations?: PairsDurationsInSeconds;
+  /** A taken trio's pause, a lockout and the hint clock. Shortened by tests. */
+  triosDurations?: TriosDurationsInSeconds;
   /** How long a dropped player keeps their seat. Shortened by tests. */
   graceInSeconds?: number;
 }
@@ -86,6 +90,7 @@ const createZumpoServer = (
     minesweeperDurations,
     make24Durations,
     pairsDurations,
+    triosDurations,
     graceInSeconds,
   } = options;
 
@@ -122,6 +127,7 @@ const createZumpoServer = (
   );
   registry.register(createMake24Module(registry.context, make24Durations));
   registry.register(createPairsModule(registry.context, pairsDurations));
+  registry.register(createTriosModule(registry.context, triosDurations));
 
   const membership = createRoomMembership(
     io,

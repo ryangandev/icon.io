@@ -148,7 +148,7 @@ const RANDOM_DRAWS = 32;
  * no trio they go back, the deck is shuffled, and others are drawn, as the
  * rules say. Null when no draw can make a trio: the game is over.
  */
-function fill(
+function dealInto(
   table: readonly (number | null)[],
   deck: readonly number[],
   random: () => number,
@@ -190,7 +190,7 @@ export function dealTable(random: () => number): Deal {
     Array.from({ length: DECK_SIZE }, (_, card) => card),
     random,
   );
-  const dealt = fill(Array(TABLE_SIZE).fill(null), deck, random);
+  const dealt = dealInto(Array(TABLE_SIZE).fill(null), deck, random);
   // A whole deck always holds a trio.
   if (!dealt) throw new Error('A full deck dealt no trio.');
   return dealt;
@@ -206,7 +206,7 @@ export function takeTrio(
   places: readonly number[],
   random: () => number,
 ): Deal | null {
-  return fill(
+  return dealInto(
     table.map((card, place) => (places.includes(place) ? null : card)),
     deck,
     random,
