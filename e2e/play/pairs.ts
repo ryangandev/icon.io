@@ -60,6 +60,14 @@ export async function playTurn(
   memory: Memory,
   afterFirst?: () => Promise<void>,
 ) {
+  // Two cards that did not match stay up for a moment. Choosing while they
+  // are up would leave their places out of the choice, and near the end of a
+  // board that can miss the same way turn after turn.
+  await expect
+    .poll(async () =>
+      (await boardOf(page)).every((card) => card.matched || !card.symbol),
+    )
+    .toBe(true);
   await remember(page, memory);
   const down = (await boardOf(page)).filter((card) => !card.symbol);
   const known = down.filter((card) => memory.has(card.place));
