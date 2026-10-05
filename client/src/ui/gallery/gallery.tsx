@@ -894,8 +894,8 @@ export default function Gallery() {
             ['small', 'Small'],
             ['mini', 'Mini'],
           ] as const
-        ).map(([size, sizeName]) => (
-          <div key={size} className={styles.cellRow}>
+        ).map(([tileSize, sizeName]) => (
+          <div key={tileSize} className={styles.cellRow}>
             {(
               [
                 ['Empty', 'empty'],
@@ -906,7 +906,7 @@ export default function Gallery() {
               ] as const
             )
               // A Mini tile is another player's, marks only: never typed into.
-              .filter(([, state]) => size !== 'mini' || state !== 'typed')
+              .filter(([, state]) => tileSize !== 'mini' || state !== 'typed')
               .map(([stateName, state]) => (
                 <Specimen
                   key={state}
@@ -917,7 +917,7 @@ export default function Gallery() {
                   <LetterTile
                     letter={state === 'empty' ? undefined : 'A'}
                     state={state}
-                    size={size}
+                    size={tileSize}
                   />
                 </Specimen>
               ))}
@@ -931,8 +931,8 @@ export default function Gallery() {
             ['regular', 'Regular'],
             ['compact', 'Compact'],
           ] as const
-        ).map(([size, sizeName]) => (
-          <div key={size} className={styles.cellRow}>
+        ).map(([keySize, sizeName]) => (
+          <div key={keySize} className={styles.cellRow}>
             {(
               [
                 ['Plain', 'plain'],
@@ -950,7 +950,7 @@ export default function Gallery() {
                 <LetterKey
                   letter="q"
                   state={state}
-                  size={size}
+                  size={keySize}
                   onPress={noop}
                 />
               </Specimen>
@@ -967,7 +967,7 @@ export default function Gallery() {
                 variant={`Kind=${kindName}, State=Plain, Size=${sizeName}`}
                 label={`${kindName} · ${sizeName}`}
               >
-                <LetterKey kind={kind} size={size} onPress={noop} />
+                <LetterKey kind={kind} size={keySize} onPress={noop} />
               </Specimen>
             ))}
           </div>
@@ -1010,13 +1010,17 @@ export default function Gallery() {
               ['small', 'Small'],
               ['mini', 'Mini'],
             ] as const
-          ).map(([size, sizeName]) => (
+          ).map(([boardSize, sizeName]) => (
             <Specimen
-              key={size}
+              key={boardSize}
               family="word-board"
               variant={`Size=${sizeName}`}
             >
-              <WordBoard rows={[]} size={size} label={`${sizeName} board`} />
+              <WordBoard
+                rows={[]}
+                size={boardSize}
+                label={`${sizeName} board`}
+              />
             </Specimen>
           ))}
         </div>
@@ -1028,8 +1032,8 @@ export default function Gallery() {
             ['mini', 'Mini'],
             ['small', 'Small'],
           ] as const
-        ).map(([board, boardName]) => (
-          <div key={board} className={styles.cellRow}>
+        ).map(([boardSize, boardName]) => (
+          <div key={boardSize} className={styles.cellRow}>
             {(
               [
                 ['Guessing', 'guessing'],
@@ -1047,7 +1051,7 @@ export default function Gallery() {
                   name="Maya"
                   status="Found · +431"
                   state={state}
-                  board={board}
+                  board={boardSize}
                   rows={[]}
                 />
               </Specimen>
