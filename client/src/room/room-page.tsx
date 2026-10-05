@@ -11,7 +11,7 @@ import { useSession } from '../net/session';
 import { REQUEST_TIMEOUT_MS } from '../net/socket';
 import { useLobby } from '../net/use-lobby';
 import { useRoom, type RoomConnection, type Snapshot } from '../net/use-room';
-import { ConnectionFailed } from '../shell/connection-failed';
+import { ConnectionLost } from '../shell/connection-lost';
 import { FormPage } from '../shell/form-page';
 import { Page } from '../shell/page';
 import { Stage } from '../shell/stage';
@@ -54,7 +54,7 @@ export default function RoomPage({
       return (
         <Page>
           <Stage>
-            <ConnectionFailed />
+            <ConnectionLost />
           </Stage>
         </Page>
       );
@@ -102,6 +102,20 @@ export default function RoomPage({
       );
     case 'expired':
       return <ExpiredPage gameType={gameType} />;
+    case 'closed':
+      return (
+        <Page>
+          <Stage>
+            <Card
+              title="Zumpo just restarted."
+              description="Rooms close when Zumpo restarts for an update, so this one has ended. Find another room or start your own."
+              actions={
+                <ButtonLink to={lobbyPath(gameType)}>Back to rooms</ButtonLink>
+              }
+            />
+          </Stage>
+        </Page>
+      );
     case 'seated':
       // A link with the wrong game in it still reaches the room.
       if (stage.snapshot.state.gameType !== gameType) {

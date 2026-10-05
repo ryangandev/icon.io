@@ -11,7 +11,7 @@ services:
     # Vite), so it installs everything; npm start sets NODE_ENV=production.
     buildCommand: npm ci && npm run build
     startCommand: npm start
-    healthCheckPath: /
+    healthCheckPath: /healthz
     # Deploy a commit on main only once CI has passed on it.
     autoDeployTrigger: checksPass
     domains:

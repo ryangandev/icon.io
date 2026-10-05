@@ -5,7 +5,6 @@ import {
   CHAT_HISTORY_LIMIT,
   createRoomRegistry,
 } from '../libs/rooms/registry.js';
-import { createPlayerSessionRegistry } from '../libs/player-session.js';
 import {
   collect,
   collectChat,
@@ -69,12 +68,13 @@ describe('room chat', () => {
 
   it('numbers each room’s messages on its own', async () => {
     const alice = await harness.connect();
+    const bob = await harness.connect();
     const first = await createRoom(alice, { username: 'Alice' });
-    const second = await createRoom(alice, { username: 'Alice' });
+    const second = await createRoom(bob, { username: 'Bob' });
 
     const [inFirst, inSecond] = await Promise.all([
       syncRoom(alice, first),
-      syncRoom(alice, second),
+      syncRoom(bob, second),
     ]);
 
     expect(inFirst.messages.map((m) => m.id)).toEqual([1]);
@@ -132,7 +132,7 @@ describe('room chat', () => {
 /** A registry whose sends go nowhere, to drive the log directly. */
 const makeRegistry = () => {
   const io = { to: () => ({ emit: () => true }) } as unknown as IoServer;
-  return createRoomRegistry(io, createPlayerSessionRegistry());
+  return createRoomRegistry(io);
 };
 
 const makeRoom = (): Room => ({
@@ -140,8 +140,6 @@ const makeRoom = (): Room => ({
   roomId: 'room-1',
   roomName: 'Room One',
   owner: { username: 'Owner', playerId: 'player-owner' },
-  status: 'Open',
-  currentPlayerCount: 1,
   maxPlayers: 4,
   password: '',
   playerList: {
@@ -157,7 +155,7 @@ describe('the chat log', () => {
   it(`keeps the last ${CHAT_HISTORY_LIMIT} messages, and never reuses an id`, () => {
     const registry = makeRegistry();
     const room = makeRoom();
-    registry.all[room.roomId] = room;
+    registry.add(room);
 
     for (let i = 1; i <= CHAT_HISTORY_LIMIT + 5; i++) {
       registry.lookup.announce(room.roomId, 'system', `message ${i}`);
@@ -176,7 +174,7 @@ describe('the chat log', () => {
   it('posts a player’s message under the name on their seat', () => {
     const registry = makeRegistry();
     const room = makeRoom();
-    registry.all[room.roomId] = room;
+    registry.add(room);
 
     registry.say(room, 'player-owner', 'hi');
     registry.say(room, 'player-nobody', 'not seated');

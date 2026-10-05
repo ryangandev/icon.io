@@ -19,6 +19,11 @@ export interface PlayerOptions {
   droppable?: boolean;
   /** Device pixels per CSS pixel; Figma's previews are at 1. */
   scale?: number;
+  /**
+   * A server of the test's own, which it stops and starts under the player,
+   * so connections failing while it is down are expected.
+   */
+  server?: string;
 }
 
 interface Fixtures {
@@ -36,9 +41,9 @@ export const test = base.extend<Fixtures>({
     const errors: string[] = [];
     await use(async (name, options = {}) => {
       const { phone = false, named = true, droppable = false } = options;
-      const { scale = phone ? 2 : 1 } = options;
-      const context = await browser.newContext(
-        phone
+      const { scale = phone ? 2 : 1, server } = options;
+      const context = await browser.newContext({
+        ...(phone
           ? {
               viewport: { width: 390, height: 844 },
               deviceScaleFactor: scale,
@@ -48,8 +53,9 @@ export const test = base.extend<Fixtures>({
           : {
               viewport: { width: 1440, height: 900 },
               deviceScaleFactor: scale,
-            },
-      );
+            }),
+        ...(server ? { baseURL: server } : {}),
+      });
       contexts.push(context);
       if (named) {
         await context.addInitScript((given) => {
@@ -64,7 +70,8 @@ export const test = base.extend<Fixtures>({
       page.on('console', (message) => {
         if (message.type() !== 'error') return;
         // A cut connection's failed requests are the point of the test.
-        if (droppable && /net::ERR_|WebSocket/.test(message.text())) return;
+        const offline = droppable || server !== undefined;
+        if (offline && /net::ERR_|WebSocket/.test(message.text())) return;
         errors.push(`${name}: ${message.text()}`);
       });
       return page;
