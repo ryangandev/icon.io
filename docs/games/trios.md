@@ -67,6 +67,9 @@ Everything before the third pick is yours alone and never leaves your screen.
 Three cards that are not a trio are told why, by the first feature that breaks it, in the order colour, shape, count, fill: "Two are striped and one is solid."
 A feature breaks a trio when exactly two of the three cards share it.
 
+The table never moves while you look.
+On a narrow screen the turn bar sits above it, so the bar keeps one height through every phase: a clock is always in its top row, and it keeps room for two lines of what it says, the most any phase needs (three on the narrowest phones).
+
 ## On your own
 
 A **run** is **ten trios** against one clock, with no name, no room and no server: it runs in the browser.
@@ -129,7 +132,8 @@ A table nobody can crack would stall the room, so the server breaks a long silen
 - **30 seconds** after that, a second card of the same trio.
 
 The turn bar counts down to the next hint, so a room's clock means something without ending anything.
-A hint is help, not a deadline, so that clock never turns urgent in its last seconds.
+After the second hint it counts up instead: how long the table has gone without a trio.
+A hint is help, not a deadline, so neither clock ever turns urgent.
 A hint is the same for everybody, so it changes nobody's chances; hints are cleared when a trio is taken.
 
 ### The end
@@ -174,11 +178,12 @@ Every change reaches a player as `room:state`, the whole room as that player may
 | `deckLeft`    | How many cards are left in the deck                                                                             |
 | `lastTrio`    | The latest trio taken this game: who took it, its three cards and the places they were in; `null` before one    |
 | `hint`        | The places the hints have marked, in order: none, one or two                                                    |
+| `searchingMs` | How long the table in play has gone without a trio, during `finding`; 0 otherwise                               |
 | `lockedOutMs` | How long this player is still locked out; 0 when they are not                                                   |
 | `myMiss`      | This player's three cards that were not a trio, while the lockout lasts; empty otherwise                        |
 | `lastGame`    | The summary of the last finished game, until the next one starts                                                |
 
-During `taken`, `phaseEndsInMs` is what is left of the 2 seconds; during `finding`, the time to the next hint, or 0 once both have been given.
+During `taken`, `phaseEndsInMs` is what is left of the 2 seconds; during `finding`, the time to the next hint, or 0 once both have been given, when the turn bar counts `searchingMs` up instead.
 `lastTrio` stays after the table is refilled, so a player who looked away can still see what was taken.
 
 Trios' one event of its own is `trios:claim`, with the room and the three cards.

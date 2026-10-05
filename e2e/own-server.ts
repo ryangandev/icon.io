@@ -11,12 +11,21 @@ export interface OwnServer {
  * A server of a test's own, beside the one every other test shares, started
  * from the production build as the host does; resolves once it listens. With
  * no port it takes any free one, so test runs side by side never collide;
- * pass the port it got to start it again where its players expect it.
+ * pass the port it got to start it again where its players expect it. `env`
+ * sets its own variables, such as shorter phases.
  */
-export async function startServer(port = 0): Promise<OwnServer> {
+export async function startServer(
+  port = 0,
+  env: Record<string, string> = {},
+): Promise<OwnServer> {
   const child = spawn(process.execPath, ['server/build/server/server.js'], {
     cwd: path.resolve(__dirname, '..'),
-    env: { ...process.env, NODE_ENV: 'production', PORT: String(port) },
+    env: {
+      ...process.env,
+      ...env,
+      NODE_ENV: 'production',
+      PORT: String(port),
+    },
     stdio: ['ignore', 'pipe', 'inherit'],
   });
   const bound = await new Promise<number>((resolve, reject) => {

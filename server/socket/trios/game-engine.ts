@@ -89,6 +89,7 @@ const createTriosGameEngine = (
   const beginFinding = (room: TriosRoom) => {
     const game = room.game;
     game.phase = 'finding';
+    game.findingSince = Date.now();
     game.hint = [];
     game.hintPlan = null;
     ctx.rooms.startPhase(room, durations.hint, () => giveHint(room));

@@ -1,14 +1,21 @@
 import { useState } from 'react';
 import type { TriosRoomState } from '../../../shared/wire-types';
-import { TurnBar, type TurnBarProps } from '../ui';
+import type { TurnBarProps } from '../ui';
 import { plural } from '../games/plural';
 import { useSecondsLeft } from '../net/use-seconds-left';
+import { useSecondsSince } from '../net/use-seconds-since';
 import { initialsOf } from '../players/avatar';
 import { EndedEarlyPanel, ResultsPanel, WaitingPanel } from '../room/panels';
 import { rankedPlayers, type Seat } from '../room/players';
 import { useRoomContext, type Room as RoomOf } from '../room/room-context';
 import { RoomLayout, type PlayerLine } from '../room/room-layout';
-import { LastTrio, TablePanel, TriosTable, type PlaceView } from './table';
+import {
+  LastTrio,
+  TablePanel,
+  TriosTable,
+  TriosTurnBar,
+  type PlaceView,
+} from './table';
 import { whyNotATrio } from './words';
 
 type Room = RoomOf<TriosRoomState>;
@@ -116,6 +123,12 @@ function Play({ room }: { room: Room }) {
     receivedAt,
     reconnecting,
   );
+  // Once both hints are given there is nothing left to count down to.
+  const searchingSeconds = useSecondsSince(
+    state.searchingMs,
+    receivedAt,
+    reconnecting || state.hint.length < 2,
+  );
   // Picks are yours alone and never leave this page until the third. A card
   // somebody else took leaves them; the rest stay picked.
   const [picks, setPicks] = useState<readonly number[]>([]);
@@ -159,7 +172,15 @@ function Play({ room }: { room: Room }) {
   const finder = finderOf(state, playerId);
   return (
     <>
-      <TurnBar {...turnBar(room, picked.length, seconds, lockedSeconds)} />
+      {/* The longest of its lines, why three cards are not a trio, takes two. */}
+      <TriosTurnBar
+        lines={2}
+        {...turnBar(room, picked.length, {
+          seconds,
+          lockedSeconds,
+          searchingSeconds,
+        })}
+      />
       <TablePanel>
         <TriosTable
           cards={state.table}
@@ -174,11 +195,24 @@ function Play({ room }: { room: Room }) {
   );
 }
 
+/** The clocks the turn bar can show, in whole seconds. */
+interface Clocks {
+  /** Left of the phase: to the next hint, or to new cards. */
+  seconds: number;
+  /** Left of this player's lockout. */
+  lockedSeconds: number;
+  /** How long the table has gone without a trio. */
+  searchingSeconds: number;
+}
+
+/**
+ * What the turn bar says, with a clock in every phase: the bar keeps its
+ * height, so the table under it never moves.
+ */
 function turnBar(
   room: Room,
   picked: number,
-  seconds: number,
-  lockedSeconds: number,
+  { seconds, lockedSeconds, searchingSeconds }: Clocks,
 ): TurnBarProps {
   const { state, playerId, reconnecting } = room;
   // While reconnecting the server's clocks cannot be known: they hold.
@@ -186,9 +220,10 @@ function turnBar(
     reconnecting
       ? { seconds: left, label: 'paused', waiting: true }
       : { seconds: left, label, waiting };
-  // A hint is help, not a deadline: its clock never turns urgent.
-  const hintClock = (label: string) => ({
-    ...clock(label, false),
+  // A hint is help, not a deadline, and neither is the time since a trio:
+  // those clocks never turn urgent.
+  const helpClock = (label: string, left = seconds) => ({
+    ...clock(label, false, left),
     deadline: false,
   });
   if (state.phase === 'taken' && state.lastTrio) {
@@ -213,10 +248,6 @@ function turnBar(
     };
   }
   const hints = state.hint.length;
-  const toHint =
-    state.phaseEndsInMs > 0
-      ? hintClock(hints === 0 ? 'to a hint' : 'to a second hint')
-      : undefined;
   return {
     label: hints > 0 ? 'Hint' : 'Find a trio',
     kind: 'status',
@@ -231,10 +262,17 @@ function turnBar(
               ? 'Two cards of a trio are marked'
               : 'Pick three cards',
     meta:
-      hints > 0
-        ? `${hints * 30} seconds without a trio`
-        : 'The first trio claimed takes it',
-    countdown: toHint,
+      hints === 1
+        ? 'Find the two that go with it'
+        : hints === 2
+          ? 'Find the third card'
+          : 'The first trio claimed takes it',
+    // After the second hint nothing is left to count down to, so the clock
+    // counts the time the table has gone without a trio.
+    countdown:
+      hints < 2
+        ? helpClock(hints === 0 ? 'to a hint' : 'to a second hint')
+        : helpClock('without a trio', searchingSeconds),
   };
 }
 

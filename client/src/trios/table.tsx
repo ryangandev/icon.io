@@ -1,5 +1,11 @@
 import type { ReactNode } from 'react';
-import { TriosCard, type TriosCardState } from '../ui';
+import {
+  TriosCard,
+  TurnBar,
+  type TriosCardState,
+  type TurnBarProps,
+} from '../ui';
+import { cx } from '../ui/cx';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import styles from './table.module.css';
 
@@ -40,6 +46,24 @@ export function TriosTable({ cards, places = {}, onPick }: TriosTableProps) {
         />
       ))}
     </div>
+  );
+}
+
+/**
+ * The turn bar over the table. On a narrow screen it stacks its lines, so one
+ * that wraps would push the table down, and a tap meant for one card would
+ * land on another. It keeps room for `lines` lines of what it says, the most
+ * any phase needs, and a clock in every phase keeps its top row.
+ */
+export function TriosTurnBar({
+  lines,
+  ...props
+}: TurnBarProps & { lines: 1 | 2 }) {
+  return (
+    <TurnBar
+      {...props}
+      className={cx(styles.turnBar, lines === 2 && styles.twoLines)}
+    />
   );
 }
 

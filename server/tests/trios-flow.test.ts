@@ -106,6 +106,7 @@ describe('a Trios room', () => {
       table: [],
       lastTrio: null,
       hint: [],
+      searchingMs: 0,
       lockedOutMs: 0,
       myMiss: [],
       lastGame: null,
@@ -256,6 +257,9 @@ describe('the hints', () => {
     const two = await waitForTriosState(owner, (s) => s.hint.length === 2);
     expect(two.hint[0]).toBe(one.hint[0]);
     expect(two.phaseEndsInMs).toBe(0);
+    // With no clock left to count down, how long the table has gone without
+    // a trio: two hints' worth.
+    expect(two.searchingMs).toBeGreaterThanOrEqual(1500);
 
     expect(
       findTrios(two.table).some((trio) =>
@@ -273,9 +277,10 @@ describe('the hints', () => {
 
     const taken = waitForTriosState(owner, (s) => s.phase === 'taken');
     players[1].emit('trios:claim', roomId, aTrio(hinted));
-    expect((await taken).hint).toEqual([]);
+    expect(await taken).toMatchObject({ hint: [], searchingMs: 0 });
     const next = await waitForTriosState(owner, (s) => s.phase === 'finding');
     expect(next.hint).toEqual([]);
+    expect(next.searchingMs).toBeLessThan(800);
     expect(next.phaseEndsInMs).toBeGreaterThan(0);
   });
 });

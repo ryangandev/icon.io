@@ -497,6 +497,11 @@ interface TriosRoomState extends RoomState {
   lastTrio: TriosTrio | null;
   /** The places the hints have marked, in order: none, one or two. */
   hint: number[];
+  /**
+   * How long everybody has been looking at the table in play without a trio,
+   * during `finding`; 0 otherwise.
+   */
+  searchingMs: number;
   /** How long this player is still locked out after a wrong claim; 0 if not. */
   lockedOutMs: number;
   /** This player's three cards that were not a trio, while locked out. */

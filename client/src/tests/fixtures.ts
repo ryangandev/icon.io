@@ -124,6 +124,7 @@ export function triosState(
     deckLeft: 0,
     lastTrio: null,
     hint: [],
+    searchingMs: 0,
     lockedOutMs: 0,
     myMiss: [],
     lastGame: null,

@@ -32,6 +32,8 @@ interface TriosState {
   lastTrio: TriosTrio | null;
   /** The places the hints have marked, in the order they were given. */
   hint: number[];
+  /** When everybody began looking at the table in play; 0 outside `finding`. */
+  findingSince: number;
   /**
    * The trio this table's hints point at, by place, shuffled; null until its
    * first hint. Never sent: the hints give it away one card at a time.
@@ -49,6 +51,7 @@ const createState = (settings: TriosSettings): TriosState => ({
   found: 0,
   lastTrio: null,
   hint: [],
+  findingSince: 0,
   hintPlan: null,
   lockouts: new Map(),
   lastGame: null,
@@ -98,6 +101,8 @@ const toRoomState = (
     deckLeft: game.deal.deck.length,
     lastTrio: game.lastTrio,
     hint: [...game.hint],
+    searchingMs:
+      game.phase === 'finding' ? Date.now() - game.findingSince : 0,
     lockedOutMs: lockout ? lockout.endsAt - Date.now() : 0,
     myMiss: lockout ? [...lockout.cards] : [],
     lastGame: game.lastGame,

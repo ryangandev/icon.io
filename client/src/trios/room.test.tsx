@@ -139,8 +139,27 @@ describe('a Trios room', () => {
     expect(
       turn().getByText('One card of a trio is marked'),
     ).toBeInTheDocument();
+    expect(
+      turn().getByText('Find the two that go with it'),
+    ).toBeInTheDocument();
     expect(turn().getByText('to a second hint')).toBeInTheDocument();
     expect(card(9, ', hint')).toBeInTheDocument();
+  });
+
+  it('counts the time without a trio once both hints are given', async () => {
+    await renderSeated({
+      ...finding,
+      hint: [9, 3],
+      phaseEndsInMs: 0,
+      searchingMs: 75_000,
+    });
+    expect(
+      turn().getByText('Two cards of a trio are marked'),
+    ).toBeInTheDocument();
+    expect(turn().getByText('Find the third card')).toBeInTheDocument();
+    // The clock stays, so the turn bar keeps its height over the table.
+    const clock = turn().getByRole('timer');
+    expect(clock).toHaveTextContent(/^01:15without a trio$/);
   });
 
   it('ranks the trios found, and keeps the finished table up', async () => {

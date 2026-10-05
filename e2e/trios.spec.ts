@@ -1,5 +1,15 @@
+import type { Locator } from '@playwright/test';
 import { createRoom, expect, joinRoom, test } from './fixtures';
-import { pickMiss, pickTrio, readyToFind, tableOf, turnOf } from './play/trios';
+import { startServer } from './own-server';
+import {
+  missWith,
+  pickMiss,
+  pickPlaces,
+  pickTrio,
+  readyToFind,
+  tableOf,
+  turnOf,
+} from './play/trios';
 
 test('two players race for trios until the game is over', async ({
   player,
@@ -93,4 +103,52 @@ test('a player with no name finds ten trios on their own', async ({
     sam.getByRole('button', { name: 'Challenge a friend' }).first(),
   ).toBeVisible();
   expect(sockets).toBe(0);
+});
+
+test('on a phone, the table stays put through every phase', async ({
+  player,
+}) => {
+  test.setTimeout(120_000);
+  // Hints two seconds apart, so a table soon has both and the clock counts up.
+  const server = await startServer(0, { TRIOS_HINT_SECONDS: '2' });
+  try {
+    const own = { server: server.url };
+    const maya = await player('Maya', own);
+    const leo = await player('Leo', { ...own, phone: true });
+    await joinRoom(leo, await createRoom(maya, 'trios', { seats: 2 }));
+    await maya.getByRole('button', { name: 'Start game' }).click();
+    await readyToFind(leo);
+
+    // The turn bar stacks above the table on a phone; whatever it says, the
+    // table must not move, or a tap meant for one card lands on another.
+    const table = leo.getByRole('group', { name: 'Table' });
+    const top = async () => (await table.boundingBox())!.y;
+    const at = await top();
+    const turn = turnOf(leo);
+    const stays = async (state: Locator) => {
+      await expect(state).toBeVisible();
+      expect(await top(), (await state.textContent()) ?? undefined).toBe(at);
+    };
+
+    await stays(turn.getByText('to a hint'));
+    await stays(turn.getByText('One card of a trio is marked'));
+    await stays(turn.getByText('Two cards of a trio are marked'));
+    await stays(turn.getByText('without a trio'));
+
+    // Two picks, then a third that is not a trio, which says why.
+    const miss = missWith(await tableOf(leo), [0, 1]);
+    await pickPlaces(leo, miss.slice(0, 2));
+    await stays(turn.getByText('Pick a third card'));
+    await pickPlaces(leo, miss.slice(2));
+    await stays(turn.getByText('locked out'));
+    await stays(turn.getByText('Find the third card'));
+
+    // Maya takes a trio: Leo sees it taken, then new cards.
+    await readyToFind(maya);
+    await pickTrio(maya);
+    await stays(turn.getByText('Maya found a trio'));
+    await stays(turn.getByText('to a hint'));
+  } finally {
+    server.process.kill('SIGKILL');
+  }
 });
