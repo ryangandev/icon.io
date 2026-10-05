@@ -89,6 +89,10 @@ describe('a Trios room', () => {
     ).toBeInTheDocument();
     expect(scoreboard().getByText('Found a trio')).toBeInTheDocument();
     expect(screen.getByText('Last trio: Maya')).toBeInTheDocument();
+    // Your other pick still shows while the trio is up, though nothing takes a pick.
+    expect(
+      screen.getByRole('img', { name: `${cardName(TABLE[3])}, picked` }),
+    ).toBeInTheDocument();
 
     // New cards: the taken one leaves your picks, the other stays.
     update({

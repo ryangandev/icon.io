@@ -142,7 +142,8 @@ function Play({ room }: { room: Room }) {
   for (const place of state.hint) {
     places[place] = { badge: 'Hint', badgeLabel: 'hint' };
   }
-  for (const card of canPick ? picked : []) {
+  // Your picks stay shown while a trio is taken, so you see what is still picked.
+  for (const card of picked) {
     const place = state.table.indexOf(card);
     places[place] = { ...places[place], state: 'selected' };
   }
