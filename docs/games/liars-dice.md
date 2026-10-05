@@ -72,7 +72,9 @@ Find a room is the way to play with friends.
 A bot plays a simple, believable game, from its own dice and the dice it cannot see:
 
 - **It calls Liar** when the bid looks unlikely: when the chance that the hidden dice make up what its own do not, each hidden die matching with a chance of 1 in 3, is below its own threshold (between about 30% and 45%, so some bots are bolder than others).
-- **Otherwise it raises**, to the cheapest bid it believes, preferring a face it holds.
+- **Otherwise it raises** on the face it believes the table holds most of, which is usually the face it holds most of.
+  It bids one short of as many as it believes (at least an even chance), and never less than the smallest raise, so the bidding climbs without the bot overreaching.
+  When it believes no raise at all, it takes whichever is likelier to come out right: calling Liar, or the likeliest raise.
 - **About one turn in five it bluffs**: it raises on a face it does not hold, or opens higher than its dice support.
 
 The bots' code is the browser's alone (`client/src/liars-dice/solo/bot.ts`): `shared/` holds only rules both sides run, and the server never plays for anybody.
