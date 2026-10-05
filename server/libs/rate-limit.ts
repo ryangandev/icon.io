@@ -70,6 +70,8 @@ const BUCKET_FOR_EVENT: Record<ClientToServerEvent, BucketName> = {
   't24:solve': 'room',
   // Two flips a turn, and the engine ignores the rest.
   'pairs:flip': 'room',
+  // Six guesses a word, typed out a letter at a time.
+  'dw:guess': 'room',
 };
 
 /**
