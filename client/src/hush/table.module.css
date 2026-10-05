@@ -135,14 +135,20 @@
   letter-spacing: var(--zumpo-text-small-tracking);
 }
 
-/* On a phone the action goes under the hand, across the panel. */
+/* On a phone the action goes under the hand, across the panel, and the
+   hand's parts are spaced alike. */
 @media (max-width: 640px) {
   .panel {
     padding: var(--zumpo-space-16);
   }
 
+  .handRow {
+    gap: var(--zumpo-space-12);
+  }
+
   .action {
     align-items: stretch;
+    gap: var(--zumpo-space-12);
     width: 100%;
     margin-left: 0;
   }

@@ -348,7 +348,7 @@ function Hand({ room }: { room: Room }) {
     return (
       <HandRow
         label="Your hand"
-        message="You’ve played every card. Watch the pile, without a word."
+        message="Nothing left to play. Watch the pile, without a word."
       />
     );
   }
