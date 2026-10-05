@@ -7,6 +7,8 @@ import {
 
 const COUNT_WORDS = ['one', 'two', 'three'] as const;
 
+const shapes = (count: number) => (count === 1 ? 'shape' : 'shapes');
+
 /** A feature's value in words that follow "Two are" or "one is". */
 function valueWords(feature: Feature, features: CardFeatures, many: boolean) {
   switch (feature) {
@@ -37,7 +39,6 @@ export function whyNotATrio(cards: readonly number[]): string | null {
   )!;
   const pair = features.find((f) => f !== odd)!;
   if (feature === 'count') {
-    const shapes = (count: number) => (count === 1 ? 'shape' : 'shapes');
     return `Two have ${valueWords(feature, pair, true)} ${shapes(pair.count)} and one has ${valueWords(feature, odd, false)}.`;
   }
   return `Two are ${valueWords(feature, pair, true)} and one is ${valueWords(feature, odd, false)}.`;

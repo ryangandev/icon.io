@@ -36,6 +36,13 @@ function findOne(run: SoloRun, now: number): SoloRun {
   return afterFlash(pickAll(run, findTrios(run.deal.table)[0], now), now);
 }
 
+/** A whole run, finding the first trio every 10 seconds. */
+function playTen() {
+  let run = newRun('k3f9x2', 0);
+  for (let i = 0; i < RUN_TRIOS; i++) run = findOne(run, (i + 1) * 10_000);
+  return run;
+}
+
 describe('a run on your own', () => {
   it('deals the same table and deck from the same seed', () => {
     const a = newRun('k3f9x2', 0);
@@ -125,12 +132,7 @@ describe('a run on your own', () => {
   });
 
   it('ends after ten trios with its time, and plays the same from the same picks', () => {
-    const play = () => {
-      let run = newRun('k3f9x2', 0);
-      for (let i = 0; i < RUN_TRIOS; i++) run = findOne(run, (i + 1) * 10_000);
-      return run;
-    };
-    const run = play();
+    const run = playTen();
     expect(isOver(run)).toBe(true);
     expect(canPick(run)).toBe(false);
     expect(summary(run)).toEqual({
@@ -140,7 +142,7 @@ describe('a run on your own', () => {
       hints: 0,
       fastestMs: 10_000,
     });
-    expect(run.results).toEqual(play().results);
+    expect(run.results).toEqual(playTen().results);
     expect(pick(run, 0, 200_000)).toBe(run);
   });
 });
