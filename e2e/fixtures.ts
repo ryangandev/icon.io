@@ -80,7 +80,7 @@ export const test = base.extend<Fixtures>({
         // A cut connection's failed requests are the point of the test.
         const offline = droppable || server !== undefined;
         if (offline && /net::ERR_|WebSocket/.test(message.text())) return;
-        errors.push(`${name}: ${message.text()}`);
+        errors.push(`${name}: ${message.text()} @ ${message.location().url}`);
       });
       return page;
     });
