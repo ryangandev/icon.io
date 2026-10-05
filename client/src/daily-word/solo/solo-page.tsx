@@ -95,6 +95,13 @@ export function DailyWordSolo() {
 
 const two = (n: number) => String(n).padStart(2, '0');
 
+/** The line under the board while a word is still open. */
+function promptFor(guesses: number): string {
+  return guesses === 0
+    ? 'Type a five-letter word, then press Enter.'
+    : 'Enter checks the word. Backspace takes a letter back.';
+}
+
 /** "9:41:18": the time to the next word. */
 export function formatWait(ms: number): string {
   const seconds = Math.ceil(ms / 1000);
@@ -171,11 +178,7 @@ function DailyView({
                 rows={rowsOf(game)}
                 typed={game.typed}
                 problem={game.problem && GUESS_PROBLEM_TEXT[game.problem]}
-                prompt={
-                  game.guesses.length === 0
-                    ? 'Type a five-letter word, then press Enter.'
-                    : 'Enter checks the word. Backspace takes a letter back.'
-                }
+                prompt={promptFor(game.guesses.length)}
                 typing={typing}
                 keyboard
               />
@@ -288,6 +291,7 @@ function PracticeView({
                 rows={rowsOf(game)}
                 typed={game.typed}
                 problem={game.problem && GUESS_PROBLEM_TEXT[game.problem]}
+                prompt={promptFor(game.guesses.length)}
                 typing={typing}
                 keyboard
               />
