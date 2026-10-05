@@ -1,0 +1,18 @@
+/* Zumpo/Word board. */
+.board,
+.row {
+  display: flex;
+  gap: var(--zumpo-space-8);
+}
+
+.board {
+  flex: none;
+  flex-direction: column;
+}
+
+.small,
+.small .row,
+.mini,
+.mini .row {
+  gap: var(--zumpo-space-4);
+}
