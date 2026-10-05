@@ -67,6 +67,12 @@
   gap: var(--zumpo-space-16);
 }
 
+/* The others' boards 12 px apart, not DW07's 16: three at 16 are 2 px wider
+   than the panel holds beside a Desktop keyboard, which Figma lets overflow. */
+.others .boards {
+  gap: var(--zumpo-space-12);
+}
+
 /* On a phone the others are on the Players tab, on a paper panel. */
 @media (max-width: 640px) {
   .others {

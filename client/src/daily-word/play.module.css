@@ -1,6 +1,7 @@
 /* Your board, a line under it and the keyboard (DW01-DW03, DW07, DW12). */
 /* As wide as its panel, so the keyboard takes the Desktop layout when it fits. */
 .play {
+  position: relative;
   display: flex;
   align-self: stretch;
   flex-direction: column;
@@ -20,7 +21,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.steady {
   min-height: calc(2 * var(--zumpo-space-16) + var(--zumpo-text-label-line));
+}
+
+/* A row turned back where there is no line, over the board's first row. */
+.over {
+  position: absolute;
+  inset: 0 0 auto;
+  display: flex;
+  justify-content: center;
 }
 
 /* Said to a screen reader, not shown. */

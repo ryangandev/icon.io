@@ -3,11 +3,7 @@ import type {
   DailyWordBoard,
   DailyWordRoomState,
 } from '../../../shared/wire-types';
-import {
-  checkGuess,
-  GUESS_PROBLEM_TEXT,
-  MAX_GUESSES,
-} from '../../../shared/daily-word';
+import { checkGuess, GUESS_PROBLEM_TEXT } from '../../../shared/daily-word';
 import { RaceBoard, TurnBar, type TurnBarProps } from '../ui';
 import { plural } from '../games/plural';
 import { REQUEST_TIMEOUT_MS } from '../net/socket';
@@ -362,10 +358,8 @@ function turnBar(
   return {
     label,
     kind: 'status',
-    main:
-      !mine || mine.rows.length === 0
-        ? 'Find the word'
-        : `Guess ${mine.rows.length + 1} of ${MAX_GUESSES}`,
+    // The board counts the guesses; the bar keeps to the race (DW07, DW13).
+    main: 'Find the word',
     meta: finders.length
       ? `${listNames(finders)} found it`
       : 'Fewer guesses score more',

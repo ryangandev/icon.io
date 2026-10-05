@@ -79,8 +79,10 @@ export function describeRow(word: string, marks: readonly DailyWordMark[]) {
 }
 
 /**
- * DW01-DW03, DW07, DW12, DW13: your board, what is wrong with the row or a
- * prompt under it, and the keyboard, which a finished board does without.
+ * DW01-DW03, DW07, DW08, DW12, DW13: your board, a prompt under it or what
+ * is wrong with the row, and the keyboard, which a finished board does
+ * without. A phone, and a room's board while guessing, have no prompt; what
+ * is wrong is said over the board.
  */
 export function PlayArea({
   rows,
@@ -96,7 +98,7 @@ export function PlayArea({
   typed: string;
   /** Why the last Enter was turned back: "Not in the word list". */
   problem: string | null;
-  /** A line under the board when nothing is wrong. */
+  /** A line under the board when nothing is wrong; none on a phone. */
   prompt?: ReactNode;
   typing: Typing;
   /** False once the board is done. */
@@ -116,15 +118,26 @@ export function PlayArea({
         size={phone ? 'compact' : 'regular'}
         label="Your guesses"
       />
-      {/* One line under the board, the same height whatever it says, so the
-          keyboard never moves. */}
-      <div className={styles.line}>
-        {problem ? (
-          <Notice tone="error">{problem}</Notice>
-        ) : (
-          prompt && <p className={styles.prompt}>{prompt}</p>
-        )}
-      </div>
+      {phone || !prompt ? (
+        // With nothing to say under the board, or no room for it on a phone,
+        // there is no line: a row turned back is said over the top of the
+        // board, so the keys stay where they are.
+        problem && (
+          <div className={styles.over}>
+            <Notice tone="error">{problem}</Notice>
+          </div>
+        )
+      ) : (
+        // One line under the board, as tall as a note while the keyboard is
+        // up, so the keyboard never moves when a row is turned back.
+        <div className={cx(styles.line, keyboard && styles.steady)}>
+          {problem ? (
+            <Notice tone="error">{problem}</Notice>
+          ) : (
+            <p className={styles.prompt}>{prompt}</p>
+          )}
+        </div>
+      )}
       {keyboard && (
         <Keyboard
           marks={Object.fromEntries(keyMarks(rows))}
