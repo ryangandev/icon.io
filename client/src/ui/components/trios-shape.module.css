@@ -1,0 +1,31 @@
+/* Zumpo/Trios shape. Every part takes the card's colour from `color`. */
+.shape {
+  flex: none;
+  fill: currentColor;
+  overflow: visible;
+}
+
+.solid,
+.outline {
+  stroke: currentColor;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.outline {
+  fill: none;
+}
+
+/* The three colours are color/trios/*; until the Figma export generates
+   them, each falls back to the colour it aliases. */
+.coral {
+  color: var(--zumpo-trios-coral, var(--zumpo-coral));
+}
+
+.blue {
+  color: var(--zumpo-trios-blue, var(--zumpo-number-1));
+}
+
+.ink {
+  color: var(--zumpo-trios-ink, var(--zumpo-ink));
+}

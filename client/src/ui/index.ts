@@ -104,6 +104,13 @@ export { StatList, type Stat } from './components/stat-list';
 export { Tag, type TagProps, type TagTone } from './components/tag';
 export { TextField, type TextFieldProps } from './components/text-field';
 export {
+  TriosCard,
+  type TriosCardProps,
+  type TriosCardSize,
+  type TriosCardState,
+} from './components/trios-card';
+export { TriosShape, type TriosShapeProps } from './components/trios-shape';
+export {
   TurnBar,
   type TurnBarKind,
   type TurnBarProps,
