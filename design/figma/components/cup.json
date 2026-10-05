@@ -1,0 +1,2381 @@
+{
+  "format": 1,
+  "name": "Zumpo/Cup",
+  "id": "44:62520",
+  "type": "COMPONENT_SET",
+  "key": "472db539efff0331124108ec985858e0aad094fa",
+  "description": "A player at the table and their dice: their own face up, anybody else's Hidden until a call, Empty for a die already lost. Turn marks whose turn it is; Lost, outlined in danger, the player who loses a die in a reveal. Up to five dice; hide the ones a game does not have. Layout=Row lists a cup as one row, the dice at its end, for a phone's table in a 3-dice game; five dice keep Stack.",
+  "properties": {
+    "Name": {
+      "type": "text",
+      "default": "Leo"
+    },
+    "Detail": {
+      "type": "text",
+      "default": "3 dice"
+    },
+    "You": {
+      "type": "boolean",
+      "default": false
+    },
+    "State": {
+      "type": "variant",
+      "default": "Default",
+      "options": [
+        "Default",
+        "Turn",
+        "Lost"
+      ]
+    },
+    "Dice": {
+      "type": "variant",
+      "default": "Regular",
+      "options": [
+        "Regular",
+        "Compact"
+      ]
+    },
+    "Layout": {
+      "type": "variant",
+      "default": "Stack",
+      "options": [
+        "Stack",
+        "Row"
+      ]
+    }
+  },
+  "defaultVariant": "State=Default, Dice=Regular, Layout=Stack",
+  "variants": [
+    {
+      "name": "State=Default, Dice=Regular, Layout=Stack",
+      "id": "44:62352",
+      "props": {
+        "State": "Default",
+        "Dice": "Regular",
+        "Layout": "Stack"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62352",
+        "name": "State=Default, Dice=Regular, Layout=Stack",
+        "w": 218,
+        "h": 142,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/12",
+          "pad": "$Zumpo · UI:space/16",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "44:62353",
+            "name": "Player",
+            "w": 87,
+            "h": 40,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62354",
+                "name": "Avatar",
+                "w": 40,
+                "h": 40,
+                "component": "Zumpo/Avatar",
+                "variant": {
+                  "Tone": "Lime"
+                },
+                "componentId": "26:10570",
+                "props": {
+                  "Initials": "LE"
+                }
+              },
+              {
+                "type": "FRAME",
+                "id": "44:62356",
+                "name": "Details",
+                "w": 35,
+                "h": 40,
+                "wSize": "hug",
+                "hSize": "hug",
+                "clip": true,
+                "layout": {
+                  "mode": "column",
+                  "gap": 2,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "44:62357",
+                    "name": "Name line",
+                    "w": 25,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "row",
+                      "gap": 6,
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "44:62358",
+                        "name": "Name",
+                        "w": 25,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "propRefs": {
+                          "characters": "Name"
+                        },
+                        "text": "Leo",
+                        "textStyle": "Zumpo/Label",
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "53:71349",
+                        "name": "You",
+                        "visible": false,
+                        "w": 37,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "propRefs": {
+                          "visible": "You"
+                        },
+                        "component": "Zumpo/Tag",
+                        "variant": {
+                          "Tone": "Sand"
+                        },
+                        "componentId": "24:6511",
+                        "props": {
+                          "Label": "You"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 20,
+                            "paddingBottom": 1,
+                            "paddingLeft": 8,
+                            "paddingRight": 8,
+                            "paddingTop": 1,
+                            "width": 37
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "44:62364",
+                    "name": "Detail",
+                    "w": 35,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Detail"
+                    },
+                    "text": "3 dice",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62365",
+            "name": "Dice",
+            "w": 184,
+            "h": 56,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62366",
+                "name": "Die 1",
+                "w": 56,
+                "h": 56,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "5",
+                  "State": "Default",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61187"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62372",
+                "name": "Die 2",
+                "w": 56,
+                "h": 56,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "4",
+                  "State": "Default",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61172"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62377",
+                "name": "Die 3",
+                "w": 56,
+                "h": 56,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "1",
+                  "State": "Default",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61145"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62379",
+                "name": "Die 4",
+                "visible": false,
+                "w": 56,
+                "h": 56,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "2",
+                  "State": "Default",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61151"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62382",
+                "name": "Die 5",
+                "visible": false,
+                "w": 56,
+                "h": 56,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "6",
+                  "State": "Default",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61205"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Turn, Dice=Regular, Layout=Stack",
+      "id": "44:62389",
+      "props": {
+        "State": "Turn",
+        "Dice": "Regular",
+        "Layout": "Stack"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62389",
+        "name": "State=Turn, Dice=Regular, Layout=Stack",
+        "w": 220,
+        "h": 144,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/12",
+          "pad": "$Zumpo · UI:space/16",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "44:62390",
+            "name": "Player",
+            "w": 87,
+            "h": 40,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62391",
+                "name": "Avatar",
+                "w": 40,
+                "h": 40,
+                "component": "Zumpo/Avatar",
+                "variant": {
+                  "Tone": "Lime"
+                },
+                "componentId": "26:10570",
+                "props": {
+                  "Initials": "LE"
+                }
+              },
+              {
+                "type": "FRAME",
+                "id": "44:62393",
+                "name": "Details",
+                "w": 35,
+                "h": 40,
+                "wSize": "hug",
+                "hSize": "hug",
+                "clip": true,
+                "layout": {
+                  "mode": "column",
+                  "gap": 2,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "44:62394",
+                    "name": "Name line",
+                    "w": 25,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "row",
+                      "gap": 6,
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "44:62395",
+                        "name": "Name",
+                        "w": 25,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "propRefs": {
+                          "characters": "Name"
+                        },
+                        "text": "Leo",
+                        "textStyle": "Zumpo/Label",
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "53:71354",
+                        "name": "You",
+                        "visible": false,
+                        "w": 37,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "propRefs": {
+                          "visible": "You"
+                        },
+                        "component": "Zumpo/Tag",
+                        "variant": {
+                          "Tone": "Sand"
+                        },
+                        "componentId": "24:6511",
+                        "props": {
+                          "Label": "You"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 20,
+                            "paddingBottom": 1,
+                            "paddingLeft": 8,
+                            "paddingRight": 8,
+                            "paddingTop": 1,
+                            "width": 37
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "44:62401",
+                    "name": "Detail",
+                    "w": 35,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Detail"
+                    },
+                    "text": "3 dice",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62402",
+            "name": "Dice",
+            "w": 184,
+            "h": 56,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62403",
+                "name": "Die 1",
+                "w": 56,
+                "h": 56,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "5",
+                  "State": "Default",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61187"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62409",
+                "name": "Die 2",
+                "w": 56,
+                "h": 56,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "4",
+                  "State": "Default",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61172"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62414",
+                "name": "Die 3",
+                "w": 56,
+                "h": 56,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "1",
+                  "State": "Default",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61145"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62416",
+                "name": "Die 4",
+                "visible": false,
+                "w": 56,
+                "h": 56,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "2",
+                  "State": "Default",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61151"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62419",
+                "name": "Die 5",
+                "visible": false,
+                "w": 56,
+                "h": 56,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "6",
+                  "State": "Default",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61205"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Lost, Dice=Regular, Layout=Stack",
+      "id": "44:62426",
+      "props": {
+        "State": "Lost",
+        "Dice": "Regular",
+        "Layout": "Stack"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62426",
+        "name": "State=Lost, Dice=Regular, Layout=Stack",
+        "w": 220,
+        "h": 144,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/12",
+          "pad": "$Zumpo · UI:space/16",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "44:62427",
+            "name": "Player",
+            "w": 87,
+            "h": 40,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62428",
+                "name": "Avatar",
+                "w": 40,
+                "h": 40,
+                "component": "Zumpo/Avatar",
+                "variant": {
+                  "Tone": "Lime"
+                },
+                "componentId": "26:10570",
+                "props": {
+                  "Initials": "LE"
+                }
+              },
+              {
+                "type": "FRAME",
+                "id": "44:62430",
+                "name": "Details",
+                "w": 35,
+                "h": 40,
+                "wSize": "hug",
+                "hSize": "hug",
+                "clip": true,
+                "layout": {
+                  "mode": "column",
+                  "gap": 2,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "44:62431",
+                    "name": "Name line",
+                    "w": 25,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "row",
+                      "gap": 6,
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "44:62432",
+                        "name": "Name",
+                        "w": 25,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "propRefs": {
+                          "characters": "Name"
+                        },
+                        "text": "Leo",
+                        "textStyle": "Zumpo/Label",
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "53:71359",
+                        "name": "You",
+                        "visible": false,
+                        "w": 37,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "propRefs": {
+                          "visible": "You"
+                        },
+                        "component": "Zumpo/Tag",
+                        "variant": {
+                          "Tone": "Sand"
+                        },
+                        "componentId": "24:6511",
+                        "props": {
+                          "Label": "You"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 20,
+                            "paddingBottom": 1,
+                            "paddingLeft": 8,
+                            "paddingRight": 8,
+                            "paddingTop": 1,
+                            "width": 37
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "44:62438",
+                    "name": "Detail",
+                    "w": 35,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Detail"
+                    },
+                    "text": "3 dice",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62439",
+            "name": "Dice",
+            "w": 184,
+            "h": 56,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62440",
+                "name": "Die 1",
+                "w": 56,
+                "h": 56,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "5",
+                  "State": "Default",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61187"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62446",
+                "name": "Die 2",
+                "w": 56,
+                "h": 56,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "4",
+                  "State": "Default",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61172"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62451",
+                "name": "Die 3",
+                "w": 56,
+                "h": 56,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "1",
+                  "State": "Default",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61145"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62453",
+                "name": "Die 4",
+                "visible": false,
+                "w": 56,
+                "h": 56,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "2",
+                  "State": "Default",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61151"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62456",
+                "name": "Die 5",
+                "visible": false,
+                "w": 56,
+                "h": 56,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "6",
+                  "State": "Default",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61205"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Default, Dice=Compact, Layout=Stack",
+      "id": "44:62463",
+      "props": {
+        "State": "Default",
+        "Dice": "Compact",
+        "Layout": "Stack"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62463",
+        "name": "State=Default, Dice=Compact, Layout=Stack",
+        "w": 146,
+        "h": 118,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/12",
+          "pad": "$Zumpo · UI:space/16",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "44:62464",
+            "name": "Player",
+            "w": 87,
+            "h": 40,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62465",
+                "name": "Avatar",
+                "w": 40,
+                "h": 40,
+                "component": "Zumpo/Avatar",
+                "variant": {
+                  "Tone": "Lime"
+                },
+                "componentId": "26:10570",
+                "props": {
+                  "Initials": "LE"
+                }
+              },
+              {
+                "type": "FRAME",
+                "id": "44:62467",
+                "name": "Details",
+                "w": 35,
+                "h": 40,
+                "wSize": "hug",
+                "hSize": "hug",
+                "clip": true,
+                "layout": {
+                  "mode": "column",
+                  "gap": 2,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "44:62468",
+                    "name": "Name line",
+                    "w": 25,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "row",
+                      "gap": 6,
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "44:62469",
+                        "name": "Name",
+                        "w": 25,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "propRefs": {
+                          "characters": "Name"
+                        },
+                        "text": "Leo",
+                        "textStyle": "Zumpo/Label",
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "53:71364",
+                        "name": "You",
+                        "visible": false,
+                        "w": 37,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "propRefs": {
+                          "visible": "You"
+                        },
+                        "component": "Zumpo/Tag",
+                        "variant": {
+                          "Tone": "Sand"
+                        },
+                        "componentId": "24:6511",
+                        "props": {
+                          "Label": "You"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 20,
+                            "paddingBottom": 1,
+                            "paddingLeft": 8,
+                            "paddingRight": 8,
+                            "paddingTop": 1,
+                            "width": 37
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "44:62475",
+                    "name": "Detail",
+                    "w": 35,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Detail"
+                    },
+                    "text": "3 dice",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62476",
+            "name": "Dice",
+            "w": 112,
+            "h": 32,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62477",
+                "name": "Die 1",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62478",
+                "name": "Die 2",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62479",
+                "name": "Die 3",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62480",
+                "name": "Die 4",
+                "visible": false,
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62481",
+                "name": "Die 5",
+                "visible": false,
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Turn, Dice=Compact, Layout=Stack",
+      "id": "44:62482",
+      "props": {
+        "State": "Turn",
+        "Dice": "Compact",
+        "Layout": "Stack"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62482",
+        "name": "State=Turn, Dice=Compact, Layout=Stack",
+        "w": 148,
+        "h": 120,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/12",
+          "pad": "$Zumpo · UI:space/16",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "44:62483",
+            "name": "Player",
+            "w": 87,
+            "h": 40,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62484",
+                "name": "Avatar",
+                "w": 40,
+                "h": 40,
+                "component": "Zumpo/Avatar",
+                "variant": {
+                  "Tone": "Lime"
+                },
+                "componentId": "26:10570",
+                "props": {
+                  "Initials": "LE"
+                }
+              },
+              {
+                "type": "FRAME",
+                "id": "44:62486",
+                "name": "Details",
+                "w": 35,
+                "h": 40,
+                "wSize": "hug",
+                "hSize": "hug",
+                "clip": true,
+                "layout": {
+                  "mode": "column",
+                  "gap": 2,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "44:62487",
+                    "name": "Name line",
+                    "w": 25,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "row",
+                      "gap": 6,
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "44:62488",
+                        "name": "Name",
+                        "w": 25,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "propRefs": {
+                          "characters": "Name"
+                        },
+                        "text": "Leo",
+                        "textStyle": "Zumpo/Label",
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "53:71369",
+                        "name": "You",
+                        "visible": false,
+                        "w": 37,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "propRefs": {
+                          "visible": "You"
+                        },
+                        "component": "Zumpo/Tag",
+                        "variant": {
+                          "Tone": "Sand"
+                        },
+                        "componentId": "24:6511",
+                        "props": {
+                          "Label": "You"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 20,
+                            "paddingBottom": 1,
+                            "paddingLeft": 8,
+                            "paddingRight": 8,
+                            "paddingTop": 1,
+                            "width": 37
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "44:62494",
+                    "name": "Detail",
+                    "w": 35,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Detail"
+                    },
+                    "text": "3 dice",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62495",
+            "name": "Dice",
+            "w": 112,
+            "h": 32,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62496",
+                "name": "Die 1",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62497",
+                "name": "Die 2",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62498",
+                "name": "Die 3",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62499",
+                "name": "Die 4",
+                "visible": false,
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62500",
+                "name": "Die 5",
+                "visible": false,
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Lost, Dice=Compact, Layout=Stack",
+      "id": "44:62501",
+      "props": {
+        "State": "Lost",
+        "Dice": "Compact",
+        "Layout": "Stack"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62501",
+        "name": "State=Lost, Dice=Compact, Layout=Stack",
+        "w": 148,
+        "h": 120,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/12",
+          "pad": "$Zumpo · UI:space/16",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "44:62502",
+            "name": "Player",
+            "w": 87,
+            "h": 40,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62503",
+                "name": "Avatar",
+                "w": 40,
+                "h": 40,
+                "component": "Zumpo/Avatar",
+                "variant": {
+                  "Tone": "Lime"
+                },
+                "componentId": "26:10570",
+                "props": {
+                  "Initials": "LE"
+                }
+              },
+              {
+                "type": "FRAME",
+                "id": "44:62505",
+                "name": "Details",
+                "w": 35,
+                "h": 40,
+                "wSize": "hug",
+                "hSize": "hug",
+                "clip": true,
+                "layout": {
+                  "mode": "column",
+                  "gap": 2,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "44:62506",
+                    "name": "Name line",
+                    "w": 25,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "row",
+                      "gap": 6,
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "44:62507",
+                        "name": "Name",
+                        "w": 25,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "propRefs": {
+                          "characters": "Name"
+                        },
+                        "text": "Leo",
+                        "textStyle": "Zumpo/Label",
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "53:71374",
+                        "name": "You",
+                        "visible": false,
+                        "w": 37,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "propRefs": {
+                          "visible": "You"
+                        },
+                        "component": "Zumpo/Tag",
+                        "variant": {
+                          "Tone": "Sand"
+                        },
+                        "componentId": "24:6511",
+                        "props": {
+                          "Label": "You"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 20,
+                            "paddingBottom": 1,
+                            "paddingLeft": 8,
+                            "paddingRight": 8,
+                            "paddingTop": 1,
+                            "width": 37
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "44:62513",
+                    "name": "Detail",
+                    "w": 35,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Detail"
+                    },
+                    "text": "3 dice",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62514",
+            "name": "Dice",
+            "w": 112,
+            "h": 32,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62515",
+                "name": "Die 1",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62516",
+                "name": "Die 2",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62517",
+                "name": "Die 3",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62518",
+                "name": "Die 4",
+                "visible": false,
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62519",
+                "name": "Die 5",
+                "visible": false,
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Default, Dice=Compact, Layout=Row",
+      "id": "73:81079",
+      "props": {
+        "State": "Default",
+        "Dice": "Compact",
+        "Layout": "Row"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "73:81079",
+        "name": "State=Default, Dice=Compact, Layout=Row",
+        "w": 350,
+        "h": 66,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "pad": [
+            "$Zumpo · UI:space/12",
+            "$Zumpo · UI:space/16"
+          ],
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "73:81080",
+            "name": "Player",
+            "w": 87,
+            "h": 40,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "73:81081",
+                "name": "Avatar",
+                "w": 40,
+                "h": 40,
+                "component": "Zumpo/Avatar",
+                "variant": {
+                  "Tone": "Lime"
+                },
+                "componentId": "26:10570",
+                "props": {
+                  "Initials": "LE"
+                }
+              },
+              {
+                "type": "FRAME",
+                "id": "73:81082",
+                "name": "Details",
+                "w": 35,
+                "h": 40,
+                "wSize": "hug",
+                "hSize": "hug",
+                "clip": true,
+                "layout": {
+                  "mode": "column",
+                  "gap": 2,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "73:81083",
+                    "name": "Name line",
+                    "w": 25,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "row",
+                      "gap": 6,
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "73:81084",
+                        "name": "Name",
+                        "w": 25,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "propRefs": {
+                          "characters": "Name"
+                        },
+                        "text": "Leo",
+                        "textStyle": "Zumpo/Label",
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "73:81085",
+                        "name": "You",
+                        "visible": false,
+                        "w": 37,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "propRefs": {
+                          "visible": "You"
+                        },
+                        "component": "Zumpo/Tag",
+                        "variant": {
+                          "Tone": "Sand"
+                        },
+                        "componentId": "24:6511",
+                        "props": {
+                          "Label": "You"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 20,
+                            "paddingBottom": 1,
+                            "paddingLeft": 8,
+                            "paddingRight": 8,
+                            "paddingTop": 1,
+                            "width": 37
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "73:81086",
+                    "name": "Detail",
+                    "w": 35,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Detail"
+                    },
+                    "text": "3 dice",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "73:81087",
+            "name": "Dice",
+            "w": 112,
+            "h": 32,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "73:81088",
+                "name": "Die 1",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "73:81089",
+                "name": "Die 2",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "73:81090",
+                "name": "Die 3",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "73:81091",
+                "name": "Die 4",
+                "visible": false,
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "73:81092",
+                "name": "Die 5",
+                "visible": false,
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Turn, Dice=Compact, Layout=Row",
+      "id": "73:81093",
+      "props": {
+        "State": "Turn",
+        "Dice": "Compact",
+        "Layout": "Row"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "73:81093",
+        "name": "State=Turn, Dice=Compact, Layout=Row",
+        "w": 350,
+        "h": 68,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "pad": [
+            "$Zumpo · UI:space/12",
+            "$Zumpo · UI:space/16"
+          ],
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "73:81094",
+            "name": "Player",
+            "w": 87,
+            "h": 40,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "73:81095",
+                "name": "Avatar",
+                "w": 40,
+                "h": 40,
+                "component": "Zumpo/Avatar",
+                "variant": {
+                  "Tone": "Lime"
+                },
+                "componentId": "26:10570",
+                "props": {
+                  "Initials": "LE"
+                }
+              },
+              {
+                "type": "FRAME",
+                "id": "73:81096",
+                "name": "Details",
+                "w": 35,
+                "h": 40,
+                "wSize": "hug",
+                "hSize": "hug",
+                "clip": true,
+                "layout": {
+                  "mode": "column",
+                  "gap": 2,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "73:81097",
+                    "name": "Name line",
+                    "w": 25,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "row",
+                      "gap": 6,
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "73:81098",
+                        "name": "Name",
+                        "w": 25,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "propRefs": {
+                          "characters": "Name"
+                        },
+                        "text": "Leo",
+                        "textStyle": "Zumpo/Label",
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "73:81099",
+                        "name": "You",
+                        "visible": false,
+                        "w": 37,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "propRefs": {
+                          "visible": "You"
+                        },
+                        "component": "Zumpo/Tag",
+                        "variant": {
+                          "Tone": "Sand"
+                        },
+                        "componentId": "24:6511",
+                        "props": {
+                          "Label": "You"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 20,
+                            "paddingBottom": 1,
+                            "paddingLeft": 8,
+                            "paddingRight": 8,
+                            "paddingTop": 1,
+                            "width": 37
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "73:81100",
+                    "name": "Detail",
+                    "w": 35,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Detail"
+                    },
+                    "text": "3 dice",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "73:81101",
+            "name": "Dice",
+            "w": 112,
+            "h": 32,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "73:81102",
+                "name": "Die 1",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "73:81103",
+                "name": "Die 2",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "73:81104",
+                "name": "Die 3",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "73:81105",
+                "name": "Die 4",
+                "visible": false,
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "73:81106",
+                "name": "Die 5",
+                "visible": false,
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Lost, Dice=Compact, Layout=Row",
+      "id": "73:81107",
+      "props": {
+        "State": "Lost",
+        "Dice": "Compact",
+        "Layout": "Row"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "73:81107",
+        "name": "State=Lost, Dice=Compact, Layout=Row",
+        "w": 350,
+        "h": 68,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/danger"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/16",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "pad": [
+            "$Zumpo · UI:space/12",
+            "$Zumpo · UI:space/16"
+          ],
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "73:81108",
+            "name": "Player",
+            "w": 87,
+            "h": 40,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "73:81109",
+                "name": "Avatar",
+                "w": 40,
+                "h": 40,
+                "component": "Zumpo/Avatar",
+                "variant": {
+                  "Tone": "Lime"
+                },
+                "componentId": "26:10570",
+                "props": {
+                  "Initials": "LE"
+                }
+              },
+              {
+                "type": "FRAME",
+                "id": "73:81110",
+                "name": "Details",
+                "w": 35,
+                "h": 40,
+                "wSize": "hug",
+                "hSize": "hug",
+                "clip": true,
+                "layout": {
+                  "mode": "column",
+                  "gap": 2,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "73:81111",
+                    "name": "Name line",
+                    "w": 25,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "row",
+                      "gap": 6,
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "73:81112",
+                        "name": "Name",
+                        "w": 25,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "propRefs": {
+                          "characters": "Name"
+                        },
+                        "text": "Leo",
+                        "textStyle": "Zumpo/Label",
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "73:81113",
+                        "name": "You",
+                        "visible": false,
+                        "w": 37,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "propRefs": {
+                          "visible": "You"
+                        },
+                        "component": "Zumpo/Tag",
+                        "variant": {
+                          "Tone": "Sand"
+                        },
+                        "componentId": "24:6511",
+                        "props": {
+                          "Label": "You"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 20,
+                            "paddingBottom": 1,
+                            "paddingLeft": 8,
+                            "paddingRight": 8,
+                            "paddingTop": 1,
+                            "width": 37
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "73:81114",
+                    "name": "Detail",
+                    "w": 35,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Detail"
+                    },
+                    "text": "3 dice",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "73:81115",
+            "name": "Dice",
+            "w": 112,
+            "h": 32,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "73:81116",
+                "name": "Die 1",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "73:81117",
+                "name": "Die 2",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "73:81118",
+                "name": "Die 3",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "73:81119",
+                "name": "Die 4",
+                "visible": false,
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "73:81120",
+                "name": "Die 5",
+                "visible": false,
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Die",
+                "variant": {
+                  "Face": "Hidden",
+                  "State": "Default",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61309"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

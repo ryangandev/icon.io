@@ -24,10 +24,14 @@ const FLOW_SECTIONS = [
   { id: '9:10060', prefix: '04', dir: '04-mobile' },
   { id: '40:60741', prefix: '05', dir: '05-make-24' },
   { id: '40:60743', prefix: '06', dir: '06-pairs' },
+  { id: '43:61070', prefix: '07', dir: '07-trios' },
+  { id: '43:61071', prefix: '08', dir: '08-liars-dice' },
+  { id: '43:61072', prefix: '09', dir: '09-hush' },
+  { id: '43:61073', prefix: '10', dir: '10-daily-word' },
 ];
 const SHARED_SECTION = { id: '9:198', name: 'Shared pieces' };
-const EXPECTED_FLOWS = 111;
-const EXPECTED_FAMILIES = 34;
+const EXPECTED_FLOWS = 167;
+const EXPECTED_FAMILIES = 47;
 
 const FLOW_CODE = /^([A-Z]{1,2}\d{2})\b/;
 const PATH_TYPES = ['VECTOR', 'BOOLEAN_OPERATION', 'STAR', 'POLYGON', 'LINE'];
@@ -875,22 +879,34 @@ class Exporter {
   // A slot's content belongs to the instance, not to its component, so it is
   // written in full under the slot's property. Slots inside a nested
   // instance hold that instance's own content and are left to it.
+  //
+  // An instance that itself sits in another instance's slot can report
+  // sublayer ids that the Plugin API then cannot find (a Figma bug), so an
+  // instance without slot properties is not searched at all.
   async slots(node, o, mode) {
-    const slots = {};
-    const stack = node.children ? node.children.slice() : [];
-    while (stack.length) {
-      const d = stack.shift();
-      if (d.type === 'SLOT') {
-        const refs = d.componentPropertyReferences || {};
-        const key = cleanPropName(refs.slotContentId || d.name);
-        const nodes = d.children.slice();
-        const objs = [];
-        for (const child of nodes)
-          objs.push(await this.serialize(child, d, mode));
-        slots[key] = mode.collapse ? this.collapse(nodes, objs) : objs;
-      } else if (d.type !== 'INSTANCE' && d.children) {
-        stack.push(...d.children);
+    const props = node.componentProperties || {};
+    if (!Object.keys(props).some((key) => props[key].type === 'SLOT')) return;
+    const found = [];
+    try {
+      const stack = node.children ? node.children.slice() : [];
+      while (stack.length) {
+        const d = stack.shift();
+        if (d.type === 'SLOT') found.push(d);
+        else if (d.type !== 'INSTANCE' && d.children) stack.push(...d.children);
       }
+    } catch (e) {
+      this.warn('Unreadable sublayers in ' + this.path.join(' / '));
+      return;
+    }
+    const slots = {};
+    for (const d of found) {
+      const refs = d.componentPropertyReferences || {};
+      const key = cleanPropName(refs.slotContentId || d.name);
+      const nodes = d.children.slice();
+      const objs = [];
+      for (const child of nodes)
+        objs.push(await this.serialize(child, d, mode));
+      slots[key] = mode.collapse ? this.collapse(nodes, objs) : objs;
     }
     if (Object.keys(slots).length) o.slots = slots;
   }

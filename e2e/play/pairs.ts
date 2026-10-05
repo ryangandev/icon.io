@@ -54,12 +54,23 @@ export async function flip(page: Page, place: string, memory: Memory) {
 /**
  * Two cards: a pair remembered, or something new and its partner if known.
  * `afterFirst` runs with one card up, before the second is turned over.
+ * Exploring turns over two cards not known to match, so the turn usually
+ * misses and passes on.
  */
 export async function playTurn(
   page: Page,
   memory: Memory,
   afterFirst?: () => Promise<void>,
+  explore = false,
 ) {
+  // Two cards that did not match stay up for a moment. Choosing while they
+  // are up would leave their places out of the choice, and near the end of a
+  // board that can miss the same way turn after turn.
+  await expect
+    .poll(async () =>
+      (await boardOf(page)).every((card) => card.matched || !card.symbol),
+    )
+    .toBe(true);
   await remember(page, memory);
   const down = (await boardOf(page)).filter((card) => !card.symbol);
   const known = down.filter((card) => memory.has(card.place));
@@ -70,13 +81,17 @@ export async function playTurn(
         other !== card && memory.get(other.place) === memory.get(card.place),
     ),
   );
-  const first = (pair ?? unseen[0] ?? down[0]).place;
+  const first = ((explore ? undefined : pair) ?? unseen[0] ?? down[0]).place;
   const symbol = await flip(page, first, memory);
   await afterFirst?.();
   const partner =
-    down.find(
-      (card) => card.place !== first && memory.get(card.place) === symbol,
-    ) ??
+    (explore
+      ? down.find(
+          (card) => card.place !== first && memory.get(card.place) !== symbol,
+        )
+      : down.find(
+          (card) => card.place !== first && memory.get(card.place) === symbol,
+        )) ??
     unseen.find((card) => card.place !== first) ??
     down.find((card) => card.place !== first)!;
   await flip(page, partner.place, memory);

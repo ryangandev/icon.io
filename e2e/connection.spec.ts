@@ -1,4 +1,11 @@
-import { createRoom, dropConnection, expect, joinRoom, test } from './fixtures';
+import {
+  createRoom,
+  dropConnection,
+  duplicateTab,
+  expect,
+  joinRoom,
+  test,
+} from './fixtures';
 
 test('a refresh keeps the seat and the score', async ({ player }) => {
   const maya = await player('Maya');
@@ -63,14 +70,7 @@ test('a duplicated tab takes the seat, and the first tab can take it back', asyn
   const link = await createRoom(maya, 'minesweeper');
   await joinRoom(leo, link);
 
-  // What the browser's Duplicate does: a new tab with this one's storage.
-  const storage = await leo.evaluate(() => ({ ...sessionStorage }));
-  const copy = await leo.context().newPage();
-  await copy.addInitScript((entries) => {
-    for (const [key, value] of Object.entries(entries)) {
-      sessionStorage.setItem(key, value);
-    }
-  }, storage);
+  const copy = await duplicateTab(leo);
   await joinRoom(copy, link);
 
   await expect(leo.getByText('Zumpo is open in another tab.')).toBeVisible();

@@ -1,0 +1,2067 @@
+{
+  "format": 1,
+  "name": "Zumpo/Word board",
+  "id": "44:63086",
+  "type": "COMPONENT_SET",
+  "key": "2c456cf9cf3dae575bd4bcb125c5eda3a2b9989b",
+  "description": "Daily Word: six rows of five Letter tiles. Regular is your board on a desktop, Compact on a phone, Small a board shown with its letters at a reveal, Mini another player's board during a round, marks only.",
+  "properties": {
+    "Size": {
+      "type": "variant",
+      "default": "Regular",
+      "options": [
+        "Regular",
+        "Compact",
+        "Small",
+        "Mini"
+      ]
+    }
+  },
+  "defaultVariant": "Size=Regular",
+  "variants": [
+    {
+      "name": "Size=Regular",
+      "id": "44:62938",
+      "props": {
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62938",
+        "name": "Size=Regular",
+        "x": 24,
+        "y": 24,
+        "w": 352,
+        "h": 424,
+        "wSize": "hug",
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/8",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "44:62939",
+            "name": "Row 1",
+            "w": 352,
+            "h": 64,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62940",
+                "name": "Tile 1",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62941",
+                "name": "Tile 2",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62942",
+                "name": "Tile 3",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62943",
+                "name": "Tile 4",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62944",
+                "name": "Tile 5",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62945",
+            "name": "Row 2",
+            "w": 352,
+            "h": 64,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62946",
+                "name": "Tile 1",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62947",
+                "name": "Tile 2",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62948",
+                "name": "Tile 3",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62949",
+                "name": "Tile 4",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62950",
+                "name": "Tile 5",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62951",
+            "name": "Row 3",
+            "w": 352,
+            "h": 64,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62952",
+                "name": "Tile 1",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62953",
+                "name": "Tile 2",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62954",
+                "name": "Tile 3",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62955",
+                "name": "Tile 4",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62956",
+                "name": "Tile 5",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62957",
+            "name": "Row 4",
+            "w": 352,
+            "h": 64,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62958",
+                "name": "Tile 1",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62959",
+                "name": "Tile 2",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62960",
+                "name": "Tile 3",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62961",
+                "name": "Tile 4",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62962",
+                "name": "Tile 5",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62963",
+            "name": "Row 5",
+            "w": 352,
+            "h": 64,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62964",
+                "name": "Tile 1",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62965",
+                "name": "Tile 2",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62966",
+                "name": "Tile 3",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62967",
+                "name": "Tile 4",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62968",
+                "name": "Tile 5",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62969",
+            "name": "Row 6",
+            "w": 352,
+            "h": 64,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62970",
+                "name": "Tile 1",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62971",
+                "name": "Tile 2",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62972",
+                "name": "Tile 3",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62973",
+                "name": "Tile 4",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62974",
+                "name": "Tile 5",
+                "w": 64,
+                "h": 64,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Regular"
+                },
+                "componentId": "44:61313"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Size=Compact",
+      "id": "44:62975",
+      "props": {
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62975",
+        "name": "Size=Compact",
+        "x": 416,
+        "y": 24,
+        "w": 272,
+        "h": 328,
+        "wSize": "hug",
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/8",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "44:62976",
+            "name": "Row 1",
+            "w": 272,
+            "h": 48,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62977",
+                "name": "Tile 1",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62978",
+                "name": "Tile 2",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62979",
+                "name": "Tile 3",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62980",
+                "name": "Tile 4",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62981",
+                "name": "Tile 5",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62982",
+            "name": "Row 2",
+            "w": 272,
+            "h": 48,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62983",
+                "name": "Tile 1",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62984",
+                "name": "Tile 2",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62985",
+                "name": "Tile 3",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62986",
+                "name": "Tile 4",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62987",
+                "name": "Tile 5",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62988",
+            "name": "Row 3",
+            "w": 272,
+            "h": 48,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62989",
+                "name": "Tile 1",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62990",
+                "name": "Tile 2",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62991",
+                "name": "Tile 3",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62992",
+                "name": "Tile 4",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62993",
+                "name": "Tile 5",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62994",
+            "name": "Row 4",
+            "w": 272,
+            "h": 48,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62995",
+                "name": "Tile 1",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62996",
+                "name": "Tile 2",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62997",
+                "name": "Tile 3",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62998",
+                "name": "Tile 4",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62999",
+                "name": "Tile 5",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:63000",
+            "name": "Row 5",
+            "w": 272,
+            "h": 48,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:63001",
+                "name": "Tile 1",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63002",
+                "name": "Tile 2",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63003",
+                "name": "Tile 3",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63004",
+                "name": "Tile 4",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63005",
+                "name": "Tile 5",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:63006",
+            "name": "Row 6",
+            "w": 272,
+            "h": 48,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:63007",
+                "name": "Tile 1",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63008",
+                "name": "Tile 2",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63009",
+                "name": "Tile 3",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63010",
+                "name": "Tile 4",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63011",
+                "name": "Tile 5",
+                "w": 48,
+                "h": 48,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Compact"
+                },
+                "componentId": "44:61322"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Size=Small",
+      "id": "44:63012",
+      "props": {
+        "Size": "Small"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:63012",
+        "name": "Size=Small",
+        "x": 728,
+        "y": 24,
+        "w": 176,
+        "h": 212,
+        "wSize": "hug",
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/4",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "44:63013",
+            "name": "Row 1",
+            "w": 176,
+            "h": 32,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:63014",
+                "name": "Tile 1",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63015",
+                "name": "Tile 2",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63016",
+                "name": "Tile 3",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63017",
+                "name": "Tile 4",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63018",
+                "name": "Tile 5",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:63019",
+            "name": "Row 2",
+            "w": 176,
+            "h": 32,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:63020",
+                "name": "Tile 1",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63021",
+                "name": "Tile 2",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63022",
+                "name": "Tile 3",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63023",
+                "name": "Tile 4",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63024",
+                "name": "Tile 5",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:63025",
+            "name": "Row 3",
+            "w": 176,
+            "h": 32,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:63026",
+                "name": "Tile 1",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63027",
+                "name": "Tile 2",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63028",
+                "name": "Tile 3",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63029",
+                "name": "Tile 4",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63030",
+                "name": "Tile 5",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:63031",
+            "name": "Row 4",
+            "w": 176,
+            "h": 32,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:63032",
+                "name": "Tile 1",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63033",
+                "name": "Tile 2",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63034",
+                "name": "Tile 3",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63035",
+                "name": "Tile 4",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63036",
+                "name": "Tile 5",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:63037",
+            "name": "Row 5",
+            "w": 176,
+            "h": 32,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:63038",
+                "name": "Tile 1",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63039",
+                "name": "Tile 2",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63040",
+                "name": "Tile 3",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63041",
+                "name": "Tile 4",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63042",
+                "name": "Tile 5",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:63043",
+            "name": "Row 6",
+            "w": 176,
+            "h": 32,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:63044",
+                "name": "Tile 1",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63045",
+                "name": "Tile 2",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63046",
+                "name": "Tile 3",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63047",
+                "name": "Tile 4",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63048",
+                "name": "Tile 5",
+                "w": 32,
+                "h": 32,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Small"
+                },
+                "componentId": "44:61331"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Size=Mini",
+      "id": "44:63049",
+      "props": {
+        "Size": "Mini"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:63049",
+        "name": "Size=Mini",
+        "x": 944,
+        "y": 24,
+        "w": 96,
+        "h": 116,
+        "wSize": "hug",
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/4",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "44:63050",
+            "name": "Row 1",
+            "w": 96,
+            "h": 16,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:63051",
+                "name": "Tile 1",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63052",
+                "name": "Tile 2",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63053",
+                "name": "Tile 3",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63054",
+                "name": "Tile 4",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63055",
+                "name": "Tile 5",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:63056",
+            "name": "Row 2",
+            "w": 96,
+            "h": 16,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:63057",
+                "name": "Tile 1",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63058",
+                "name": "Tile 2",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63059",
+                "name": "Tile 3",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63060",
+                "name": "Tile 4",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63061",
+                "name": "Tile 5",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:63062",
+            "name": "Row 3",
+            "w": 96,
+            "h": 16,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:63063",
+                "name": "Tile 1",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63064",
+                "name": "Tile 2",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63065",
+                "name": "Tile 3",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63066",
+                "name": "Tile 4",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63067",
+                "name": "Tile 5",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:63068",
+            "name": "Row 4",
+            "w": 96,
+            "h": 16,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:63069",
+                "name": "Tile 1",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63070",
+                "name": "Tile 2",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63071",
+                "name": "Tile 3",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63072",
+                "name": "Tile 4",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63073",
+                "name": "Tile 5",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:63074",
+            "name": "Row 5",
+            "w": 96,
+            "h": 16,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:63075",
+                "name": "Tile 1",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63076",
+                "name": "Tile 2",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63077",
+                "name": "Tile 3",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63078",
+                "name": "Tile 4",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63079",
+                "name": "Tile 5",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:63080",
+            "name": "Row 6",
+            "w": 96,
+            "h": 16,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:63081",
+                "name": "Tile 1",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63082",
+                "name": "Tile 2",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63083",
+                "name": "Tile 3",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63084",
+                "name": "Tile 4",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:63085",
+                "name": "Tile 5",
+                "w": 16,
+                "h": 16,
+                "component": "Zumpo/Letter tile",
+                "variant": {
+                  "State": "Empty",
+                  "Size": "Mini"
+                },
+                "componentId": "44:61340"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

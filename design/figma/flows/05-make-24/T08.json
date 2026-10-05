@@ -127,8 +127,9 @@
                 "componentId": "26:16856",
                 "props": {
                   "Meta": "Solved with 27 seconds left",
+                  "Label": "Hand 3 of 5 results",
                   "Main": "+95 for you",
-                  "Label": "Hand 3 of 5 results"
+                  "Category": false
                 },
                 "overrides": [
                   {
@@ -143,8 +144,7 @@
                       "Show icon": false,
                       "Label": "Small · 9 × 9",
                       "Tone": "Sand"
-                    },
-                    "visible": false
+                    }
                   },
                   {
                     "path": "Countdown",
@@ -522,6 +522,7 @@
                   {
                     "path": "Player 1",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": true,
                       "Status": "Solved · +127",
                       "Host": true,
@@ -542,6 +543,7 @@
                   {
                     "path": "Player 2",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": true,
                       "Status": "Solved · +95",
                       "Host": false,
@@ -562,6 +564,7 @@
                   {
                     "path": "Player 3",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": true,
                       "Status": "Solved · +65",
                       "Host": false,
@@ -582,6 +585,7 @@
                   {
                     "path": "Player 4",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": true,
                       "Status": "Out of time",
                       "Host": false,
@@ -619,6 +623,7 @@
                   {
                     "path": "Messages / Message 1",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Name": "System",
                       "Message": "Maya solved it! (+127)",
                       "Kind": "Success"
@@ -627,6 +632,7 @@
                   {
                     "path": "Messages / Message 2",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Name": "System",
                       "Message": "Sam solved it! (+95)",
                       "Kind": "Success"
@@ -635,6 +641,7 @@
                   {
                     "path": "Messages / Message 3",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Name": "System",
                       "Message": "Leo solved it! (+65)",
                       "Kind": "Success"
@@ -643,6 +650,7 @@
                   {
                     "path": "Messages / Message 4",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "so close",
                       "Name": "Ryan",
                       "Kind": "Player"

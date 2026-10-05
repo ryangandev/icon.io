@@ -1,0 +1,367 @@
+{
+  "format": 1,
+  "name": "Zumpo/Lives",
+  "id": "44:61143",
+  "type": "COMPONENT_SET",
+  "key": "fada018d2bfc9c997e18004a8c45e244ab0e6a21",
+  "description": "The team's lives in Hush: three hearts, full or lost, and the count in words. Ink label, for paper, cream and the tinted panels alike.",
+  "properties": {
+    "Show label": {
+      "type": "boolean",
+      "default": true
+    },
+    "Lives": {
+      "type": "variant",
+      "default": "3",
+      "options": [
+        "3",
+        "2",
+        "1",
+        "0"
+      ]
+    }
+  },
+  "defaultVariant": "Lives=3",
+  "variants": [
+    {
+      "name": "Lives=3",
+      "id": "44:61119",
+      "props": {
+        "Lives": "3"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61119",
+        "name": "Lives=3",
+        "x": 24,
+        "y": 24,
+        "w": 119,
+        "h": 20,
+        "wSize": "hug",
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "44:61120",
+            "name": "Hearts",
+            "w": 68,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "VECTOR",
+                "id": "44:61121",
+                "name": "Heart 1 / Full",
+                "w": 20,
+                "h": 18,
+                "svg": "svg/heart-1-full-2a31b7.svg"
+              },
+              {
+                "type": "VECTOR",
+                "id": "44:61122",
+                "name": "Heart 2 / Full",
+                "w": 20,
+                "h": 18,
+                "svg": "svg/heart-1-full-2a31b7.svg"
+              },
+              {
+                "type": "VECTOR",
+                "id": "44:61123",
+                "name": "Heart 3 / Full",
+                "w": 20,
+                "h": 18,
+                "svg": "svg/heart-1-full-2a31b7.svg"
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "44:61124",
+            "name": "Label",
+            "w": 43,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show label"
+            },
+            "text": "3 lives",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Lives=2",
+      "id": "44:61125",
+      "props": {
+        "Lives": "2"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61125",
+        "name": "Lives=2",
+        "x": 175,
+        "y": 24,
+        "w": 119,
+        "h": 20,
+        "wSize": "hug",
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "44:61126",
+            "name": "Hearts",
+            "w": 68,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "VECTOR",
+                "id": "44:61127",
+                "name": "Heart 1 / Full",
+                "w": 20,
+                "h": 18,
+                "svg": "svg/heart-1-full-2a31b7.svg"
+              },
+              {
+                "type": "VECTOR",
+                "id": "44:61128",
+                "name": "Heart 2 / Full",
+                "w": 20,
+                "h": 18,
+                "svg": "svg/heart-1-full-2a31b7.svg"
+              },
+              {
+                "type": "VECTOR",
+                "id": "44:61129",
+                "name": "Heart 3 / Lost",
+                "w": 20,
+                "h": 18,
+                "svg": "svg/heart-3-lost-7bdcd1.svg"
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "44:61130",
+            "name": "Label",
+            "w": 43,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show label"
+            },
+            "text": "2 lives",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Lives=1",
+      "id": "44:61131",
+      "props": {
+        "Lives": "1"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61131",
+        "name": "Lives=1",
+        "x": 326,
+        "y": 24,
+        "w": 106,
+        "h": 20,
+        "wSize": "hug",
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "44:61132",
+            "name": "Hearts",
+            "w": 68,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "VECTOR",
+                "id": "44:61133",
+                "name": "Heart 1 / Full",
+                "w": 20,
+                "h": 18,
+                "svg": "svg/heart-1-full-2a31b7.svg"
+              },
+              {
+                "type": "VECTOR",
+                "id": "44:61134",
+                "name": "Heart 2 / Lost",
+                "w": 20,
+                "h": 18,
+                "svg": "svg/heart-3-lost-7bdcd1.svg"
+              },
+              {
+                "type": "VECTOR",
+                "id": "44:61135",
+                "name": "Heart 3 / Lost",
+                "w": 20,
+                "h": 18,
+                "svg": "svg/heart-3-lost-7bdcd1.svg"
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "44:61136",
+            "name": "Label",
+            "w": 30,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show label"
+            },
+            "text": "1 life",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Lives=0",
+      "id": "44:61137",
+      "props": {
+        "Lives": "0"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61137",
+        "name": "Lives=0",
+        "x": 464,
+        "y": 24,
+        "w": 130,
+        "h": 20,
+        "wSize": "hug",
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "44:61138",
+            "name": "Hearts",
+            "w": 68,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "VECTOR",
+                "id": "44:61139",
+                "name": "Heart 1 / Lost",
+                "w": 20,
+                "h": 18,
+                "svg": "svg/heart-3-lost-7bdcd1.svg"
+              },
+              {
+                "type": "VECTOR",
+                "id": "44:61140",
+                "name": "Heart 2 / Lost",
+                "w": 20,
+                "h": 18,
+                "svg": "svg/heart-3-lost-7bdcd1.svg"
+              },
+              {
+                "type": "VECTOR",
+                "id": "44:61141",
+                "name": "Heart 3 / Lost",
+                "w": 20,
+                "h": 18,
+                "svg": "svg/heart-3-lost-7bdcd1.svg"
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "44:61142",
+            "name": "Label",
+            "w": 54,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "visible": "Show label"
+            },
+            "text": "No lives",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

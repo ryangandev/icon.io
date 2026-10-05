@@ -1,0 +1,2887 @@
+{
+  "format": 1,
+  "name": "Zumpo/Die",
+  "id": "44:61311",
+  "type": "COMPONENT_SET",
+  "key": "a90ff70d30408130e0886e01dd42d9b1b2a2e558",
+  "description": "One die. Faces 1-6 are drawn as ink pips on a 3 × 3 grid; Hidden is a die in somebody else's cup, Empty a die already lost. Counted marks a die that matches the bid in a reveal, Wild a one counted as the bid's face, Dim one that does not count.",
+  "properties": {
+    "Face": {
+      "type": "variant",
+      "default": "1",
+      "options": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "Hidden",
+        "Empty"
+      ]
+    },
+    "State": {
+      "type": "variant",
+      "default": "Default",
+      "options": [
+        "Default",
+        "Wild",
+        "Dim",
+        "Counted"
+      ]
+    },
+    "Size": {
+      "type": "variant",
+      "default": "Regular",
+      "options": [
+        "Regular",
+        "Compact"
+      ]
+    }
+  },
+  "defaultVariant": "Face=1, State=Default, Size=Regular",
+  "variants": [
+    {
+      "name": "Face=1, State=Default, Size=Regular",
+      "id": "44:61145",
+      "props": {
+        "Face": "1",
+        "State": "Default",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61145",
+        "name": "Face=1, State=Default, Size=Regular",
+        "x": 24,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61146",
+            "name": "Pip",
+            "x": 23,
+            "y": 23,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=1, State=Wild, Size=Regular",
+      "id": "44:61147",
+      "props": {
+        "Face": "1",
+        "State": "Wild",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61147",
+        "name": "Face=1, State=Wild, Size=Regular",
+        "x": 96,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/peach"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61148",
+            "name": "Pip",
+            "x": 23,
+            "y": 23,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=1, State=Dim, Size=Regular",
+      "id": "44:61149",
+      "props": {
+        "Face": "1",
+        "State": "Dim",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61149",
+        "name": "Face=1, State=Dim, Size=Regular",
+        "x": 168,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61150",
+            "name": "Pip",
+            "x": 23,
+            "y": 23,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=2, State=Default, Size=Regular",
+      "id": "44:61151",
+      "props": {
+        "Face": "2",
+        "State": "Default",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61151",
+        "name": "Face=2, State=Default, Size=Regular",
+        "x": 240,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61152",
+            "name": "Pip",
+            "x": 36,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61153",
+            "name": "Pip",
+            "x": 10,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=2, State=Counted, Size=Regular",
+      "id": "44:61154",
+      "props": {
+        "Face": "2",
+        "State": "Counted",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61154",
+        "name": "Face=2, State=Counted, Size=Regular",
+        "x": 312,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61155",
+            "name": "Pip",
+            "x": 36,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61156",
+            "name": "Pip",
+            "x": 10,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=2, State=Dim, Size=Regular",
+      "id": "44:61157",
+      "props": {
+        "Face": "2",
+        "State": "Dim",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61157",
+        "name": "Face=2, State=Dim, Size=Regular",
+        "x": 384,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61158",
+            "name": "Pip",
+            "x": 36,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61159",
+            "name": "Pip",
+            "x": 10,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=3, State=Default, Size=Regular",
+      "id": "44:61160",
+      "props": {
+        "Face": "3",
+        "State": "Default",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61160",
+        "name": "Face=3, State=Default, Size=Regular",
+        "x": 456,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61161",
+            "name": "Pip",
+            "x": 36,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61162",
+            "name": "Pip",
+            "x": 23,
+            "y": 23,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61163",
+            "name": "Pip",
+            "x": 10,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=3, State=Counted, Size=Regular",
+      "id": "44:61164",
+      "props": {
+        "Face": "3",
+        "State": "Counted",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61164",
+        "name": "Face=3, State=Counted, Size=Regular",
+        "x": 528,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61165",
+            "name": "Pip",
+            "x": 36,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61166",
+            "name": "Pip",
+            "x": 23,
+            "y": 23,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61167",
+            "name": "Pip",
+            "x": 10,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=3, State=Dim, Size=Regular",
+      "id": "44:61168",
+      "props": {
+        "Face": "3",
+        "State": "Dim",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61168",
+        "name": "Face=3, State=Dim, Size=Regular",
+        "x": 600,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61169",
+            "name": "Pip",
+            "x": 36,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61170",
+            "name": "Pip",
+            "x": 23,
+            "y": 23,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61171",
+            "name": "Pip",
+            "x": 10,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=4, State=Default, Size=Regular",
+      "id": "44:61172",
+      "props": {
+        "Face": "4",
+        "State": "Default",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61172",
+        "name": "Face=4, State=Default, Size=Regular",
+        "x": 672,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61173",
+            "name": "Pip",
+            "x": 10,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61174",
+            "name": "Pip",
+            "x": 36,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61175",
+            "name": "Pip",
+            "x": 10,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61176",
+            "name": "Pip",
+            "x": 36,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=4, State=Counted, Size=Regular",
+      "id": "44:61177",
+      "props": {
+        "Face": "4",
+        "State": "Counted",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61177",
+        "name": "Face=4, State=Counted, Size=Regular",
+        "x": 744,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61178",
+            "name": "Pip",
+            "x": 10,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61179",
+            "name": "Pip",
+            "x": 36,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61180",
+            "name": "Pip",
+            "x": 10,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61181",
+            "name": "Pip",
+            "x": 36,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=4, State=Dim, Size=Regular",
+      "id": "44:61182",
+      "props": {
+        "Face": "4",
+        "State": "Dim",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61182",
+        "name": "Face=4, State=Dim, Size=Regular",
+        "x": 816,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61183",
+            "name": "Pip",
+            "x": 10,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61184",
+            "name": "Pip",
+            "x": 36,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61185",
+            "name": "Pip",
+            "x": 10,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61186",
+            "name": "Pip",
+            "x": 36,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=5, State=Default, Size=Regular",
+      "id": "44:61187",
+      "props": {
+        "Face": "5",
+        "State": "Default",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61187",
+        "name": "Face=5, State=Default, Size=Regular",
+        "x": 888,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61188",
+            "name": "Pip",
+            "x": 10,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61189",
+            "name": "Pip",
+            "x": 36,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61190",
+            "name": "Pip",
+            "x": 23,
+            "y": 23,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61191",
+            "name": "Pip",
+            "x": 10,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61192",
+            "name": "Pip",
+            "x": 36,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=5, State=Counted, Size=Regular",
+      "id": "44:61193",
+      "props": {
+        "Face": "5",
+        "State": "Counted",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61193",
+        "name": "Face=5, State=Counted, Size=Regular",
+        "x": 960,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61194",
+            "name": "Pip",
+            "x": 10,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61195",
+            "name": "Pip",
+            "x": 36,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61196",
+            "name": "Pip",
+            "x": 23,
+            "y": 23,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61197",
+            "name": "Pip",
+            "x": 10,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61198",
+            "name": "Pip",
+            "x": 36,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=5, State=Dim, Size=Regular",
+      "id": "44:61199",
+      "props": {
+        "Face": "5",
+        "State": "Dim",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61199",
+        "name": "Face=5, State=Dim, Size=Regular",
+        "x": 1032,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61200",
+            "name": "Pip",
+            "x": 10,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61201",
+            "name": "Pip",
+            "x": 36,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61202",
+            "name": "Pip",
+            "x": 23,
+            "y": 23,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61203",
+            "name": "Pip",
+            "x": 10,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61204",
+            "name": "Pip",
+            "x": 36,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=6, State=Default, Size=Regular",
+      "id": "44:61205",
+      "props": {
+        "Face": "6",
+        "State": "Default",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61205",
+        "name": "Face=6, State=Default, Size=Regular",
+        "x": 1104,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61206",
+            "name": "Pip",
+            "x": 10,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61207",
+            "name": "Pip",
+            "x": 10,
+            "y": 23,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61208",
+            "name": "Pip",
+            "x": 10,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61209",
+            "name": "Pip",
+            "x": 36,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61210",
+            "name": "Pip",
+            "x": 36,
+            "y": 23,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61211",
+            "name": "Pip",
+            "x": 36,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=6, State=Counted, Size=Regular",
+      "id": "44:61212",
+      "props": {
+        "Face": "6",
+        "State": "Counted",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61212",
+        "name": "Face=6, State=Counted, Size=Regular",
+        "x": 1176,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61213",
+            "name": "Pip",
+            "x": 10,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61214",
+            "name": "Pip",
+            "x": 10,
+            "y": 23,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61215",
+            "name": "Pip",
+            "x": 10,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61216",
+            "name": "Pip",
+            "x": 36,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61217",
+            "name": "Pip",
+            "x": 36,
+            "y": 23,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61218",
+            "name": "Pip",
+            "x": 36,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=6, State=Dim, Size=Regular",
+      "id": "44:61219",
+      "props": {
+        "Face": "6",
+        "State": "Dim",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61219",
+        "name": "Face=6, State=Dim, Size=Regular",
+        "x": 1248,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61220",
+            "name": "Pip",
+            "x": 10,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61221",
+            "name": "Pip",
+            "x": 10,
+            "y": 23,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61222",
+            "name": "Pip",
+            "x": 10,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61223",
+            "name": "Pip",
+            "x": 36,
+            "y": 10,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61224",
+            "name": "Pip",
+            "x": 36,
+            "y": 23,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61225",
+            "name": "Pip",
+            "x": 36,
+            "y": 36,
+            "w": 10,
+            "h": 10,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=Hidden, State=Default, Size=Regular",
+      "id": "44:61226",
+      "props": {
+        "Face": "Hidden",
+        "State": "Default",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61226",
+        "name": "Face=Hidden, State=Default, Size=Regular",
+        "x": 1320,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/blue"
+        ],
+        "radius": "$Zumpo · UI:radius/12",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge"
+      }
+    },
+    {
+      "name": "Face=Empty, State=Default, Size=Regular",
+      "id": "44:61227",
+      "props": {
+        "Face": "Empty",
+        "State": "Default",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61227",
+        "name": "Face=Empty, State=Default, Size=Regular",
+        "x": 1392,
+        "y": 24,
+        "w": 56,
+        "h": 56,
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "dash": [
+          6,
+          4
+        ],
+        "radius": "$Zumpo · UI:radius/12"
+      }
+    },
+    {
+      "name": "Face=1, State=Default, Size=Compact",
+      "id": "44:61228",
+      "props": {
+        "Face": "1",
+        "State": "Default",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61228",
+        "name": "Face=1, State=Default, Size=Compact",
+        "x": 24,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61229",
+            "name": "Pip",
+            "x": 13,
+            "y": 13,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=1, State=Wild, Size=Compact",
+      "id": "44:61230",
+      "props": {
+        "Face": "1",
+        "State": "Wild",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61230",
+        "name": "Face=1, State=Wild, Size=Compact",
+        "x": 72,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "fills": [
+          "$Zumpo · UI:color/peach"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61231",
+            "name": "Pip",
+            "x": 13,
+            "y": 13,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=1, State=Dim, Size=Compact",
+      "id": "44:61232",
+      "props": {
+        "Face": "1",
+        "State": "Dim",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61232",
+        "name": "Face=1, State=Dim, Size=Compact",
+        "x": 120,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61233",
+            "name": "Pip",
+            "x": 13,
+            "y": 13,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=2, State=Default, Size=Compact",
+      "id": "44:61234",
+      "props": {
+        "Face": "2",
+        "State": "Default",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61234",
+        "name": "Face=2, State=Default, Size=Compact",
+        "x": 168,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61235",
+            "name": "Pip",
+            "x": 20,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61236",
+            "name": "Pip",
+            "x": 6,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=2, State=Counted, Size=Compact",
+      "id": "44:61237",
+      "props": {
+        "Face": "2",
+        "State": "Counted",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61237",
+        "name": "Face=2, State=Counted, Size=Compact",
+        "x": 216,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61238",
+            "name": "Pip",
+            "x": 20,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61239",
+            "name": "Pip",
+            "x": 6,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=2, State=Dim, Size=Compact",
+      "id": "44:61240",
+      "props": {
+        "Face": "2",
+        "State": "Dim",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61240",
+        "name": "Face=2, State=Dim, Size=Compact",
+        "x": 264,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61241",
+            "name": "Pip",
+            "x": 20,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61242",
+            "name": "Pip",
+            "x": 6,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=3, State=Default, Size=Compact",
+      "id": "44:61243",
+      "props": {
+        "Face": "3",
+        "State": "Default",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61243",
+        "name": "Face=3, State=Default, Size=Compact",
+        "x": 312,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61244",
+            "name": "Pip",
+            "x": 20,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61245",
+            "name": "Pip",
+            "x": 13,
+            "y": 13,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61246",
+            "name": "Pip",
+            "x": 6,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=3, State=Counted, Size=Compact",
+      "id": "44:61247",
+      "props": {
+        "Face": "3",
+        "State": "Counted",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61247",
+        "name": "Face=3, State=Counted, Size=Compact",
+        "x": 360,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61248",
+            "name": "Pip",
+            "x": 20,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61249",
+            "name": "Pip",
+            "x": 13,
+            "y": 13,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61250",
+            "name": "Pip",
+            "x": 6,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=3, State=Dim, Size=Compact",
+      "id": "44:61251",
+      "props": {
+        "Face": "3",
+        "State": "Dim",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61251",
+        "name": "Face=3, State=Dim, Size=Compact",
+        "x": 408,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61252",
+            "name": "Pip",
+            "x": 20,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61253",
+            "name": "Pip",
+            "x": 13,
+            "y": 13,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61254",
+            "name": "Pip",
+            "x": 6,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=4, State=Default, Size=Compact",
+      "id": "44:61255",
+      "props": {
+        "Face": "4",
+        "State": "Default",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61255",
+        "name": "Face=4, State=Default, Size=Compact",
+        "x": 456,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61256",
+            "name": "Pip",
+            "x": 6,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61257",
+            "name": "Pip",
+            "x": 20,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61258",
+            "name": "Pip",
+            "x": 6,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61259",
+            "name": "Pip",
+            "x": 20,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=4, State=Counted, Size=Compact",
+      "id": "44:61260",
+      "props": {
+        "Face": "4",
+        "State": "Counted",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61260",
+        "name": "Face=4, State=Counted, Size=Compact",
+        "x": 504,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61261",
+            "name": "Pip",
+            "x": 6,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61262",
+            "name": "Pip",
+            "x": 20,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61263",
+            "name": "Pip",
+            "x": 6,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61264",
+            "name": "Pip",
+            "x": 20,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=4, State=Dim, Size=Compact",
+      "id": "44:61265",
+      "props": {
+        "Face": "4",
+        "State": "Dim",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61265",
+        "name": "Face=4, State=Dim, Size=Compact",
+        "x": 552,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61266",
+            "name": "Pip",
+            "x": 6,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61267",
+            "name": "Pip",
+            "x": 20,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61268",
+            "name": "Pip",
+            "x": 6,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61269",
+            "name": "Pip",
+            "x": 20,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=5, State=Default, Size=Compact",
+      "id": "44:61270",
+      "props": {
+        "Face": "5",
+        "State": "Default",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61270",
+        "name": "Face=5, State=Default, Size=Compact",
+        "x": 600,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61271",
+            "name": "Pip",
+            "x": 6,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61272",
+            "name": "Pip",
+            "x": 20,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61273",
+            "name": "Pip",
+            "x": 13,
+            "y": 13,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61274",
+            "name": "Pip",
+            "x": 6,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61275",
+            "name": "Pip",
+            "x": 20,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=5, State=Counted, Size=Compact",
+      "id": "44:61276",
+      "props": {
+        "Face": "5",
+        "State": "Counted",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61276",
+        "name": "Face=5, State=Counted, Size=Compact",
+        "x": 648,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61277",
+            "name": "Pip",
+            "x": 6,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61278",
+            "name": "Pip",
+            "x": 20,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61279",
+            "name": "Pip",
+            "x": 13,
+            "y": 13,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61280",
+            "name": "Pip",
+            "x": 6,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61281",
+            "name": "Pip",
+            "x": 20,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=5, State=Dim, Size=Compact",
+      "id": "44:61282",
+      "props": {
+        "Face": "5",
+        "State": "Dim",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61282",
+        "name": "Face=5, State=Dim, Size=Compact",
+        "x": 696,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61283",
+            "name": "Pip",
+            "x": 6,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61284",
+            "name": "Pip",
+            "x": 20,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61285",
+            "name": "Pip",
+            "x": 13,
+            "y": 13,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61286",
+            "name": "Pip",
+            "x": 6,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61287",
+            "name": "Pip",
+            "x": 20,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=6, State=Default, Size=Compact",
+      "id": "44:61288",
+      "props": {
+        "Face": "6",
+        "State": "Default",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61288",
+        "name": "Face=6, State=Default, Size=Compact",
+        "x": 744,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61289",
+            "name": "Pip",
+            "x": 6,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61290",
+            "name": "Pip",
+            "x": 6,
+            "y": 13,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61291",
+            "name": "Pip",
+            "x": 6,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61292",
+            "name": "Pip",
+            "x": 20,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61293",
+            "name": "Pip",
+            "x": 20,
+            "y": 13,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61294",
+            "name": "Pip",
+            "x": 20,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=6, State=Counted, Size=Compact",
+      "id": "44:61295",
+      "props": {
+        "Face": "6",
+        "State": "Counted",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61295",
+        "name": "Face=6, State=Counted, Size=Compact",
+        "x": 792,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61296",
+            "name": "Pip",
+            "x": 6,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61297",
+            "name": "Pip",
+            "x": 6,
+            "y": 13,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61298",
+            "name": "Pip",
+            "x": 6,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61299",
+            "name": "Pip",
+            "x": 20,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61300",
+            "name": "Pip",
+            "x": 20,
+            "y": 13,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61301",
+            "name": "Pip",
+            "x": 20,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=6, State=Dim, Size=Compact",
+      "id": "44:61302",
+      "props": {
+        "Face": "6",
+        "State": "Dim",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61302",
+        "name": "Face=6, State=Dim, Size=Compact",
+        "x": 840,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "children": [
+          {
+            "type": "ELLIPSE",
+            "id": "44:61303",
+            "name": "Pip",
+            "x": 6,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61304",
+            "name": "Pip",
+            "x": 6,
+            "y": 13,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61305",
+            "name": "Pip",
+            "x": 6,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61306",
+            "name": "Pip",
+            "x": 20,
+            "y": 6,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61307",
+            "name": "Pip",
+            "x": 20,
+            "y": 13,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "type": "ELLIPSE",
+            "id": "44:61308",
+            "name": "Pip",
+            "x": 20,
+            "y": 20,
+            "w": 6,
+            "h": 6,
+            "opacity": 0.35,
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Face=Hidden, State=Default, Size=Compact",
+      "id": "44:61309",
+      "props": {
+        "Face": "Hidden",
+        "State": "Default",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61309",
+        "name": "Face=Hidden, State=Default, Size=Compact",
+        "x": 888,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "fills": [
+          "$Zumpo · UI:color/blue"
+        ],
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge"
+      }
+    },
+    {
+      "name": "Face=Empty, State=Default, Size=Compact",
+      "id": "44:61310",
+      "props": {
+        "Face": "Empty",
+        "State": "Default",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:61310",
+        "name": "Face=Empty, State=Default, Size=Compact",
+        "x": 936,
+        "y": 112,
+        "w": 32,
+        "h": 32,
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "dash": [
+          6,
+          4
+        ],
+        "radius": "$Zumpo · UI:radius/8"
+      }
+    }
+  ]
+}

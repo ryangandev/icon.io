@@ -115,8 +115,8 @@
                 "componentId": "26:16856",
                 "props": {
                   "Meta": "Waiting for Ryan and Maya",
-                  "Main": "Locked in",
-                  "Label": "Round 4"
+                  "Label": "Round 4",
+                  "Main": "Locked in"
                 },
                 "overrides": [
                   {
@@ -1090,6 +1090,7 @@
                   {
                     "path": "Player 1",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Picking",
                       "Host": false,
@@ -1110,6 +1111,7 @@
                   {
                     "path": "Player 2",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": true,
                       "Status": "Locked in",
                       "Host": false,
@@ -1130,6 +1132,7 @@
                   {
                     "path": "Player 3",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": true,
                       "Status": "Locked in",
                       "Host": false,
@@ -1143,6 +1146,7 @@
                   {
                     "path": "Player 4",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Picking",
                       "Host": true,
@@ -1180,6 +1184,7 @@
                   {
                     "path": "Messages / Message 1",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Name": "System",
                       "Message": "Game has started! 10 mines on a 9×9 board.",
                       "Kind": "System"
@@ -1188,6 +1193,7 @@
                   {
                     "path": "Messages / Message 2",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "good luck",
                       "Name": "Ryan",
                       "Kind": "Player"
@@ -1197,6 +1203,7 @@
                     "path": "Messages / Message 3",
                     "componentProperties": {
                       "Name": "System",
+                      "Alert icon": "24:5071",
                       "Message": "Maya hit a mine (11% risk): −109",
                       "Kind": "Alert"
                     }
@@ -1204,6 +1211,7 @@
                   {
                     "path": "Messages / Message 4",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "ouch",
                       "Name": "Maya",
                       "Kind": "Player"

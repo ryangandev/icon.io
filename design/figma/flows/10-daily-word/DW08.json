@@ -1,0 +1,746 @@
+{
+  "format": 1,
+  "code": "DW08",
+  "title": "Room · you found it",
+  "id": "79:100888",
+  "section": "10 / Daily Word / complete flow",
+  "reviewNotes": [
+    "DW08 · Found in 4 with 52 seconds left: 300 + 22 = 322. The keyboard goes away and you watch the race. You know the word now, so your chat stays closed until the reveal."
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "79:100888",
+    "name": "DW08 / Room · you found it",
+    "x": 1580,
+    "y": 1318,
+    "w": 1440,
+    "h": 797,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        24,
+        "$Zumpo · UI:space/64",
+        32,
+        "$Zumpo · UI:space/64"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "79:100889",
+        "name": "Zumpo/Room bar",
+        "w": 1312,
+        "h": 48,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Desktop"
+        },
+        "componentId": "39:19276",
+        "props": {
+          "Game": "Daily Word"
+        },
+        "overrides": [
+          {
+            "path": "Room identity / Room",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Maya’s room",
+              "Tone": "Sand"
+            }
+          },
+          {
+            "path": "Room identity / Phase",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Word 2 of 3",
+              "Tone": "Blue"
+            }
+          },
+          {
+            "path": "Action / Leave room",
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "9:2528",
+                    "toName": "ML01 / Room list · open, private, full and playing states",
+                    "transition": "dissolve"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "79:100890",
+        "name": "Board & room",
+        "w": 1312,
+        "h": 627,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/24",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "79:100891",
+            "name": "Board stage",
+            "w": 944,
+            "h": 627,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/16",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "79:100892",
+                "name": "Zumpo/Turn bar",
+                "w": 944,
+                "h": 92,
+                "wSize": "fill",
+                "hSize": "hug",
+                "component": "Zumpo/Turn bar",
+                "variant": {
+                  "Kind": "Status",
+                  "Layout": "Desktop"
+                },
+                "componentId": "26:16856",
+                "props": {
+                  "Meta": "Waiting for Ryan and Leo",
+                  "Label": "Word 2 of 3",
+                  "Main": "Got it in 4! +322",
+                  "Category": false
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 92,
+                    "width": 944
+                  },
+                  {
+                    "path": "Turn / Eyebrow / Category",
+                    "componentProperties": {
+                      "Icon": "24:5010",
+                      "Show icon": false,
+                      "Label": "Small · 9 × 9",
+                      "Tone": "Sand"
+                    }
+                  },
+                  {
+                    "path": "Countdown",
+                    "componentProperties": {
+                      "Label": "to guess",
+                      "Time": "00:52",
+                      "Tone": "Running"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "79:100893",
+                "name": "Table panel",
+                "w": 944,
+                "h": 519,
+                "wSize": "fill",
+                "hSize": "hug",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside",
+                "radius": "$Zumpo · UI:radius/24",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/32",
+                  "pad": "$Zumpo · UI:space/24",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "79:100967",
+                    "name": "Your board",
+                    "w": 472,
+                    "h": 469,
+                    "hSize": "hug",
+                    "layout": {
+                      "mode": "column",
+                      "gap": "$Zumpo · UI:space/20",
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "INSTANCE",
+                        "id": "79:100968",
+                        "name": "Your board",
+                        "w": 352,
+                        "h": 424,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "component": "Zumpo/Word board",
+                        "variant": {
+                          "Size": "Regular"
+                        },
+                        "componentId": "44:62938",
+                        "overrides": [
+                          {
+                            "path": "Row 1 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "C",
+                              "State": "Absent",
+                              "Size": "Regular"
+                            }
+                          },
+                          {
+                            "path": "Row 1 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "R",
+                              "State": "Absent",
+                              "Size": "Regular"
+                            }
+                          },
+                          {
+                            "path": "Row 1 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "A",
+                              "State": "Absent",
+                              "Size": "Regular"
+                            }
+                          },
+                          {
+                            "path": "Row 1 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "N",
+                              "State": "Absent",
+                              "Size": "Regular"
+                            }
+                          },
+                          {
+                            "path": "Row 1 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "E",
+                              "State": "Absent",
+                              "Size": "Regular"
+                            }
+                          },
+                          {
+                            "path": "Row 2 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "S",
+                              "State": "Present",
+                              "Size": "Regular"
+                            }
+                          },
+                          {
+                            "path": "Row 2 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Present",
+                              "Size": "Regular"
+                            }
+                          },
+                          {
+                            "path": "Row 2 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "U",
+                              "State": "Absent",
+                              "Size": "Regular"
+                            }
+                          },
+                          {
+                            "path": "Row 2 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "T",
+                              "State": "Present",
+                              "Size": "Regular"
+                            }
+                          },
+                          {
+                            "path": "Row 2 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "H",
+                              "State": "Present",
+                              "Size": "Regular"
+                            }
+                          },
+                          {
+                            "path": "Row 3 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "M",
+                              "State": "Absent",
+                              "Size": "Regular"
+                            }
+                          },
+                          {
+                            "path": "Row 3 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Present",
+                              "Size": "Regular"
+                            }
+                          },
+                          {
+                            "path": "Row 3 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "I",
+                              "State": "Absent",
+                              "Size": "Regular"
+                            }
+                          },
+                          {
+                            "path": "Row 3 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "S",
+                              "State": "Correct",
+                              "Size": "Regular"
+                            }
+                          },
+                          {
+                            "path": "Row 3 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "T",
+                              "State": "Correct",
+                              "Size": "Regular"
+                            }
+                          },
+                          {
+                            "path": "Row 4 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "G",
+                              "State": "Correct",
+                              "Size": "Regular"
+                            }
+                          },
+                          {
+                            "path": "Row 4 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "H",
+                              "State": "Correct",
+                              "Size": "Regular"
+                            }
+                          },
+                          {
+                            "path": "Row 4 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Correct",
+                              "Size": "Regular"
+                            }
+                          },
+                          {
+                            "path": "Row 4 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "S",
+                              "State": "Correct",
+                              "Size": "Regular"
+                            }
+                          },
+                          {
+                            "path": "Row 4 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "T",
+                              "State": "Correct",
+                              "Size": "Regular"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "TEXT",
+                        "id": "79:101025",
+                        "name": "Prompt",
+                        "w": 340,
+                        "h": 25,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "text": "You found it. Watch the others until the reveal.",
+                        "textStyle": "Zumpo/Body",
+                        "fills": [
+                          "$Zumpo · UI:color/muted"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "79:101026",
+                    "name": "The others",
+                    "w": 390,
+                    "h": 254,
+                    "wSize": "fill",
+                    "hSize": "hug",
+                    "layout": {
+                      "mode": "column",
+                      "gap": "$Zumpo · UI:space/16",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "FRAME",
+                        "id": "79:101027",
+                        "name": "Heading space",
+                        "w": 174,
+                        "h": 52,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "layout": {
+                          "mode": "column",
+                          "gap": "$Zumpo · UI:space/4",
+                          "strokesIncluded": true
+                        },
+                        "children": [
+                          {
+                            "type": "TEXT",
+                            "id": "79:101028",
+                            "w": 125,
+                            "h": 30,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "text": "The others",
+                            "textStyle": "Zumpo/Heading",
+                            "fills": [
+                              "$Zumpo · UI:color/ink"
+                            ]
+                          },
+                          {
+                            "type": "TEXT",
+                            "id": "79:101029",
+                            "w": 174,
+                            "h": 18,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "text": "Their marks, never their letters",
+                            "textStyle": "Zumpo/Small",
+                            "fills": [
+                              "$Zumpo · UI:color/muted"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "FRAME",
+                        "id": "79:101030",
+                        "name": "Boards",
+                        "w": 392,
+                        "h": 186,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "layout": {
+                          "mode": "row",
+                          "gap": "$Zumpo · UI:space/16",
+                          "strokesIncluded": true
+                        },
+                        "children": [
+                          {
+                            "type": "INSTANCE",
+                            "id": "79:101031",
+                            "name": "Race board / Maya",
+                            "w": 120,
+                            "h": 186,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "component": "Zumpo/Race board",
+                            "variant": {
+                              "State": "Found",
+                              "Board": "Mini"
+                            },
+                            "componentId": "44:63532"
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "79:101072",
+                            "name": "Race board / Ryan",
+                            "w": 120,
+                            "h": 186,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "component": "Zumpo/Race board",
+                            "variant": {
+                              "State": "Guessing",
+                              "Board": "Mini"
+                            },
+                            "componentId": "44:63491",
+                            "props": {
+                              "Status": "5 guesses",
+                              "Name": "Ryan"
+                            }
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "79:101113",
+                            "name": "Race board / Leo",
+                            "w": 120,
+                            "h": 186,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "component": "Zumpo/Race board",
+                            "variant": {
+                              "State": "Guessing",
+                              "Board": "Mini"
+                            },
+                            "componentId": "44:63491",
+                            "props": {
+                              "Status": "4 guesses",
+                              "Name": "Leo"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "79:100914",
+            "name": "Room sidebar",
+            "w": 344,
+            "h": 626,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/24",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "79:100915",
+                "name": "Zumpo/Scoreboard",
+                "w": 344,
+                "h": 304,
+                "hSize": "hug",
+                "component": "Zumpo/Scoreboard",
+                "componentId": "9:320",
+                "overrides": [
+                  {
+                    "path": "Player 1",
+                    "componentProperties": {
+                      "Icon": "24:4994",
+                      "You": false,
+                      "Show score": true,
+                      "Host": true,
+                      "Name": "Maya",
+                      "Score": "756",
+                      "Status icon": true,
+                      "Status": "Found it · +431",
+                      "State": "Scored"
+                    }
+                  },
+                  {
+                    "path": "Player 1 / Avatar",
+                    "componentProperties": {
+                      "Initials": "MA",
+                      "Tone": "Peach"
+                    }
+                  },
+                  {
+                    "path": "Player 2",
+                    "componentProperties": {
+                      "Icon": "24:4994",
+                      "You": true,
+                      "Show score": true,
+                      "Host": false,
+                      "Name": "Sam",
+                      "Score": "636",
+                      "Status icon": true,
+                      "Status": "Found it · +322",
+                      "State": "Scored"
+                    }
+                  },
+                  {
+                    "path": "Player 2 / Avatar",
+                    "componentProperties": {
+                      "Initials": "SA",
+                      "Tone": "Sand"
+                    }
+                  },
+                  {
+                    "path": "Player 3",
+                    "componentProperties": {
+                      "Show score": true,
+                      "Status icon": false,
+                      "Status": "Guessing",
+                      "Host": false,
+                      "You": false,
+                      "Score": "417",
+                      "Icon": "24:5071",
+                      "Name": "Ryan",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 3 / Avatar",
+                    "componentProperties": {
+                      "Initials": "RG",
+                      "Tone": "Blue"
+                    }
+                  },
+                  {
+                    "path": "Player 4",
+                    "componentProperties": {
+                      "Show score": true,
+                      "Status icon": false,
+                      "Status": "Guessing",
+                      "Host": false,
+                      "You": false,
+                      "Score": "205",
+                      "Icon": "24:4994",
+                      "Name": "Leo",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 4 / Avatar",
+                    "componentProperties": {
+                      "Initials": "LE",
+                      "Tone": "Lime"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "79:100916",
+                "name": "Zumpo/Chat",
+                "w": 344,
+                "h": 298,
+                "hSize": "hug",
+                "component": "Zumpo/Chat",
+                "componentId": "9:334",
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 298,
+                    "width": 344
+                  },
+                  {
+                    "path": "Messages / Message 1",
+                    "componentProperties": {
+                      "Alert icon": "24:4999",
+                      "Message": "good luck",
+                      "Name": "Ryan",
+                      "Kind": "Player"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 2",
+                    "componentProperties": {
+                      "Alert icon": "24:4999",
+                      "Name": "System",
+                      "Message": "Maya got it in 3! (+431)",
+                      "Kind": "Success"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 3",
+                    "componentProperties": {
+                      "Alert icon": "24:4999",
+                      "Message": "how?!",
+                      "Name": "Leo",
+                      "Kind": "Player"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 4",
+                    "componentProperties": {
+                      "Alert icon": "24:4999",
+                      "Name": "System",
+                      "Message": "Sam got it in 4! (+322)",
+                      "Kind": "Success"
+                    },
+                    "visible": true
+                  },
+                  {
+                    "path": "Messages / Message 5",
+                    "visible": false
+                  },
+                  {
+                    "path": "Messages / Message 6",
+                    "visible": false
+                  },
+                  {
+                    "path": "Chat input",
+                    "componentProperties": {
+                      "Placeholder": "You got it. Chat opens after the reveal.",
+                      "State": "Disabled"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "79:100917",
+        "name": "Footer",
+        "w": 1312,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "79:100918",
+            "w": 650,
+            "h": 18,
+            "hSize": "hug",
+            "text": "Good company. One more round.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "79:100919",
+            "w": 115,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "zumpo. / play a little",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

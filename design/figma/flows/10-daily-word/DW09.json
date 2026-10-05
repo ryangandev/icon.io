@@ -1,0 +1,1267 @@
+{
+  "format": 1,
+  "code": "DW09",
+  "title": "Room · the reveal",
+  "id": "79:101387",
+  "section": "10 / Daily Word / complete flow",
+  "reviewNotes": [
+    "DW09 · Eight seconds to see every board with its letters, best first. Leo found it in 5 with 18 seconds left (200 + 8); Ryan used all six guesses and scores nothing, never less."
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "79:101387",
+    "name": "DW09 / Room · the reveal",
+    "x": 3120,
+    "y": 1318,
+    "w": 1440,
+    "h": 837,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        24,
+        "$Zumpo · UI:space/64",
+        32,
+        "$Zumpo · UI:space/64"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "79:101388",
+        "name": "Zumpo/Room bar",
+        "w": 1312,
+        "h": 48,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Desktop"
+        },
+        "componentId": "39:19276",
+        "props": {
+          "Game": "Daily Word"
+        },
+        "overrides": [
+          {
+            "path": "Room identity / Room",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Maya’s room",
+              "Tone": "Sand"
+            }
+          },
+          {
+            "path": "Room identity / Phase",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Word 2 of 3",
+              "Tone": "Blue"
+            }
+          },
+          {
+            "path": "Action / Leave room",
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "9:2528",
+                    "toName": "ML01 / Room list · open, private, full and playing states",
+                    "transition": "dissolve"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "79:101389",
+        "name": "Board & room",
+        "w": 1312,
+        "h": 667,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/24",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "79:101390",
+            "name": "Board stage",
+            "w": 944,
+            "h": 502,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/16",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "79:101391",
+                "name": "Zumpo/Turn bar",
+                "w": 944,
+                "h": 92,
+                "wSize": "fill",
+                "hSize": "hug",
+                "component": "Zumpo/Turn bar",
+                "variant": {
+                  "Kind": "Status",
+                  "Layout": "Desktop"
+                },
+                "componentId": "26:16856",
+                "props": {
+                  "Meta": "You found it in 4 for +322",
+                  "Label": "The word was",
+                  "Main": "GHOST",
+                  "Category": false
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 92,
+                    "width": 944
+                  },
+                  {
+                    "path": "Turn / Eyebrow / Category",
+                    "componentProperties": {
+                      "Icon": "24:5010",
+                      "Show icon": false,
+                      "Label": "Small · 9 × 9",
+                      "Tone": "Sand"
+                    }
+                  },
+                  {
+                    "path": "Countdown",
+                    "componentProperties": {
+                      "Label": "next word",
+                      "Time": "00:06",
+                      "Tone": "Waiting"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "79:101392",
+                "name": "Table panel",
+                "w": 944,
+                "h": 394,
+                "wSize": "fill",
+                "hSize": "hug",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside",
+                "radius": "$Zumpo · UI:radius/24",
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/20",
+                  "pad": "$Zumpo · UI:space/24",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "79:101471",
+                    "name": "Heading space",
+                    "w": 173,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "layout": {
+                      "mode": "column",
+                      "gap": "$Zumpo · UI:space/4",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "79:101472",
+                        "w": 173,
+                        "h": 30,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "text": "Word 2 results",
+                        "textStyle": "Zumpo/Heading",
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "79:101473",
+                    "name": "Boards",
+                    "w": 880,
+                    "h": 294,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "layout": {
+                      "mode": "row",
+                      "gap": "$Zumpo · UI:space/16",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "INSTANCE",
+                        "id": "79:101474",
+                        "name": "Race board / Maya",
+                        "w": 208,
+                        "h": 294,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "component": "Zumpo/Race board",
+                        "variant": {
+                          "State": "Found",
+                          "Board": "Small"
+                        },
+                        "componentId": "44:63655",
+                        "props": {
+                          "Status": "Found in 3 · +431"
+                        },
+                        "overrides": [
+                          {
+                            "path": "Board / Row 1 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "S",
+                              "State": "Present",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 1 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "T",
+                              "State": "Present",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 1 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "A",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 1 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "R",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 1 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "E",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "H",
+                              "State": "Present",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Present",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "I",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "S",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "T",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "G",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "H",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "S",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "T",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "79:101530",
+                        "name": "Race board / Sam",
+                        "w": 208,
+                        "h": 294,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "component": "Zumpo/Race board",
+                        "variant": {
+                          "State": "Found",
+                          "Board": "Small"
+                        },
+                        "componentId": "44:63655",
+                        "props": {
+                          "Status": "Found in 4 · +322",
+                          "Name": "Sam"
+                        },
+                        "overrides": [
+                          {
+                            "path": "Board / Row 1 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "C",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 1 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "R",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 1 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "A",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 1 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "N",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 1 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "E",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "S",
+                              "State": "Present",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Present",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "U",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "T",
+                              "State": "Present",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "H",
+                              "State": "Present",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "M",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Present",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "I",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "S",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "T",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 4 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "G",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 4 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "H",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 4 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 4 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "S",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 4 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "T",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "79:101591",
+                        "name": "Race board / Leo",
+                        "w": 208,
+                        "h": 294,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "component": "Zumpo/Race board",
+                        "variant": {
+                          "State": "Found",
+                          "Board": "Small"
+                        },
+                        "componentId": "44:63655",
+                        "props": {
+                          "Status": "Found in 5 · +208",
+                          "Name": "Leo"
+                        },
+                        "overrides": [
+                          {
+                            "path": "Board / Row 1 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "L",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 1 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "E",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 1 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "M",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 1 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Present",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 1 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "N",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "S",
+                              "State": "Present",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "P",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "R",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "T",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "F",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "R",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "S",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "T",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 4 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "H",
+                              "State": "Present",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 4 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Present",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 4 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "I",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 4 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "S",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 4 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "T",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 5 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "G",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 5 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "H",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 5 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 5 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "S",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 5 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "T",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "79:101657",
+                        "name": "Race board / Ryan",
+                        "w": 208,
+                        "h": 294,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "component": "Zumpo/Race board",
+                        "variant": {
+                          "State": "Out",
+                          "Board": "Small"
+                        },
+                        "componentId": "44:63696",
+                        "props": {
+                          "Status": "Missed",
+                          "Name": "Ryan"
+                        },
+                        "overrides": [
+                          {
+                            "path": "Board / Row 1 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "A",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 1 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "U",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 1 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "D",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 1 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "I",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 1 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Present",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "T",
+                              "State": "Present",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "H",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "S",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 2 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "E",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "S",
+                              "State": "Present",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "H",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 3 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "T",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 4 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "B",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 4 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 4 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 4 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "S",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 4 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "T",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 5 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "R",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 5 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 5 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 5 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "S",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 5 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "T",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 6 / Tile 1",
+                            "componentProperties": {
+                              "Letter": "H",
+                              "State": "Present",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 6 / Tile 2",
+                            "componentProperties": {
+                              "Letter": "O",
+                              "State": "Present",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 6 / Tile 3",
+                            "componentProperties": {
+                              "Letter": "I",
+                              "State": "Absent",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 6 / Tile 4",
+                            "componentProperties": {
+                              "Letter": "S",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          },
+                          {
+                            "path": "Board / Row 6 / Tile 5",
+                            "componentProperties": {
+                              "Letter": "T",
+                              "State": "Correct",
+                              "Size": "Small"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "79:101413",
+            "name": "Room sidebar",
+            "w": 344,
+            "h": 667,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/24",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "79:101414",
+                "name": "Zumpo/Scoreboard",
+                "w": 344,
+                "h": 304,
+                "hSize": "hug",
+                "component": "Zumpo/Scoreboard",
+                "componentId": "9:320",
+                "overrides": [
+                  {
+                    "path": "Player 1",
+                    "componentProperties": {
+                      "Show score": true,
+                      "Status icon": true,
+                      "Status": "Found it · +431",
+                      "Host": true,
+                      "You": false,
+                      "Score": "756",
+                      "Icon": "24:4994",
+                      "Name": "Maya",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 1 / Avatar",
+                    "componentProperties": {
+                      "Initials": "MA",
+                      "Tone": "Peach"
+                    }
+                  },
+                  {
+                    "path": "Player 2",
+                    "componentProperties": {
+                      "Show score": true,
+                      "Status icon": true,
+                      "Status": "Found it · +322",
+                      "Host": false,
+                      "You": true,
+                      "Score": "636",
+                      "Icon": "24:4994",
+                      "Name": "Sam",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 2 / Avatar",
+                    "componentProperties": {
+                      "Initials": "SA",
+                      "Tone": "Sand"
+                    }
+                  },
+                  {
+                    "path": "Player 3",
+                    "componentProperties": {
+                      "Show score": true,
+                      "Status icon": false,
+                      "Status": "Missed",
+                      "Host": false,
+                      "You": false,
+                      "Score": "417",
+                      "Icon": "24:5071",
+                      "Name": "Ryan",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 3 / Avatar",
+                    "componentProperties": {
+                      "Initials": "RG",
+                      "Tone": "Blue"
+                    }
+                  },
+                  {
+                    "path": "Player 4",
+                    "componentProperties": {
+                      "Show score": true,
+                      "Status icon": true,
+                      "Status": "Found it · +208",
+                      "Host": false,
+                      "You": false,
+                      "Score": "413",
+                      "Icon": "24:4994",
+                      "Name": "Leo",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 4 / Avatar",
+                    "componentProperties": {
+                      "Initials": "LE",
+                      "Tone": "Lime"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "79:101415",
+                "name": "Zumpo/Chat",
+                "w": 344,
+                "h": 339,
+                "hSize": "hug",
+                "component": "Zumpo/Chat",
+                "componentId": "9:334",
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 339,
+                    "width": 344
+                  },
+                  {
+                    "path": "Messages / Message 1",
+                    "componentProperties": {
+                      "Alert icon": "24:4999",
+                      "Name": "System",
+                      "Message": "Maya got it in 3! (+431)",
+                      "Kind": "Success"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 2",
+                    "componentProperties": {
+                      "Alert icon": "24:4999",
+                      "Name": "System",
+                      "Message": "Sam got it in 4! (+322)",
+                      "Kind": "Success"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 3",
+                    "componentProperties": {
+                      "Alert icon": "24:4999",
+                      "Name": "System",
+                      "Message": "Leo got it in 5! (+208)",
+                      "Kind": "Success"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 4",
+                    "componentProperties": {
+                      "Alert icon": "24:4999",
+                      "Name": "System",
+                      "Message": "The word was GHOST.",
+                      "Kind": "System"
+                    },
+                    "visible": true
+                  },
+                  {
+                    "path": "Messages / Message 5",
+                    "componentProperties": {
+                      "Alert icon": "24:4999",
+                      "Message": "HOIST was so close",
+                      "Name": "Ryan",
+                      "Kind": "Player"
+                    },
+                    "visible": true
+                  },
+                  {
+                    "path": "Messages / Message 6",
+                    "visible": false
+                  },
+                  {
+                    "path": "Chat input",
+                    "componentProperties": {
+                      "Placeholder": "Say something…",
+                      "State": "Default"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "79:101416",
+        "name": "Footer",
+        "w": 1312,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "79:101417",
+            "w": 650,
+            "h": 18,
+            "hSize": "hug",
+            "text": "Good company. One more round.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "79:101418",
+            "w": 115,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "zumpo. / play a little",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
