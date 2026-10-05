@@ -1,4 +1,5 @@
 import type {
+  DailyWordRoomState,
   DrawAndGuessRoomState,
   LiarsDiceRoomState,
   Make24RoomState,
@@ -126,6 +127,22 @@ export function liarsDiceState(
     turnPlayerId: null,
     nextPlayerId: null,
     reveal: null,
+    lastGame: null,
+    ...overrides,
+  };
+}
+
+export function dailyWordState(
+  overrides: Partial<DailyWordRoomState> = {},
+): DailyWordRoomState {
+  return {
+    ...room,
+    gameType: 'daily-word',
+    rounds: 3,
+    phase: 'waiting',
+    round: 0,
+    boards: [],
+    lastRound: null,
     lastGame: null,
     ...overrides,
   };

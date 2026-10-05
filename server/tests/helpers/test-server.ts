@@ -7,6 +7,7 @@ import {
 } from '../../app.js';
 import type {
   LiarsDiceDurationsInSeconds,
+  DailyWordDurationsInSeconds,
   Make24DurationsInSeconds,
   MinesweeperDurationsInSeconds,
   PairsDurationsInSeconds,
@@ -16,11 +17,13 @@ import type { MinesweeperState } from '../../socket/minesweeper/index.js';
 import type { Make24State } from '../../socket/make-24/index.js';
 import type { PairsState } from '../../socket/pairs/index.js';
 import type { LiarsDiceState } from '../../socket/liars-dice/index.js';
+import type { DailyWordState } from '../../socket/daily-word/index.js';
 import type {
   AnyLobbyRoomInfo,
   AnyRoomState,
   ChatMessage,
   ClientToServerEvents,
+  DailyWordRoomState,
   DrawAndGuessRoomState,
   DrawAndGuessState,
   GameType,
@@ -90,6 +93,15 @@ const FAST_LIARS_DICE: LiarsDiceDurationsInSeconds = {
   reveal: 0.3,
 };
 
+/**
+ * A round long enough to type several guesses deliberately inside it, and
+ * results short enough that a game of three words still finishes in a test.
+ */
+const FAST_DAILY_WORD: DailyWordDurationsInSeconds = {
+  round: 2,
+  reveal: 0.1,
+};
+
 /** A client socket typed on the contract, from the client's side of it. */
 type ClientSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -141,6 +153,7 @@ const startTestServer = async (
     make24Durations,
     pairsDurations,
     liarsDiceDurations: FAST_LIARS_DICE,
+    dailyWordDurations: FAST_DAILY_WORD,
     graceInSeconds,
     ...overrides,
   });
@@ -286,6 +299,13 @@ const waitForLiarsDiceState = (
   predicate: (state: LiarsDiceRoomState) => boolean = () => true,
   timeoutMs = 3000,
 ) => waitForState<LiarsDiceRoomState>(client, predicate, timeoutMs);
+
+/** And for Daily Word. */
+const waitForDailyWordState = (
+  client: ClientSocket,
+  predicate: (state: DailyWordRoomState) => boolean = () => true,
+  timeoutMs = 3000,
+) => waitForState<DailyWordRoomState>(client, predicate, timeoutMs);
 
 /** Resolves with the next chat message that satisfies `predicate`. */
 const waitForChat = async (
@@ -627,6 +647,56 @@ const liarsDiceRoom = (
 ): Room<LiarsDiceState> =>
   harness.server.rooms.get(roomId) as Room<LiarsDiceState>;
 
+/** Creates a Daily Word room, with its creator seated, and returns its id. */
+const createDailyWordRoom = async (
+  client: ClientSocket,
+  options: { username?: string; rounds?: number; maxPlayers?: number } = {},
+): Promise<string> => {
+  const answer = await client.timeout(3000).emitWithAck('room:create', {
+    gameType: 'daily-word',
+    roomName: 'Word table',
+    username: options.username ?? 'Owner',
+    maxPlayers: options.maxPlayers ?? 4,
+    password: '',
+    settings: { rounds: options.rounds ?? 3 },
+  });
+  if (!answer.ok) throw new Error(`room:create refused: ${answer.error.type}`);
+  return answer.roomId;
+};
+
+/**
+ * The server's own Daily Word room. Tests read the words through it on
+ * purpose: knowing the word is the only way to find it deliberately, and it is
+ * exactly what a client is never sent.
+ */
+const dailyWordRoom = (
+  harness: TestServer,
+  roomId: string,
+): Room<DailyWordState> =>
+  harness.server.rooms.get(roomId) as Room<DailyWordState>;
+
+/** Seats Alice and Bob in a Daily Word room and opens the first word. */
+const playToFirstWord = async (harness: TestServer, rounds = 3) => {
+  const alice = await harness.connect();
+  const bob = await harness.connect();
+
+  const roomId = await createDailyWordRoom(alice, {
+    username: 'Alice',
+    rounds,
+  });
+  await joinRoom(bob, roomId, 'Bob');
+
+  const round = waitForDailyWordState(
+    alice,
+    (state) => state.phase === 'guessing' && state.round === 1,
+    5000,
+  );
+  await startGame(alice, roomId);
+  const first = await round;
+
+  return { roomId, alice, bob, first };
+};
+
 /** Seats two players in a Minesweeper room and opens the first round. */
 const playToFirstRound = async (harness: TestServer) => {
   const alice = await harness.connect();
@@ -653,6 +723,7 @@ export {
   FAST_MAKE24,
   FAST_PAIRS,
   FAST_LIARS_DICE,
+  FAST_DAILY_WORD,
   startTestServer,
   waitFor,
   waitForState,
@@ -661,6 +732,7 @@ export {
   waitForMake24State,
   waitForPairsState,
   waitForLiarsDiceState,
+  waitForDailyWordState,
   waitForChat,
   collect,
   collectChat,
@@ -672,6 +744,7 @@ export {
   createMake24Room,
   createPairsRoom,
   createLiarsDiceRoom,
+  createDailyWordRoom,
   joinRoom,
   startGame,
   syncRoom,
@@ -685,5 +758,7 @@ export {
   playToFirstHand,
   pairsRoom,
   liarsDiceRoom,
+  dailyWordRoom,
+  playToFirstWord,
 };
 export type { TestServer, TestClient, ClientSocket };

@@ -12,6 +12,15 @@ import {
   type PlayerOptions,
 } from '../fixtures';
 import { startServer } from '../own-server';
+import { ANSWERS, dailyAnswer, markGuess } from '../../shared/daily-word.js';
+import { GUESSES } from '../../shared/daily-word-guesses.js';
+import {
+  guessesOf,
+  nextGuess,
+  solve,
+  typeGuess,
+  type Guessed,
+} from '../play/daily-word';
 import { missHand, solveHand, startHand } from '../play/make-24';
 import {
   clearABoard,
@@ -197,17 +206,20 @@ test('a tab taken over, and a room closed by a restart', async ({ player }) => {
     await joinRoom(copy, link);
     await expect(page.getByText('Zumpo is open in another tab.')).toBeVisible();
     await shot(page, code);
+    // Leave from the tab that holds the seat, so the room closes now rather
+    // than waiting out the away grace on the shared server.
+    await copy.getByRole('button', { name: 'Leave room' }).click();
+    await expect(copy).toHaveURL(/\/games\/minesweeper$/);
   }
 
   // A server of this test's own, so stopping it leaves the others alone.
-  const port = Number(process.env.SCREENS_PORT ?? 3320) + 1;
-  const server = await startServer(port);
+  const server = await startServer();
   try {
-    const own = { server: `http://localhost:${port}` };
+    const own = { server: server.url };
     const maya = await player('Maya', { ...desktop, ...own });
     const sam = await player('Sam', { ...phone, ...own });
     await joinRoom(sam, await createRoom(maya, 'minesweeper'));
-    server.kill('SIGTERM');
+    server.process.kill('SIGTERM');
     for (const [page, code] of [
       [maya, 'P18'],
       [sam, 'MO18'],
@@ -216,7 +228,7 @@ test('a tab taken over, and a room closed by a restart', async ({ player }) => {
       await shot(page, code);
     }
   } finally {
-    server.kill('SIGKILL');
+    server.process.kill('SIGKILL');
   }
 });
 
@@ -1156,4 +1168,249 @@ test('a Liar’s Dice game', async ({ player }) => {
     'LD15',
   ]);
   await shot(sam, 'LD12');
+});
+
+/*
+ * Daily Word on your own runs on the device's date, so each screen is played
+ * on Figma's day: word #12 on 16 October 2026, #13 the day after, with the
+ * clock stopped at Figma's 09:41:18 to the next word.
+ */
+const dailyWordDay = (day: number) => new Date(2026, 9, day, 14, 18, 42);
+
+/**
+ * Eleven words played before #12, as Figma's device has: 91% found, the last
+ * four in a row. Figma's best streak of 7 cannot go with them, so it is 6.
+ */
+function pastDailyWords(): Record<number, string[]> {
+  const fillers = ['stare', 'cloud', 'giant', 'pound', 'hatch', 'match'];
+  const played = (puzzle: number, guesses: number, found: boolean) =>
+    found
+      ? [...fillers.slice(0, guesses - 1), dailyAnswer(puzzle)]
+      : fillers.slice(0, 6);
+  const lengths = [3, 2, 3, 4, 3, 5, 0, 4, 3, 4, 5];
+  return Object.fromEntries(
+    lengths.map((guesses, index) => [
+      index + 1,
+      played(index + 1, guesses || 6, guesses > 0),
+    ]),
+  );
+}
+
+const yourGuesses = (page: Page) =>
+  page.getByRole('group', { name: 'Your guesses' });
+
+/** Guesses each word in turn, waiting for each to be marked. */
+async function guessWords(page: Page, words: readonly string[]) {
+  for (const word of words) {
+    const count = (await guessesOf(page)).length;
+    await typeGuess(page, word);
+    await expect
+      .poll(async () => (await guessesOf(page)).length)
+      .toBe(count + 1);
+  }
+}
+
+test('Daily Word on your own', async ({ player }) => {
+  test.setTimeout(300_000);
+  const kept = { 'daily-word:puzzles': JSON.stringify(pastDailyWords()) };
+  const maya = await player('Maya', desktop);
+  await maya.clock.setFixedTime(dailyWordDay(16));
+  await keepOnDevice(maya, kept);
+  await maya.goto('/games/daily-word/solo');
+  await expect(yourGuesses(maya)).toBeVisible();
+  await shot(maya, 'DW01');
+
+  // Word #12 is UNITE.
+  await guessWords(maya, ['stare', 'cloud']);
+  await maya.keyboard.type('unt');
+  await shot(maya, 'DW02');
+  await maya.keyboard.type('ie');
+  await maya.keyboard.press('Enter');
+  await expect.poll(async () => (await guessesOf(maya)).length).toBe(3);
+  await typeGuess(maya, 'blant');
+  await expect(maya.getByText('Not in the word list')).toBeVisible();
+  await shot(maya, 'DW03');
+  for (let i = 0; i < 5; i++) await maya.keyboard.press('Backspace');
+  await typeGuess(maya, 'unite');
+  await expect(
+    maya.getByRole('heading', { name: 'Found in 4.' }),
+  ).toBeVisible();
+  await shot(maya, 'DW04');
+
+  await maya.getByRole('button', { name: 'Practice word' }).click();
+  await solve(maya);
+  await expect(
+    maya.getByRole('heading', { name: /^Found in \d\.$/ }),
+  ).toBeVisible();
+  await shot(maya, 'DW06');
+
+  // The next day's word, #13, is SPECK: six guesses that miss it.
+  await maya.clock.setFixedTime(dailyWordDay(17));
+  await maya.goto('/games/daily-word/solo');
+  await expect(yourGuesses(maya)).toBeVisible();
+  await guessWords(maya, [
+    'hatch',
+    'match',
+    'latch',
+    'batch',
+    'patch',
+    'catch',
+  ]);
+  await expect(
+    maya.getByRole('heading', { name: 'Not this time.' }),
+  ).toBeVisible();
+  await shot(maya, 'DW05');
+
+  const onPhone = await player('Maya', phone);
+  await onPhone.clock.setFixedTime(dailyWordDay(16));
+  await keepOnDevice(onPhone, kept);
+  await onPhone.goto('/games/daily-word/solo');
+  await expect(yourGuesses(onPhone)).toBeVisible();
+  await guessWords(onPhone, ['stare', 'cloud']);
+  await onPhone.keyboard.type('unt');
+  await shot(onPhone, 'DW12');
+});
+
+const plurals = ['tears', 'notes', 'lines', 'boats', 'ports', 'hints', 'meals'];
+
+/** Valid guesses that are never a word to find. */
+const neverAnswers = (() => {
+  const answers = new Set(ANSWERS);
+  return GUESSES.filter((word) => !answers.has(word));
+})();
+
+/**
+ * A guess that cannot be the word, so a player stays guessing as long as a
+ * screen needs: Figma's own guess when the marks so far already rule it out,
+ * and otherwise a word that is never an answer, a plural first.
+ */
+function aMiss(guesses: readonly Guessed[], figma: readonly string[]): string {
+  const ruledOut = (word: string) =>
+    guesses.some(
+      (made) => markGuess(made.word, word).join() !== made.marks.join(),
+    );
+  const tried = new Set(guesses.map((made) => made.word));
+  return (
+    figma.find((word) => !tried.has(word) && ruledOut(word)) ??
+    [...plurals, ...neverAnswers].find(
+      (word) => !tried.has(word) && neverAnswers.includes(word),
+    )!
+  );
+}
+
+async function missOnce(page: Page, figma: readonly string[]) {
+  await guessWords(page, [aMiss(await guessesOf(page), figma)]);
+}
+
+async function say(page: Page, text: string, onPhone = false) {
+  if (onPhone) await page.getByRole('tab', { name: 'Chat' }).click();
+  const box = page.getByRole('textbox', { name: 'Message' });
+  await box.fill(text);
+  await box.press('Enter');
+  await expect(page.getByText(text, { exact: true }).last()).toBeVisible();
+  // Back to the board, whose keys are not heard while the chat has focus.
+  await box.blur();
+  if (onPhone) {
+    await page.getByRole('tab', { name: 'Board' }).click();
+    // A thumb on the on-screen keys leaves the tab without a focus ring.
+    await page.getByRole('tab', { name: 'Board' }).blur();
+  }
+}
+
+test('a Daily Word game', async ({ player }) => {
+  test.setTimeout(600_000);
+  const maya = await player('Maya', desktop);
+  const sam = await player('Sam', desktop);
+  const ryan = await player('Ryan', desktop);
+  const leo = await player('Leo', phone);
+  const seats = [maya, sam, ryan, leo];
+
+  await maya.goto('/games/daily-word/new');
+  await maya.getByLabel('Password (optional)').fill('otters');
+  await shot(maya, 'DW11');
+  const link = await createRoom(maya, 'daily-word');
+  for (const seat of [sam, ryan, leo]) await joinRoom(seat, link);
+  await startGame(maya);
+
+  const wordOn = async (word: number) => {
+    for (const seat of seats) {
+      // After the last word's reveal, which runs its own clock.
+      await expect(
+        turnOf(seat).getByText(`Word ${word} of 3`, { exact: true }),
+      ).toBeVisible({ timeout: 15_000 });
+      await expect(yourGuesses(seat)).toBeVisible();
+    }
+  };
+
+  // Word 1: everybody finds it.
+  await wordOn(1);
+  for (const seat of seats) await solve(seat);
+
+  // Word 2, as Figma tells it: Maya finds it while the others are guessing.
+  await wordOn(2);
+  await say(ryan, 'good luck');
+  await solve(maya);
+  await say(leo, 'how?!', true);
+  for (const word of ['crane', 'south', 'moist']) {
+    await missOnce(sam, [word]);
+  }
+  for (const word of ['audio', 'those', 'shoot', 'boost']) {
+    await missOnce(ryan, [word]);
+  }
+  for (const word of ['lemon', 'sport', 'frost']) {
+    await missOnce(leo, [word]);
+  }
+  await sam.keyboard.type(nextGuess(await guessesOf(sam)).slice(0, 3));
+  await shot(sam, 'DW07');
+  await leo.keyboard.type(nextGuess(await guessesOf(leo)).slice(0, 3));
+  await shot(leo, 'DW13');
+  await leo.getByRole('tab', { name: /^Players/ }).click();
+  await shot(leo, 'DW14');
+  await leo.getByRole('tab', { name: 'Board' }).click();
+  await leo.getByRole('tab', { name: 'Board' }).blur();
+  for (let i = 0; i < 3; i++) await leo.keyboard.press('Backspace');
+
+  // Sam finds it in four or more; Ryan and Leo guess on.
+  for (let i = 0; i < 3; i++) await sam.keyboard.press('Backspace');
+  await solve(sam);
+  await missOnce(ryan, ['roost']);
+  await missOnce(leo, ['hoist']);
+  await expect(
+    turnOf(sam).getByText('Got it in ', { exact: false }),
+  ).toBeVisible();
+  await shot(sam, 'DW08');
+
+  // Leo finds it and Ryan's last guess misses, which ends the word.
+  await solve(leo);
+  await typeGuess(ryan, aMiss(await guessesOf(ryan), ['hoist']));
+  const results = sam.getByRole('heading', { name: 'Word 2 results' });
+  await expect(results).toBeVisible();
+  await say(ryan, 'HOIST was so close');
+  expect(await shotWhile(sam, 'DW09', results)).toBe(true);
+
+  // Word 3: everybody finds it, and the game is over.
+  await wordOn(3);
+  // Each from Figma's own first guess, so the four boards differ.
+  for (const [seat, first] of [
+    [ryan, 'stale'],
+    [sam, 'crane'],
+    [maya, 'share'],
+    [leo, 'audio'],
+  ] as const) {
+    await typeGuess(seat, first);
+    await expect
+      .poll(
+        async () =>
+          !(await yourGuesses(seat).isVisible()) ||
+          (await guessesOf(seat)).length === 1,
+      )
+      .toBe(true);
+    if (await yourGuesses(seat).isVisible()) await solve(seat);
+  }
+  await expect(maya.getByText('Game over', { exact: true })).toBeVisible({
+    timeout: 15_000,
+  });
+  await say(sam, 'by nine points!');
+  await say(leo, 'gg', true);
+  await shot(maya, 'DW10');
 });

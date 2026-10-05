@@ -73,6 +73,8 @@ const BUCKET_FOR_EVENT: Record<ClientToServerEvent, BucketName> = {
   // One bid or call a turn, and the engine ignores the rest.
   'ld:bid': 'room',
   'ld:call': 'room',
+  // Six guesses a word, typed out a letter at a time.
+  'dw:guess': 'room',
 };
 
 /**

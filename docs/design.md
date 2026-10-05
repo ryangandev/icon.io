@@ -136,6 +136,9 @@ Code differs from Figma on purpose in a few places:
 - The phone name page (MO02) keeps the desktop's Back home button beside Let’s play, as the other phone forms (MO05, MO06) lay out their buttons; MO02 stacks a Cancel under it.
 - Liar’s Dice keeps the clock Waiting on another player’s turn, as the Countdown’s rule says (Running is for a phase you act in); LD08 and LD11 draw it Running.
 - Results seen by anyone but the room owner (LD12, as PR07) say whom they wait for to start another game, since only the owner may; Figma draws Play again there.
+- Daily Word on your own keeps the line under the board as tall as its "Not in the word list" note, so the keyboard never moves when a row is turned back; DW01 and DW02 are 27 px shorter than DW03.
+  Where there is no line, on a phone and in a room while guessing, as Figma draws them, the note is said over the board instead, across the row under the one being fixed.
+- The others' boards in a Daily Word room stand 12 px apart, not DW07's 16 px: three at 16 px are 2 px wider than the panel holds beside the Desktop keyboard, which Figma lets overflow.
 
 ## Editing the Figma file
 

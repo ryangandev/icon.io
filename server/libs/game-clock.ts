@@ -99,6 +99,19 @@ const liarsDiceDurationsInSeconds: LiarsDiceDurationsInSeconds = {
   reveal: readSecondsFromEnv('LIARS_DICE_REVEAL_SECONDS', 5),
 };
 
+/** Daily Word's clock: one word for everybody at once, then its results. */
+interface DailyWordDurationsInSeconds {
+  /** How long everybody has to find the word. */
+  round: number;
+  /** How long a round's results stay up before the next word. */
+  reveal: number;
+}
+
+const dailyWordDurationsInSeconds: DailyWordDurationsInSeconds = {
+  round: readSecondsFromEnv('DAILY_WORD_ROUND_SECONDS', 120),
+  reveal: readSecondsFromEnv('DAILY_WORD_REVEAL_SECONDS', 8),
+};
+
 /**
  * How long a disconnected player keeps their seat, their score and their place
  * in the round before the room gives up on them.
@@ -119,6 +132,7 @@ export {
   make24DurationsInSeconds,
   pairsDurationsInSeconds,
   liarsDiceDurationsInSeconds,
+  dailyWordDurationsInSeconds,
   reconnectGraceInSeconds,
 };
 export type {
@@ -127,4 +141,5 @@ export type {
   Make24DurationsInSeconds,
   PairsDurationsInSeconds,
   LiarsDiceDurationsInSeconds,
+  DailyWordDurationsInSeconds,
 };

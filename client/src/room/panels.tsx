@@ -136,6 +136,7 @@ export function EndedEarlyPanel() {
 export function ResultsPanel<Summary extends GameSummary>({
   summary,
   detail,
+  standingDetail,
   onPlayAgain,
   starting,
   ranked = false,
@@ -144,6 +145,8 @@ export function ResultsPanel<Summary extends GameSummary>({
   summary: Summary;
   /** "2 rounds of Animals, 8 turns." */
   detail: string;
+  /** More about each player's game after their place: "3 words found". */
+  standingDetail?: (playerId: string) => string;
   onPlayAgain: () => void;
   starting: boolean;
   /**
@@ -206,13 +209,16 @@ export function ResultsPanel<Summary extends GameSummary>({
                 name={standing.username}
                 initials={initialsOf(standing.username)}
                 tone={toneOf(standing.username)}
-                status={
+                status={[
                   statusOf
                     ? statusOf(standing, standingPlace)
                     : standingPlace === 1
                       ? 'Winner'
-                      : `${ordinal(standingPlace)} place`
-                }
+                      : `${ordinal(standingPlace)} place`,
+                  standingDetail?.(standing.playerId),
+                ]
+                  .filter(Boolean)
+                  .join(' · ')}
                 score={standing.points}
                 host={standing.playerId === state.owner.playerId}
                 you={standing.playerId === playerId}

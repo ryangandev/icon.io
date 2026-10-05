@@ -47,6 +47,8 @@ export interface RoomLayoutProps {
    * switch to the Chat tab: its accessible name, or nothing for no input.
    */
   boardInput?: string;
+  /** On a phone, more under the scoreboard on the Players tab: the race. */
+  playersAside?: ReactNode;
 }
 
 type View = 'board' | 'players' | 'chat';
@@ -63,6 +65,7 @@ export function RoomLayout({
   players,
   chat,
   boardInput,
+  playersAside,
 }: RoomLayoutProps) {
   const room = useRoomContext();
   const { state, reconnecting, reconnectGraceMs } = room;
@@ -159,7 +162,14 @@ export function RoomLayout({
             {
               value: 'players',
               label: `Players · ${players.length}`,
-              panel: scoreboard,
+              panel: playersAside ? (
+                <div className={styles.side}>
+                  {scoreboard}
+                  {playersAside}
+                </div>
+              ) : (
+                scoreboard
+              ),
             },
             { value: 'chat', label: 'Chat', panel: chatPanel },
           ]}

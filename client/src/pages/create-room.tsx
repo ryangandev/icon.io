@@ -32,6 +32,7 @@ const ROOM_NAME_MAX_LENGTH = 40;
 const PASSWORD_MAX_LENGTH = 20;
 const ROUNDS = [1, 2, 3, 4] as const;
 const HANDS = [5, 10] as const;
+const WORDS = [3, 5] as const;
 /** What each Liar's Dice game is like. */
 const DICE_DETAIL: Record<DicePerPlayer, string> = {
   3: 'The quick game, and the usual one.',
@@ -39,7 +40,7 @@ const DICE_DETAIL: Record<DicePerPlayer, string> = {
 };
 
 /**
- * DL04-DL06, DL10, DL11, ML04-ML06, ML10, MO05, T10, PR08, LD07: a new room, with
+ * DL04-DL06, DL10, DL11, ML04-ML06, ML10, MO05, T10, PR08, LD07, DW11: a new room, with
  * its settings.
  */
 export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
@@ -58,6 +59,7 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   const [hands, setHands] = useState(5);
   const [pairsBoard, setPairsBoard] = useState<PairsBoard>('Small');
   const [dicePerPlayer, setDicePerPlayer] = useState<DicePerPlayer>(3);
+  const [words, setWords] = useState(3);
   const [password, setPassword] = useState('');
   const [pending, setPending] = useState(false);
   const [failed, setFailed] = useState<'error' | 'full' | null>(null);
@@ -86,7 +88,9 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
               ? { hands }
               : gameType === 'liars-dice'
                 ? { dicePerPlayer }
-                : { board: pairsBoard },
+                : gameType === 'pairs'
+                  ? { board: pairsBoard }
+                  : { rounds: words },
     };
     setPending(true);
     setFailed(null);
@@ -224,6 +228,18 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
           value={pairsBoard}
           onValueChange={setPairsBoard}
           name="board"
+        />
+      ) : gameType === 'daily-word' ? (
+        <SelectField
+          label="Words"
+          helper="3 or 5 words, 2 minutes each."
+          options={WORDS.map((count) => ({
+            value: count,
+            label: plural(count, 'word'),
+          }))}
+          value={words}
+          onValueChange={setWords}
+          name="words"
         />
       ) : (
         <SelectField

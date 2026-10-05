@@ -34,6 +34,9 @@ const CONTENT: Record<string, string> = {
   LD09: 'The chat holds the game so far, from the join messages on; Figma’s example has a call and three lines of talk.',
   LD10: 'The chat holds the game so far, from the join messages on; Figma’s example has two calls and two lines of talk.',
   LD11: 'The chat holds the game so far, from the join messages on; Figma’s example has a call, Ryan going out and two lines of talk.',
+  DW07: 'The chat holds the game so far, from the start and the first word on; Figma’s example has two lines.',
+  DW08: 'The chat holds the game so far, from the start and the first word on; Figma’s example has a few lines.',
+  DW09: 'The chat holds the game so far, from the start and the first word on; Figma’s example has the second word only.',
 };
 
 interface Screen {
