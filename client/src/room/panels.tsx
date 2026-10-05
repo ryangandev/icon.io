@@ -130,28 +130,24 @@ export function EndedEarlyPanel() {
 }
 
 /**
- * D13, D14, M14, M15: the final standings. The host can play again; a guest
- * waits for them.
+ * A finished game's panel: what happened, the game's own account of it, and
+ * Play again for the host, or a guest's wait for them.
  */
-export function ResultsPanel({
-  summary,
+export function ResultsFrame({
+  title,
   detail,
+  children,
   onPlayAgain,
   starting,
 }: {
-  summary: GameSummary;
-  /** "2 rounds of Animals, 8 turns." */
+  title: string;
   detail: string;
+  children: ReactNode;
   onPlayAgain: () => void;
   starting: boolean;
 }) {
-  const { state, isHost, playerId } = useRoomContext();
-  const { standings } = summary;
-  const places = placesOf(standings);
-  const winners = standings.filter((_, index) => places[index] === 1);
-  const place = places[standings.findIndex((s) => s.playerId === playerId)];
+  const { state, isHost } = useRoomContext();
   const count = Object.keys(state.playerList).length;
-
   const actions = !isHost ? (
     <StatusLine>
       Waiting for {state.owner.username} to start another game.
@@ -171,17 +167,51 @@ export function ResultsPanel({
     <section className={styles.results} aria-labelledby="results-title">
       <div className={styles.resultHeading}>
         <h2 id="results-title" className={styles.title}>
-          {winners.length === 0
-            ? 'Game over.'
-            : winners.length === 1
-              ? `${winners[0].username} wins with ${scoreOf(state.gameType, winners[0].points)}.`
-              : `${listNames(winners.map((w) => w.username))} tie with ${scoreOf(state.gameType, winners[0].points)}.`}
+          {title}
         </h2>
-        <p className={styles.body}>
-          {detail}
-          {place > 1 && ` You finished ${ordinal(place)}.`}
-        </p>
+        <p className={styles.body}>{detail}</p>
       </div>
+      {children}
+      <div className={styles.actions}>{actions}</div>
+    </section>
+  );
+}
+
+/**
+ * D13, D14, M14, M15: the final standings. The host can play again; a guest
+ * waits for them.
+ */
+export function ResultsPanel({
+  summary,
+  detail,
+  onPlayAgain,
+  starting,
+}: {
+  summary: GameSummary;
+  /** "2 rounds of Animals, 8 turns." */
+  detail: string;
+  onPlayAgain: () => void;
+  starting: boolean;
+}) {
+  const { state, playerId } = useRoomContext();
+  const { standings } = summary;
+  const places = placesOf(standings);
+  const winners = standings.filter((_, index) => places[index] === 1);
+  const place = places[standings.findIndex((s) => s.playerId === playerId)];
+
+  return (
+    <ResultsFrame
+      title={
+        winners.length === 0
+          ? 'Game over.'
+          : winners.length === 1
+            ? `${winners[0].username} wins with ${scoreOf(state.gameType, winners[0].points)}.`
+            : `${listNames(winners.map((w) => w.username))} tie with ${scoreOf(state.gameType, winners[0].points)}.`
+      }
+      detail={place > 1 ? `${detail} You finished ${ordinal(place)}.` : detail}
+      onPlayAgain={onPlayAgain}
+      starting={starting}
+    >
       <ol className={styles.ranking} aria-label="Standings">
         {standings.map((standing, index) => {
           const seat = state.playerList[standing.playerId];
@@ -211,7 +241,6 @@ export function ResultsPanel({
           );
         })}
       </ol>
-      <div className={styles.actions}>{actions}</div>
-    </section>
+    </ResultsFrame>
   );
 }
