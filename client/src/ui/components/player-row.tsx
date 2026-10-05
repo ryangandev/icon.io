@@ -13,7 +13,8 @@ export interface PlayerRowProps {
   /** What the player is doing right now; never a generic "Connected". */
   status: string;
   statusIcon?: GlyphName;
-  score: number;
+  /** Left out where a score says nothing, as in Hush, where a team scores together. */
+  score?: number;
   /** Shows the crown; it passes on when the host leaves. */
   host?: boolean;
   /** Marks the viewer. */
@@ -75,7 +76,9 @@ export function PlayerRow({
           <span className={styles.status}>{status}</span>
         </span>
       </span>
-      <span className={styles.score}>{score < 0 ? `−${-score}` : score}</span>
+      {score !== undefined && (
+        <span className={styles.score}>{score < 0 ? `−${-score}` : score}</span>
+      )}
     </Row>
   );
 }

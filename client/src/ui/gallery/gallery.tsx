@@ -25,6 +25,8 @@ import {
   NumberCard,
   OperatorKey,
   PairsCard,
+  HushCard,
+  Lives,
   PairsSymbol,
   symbolName,
   PickMarker,
@@ -860,6 +862,55 @@ export default function Gallery() {
             </div>
           );
         })}
+      </Family>
+
+      <Family
+        name="Hush card"
+        file="hush-card"
+        note="Proposed for Hush; Figma keeps it in the section's Proposed pieces until it joins Shared pieces."
+      >
+        {(['large', 'regular', 'small'] as const).map((cardSize) => {
+          const sizeName = cardSize[0].toUpperCase() + cardSize.slice(1);
+          return (
+            <div key={cardSize} className={styles.cellRow}>
+              {(
+                [
+                  ['Hand', 'hand'],
+                  ['Next', 'next'],
+                  ['Pile', 'pile'],
+                  ['Played', 'played'],
+                  ['Discarded', 'discarded'],
+                ] as const
+              ).map(([state, kind]) => (
+                <Specimen
+                  key={kind}
+                  family="hush-card"
+                  variant={`State=${state}, Size=${sizeName}`}
+                  label={state}
+                >
+                  <HushCard value={41} state={kind} size={cardSize} />
+                </Specimen>
+              ))}
+            </div>
+          );
+        })}
+      </Family>
+
+      <Family
+        name="Lives"
+        file="lives"
+        note="Proposed for Hush, with the Hush card."
+      >
+        {[3, 2, 1, 0].map((lives) => (
+          <Specimen
+            key={lives}
+            family="lives"
+            variant={`Lives=${lives}`}
+            label={`${lives}`}
+          >
+            <Lives lives={lives} />
+          </Specimen>
+        ))}
       </Family>
 
       <Family

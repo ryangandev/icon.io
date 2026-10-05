@@ -47,7 +47,13 @@ export {
   type HeaderProps,
   type Viewer,
 } from './components/header';
+export {
+  HushCard,
+  type HushCardProps,
+  type HushCardState,
+} from './components/hush-card';
 export { Icon, type GlyphName, type IconProps } from './components/icon';
+export { Lives, livesLabel, type LivesProps } from './components/lives';
 export {
   MineCell,
   type MineCellProps,
