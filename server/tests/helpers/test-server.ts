@@ -6,10 +6,12 @@ import type {
   MinesweeperDurationsInSeconds,
   PairsDurationsInSeconds,
   PhaseDurationsInSeconds,
+  TriosDurationsInSeconds,
 } from '../../libs/game-clock.js';
 import type { MinesweeperState } from '../../socket/minesweeper/index.js';
 import type { Make24State } from '../../socket/make-24/index.js';
 import type { PairsState } from '../../socket/pairs/index.js';
+import type { TriosState } from '../../socket/trios/index.js';
 import type {
   AnyLobbyRoomInfo,
   AnyRoomState,
@@ -25,6 +27,7 @@ import type {
   PairsBoard,
   PairsRoomState,
   PlayerIdentity,
+  TriosRoomState,
   ServerToClientEvent,
   ServerToClientEvents,
 } from '../../models/types.js';
@@ -74,6 +77,16 @@ const FAST_PAIRS: PairsDurationsInSeconds = {
   show: 0.3,
 };
 
+/**
+ * A taken trio on show long enough to assert on, a lockout that outlasts a
+ * second claim, and hints that come quickly but not before a test can claim.
+ */
+const FAST_TRIOS: TriosDurationsInSeconds = {
+  taken: 0.3,
+  lockout: 0.5,
+  hint: 0.8,
+};
+
 /** A client socket typed on the contract, from the client's side of it. */
 type ClientSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -116,6 +129,7 @@ const startTestServer = async (
   minesweeperDurations: MinesweeperDurationsInSeconds = FAST_MINESWEEPER,
   make24Durations: Make24DurationsInSeconds = FAST_MAKE24,
   pairsDurations: PairsDurationsInSeconds = FAST_PAIRS,
+  triosDurations: TriosDurationsInSeconds = FAST_TRIOS,
 ): Promise<TestServer> => {
   const server = createZumpoServer({
     serveClient: false,
@@ -123,6 +137,7 @@ const startTestServer = async (
     minesweeperDurations,
     make24Durations,
     pairsDurations,
+    triosDurations,
     graceInSeconds,
   });
 
@@ -260,6 +275,13 @@ const waitForPairsState = (
   predicate: (state: PairsRoomState) => boolean = () => true,
   timeoutMs = 3000,
 ) => waitForState<PairsRoomState>(client, predicate, timeoutMs);
+
+/** And for Trios. */
+const waitForTriosState = (
+  client: ClientSocket,
+  predicate: (state: TriosRoomState) => boolean = () => true,
+  timeoutMs = 3000,
+) => waitForState<TriosRoomState>(client, predicate, timeoutMs);
 
 /** Resolves with the next chat message that satisfies `predicate`. */
 const waitForChat = async (
@@ -418,6 +440,23 @@ const createPairsRoom = async (
   return answer.roomId;
 };
 
+/** Creates a Trios room, with its creator seated, and returns its id. */
+const createTriosRoom = async (
+  client: ClientSocket,
+  options: { username?: string; trios?: number; maxPlayers?: number } = {},
+): Promise<string> => {
+  const answer = await client.timeout(3000).emitWithAck('room:create', {
+    gameType: 'trios',
+    roomName: 'Odd ones in',
+    username: options.username ?? 'Owner',
+    maxPlayers: options.maxPlayers ?? 4,
+    password: '',
+    settings: { trios: options.trios ?? 10 },
+  });
+  if (!answer.ok) throw new Error(`room:create refused: ${answer.error.type}`);
+  return answer.roomId;
+};
+
 /** Takes a seat, and fails the test if the server refuses it. */
 const joinRoom = async (
   client: ClientSocket,
@@ -569,6 +608,13 @@ const playToFirstHand = async (harness: TestServer, hands = 5) => {
 const pairsRoom = (harness: TestServer, roomId: string): Room<PairsState> =>
   harness.server.rooms[roomId] as Room<PairsState>;
 
+/**
+ * The server's own Trios room. Tests read the deck through it to know what is
+ * coming; the table they can read off any snapshot, as a player could.
+ */
+const triosRoom = (harness: TestServer, roomId: string): Room<TriosState> =>
+  harness.server.rooms[roomId] as Room<TriosState>;
+
 /** Seats two players in a Minesweeper room and opens the first round. */
 const playToFirstRound = async (harness: TestServer) => {
   const alice = await harness.connect();
@@ -594,6 +640,7 @@ export {
   FAST_MINESWEEPER,
   FAST_MAKE24,
   FAST_PAIRS,
+  FAST_TRIOS,
   startTestServer,
   waitFor,
   waitForState,
@@ -601,6 +648,7 @@ export {
   waitForMineState,
   waitForMake24State,
   waitForPairsState,
+  waitForTriosState,
   waitForChat,
   collect,
   collectChat,
@@ -611,6 +659,7 @@ export {
   createMinesweeperRoom,
   createMake24Room,
   createPairsRoom,
+  createTriosRoom,
   joinRoom,
   startGame,
   syncRoom,
@@ -623,5 +672,6 @@ export {
   make24Room,
   playToFirstHand,
   pairsRoom,
+  triosRoom,
 };
 export type { TestServer, TestClient, ClientSocket };
