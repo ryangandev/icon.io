@@ -21,7 +21,9 @@ export interface Typing {
 /**
  * A real keyboard types into the board too: letters, Backspace and Enter,
  * unless a text field has the focus (the chat) or a key comes with Ctrl, Alt
- * or Cmd. Enter and Space on a focused button press that button instead.
+ * or Cmd. Enter on a focused button presses that button, unless letters were
+ * typed since the focus came to it: a tab just tapped keeps the focus, and
+ * the word typed after it is what Enter is for.
  */
 export function useTypingKeys(typing: Typing, enabled: boolean) {
   const latest = useRef(typing);
@@ -30,6 +32,10 @@ export function useTypingKeys(typing: Typing, enabled: boolean) {
   });
   useEffect(() => {
     if (!enabled) return;
+    let typedSinceFocus = false;
+    const onFocus = () => {
+      typedSinceFocus = false;
+    };
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey || event.metaKey || event.altKey) return;
       const target = event.target;
@@ -43,18 +49,24 @@ export function useTypingKeys(typing: Typing, enabled: boolean) {
       const onButton =
         target instanceof HTMLElement && target.closest('button, a') !== null;
       if (event.key === 'Enter') {
-        if (onButton) return;
+        if (onButton && !typedSinceFocus) return;
         event.preventDefault();
         latest.current.onEnter();
       } else if (event.key === 'Backspace') {
         event.preventDefault();
+        typedSinceFocus = true;
         latest.current.onDelete();
       } else if (/^[a-z]$/i.test(event.key)) {
+        typedSinceFocus = true;
         latest.current.onLetter(event.key.toLowerCase());
       }
     };
+    window.addEventListener('focusin', onFocus);
     window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
+    return () => {
+      window.removeEventListener('focusin', onFocus);
+      window.removeEventListener('keydown', onKeyDown);
+    };
   }, [enabled]);
 }
 

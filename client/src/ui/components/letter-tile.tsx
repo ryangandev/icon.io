@@ -51,11 +51,13 @@ export function LetterTile({
     ? shown
       ? `${shown}, ${MARK_WORDS[state]}`
       : MARK_WORDS[state]
-    : (shown ?? 'empty');
+    : shown;
+  // An empty tile says nothing, so a board reads as its guesses only.
   return (
     <span
-      role="img"
+      role={name ? 'img' : undefined}
       aria-label={name}
+      aria-hidden={name ? undefined : true}
       className={cx(styles.tile, styles[size], styles[state])}
     >
       {shown && (

@@ -23,6 +23,16 @@ import styles from './room.module.css';
 
 type Room = RoomOf<DailyWordRoomState>;
 
+/**
+ * The row being typed and what was wrong with it, for one word. It lives above
+ * the board, which a phone unmounts on the Players and Chat tabs.
+ */
+interface Draft {
+  round: number;
+  typed: string;
+  problem: string | null;
+}
+
 const FOUND_CHAT = 'You got it. Chat opens after the reveal.';
 
 /** DW07-DW10, DW13, DW14: a Daily Word room, before, during and after a game. */
@@ -35,6 +45,11 @@ export function DailyWordRoom() {
   const ended = !inGame ? state.lastGame : null;
   const mine = state.boards.find((board) => board.playerId === playerId);
   const guessing = state.phase === 'guessing';
+  const [draft, setDraft] = useState<Draft>({
+    round: 0,
+    typed: '',
+    problem: null,
+  });
   return (
     <RoomLayout
       phase={
@@ -48,8 +63,17 @@ export function DailyWordRoom() {
       }
       stage={
         inGame ? (
-          // Each word starts with nothing typed.
-          <Round key={state.round} room={room} />
+          <Round
+            key={state.round}
+            room={room}
+            // Each word starts with nothing typed.
+            draft={
+              draft.round === state.round
+                ? draft
+                : { round: state.round, typed: '', problem: null }
+            }
+            onDraft={setDraft}
+          />
         ) : (
           <BetweenGames room={room} />
         )
@@ -101,12 +125,21 @@ function BetweenGames({ room }: { room: Room }) {
 }
 
 /** DW07-DW09, DW13: one word: the turn bar, then your board or the reveal. */
-function Round({ room }: { room: Room }) {
+function Round({
+  room,
+  draft,
+  onDraft,
+}: {
+  room: Room;
+  draft: Draft;
+  onDraft: (draft: Draft) => void;
+}) {
   const { state, receivedAt, reconnecting, socket, playerId } = room;
   const seconds = useSecondsLeft(state.phaseEndsInMs, receivedAt, reconnecting);
   const phone = useMediaQuery(PHONE);
-  const [typed, setTyped] = useState('');
-  const [problem, setProblem] = useState<string | null>(null);
+  const { typed, problem } = draft;
+  const setProblem = (next: string) =>
+    onDraft({ round: state.round, typed, problem: next });
   const [sending, setSending] = useState(false);
   const mine = state.boards.find((board) => board.playerId === playerId);
 
@@ -124,10 +157,8 @@ function Round({ room }: { room: Room }) {
     marks: row.marks,
   }));
   const done = mine.status !== 'guessing';
-  const change = (next: string) => {
-    setTyped(next);
-    setProblem(null);
-  };
+  const change = (next: string) =>
+    onDraft({ round: state.round, typed: next, problem: null });
   const typing = {
     onLetter: (letter: string) => {
       if (typed.length < 5) change(typed + letter);
@@ -150,7 +181,7 @@ function Round({ room }: { room: Room }) {
         const answer = await socket
           .timeout(REQUEST_TIMEOUT_MS)
           .emitWithAck('dw:guess', state.roomId, typed);
-        if (answer.ok) setTyped('');
+        if (answer.ok) change('');
         else setProblem(answer.error.message);
       } catch {
         setProblem('That guess did not reach the room. Try again.');
