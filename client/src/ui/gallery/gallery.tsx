@@ -898,7 +898,7 @@ export default function Gallery() {
           [
             ['regular', 'Regular', ['Default', 'Selected', 'Found', 'Wrong']],
             ['compact', 'Compact', ['Default', 'Selected', 'Found', 'Wrong']],
-            ['mini', 'Mini', ['Default']],
+            ['mini', 'Mini', ['Default', 'Found']],
           ] as const
         ).map(([cardSize, sizeName, states]) => (
           <div key={cardSize} className={styles.cellRow}>
@@ -916,7 +916,11 @@ export default function Gallery() {
                     card={card}
                     state={state.toLowerCase() as Lowercase<typeof state>}
                     size={cardSize}
-                    badge={state === 'Found' ? 'MA' : undefined}
+                    badge={
+                      state === 'Found' && cardSize !== 'mini'
+                        ? 'MA'
+                        : undefined
+                    }
                   />
                 </Specimen>
               );

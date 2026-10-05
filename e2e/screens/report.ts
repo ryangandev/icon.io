@@ -29,6 +29,11 @@ const CONTENT: Record<string, string> = {
   PR05: 'The chat starts with the room’s join messages, which Figma leaves out.',
   PR06: 'The chat starts with the room’s join messages, which Figma leaves out.',
   PR08: 'Pairs’ description takes a second line; Figma keeps the frame at the Make 24 form’s height and moves the card up.',
+  TS05: 'The chat starts with the room’s join messages, which Figma leaves out.',
+  TS06: 'The chat starts with the room’s join messages, which Figma leaves out.',
+  TS07: 'The chat starts with the room’s join messages, which Figma leaves out.',
+  TS08: 'The chat starts with the room’s join messages, which Figma leaves out.',
+  TS10: 'Trios’ description takes a second line; Figma keeps the frame at the Make 24 form’s height and moves the card up.',
 };
 
 interface Screen {

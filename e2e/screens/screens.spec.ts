@@ -28,6 +28,16 @@ import {
   yourTurn,
   type Memory,
 } from '../play/pairs';
+import {
+  missWith,
+  pickPlaces,
+  pickTrio,
+  readyToFind,
+  tableOf,
+  trioOn,
+  turnOf as triosTurnOf,
+  twoBesides,
+} from '../play/trios';
 import { COMPARE_DIR, figmaSize, writeReport } from './report';
 
 /*
@@ -946,4 +956,141 @@ test('a Pairs game', async ({ player }) => {
   }
   expect(shown).toEqual({ yourTurn: true, miss: true, phone: true });
   await shot(sam, 'PR07');
+});
+
+test('Trios on your own', async ({ player }) => {
+  test.setTimeout(300_000);
+  const maya = await player('Maya', desktop);
+  await keepOnDevice(maya, {
+    'best:trios:ten-trios': '168000',
+    'days:trios:ten-trios': JSON.stringify([
+      { day: daysAgo(1), result: 168_000 },
+      { day: daysAgo(2), result: 192_000 },
+    ]),
+  });
+  // "Not a trio" is on show for only a moment.
+  await maya.clock.install();
+  await maya.goto('/games/trios/solo');
+  await shot(maya, 'TS01');
+  await maya.getByRole('button', { name: 'Start' }).click();
+
+  const turn = triosTurnOf(maya);
+  const miss = turn.getByText('Not a trio, +5 s');
+  for (let trio = 1; trio <= 10; trio++) {
+    await expect(turn.getByText(`Trio ${trio} of 10`)).toBeVisible();
+    await readyToFind(maya);
+    // A wrong pick on the way to the second trio and the fourth, as
+    // Figma's run has, and a hint for the last.
+    if (trio === 2) {
+      await pickPlaces(maya, missWith(await tableOf(maya), [0, 1]));
+      await expect(miss).toBeVisible();
+      await readyToFind(maya);
+    }
+    if (trio === 4) {
+      const places = missWith(await tableOf(maya), [7, 8], [11, 10, 9]);
+      await pickPlaces(maya, places.slice(0, 2));
+      await shot(maya, 'TS02');
+      const missShown = await paused(maya, async () => {
+        await pickPlaces(maya, places.slice(2));
+        return shotWhile(maya, 'TS03', miss);
+      });
+      expect(missShown, 'a miss captured').toBe(true);
+      await readyToFind(maya);
+    }
+    if (trio === 10) {
+      await maya.getByRole('button', { name: 'Hint, +10 s' }).click();
+    }
+    await pickTrio(maya);
+    // The last trio ends the run at once.
+    if (trio < 10) await expect(turn.getByText('A trio!')).toBeVisible();
+  }
+  await expect(
+    maya.getByRole('heading', { name: /^10 trios in \d+:\d\d\.$/ }),
+  ).toBeVisible();
+  await shot(maya, 'TS04');
+
+  const onPhone = await player('Maya', phone);
+  await onPhone.goto('/games/trios/solo');
+  await onPhone.getByRole('button', { name: 'Start' }).click();
+  for (let trio = 1; trio <= 3; trio++) {
+    await readyToFind(onPhone);
+    await pickTrio(onPhone);
+    await expect(triosTurnOf(onPhone).getByText('A trio!')).toBeVisible();
+  }
+  await expect(triosTurnOf(onPhone).getByText('Trio 4 of 10')).toBeVisible();
+  await readyToFind(onPhone);
+  // Two cards picked where Figma picks them.
+  await pickPlaces(onPhone, [7, 8]);
+  await shot(onPhone, 'TS11');
+});
+
+test('a Trios game', async ({ player }) => {
+  test.setTimeout(600_000);
+  const maya = await player('Maya', desktop);
+  const sam = await player('Sam', desktop);
+  const leo = await player('Leo', phone);
+  const ryan = await player('Ryan', desktop);
+  const seats = [maya, sam, leo, ryan];
+
+  await maya.goto('/games/trios/new');
+  await maya.getByLabel('Password (optional)').fill('otters');
+  await shot(maya, 'TS10');
+  const link = await createRoom(maya, 'trios');
+  for (const seat of [sam, leo, ryan]) await joinRoom(seat, link);
+  await startGame(maya);
+
+  /** `finder` takes the `found`th trio, and everybody sees it taken. */
+  const take = async (finder: Page, found: number) => {
+    await readyToFind(finder);
+    await pickTrio(finder);
+    for (const seat of seats) {
+      await expect(
+        seat.getByText(`${found} of 10 trios`, { exact: true }),
+      ).toBeVisible();
+    }
+  };
+
+  // Four trios in, scored as Figma's are: Maya 2, Sam 1, Leo 1, Ryan 0.
+  await take(leo, 1);
+  await take(maya, 2);
+  await take(maya, 3);
+  await take(sam, 4);
+
+  // Sam and Leo each have two cards picked when Maya takes the fifth.
+  for (const seat of seats) await readyToFind(seat);
+  const trio = trioOn(await tableOf(sam));
+  const picks = twoBesides(trio, [3, 8]);
+  await pickPlaces(sam, picks);
+  await shot(sam, 'TS05');
+  await pickPlaces(leo, picks);
+  await shot(leo, 'TS12');
+  // Leo puts his back, so his own trio later is picked from none.
+  await pickPlaces(leo, picks);
+  await pickPlaces(maya, trio);
+  const taken = triosTurnOf(sam).getByText('Maya found a trio');
+  await expect(taken).toBeVisible();
+  expect(await shotWhile(sam, 'TS06', taken)).toBe(true);
+
+  // Sam's picks stay through the new cards, and his third is wrong.
+  await readyToFind(sam);
+  const [, , third] = missWith(await tableOf(sam), picks);
+  await pickPlaces(sam, [third]);
+  const locked = triosTurnOf(sam).getByText('locked out');
+  await expect(locked).toBeVisible();
+  expect(await shotWhile(sam, 'TS07', locked)).toBe(true);
+
+  // Nobody finds one for 30 seconds.
+  const hinted = triosTurnOf(sam).getByText('One card of a trio is marked');
+  await expect(hinted).toBeVisible({ timeout: 45_000 });
+  await shot(sam, 'TS08');
+
+  // Then the rest, to Maya 4, Sam 3, Leo 2 and Ryan 1.
+  await take(ryan, 6);
+  await take(leo, 7);
+  await take(sam, 8);
+  await take(sam, 9);
+  await readyToFind(maya);
+  await pickTrio(maya);
+  await expect(sam.getByText('Game over', { exact: true })).toBeVisible();
+  await shot(sam, 'TS09');
 });
