@@ -34,6 +34,9 @@ export default defineConfig({
       MINESWEEPER_REVEAL_SECONDS: '0.5',
       MAKE24_REVEAL_SECONDS: '0.5',
       PAIRS_SHOW_SECONDS: '1',
+      HUSH_COUNTDOWN_SECONDS: '1',
+      HUSH_MISTAKE_SECONDS: '1',
+      HUSH_CLEARED_SECONDS: '1',
     },
   },
 });
