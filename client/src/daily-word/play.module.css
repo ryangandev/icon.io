@@ -27,12 +27,14 @@
   min-height: calc(2 * var(--zumpo-space-16) + var(--zumpo-text-label-line));
 }
 
-/* A row turned back where there is no line, over the board's first row. */
+/* A row turned back where there is no line, over the board beside the row
+   being fixed; its top is that row's middle. */
 .over {
   position: absolute;
   inset: 0 0 auto;
   display: flex;
   justify-content: center;
+  transform: translateY(-50%);
 }
 
 /* Said to a screen reader, not shown. */

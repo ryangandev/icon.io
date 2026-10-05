@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react';
 import type { DailyWordMark } from '../../../shared/wire-types';
 import { keyMarks, WORD_LENGTH } from '../../../shared/daily-word';
 import {
@@ -108,10 +108,11 @@ export function PlayArea({
   className?: string;
 }) {
   const phone = useMediaQuery(PHONE);
+  const { play, over } = useNoteOverBoard(problem ? rows.length : null);
   useTypingKeys(typing, keyboard && !disabled);
   const last = rows.at(-1);
   return (
-    <div className={cx(styles.play, className)}>
+    <div ref={play} className={cx(styles.play, className)}>
       <WordBoard
         rows={rows}
         typed={typed.slice(0, WORD_LENGTH)}
@@ -120,10 +121,10 @@ export function PlayArea({
       />
       {phone || !prompt ? (
         // With nothing to say under the board, or no room for it on a phone,
-        // there is no line: a row turned back is said over the top of the
-        // board, so the keys stay where they are.
+        // there is no line: a row turned back is said over the board, so the
+        // keys stay where they are.
         problem && (
-          <div className={styles.over}>
+          <div ref={over} className={styles.over}>
             <Notice tone="error">{problem}</Notice>
           </div>
         )
@@ -150,4 +151,24 @@ export function PlayArea({
       </p>
     </div>
   );
+}
+
+/**
+ * Puts a note over the board across the middle of the row under the one
+ * being fixed, so that row stays readable, or of the row above it when it is
+ * the last.
+ */
+function useNoteOverBoard(typedRow: number | null) {
+  const play = useRef<HTMLDivElement>(null);
+  const over = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const board = play.current?.querySelector('[role="group"]');
+    const note = over.current;
+    if (typedRow === null || !board || !note) return;
+    const row = board.children[typedRow + 1] ?? board.children[typedRow - 1];
+    if (row instanceof HTMLElement) {
+      note.style.top = `${row.offsetTop + row.offsetHeight / 2}px`;
+    }
+  }, [typedRow]);
+  return { play, over };
 }
