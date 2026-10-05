@@ -74,8 +74,10 @@
   cursor: pointer;
 }
 
-.size:hover {
-  background: var(--zumpo-cream);
+@media (hover: hover) {
+  .size:hover {
+    background: var(--zumpo-cream);
+  }
 }
 
 .size[data-checked] {

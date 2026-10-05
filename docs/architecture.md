@@ -178,6 +178,7 @@ The design system lives in [`client/src/ui/`](../client/src/ui/index.ts), one co
 - **Desktop and Phone variants are container queries**, so a component follows its own width, as Figma's `Layout` variants do, wherever a page puts it.
   Pages switch layouts at `(max-width: 640px)`, the width Figma's phone screens are drawn for, through `useMediaQuery(PHONE)` where the markup itself differs: a room's tabs instead of columns, and `FormPage`, which lays a one-question page's card straight on the page.
 - **States never change size:** hover borders, selection rings and cell outlines are inset shadows, not borders, so nothing shifts and overlays such as the pick marker cover the whole box.
+- **Hover only where a pointer hovers:** every `:hover` style sits inside `@media (hover: hover)`, because a touch screen keeps it after a tap, and a card just put back would still look picked.
 - **The `/design` gallery** renders every family in the states Figma draws, beside its Figma preview, and measures each specimen against the export.
   It exists only in development (the build drops it), and the Vite dev server serves `design/figma/` at `/__figma` for it.
 

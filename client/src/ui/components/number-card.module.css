@@ -83,10 +83,12 @@
   cursor: pointer;
 }
 
-.button:hover:not(:disabled, .selected) {
-  box-shadow:
-    var(--zumpo-shadow-cell-edge),
-    inset 0 0 0 2px var(--zumpo-ink);
+@media (hover: hover) {
+  .button:hover:not(:disabled, .selected) {
+    box-shadow:
+      var(--zumpo-shadow-cell-edge),
+      inset 0 0 0 2px var(--zumpo-ink);
+  }
 }
 
 .button:focus-visible {
