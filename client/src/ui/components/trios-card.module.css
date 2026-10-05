@@ -81,10 +81,14 @@
   touch-action: manipulation;
 }
 
-.button:hover:not(:disabled, .selected, .found, .wrong) {
-  box-shadow:
-    var(--zumpo-shadow-cell-edge),
-    inset 0 0 0 2px var(--zumpo-ink);
+/* Only where there is a pointer to hover with: on a touch screen the hover
+   sticks after a tap, and a card just put back would still look picked. */
+@media (hover: hover) {
+  .button:hover:not(:disabled, .selected, .found, .wrong) {
+    box-shadow:
+      var(--zumpo-shadow-cell-edge),
+      inset 0 0 0 2px var(--zumpo-ink);
+  }
 }
 
 .button:focus-visible {
