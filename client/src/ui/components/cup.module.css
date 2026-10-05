@@ -1,0 +1,72 @@
+.cup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-12);
+  min-width: 0;
+  padding: var(--zumpo-space-16);
+  border-radius: var(--zumpo-radius-16);
+  background: var(--zumpo-cream);
+  box-shadow: inset 0 0 0 1px var(--zumpo-line);
+  color: var(--zumpo-ink);
+}
+
+/* Strokes sit inside, as in Figma, so every state keeps the cup's size. */
+.turn {
+  background: var(--zumpo-paper);
+  box-shadow: inset 0 0 0 2px var(--zumpo-ink);
+}
+
+.lost {
+  background: var(--zumpo-paper);
+  box-shadow: inset 0 0 0 2px var(--zumpo-danger);
+}
+
+.player {
+  display: flex;
+  align-items: center;
+  gap: var(--zumpo-space-12);
+  min-width: 0;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nameLine {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.name {
+  overflow: hidden;
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detail {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-small);
+  letter-spacing: var(--zumpo-text-small-tracking);
+  white-space: nowrap;
+}
+
+.lost .detail {
+  color: var(--zumpo-ink);
+}
+
+.dice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--zumpo-space-8);
+}
+
+.slot {
+  display: flex;
+}

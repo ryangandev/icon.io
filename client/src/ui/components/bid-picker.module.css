@@ -1,0 +1,99 @@
+.container {
+  container-type: inline-size;
+}
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-20);
+  color: var(--zumpo-ink);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--zumpo-space-32);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-8);
+}
+
+.label {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: var(--zumpo-space-8);
+}
+
+.step {
+  min-width: 48px;
+  font: var(--zumpo-text-heading);
+  letter-spacing: var(--zumpo-text-heading-tracking);
+}
+
+.count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  font: var(--zumpo-text-title);
+  letter-spacing: var(--zumpo-text-title-tracking);
+}
+
+.faces {
+  display: flex;
+  gap: var(--zumpo-space-8);
+}
+
+.face {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--zumpo-radius-12);
+  background: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hover rings the die inside its edge, so nothing moves. */
+.face:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.face:hover:not(:disabled) > span {
+  box-shadow: inset 0 0 0 2px var(--zumpo-ink);
+}
+
+.face:focus-visible {
+  outline: 2px solid var(--zumpo-ink);
+  outline-offset: 2px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--zumpo-space-12);
+}
+
+/* Phone: the controls stack and the two actions share the width. */
+@container (max-width: 560px) {
+  .controls {
+    flex-direction: column;
+    gap: var(--zumpo-space-16);
+  }
+
+  .actions > * {
+    flex: 1;
+  }
+}

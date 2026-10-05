@@ -1,0 +1,34 @@
+.bid {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--zumpo-space-8);
+  padding: 6px 6px 6px var(--zumpo-space-16);
+  border-radius: var(--zumpo-radius-999);
+  background: var(--zumpo-cream);
+  box-shadow: inset 0 0 0 1px var(--zumpo-line);
+  color: var(--zumpo-ink);
+}
+
+/* The stroke sits inside, as in Figma, so the latest bid keeps its size. */
+.latest {
+  background: var(--zumpo-paper);
+  box-shadow: inset 0 0 0 2px var(--zumpo-ink);
+}
+
+.name,
+.times {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+  white-space: nowrap;
+}
+
+.latest .name {
+  color: var(--zumpo-ink);
+}
+
+.count {
+  font: var(--zumpo-text-number);
+  letter-spacing: var(--zumpo-text-number-tracking);
+}
