@@ -223,10 +223,12 @@ export function CountLine({
           label={`${reveal.bid.face}s`}
         />
         <span className={styles.detail}>{countDetail(reveal)}</span>
-        <span className={styles.detail} aria-hidden="true">
-          →
+        <span className={styles.outcome}>
+          <span className={styles.detail} aria-hidden="true">
+            →
+          </span>
+          <span className={styles.verdict}>{verdict(reveal, who)}</span>
         </span>
-        <span className={styles.verdict}>{verdict(reveal, who)}</span>
       </p>
     </section>
   );
