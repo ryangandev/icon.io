@@ -1,0 +1,803 @@
+{
+  "format": 1,
+  "code": "LD02",
+  "title": "Solo · your turn",
+  "id": "69:77020",
+  "section": "08 / Liar's Dice / complete flow",
+  "reviewNotes": [
+    "LD02 · Maya against Pip, Juno and Otto, 3 dice each, 12 on the table. She opens: three 4s is what she holds (two 4s and a wild 1), so it is safe. With no bid yet, Liar is not offered. No clock on your own; your turn waits."
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "69:77020",
+    "name": "LD02 / Solo · your turn",
+    "x": 1580,
+    "y": 150,
+    "w": 1440,
+    "h": 623,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        24,
+        "$Zumpo · UI:space/64",
+        32,
+        "$Zumpo · UI:space/64"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "69:77021",
+        "name": "Zumpo/Room bar",
+        "w": 1312,
+        "h": 48,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Desktop"
+        },
+        "componentId": "39:19276",
+        "props": {
+          "Game": "Liar’s Dice"
+        },
+        "overrides": [
+          {
+            "path": "Room identity / Room",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "On your own",
+              "Tone": "Sand"
+            }
+          },
+          {
+            "path": "Room identity / Phase",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Round 1",
+              "Tone": "Blue"
+            }
+          },
+          {
+            "path": "Action / Leave room",
+            "componentProperties": {
+              "Icon": "24:5041",
+              "Show icon": true,
+              "Label": "Leave",
+              "Style": "Secondary",
+              "State": "Default"
+            },
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "9:2528",
+                    "toName": "ML01 / Room list · open, private, full and playing states",
+                    "transition": "dissolve"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "path": "You",
+            "componentProperties": {
+              "Initials": "MA",
+              "Tone": "Peach"
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "69:77022",
+        "name": "Board & room",
+        "w": 1312,
+        "h": 453,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/24",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "69:77023",
+            "name": "Board stage",
+            "w": 944,
+            "h": 452,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/16",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "69:77024",
+                "name": "Zumpo/Turn bar",
+                "w": 944,
+                "h": 92,
+                "wSize": "fill",
+                "hSize": "hug",
+                "component": "Zumpo/Turn bar",
+                "variant": {
+                  "Kind": "Status",
+                  "Layout": "Desktop"
+                },
+                "componentId": "26:16856",
+                "props": {
+                  "Countdown": false,
+                  "Meta": "12 dice on the table",
+                  "Label": "Your turn",
+                  "Main": "Open the bidding",
+                  "Category": false
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 92,
+                    "width": 944
+                  },
+                  {
+                    "path": "Turn / Eyebrow / Category",
+                    "componentProperties": {
+                      "Icon": "24:5010",
+                      "Show icon": false,
+                      "Label": "Small · 9 × 9",
+                      "Tone": "Sand"
+                    }
+                  },
+                  {
+                    "path": "Countdown",
+                    "componentProperties": {
+                      "Label": "run time",
+                      "Time": "01:12",
+                      "Tone": "Waiting"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "69:77025",
+                "name": "Table panel",
+                "w": 944,
+                "h": 344,
+                "wSize": "fill",
+                "hSize": "hug",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside",
+                "radius": "$Zumpo · UI:radius/24",
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/24",
+                  "pad": "$Zumpo · UI:space/24",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "69:77231",
+                    "name": "Other cups",
+                    "w": 894,
+                    "h": 118,
+                    "wSize": "fill",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "row",
+                      "gap": "$Zumpo · UI:space/16",
+                      "wrap": true,
+                      "crossGap": 16,
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "INSTANCE",
+                        "id": "69:77232",
+                        "name": "Cup / Pip",
+                        "w": 211.5,
+                        "h": 118,
+                        "hSize": "hug",
+                        "component": "Zumpo/Cup",
+                        "variant": {
+                          "State": "Default",
+                          "Dice": "Compact",
+                          "Layout": "Stack"
+                        },
+                        "componentId": "44:62463",
+                        "props": {
+                          "Name": "Pip"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "counterAxisSizingMode": "FIXED",
+                            "height": 118,
+                            "width": 211.5
+                          },
+                          {
+                            "path": "Player / Avatar",
+                            "componentProperties": {
+                              "Initials": "PI",
+                              "Tone": "Blue"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "69:77252",
+                        "name": "Cup / Juno",
+                        "w": 211.5,
+                        "h": 118,
+                        "hSize": "hug",
+                        "component": "Zumpo/Cup",
+                        "variant": {
+                          "State": "Default",
+                          "Dice": "Compact",
+                          "Layout": "Stack"
+                        },
+                        "componentId": "44:62463",
+                        "props": {
+                          "Name": "Juno"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "counterAxisSizingMode": "FIXED",
+                            "height": 118,
+                            "width": 211.5
+                          },
+                          {
+                            "path": "Player / Avatar",
+                            "componentProperties": {
+                              "Initials": "JU",
+                              "Tone": "Lime"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "69:77271",
+                        "name": "Cup / Otto",
+                        "w": 211.5,
+                        "h": 118,
+                        "hSize": "hug",
+                        "component": "Zumpo/Cup",
+                        "variant": {
+                          "State": "Default",
+                          "Dice": "Compact",
+                          "Layout": "Stack"
+                        },
+                        "componentId": "44:62463",
+                        "props": {
+                          "Name": "Otto"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "counterAxisSizingMode": "FIXED",
+                            "height": 118,
+                            "width": 211.5
+                          },
+                          {
+                            "path": "Player / Avatar",
+                            "componentProperties": {
+                              "Initials": "OT",
+                              "Tone": "Sand"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "69:77291",
+                    "name": "Your cup",
+                    "w": 894,
+                    "h": 152,
+                    "wSize": "fill",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "row",
+                      "gap": "$Zumpo · UI:space/32",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "INSTANCE",
+                        "id": "69:77292",
+                        "name": "Cup / Maya",
+                        "w": 220,
+                        "h": 144,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "component": "Zumpo/Cup",
+                        "variant": {
+                          "State": "Turn",
+                          "Dice": "Regular",
+                          "Layout": "Stack"
+                        },
+                        "componentId": "44:62389",
+                        "props": {
+                          "You": true,
+                          "Detail": "Your turn",
+                          "Name": "Maya"
+                        },
+                        "overrides": [
+                          {
+                            "path": "Player / Avatar",
+                            "componentProperties": {
+                              "Initials": "MA",
+                              "Tone": "Peach"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "69:77334",
+                        "name": "Zumpo/Bid picker",
+                        "w": 518,
+                        "h": 152,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "component": "Zumpo/Bid picker",
+                        "variant": {
+                          "Layout": "Desktop"
+                        },
+                        "componentId": "44:62778",
+                        "props": {
+                          "Show Liar": false,
+                          "Count": "3"
+                        },
+                        "overrides": [
+                          {
+                            "path": "Controls / How many / Stepper / Fewer",
+                            "componentProperties": {
+                              "Icon": "24:5041",
+                              "Show icon": false,
+                              "Label": "−",
+                              "Style": "Secondary",
+                              "State": "Default"
+                            },
+                            "height": 48,
+                            "width": 51
+                          },
+                          {
+                            "path": "Actions / Bid",
+                            "componentProperties": {
+                              "Icon": "24:5041",
+                              "Show icon": false,
+                              "Label": "Bid three 4s",
+                              "Style": "Primary",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "69:77069",
+            "name": "Game sidebar",
+            "w": 344,
+            "h": 453,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/24",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "69:77070",
+                "name": "This game",
+                "w": 344,
+                "h": 235,
+                "wSize": "fill",
+                "hSize": "hug",
+                "component": "Zumpo/Card",
+                "variant": {
+                  "Kind": "Panel"
+                },
+                "componentId": "35:13438",
+                "props": {
+                  "Show description": false,
+                  "Title": "This game"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 235,
+                    "width": 344
+                  }
+                ],
+                "slots": {
+                  "Content": [
+                    {
+                      "type": "FRAME",
+                      "id": "I69:77070;35:13441;69:77076",
+                      "name": "Stats",
+                      "w": 278,
+                      "h": 123,
+                      "wSize": "fill",
+                      "hSize": "hug",
+                      "layout": {
+                        "mode": "column",
+                        "strokesIncluded": true
+                      },
+                      "children": [
+                        {
+                          "type": "FRAME",
+                          "id": "I69:77070;35:13441;69:77077",
+                          "name": "Stat / Round",
+                          "w": 278,
+                          "h": 41,
+                          "wSize": "fill",
+                          "hSize": "hug",
+                          "layout": {
+                            "mode": "row",
+                            "pad": [
+                              "$Zumpo · UI:space/8",
+                              0
+                            ],
+                            "justify": "space_between",
+                            "align": "center",
+                            "strokesIncluded": true
+                          },
+                          "children": [
+                            {
+                              "type": "TEXT",
+                              "id": "I69:77070;35:13441;69:77078",
+                              "name": "Label",
+                              "w": 47,
+                              "h": 25,
+                              "wSize": "hug",
+                              "hSize": "hug",
+                              "text": "Round",
+                              "textStyle": "Zumpo/Body",
+                              "fills": [
+                                "$Zumpo · UI:color/muted"
+                              ]
+                            },
+                            {
+                              "type": "TEXT",
+                              "id": "I69:77070;35:13441;69:77079",
+                              "name": "Value",
+                              "w": 7,
+                              "h": 24,
+                              "wSize": "hug",
+                              "hSize": "hug",
+                              "text": "1",
+                              "textStyle": "Zumpo/Number",
+                              "fills": [
+                                "$Zumpo · UI:color/ink"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "FRAME",
+                          "id": "I69:77070;35:13441;69:77080",
+                          "name": "Stat / Dice on the table",
+                          "w": 278,
+                          "h": 41,
+                          "wSize": "fill",
+                          "hSize": "hug",
+                          "layout": {
+                            "mode": "row",
+                            "pad": [
+                              "$Zumpo · UI:space/8",
+                              0
+                            ],
+                            "justify": "space_between",
+                            "align": "center",
+                            "strokesIncluded": true
+                          },
+                          "children": [
+                            {
+                              "type": "TEXT",
+                              "id": "I69:77070;35:13441;69:77081",
+                              "name": "Label",
+                              "w": 127,
+                              "h": 25,
+                              "wSize": "hug",
+                              "hSize": "hug",
+                              "text": "Dice on the table",
+                              "textStyle": "Zumpo/Body",
+                              "fills": [
+                                "$Zumpo · UI:color/muted"
+                              ]
+                            },
+                            {
+                              "type": "TEXT",
+                              "id": "I69:77070;35:13441;69:77082",
+                              "name": "Value",
+                              "w": 17,
+                              "h": 24,
+                              "wSize": "hug",
+                              "hSize": "hug",
+                              "text": "12",
+                              "textStyle": "Zumpo/Number",
+                              "fills": [
+                                "$Zumpo · UI:color/ink"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "FRAME",
+                          "id": "69:77409",
+                          "name": "Stat / Your dice",
+                          "w": 278,
+                          "h": 41,
+                          "wSize": "fill",
+                          "hSize": "hug",
+                          "layout": {
+                            "mode": "row",
+                            "pad": [
+                              "$Zumpo · UI:space/8",
+                              0
+                            ],
+                            "justify": "space_between",
+                            "align": "center",
+                            "strokesIncluded": true
+                          },
+                          "children": [
+                            {
+                              "type": "TEXT",
+                              "id": "I69:77070;35:13441;69:77413",
+                              "name": "Label",
+                              "w": 69,
+                              "h": 25,
+                              "wSize": "hug",
+                              "hSize": "hug",
+                              "text": "Your dice",
+                              "textStyle": "Zumpo/Body",
+                              "fills": [
+                                "$Zumpo · UI:color/muted"
+                              ]
+                            },
+                            {
+                              "type": "TEXT",
+                              "id": "I69:77070;35:13441;69:77414",
+                              "name": "Value",
+                              "w": 11,
+                              "h": 24,
+                              "wSize": "hug",
+                              "hSize": "hug",
+                              "text": "3",
+                              "textStyle": "Zumpo/Number",
+                              "fills": [
+                                "$Zumpo · UI:color/ink"
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "69:77071",
+                "name": "On this device",
+                "w": 344,
+                "h": 194,
+                "wSize": "fill",
+                "hSize": "hug",
+                "component": "Zumpo/Card",
+                "variant": {
+                  "Kind": "Panel"
+                },
+                "componentId": "35:13438",
+                "props": {
+                  "Show description": false,
+                  "Title": "On this device"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 194,
+                    "width": 344
+                  }
+                ],
+                "slots": {
+                  "Content": [
+                    {
+                      "type": "FRAME",
+                      "id": "I69:77071;35:13441;69:77084",
+                      "name": "Stats",
+                      "w": 278,
+                      "h": 82,
+                      "wSize": "fill",
+                      "hSize": "hug",
+                      "layout": {
+                        "mode": "column",
+                        "strokesIncluded": true
+                      },
+                      "children": [
+                        {
+                          "type": "FRAME",
+                          "id": "I69:77071;35:13441;69:77085",
+                          "name": "Stat / Games won",
+                          "w": 278,
+                          "h": 41,
+                          "wSize": "fill",
+                          "hSize": "hug",
+                          "layout": {
+                            "mode": "row",
+                            "pad": [
+                              "$Zumpo · UI:space/8",
+                              0
+                            ],
+                            "justify": "space_between",
+                            "align": "center",
+                            "strokesIncluded": true
+                          },
+                          "children": [
+                            {
+                              "type": "TEXT",
+                              "id": "I69:77071;35:13441;69:77086",
+                              "name": "Label",
+                              "w": 87,
+                              "h": 25,
+                              "wSize": "hug",
+                              "hSize": "hug",
+                              "text": "Games won",
+                              "textStyle": "Zumpo/Body",
+                              "fills": [
+                                "$Zumpo · UI:color/muted"
+                              ]
+                            },
+                            {
+                              "type": "TEXT",
+                              "id": "I69:77071;35:13441;69:77087",
+                              "name": "Value",
+                              "w": 57,
+                              "h": 24,
+                              "wSize": "hug",
+                              "hSize": "hug",
+                              "text": "5 of 10",
+                              "textStyle": "Zumpo/Number",
+                              "fills": [
+                                "$Zumpo · UI:color/ink"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "FRAME",
+                          "id": "I69:77071;35:13441;69:77088",
+                          "name": "Stat / Current run",
+                          "w": 278,
+                          "h": 41,
+                          "wSize": "fill",
+                          "hSize": "hug",
+                          "layout": {
+                            "mode": "row",
+                            "pad": [
+                              "$Zumpo · UI:space/8",
+                              0
+                            ],
+                            "justify": "space_between",
+                            "align": "center",
+                            "strokesIncluded": true
+                          },
+                          "children": [
+                            {
+                              "type": "TEXT",
+                              "id": "I69:77071;35:13441;69:77089",
+                              "name": "Label",
+                              "w": 86,
+                              "h": 25,
+                              "wSize": "hug",
+                              "hSize": "hug",
+                              "text": "Current run",
+                              "textStyle": "Zumpo/Body",
+                              "fills": [
+                                "$Zumpo · UI:color/muted"
+                              ]
+                            },
+                            {
+                              "type": "TEXT",
+                              "id": "I69:77071;35:13441;69:77090",
+                              "name": "Value",
+                              "w": 55,
+                              "h": 24,
+                              "wSize": "hug",
+                              "hSize": "hug",
+                              "text": "2 wins",
+                              "textStyle": "Zumpo/Number",
+                              "fills": [
+                                "$Zumpo · UI:color/ink"
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "69:77072",
+        "name": "Footer",
+        "w": 1312,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "69:77073",
+            "w": 650,
+            "h": 18,
+            "hSize": "hug",
+            "text": "Good company. One more round.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "69:77074",
+            "w": 115,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "zumpo. / play a little",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

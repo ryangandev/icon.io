@@ -12,6 +12,11 @@ import { randomBytes, randomUUID, timingSafeEqual } from 'node:crypto';
  * everyone in that room, so an id on its own would let any player take any
  * other player's seat just by sending theirs. The id is paired with a secret
  * token that only its owner ever receives, and resuming requires both.
+ *
+ * Which player a socket speaks for is kept on the socket (`socket.data`), and
+ * each player's socket sits in a channel of the player's own, which is how
+ * anything reaches one player. This registry keeps what outlives a socket: the
+ * token, and which socket is the current one.
  */
 
 interface PlayerSession {
@@ -38,49 +43,41 @@ const constantTimeEquals = (a: string, b: string): boolean => {
 
 const createPlayerSessionRegistry = () => {
   const sessionsByPlayerId = new Map<string, PlayerSession>();
-  const playerIdBySocketId = new Map<string, string>();
 
-  const attach = (session: PlayerSession, socketId: string): void => {
-    // A player speaks through one socket at a time. If they open a second tab
-    // with the same identity, the newer socket takes over rather than both
-    // being treated as the same player in two places.
-    if (session.socketId) playerIdBySocketId.delete(session.socketId);
-    session.socketId = socketId;
-    playerIdBySocketId.set(socketId, session.playerId);
-  };
-
-  /** Mints a new identity and binds it to this socket. */
-  const issue = (socketId: string): PlayerSession => {
+  /** Mints a new identity, not yet speaking through any socket. */
+  const issue = (): PlayerSession => {
     const session: PlayerSession = {
       playerId: randomUUID(),
       token: randomBytes(32).toString('hex'),
       socketId: null,
     };
     sessionsByPlayerId.set(session.playerId, session);
-    attach(session, socketId);
     return session;
   };
 
   /**
-   * Rebinds an existing identity to a new socket, if the token proves it. A
-   * wrong or unknown one returns null; the caller mints a fresh identity rather
-   * than reporting which part was wrong.
+   * The identity a claim proves, if it does. A wrong or unknown one returns
+   * null; the caller mints a fresh identity rather than reporting which part
+   * was wrong.
    */
-  const resume = (
-    playerId: string,
-    token: string,
-    socketId: string,
-  ): PlayerSession | null => {
+  const resume = (playerId: string, token: string): PlayerSession | null => {
     const session = sessionsByPlayerId.get(playerId);
     if (!session) return null;
     if (!constantTimeEquals(session.token, token)) return null;
-
-    attach(session, socketId);
     return session;
   };
 
-  const playerIdFor = (socketId: string): string | undefined =>
-    playerIdBySocketId.get(socketId);
+  /**
+   * Makes this socket the one speaking for the player, and returns the one it
+   * replaces, if another was still connected: a duplicated tab carries the
+   * same identity, and a player is in one place at a time, so the caller
+   * closes the older one.
+   */
+  const attach = (session: PlayerSession, socketId: string): string | null => {
+    const replaced = session.socketId;
+    session.socketId = socketId;
+    return replaced === socketId ? null : replaced;
+  };
 
   const socketIdFor = (playerId: string): string | null =>
     sessionsByPlayerId.get(playerId)?.socketId ?? null;
@@ -88,18 +85,16 @@ const createPlayerSessionRegistry = () => {
   const isOnline = (playerId: string): boolean =>
     socketIdFor(playerId) !== null;
 
-  /** Marks the player away without forgetting who they are. */
-  const detach = (socketId: string): string | undefined => {
-    const playerId = playerIdBySocketId.get(socketId);
-    if (!playerId) return undefined;
-
-    playerIdBySocketId.delete(socketId);
+  /**
+   * Marks the player away without forgetting who they are, if this socket was
+   * still the one speaking for them. False when another has taken over, and
+   * the player has not gone anywhere.
+   */
+  const detach = (playerId: string, socketId: string): boolean => {
     const session = sessionsByPlayerId.get(playerId);
-    // Only clear the pointer if it still refers to this socket - a second tab
-    // may already have taken the identity over.
-    if (session?.socketId === socketId) session.socketId = null;
-
-    return playerId;
+    if (session?.socketId !== socketId) return false;
+    session.socketId = null;
+    return true;
   };
 
   /**
@@ -107,8 +102,6 @@ const createPlayerSessionRegistry = () => {
    * so the registry does not grow for the lifetime of the process.
    */
   const forget = (playerId: string): void => {
-    const session = sessionsByPlayerId.get(playerId);
-    if (session?.socketId) playerIdBySocketId.delete(session.socketId);
     sessionsByPlayerId.delete(playerId);
   };
 
@@ -117,7 +110,7 @@ const createPlayerSessionRegistry = () => {
   return {
     issue,
     resume,
-    playerIdFor,
+    attach,
     socketIdFor,
     isOnline,
     detach,

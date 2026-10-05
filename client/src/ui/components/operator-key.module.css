@@ -20,10 +20,12 @@
   cursor: pointer;
 }
 
-.key:hover:not(:disabled, .selected) {
-  box-shadow:
-    var(--zumpo-shadow-cell-edge),
-    inset 0 0 0 2px var(--zumpo-ink);
+@media (hover: hover) {
+  .key:hover:not(:disabled, .selected) {
+    box-shadow:
+      var(--zumpo-shadow-cell-edge),
+      inset 0 0 0 2px var(--zumpo-ink);
+  }
 }
 
 .key:focus-visible {

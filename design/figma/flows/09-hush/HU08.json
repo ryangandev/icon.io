@@ -1,0 +1,1345 @@
+{
+  "format": 1,
+  "code": "HU08",
+  "title": "Room · out of lives",
+  "id": "63:75807",
+  "section": "09 / Hush / complete flow",
+  "reviewNotes": [
+    "HU08 · Another ending: the last life goes on level 4. The game ends at once, and every card still held is shown, since nothing is secret any more."
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "63:75807",
+    "name": "HU08 / Room · out of lives",
+    "x": 4660,
+    "y": 1550,
+    "w": 1440,
+    "h": 1289,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        24,
+        "$Zumpo · UI:space/64",
+        32,
+        "$Zumpo · UI:space/64"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "63:75808",
+        "name": "Zumpo/Room bar",
+        "w": 1312,
+        "h": 48,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Desktop"
+        },
+        "componentId": "39:19276",
+        "props": {
+          "Game": "Hush"
+        },
+        "overrides": [
+          {
+            "path": "Room identity / Room",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Maya’s room",
+              "Tone": "Sand"
+            }
+          },
+          {
+            "path": "Room identity / Phase",
+            "componentProperties": {
+              "Show icon": false,
+              "Icon": "24:5010",
+              "Label": "Game over",
+              "Tone": "Lime"
+            }
+          },
+          {
+            "path": "Action / Leave room",
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "9:2528",
+                    "toName": "ML01 / Room list · open, private, full and playing states",
+                    "transition": "dissolve"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "path": "You",
+            "componentProperties": {
+              "Initials": "MA",
+              "Tone": "Peach"
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "63:75809",
+        "name": "Board & room",
+        "w": 1312,
+        "h": 1119,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/24",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "63:75810",
+            "name": "Board stage",
+            "w": 944,
+            "h": 1119,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/16",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "FRAME",
+                "id": "63:75811",
+                "name": "Result",
+                "w": 944,
+                "h": 687,
+                "wSize": "fill",
+                "hSize": "hug",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside",
+                "radius": "$Zumpo · UI:radius/24",
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/24",
+                  "pad": 40,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "63:75812",
+                    "name": "Result heading",
+                    "w": 392,
+                    "h": 75,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "layout": {
+                      "mode": "column",
+                      "gap": "$Zumpo · UI:space/8",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "63:75813",
+                        "w": 392,
+                        "h": 42,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "text": "Out of lives on level 4.",
+                        "textStyle": "Zumpo/Title",
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      },
+                      {
+                        "type": "TEXT",
+                        "id": "63:75814",
+                        "w": 221,
+                        "h": 25,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "text": "3 of 5 levels cleared, together.",
+                        "textStyle": "Zumpo/Body",
+                        "fills": [
+                          "$Zumpo · UI:color/muted"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "63:75912",
+                    "name": "Level by level",
+                    "w": 597,
+                    "h": 62,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "column",
+                      "gap": "$Zumpo · UI:space/12",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "63:75913",
+                        "name": "Label",
+                        "w": 91,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "text": "Level by level",
+                        "textStyle": "Zumpo/Label",
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      },
+                      {
+                        "type": "FRAME",
+                        "id": "63:75914",
+                        "name": "Levels",
+                        "w": 597,
+                        "h": 30,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "clip": true,
+                        "layout": {
+                          "mode": "row",
+                          "gap": "$Zumpo · UI:space/8",
+                          "align": "center",
+                          "strokesIncluded": true
+                        },
+                        "children": [
+                          {
+                            "type": "INSTANCE",
+                            "id": "63:75915",
+                            "name": "Tag / Level 1: clean",
+                            "w": 117,
+                            "h": 30,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "component": "Zumpo/Tag",
+                            "variant": {
+                              "Tone": "Lime"
+                            },
+                            "componentId": "24:6521",
+                            "props": {
+                              "Show icon": true,
+                              "Icon": "Zumpo/Icon / Glyph=check",
+                              "Label": "Level 1: clean"
+                            },
+                            "overrides": [
+                              {
+                                "path": ".",
+                                "height": 30,
+                                "width": 117
+                              }
+                            ]
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "63:75922",
+                            "name": "Tag / Level 2: a life lost",
+                            "w": 140,
+                            "h": 30,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "component": "Zumpo/Tag",
+                            "variant": {
+                              "Tone": "Peach"
+                            },
+                            "componentId": "24:6526",
+                            "props": {
+                              "Show icon": true,
+                              "Icon": "Zumpo/Icon / Glyph=alert",
+                              "Label": "Level 2: a life lost"
+                            },
+                            "overrides": [
+                              {
+                                "path": ".",
+                                "height": 30,
+                                "width": 140
+                              }
+                            ]
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "63:75930",
+                            "name": "Tag / Level 3: a life lost",
+                            "w": 140,
+                            "h": 30,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "component": "Zumpo/Tag",
+                            "variant": {
+                              "Tone": "Peach"
+                            },
+                            "componentId": "24:6526",
+                            "props": {
+                              "Show icon": true,
+                              "Icon": "Zumpo/Icon / Glyph=alert",
+                              "Label": "Level 3: a life lost"
+                            },
+                            "overrides": [
+                              {
+                                "path": ".",
+                                "height": 30,
+                                "width": 140
+                              }
+                            ]
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "63:75938",
+                            "name": "Tag / Level 4: the last life lost",
+                            "w": 176,
+                            "h": 30,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "component": "Zumpo/Tag",
+                            "variant": {
+                              "Tone": "Peach"
+                            },
+                            "componentId": "24:6526",
+                            "props": {
+                              "Show icon": true,
+                              "Icon": "Zumpo/Icon / Glyph=alert",
+                              "Label": "Level 4: the last life lost"
+                            },
+                            "overrides": [
+                              {
+                                "path": ".",
+                                "height": 30,
+                                "width": 176
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "63:75946",
+                    "name": "Still held",
+                    "w": 252,
+                    "h": 348,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "column",
+                      "gap": "$Zumpo · UI:space/12",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "63:75947",
+                        "name": "Label",
+                        "w": 60,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "text": "Still held",
+                        "textStyle": "Zumpo/Label",
+                        "fills": [
+                          "$Zumpo · UI:color/ink"
+                        ]
+                      },
+                      {
+                        "type": "FRAME",
+                        "id": "63:75948",
+                        "name": "Hands",
+                        "w": 252,
+                        "h": 316,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "clip": true,
+                        "layout": {
+                          "mode": "column",
+                          "gap": "$Zumpo · UI:space/12",
+                          "strokesIncluded": true
+                        },
+                        "children": [
+                          {
+                            "type": "FRAME",
+                            "id": "63:75949",
+                            "name": "Maya",
+                            "w": 252,
+                            "h": 80,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "clip": true,
+                            "layout": {
+                              "mode": "row",
+                              "gap": "$Zumpo · UI:space/12",
+                              "align": "center",
+                              "strokesIncluded": true
+                            },
+                            "children": [
+                              {
+                                "type": "INSTANCE",
+                                "id": "63:75950",
+                                "name": "Avatar",
+                                "w": 40,
+                                "h": 40,
+                                "component": "Zumpo/Avatar",
+                                "variant": {
+                                  "Tone": "Peach"
+                                },
+                                "componentId": "4:34",
+                                "props": {
+                                  "Initials": "MA"
+                                }
+                              },
+                              {
+                                "type": "TEXT",
+                                "id": "63:75952",
+                                "name": "Name",
+                                "w": 56,
+                                "h": 20,
+                                "hSize": "hug",
+                                "text": "Maya",
+                                "textStyle": "Zumpo/Label",
+                                "fills": [
+                                  "$Zumpo · UI:color/ink"
+                                ],
+                                "autoResize": "height"
+                              },
+                              {
+                                "type": "INSTANCE",
+                                "id": "63:75953",
+                                "name": "Hush card / 79",
+                                "w": 60,
+                                "h": 80,
+                                "component": "Zumpo/Hush card",
+                                "variant": {
+                                  "State": "Hand",
+                                  "Size": "Small"
+                                },
+                                "componentId": "44:61108",
+                                "props": {
+                                  "Value": "79"
+                                }
+                              },
+                              {
+                                "type": "INSTANCE",
+                                "id": "63:75955",
+                                "name": "Hush card / 93",
+                                "w": 60,
+                                "h": 80,
+                                "component": "Zumpo/Hush card",
+                                "variant": {
+                                  "State": "Hand",
+                                  "Size": "Small"
+                                },
+                                "componentId": "44:61108",
+                                "props": {
+                                  "Value": "93"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "FRAME",
+                            "id": "63:75957",
+                            "name": "Sam",
+                            "w": 252,
+                            "h": 80,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "clip": true,
+                            "layout": {
+                              "mode": "row",
+                              "gap": "$Zumpo · UI:space/12",
+                              "align": "center",
+                              "strokesIncluded": true
+                            },
+                            "children": [
+                              {
+                                "type": "INSTANCE",
+                                "id": "63:75958",
+                                "name": "Avatar",
+                                "w": 40,
+                                "h": 40,
+                                "component": "Zumpo/Avatar",
+                                "variant": {
+                                  "Tone": "Sand"
+                                },
+                                "componentId": "26:10572",
+                                "props": {
+                                  "Initials": "SA"
+                                }
+                              },
+                              {
+                                "type": "TEXT",
+                                "id": "63:75961",
+                                "name": "Name",
+                                "w": 56,
+                                "h": 20,
+                                "hSize": "hug",
+                                "text": "Sam",
+                                "textStyle": "Zumpo/Label",
+                                "fills": [
+                                  "$Zumpo · UI:color/ink"
+                                ],
+                                "autoResize": "height"
+                              },
+                              {
+                                "type": "INSTANCE",
+                                "id": "63:75962",
+                                "name": "Hush card / 70",
+                                "w": 60,
+                                "h": 80,
+                                "component": "Zumpo/Hush card",
+                                "variant": {
+                                  "State": "Hand",
+                                  "Size": "Small"
+                                },
+                                "componentId": "44:61108",
+                                "props": {
+                                  "Value": "70"
+                                }
+                              },
+                              {
+                                "type": "INSTANCE",
+                                "id": "63:75964",
+                                "name": "Hush card / 84",
+                                "w": 60,
+                                "h": 80,
+                                "component": "Zumpo/Hush card",
+                                "variant": {
+                                  "State": "Hand",
+                                  "Size": "Small"
+                                },
+                                "componentId": "44:61108",
+                                "props": {
+                                  "Value": "84"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "FRAME",
+                            "id": "63:75966",
+                            "name": "Ryan",
+                            "w": 187,
+                            "h": 40,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "clip": true,
+                            "layout": {
+                              "mode": "row",
+                              "gap": "$Zumpo · UI:space/12",
+                              "align": "center",
+                              "strokesIncluded": true
+                            },
+                            "children": [
+                              {
+                                "type": "INSTANCE",
+                                "id": "63:75967",
+                                "name": "Avatar",
+                                "w": 40,
+                                "h": 40,
+                                "component": "Zumpo/Avatar",
+                                "variant": {
+                                  "Tone": "Blue"
+                                },
+                                "componentId": "26:10568"
+                              },
+                              {
+                                "type": "TEXT",
+                                "id": "63:75970",
+                                "name": "Name",
+                                "w": 56,
+                                "h": 20,
+                                "hSize": "hug",
+                                "text": "Ryan",
+                                "textStyle": "Zumpo/Label",
+                                "fills": [
+                                  "$Zumpo · UI:color/ink"
+                                ],
+                                "autoResize": "height"
+                              },
+                              {
+                                "type": "TEXT",
+                                "id": "63:75971",
+                                "name": "Empty",
+                                "w": 67,
+                                "h": 18,
+                                "wSize": "hug",
+                                "hSize": "hug",
+                                "text": "Nothing left",
+                                "textStyle": "Zumpo/Small",
+                                "fills": [
+                                  "$Zumpo · UI:color/muted"
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "type": "FRAME",
+                            "id": "63:75972",
+                            "name": "Leo",
+                            "w": 252,
+                            "h": 80,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "clip": true,
+                            "layout": {
+                              "mode": "row",
+                              "gap": "$Zumpo · UI:space/12",
+                              "align": "center",
+                              "strokesIncluded": true
+                            },
+                            "children": [
+                              {
+                                "type": "INSTANCE",
+                                "id": "63:75973",
+                                "name": "Avatar",
+                                "w": 40,
+                                "h": 40,
+                                "component": "Zumpo/Avatar",
+                                "variant": {
+                                  "Tone": "Lime"
+                                },
+                                "componentId": "26:10570",
+                                "props": {
+                                  "Initials": "LE"
+                                }
+                              },
+                              {
+                                "type": "TEXT",
+                                "id": "63:75976",
+                                "name": "Name",
+                                "w": 56,
+                                "h": 20,
+                                "hSize": "hug",
+                                "text": "Leo",
+                                "textStyle": "Zumpo/Label",
+                                "fills": [
+                                  "$Zumpo · UI:color/ink"
+                                ],
+                                "autoResize": "height"
+                              },
+                              {
+                                "type": "INSTANCE",
+                                "id": "63:75977",
+                                "name": "Hush card / 89",
+                                "w": 60,
+                                "h": 80,
+                                "component": "Zumpo/Hush card",
+                                "variant": {
+                                  "State": "Hand",
+                                  "Size": "Small"
+                                },
+                                "componentId": "44:61108",
+                                "props": {
+                                  "Value": "89"
+                                }
+                              },
+                              {
+                                "type": "INSTANCE",
+                                "id": "63:75979",
+                                "name": "Hush card / 98",
+                                "w": 60,
+                                "h": 80,
+                                "component": "Zumpo/Hush card",
+                                "variant": {
+                                  "State": "Hand",
+                                  "Size": "Small"
+                                },
+                                "componentId": "44:61108",
+                                "props": {
+                                  "Value": "98"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "63:75828",
+                    "name": "Actions",
+                    "w": 283,
+                    "h": 48,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "layout": {
+                      "mode": "row",
+                      "gap": "$Zumpo · UI:space/12",
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "INSTANCE",
+                        "id": "63:75829",
+                        "name": "Action / Play again",
+                        "w": 110,
+                        "h": 48,
+                        "wSize": "hug",
+                        "component": "Zumpo/Button",
+                        "variant": {
+                          "Style": "Primary",
+                          "State": "Default"
+                        },
+                        "componentId": "4:15",
+                        "props": {
+                          "Label": "Play again"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 48,
+                            "width": 110
+                          }
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "63:75830",
+                        "name": "Action / Invite friends",
+                        "w": 161,
+                        "h": 48,
+                        "wSize": "hug",
+                        "component": "Zumpo/Button",
+                        "variant": {
+                          "Style": "Secondary",
+                          "State": "Default"
+                        },
+                        "componentId": "4:18",
+                        "props": {
+                          "Icon": "Zumpo/Icon / Glyph=link",
+                          "Show icon": true,
+                          "Label": "Invite friends"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "height": 48,
+                            "width": 161
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "63:75831",
+                "name": "Board panel",
+                "w": 944,
+                "h": 416,
+                "wSize": "fill",
+                "hSize": "hug",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside",
+                "radius": "$Zumpo · UI:radius/24",
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/24",
+                  "pad": 24,
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "63:75990",
+                    "name": "Table head",
+                    "w": 894,
+                    "h": 30,
+                    "wSize": "fill",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "row",
+                      "gap": "$Zumpo · UI:space/16",
+                      "justify": "space_between",
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "FRAME",
+                        "id": "63:75991",
+                        "name": "Title",
+                        "w": 160,
+                        "h": 30,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "clip": true,
+                        "layout": {
+                          "mode": "row",
+                          "gap": "$Zumpo · UI:space/12",
+                          "align": "center",
+                          "strokesIncluded": true
+                        },
+                        "children": [
+                          {
+                            "type": "TEXT",
+                            "id": "63:75992",
+                            "name": "Heading",
+                            "w": 83,
+                            "h": 30,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "text": "Level 4",
+                            "textStyle": "Zumpo/Heading",
+                            "fills": [
+                              "$Zumpo · UI:color/ink"
+                            ]
+                          },
+                          {
+                            "type": "TEXT",
+                            "id": "63:75993",
+                            "name": "Note",
+                            "w": 65,
+                            "h": 18,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "text": "As it ended",
+                            "textStyle": "Zumpo/Small",
+                            "fills": [
+                              "$Zumpo · UI:color/muted"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "63:75994",
+                        "name": "Zumpo/Lives",
+                        "w": 130,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "component": "Zumpo/Lives",
+                        "variant": {
+                          "Lives": "0"
+                        },
+                        "componentId": "44:61137"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "63:76000",
+                    "name": "Pile",
+                    "w": 894,
+                    "h": 312,
+                    "wSize": "fill",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "column",
+                      "gap": "$Zumpo · UI:space/16",
+                      "align": "center",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "INSTANCE",
+                        "id": "63:76001",
+                        "name": "Hush card / 66",
+                        "w": 168,
+                        "h": 216,
+                        "component": "Zumpo/Hush card",
+                        "variant": {
+                          "State": "Pile",
+                          "Size": "Large"
+                        },
+                        "componentId": "44:61092",
+                        "props": {
+                          "Value": "66"
+                        }
+                      },
+                      {
+                        "type": "FRAME",
+                        "id": "63:76003",
+                        "name": "Trail",
+                        "w": 604,
+                        "h": 80,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "clip": true,
+                        "layout": {
+                          "mode": "row",
+                          "gap": "$Zumpo · UI:space/8",
+                          "align": "center",
+                          "strokesIncluded": true
+                        },
+                        "children": [
+                          {
+                            "type": "INSTANCE",
+                            "id": "63:76004",
+                            "name": "Hush card / 3",
+                            "w": 60,
+                            "h": 80,
+                            "component": "Zumpo/Hush card",
+                            "variant": {
+                              "State": "Played",
+                              "Size": "Small"
+                            },
+                            "componentId": "44:61114",
+                            "props": {
+                              "Value": "3"
+                            }
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "63:76006",
+                            "name": "Hush card / 11",
+                            "w": 60,
+                            "h": 80,
+                            "component": "Zumpo/Hush card",
+                            "variant": {
+                              "State": "Played",
+                              "Size": "Small"
+                            },
+                            "componentId": "44:61114",
+                            "props": {
+                              "Value": "11"
+                            }
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "63:76008",
+                            "name": "Hush card / 17",
+                            "w": 60,
+                            "h": 80,
+                            "component": "Zumpo/Hush card",
+                            "variant": {
+                              "State": "Played",
+                              "Size": "Small"
+                            },
+                            "componentId": "44:61114",
+                            "props": {
+                              "Value": "17"
+                            }
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "63:76010",
+                            "name": "Hush card / 24",
+                            "w": 60,
+                            "h": 80,
+                            "component": "Zumpo/Hush card",
+                            "variant": {
+                              "State": "Played",
+                              "Size": "Small"
+                            },
+                            "componentId": "44:61114",
+                            "props": {
+                              "Value": "24"
+                            }
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "63:76012",
+                            "name": "Hush card / 30",
+                            "w": 60,
+                            "h": 80,
+                            "component": "Zumpo/Hush card",
+                            "variant": {
+                              "State": "Played",
+                              "Size": "Small"
+                            },
+                            "componentId": "44:61114",
+                            "props": {
+                              "Value": "30"
+                            }
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "63:76014",
+                            "name": "Hush card / 38",
+                            "w": 60,
+                            "h": 80,
+                            "component": "Zumpo/Hush card",
+                            "variant": {
+                              "State": "Played",
+                              "Size": "Small"
+                            },
+                            "componentId": "44:61114",
+                            "props": {
+                              "Value": "38"
+                            }
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "63:76016",
+                            "name": "Hush card / 45",
+                            "w": 60,
+                            "h": 80,
+                            "component": "Zumpo/Hush card",
+                            "variant": {
+                              "State": "Played",
+                              "Size": "Small"
+                            },
+                            "componentId": "44:61114",
+                            "props": {
+                              "Value": "45"
+                            }
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "63:76018",
+                            "name": "Hush card / 51",
+                            "w": 60,
+                            "h": 80,
+                            "component": "Zumpo/Hush card",
+                            "variant": {
+                              "State": "Played",
+                              "Size": "Small"
+                            },
+                            "componentId": "44:61114",
+                            "props": {
+                              "Value": "51"
+                            }
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "63:76020",
+                            "name": "Hush card / 58",
+                            "w": 60,
+                            "h": 80,
+                            "component": "Zumpo/Hush card",
+                            "variant": {
+                              "State": "Discarded",
+                              "Size": "Small"
+                            },
+                            "componentId": "44:61116",
+                            "props": {
+                              "Value": "58"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "63:75875",
+            "name": "Room sidebar",
+            "w": 344,
+            "h": 646,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/24",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "63:75876",
+                "name": "Zumpo/Scoreboard",
+                "w": 344,
+                "h": 304,
+                "hSize": "hug",
+                "component": "Zumpo/Scoreboard",
+                "componentId": "9:320",
+                "overrides": [
+                  {
+                    "path": "Heading / Count",
+                    "characters": "4 / 4"
+                  },
+                  {
+                    "path": "Player 1",
+                    "componentProperties": {
+                      "Show score": false,
+                      "Status icon": false,
+                      "Status": "Waiting",
+                      "Host": true,
+                      "You": true,
+                      "Score": "",
+                      "Icon": "24:5053",
+                      "Name": "Maya",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 1 / Avatar",
+                    "componentProperties": {
+                      "Initials": "MA",
+                      "Tone": "Peach"
+                    }
+                  },
+                  {
+                    "path": "Player 2",
+                    "componentProperties": {
+                      "Show score": false,
+                      "Status icon": false,
+                      "Status": "Waiting",
+                      "Host": false,
+                      "You": false,
+                      "Score": "",
+                      "Icon": "24:5053",
+                      "Name": "Sam",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 2 / Avatar",
+                    "componentProperties": {
+                      "Initials": "SA",
+                      "Tone": "Sand"
+                    }
+                  },
+                  {
+                    "path": "Player 3",
+                    "componentProperties": {
+                      "Show score": false,
+                      "Status icon": false,
+                      "Status": "Waiting",
+                      "Host": false,
+                      "You": false,
+                      "Score": "",
+                      "Icon": "24:5053",
+                      "Name": "Ryan",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 3 / Avatar",
+                    "componentProperties": {
+                      "Initials": "RG",
+                      "Tone": "Blue"
+                    }
+                  },
+                  {
+                    "path": "Player 4",
+                    "componentProperties": {
+                      "Show score": false,
+                      "Status icon": false,
+                      "Status": "Waiting",
+                      "Host": false,
+                      "You": false,
+                      "Score": "",
+                      "Icon": "24:5053",
+                      "Name": "Leo",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 4 / Avatar",
+                    "componentProperties": {
+                      "Initials": "LE",
+                      "Tone": "Lime"
+                    }
+                  },
+                  {
+                    "path": "Player 5",
+                    "componentProperties": {
+                      "Icon": "24:5053",
+                      "Show score": false,
+                      "Status icon": true,
+                      "You": false,
+                      "Name": "Maya",
+                      "Status": "Drawing",
+                      "Host": true,
+                      "Score": "460",
+                      "State": "Highlight"
+                    }
+                  },
+                  {
+                    "path": "Player 6",
+                    "componentProperties": {
+                      "Show score": false,
+                      "Status icon": false,
+                      "Status": "Guessing",
+                      "Host": false,
+                      "You": false,
+                      "Score": "320",
+                      "Icon": "24:5053",
+                      "Name": "Ryan",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 7",
+                    "componentProperties": {
+                      "Show score": false,
+                      "Status icon": false,
+                      "Status": "Guessing",
+                      "Host": false,
+                      "You": false,
+                      "Score": "240",
+                      "Icon": "24:5053",
+                      "Name": "Leo",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 8",
+                    "componentProperties": {
+                      "Show score": false,
+                      "Status icon": false,
+                      "Status": "Guessing",
+                      "Host": false,
+                      "You": true,
+                      "Score": "180",
+                      "Icon": "24:5053",
+                      "Name": "Sam",
+                      "State": "Default"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "63:75877",
+                "name": "Zumpo/Chat",
+                "w": 344,
+                "h": 318,
+                "hSize": "hug",
+                "component": "Zumpo/Chat",
+                "componentId": "9:334",
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 318,
+                    "width": 344
+                  },
+                  {
+                    "path": "Messages / Message 1",
+                    "componentProperties": {
+                      "Alert icon": "24:4999",
+                      "Name": "System",
+                      "Message": "Leo played 66, but Sam held 58.",
+                      "Kind": "Alert"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 2",
+                    "componentProperties": {
+                      "Alert icon": "24:4999",
+                      "Name": "System",
+                      "Message": "Out of lives on level 4: 3 of 5 levels cleared.",
+                      "Kind": "Alert"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 3",
+                    "componentProperties": {
+                      "Alert icon": "24:4999",
+                      "Message": "noooo, 58",
+                      "Name": "Sam",
+                      "Kind": "Player"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 4",
+                    "componentProperties": {
+                      "Alert icon": "24:4999",
+                      "Message": "one more?",
+                      "Name": "Maya",
+                      "Kind": "Player"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 5",
+                    "componentProperties": {
+                      "Alert icon": "24:4999",
+                      "Message": "rematch?",
+                      "Name": "Maya",
+                      "Kind": "Player"
+                    },
+                    "visible": false
+                  },
+                  {
+                    "path": "Messages / Message 6",
+                    "visible": false
+                  },
+                  {
+                    "path": "Chat input",
+                    "componentProperties": {
+                      "Placeholder": "Say something…",
+                      "State": "Default"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "63:75878",
+        "name": "Footer",
+        "w": 1312,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "63:75879",
+            "w": 650,
+            "h": 18,
+            "hSize": "hug",
+            "text": "Good company. One more round.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "63:75880",
+            "w": 115,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "zumpo. / play a little",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

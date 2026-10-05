@@ -106,7 +106,7 @@ describe('a Pairs room', () => {
       'invalidRequest',
     );
     expect((await create({ board: 'Small' }, 7)).ok).toBe(false);
-    expect(Object.keys(harness.server.rooms)).toEqual([]);
+    expect(harness.server.rooms.size).toBe(0);
   });
 
   it('waits with no cards on the table before the first game', async () => {

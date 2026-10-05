@@ -42,9 +42,6 @@ const createLiarsDiceModule = (
     onDisconnect: () => {},
     onReturn: () => {},
 
-    disposeRoom: (roomId) => engine.disposeRoom(roomId),
-    dispose: () => engine.dispose(),
-
     registerHandlers: (socket: IoSocket) => {
       onClientEvent(socket, 'ld:bid', (...rawArgs: unknown[]) => {
         const validated = parseArgs(bidRequest, rawArgs, 'ld:bid');
@@ -52,8 +49,7 @@ const createLiarsDiceModule = (
         const [roomId, count, face] = validated;
 
         // Identity comes from the connection, never from the payload.
-        const playerId = ctx.sessions.playerIdFor(socket.id);
-        if (!playerId) return;
+        const playerId = socket.data.playerId;
 
         engine.bid(roomId, playerId, count, face);
       });
@@ -63,8 +59,7 @@ const createLiarsDiceModule = (
         if (!validated) return;
         const [roomId] = validated;
 
-        const playerId = ctx.sessions.playerIdFor(socket.id);
-        if (!playerId) return;
+        const playerId = socket.data.playerId;
 
         engine.call(roomId, playerId);
       });

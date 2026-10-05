@@ -4,7 +4,7 @@
   "id": "26:16873",
   "type": "COMPONENT_SET",
   "key": "afc740a85a15447df5099f4555551bf122d3dbd4",
-  "description": "Sits above the canvas in Draw & Guess and carries the turn: the game’s category (always shown, nested Tag), what to do, the word or the hint, and the phase clock. Word: the drawer sees the word. Hint: guessers see the server’s hint string as is (“__r___”, spaces kept for two-word answers), tracked out 30% so each blank reads as a slot; the server reveals letters at a third and two thirds of the drawing clock, up to a third of the word. Status: choosing, review, waiting. Replaces putting the word or hint in a page Notice. Phone layout: the clock moves up beside the category, and the answer wraps under the label.",
+  "description": "Sits above the canvas in Draw & Guess and carries the turn: the game’s category (always shown, nested Tag), what to do, the word or the hint, and the phase clock. Word: the drawer sees the word. Hint: guessers see the server’s hint string as is (“__r___”, spaces kept for two-word answers), tracked out 30% so each blank reads as a slot; the server reveals letters at a third and two thirds of the drawing clock, up to a third of the word. Status: choosing, review, waiting. Replaces putting the word or hint in a page Notice. Phone layout: the clock moves up beside the category, and the answer wraps under the label. Category, Countdown, Top row: off when the game has no category (a game on your own), nothing is timed, or (Phone) neither shows.",
   "properties": {
     "Label": {
       "type": "text",
@@ -17,6 +17,18 @@
     "Meta": {
       "type": "text",
       "default": "6 letters"
+    },
+    "Category": {
+      "type": "boolean",
+      "default": true
+    },
+    "Countdown": {
+      "type": "boolean",
+      "default": true
+    },
+    "Top row": {
+      "type": "boolean",
+      "default": true
     },
     "Kind": {
       "type": "variant",
@@ -110,6 +122,9 @@
                     "h": 30,
                     "wSize": "hug",
                     "hSize": "hug",
+                    "propRefs": {
+                      "visible": "Category"
+                    },
                     "component": "Zumpo/Tag",
                     "variant": {
                       "Tone": "Sand"
@@ -206,6 +221,9 @@
             "h": 44,
             "wSize": "hug",
             "hSize": "hug",
+            "propRefs": {
+              "visible": "Countdown"
+            },
             "component": "Zumpo/Countdown",
             "variant": {
               "Tone": "Running"
@@ -298,6 +316,9 @@
                     "h": 30,
                     "wSize": "hug",
                     "hSize": "hug",
+                    "propRefs": {
+                      "visible": "Category"
+                    },
                     "component": "Zumpo/Tag",
                     "variant": {
                       "Tone": "Sand"
@@ -394,6 +415,9 @@
             "h": 44,
             "wSize": "hug",
             "hSize": "hug",
+            "propRefs": {
+              "visible": "Countdown"
+            },
             "component": "Zumpo/Countdown",
             "variant": {
               "Tone": "Running"
@@ -486,6 +510,9 @@
                     "h": 30,
                     "wSize": "hug",
                     "hSize": "hug",
+                    "propRefs": {
+                      "visible": "Category"
+                    },
                     "component": "Zumpo/Tag",
                     "variant": {
                       "Tone": "Sand"
@@ -582,6 +609,9 @@
             "h": 44,
             "wSize": "hug",
             "hSize": "hug",
+            "propRefs": {
+              "visible": "Countdown"
+            },
             "component": "Zumpo/Countdown",
             "variant": {
               "Tone": "Waiting"
@@ -639,6 +669,9 @@
             "h": 52,
             "wSize": "fill",
             "hSize": "hug",
+            "propRefs": {
+              "visible": "Top row"
+            },
             "layout": {
               "mode": "row",
               "gap": "$Zumpo · UI:space/8",
@@ -676,6 +709,9 @@
                     "h": 30,
                     "wSize": "hug",
                     "hSize": "hug",
+                    "propRefs": {
+                      "visible": "Category"
+                    },
                     "component": "Zumpo/Tag",
                     "variant": {
                       "Tone": "Sand"
@@ -702,6 +738,9 @@
                 "h": 44,
                 "wSize": "hug",
                 "hSize": "hug",
+                "propRefs": {
+                  "visible": "Countdown"
+                },
                 "component": "Zumpo/Countdown",
                 "variant": {
                   "Tone": "Running"
@@ -831,6 +870,9 @@
             "h": 52,
             "wSize": "fill",
             "hSize": "hug",
+            "propRefs": {
+              "visible": "Top row"
+            },
             "layout": {
               "mode": "row",
               "gap": "$Zumpo · UI:space/8",
@@ -868,6 +910,9 @@
                     "h": 30,
                     "wSize": "hug",
                     "hSize": "hug",
+                    "propRefs": {
+                      "visible": "Category"
+                    },
                     "component": "Zumpo/Tag",
                     "variant": {
                       "Tone": "Sand"
@@ -894,6 +939,9 @@
                 "h": 44,
                 "wSize": "hug",
                 "hSize": "hug",
+                "propRefs": {
+                  "visible": "Countdown"
+                },
                 "component": "Zumpo/Countdown",
                 "variant": {
                   "Tone": "Running"
@@ -1023,6 +1071,9 @@
             "h": 52,
             "wSize": "fill",
             "hSize": "hug",
+            "propRefs": {
+              "visible": "Top row"
+            },
             "layout": {
               "mode": "row",
               "gap": "$Zumpo · UI:space/8",
@@ -1060,6 +1111,9 @@
                     "h": 30,
                     "wSize": "hug",
                     "hSize": "hug",
+                    "propRefs": {
+                      "visible": "Category"
+                    },
                     "component": "Zumpo/Tag",
                     "variant": {
                       "Tone": "Sand"
@@ -1086,6 +1140,9 @@
                 "h": 44,
                 "wSize": "hug",
                 "hSize": "hug",
+                "propRefs": {
+                  "visible": "Countdown"
+                },
                 "component": "Zumpo/Countdown",
                 "variant": {
                   "Tone": "Waiting"

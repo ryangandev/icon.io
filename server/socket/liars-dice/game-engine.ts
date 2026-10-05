@@ -4,8 +4,8 @@ import type {
   LiarsDiceStanding,
 } from '../../models/types.js';
 import { RequestError } from '../../models/error.js';
+import { seatCount } from '../../libs/rooms/seats.js';
 import type { GameContext } from '../../libs/rooms/types.js';
-import { getRoomStatus } from '../../libs/utils.js';
 import {
   liarsDiceDurationsInSeconds as defaultDurations,
   type LiarsDiceDurationsInSeconds,
@@ -82,35 +82,8 @@ const createLiarsDiceGameEngine = (
   durations: LiarsDiceDurationsInSeconds = defaultDurations,
   random: () => number = secureRandom,
 ) => {
-  /** One per room: the open turn, or a reveal on show. */
-  const timers = new Map<string, NodeJS.Timeout>();
-
   const roomOf = (roomId: string): LiarsDiceRoom | undefined =>
     ctx.rooms.ofType(roomId, 'liars-dice');
-
-  const clearTimer = (roomId: string) => {
-    const pending = timers.get(roomId);
-    if (pending) {
-      clearTimeout(pending);
-      timers.delete(roomId);
-    }
-  };
-
-  const schedule = (
-    roomId: string,
-    durationInSeconds: number,
-    onDue: () => void,
-  ) => {
-    clearTimer(roomId);
-    timers.set(
-      roomId,
-      setTimeout(() => {
-        timers.delete(roomId);
-        // The room may have been emptied and deleted while we waited.
-        if (roomOf(roomId)) onDue();
-      }, durationInSeconds * 1000),
-    );
-  };
 
   const startGame = (room: LiarsDiceRoom, playerId: string) => {
     if (room.owner.playerId !== playerId) {
@@ -125,7 +98,7 @@ const createLiarsDiceGameEngine = (
         'The game has already started.',
       );
     }
-    if (room.currentPlayerCount < MIN_PLAYERS_TO_START) {
+    if (seatCount(room) < MIN_PLAYERS_TO_START) {
       throw new RequestError(
         'notEnoughPlayers',
         `At least ${MIN_PLAYERS_TO_START} players are required to start.`,
@@ -142,11 +115,6 @@ const createLiarsDiceGameEngine = (
       player.points = game.dicePerPlayer;
     }
     room.isGameStarted = true;
-    room.status = getRoomStatus(
-      room.currentPlayerCount,
-      room.maxPlayers,
-      room.isGameStarted,
-    );
 
     console.log(
       `Liar's Dice started in room ${room.roomId}, ${game.dicePerPlayer} dice each.`,
@@ -188,9 +156,8 @@ const createLiarsDiceGameEngine = (
   /** `playerId` raises or calls, with a fresh clock. */
   const beginTurn = (room: LiarsDiceRoom, playerId: string) => {
     room.game.turnPlayerId = playerId;
-    room.phaseEndsAt = Date.now() + durations.turn * 1000;
+    ctx.rooms.startPhase(room, durations.turn, () => runOutOfTime(room));
     ctx.rooms.emitState(room);
-    schedule(room.roomId, durations.turn, () => runOutOfTime(room));
   };
 
   /**
@@ -297,9 +264,8 @@ const createLiarsDiceGameEngine = (
       return;
     }
 
-    room.phaseEndsAt = Date.now() + durations.reveal * 1000;
+    ctx.rooms.startPhase(room, durations.reveal, () => afterReveal(room));
     ctx.rooms.emitState(room);
-    schedule(room.roomId, durations.reveal, () => afterReveal(room));
   };
 
   /** The loser opens the next round, or the next player still in if they are out. */
@@ -317,7 +283,7 @@ const createLiarsDiceGameEngine = (
     room: LiarsDiceRoom,
     { endedEarly }: { endedEarly: boolean },
   ) => {
-    clearTimer(room.roomId);
+    ctx.rooms.stopPhase(room);
     const game = room.game;
     const standings = standingsOf(room);
 
@@ -332,12 +298,6 @@ const createLiarsDiceGameEngine = (
     game.phase = 'waiting';
     game.bids = [];
     game.turnPlayerId = null;
-    room.phaseEndsAt = 0;
-    room.status = getRoomStatus(
-      room.currentPlayerCount,
-      room.maxPlayers,
-      room.isGameStarted,
-    );
 
     ctx.rooms.emitState(room);
     const [winner] = standings;
@@ -356,7 +316,7 @@ const createLiarsDiceGameEngine = (
     if (!room.isGameStarted) return;
     const game = room.game;
 
-    if (room.currentPlayerCount < MIN_PLAYERS_TO_START) {
+    if (seatCount(room) < MIN_PLAYERS_TO_START) {
       ctx.rooms.announce(
         room.roomId,
         'alert',
@@ -392,19 +352,11 @@ const createLiarsDiceGameEngine = (
     }
   };
 
-  const disposeRoom = (roomId: string) => clearTimer(roomId);
-
-  const dispose = () => {
-    for (const roomId of new Set(timers.keys())) clearTimer(roomId);
-  };
-
   return {
     startGame,
     bid,
     call,
     handlePlayerDeparture,
-    disposeRoom,
-    dispose,
   };
 };
 

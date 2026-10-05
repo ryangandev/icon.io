@@ -4,7 +4,7 @@
   "id": "26:10660",
   "type": "COMPONENT_SET",
   "key": "b19be0b9e519dcfaa8886fe7e682ac0c48531f8b",
-  "description": "One player in the room list. The list is always sorted by score. Host shows the crown (it passes on when the host leaves); You marks the viewer. Status says what the player is doing right now, never a generic “Connected”. Highlight: the player whose turn it is. Scored: guessed this turn. Away: dropped, seat held for 30 s.",
+  "description": "One player in the room list. The list is always sorted by score. Host shows the crown (it passes on when the host leaves); You marks the viewer. Status says what the player is doing right now, never a generic “Connected”. Highlight: the player whose turn it is. Scored: guessed this turn. Away: dropped, seat held for 30 s. Show score: off in a game with no score (Hush).",
   "properties": {
     "Name": {
       "type": "text",
@@ -33,6 +33,10 @@
     "Icon": {
       "type": "instance_swap",
       "default": "Zumpo/Icon / Glyph=brush"
+    },
+    "Show score": {
+      "type": "boolean",
+      "default": true
     },
     "State": {
       "type": "variant",
@@ -254,6 +258,7 @@
             "wSize": "hug",
             "hSize": "hug",
             "propRefs": {
+              "visible": "Show score",
               "characters": "Score"
             },
             "text": "460",
@@ -476,6 +481,7 @@
             "wSize": "hug",
             "hSize": "hug",
             "propRefs": {
+              "visible": "Show score",
               "characters": "Score"
             },
             "text": "460",
@@ -681,6 +687,7 @@
             "wSize": "hug",
             "hSize": "hug",
             "propRefs": {
+              "visible": "Show score",
               "characters": "Score"
             },
             "text": "460",
@@ -892,6 +899,7 @@
             "wSize": "hug",
             "hSize": "hug",
             "propRefs": {
+              "visible": "Show score",
               "characters": "Score"
             },
             "text": "460",

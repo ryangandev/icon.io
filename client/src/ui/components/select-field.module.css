@@ -106,8 +106,10 @@
   padding-block: 10px;
 }
 
-.choice:hover:not([data-checked]) {
-  background: var(--zumpo-cream);
+@media (hover: hover) {
+  .choice:hover:not([data-checked]) {
+    background: var(--zumpo-cream);
+  }
 }
 
 .choice:focus-visible {

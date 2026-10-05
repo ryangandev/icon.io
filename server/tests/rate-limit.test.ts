@@ -178,6 +178,6 @@ describe('a throttled socket', () => {
 
     await startGame(owner, roomId);
 
-    expect(harness.server.rooms[roomId]?.isGameStarted).toBe(true);
+    expect(harness.server.rooms.get(roomId)?.isGameStarted).toBe(true);
   });
 });

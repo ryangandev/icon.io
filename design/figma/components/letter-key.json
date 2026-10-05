@@ -1,0 +1,750 @@
+{
+  "format": 1,
+  "name": "Zumpo/Letter key",
+  "id": "44:62031",
+  "type": "COMPONENT_SET",
+  "key": "5267b642ccd6c5988eb2755e3c41519ece762313",
+  "description": "Daily Word: one key of the on-screen keyboard. A letter key shows the best mark its letter has had, with the tile's shapes: a square for Correct, a pill for Present, flat grey for Absent.",
+  "properties": {
+    "Letter": {
+      "type": "text",
+      "default": "Q"
+    },
+    "Kind": {
+      "type": "variant",
+      "default": "Letter",
+      "options": [
+        "Letter",
+        "Enter",
+        "Delete"
+      ]
+    },
+    "State": {
+      "type": "variant",
+      "default": "Plain",
+      "options": [
+        "Plain",
+        "Correct",
+        "Present",
+        "Absent"
+      ]
+    },
+    "Size": {
+      "type": "variant",
+      "default": "Regular",
+      "options": [
+        "Regular",
+        "Compact"
+      ]
+    }
+  },
+  "defaultVariant": "Kind=Letter, State=Plain, Size=Regular",
+  "variants": [
+    {
+      "name": "Kind=Letter, State=Plain, Size=Regular",
+      "id": "44:62003",
+      "props": {
+        "Kind": "Letter",
+        "State": "Plain",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62003",
+        "name": "Kind=Letter, State=Plain, Size=Regular",
+        "x": 24,
+        "y": 24,
+        "w": 40,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:62004",
+            "name": "Letter",
+            "w": 15,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Letter"
+            },
+            "text": "Q",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Kind=Letter, State=Correct, Size=Regular",
+      "id": "44:62005",
+      "props": {
+        "Kind": "Letter",
+        "State": "Correct",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62005",
+        "name": "Kind=Letter, State=Correct, Size=Regular",
+        "x": 88,
+        "y": 24,
+        "w": 40,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/green"
+        ],
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:62006",
+            "name": "Letter",
+            "w": 15,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Letter"
+            },
+            "text": "Q",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/paper"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Kind=Letter, State=Present, Size=Regular",
+      "id": "44:62007",
+      "props": {
+        "Kind": "Letter",
+        "State": "Present",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62007",
+        "name": "Kind=Letter, State=Present, Size=Regular",
+        "x": 152,
+        "y": 24,
+        "w": 40,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/coral"
+        ],
+        "radius": "$Zumpo · UI:radius/999",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:62008",
+            "name": "Letter",
+            "w": 15,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Letter"
+            },
+            "text": "Q",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Kind=Letter, State=Absent, Size=Regular",
+      "id": "44:62009",
+      "props": {
+        "Kind": "Letter",
+        "State": "Absent",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62009",
+        "name": "Kind=Letter, State=Absent, Size=Regular",
+        "x": 216,
+        "y": 24,
+        "w": 40,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/line"
+        ],
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:62010",
+            "name": "Letter",
+            "w": 15,
+            "h": 24,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Letter"
+            },
+            "text": "Q",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Kind=Enter, State=Plain, Size=Regular",
+      "id": "44:62011",
+      "props": {
+        "Kind": "Enter",
+        "State": "Plain",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62011",
+        "name": "Kind=Enter, State=Plain, Size=Regular",
+        "x": 280,
+        "y": 24,
+        "w": 64,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:62012",
+            "name": "Label",
+            "w": 37,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "Enter",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Kind=Delete, State=Plain, Size=Regular",
+      "id": "44:62013",
+      "props": {
+        "Kind": "Delete",
+        "State": "Plain",
+        "Size": "Regular"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62013",
+        "name": "Kind=Delete, State=Plain, Size=Regular",
+        "x": 368,
+        "y": 24,
+        "w": 64,
+        "h": 56,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "44:62014",
+            "name": "Icon",
+            "w": 20,
+            "h": 20,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "back"
+            },
+            "componentId": "24:5045",
+            "overrides": [
+              {
+                "path": ".",
+                "height": 20,
+                "width": 20
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Kind=Letter, State=Plain, Size=Compact",
+      "id": "44:62017",
+      "props": {
+        "Kind": "Letter",
+        "State": "Plain",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62017",
+        "name": "Kind=Letter, State=Plain, Size=Compact",
+        "x": 24,
+        "y": 104,
+        "w": 30,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:62018",
+            "name": "Letter",
+            "w": 11,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Letter"
+            },
+            "text": "Q",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Kind=Letter, State=Correct, Size=Compact",
+      "id": "44:62019",
+      "props": {
+        "Kind": "Letter",
+        "State": "Correct",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62019",
+        "name": "Kind=Letter, State=Correct, Size=Compact",
+        "x": 78,
+        "y": 104,
+        "w": 30,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/green"
+        ],
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:62020",
+            "name": "Letter",
+            "w": 11,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Letter"
+            },
+            "text": "Q",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/paper"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Kind=Letter, State=Present, Size=Compact",
+      "id": "44:62021",
+      "props": {
+        "Kind": "Letter",
+        "State": "Present",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62021",
+        "name": "Kind=Letter, State=Present, Size=Compact",
+        "x": 132,
+        "y": 104,
+        "w": 30,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/coral"
+        ],
+        "radius": "$Zumpo · UI:radius/999",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:62022",
+            "name": "Letter",
+            "w": 11,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Letter"
+            },
+            "text": "Q",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Kind=Letter, State=Absent, Size=Compact",
+      "id": "44:62023",
+      "props": {
+        "Kind": "Letter",
+        "State": "Absent",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62023",
+        "name": "Kind=Letter, State=Absent, Size=Compact",
+        "x": 186,
+        "y": 104,
+        "w": 30,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/line"
+        ],
+        "radius": "$Zumpo · UI:radius/8",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:62024",
+            "name": "Letter",
+            "w": 11,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Letter"
+            },
+            "text": "Q",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Kind=Enter, State=Plain, Size=Compact",
+      "id": "44:62025",
+      "props": {
+        "Kind": "Enter",
+        "State": "Plain",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62025",
+        "name": "Kind=Enter, State=Plain, Size=Compact",
+        "x": 240,
+        "y": 104,
+        "w": 47,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "44:62026",
+            "name": "Label",
+            "w": 37,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "Enter",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Kind=Delete, State=Plain, Size=Compact",
+      "id": "44:62027",
+      "props": {
+        "Kind": "Delete",
+        "State": "Plain",
+        "Size": "Compact"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62027",
+        "name": "Kind=Delete, State=Plain, Size=Compact",
+        "x": 311,
+        "y": 104,
+        "w": 47,
+        "h": 44,
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/8",
+        "effects": [
+          {
+            "type": "inner_shadow",
+            "color": "#282B2524",
+            "offset": [
+              0,
+              -2
+            ],
+            "radius": 0
+          }
+        ],
+        "effectStyle": "Zumpo/Cell edge",
+        "layout": {
+          "mode": "row",
+          "justify": "center",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "44:62028",
+            "name": "Icon",
+            "w": 20,
+            "h": 20,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "back"
+            },
+            "componentId": "24:5045",
+            "overrides": [
+              {
+                "path": ".",
+                "height": 20,
+                "width": 20
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

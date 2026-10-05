@@ -20,7 +20,7 @@ import {
 } from '../pairs/boards';
 import { useConnectedSession } from '../net/session';
 import { REQUEST_TIMEOUT_MS } from '../net/socket';
-import { ConnectionFailed } from '../shell/connection-failed';
+import { ConnectionLost } from '../shell/connection-lost';
 import { FormPage } from '../shell/form-page';
 import { Page } from '../shell/page';
 import { Stage } from '../shell/stage';
@@ -44,7 +44,7 @@ const DICE_DETAIL: Record<DicePerPlayer, string> = {
  */
 export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   const game = gameInfo(gameType);
-  const { socket, status, name } = useConnectedSession();
+  const { socket, lost, name } = useConnectedSession();
   const navigate = useNavigate();
 
   const [roomName, setRoomName] = useState(() =>
@@ -60,7 +60,7 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   const [dicePerPlayer, setDicePerPlayer] = useState<DicePerPlayer>(3);
   const [password, setPassword] = useState('');
   const [pending, setPending] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const [failed, setFailed] = useState<'error' | 'full' | null>(null);
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -89,7 +89,7 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
                 : { board: pairsBoard },
     };
     setPending(true);
-    setFailed(false);
+    setFailed(null);
     try {
       const answer = await socket
         .timeout(REQUEST_TIMEOUT_MS)
@@ -98,20 +98,20 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
         navigate(roomPath(gameType, answer.roomId), { replace: true });
         return;
       }
-      setFailed(true);
+      setFailed(answer.error.type === 'tooManyRooms' ? 'full' : 'error');
     } catch {
-      setFailed(true);
+      setFailed('error');
     }
     setPending(false);
   };
 
   const subtitle = 'Make a little space for your next game.';
-  if (status === 'failed') {
+  if (lost) {
     return (
       <Page>
         <LobbyHeading game={game} subtitle={subtitle} />
         <Stage>
-          <ConnectionFailed />
+          <ConnectionLost />
         </Stage>
       </Page>
     );
@@ -145,7 +145,9 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
     >
       {failed && (
         <Notice tone="error">
-          We couldn’t create the room. Please try again.
+          {failed === 'full'
+            ? 'Zumpo is full right now. Join a room, or try again in a little while.'
+            : 'We couldn’t create the room. Please try again.'}
         </Notice>
       )}
       <TextField
