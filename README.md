@@ -51,7 +51,7 @@ Each game is a module on a shared room layer that owns seats, ownership, the rec
 
 ## 🛠️ Development
 
-Needs Node.js 22.12 or later (`.nvmrc` pins the version CI uses).
+Needs Node.js 24.15 or later, or 22.22.2 or later on 22, which jsdom asks of the client tests (`.nvmrc` pins the version CI uses).
 
 ```zsh
 npm ci
