@@ -152,12 +152,12 @@ function BoardArtwork() {
 
 /** A card that is not in it, and a trio found: every feature different. */
 function TriosArtwork() {
-  // A phone's narrower card shows them as mini cards.
+  // A phone's narrower card shows only the trio, as mini cards.
   const phone = useMediaQuery(PHONE);
   const size = phone ? 'mini' : 'compact';
   return (
     <div className={styles.trios}>
-      <TriosCard card={37} size={size} />
+      {!phone && <TriosCard card={37} size={size} />}
       {[0, 40, 80].map((card) => (
         <TriosCard key={card} card={card} state="found" size={size} />
       ))}
