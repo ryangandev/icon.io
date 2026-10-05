@@ -6,6 +6,7 @@ import type {
   TriosSettings,
   TriosTrio,
 } from '../../models/types.js';
+import { roomStatus, seatCount } from '../../libs/rooms/seats.js';
 import type { Room } from '../../libs/rooms/types.js';
 import { getRemainingPhaseMs } from '../../libs/utils.js';
 import type { Deal } from '../../../shared/trios.js';
@@ -31,6 +32,11 @@ interface TriosState {
   lastTrio: TriosTrio | null;
   /** The places the hints have marked, in the order they were given. */
   hint: number[];
+  /**
+   * The trio this table's hints point at, by place, shuffled; null until its
+   * first hint. Never sent: the hints give it away one card at a time.
+   */
+  hintPlan: number[] | null;
   /** Each locked-out player's wrong claim, by player id. */
   lockouts: Map<string, Lockout>;
   lastGame: TriosGameSummary | null;
@@ -43,6 +49,7 @@ const createState = (settings: TriosSettings): TriosState => ({
   found: 0,
   lastTrio: null,
   hint: [],
+  hintPlan: null,
   lockouts: new Map(),
   lastGame: null,
 });
@@ -62,8 +69,8 @@ const toLobbyInfo = (room: Room<TriosState>): TriosLobbyRoomInfo => ({
   roomId: room.roomId,
   roomName: room.roomName,
   owner: room.owner,
-  status: room.status,
-  currentPlayerCount: room.currentPlayerCount,
+  status: roomStatus(room),
+  currentPlayerCount: seatCount(room),
   maxPlayers: room.maxPlayers,
   hasPassword: room.password !== '',
   trios: room.game.trios,

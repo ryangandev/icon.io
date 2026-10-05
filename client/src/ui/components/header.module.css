@@ -35,9 +35,14 @@
   text-decoration: none;
 }
 
-.link:hover,
 .link[aria-current='page'] {
   color: var(--zumpo-ink);
+}
+
+@media (hover: hover) {
+  .link:hover {
+    color: var(--zumpo-ink);
+  }
 }
 
 .home:focus-visible,

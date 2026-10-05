@@ -1,0 +1,98 @@
+{
+  "format": 1,
+  "code": "game-artwork-trios-phone",
+  "title": "Game artwork / Trios / Phone",
+  "id": "79:89555",
+  "section": "07 / Trios / complete flow",
+  "reviewNotes": [
+    "Phone · 286 × 120, as on MO03: only the trio, as Mini cards."
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "79:89555",
+    "name": "Game artwork / Trios / Phone",
+    "x": 5280,
+    "y": 3050,
+    "w": 286,
+    "h": 120,
+    "fills": [
+      "$Zumpo · UI:color/paper"
+    ],
+    "radius": "$Zumpo · UI:radius/16",
+    "clip": true,
+    "layout": {
+      "mode": "row",
+      "gap": 16,
+      "justify": "center",
+      "align": "center",
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "FRAME",
+        "id": "79:89556",
+        "name": "Cards",
+        "w": 232,
+        "h": 48,
+        "wSize": "hug",
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "79:90674",
+            "name": "Trios card / Found / One coral solid circle",
+            "w": 72,
+            "h": 48,
+            "component": "Zumpo/Trios card",
+            "variant": {
+              "Count": "1",
+              "State": "Found",
+              "Size": "Mini"
+            },
+            "componentId": "79:89534"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:90680",
+            "name": "Trios card / Found / Two blue striped triangles",
+            "w": 72,
+            "h": 48,
+            "component": "Zumpo/Trios card",
+            "variant": {
+              "Count": "2",
+              "State": "Found",
+              "Size": "Mini"
+            },
+            "componentId": "79:89539",
+            "props": {
+              "Shape": "Zumpo/Trios shape / Shape=Triangle, Fill=Striped, Colour=Blue, Stripes=Coarse"
+            }
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:90703",
+            "name": "Trios card / Found / Three ink outlined squares",
+            "w": 72,
+            "h": 48,
+            "component": "Zumpo/Trios card",
+            "variant": {
+              "Count": "3",
+              "State": "Found",
+              "Size": "Mini"
+            },
+            "componentId": "79:89546",
+            "props": {
+              "Shape": "Zumpo/Trios shape / Shape=Square, Fill=Outline, Colour=Ink, Stripes=Fine"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

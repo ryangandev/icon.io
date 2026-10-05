@@ -25,8 +25,10 @@
 }
 
 /* Hover draws a 2 px ink border inside the button, so its size never moves. */
-.button:hover:not([data-disabled]) {
-  box-shadow: inset 0 0 0 2px var(--zumpo-ink);
+@media (hover: hover) {
+  .button:hover:not([data-disabled]) {
+    box-shadow: inset 0 0 0 2px var(--zumpo-ink);
+  }
 }
 
 .button:active:not([data-disabled]) {
@@ -48,9 +50,11 @@
   background: var(--zumpo-paper);
 }
 
-.secondary:hover:not([data-disabled]) {
-  border-color: var(--zumpo-ink);
-  box-shadow: inset 0 0 0 1px var(--zumpo-ink);
+@media (hover: hover) {
+  .secondary:hover:not([data-disabled]) {
+    border-color: var(--zumpo-ink);
+    box-shadow: inset 0 0 0 1px var(--zumpo-ink);
+  }
 }
 
 .quiet {

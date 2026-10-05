@@ -7,6 +7,7 @@ import type {
   Make24Settings,
   Make24Solve,
 } from '../../models/types.js';
+import { roomStatus, seatCount } from '../../libs/rooms/seats.js';
 import type { Room } from '../../libs/rooms/types.js';
 import { getRemainingPhaseMs } from '../../libs/utils.js';
 
@@ -58,8 +59,8 @@ const toLobbyInfo = (room: Room<Make24State>): Make24LobbyRoomInfo => ({
   roomId: room.roomId,
   roomName: room.roomName,
   owner: room.owner,
-  status: room.status,
-  currentPlayerCount: room.currentPlayerCount,
+  status: roomStatus(room),
+  currentPlayerCount: seatCount(room),
   maxPlayers: room.maxPlayers,
   hasPassword: room.password !== '',
   hands: room.game.hands,

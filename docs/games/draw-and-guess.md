@@ -141,7 +141,7 @@ The drawing is a stream rather than state: `dg:canvas:start`, `move`, `end`, `un
 
 Everything that decides an outcome:
 
-- **The clock:** one timer per room, in [`game-engine.ts`](../../server/socket/draw-and-guess/game-engine.ts).
+- **The clock:** one per room, kept by the room layer and started from [`game-engine.ts`](../../server/socket/draw-and-guess/game-engine.ts).
 - **The word:** in the drawer's snapshot alone until the reveal, and left out of everyone else's.
 - **The drawing:** the same replayable stroke list every client builds, kept server-side so that a player arriving mid-turn is sent the board rather than a blank one.
 - **The scores:** awarded where the clock is known, because what a guess is worth depends on how much of the phase is left.

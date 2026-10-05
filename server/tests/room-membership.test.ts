@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { seatCount } from '../libs/rooms/seats.js';
 import {
   collect,
   collectChat,
@@ -74,7 +75,7 @@ describe('joining and leaving a room', () => {
       ok: false,
       error: { type: 'incorrectPassword', message: expect.any(String) },
     });
-    expect(harness.server.rooms[roomId]?.playerList[guest.playerId]).toBe(
+    expect(harness.server.rooms.get(roomId)?.playerList[guest.playerId]).toBe(
       undefined,
     );
 
@@ -129,8 +130,8 @@ describe('joining and leaving a room', () => {
     // Full, locked, and asked again without the password.
     await expect(joinRoom(owner, roomId, 'Renamed')).resolves.toBeUndefined();
 
-    const room = harness.server.rooms[roomId];
-    expect(room?.currentPlayerCount).toBe(2);
+    const room = harness.server.rooms.get(roomId);
+    expect(seatCount(room!)).toBe(2);
     expect(room?.playerList[owner.playerId]?.username).toBe('Ada');
   });
 
@@ -264,7 +265,7 @@ describe('joining and leaving a room', () => {
     owner.emit('room:leave', roomId);
     await settle();
 
-    expect(harness.server.rooms[roomId]).toBeUndefined();
+    expect(harness.server.rooms.get(roomId)).toBeUndefined();
   });
 
   it('holds the room briefly when its last player drops, then cleans up', async () => {
@@ -276,14 +277,14 @@ describe('joining and leaving a room', () => {
 
     // Still there: a dropped connection might be a reload, and deleting the
     // room immediately is what used to make refreshing into one impossible.
-    expect(harness.server.rooms[roomId]).toBeDefined();
+    expect(harness.server.rooms.get(roomId)).toBeDefined();
     expect(
-      harness.server.rooms[roomId]?.playerList[owner.playerId]?.isConnected,
+      harness.server.rooms.get(roomId)?.playerList[owner.playerId]?.isConnected,
     ).toBe(false);
 
     await settle(700);
 
-    expect(harness.server.rooms[roomId]).toBeUndefined();
+    expect(harness.server.rooms.get(roomId)).toBeUndefined();
   });
 
   /*
@@ -307,8 +308,8 @@ describe('joining and leaving a room', () => {
       stranger.emit('room:leave', roomId);
       await settle();
 
-      expect(harness.server.rooms[roomId]?.currentPlayerCount).toBe(2);
-      expect(harness.server.rooms[roomId]?.owner.username).toBe('Ada');
+      expect(seatCount(harness.server.rooms.get(roomId)!)).toBe(2);
+      expect(harness.server.rooms.get(roomId)?.owner.username).toBe('Ada');
       expect(messages).toEqual([]);
       expect(states).toEqual([]);
     });
@@ -325,7 +326,7 @@ describe('joining and leaving a room', () => {
       guest.emit('room:leave', roomId);
       await settle();
 
-      expect(harness.server.rooms[roomId]?.currentPlayerCount).toBe(1);
+      expect(seatCount(harness.server.rooms.get(roomId)!)).toBe(1);
     });
   });
 });

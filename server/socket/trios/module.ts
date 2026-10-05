@@ -39,9 +39,6 @@ const createTriosModule = (
     onDisconnect: () => {},
     onReturn: () => {},
 
-    disposeRoom: (roomId) => engine.disposeRoom(roomId),
-    dispose: () => engine.dispose(),
-
     registerHandlers: (socket: IoSocket) => {
       onClientEvent(socket, 'trios:claim', (...rawArgs: unknown[]) => {
         const validated = parseArgs(claimRequest, rawArgs, 'trios:claim');
@@ -49,8 +46,7 @@ const createTriosModule = (
         const [roomId, cards] = validated;
 
         // Identity comes from the connection, never from the payload.
-        const playerId = ctx.sessions.playerIdFor(socket.id);
-        if (!playerId) return;
+        const playerId = socket.data.playerId;
 
         engine.claim(roomId, playerId, cards);
       });

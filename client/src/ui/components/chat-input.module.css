@@ -56,8 +56,10 @@
   cursor: pointer;
 }
 
-.send:hover {
-  box-shadow: inset 0 0 0 2px var(--zumpo-ink);
+@media (hover: hover) {
+  .send:hover {
+    box-shadow: inset 0 0 0 2px var(--zumpo-ink);
+  }
 }
 
 .send:focus-visible {

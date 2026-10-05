@@ -48,9 +48,6 @@ const createMinesweeperModule = (
     onDisconnect: (room) => engine.handleDisconnect(room),
     onReturn: () => {},
 
-    disposeRoom: (roomId) => engine.disposeRoom(roomId),
-    dispose: () => engine.dispose(),
-
     registerHandlers: (socket: IoSocket) => {
       onClientEvent(socket, 'ms:pick', (...rawArgs: unknown[]) => {
         const validated = parseArgs(pickRequest, rawArgs, 'ms:pick');
@@ -58,8 +55,7 @@ const createMinesweeperModule = (
         const [roomId, index] = validated;
 
         // Identity comes from the connection, never from the payload.
-        const playerId = ctx.sessions.playerIdFor(socket.id);
-        if (!playerId) return;
+        const playerId = socket.data.playerId;
 
         engine.pick(roomId, playerId, index);
       });

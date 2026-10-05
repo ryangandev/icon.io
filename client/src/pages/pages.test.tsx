@@ -171,6 +171,22 @@ describe('making a room', () => {
       }),
     );
   });
+
+  it('says so when the server holds all the rooms it can', async () => {
+    const user = userEvent.setup();
+    const { fake } = await renderApp('/games/minesweeper/new');
+    fake.answer('room:create', () => ({
+      ok: false as const,
+      error: { type: 'tooManyRooms' as const, message: 'tooManyRooms' },
+    }));
+    await user.click(screen.getByRole('button', { name: 'Create room' }));
+    expect(
+      await screen.findByText(/^Zumpo is full right now\./),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Create room' }),
+    ).toBeInTheDocument();
+  });
 });
 
 describe('on a phone', () => {

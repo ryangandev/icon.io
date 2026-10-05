@@ -1,0 +1,505 @@
+{
+  "format": 1,
+  "code": "HU10",
+  "title": "Phone · a level in play",
+  "id": "65:76321",
+  "section": "09 / Hush / complete flow",
+  "reviewNotes": [
+    "HU10 · The table on a phone: the pile first, then the hand, with Play full width under it. Players and the locked chat are one tab away."
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "65:76321",
+    "name": "HU10 / Phone · a level in play",
+    "x": 1580,
+    "y": 2965,
+    "w": 390,
+    "h": 1055,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        "$Zumpo · UI:space/20",
+        "$Zumpo · UI:space/20",
+        32,
+        "$Zumpo · UI:space/20"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "65:76322",
+        "name": "Zumpo/Room bar",
+        "w": 350,
+        "h": 68,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Phone"
+        },
+        "componentId": "39:19277",
+        "props": {
+          "Game": "Hush"
+        },
+        "overrides": [
+          {
+            "path": "Room identity / Room context / Room",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Maya’s room",
+              "Tone": "Sand"
+            }
+          },
+          {
+            "path": "Room identity / Room context / Phase",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Level 3 of 5",
+              "Tone": "Blue"
+            }
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "65:76323",
+        "name": "Zumpo/Mobile tabs",
+        "w": 350,
+        "h": 34,
+        "hSize": "hug",
+        "component": "Zumpo/Mobile tabs",
+        "variant": {
+          "View": "Board"
+        },
+        "componentId": "9:416",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 34,
+            "width": 350
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "65:76324",
+        "name": "Zumpo/Turn bar",
+        "w": 350,
+        "h": 88,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Turn bar",
+        "variant": {
+          "Kind": "Status",
+          "Layout": "Phone"
+        },
+        "componentId": "27:22192",
+        "props": {
+          "Top row": false,
+          "Countdown": false,
+          "Main": "Hush",
+          "Category": false,
+          "Meta": "Play your lowest card when it feels right.",
+          "Label": "Level 3 of 5"
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 88,
+            "width": 350
+          },
+          {
+            "path": "Top / Eyebrow / Category",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Small · 9 × 9",
+              "Tone": "Sand"
+            }
+          },
+          {
+            "path": "Top / Countdown",
+            "componentProperties": {
+              "Label": "to flip",
+              "Time": "00:07",
+              "Tone": "Running"
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "65:76422",
+        "name": "Board panel",
+        "w": 350,
+        "h": 699,
+        "wSize": "fill",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/24",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/24",
+          "pad": "$Zumpo · UI:space/16",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "65:76444",
+            "name": "Table head",
+            "w": 316,
+            "h": 30,
+            "wSize": "fill",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/16",
+              "justify": "space_between",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "FRAME",
+                "id": "65:76445",
+                "name": "Title",
+                "w": 197,
+                "h": 30,
+                "wSize": "fill",
+                "hSize": "hug",
+                "clip": true,
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/12",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/4",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "TEXT",
+                    "id": "65:76446",
+                    "name": "Heading",
+                    "w": 94,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "The pile",
+                    "textStyle": "Zumpo/Heading",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "65:76447",
+                    "name": "Note",
+                    "w": 75,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "8 cards to go",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "65:76448",
+                "name": "Zumpo/Lives",
+                "w": 119,
+                "h": 20,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Lives",
+                "variant": {
+                  "Lives": "2"
+                },
+                "componentId": "44:61125"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "65:76454",
+            "name": "Pile",
+            "w": 316,
+            "h": 312,
+            "wSize": "fill",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/16",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "65:76455",
+                "name": "Hush card / 34",
+                "w": 168,
+                "h": 216,
+                "component": "Zumpo/Hush card",
+                "variant": {
+                  "State": "Pile",
+                  "Size": "Large"
+                },
+                "componentId": "44:61092",
+                "props": {
+                  "Value": "34"
+                }
+              },
+              {
+                "type": "FRAME",
+                "id": "65:76457",
+                "name": "Trail",
+                "w": 196,
+                "h": 80,
+                "wSize": "hug",
+                "hSize": "hug",
+                "clip": true,
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "65:76458",
+                    "name": "Hush card / 9",
+                    "w": 60,
+                    "h": 80,
+                    "component": "Zumpo/Hush card",
+                    "variant": {
+                      "State": "Played",
+                      "Size": "Small"
+                    },
+                    "componentId": "44:61114",
+                    "props": {
+                      "Value": "9"
+                    }
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "65:76460",
+                    "name": "Hush card / 14",
+                    "w": 60,
+                    "h": 80,
+                    "component": "Zumpo/Hush card",
+                    "variant": {
+                      "State": "Played",
+                      "Size": "Small"
+                    },
+                    "componentId": "44:61114",
+                    "props": {
+                      "Value": "14"
+                    }
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "65:76462",
+                    "name": "Hush card / 22",
+                    "w": 60,
+                    "h": 80,
+                    "component": "Zumpo/Hush card",
+                    "variant": {
+                      "State": "Played",
+                      "Size": "Small"
+                    },
+                    "componentId": "44:61114",
+                    "props": {
+                      "Value": "22"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "RECTANGLE",
+            "id": "65:76464",
+            "name": "Divider",
+            "w": 316,
+            "h": 1,
+            "wSize": "fill",
+            "fills": [
+              "$Zumpo · UI:color/line"
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "65:76465",
+            "name": "Your hand",
+            "w": 316,
+            "h": 250,
+            "wSize": "fill",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/12",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "65:76466",
+                "name": "Label",
+                "w": 69,
+                "h": 20,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Your hand",
+                "textStyle": "Zumpo/Label",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "65:76467",
+                "name": "Cards",
+                "w": 204,
+                "h": 128,
+                "wSize": "hug",
+                "hSize": "hug",
+                "clip": true,
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/12",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "65:76468",
+                    "name": "Hush card / 41",
+                    "w": 96,
+                    "h": 128,
+                    "component": "Zumpo/Hush card",
+                    "variant": {
+                      "State": "Next",
+                      "Size": "Regular"
+                    },
+                    "componentId": "44:61100"
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "65:76470",
+                    "name": "Hush card / 77",
+                    "w": 96,
+                    "h": 128,
+                    "component": "Zumpo/Hush card",
+                    "variant": {
+                      "State": "Hand",
+                      "Size": "Regular"
+                    },
+                    "componentId": "44:61098",
+                    "props": {
+                      "Value": "77"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "65:76472",
+                "name": "Action / Play 41",
+                "w": 316,
+                "h": 48,
+                "wSize": "fill",
+                "component": "Zumpo/Button",
+                "variant": {
+                  "Style": "Primary",
+                  "State": "Default"
+                },
+                "componentId": "4:15",
+                "props": {
+                  "Label": "Play 41"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 48,
+                    "primaryAxisSizingMode": "FIXED",
+                    "width": 316
+                  }
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "65:76478",
+                "name": "Status",
+                "w": 209,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Only your lowest card can be played.",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/muted"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "65:76369",
+        "name": "Footer",
+        "w": 350,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "65:76370",
+            "w": 350,
+            "h": 18,
+            "hSize": "hug",
+            "text": "A little play. Good company.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    ]
+  }
+}

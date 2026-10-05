@@ -114,6 +114,33 @@ describe('the session', () => {
     expect(fake.active).toBe(true);
   });
 
+  it('waits after another tab takes over, and takes it back on request', async () => {
+    const fake = setup(<Retry />);
+    await act(async () => fake.open());
+
+    act(() => fake.serverEmits('session:replaced'));
+    act(() => fake.drop('io server disconnect'));
+    // Reconnecting on its own would take the identity back from the other
+    // tab, which would take it back in turn.
+    expect(screen.getByText('replaced')).toBeInTheDocument();
+    expect(fake.active).toBe(false);
+
+    await userEvent.click(screen.getByRole('button'));
+    expect(screen.getByText('connecting')).toBeInTheDocument();
+    expect(fake.active).toBe(true);
+    await act(async () => fake.open());
+    expect(screen.getByText('online')).toBeInTheDocument();
+  });
+
+  it('reconnects by itself when the server closes the connection', async () => {
+    const fake = setup();
+    await act(async () => fake.open());
+
+    act(() => fake.drop('io server disconnect'));
+    expect(screen.getByText('reconnecting p1')).toBeInTheDocument();
+    expect(fake.active).toBe(true);
+  });
+
   it('remembers the chosen name for this tab', async () => {
     setup(<Naming />);
     await userEvent.click(screen.getByRole('button'));

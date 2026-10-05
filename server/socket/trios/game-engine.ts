@@ -1,10 +1,7 @@
 import { RequestError } from '../../models/error.js';
+import { seatCount } from '../../libs/rooms/seats.js';
 import type { GameContext, Room } from '../../libs/rooms/types.js';
-import {
-  gameOverMessage,
-  getRoomStatus,
-  resetPoints,
-} from '../../libs/utils.js';
+import { gameOverMessage, resetPoints } from '../../libs/utils.js';
 import {
   triosDurationsInSeconds as defaultDurations,
   type TriosDurationsInSeconds,
@@ -22,66 +19,30 @@ const MIN_PLAYERS_TO_START = 2;
 
 type TriosRoom = Room<TriosState>;
 
+/** Ends a player's lockout; its timer, when it fires, finds it gone and leaves it be. */
+const clearLockout = (room: TriosRoom, playerId: string) => {
+  room.game.lockouts.delete(playerId);
+};
+
 /**
  * Owns the race for each table. There are no turns: every claim is judged
- * the moment it arrives, so the first trio to reach the server takes it. One
- * timer per room drives the table (a hint due, or a taken trio on show), and
- * one per locked-out player ends their lockout.
+ * the moment it arrives, so the first trio to reach the server takes it. The
+ * room's clock drives the table (a hint due, or a taken trio on show), and a
+ * set of timers ends each locked-out player's lockout.
  */
 const createTriosGameEngine = (
   ctx: GameContext,
   durations: TriosDurationsInSeconds = defaultDurations,
 ) => {
-  const tableTimers = new Map<string, NodeJS.Timeout>();
-  /** Room id, then player id. */
-  const lockoutTimers = new Map<string, Map<string, NodeJS.Timeout>>();
-  /**
-   * The trio the hints point at, by place, shuffled, for each room whose
-   * table has had its first hint.
-   */
-  const hintPlans = new Map<string, number[]>();
+  /** Several per room: one per player locked out. */
+  const lockoutTimers = ctx.rooms.timers();
 
   const roomOf = (roomId: string): TriosRoom | undefined =>
     ctx.rooms.ofType<TriosState>(roomId, 'trios');
 
-  const clearTableTimer = (roomId: string) => {
-    const pending = tableTimers.get(roomId);
-    if (pending) {
-      clearTimeout(pending);
-      tableTimers.delete(roomId);
-    }
-  };
-
-  const schedule = (
-    roomId: string,
-    durationInSeconds: number,
-    onDue: () => void,
-  ) => {
-    clearTableTimer(roomId);
-    tableTimers.set(
-      roomId,
-      setTimeout(() => {
-        tableTimers.delete(roomId);
-        // The room may have been emptied and deleted while we waited.
-        if (roomOf(roomId)) onDue();
-      }, durationInSeconds * 1000),
-    );
-  };
-
-  const clearLockout = (room: TriosRoom, playerId: string) => {
-    const timers = lockoutTimers.get(room.roomId);
-    const pending = timers?.get(playerId);
-    if (pending) clearTimeout(pending);
-    timers?.delete(playerId);
-    room.game.lockouts.delete(playerId);
-  };
-
-  const clearLockouts = (roomId: string) => {
-    for (const pending of lockoutTimers.get(roomId)?.values() ?? []) {
-      clearTimeout(pending);
-    }
-    lockoutTimers.delete(roomId);
-    roomOf(roomId)?.game.lockouts.clear();
+  const clearLockouts = (room: TriosRoom) => {
+    lockoutTimers.clear(room.roomId);
+    room.game.lockouts.clear();
   };
 
   const startGame = (room: TriosRoom, playerId: string) => {
@@ -97,7 +58,7 @@ const createTriosGameEngine = (
         'The game has already started.',
       );
     }
-    if (room.currentPlayerCount < MIN_PLAYERS_TO_START) {
+    if (seatCount(room) < MIN_PLAYERS_TO_START) {
       throw new RequestError(
         'notEnoughPlayers',
         `At least ${MIN_PLAYERS_TO_START} players are required to start.`,
@@ -105,18 +66,13 @@ const createTriosGameEngine = (
     }
 
     const game = room.game;
-    clearLockouts(room.roomId);
+    clearLockouts(room);
     game.deal = dealTable(Math.random);
     game.found = 0;
     game.lastTrio = null;
     game.lastGame = null;
     room.playerList = resetPoints(room.playerList);
     room.isGameStarted = true;
-    room.status = getRoomStatus(
-      room.currentPlayerCount,
-      room.maxPlayers,
-      room.isGameStarted,
-    );
 
     console.log(`Trios started in room ${room.roomId}, ${game.trios} trios.`);
 
@@ -134,10 +90,9 @@ const createTriosGameEngine = (
     const game = room.game;
     game.phase = 'finding';
     game.hint = [];
-    hintPlans.delete(room.roomId);
-    room.phaseEndsAt = Date.now() + durations.hint * 1000;
+    game.hintPlan = null;
+    ctx.rooms.startPhase(room, durations.hint, () => giveHint(room));
     ctx.rooms.emitState(room);
-    schedule(room.roomId, durations.hint, () => giveHint(room));
   };
 
   /**
@@ -148,20 +103,17 @@ const createTriosGameEngine = (
     const game = room.game;
     if (!room.isGameStarted || game.phase !== 'finding') return;
 
-    let plan = hintPlans.get(room.roomId);
-    if (!plan) {
+    if (!game.hintPlan) {
       const trios = findTrios(game.deal.table);
       const trio = trios[Math.floor(Math.random() * trios.length)];
-      plan = shuffle(trio, Math.random);
-      hintPlans.set(room.roomId, plan);
+      game.hintPlan = shuffle(trio, Math.random);
     }
-    game.hint = plan.slice(0, game.hint.length + 1);
+    game.hint = game.hintPlan.slice(0, game.hint.length + 1);
 
     if (game.hint.length < 2) {
-      room.phaseEndsAt = Date.now() + durations.hint * 1000;
-      schedule(room.roomId, durations.hint, () => giveHint(room));
+      ctx.rooms.startPhase(room, durations.hint, () => giveHint(room));
     } else {
-      room.phaseEndsAt = 0;
+      ctx.rooms.stopPhase(room);
     }
     ctx.rooms.emitState(room);
   };
@@ -199,9 +151,9 @@ const createTriosGameEngine = (
       places: inOrder,
     };
     game.hint = [];
-    hintPlans.delete(room.roomId);
+    game.hintPlan = null;
     game.phase = 'taken';
-    room.phaseEndsAt = Date.now() + durations.taken * 1000;
+    ctx.rooms.startPhase(room, durations.taken, () => refill(room, inOrder));
 
     ctx.rooms.announce(
       room.roomId,
@@ -209,31 +161,20 @@ const createTriosGameEngine = (
       `${player.username} found a trio! (+1)`,
     );
     ctx.rooms.emitState(room);
-    schedule(room.roomId, durations.taken, () => refill(room, inOrder));
   };
 
   const lockOut = (room: TriosRoom, playerId: string, cards: number[]) => {
-    clearLockout(room, playerId);
-    room.game.lockouts.set(playerId, {
+    const lockout = {
       endsAt: Date.now() + durations.lockout * 1000,
       cards: [...cards],
+    };
+    room.game.lockouts.set(playerId, lockout);
+    lockoutTimers.add(room.roomId, durations.lockout * 1000, () => {
+      // Only this lockout: not one since cleared by a new game or a departure.
+      if (room.game.lockouts.get(playerId) !== lockout) return;
+      clearLockout(room, playerId);
+      ctx.rooms.emitState(room);
     });
-
-    let timers = lockoutTimers.get(room.roomId);
-    if (!timers) {
-      timers = new Map();
-      lockoutTimers.set(room.roomId, timers);
-    }
-    timers.set(
-      playerId,
-      setTimeout(() => {
-        const current = roomOf(room.roomId);
-        if (!current) return;
-        clearLockout(current, playerId);
-        ctx.rooms.emitState(current);
-      }, durations.lockout * 1000),
-    );
-
     ctx.rooms.emitState(room);
   };
 
@@ -261,9 +202,8 @@ const createTriosGameEngine = (
     room: TriosRoom,
     { endedEarly }: { endedEarly: boolean },
   ) => {
-    clearTableTimer(room.roomId);
-    clearLockouts(room.roomId);
-    hintPlans.delete(room.roomId);
+    ctx.rooms.stopPhase(room);
+    clearLockouts(room);
     const game = room.game;
 
     const standings = Object.entries(room.playerList)
@@ -284,12 +224,7 @@ const createTriosGameEngine = (
     room.isGameStarted = false;
     game.phase = 'waiting';
     game.hint = [];
-    room.phaseEndsAt = 0;
-    room.status = getRoomStatus(
-      room.currentPlayerCount,
-      room.maxPlayers,
-      room.isGameStarted,
-    );
+    game.hintPlan = null;
 
     ctx.rooms.emitState(room);
     ctx.rooms.announce(
@@ -305,7 +240,7 @@ const createTriosGameEngine = (
     clearLockout(room, playerId);
     if (!room.isGameStarted) return;
 
-    if (room.currentPlayerCount < MIN_PLAYERS_TO_START) {
+    if (seatCount(room) < MIN_PLAYERS_TO_START) {
       ctx.rooms.announce(
         room.roomId,
         'alert',
@@ -315,24 +250,10 @@ const createTriosGameEngine = (
     }
   };
 
-  const disposeRoom = (roomId: string) => {
-    clearTableTimer(roomId);
-    clearLockouts(roomId);
-    hintPlans.delete(roomId);
-  };
-
-  const dispose = () => {
-    for (const roomId of new Set(tableTimers.keys())) clearTableTimer(roomId);
-    for (const roomId of new Set(lockoutTimers.keys())) clearLockouts(roomId);
-    hintPlans.clear();
-  };
-
   return {
     startGame,
     claim,
     handlePlayerDeparture,
-    disposeRoom,
-    dispose,
   };
 };
 
