@@ -58,7 +58,6 @@ export function BidPicker({
             <div className={styles.stepper}>
               <Button
                 variant="secondary"
-                className={styles.step}
                 disabled={!canFewer}
                 onClick={() => onCountChange(count - 1)}
                 aria-label="Fewer"
@@ -74,7 +73,6 @@ export function BidPicker({
               </output>
               <Button
                 variant="secondary"
-                className={styles.step}
                 disabled={!canMore}
                 onClick={() => onCountChange(count + 1)}
                 aria-label="More"

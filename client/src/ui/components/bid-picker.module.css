@@ -33,12 +33,6 @@
   gap: var(--zumpo-space-8);
 }
 
-.step {
-  min-width: 48px;
-  font: var(--zumpo-text-heading);
-  letter-spacing: var(--zumpo-text-heading-tracking);
-}
-
 .count {
   display: flex;
   align-items: center;
@@ -86,8 +80,9 @@
   gap: var(--zumpo-space-12);
 }
 
-/* Phone: the controls stack and the two actions share the width. */
-@container (max-width: 560px) {
+/* Narrower than the row's 518px, as on a phone: the controls stack and the
+   two actions share the width. */
+@container (width < 518px) {
   .controls {
     flex-direction: column;
     gap: var(--zumpo-space-16);

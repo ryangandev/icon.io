@@ -4,16 +4,16 @@
   align-items: center;
   gap: var(--zumpo-space-8);
   padding: 6px 6px 6px var(--zumpo-space-16);
+  border: 1px solid var(--zumpo-line);
   border-radius: var(--zumpo-radius-999);
   background: var(--zumpo-cream);
-  box-shadow: inset 0 0 0 1px var(--zumpo-line);
   color: var(--zumpo-ink);
 }
 
-/* The stroke sits inside, as in Figma, so the latest bid keeps its size. */
+/* Figma counts the stroke in the size, so the latest bid is 2px larger. */
 .latest {
+  border: 2px solid var(--zumpo-ink);
   background: var(--zumpo-paper);
-  box-shadow: inset 0 0 0 2px var(--zumpo-ink);
 }
 
 .name,
