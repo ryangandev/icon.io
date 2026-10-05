@@ -131,7 +131,7 @@ function PairsArtwork() {
 
 /**
  * A table at a call: the dice that count towards five 5s, a wild one among
- * them, one that does not, and cups still hidden.
+ * them, one that does not, and cups still hidden. A phone keeps the first four.
  */
 function DiceArtwork() {
   return (
@@ -140,7 +140,9 @@ function DiceArtwork() {
       <Die face={5} state="counted" label={null} />
       <Die face={1} state="wild" label={null} />
       <Die face={5} state="counted" label={null} />
-      <Die face={2} state="dim" label={null} />
+      <span className={styles.lastCell}>
+        <Die face={2} state="dim" label={null} />
+      </span>
       <span className={styles.lastCell}>
         <Die face="hidden" label={null} />
       </span>
