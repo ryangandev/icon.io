@@ -15,25 +15,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version-file: .nvmrc
           cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            back/package-lock.json
-            front/package-lock.json
 
       - name: Install
-        run: |
-          npm ci
-          npm run install:all
+        run: npm ci
 
       # One linter for the whole repo. oxlint rather than ESLint because
-      # typescript-eslint still caps TypeScript below 6.1 and this project is
-      # on 7; see docs/architecture.md#tooling.
+      # typescript-eslint still caps TypeScript below 7; see
+      # docs/architecture.md#tooling.
       - name: Lint
         run: npm run lint
 
@@ -50,8 +44,8 @@ jobs:
       - name: Design tokens
         run: npm run design:tokens -- --check
 
-      # The backend suite binds ephemeral ports and drives real socket.io
-      # clients, so it needs no services — but it is timing-sensitive, and a
+      # The server suite binds ephemeral ports and drives real socket.io
+      # clients, so it needs no services, but it is timing-sensitive, and a
       # loaded runner is exactly where that shows up.
       - name: Test
         run: npm test
@@ -65,21 +59,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version-file: .nvmrc
           cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            back/package-lock.json
-            front/package-lock.json
 
       - name: Install
         run: |
           npm ci
-          npm run install:all
           npx playwright install --with-deps chromium
 
       - name: Browser checks
@@ -87,7 +76,7 @@ jobs:
 
       - name: Keep the traces of failed checks
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: e2e-traces
           path: test-results/

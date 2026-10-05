@@ -1,0 +1,24 @@
+# Monthly dependency updates, grouped so a month is one or two pull requests
+# rather than one per package. Major npm versions still come one at a time,
+# because each can break something on its own. See docs/architecture.md#tooling.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: deps
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: ci
+    groups:
+      actions:
+        patterns: ['*']

@@ -1,5 +1,5 @@
 {
-  "name": "zumpo-back",
+  "name": "zumpo-server",
   "version": "0.2.0",
   "private": true,
   "type": "module",
@@ -7,12 +7,9 @@
     "node": ">=22.12"
   },
   "scripts": {
+    "dev": "tsc-watch --noClear --onSuccess \"node build/server/server.js\"",
     "build": "rimraf --glob \"build/*\" && tsc -p tsconfig.build.json",
-    "watch": "tsc-watch --onSuccess \"npm run start:dev\"",
-    "start:dev": "cross-env NODE_ENV=development node build/back/server.js",
-    "build:deploy": "npm run build && (cd ../front && npm run build)",
-    "start:prod": "cross-env NODE_ENV=production node build/back/server.js",
-    "start:deploy": "cross-env NODE_ENV=production pm2 start build/back/server.js --name zumpo",
+    "start": "cross-env NODE_ENV=production node build/server/server.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"
@@ -26,7 +23,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
-    "@types/node": "^26.1.1",
+    "@types/node": "^26.6.4",
     "cross-env": "^10.1.0",
     "rimraf": "^6.1.3",
     "socket.io-client": "^4.8.3",

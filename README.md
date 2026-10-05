@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="Zumpo Logo" src="front/public/favicon.svg" height="auto" width="200">
+    <img alt="Zumpo Logo" src="client/public/favicon.svg" height="auto" width="200">
 </p>
 
 <h1 align="center">Zumpo</h1>
@@ -14,10 +14,10 @@ Zumpo began as [**Icon**](https://github.com/ryangandev/zumpo/tree/old-version),
 
 ## 🧱 Stack
 
-| Layer    | Tech                                                   |
-| -------- | ------------------------------------------------------ |
-| Frontend | React 19 · TypeScript 7 · Vite 8 · Base UI · Socket.io |
-| Backend  | Node.js 22.12+ · TypeScript 7 · Express 5 · Socket.io  |
+| Layer  | Tech                                                   |
+| ------ | ------------------------------------------------------ |
+| Client | React 19 · TypeScript 7 · Vite 8 · Base UI · Socket.io |
+| Server | Node.js 22.12+ · TypeScript 7 · Express 5 · Socket.io  |
 
 ## 🎮 Games
 
@@ -28,100 +28,60 @@ Zumpo began as [**Icon**](https://github.com/ryangandev/zumpo/tree/old-version),
 | [Make 24](docs/games/make-24.md)             | Solo or 2–8 | Four numbers and plus, minus, times, divide: make 24           |
 | [Pairs](docs/games/pairs.md)                 | Solo or 2–6 | Flip two cards, remember where everything is, find every pair  |
 
-Each game is a module on a shared room layer that owns seats, ownership, the
-reconnect grace and the lobby. See [`docs/README.md`](docs/README.md) for the
-architecture, current status, known issues, and the roadmap.
+Each game is a module on a shared room layer that owns seats, ownership, the reconnect grace and the lobby.
+[`docs/README.md`](docs/README.md) routes to the architecture, the current status, known issues and the roadmap.
 
-## ✅ Checks
+## 🗂️ Layout
 
-The two applications keep their own dependencies, but linting, type-checking, tests and the build all run from the repository root:
+| Folder    | What it is                                                   |
+| --------- | ------------------------------------------------------------ |
+| `client/` | The React SPA ([README](client/README.md))                   |
+| `server/` | The Express + Socket.IO server ([README](server/README.md))  |
+| `shared/` | Wire types and the rule code both sides run                  |
+| `e2e/`    | Playwright: two players in real browsers                     |
+| `design/` | The Figma export, generated; never edited by hand            |
+| `tools/`  | Figma plugins and the design token generator                 |
+| `docs/`   | How it works and why, the game rules, and where things stand |
 
-```zsh
-npm ci && npm run install:all
-npm run verify
-```
+`client/` and `server/` are npm workspaces, so every command runs from the repository root.
 
-`verify` is lint → typecheck → format check → design token check → test → build, which is exactly what CI runs on every pull request. The individual steps are `npm run lint`, `npm run typecheck`, `npm run format:check`, `npm run design:tokens -- --check`, `npm test` and `npm run build`.
+## 🛠️ Development
 
-Linting and formatting are root-level commands with one shared config each, [`.oxlintrc.json`](.oxlintrc.json) and [`.prettierrc.json`](.prettierrc.json), covering both packages. `npm run format` rewrites; CI runs `npm run format:check`.
-
-## 🛠️ How To Run - Development
-
-Zumpo is built using React for the frontend and Node.js for the backend, each located within its respective directory: `front` and `back`. To run the app in development, follow the instructions provided below.
-
-### Frontend
-
-- For frontend setup, follow the instructions in the [Front README](front/README.md).
-
-### Backend
-
-- For backend setup, follow the instructions in the [Back README](back/README.md).
-
-## 🛠️ How To Run - Deployment
-
-Follow the steps below to create and deploy a production build of the application:
-
-### 1. Installing Dependencies
-
-Ensure you install dependencies for both the frontend and backend:
-
-**Frontend**:
+Needs Node.js 22.12 or later (`.nvmrc` pins the version CI uses).
 
 ```zsh
-cd front
-npm install
+npm ci
+npm run dev
 ```
 
-**Backend**:
+`npm run dev` starts the server on port 3000 and the client on port 3001, each reloading on change, in one terminal.
+Open http://localhost:3001.
+The design system gallery is at http://localhost:3001/design while it runs.
+
+| Command             | What it does                                                       |
+| ------------------- | ------------------------------------------------------------------ |
+| `npm run dev`       | Server and client, reloading on change                             |
+| `npm test`          | Both Vitest suites (`npm test -w server` or `-w client` for one)   |
+| `npm run lint`      | oxlint over the whole repository                                   |
+| `npm run typecheck` | `tsc` over the client, the server and the browser checks           |
+| `npm run format`    | Prettier, rewriting in place (`format:check` only checks)          |
+| `npm run verify`    | Lint, typecheck, format check, design tokens, tests, build: the CI |
+| `npm run e2e`       | Build, then play the main flows with two players in Chromium       |
+| `npm run build`     | Production build: the server, then the client into it              |
+| `npm start`         | Serve the production build                                         |
+
+The `design:*` and `figma:*` commands move the design between Figma and the repository; see [docs/design.md](docs/design.md).
+
+## 🚢 Production
 
 ```zsh
-cd back
-npm install
+npm ci
+npm run build
+npm start
 ```
 
-### 2. Building for Production
-
-Execute the commands below to create a production-ready build for both the frontend and backend:
-
-```zsh
-cd back
-npm run build:deploy
-```
-
-This command will generate a combined build in a folder named `build` within the `back` directory:
-
-- The React frontend will be located in `build/public`.
-- These frontend assets will be served as static files by the backend.
-
-### 3. Starting the Application
-
-There are two options to start your application:
-
-- **Using PM2** (recommended for background running):
-
-  If you have PM2 installed:
-
-  ```zsh
-  npm run start:deploy
-  ```
-
-  This will start the application on port 3000 and keep it running in the background.
-
-- **Without PM2**:
-
-  If you don't have PM2 or prefer not to use it:
-
-  ```zsh
-  npm run start:prod
-  ```
-
-### 4. Accessing the Application
-
-Once the application is running, you can access it at:
-
-```
-http://localhost:3000
-```
+One Node process serves the built client and the Socket.IO server on port 3000 (`PORT` to change it).
+The server's environment variables are in [server/README.md](server/README.md).
 
 ## 🗃️ Old Version
 

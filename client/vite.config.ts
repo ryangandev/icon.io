@@ -35,9 +35,9 @@ export default defineConfig({
   },
   build: {
     // The Express backend serves the built SPA as static files from
-    // back/build/public, so emit directly there instead of building
-    // into front/build and moving it afterwards.
-    outDir: '../back/build/public',
+    // server/build/public, so emit directly there instead of building
+    // into client/build and moving it afterwards.
+    outDir: '../server/build/public',
     emptyOutDir: true,
     sourcemap: true,
     rolldownOptions: {

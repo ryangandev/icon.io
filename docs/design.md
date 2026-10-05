@@ -43,8 +43,10 @@ Three early Paper Pop concepts (`3:53`, `3:54`, `3:55`) sit above the flows for 
 - Solo screens show a visitor with no name where it matters (MS01-MS05: no avatar); a visitor who has a name sees it as usual (T01-T05, PR01-PR04).
 - Prototype links are partial; this is a design, not a clickable spec of every control.
 
-Decisions from the first review round ([report](../design/reviews/2026-10-03-round-1.md)):
+Decisions from the design review rounds (their reports are in git history):
 
+- A game card says how it can be played and its buttons are the way in: Play solo first where the game has it, because one click starts it with nobody to wait for, then Find a room.
+  You pick the game, then how to play it, so a game without a solo mode never shows an empty entry.
 - A game screen states the turn in one `Zumpo/Turn bar` above the canvas or board: what is happening, whose turn, and the server's countdown.
 - In Draw & Guess the guess is the chat input; it is locked for the drawer and for anyone who has scored this turn, as the server already enforces.
 - Brush colours are `color/brush/*` tokens, and the drawer's controls are one `Zumpo/Drawing toolbar`.
@@ -88,10 +90,10 @@ Everything in `design/figma/` is generated; change the design in Figma and expor
 
 ## In code
 
-Each Shared pieces family is one component in [`front/src/ui/`](../front/src/ui/index.ts), named as in Figma without the `Zumpo/` prefix; [architecture.md](architecture.md#frontend) explains how the layer is built.
+Each Shared pieces family is one component in [`client/src/ui/`](../client/src/ui/index.ts), named as in Figma without the `Zumpo/` prefix; [architecture.md](architecture.md#client) explains how the layer is built.
 Variables, text styles and effect styles reach code only through the generated `--zumpo-*` tokens, so a value code needs and Figma lacks is a gap to fix in Figma first, as the menu, dialog and cell shadows were.
 
-To review the design system, run the frontend dev server and open [`/design`](http://localhost:3001/design).
+To review the design system, run `npm run dev -w client` (it needs no server) and open [`/design`](http://localhost:3001/design).
 Every specimen is captioned with its Figma variant, uses that variant's sample copy, and shows its size beside Figma's, in red when they differ by more than half a pixel.
 Each family's Figma preview sits under it at the same scale.
 

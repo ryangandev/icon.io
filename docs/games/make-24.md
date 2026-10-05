@@ -117,13 +117,13 @@ Make 24's one event of its own is `t24:solve`, with the room and the steps.
 
 ## Where the code lives
 
-| File                                                         | Responsibility                                                      |
-| ------------------------------------------------------------ | ------------------------------------------------------------------- |
-| [`shared/make-24.ts`](../../shared/make-24.ts)               | Fractions, steps, the solver and the deal: the rules both sides run |
-| [`module.ts`](../../back/socket/make-24/module.ts)           | What the room layer calls, and all it calls                         |
-| [`game-engine.ts`](../../back/socket/make-24/game-engine.ts) | The hand loop, solves and scores                                    |
-| [`state.ts`](../../back/socket/make-24/state.ts)             | The game's state, and the snapshot each player is sent              |
-| [`make-24/solo/`](../../front/src/make-24/solo/)             | A run on your own                                                   |
+| File                                                           | Responsibility                                                      |
+| -------------------------------------------------------------- | ------------------------------------------------------------------- |
+| [`shared/make-24.ts`](../../shared/make-24.ts)                 | Fractions, steps, the solver and the deal: the rules both sides run |
+| [`module.ts`](../../server/socket/make-24/module.ts)           | What the room layer calls, and all it calls                         |
+| [`game-engine.ts`](../../server/socket/make-24/game-engine.ts) | The hand loop, solves and scores                                    |
+| [`state.ts`](../../server/socket/make-24/state.ts)             | The game's state, and the snapshot each player is sent              |
+| [`make-24/solo/`](../../client/src/make-24/solo/)              | A run on your own                                                   |
 
-The rules are covered by [`make-24-rules.test.ts`](../../back/tests/make-24-rules.test.ts) and [`make-24-flow.test.ts`](../../back/tests/make-24-flow.test.ts).
+The rules are covered by [`make-24-rules.test.ts`](../../server/tests/make-24-rules.test.ts) and [`make-24-flow.test.ts`](../../server/tests/make-24-flow.test.ts).
 The screens are T01-T12 in [the Figma file](../design.md).
