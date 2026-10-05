@@ -73,6 +73,12 @@ interface CreateZumpoServerOptions {
   hushDurations?: HushDurationsInSeconds;
   /** A Daily Word round and its results. Shortened by tests. */
   dailyWordDurations?: DailyWordDurationsInSeconds;
+  /**
+   * Deals every Daily Word game's words from this seed instead of at random,
+   * so a test run plays the same words each time. Defaults to
+   * `process.env.DAILY_WORD_SEED`; never set in production.
+   */
+  dailyWordSeed?: string;
   /** How long a dropped player keeps their seat. Shortened by tests. */
   graceInSeconds?: number;
   /** The most rooms open at once. Lowered by tests. */
@@ -113,6 +119,7 @@ const createZumpoServer = (
     pairsDurations,
     hushDurations,
     dailyWordDurations,
+    dailyWordSeed = process.env.DAILY_WORD_SEED || undefined,
     graceInSeconds,
     maxRooms = DEFAULT_MAX_ROOMS,
   } = options;
@@ -155,7 +162,7 @@ const createZumpoServer = (
     createHushModule(registry.context, hushDurations, graceInSeconds),
   );
   registry.register(
-    createDailyWordModule(registry.context, dailyWordDurations),
+    createDailyWordModule(registry.context, dailyWordDurations, dailyWordSeed),
   );
 
   const membership = createRoomMembership(

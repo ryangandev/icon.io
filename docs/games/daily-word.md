@@ -212,7 +212,11 @@ The client checks the word list before sending, so only a stale or modified clie
 | --------------------------- | ------- | ------------------------------------------ |
 | `DAILY_WORD_ROUND_SECONDS`  | `120`   | How long everybody has to find a word      |
 | `DAILY_WORD_REVEAL_SECONDS` | `8`     | How long a round's results stay up         |
+| `DAILY_WORD_SEED`           | unset   | Deals every game's words from this seed    |
 | `RECONNECT_GRACE_SECONDS`   | `30`    | How long a dropped player keeps their seat |
+
+`DAILY_WORD_SEED` is for test runs, never production: `npm run design:compare` sets it so a room plays Figma's story on words it knows.
+The words are still drawn by the rules above, never twice in a game and never a daily word; only the randomness is fixed.
 
 ## Where the code lives
 
