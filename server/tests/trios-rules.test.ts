@@ -152,9 +152,33 @@ describe('a trio', () => {
 const accountedFor = ({ table, deck }: Deal, taken: readonly number[] = []) =>
   [...table, ...deck, ...taken].toSorted((a, b) => a - b);
 
-describe('the deal', () => {
-  const deal = (seed: string) => dealTable(seededRandom(seedNumber(seed)));
+const dealFor = (seed: string) => dealTable(seededRandom(seedNumber(seed)));
 
+/** The table with `cards` dealt into `places`, in order. */
+const dealtInto = (
+  table: readonly number[],
+  places: readonly number[],
+  cards: readonly number[],
+) =>
+  table.map((card, place) =>
+    places.includes(place) ? cards[places.indexOf(place)] : card,
+  );
+
+/**
+ * The first seed whose first table's first trio, once taken, is followed by
+ * three cards that do (or do not) leave a trio on the table.
+ */
+function seedWhereNextThree(leaveATrio: boolean) {
+  for (let seed = 0; ; seed++) {
+    const random = seededRandom(seed);
+    const dealt = dealTable(random);
+    const [trio] = findTrios(dealt.table);
+    const naive = dealtInto(dealt.table, trio, dealt.deck.slice(0, 3));
+    if (hasTrio(naive) === leaveATrio) return { random, dealt, trio };
+  }
+}
+
+describe('the deal', () => {
   it('lays out twelve cards with a trio among them, the rest in the deck', () => {
     for (let seed = 0; seed < 300; seed++) {
       const dealt = dealTable(seededRandom(seed));
@@ -166,8 +190,8 @@ describe('the deal', () => {
   });
 
   it('deals the same table and deck from the same seed, and others from another', () => {
-    expect(deal('k3f9x2')).toEqual(deal('k3f9x2'));
-    expect(deal('k3f9x2').table).not.toEqual(deal('zzzzzz').table);
+    expect(dealFor('k3f9x2')).toEqual(dealFor('k3f9x2'));
+    expect(dealFor('k3f9x2').table).not.toEqual(dealFor('zzzzzz').table);
   });
 
   it('redeals a table whose first twelve cards hold no trio', () => {
@@ -185,16 +209,23 @@ describe('the deal', () => {
 
 describe('taking a trio', () => {
   it('deals the next cards of the deck into its places, the rest staying put', () => {
-    const random = seededRandom(7);
-    const dealt = dealTable(random);
-    const [trio] = findTrios(dealt.table);
+    const { random, dealt, trio } = seedWhereNextThree(true);
     const next = takeTrio(dealt, trio, random)!;
 
-    expect(next.table).toHaveLength(TABLE_SIZE);
+    expect(next.table).toEqual(
+      dealtInto(dealt.table, trio, dealt.deck.slice(0, 3)),
+    );
+    expect(next.deck).toEqual(dealt.deck.slice(3));
+  });
+
+  it('puts the next cards back when they would leave no trio, and deals others', () => {
+    const { random, dealt, trio } = seedWhereNextThree(false);
+    const next = takeTrio(dealt, trio, random)!;
+
     expect(hasTrio(next.table)).toBe(true);
-    dealt.table.forEach((card, place) => {
-      if (!trio.includes(place)) expect(next.table[place]).toBe(card);
-    });
+    const kept = (table: readonly number[]) =>
+      table.filter((_, place) => !trio.includes(place));
+    expect(kept(next.table)).toEqual(kept(dealt.table));
     expect(next.deck).toHaveLength(dealt.deck.length - 3);
     expect(
       accountedFor(
@@ -202,22 +233,6 @@ describe('taking a trio', () => {
         trio.map((place) => dealt.table[place]),
       ),
     ).toEqual(ALL);
-    // With a trio among the next three, they are what comes.
-    if (
-      hasTrio(
-        trio.reduce(
-          (table, place, i) => {
-            table[place] = dealt.deck[i];
-            return table;
-          },
-          [...dealt.table],
-        ),
-      )
-    ) {
-      expect(trio.map((place) => next.table[place])).toEqual(
-        dealt.deck.slice(0, 3),
-      );
-    }
   });
 
   it('keeps a trio on the table through a whole deck, then ends', () => {
@@ -232,7 +247,8 @@ describe('taking a trio', () => {
         taken.push(...trio.map((place) => deal!.table[place]));
         const next = takeTrio(deal, trio, random);
         trios++;
-        if (next) expect(accountedFor(next, taken)).toEqual(ALL);
+        if (!next) break;
+        expect(accountedFor(next, taken)).toEqual(ALL);
         deal = next;
       }
       // Any 21 cards hold a trio, so a game of 20 never runs out.
@@ -242,13 +258,15 @@ describe('taking a trio', () => {
   });
 
   it('is the same from the same seed and the same picks', () => {
-    const play = () => {
-      const random = seededRandom(seedNumber('k3f9x2'));
-      let deal = dealTable(random);
-      for (let i = 0; i < 10; i++)
-        deal = takeTrio(deal, findTrios(deal.table)[0], random)!;
-      return deal;
-    };
-    expect(play()).toEqual(play());
+    expect(playTen()).toEqual(playTen());
   });
 });
+
+/** Ten trios taken from the deal of one seed, the first trio each time. */
+function playTen() {
+  const random = seededRandom(seedNumber('k3f9x2'));
+  let deal = dealTable(random);
+  for (let i = 0; i < 10; i++)
+    deal = takeTrio(deal, findTrios(deal.table)[0], random)!;
+  return deal;
+}
