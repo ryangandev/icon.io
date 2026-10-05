@@ -48,7 +48,8 @@ An on-screen keyboard (three rows, QWERTY, with Enter and a delete key) and a ph
 Each key shows the best mark its letter has had so far (`correct` over `present` over `absent`), and an unused letter is plain.
 In a room the physical keyboard types into the board unless the chat input has focus.
 
-A guess that cannot be used is turned back with a short note under the board, and costs nothing; the row stays as typed so it can be fixed:
+A guess that cannot be used is turned back with a short note, and costs nothing; the row stays as typed so it can be fixed.
+The note is under the board on your own on a wide screen, and over the board's top row on a phone and in a room, where nothing else is under the board while you guess:
 
 - **Not enough letters**: fewer than five.
 - **Not in the word list**: five letters that are not a valid guess.
