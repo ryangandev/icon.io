@@ -104,9 +104,10 @@
     background: none;
   }
 
+  /* Stacked as a grid: in a flex column the 280px basis above would be a
+     height, and Chrome sizes the picker's query container taller than the picker. */
   .yours {
-    flex-direction: column;
-    align-items: stretch;
+    display: grid;
     gap: var(--zumpo-space-20);
   }
 
