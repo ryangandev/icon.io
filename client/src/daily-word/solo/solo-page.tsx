@@ -174,7 +174,7 @@ function DailyView({
                 prompt={
                   game.guesses.length === 0
                     ? 'Type a five-letter word, then press Enter.'
-                    : undefined
+                    : 'Enter checks the word. Backspace takes a letter back.'
                 }
                 typing={typing}
                 keyboard

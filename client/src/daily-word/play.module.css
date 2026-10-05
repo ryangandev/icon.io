@@ -1,6 +1,8 @@
 /* Your board, a line under it and the keyboard (DW01-DW03, DW07, DW12). */
+/* As wide as its panel, so the keyboard takes the Desktop layout when it fits. */
 .play {
   display: flex;
+  align-self: stretch;
   flex-direction: column;
   align-items: center;
   gap: var(--zumpo-space-20);
@@ -14,8 +16,11 @@
   text-align: center;
 }
 
-.problem {
-  align-self: center;
+.line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(2 * var(--zumpo-space-16) + var(--zumpo-text-label-line));
 }
 
 /* Said to a screen reader, not shown. */

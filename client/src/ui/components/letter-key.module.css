@@ -32,6 +32,22 @@
   width: 47px;
 }
 
+@container (max-width: 471px) {
+  .key {
+    width: 30px;
+    height: 44px;
+  }
+
+  .wide {
+    width: 47px;
+  }
+
+  .letter {
+    font: var(--zumpo-text-label);
+    letter-spacing: var(--zumpo-text-label-tracking);
+  }
+}
+
 .letter {
   font: var(--zumpo-text-number);
   letter-spacing: var(--zumpo-text-number-tracking);

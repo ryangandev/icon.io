@@ -178,6 +178,7 @@ function Round({ room }: { room: Room }) {
             typing={typing}
             keyboard={!done}
             disabled={reconnecting || sending}
+            className={styles.mine}
           />
           {!phone && <Others room={room} />}
         </div>

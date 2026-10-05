@@ -11,7 +11,10 @@ export interface LetterKeyProps {
   letter?: string;
   /** The best mark the letter has had so far; plain when unused. */
   state?: LetterKeyState;
-  /** Regular is 40 × 56; Compact, 30 × 44, is for a phone. */
+  /**
+   * Regular is 40 × 56; Compact, 30 × 44, is for a phone, and a Regular key
+   * becomes Compact in a container narrower than the Desktop keyboard.
+   */
   size?: 'regular' | 'compact';
   onPress: () => void;
   disabled?: boolean;

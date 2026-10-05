@@ -9,6 +9,7 @@ import {
   type WordBoardRow,
 } from '../ui';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
+import { cx } from '../ui/cx';
 import styles from './play.module.css';
 
 export interface Typing {
@@ -77,6 +78,7 @@ export function PlayArea({
   typing,
   keyboard,
   disabled,
+  className,
 }: {
   rows: readonly (WordBoardRow & { word: string })[];
   typed: string;
@@ -89,28 +91,30 @@ export function PlayArea({
   keyboard: boolean;
   /** A paused board: reconnecting, or a guess on its way. */
   disabled?: boolean;
+  className?: string;
 }) {
   const phone = useMediaQuery(PHONE);
   useTypingKeys(typing, keyboard && !disabled);
   const last = rows.at(-1);
   return (
-    <div className={styles.play}>
+    <div className={cx(styles.play, className)}>
       <WordBoard
         rows={rows}
         typed={typed.slice(0, WORD_LENGTH)}
         size={phone ? 'compact' : 'regular'}
         label="Your guesses"
       />
-      {problem ? (
-        <Notice tone="error" className={styles.problem}>
-          {problem}
-        </Notice>
-      ) : (
-        prompt && <p className={styles.prompt}>{prompt}</p>
-      )}
+      {/* One line under the board, the same height whatever it says, so the
+          keyboard never moves. */}
+      <div className={styles.line}>
+        {problem ? (
+          <Notice tone="error">{problem}</Notice>
+        ) : (
+          prompt && <p className={styles.prompt}>{prompt}</p>
+        )}
+      </div>
       {keyboard && (
         <Keyboard
-          layout={phone ? 'phone' : 'desktop'}
           marks={Object.fromEntries(keyMarks(rows))}
           disabled={disabled}
           {...typing}

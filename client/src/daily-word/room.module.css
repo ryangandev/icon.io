@@ -1,15 +1,27 @@
 /* Your board and the others' side by side (DW07, DW08). */
 .table {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
+  justify-content: center;
   align-self: stretch;
   gap: var(--zumpo-space-32);
+}
+
+/* Your board, up to the Desktop keyboard's width; the others beside it when
+   there is room, under it when not. */
+.mine {
+  flex: 1 1 352px;
+  max-width: 472px;
+}
+
+.others {
+  flex: 1 1 392px;
 }
 
 .others,
 .results {
   display: flex;
-  flex: 1;
   flex-direction: column;
   gap: var(--zumpo-space-16);
   min-width: 0;
