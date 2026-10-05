@@ -1,20 +1,9 @@
 import type { Page } from '@playwright/test';
 import { createRoom, expect, joinRoom, test } from './fixtures';
-
-/** Told it is their turn to bid or call. */
-const yourTurn = (page: Page) =>
-  page.getByRole('region', { name: 'Turn' }).getByText('Your turn');
-
-/** Whoever is told it is their turn, if anybody is. */
-async function whoseTurn(pages: readonly Page[]): Promise<Page | null> {
-  for (const page of pages) {
-    if (await yourTurn(page).isVisible()) return page;
-  }
-  return null;
-}
+import { whoseTurn, yourTurn } from './play/liars-dice';
 
 /** Calls Liar on the bid in front of them, or opens the round when there is none. */
-async function move(page: Page) {
+async function callOrOpen(page: Page) {
   const call = page.getByRole('button', { name: 'Call Liar' });
   if (await call.isVisible()) return call.click();
   await page.getByRole('button', { name: /^Bid / }).click();
@@ -58,7 +47,7 @@ test('two players bid and call until one of them has dice left', async ({
     const called = await mover
       .getByRole('button', { name: 'Call Liar' })
       .isVisible();
-    await move(mover);
+    await callOrOpen(mover);
     if (!called) {
       // The bid is on the table for both, and the turn passes on.
       for (const page of [maya, leo]) {
@@ -141,7 +130,7 @@ test('a player with no name plays a table of bots to the end', async ({
       )
       .toBe(true);
     if (await nextRound.isVisible()) await nextRound.click();
-    else if (await yourTurn(sam).isVisible()) await move(sam);
+    else if (await yourTurn(sam).isVisible()) await callOrOpen(sam);
   }
   await expect(sam.getByRole('button', { name: 'Play again' })).toBeVisible();
   await expect(sam.getByText('Games won').first()).toBeVisible();

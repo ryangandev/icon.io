@@ -134,6 +134,8 @@ Code differs from Figma on purpose in a few places:
 - A game that ends while the room is open bursts into confetti in the brand accents and the sun brush's gold, at Ryan's request; Figma draws the results still, and a game found finished on arrival or after a refresh is not celebrated.
   It stays off when the system asks for reduced motion.
 - The phone name page (MO02) keeps the desktop's Back home button beside Let’s play, as the other phone forms (MO05, MO06) lay out their buttons; MO02 stacks a Cancel under it.
+- Liar’s Dice keeps the clock Waiting on another player’s turn, as the Countdown’s rule says (Running is for a phase you act in); LD08 and LD11 draw it Running.
+- Results seen by anyone but the room owner (LD12, as PR07) say whom they wait for to start another game, since only the owner may; Figma draws Play again there.
 
 ## Editing the Figma file
 
