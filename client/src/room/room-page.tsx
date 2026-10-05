@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Navigate, useBlocker, useNavigate, type Location } from 'react-router';
 import type { GameType } from '../../../shared/wire-types';
 import { Button, ButtonLink, Card, TextField } from '../ui';
@@ -22,6 +30,9 @@ import { LobbyHeading, lobbyHeading } from '../pages/lobby';
 import { Confetti } from './confetti';
 import { InviteDialog, LeaveDialog } from './dialogs';
 import { RoomContext, type Room } from './room-context';
+
+// Daily Word brings its word lists, so it loads only when played.
+const DailyWordRoom = lazy(() => import('../daily-word/room'));
 
 /**
  * /games/:game/rooms/:roomId: takes a seat, asking for a password if the room
@@ -359,8 +370,12 @@ function SeatedRoom({
         <Make24Room />
       ) : state.gameType === 'pairs' ? (
         <PairsRoom />
-      ) : (
+      ) : state.gameType === 'trios' ? (
         <TriosRoom />
+      ) : (
+        <Suspense>
+          <DailyWordRoom />
+        </Suspense>
       )}
       {celebrations > 0 && <Confetti key={celebrations} />}
       <InviteDialog

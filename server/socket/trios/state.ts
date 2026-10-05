@@ -101,8 +101,7 @@ const toRoomState = (
     deckLeft: game.deal.deck.length,
     lastTrio: game.lastTrio,
     hint: [...game.hint],
-    searchingMs:
-      game.phase === 'finding' ? Date.now() - game.findingSince : 0,
+    searchingMs: game.phase === 'finding' ? Date.now() - game.findingSince : 0,
     lockedOutMs: lockout ? lockout.endsAt - Date.now() : 0,
     myMiss: lockout ? [...lockout.cards] : [],
     lastGame: game.lastGame,

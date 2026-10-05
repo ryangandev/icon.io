@@ -26,7 +26,12 @@
  * the key the server's module registry is keyed by.
  */
 type GameType =
-  'draw-and-guess' | 'minesweeper' | 'make-24' | 'pairs' | 'trios';
+  | 'draw-and-guess'
+  | 'minesweeper'
+  | 'make-24'
+  | 'pairs'
+  | 'trios'
+  | 'daily-word';
 
 type RoomStatus = 'Open' | 'Full' | 'In Progress';
 
@@ -129,7 +134,8 @@ interface RoomCreateRequest {
     | MinesweeperSettings
     | Make24Settings
     | PairsSettings
-    | TriosSettings;
+    | TriosSettings
+    | DailyWordSettings;
 }
 
 interface DrawAndGuessSettings {
@@ -157,6 +163,11 @@ interface PairsSettings {
 interface TriosSettings {
   /** Trios in a game: 10 or 20. */
   trios: number;
+}
+
+interface DailyWordSettings {
+  /** Words a game has: 3 or 5. */
+  rounds: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -202,12 +213,18 @@ interface TriosLobbyRoomInfo extends LobbyRoomInfo {
   trios: number;
 }
 
+interface DailyWordLobbyRoomInfo extends LobbyRoomInfo {
+  gameType: 'daily-word';
+  rounds: number;
+}
+
 type AnyLobbyRoomInfo =
   | DrawAndGuessLobbyRoomInfo
   | MinesweeperLobbyRoomInfo
   | Make24LobbyRoomInfo
   | PairsLobbyRoomInfo
-  | TriosLobbyRoomInfo;
+  | TriosLobbyRoomInfo
+  | DailyWordLobbyRoomInfo;
 
 // ---------------------------------------------------------------------------
 // Rooms
@@ -509,12 +526,75 @@ interface TriosRoomState extends RoomState {
   lastGame: TriosGameSummary | null;
 }
 
+/** waiting: no game; guessing: a word is open; reveal: its results are shown. */
+type DailyWordPhase = 'waiting' | 'guessing' | 'reveal';
+
+/**
+ * A letter of a guess: in its place, in the word elsewhere, or not in it (or
+ * not as many times).
+ */
+type DailyWordMark = 'correct' | 'present' | 'absent';
+
+/** One guess. Its word is null on another player's board while a round runs. */
+interface DailyWordRow {
+  word: string | null;
+  marks: DailyWordMark[];
+}
+
+/** guessing: still at it; found: all five correct; out: six guesses, not found. */
+type DailyWordBoardStatus = 'guessing' | 'found' | 'out';
+
+/** One player's board for a round. */
+interface DailyWordBoard {
+  playerId: string;
+  username: string;
+  rows: DailyWordRow[];
+  status: DailyWordBoardStatus;
+  /** What finding the word earned; 0 until found. */
+  points: number;
+  /** Whole seconds that were left on the round's clock when found; 0 before. */
+  secondsLeft: number;
+}
+
+/** A finished round: the word, and every board with its letters, best first. */
+interface DailyWordRoundResult {
+  word: string;
+  boards: DailyWordBoard[];
+}
+
+interface DailyWordGameSummary extends GameSummary {
+  /** Rounds played; fewer than the game's when it ended early. */
+  rounds: number;
+  /** How many of those words each player found, by player id. */
+  found: Record<string, number>;
+}
+
+/**
+ * A Daily Word room, as one player may see it.
+ *
+ * While a round runs the word is in nobody's snapshot, and every board but the
+ * viewer's own carries its marks only, never its letters.
+ */
+interface DailyWordRoomState extends RoomState {
+  gameType: 'daily-word';
+  rounds: number;
+  phase: DailyWordPhase;
+  /** The round open or being revealed, from 1; 0 between games. */
+  round: number;
+  /** Every player's board for the open round, in seat order; empty otherwise. */
+  boards: DailyWordBoard[];
+  /** The latest finished round, which stays after the game ends. */
+  lastRound: DailyWordRoundResult | null;
+  lastGame: DailyWordGameSummary | null;
+}
+
 type AnyRoomState =
   | DrawAndGuessRoomState
   | MinesweeperRoomState
   | Make24RoomState
   | PairsRoomState
-  | TriosRoomState;
+  | TriosRoomState
+  | DailyWordRoomState;
 
 // ---------------------------------------------------------------------------
 // Chat and the drawing
@@ -608,6 +688,12 @@ interface ClientToServerEvents {
 
   /** Three cards claimed as a trio, by their numbers, on the third pick. */
   'trios:claim': (roomId: string, cards: number[]) => void;
+
+  /**
+   * A guess at the open word, lowercase. Refused as `invalidRequest` with the
+   * reason; an accepted one arrives marked in the next snapshot.
+   */
+  'dw:guess': (roomId: string, word: string, ack: Ack<Result>) => void;
 }
 
 interface ServerToClientEvents {
@@ -712,6 +798,16 @@ export type {
   TriosTrio,
   TriosGameSummary,
   TriosRoomState,
+  DailyWordSettings,
+  DailyWordLobbyRoomInfo,
+  DailyWordPhase,
+  DailyWordMark,
+  DailyWordRow,
+  DailyWordBoardStatus,
+  DailyWordBoard,
+  DailyWordRoundResult,
+  DailyWordGameSummary,
+  DailyWordRoomState,
   AnyRoomState,
   ChatMessageKind,
   ChatMessage,

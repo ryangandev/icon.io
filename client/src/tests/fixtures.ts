@@ -1,4 +1,5 @@
 import type {
+  DailyWordRoomState,
   DrawAndGuessRoomState,
   Make24RoomState,
   MinesweeperRoomState,
@@ -127,6 +128,22 @@ export function triosState(
     searchingMs: 0,
     lockedOutMs: 0,
     myMiss: [],
+    lastGame: null,
+    ...overrides,
+  };
+}
+
+export function dailyWordState(
+  overrides: Partial<DailyWordRoomState> = {},
+): DailyWordRoomState {
+  return {
+    ...room,
+    gameType: 'daily-word',
+    rounds: 3,
+    phase: 'waiting',
+    round: 0,
+    boards: [],
+    lastRound: null,
     lastGame: null,
     ...overrides,
   };

@@ -72,6 +72,8 @@ const BUCKET_FOR_EVENT: Record<ClientToServerEvent, BucketName> = {
   'pairs:flip': 'room',
   // A claim is three picks, so a human makes one a second at most.
   'trios:claim': 'room',
+  // Six guesses a word, typed out a letter at a time.
+  'dw:guess': 'room',
 };
 
 /**

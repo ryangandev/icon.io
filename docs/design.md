@@ -135,6 +135,9 @@ Code differs from Figma on purpose in a few places:
   It stays off when the system asks for reduced motion.
 - On a narrow screen the Trios room's turn bar keeps room for two lines of what it says, the longest any phase needs, so the table under it never moves mid-pick; TS12 draws one line.
 - The phone name page (MO02) keeps the desktop's Back home button beside Let’s play, as the other phone forms (MO05, MO06) lay out their buttons; MO02 stacks a Cancel under it.
+- Daily Word on your own keeps the line under the board as tall as its "Not in the word list" note, so the keyboard never moves when a row is turned back; DW01 and DW02 are 27 px shorter than DW03.
+  Where there is no line, on a phone and in a room while guessing, as Figma draws them, the note is said over the board instead, across the row under the one being fixed.
+- The others' boards in a Daily Word room stand 12 px apart, not DW07's 16 px: three at 16 px are 2 px wider than the panel holds beside the Desktop keyboard, which Figma lets overflow.
 
 ## Editing the Figma file
 

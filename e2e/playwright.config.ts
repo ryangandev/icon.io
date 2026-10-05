@@ -35,6 +35,7 @@ export default defineConfig({
       MAKE24_REVEAL_SECONDS: '0.5',
       PAIRS_SHOW_SECONDS: '1',
       TRIOS_TAKEN_SECONDS: '0.5',
+      DAILY_WORD_REVEAL_SECONDS: '1',
     },
   },
 });

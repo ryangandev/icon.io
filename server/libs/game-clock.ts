@@ -86,6 +86,19 @@ const pairsDurationsInSeconds: PairsDurationsInSeconds = {
   show: readSecondsFromEnv('PAIRS_SHOW_SECONDS', 2),
 };
 
+/** Daily Word's clock: one word for everybody at once, then its results. */
+interface DailyWordDurationsInSeconds {
+  /** How long everybody has to find the word. */
+  round: number;
+  /** How long a round's results stay up before the next word. */
+  reveal: number;
+}
+
+const dailyWordDurationsInSeconds: DailyWordDurationsInSeconds = {
+  round: readSecondsFromEnv('DAILY_WORD_ROUND_SECONDS', 120),
+  reveal: readSecondsFromEnv('DAILY_WORD_REVEAL_SECONDS', 8),
+};
+
 /**
  * Trios' clock. A table has no deadline of its own: nothing ends while
  * everybody looks, so these are the pause after a trio, the cost of a wrong
@@ -126,6 +139,7 @@ export {
   make24DurationsInSeconds,
   pairsDurationsInSeconds,
   triosDurationsInSeconds,
+  dailyWordDurationsInSeconds,
   reconnectGraceInSeconds,
 };
 export type {
@@ -134,4 +148,5 @@ export type {
   Make24DurationsInSeconds,
   PairsDurationsInSeconds,
   TriosDurationsInSeconds,
+  DailyWordDurationsInSeconds,
 };

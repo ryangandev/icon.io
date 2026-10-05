@@ -29,10 +29,11 @@ const ROOM_NAME_MAX_LENGTH = 40;
 const PASSWORD_MAX_LENGTH = 20;
 const ROUNDS = [1, 2, 3, 4] as const;
 const HANDS = [5, 10] as const;
+const WORDS = [3, 5] as const;
 
 /**
- * DL04-DL06, DL10, DL11, ML04-ML06, ML10, MO05, T10, PR08, TS10: a new room, with
- * its settings.
+ * DL04-DL06, DL10, DL11, ML04-ML06, ML10, MO05, T10, PR08, TS10, DW11: a new
+ * room, with its settings.
  */
 export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   const game = gameInfo(gameType);
@@ -50,6 +51,7 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   const [hands, setHands] = useState(5);
   const [pairsBoard, setPairsBoard] = useState<PairsBoard>('Small');
   const [trios, setTrios] = useState<number>(TRIOS_LENGTHS[0]);
+  const [words, setWords] = useState(3);
   const [password, setPassword] = useState('');
   const [pending, setPending] = useState(false);
   const [failed, setFailed] = useState<'error' | 'full' | null>(null);
@@ -78,7 +80,9 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
               ? { hands }
               : gameType === 'pairs'
                 ? { board: pairsBoard }
-                : { trios },
+                : gameType === 'trios'
+                  ? { trios }
+                  : { rounds: words },
     };
     setPending(true);
     setFailed(null);
@@ -215,6 +219,18 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
           value={trios}
           onValueChange={setTrios}
           name="trios"
+        />
+      ) : gameType === 'daily-word' ? (
+        <SelectField
+          label="Words"
+          helper="3 or 5 words, 2 minutes each."
+          options={WORDS.map((count) => ({
+            value: count,
+            label: plural(count, 'word'),
+          }))}
+          value={words}
+          onValueChange={setWords}
+          name="words"
         />
       ) : (
         <SelectField
