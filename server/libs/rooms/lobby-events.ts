@@ -1,7 +1,7 @@
-import { invalidRequest } from '../../models/error.js';
-import { generateRoomId, getRoomStatus } from '../utils.js';
+import { failure, invalidRequest } from '../../models/error.js';
+import { generateRoomId } from '../utils.js';
 import { parseArgs, roomCreateRequest, gameTypeOnly } from '../validation.js';
-import type { PlayerSessionRegistry } from '../player-session.js';
+import type { RoomMembership } from './membership.js';
 import type { RoomRegistry } from './registry.js';
 import type { Room } from './types.js';
 import {
@@ -24,7 +24,8 @@ import {
 const lobbyEventsHandler = (
   socket: IoSocket,
   registry: RoomRegistry,
-  sessions: PlayerSessionRegistry,
+  membership: RoomMembership,
+  maxRooms: number,
 ) => {
   onClientEvent(socket, 'lobby:subscribe', (...rawArgs: unknown[]) => {
     const validated = parseArgs(gameTypeOnly, rawArgs, 'lobby:subscribe');
@@ -36,8 +37,8 @@ const lobbyEventsHandler = (
     socket.join(lobbyChannel(gameType));
 
     // The subscriber wants the list now, not at the next change.
-    const rooms = Object.values(registry.all)
-      .filter((room) => room.gameType === gameType)
+    const rooms = registry
+      .ofGame(gameType)
       .map((room) => module.toLobbyInfo(room));
 
     emitToSocket(socket, 'lobby:rooms', gameType, rooms);
@@ -85,12 +86,21 @@ const lobbyEventsHandler = (
       return;
     }
 
-    // Identity comes from the connection, never from the payload.
-    const playerId = sessions.playerIdFor(socket.id);
-    if (!playerId) {
-      reply(invalidRequest('Identify before creating a room.'));
+    // Rooms live in memory, and one player holds one seat, but nothing stops
+    // somebody opening connection after connection to make room after room.
+    if (registry.count() >= maxRooms) {
+      reply(
+        failure(
+          'tooManyRooms',
+          'Zumpo has as many rooms as it can hold right now.',
+        ),
+      );
       return;
     }
+
+    // Identity comes from the connection, never from the payload.
+    const playerId = socket.data.playerId;
+    membership.leaveAllBut(playerId);
 
     const roomId = generateRoomId();
     const room: Room = {
@@ -98,8 +108,6 @@ const lobbyEventsHandler = (
       roomId,
       roomName,
       owner: { username, playerId },
-      status: getRoomStatus(1, maxPlayers),
-      currentPlayerCount: 1,
       maxPlayers,
       password,
       playerList: {
@@ -111,7 +119,7 @@ const lobbyEventsHandler = (
       game: module.createState(gameSettings),
     };
 
-    registry.all[roomId] = room;
+    registry.add(room);
     socket.join(roomId);
 
     // The password is deliberately not echoed back: the creator already has

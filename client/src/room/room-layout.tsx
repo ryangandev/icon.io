@@ -9,6 +9,7 @@ import {
   RoomBar,
   Scoreboard,
   type PlayerRowProps,
+  type GlyphName,
   type TagTone,
 } from '../ui';
 import { gameInfo } from '../games/catalog';
@@ -35,12 +36,24 @@ export interface RoomLayoutProps {
   /** The game: turn bar and canvas or board, or a panel between games. */
   stage: ReactNode;
   players: readonly PlayerLine[];
-  chat: { placeholder: string; lockedReason?: string };
+  chat: {
+    placeholder: string;
+    lockedReason?: string;
+    /** The game's own Alert icon in the chat, as Chat message allows. */
+    alertIcon?: GlyphName;
+  };
   /**
    * On a phone, the chat input repeated under the board, so a guess needs no
    * switch to the Chat tab: its accessible name, or nothing for no input.
    */
   boardInput?: string;
+  /**
+   * The scoreboard's points; off where everybody's are the same, as in Hush,
+   * whose team scores together and whose rows say what each player holds.
+   */
+  showScores?: boolean;
+  /** On a phone, more under the scoreboard on the Players tab: the race. */
+  playersAside?: ReactNode;
 }
 
 type View = 'board' | 'players' | 'chat';
@@ -57,6 +70,8 @@ export function RoomLayout({
   players,
   chat,
   boardInput,
+  showScores = true,
+  playersAside,
 }: RoomLayoutProps) {
   const room = useRoomContext();
   const { state, reconnecting, reconnectGraceMs } = room;
@@ -82,7 +97,7 @@ export function RoomLayout({
           tone={toneOf(seat.username)}
           status={status}
           statusIcon={statusIcon}
-          score={seat.points}
+          score={showScores ? seat.points : undefined}
           host={seat.playerId === state.owner.playerId}
           you={seat.playerId === room.playerId}
           state={rowState}
@@ -97,6 +112,7 @@ export function RoomLayout({
         <ChatMessage
           key={message.id}
           kind={message.kind}
+          alertIcon={chat.alertIcon}
           name={
             message.playerId === room.playerId
               ? `${message.username} (you)`
@@ -152,7 +168,14 @@ export function RoomLayout({
             {
               value: 'players',
               label: `Players · ${players.length}`,
-              panel: scoreboard,
+              panel: playersAside ? (
+                <div className={styles.side}>
+                  {scoreboard}
+                  {playersAside}
+                </div>
+              ) : (
+                scoreboard
+              ),
             },
             { value: 'chat', label: 'Chat', panel: chatPanel },
           ]}

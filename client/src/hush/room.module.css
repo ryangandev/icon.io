@@ -1,0 +1,72 @@
+/* HU07, HU08: the team's result, level by level. */
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-12);
+}
+
+.blockTitle {
+  margin: 0;
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+}
+
+.levels,
+.team,
+.held,
+.heldCards {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.levels {
+  gap: var(--zumpo-space-8);
+}
+
+.team {
+  gap: var(--zumpo-space-24);
+}
+
+.held {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--zumpo-space-12);
+}
+
+.member,
+.holder {
+  display: flex;
+  align-items: center;
+  gap: var(--zumpo-space-8);
+}
+
+.holder {
+  gap: var(--zumpo-space-12);
+}
+
+.name {
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+}
+
+.holder .name {
+  width: 56px;
+}
+
+.heldCards {
+  gap: var(--zumpo-space-8);
+}
+
+.heldCards li {
+  display: flex;
+}
+
+.nothing {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-small);
+  letter-spacing: var(--zumpo-text-small-tracking);
+}

@@ -8,7 +8,15 @@ import {
 
 export { expect };
 
-export type GameType = 'draw-and-guess' | 'minesweeper' | 'make-24' | 'pairs';
+export type GameType =
+  | 'draw-and-guess'
+  | 'minesweeper'
+  | 'make-24'
+  | 'pairs'
+  | 'trios'
+  | 'liars-dice'
+  | 'hush'
+  | 'daily-word';
 
 export interface PlayerOptions {
   /** A 390 px touch screen, as Figma's mobile frames. */
@@ -19,6 +27,11 @@ export interface PlayerOptions {
   droppable?: boolean;
   /** Device pixels per CSS pixel; Figma's previews are at 1. */
   scale?: number;
+  /**
+   * A server of the test's own, which it stops and starts under the player,
+   * so connections failing while it is down are expected.
+   */
+  server?: string;
 }
 
 interface Fixtures {
@@ -36,9 +49,9 @@ export const test = base.extend<Fixtures>({
     const errors: string[] = [];
     await use(async (name, options = {}) => {
       const { phone = false, named = true, droppable = false } = options;
-      const { scale = phone ? 2 : 1 } = options;
-      const context = await browser.newContext(
-        phone
+      const { scale = phone ? 2 : 1, server } = options;
+      const context = await browser.newContext({
+        ...(phone
           ? {
               viewport: { width: 390, height: 844 },
               deviceScaleFactor: scale,
@@ -48,8 +61,9 @@ export const test = base.extend<Fixtures>({
           : {
               viewport: { width: 1440, height: 900 },
               deviceScaleFactor: scale,
-            },
-      );
+            }),
+        ...(server ? { baseURL: server } : {}),
+      });
       contexts.push(context);
       if (named) {
         await context.addInitScript((given) => {
@@ -64,8 +78,9 @@ export const test = base.extend<Fixtures>({
       page.on('console', (message) => {
         if (message.type() !== 'error') return;
         // A cut connection's failed requests are the point of the test.
-        if (droppable && /net::ERR_|WebSocket/.test(message.text())) return;
-        errors.push(`${name}: ${message.text()}`);
+        const offline = droppable || server !== undefined;
+        if (offline && /net::ERR_|WebSocket/.test(message.text())) return;
+        errors.push(`${name}: ${message.text()} @ ${message.location().url}`);
       });
       return page;
     });
@@ -84,6 +99,12 @@ export interface RoomSettings {
   board?: 'Small' | 'Medium' | 'Large';
   /** Make 24: how many hands. */
   hands?: 5 | 10;
+  /** Trios: how many trios a game takes. */
+  trios?: 10 | 20;
+  /** Liar's Dice: how many dice each player starts with. */
+  dice?: 3 | 5;
+  /** Daily Word: how many words. */
+  words?: 3 | 5;
 }
 
 /** Makes a room through the create page and returns its link. */
@@ -105,6 +126,15 @@ export async function createRoom(
   }
   if (settings.hands) {
     await choose(page, 'Hands', new RegExp(`^${settings.hands} hands$`));
+  }
+  if (settings.trios) {
+    await choose(page, 'Trios', new RegExp(`^${settings.trios} trios$`));
+  }
+  if (settings.dice) {
+    await choose(page, 'Dice each', new RegExp(`^${settings.dice} dice`));
+  }
+  if (settings.words) {
+    await choose(page, 'Words', new RegExp(`^${settings.words} words$`));
   }
   if (settings.password) {
     await page.getByLabel('Password (optional)').fill(settings.password);
@@ -203,4 +233,19 @@ export function holdConnection(page: Page): () => void {
   return () => {
     link.down = false;
   };
+}
+
+/**
+ * What the browser's Duplicate does: a new tab with this one's storage, so
+ * the same player, which opens once it goes somewhere.
+ */
+export async function duplicateTab(page: Page): Promise<Page> {
+  const storage = await page.evaluate(() => ({ ...sessionStorage }));
+  const copy = await page.context().newPage();
+  await copy.addInitScript((entries) => {
+    for (const [key, value] of Object.entries(entries)) {
+      sessionStorage.setItem(key, value);
+    }
+  }, storage);
+  return copy;
 }

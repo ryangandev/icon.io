@@ -14,7 +14,7 @@
     "x": 3120,
     "y": 1482,
     "w": 1440,
-    "h": 1241,
+    "h": 1218,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -86,8 +86,8 @@
           {
             "path": "You",
             "componentProperties": {
-              "Initials": "MA",
-              "Tone": "Peach"
+              "Initials": "SA",
+              "Tone": "Sand"
             }
           }
         ]
@@ -97,7 +97,7 @@
         "id": "40:52796",
         "name": "Board & room",
         "w": 1312,
-        "h": 1071,
+        "h": 1048,
         "hSize": "hug",
         "layout": {
           "mode": "row",
@@ -110,7 +110,7 @@
             "id": "40:52797",
             "name": "Board stage",
             "w": 944,
-            "h": 1071,
+            "h": 1048,
             "hSize": "hug",
             "layout": {
               "mode": "column",
@@ -123,7 +123,7 @@
                 "id": "40:52798",
                 "name": "Final scores",
                 "w": 944,
-                "h": 485,
+                "h": 462,
                 "wSize": "fill",
                 "hSize": "hug",
                 "fills": [
@@ -462,67 +462,50 @@
                   },
                   {
                     "type": "FRAME",
-                    "id": "40:52815",
-                    "name": "Actions",
-                    "w": 283,
-                    "h": 48,
+                    "id": "87:104937",
+                    "name": "Waiting for host",
+                    "w": 321,
+                    "h": 25,
                     "wSize": "hug",
                     "hSize": "hug",
                     "layout": {
                       "mode": "row",
-                      "gap": "$Zumpo · UI:space/12",
+                      "gap": "$Zumpo · UI:space/8",
                       "align": "center",
                       "strokesIncluded": true
                     },
                     "children": [
                       {
                         "type": "INSTANCE",
-                        "id": "40:52816",
-                        "name": "Action / Play again",
-                        "w": 110,
-                        "h": 48,
-                        "wSize": "hug",
-                        "component": "Zumpo/Button",
+                        "id": "87:104938",
+                        "name": "Zumpo/Icon",
+                        "w": 20,
+                        "h": 20,
+                        "component": "Zumpo/Icon",
                         "variant": {
-                          "Style": "Primary",
-                          "State": "Default"
+                          "Glyph": "pending"
                         },
-                        "componentId": "4:15",
-                        "props": {
-                          "Label": "Play again"
-                        },
+                        "componentId": "24:5002",
                         "overrides": [
                           {
-                            "path": ".",
-                            "height": 48,
-                            "width": 110
+                            "path": "pending",
+                            "strokes": [
+                              "$Zumpo · UI:color/muted"
+                            ]
                           }
                         ]
                       },
                       {
-                        "type": "INSTANCE",
-                        "id": "40:52817",
-                        "name": "Action / Invite friends",
-                        "w": 161,
-                        "h": 48,
+                        "type": "TEXT",
+                        "id": "87:104939",
+                        "w": 293,
+                        "h": 25,
                         "wSize": "hug",
-                        "component": "Zumpo/Button",
-                        "variant": {
-                          "Style": "Secondary",
-                          "State": "Default"
-                        },
-                        "componentId": "4:18",
-                        "props": {
-                          "Icon": "Zumpo/Icon / Glyph=link",
-                          "Show icon": true,
-                          "Label": "Invite friends"
-                        },
-                        "overrides": [
-                          {
-                            "path": ".",
-                            "height": 48,
-                            "width": 161
-                          }
+                        "hSize": "hug",
+                        "text": "Waiting for Maya to start another game.",
+                        "textStyle": "Zumpo/Body",
+                        "fills": [
+                          "$Zumpo · UI:color/muted"
                         ]
                       }
                     ]
@@ -1485,6 +1468,7 @@
                   {
                     "path": "Player 1",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Waiting",
                       "Host": true,
@@ -1505,6 +1489,7 @@
                   {
                     "path": "Player 2",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Waiting",
                       "Host": false,
@@ -1525,6 +1510,7 @@
                   {
                     "path": "Player 3",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Waiting",
                       "Host": false,
@@ -1545,6 +1531,7 @@
                   {
                     "path": "Player 4",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Waiting",
                       "Host": false,
@@ -1582,6 +1569,7 @@
                   {
                     "path": "Messages / Message 1",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Name": "System",
                       "Message": "Maya found a pair! (+1)",
                       "Kind": "Success"
@@ -1590,6 +1578,7 @@
                   {
                     "path": "Messages / Message 2",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Name": "System",
                       "Message": "Game over: Maya wins with 6 pairs!",
                       "Kind": "System"
@@ -1598,6 +1587,7 @@
                   {
                     "path": "Messages / Message 3",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "gg",
                       "Name": "Leo",
                       "Kind": "Player"
@@ -1606,6 +1596,7 @@
                   {
                     "path": "Messages / Message 4",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "rematch?",
                       "Name": "Sam",
                       "Kind": "Player"
@@ -1614,6 +1605,7 @@
                   {
                     "path": "Messages / Message 5",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "rematch?",
                       "Name": "Maya",
                       "Kind": "Player"

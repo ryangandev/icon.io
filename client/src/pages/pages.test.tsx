@@ -99,6 +99,7 @@ describe('how to play', () => {
       ['Minesweeper', 'minesweeper'],
       ['Make 24', 'make-24'],
       ['Pairs', 'pairs'],
+      ['Trios', 'trios'],
     ]) {
       expect(
         rules(name).getByRole('link', { name: 'Play solo' }),
@@ -145,6 +146,79 @@ describe('making a room', () => {
         ],
       }),
     );
+  });
+
+  it('makes a Trios room of the length picked, with up to eight seats', async () => {
+    const user = userEvent.setup();
+    const { fake } = await renderApp('/games/trios/new');
+    expect(screen.getByText('Choose 2–8 seats.')).toBeInTheDocument();
+    expect(screen.getByText('10 or 20 trios a game.')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('combobox', { name: 'Trios' }));
+    await user.click(await screen.findByRole('option', { name: '20 trios' }));
+    await user.click(screen.getByRole('button', { name: 'Create room' }));
+
+    await waitFor(() =>
+      expect(fake.requests).toContainEqual({
+        event: 'room:create',
+        args: [
+          expect.objectContaining({
+            gameType: 'trios',
+            maxPlayers: 8,
+            settings: { trios: 20 },
+          }),
+        ],
+      }),
+    );
+  });
+
+  it('says so when the server holds all the rooms it can', async () => {
+    const user = userEvent.setup();
+    const { fake } = await renderApp('/games/minesweeper/new');
+    fake.answer('room:create', () => ({
+      ok: false as const,
+      error: { type: 'tooManyRooms' as const, message: 'tooManyRooms' },
+    }));
+    await user.click(screen.getByRole('button', { name: 'Create room' }));
+    expect(
+      await screen.findByText(/^Zumpo is full right now\./),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Create room' }),
+    ).toBeInTheDocument();
+  });
+});
+
+describe('making a Hush room', () => {
+  it('asks only for seats, and says what they mean for the game', async () => {
+    const user = userEvent.setup();
+    const { fake } = await renderApp('/games/hush/new');
+    expect(
+      screen.getByText('Choose 2–4 seats. 2 players play 7 levels, 4 play 5.'),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('combobox', { name: 'Board' })).toBeNull();
+
+    await user.click(screen.getByRole('button', { name: 'Create room' }));
+    await waitFor(() =>
+      expect(fake.requests).toContainEqual({
+        event: 'room:create',
+        args: [
+          expect.objectContaining({
+            gameType: 'hush',
+            maxPlayers: 4,
+            settings: {},
+          }),
+        ],
+      }),
+    );
+  });
+
+  it('offers only rooms, beside its rules', async () => {
+    await renderApp('/how-to-play', { name: '' });
+    expect(
+      rules('Hush').getByRole('link', { name: 'Find a room' }),
+    ).toHaveAttribute('href', '/games/hush');
+    expect(rules('Hush').queryByRole('link', { name: 'Play solo' })).toBeNull();
   });
 });
 

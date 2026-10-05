@@ -4,13 +4,19 @@ import type { Locator, Page } from '@playwright/test';
 import {
   createRoom,
   dropConnection,
+  duplicateTab,
   expect,
   holdConnection,
   joinRoom,
   test,
   type PlayerOptions,
 } from '../fixtures';
+import { startServer } from '../own-server';
+import { dailyAnswer, roomWords } from '../../shared/daily-word.js';
+import { seededRandom, seedNumber } from '../../shared/seed.js';
+import { guessesOf, solve, typeGuess } from '../play/daily-word';
 import { missHand, solveHand, startHand } from '../play/make-24';
+import { deal, handOf, play, pressReady, readyUp } from '../play/hush';
 import {
   clearABoard,
   hiddenCell,
@@ -26,6 +32,27 @@ import {
   yourTurn,
   type Memory,
 } from '../play/pairs';
+import {
+  missWith,
+  pickPlaces,
+  pickTrio,
+  readyToFind,
+  tableOf,
+  trioOn,
+  turnOf as triosTurnOf,
+  twoBesides,
+} from '../play/trios';
+import {
+  bidCount,
+  bidsOf,
+  bidSurelyStands,
+  pickBid,
+  bluff,
+  callLiar,
+  move,
+  whoseTurn as whoseLiarsDiceTurn,
+  yourTurn as yourLiarsDiceTurn,
+} from '../play/liars-dice';
 import { COMPARE_DIR, figmaSize, writeReport } from './report';
 
 /*
@@ -171,6 +198,43 @@ test('before a connection, and when it fails', async ({ player }) => {
     timeout: 60_000,
   });
   await shot(maya, 'P06');
+});
+
+test('a tab taken over, and a room closed by a restart', async ({ player }) => {
+  for (const [name, options, code] of [
+    ['Maya', desktop, 'P17'],
+    ['Sam', phone, 'MO17'],
+  ] as const) {
+    const page = await player(name, options);
+    const link = await createRoom(page, 'minesweeper');
+    const copy = await duplicateTab(page);
+    await joinRoom(copy, link);
+    await expect(page.getByText('Zumpo is open in another tab.')).toBeVisible();
+    await shot(page, code);
+    // Leave from the tab that holds the seat, so the room closes now rather
+    // than waiting out the away grace on the shared server.
+    await copy.getByRole('button', { name: 'Leave room' }).click();
+    await expect(copy).toHaveURL(/\/games\/minesweeper$/);
+  }
+
+  // A server of this test's own, so stopping it leaves the others alone.
+  const server = await startServer();
+  try {
+    const own = { server: server.url };
+    const maya = await player('Maya', { ...desktop, ...own });
+    const sam = await player('Sam', { ...phone, ...own });
+    await joinRoom(sam, await createRoom(maya, 'minesweeper'));
+    server.process.kill('SIGTERM');
+    for (const [page, code] of [
+      [maya, 'P18'],
+      [sam, 'MO18'],
+    ] as const) {
+      await expect(page.getByText('Zumpo just restarted.')).toBeVisible();
+      await shot(page, code);
+    }
+  } finally {
+    server.process.kill('SIGKILL');
+  }
 });
 
 /** The lobby pages of one game, empty and then with a room in each state. */
@@ -887,12 +951,19 @@ test('a Pairs game', async ({ player }) => {
     }
     const samIsNext =
       mover !== sam && (await samTurn.getByText('You’re next.').isVisible());
-    await playTurn(mover, memory, async () => {
-      if (later && mover === leo && !shown.phone) {
-        await shot(leo, 'PR10');
-        shown.phone = true;
-      }
-    });
+    // Once a few pairs are in, turns pass on until every shot is taken.
+    const exploring = later && Object.values(shown).includes(false);
+    await playTurn(
+      mover,
+      memory,
+      async () => {
+        if (later && mover === leo && !shown.phone) {
+          await shot(leo, 'PR10');
+          shown.phone = true;
+        }
+      },
+      exploring,
+    );
     if (later && samIsNext && !shown.miss) {
       shown.miss = await shotWhile(
         sam,
@@ -903,4 +974,723 @@ test('a Pairs game', async ({ player }) => {
   }
   expect(shown).toEqual({ yourTurn: true, miss: true, phone: true });
   await shot(sam, 'PR07');
+});
+
+test('Trios on your own', async ({ player }) => {
+  test.setTimeout(300_000);
+  const maya = await player('Maya', desktop);
+  await keepOnDevice(maya, {
+    'best:trios:ten-trios': '168000',
+    'days:trios:ten-trios': JSON.stringify([
+      { day: daysAgo(1), result: 168_000 },
+      { day: daysAgo(2), result: 192_000 },
+    ]),
+  });
+  // "Not a trio" is on show for only a moment.
+  await maya.clock.install();
+  await maya.goto('/games/trios/solo');
+  await shot(maya, 'TS01');
+  await maya.getByRole('button', { name: 'Start' }).click();
+
+  const turn = triosTurnOf(maya);
+  const miss = turn.getByText('Not a trio, +5 s');
+  for (let trio = 1; trio <= 10; trio++) {
+    await expect(turn.getByText(`Trio ${trio} of 10`)).toBeVisible();
+    await readyToFind(maya);
+    // A wrong pick on the way to the second trio and the fourth, as
+    // Figma's run has, and a hint for the last.
+    if (trio === 2) {
+      await pickPlaces(maya, missWith(await tableOf(maya), [0, 1]));
+      await expect(miss).toBeVisible();
+      await readyToFind(maya);
+    }
+    if (trio === 4) {
+      const places = missWith(await tableOf(maya), [7, 8], [11, 10, 9]);
+      await pickPlaces(maya, places.slice(0, 2));
+      await shot(maya, 'TS02');
+      const missShown = await paused(maya, async () => {
+        await pickPlaces(maya, places.slice(2));
+        return shotWhile(maya, 'TS03', miss);
+      });
+      expect(missShown, 'a miss captured').toBe(true);
+      await readyToFind(maya);
+    }
+    if (trio === 10) {
+      await maya.getByRole('button', { name: 'Hint, +10 s' }).click();
+    }
+    await pickTrio(maya);
+    // The last trio ends the run at once.
+    if (trio < 10) await expect(turn.getByText('A trio!')).toBeVisible();
+  }
+  await expect(
+    maya.getByRole('heading', { name: /^10 trios in \d+:\d\d\.$/ }),
+  ).toBeVisible();
+  await shot(maya, 'TS04');
+
+  const onPhone = await player('Maya', phone);
+  await onPhone.goto('/games/trios/solo');
+  await onPhone.getByRole('button', { name: 'Start' }).click();
+  for (let trio = 1; trio <= 3; trio++) {
+    await readyToFind(onPhone);
+    await pickTrio(onPhone);
+    await expect(triosTurnOf(onPhone).getByText('A trio!')).toBeVisible();
+  }
+  await expect(triosTurnOf(onPhone).getByText('Trio 4 of 10')).toBeVisible();
+  await readyToFind(onPhone);
+  // Two cards picked where Figma picks them.
+  await pickPlaces(onPhone, [7, 8]);
+  await shot(onPhone, 'TS11');
+});
+
+test('a Trios game', async ({ player }) => {
+  test.setTimeout(600_000);
+  const maya = await player('Maya', desktop);
+  const sam = await player('Sam', desktop);
+  const leo = await player('Leo', phone);
+  const ryan = await player('Ryan', desktop);
+  const seats = [maya, sam, leo, ryan];
+
+  await maya.goto('/games/trios/new');
+  await maya.getByLabel('Password (optional)').fill('otters');
+  await shot(maya, 'TS10');
+  const link = await createRoom(maya, 'trios');
+  for (const seat of [sam, leo, ryan]) await joinRoom(seat, link);
+  await startGame(maya);
+
+  /** `finder` takes the `found`th trio, and everybody sees it taken. */
+  const take = async (finder: Page, found: number) => {
+    await readyToFind(finder);
+    await pickTrio(finder);
+    for (const seat of seats) {
+      await expect(
+        seat.getByText(`${found} of 10 trios`, { exact: true }),
+      ).toBeVisible();
+    }
+  };
+
+  // Four trios in, scored as Figma's are: Maya 2, Sam 1, Leo 1, Ryan 0.
+  await take(leo, 1);
+  await take(maya, 2);
+  await take(maya, 3);
+  await take(sam, 4);
+
+  // Sam and Leo each have two cards picked when Maya takes the fifth.
+  for (const seat of seats) await readyToFind(seat);
+  const trio = trioOn(await tableOf(sam));
+  const picks = twoBesides(trio, [3, 8]);
+  await pickPlaces(sam, picks);
+  await shot(sam, 'TS05');
+  await pickPlaces(leo, picks);
+  await shot(leo, 'TS12');
+  // Leo puts his back, so his own trio later is picked from none.
+  await pickPlaces(leo, picks);
+  await pickPlaces(maya, trio);
+  const taken = triosTurnOf(sam).getByText('Maya found a trio');
+  await expect(taken).toBeVisible();
+  expect(await shotWhile(sam, 'TS06', taken)).toBe(true);
+
+  // Sam's picks stay through the new cards, and his third is wrong.
+  await readyToFind(sam);
+  const [, , third] = missWith(await tableOf(sam), picks);
+  await pickPlaces(sam, [third]);
+  const locked = triosTurnOf(sam).getByText('locked out');
+  await expect(locked).toBeVisible();
+  expect(await shotWhile(sam, 'TS07', locked)).toBe(true);
+
+  // Nobody finds one for 30 seconds.
+  const hinted = triosTurnOf(sam).getByText('One card of a trio is marked');
+  await expect(hinted).toBeVisible({ timeout: 45_000 });
+  await shot(sam, 'TS08');
+
+  // Then the rest, to Maya 4, Sam 3, Leo 2 and Ryan 1.
+  await take(ryan, 6);
+  await take(leo, 7);
+  await take(sam, 8);
+  await take(sam, 9);
+  await readyToFind(maya);
+  await pickTrio(maya);
+  await expect(sam.getByText('Game over', { exact: true })).toBeVisible();
+  await shot(sam, 'TS09');
+});
+
+/** What a table of bots keeps on this device before each game: 5 of 10 won. */
+const LIARS_DICE_RECORD = {
+  'record:liars-dice': JSON.stringify({ wins: 5, games: 10, run: 2 }),
+  'picks:liars-dice': JSON.stringify({ bots: 3, dicePerPlayer: 3 }),
+};
+
+test('Liar’s Dice on your own', async ({ player }) => {
+  test.setTimeout(600_000);
+  const maya = await player('Maya', desktop);
+  await keepOnDevice(maya, LIARS_DICE_RECORD);
+  // A bot takes a second over its turn; the clock skips it.
+  await maya.clock.install();
+  await maya.goto('/games/liars-dice/solo');
+  await shot(maya, 'LD01');
+  await maya.getByRole('button', { name: 'Start' }).click();
+
+  const won = maya.getByRole('heading', { name: /^You won in \d+ rounds?\.$/ });
+  const out = maya.getByRole('heading', { name: /^Out in \d\w\w of 4\.$/ });
+  const nextRound = maya.getByRole('button', { name: 'Next round' });
+  const thinking = maya
+    .getByRole('region', { name: 'Turn' })
+    .getByText(/ is thinking$/);
+  const shown = new Set<string>();
+  let calledToLose = false;
+  for (let games = 1; !(shown.has('LD05') && shown.has('LD06')); games++) {
+    // Last of four is a long shot for a player this plain: a game takes a
+    // second or two on the fast clock, so it can afford many tries.
+    expect(games, 'a game won and a game lost').toBeLessThanOrEqual(100);
+    while (!(await won.isVisible()) && !(await out.isVisible())) {
+      if (await nextRound.isVisible()) {
+        if (calledToLose && !shown.has('LD04')) {
+          await shot(maya, 'LD04');
+          shown.add('LD04');
+        }
+        calledToLose = false;
+        await nextRound.click();
+      } else if (await yourLiarsDiceTurn(maya).isVisible()) {
+        const opening = !(await bidsOf(maya).isVisible());
+        if (opening && !shown.has('LD02')) {
+          // Figma's opening bid: three 4s.
+          await pickBid(maya, 3, 4);
+          await shot(maya, 'LD02');
+          shown.add('LD02');
+        }
+        // Liar on a bid your own dice already make: a mistake, on purpose.
+        if (!shown.has('LD04') && (await bidSurelyStands(maya))) {
+          calledToLose = true;
+          await callLiar(maya);
+        } else {
+          await move(maya);
+        }
+      } else if (await thinking.isVisible()) {
+        // A round two bids in, as Figma's is.
+        if (!shown.has('LD03') && (await bidCount(maya)) >= 2) {
+          if (await paused(maya, () => shotWhile(maya, 'LD03', thinking))) {
+            shown.add('LD03');
+          }
+        }
+        await maya.clock.fastForward(1000);
+      } else {
+        await maya.clock.fastForward(100);
+      }
+    }
+    const code = (await won.isVisible()) ? 'LD05' : 'LD06';
+    if (!shown.has(code)) {
+      await shot(maya, code);
+      shown.add(code);
+    }
+    // The record as Figma's next game starts from.
+    await maya.evaluate((entries) => {
+      for (const [key, value] of Object.entries(entries)) {
+        localStorage.setItem(`zumpo:solo:${key}`, value);
+      }
+    }, LIARS_DICE_RECORD);
+    await maya.getByRole('button', { name: 'Play again' }).click();
+  }
+  expect(shown).toEqual(new Set(['LD02', 'LD03', 'LD04', 'LD05', 'LD06']));
+
+  const onPhone = await player('Maya', phone);
+  await onPhone.clock.install();
+  await onPhone.goto('/games/liars-dice/solo');
+  await onPhone.getByRole('button', { name: 'Start' }).click();
+  const phoneNext = onPhone.getByRole('button', { name: 'Next round' });
+  const phoneAgain = onPhone.getByRole('button', { name: 'Play again' });
+  // Three or four bids in, so they wrap onto a second row as Figma's do.
+  const twoRows = async () => [3, 4].includes(await bidCount(onPhone));
+  while (!(
+    (await yourLiarsDiceTurn(onPhone).isVisible()) && (await twoRows())
+  )) {
+    if (await phoneNext.isVisible()) await phoneNext.click();
+    else if (await phoneAgain.isVisible()) await phoneAgain.click();
+    else if (await yourLiarsDiceTurn(onPhone).isVisible()) await move(onPhone);
+    else await onPhone.clock.fastForward(1000);
+  }
+  await shot(onPhone, 'LD13');
+});
+
+/** A phone's width for the same page, as Figma draws a screen again for one. */
+async function narrow<T>(page: Page, capture: () => Promise<T>): Promise<T> {
+  const viewport = page.viewportSize()!;
+  await page.setViewportSize({ width: 390, height: 844 });
+  try {
+    return await capture();
+  } finally {
+    await page.setViewportSize(viewport);
+  }
+}
+
+test('a Liar’s Dice game', async ({ player }) => {
+  test.setTimeout(600_000);
+  const maya = await player('Maya', desktop);
+  const sam = await player('Sam', desktop);
+  const ryan = await player('Ryan', desktop);
+  const leo = await player('Leo', desktop);
+  const seats = [maya, sam, ryan, leo];
+
+  const shown = new Set<string>();
+  const capture = async (page: Page, code: string) => {
+    await shot(page, code);
+    shown.add(code);
+  };
+
+  await maya.goto('/games/liars-dice/new');
+  const password = maya.getByLabel('Password (optional)');
+  await password.fill('otters');
+  await password.blur();
+  await capture(maya, 'LD07');
+  const link = await createRoom(maya, 'liars-dice', { dice: 3 });
+  for (const seat of [sam, ryan, leo]) await joinRoom(seat, link);
+  await startGame(maya);
+
+  // Figma follows Sam, on a desktop and again on a phone (LD14, LD15).
+  const samNext = sam
+    .getByRole('region', { name: 'Sam (you)' })
+    .getByText('You go next');
+  const ryanOut = ryan.getByText(/^You are out of dice\./);
+  const samCalled = sam
+    .getByRole('region', { name: 'Turn' })
+    .getByText('You called Liar');
+  const over = sam.getByText('Game over', { exact: true });
+  while (!(await over.isVisible())) {
+    await expect
+      .poll(
+        async () =>
+          (await whoseLiarsDiceTurn(seats)) !== null || over.isVisible(),
+        { timeout: 30_000 },
+      )
+      .toBe(true);
+    const mover = await whoseLiarsDiceTurn(seats);
+    if (!mover) break;
+    // A round some bids in, as Figma's are: one row of them on a desktop,
+    // three on a phone.
+    const bids = await bidCount(mover);
+    if (mover !== sam && bids >= 4 && bids <= 5 && !shown.has('LD08')) {
+      if (await samNext.isVisible()) await capture(sam, 'LD08');
+    }
+    if (mover === sam && bids >= 5 && bids <= 6 && !shown.has('LD09')) {
+      await capture(sam, 'LD09');
+      await narrow(sam, () => capture(sam, 'LD14'));
+    }
+    if (mover !== ryan && bids > 0 && !shown.has('LD11')) {
+      if (await ryanOut.isVisible()) await capture(ryan, 'LD11');
+    }
+
+    // Sam calls a bid his own dice already make, and loses a die over it.
+    if (
+      mover === sam &&
+      shown.has('LD09') &&
+      !shown.has('LD10') &&
+      (await bidSurelyStands(sam))
+    ) {
+      await callLiar(sam);
+      if (await shotWhile(sam, 'LD10', samCalled)) {
+        shown.add('LD10');
+        await narrow(sam, async () => {
+          if (await shotWhile(sam, 'LD15', samCalled)) shown.add('LD15');
+        });
+      }
+      continue;
+    }
+    // Then Ryan bids every die on the table until he is out.
+    if (mover === ryan && shown.has('LD10')) {
+      await bluff(ryan);
+      continue;
+    }
+    await move(mover);
+  }
+  expect(shown).toEqual(
+    new Set(['LD07', 'LD08', 'LD09', 'LD10', 'LD11', 'LD14', 'LD15']),
+  );
+  await shot(sam, 'LD12');
+});
+
+test('a Hush game', async ({ player }) => {
+  test.setTimeout(600_000);
+  const maya = await player('Maya', desktop);
+  const sam = await player('Sam', desktop);
+  const ryan = await player('Ryan', desktop);
+  const leo = await player('Leo', phone);
+  const seats = [maya, sam, ryan, leo];
+
+  await maya.goto('/games/hush/new');
+  const password = maya.getByLabel('Password (optional)');
+  await password.fill('otters');
+  // HU09 draws the form at rest, with no field focused.
+  await password.blur();
+  await shot(maya, 'HU09');
+  const link = await createRoom(maya, 'hush');
+  for (const seat of [sam, ryan, leo]) await joinRoom(seat, link);
+  await startGame(maya);
+
+  const levelOn = async (level: number) => {
+    for (const seat of seats) {
+      await expect(
+        turnOf(seat).getByText(`Level ${level} of 5`, { exact: true }),
+      ).toBeVisible({ timeout: 15_000 });
+      await expect(turnOf(seat).getByText('Get ready')).toBeVisible();
+    }
+  };
+  /** Every card still held, played in order: a clean finish. */
+  const playOut = async () => {
+    for (const { page, card } of await deal(seats)) {
+      await play(page, card, seats);
+    }
+  };
+  /**
+   * A card played too soon: only a lowest card can be played, so the highest
+   * of those.
+   */
+  const slip = async () => {
+    const lowests = await Promise.all(
+      seats.map(async (page) => ({ page, card: (await handOf(page))[0] })),
+    );
+    const over = lowests.toSorted((a, b) => b.card - a.card)[0];
+    await play(over.page, over.card, [over.page]);
+  };
+  /** Play goes on after a slip, unless it took every card still held. */
+  const goOn = () =>
+    expect(turnOf(maya).getByText(/^(Hush|Level cleared!)$/)).toBeVisible({
+      timeout: 10_000,
+    });
+
+  // Level 1 is played clean, and level 2 costs a life, as in Figma's story;
+  // Leo looks at level 2 from his phone.
+  await levelOn(1);
+  await readyUp(seats);
+  await playOut();
+  await levelOn(2);
+  await pressReady([maya]);
+  await expect(turnOf(leo).getByText('Maya is ready.')).toBeVisible();
+  await shot(leo, 'HU11');
+  await readyUp(seats.filter((seat) => seat !== maya));
+  await slip();
+  await goOn();
+  await playOut();
+
+  // Level 3: Maya and Ryan are ready, then the rest, and the cards are dealt.
+  await levelOn(3);
+  await pressReady([maya, ryan]);
+  await expect(turnOf(sam).getByText('Maya and Ryan are ready.')).toBeVisible();
+  await shot(sam, 'HU01');
+  await pressReady([leo, sam]);
+  const counting = turnOf(sam).getByText('Everybody holds 3 cards.');
+  await expect(counting).toBeVisible();
+  expect(await shotWhile(sam, 'HU02', counting), 'the countdown captured').toBe(
+    true,
+  );
+  await expect(sam.getByRole('button', { name: /^Play \d+$/ })).toBeVisible({
+    timeout: 10_000,
+  });
+
+  // A few cards in order, while Sam and Leo still hold some, as Figma's are.
+  let played = 0;
+  for (const { page, card } of await deal(seats)) {
+    const keeps = [sam, leo].includes(page) && (await handOf(page)).length < 2;
+    if (played === 4 || keeps) break;
+    await play(page, card, seats);
+    played++;
+  }
+  await shot(sam, 'HU03');
+  await shot(leo, 'HU10');
+
+  // Leo drops, holding cards: the level waits for him.
+  const restore = await dropConnection(leo);
+  await expect(turnOf(sam).getByText('Paused')).toBeVisible();
+  await shot(sam, 'HU05');
+  restore();
+  await expect(leo.getByRole('button', { name: 'Leave room' })).toBeVisible({
+    timeout: 20_000,
+  });
+  await expect(sam.getByRole('button', { name: /^Play \d+$/ })).toBeVisible({
+    timeout: 10_000,
+  });
+
+  // A card over somebody's lower one: a life lost. The smallest such slip
+  // that Sam does not make, so his hand stays as Figma draws it.
+  const lowests = (
+    await Promise.all(
+      seats.map(async (page) => ({ page, card: (await handOf(page))[0] })),
+    )
+  )
+    .filter(({ card }) => card !== undefined)
+    .toSorted((a, b) => a.card - b.card);
+  const over = lowests.slice(1).find(({ page }) => page !== sam);
+  expect(over, 'a card over another player’s').toBeDefined();
+  await play(over!.page, over!.card, [over!.page]);
+  const lost = turnOf(sam).getByText(/One life lost\.$/);
+  await expect(lost).toBeVisible();
+  expect(await shotWhile(sam, 'HU04', lost), 'the mistake captured').toBe(true);
+  await goOn();
+  await playOut();
+
+  // Level 4, clean, wins the life back.
+  await levelOn(4);
+  await readyUp(seats);
+  await playOut();
+  const lifeBack = turnOf(sam).getByText('Not one slip: a life back.');
+  await expect(lifeBack).toBeVisible();
+  expect(
+    await shotWhile(sam, 'HU06', lifeBack),
+    'the cleared level captured',
+  ).toBe(true);
+
+  // Level 5, the last: the team wins.
+  await levelOn(5);
+  await readyUp(seats);
+  await playOut();
+  await expect(
+    maya.getByRole('heading', { name: 'All 5 levels cleared.' }),
+  ).toBeVisible();
+  await shot(maya, 'HU07');
+
+  // Another game, each level lost to a card played too soon, until the
+  // lives run out.
+  await maya.getByRole('button', { name: 'Play again' }).click();
+  for (let level = 1; level <= 3; level++) {
+    await levelOn(level);
+    await readyUp(seats);
+    await slip();
+    if (level < 3) {
+      await goOn();
+      await playOut();
+    }
+  }
+  await expect(
+    maya.getByRole('heading', { name: 'Out of lives on level 3.' }),
+  ).toBeVisible({ timeout: 15_000 });
+  await shot(maya, 'HU08');
+});
+
+/*
+ * Daily Word on your own runs on the device's date, so each screen is played
+ * on Figma's day: word #12 on 16 October 2026, #13 the day after, with the
+ * clock stopped at Figma's 09:41:18 to the next word.
+ */
+const dailyWordDay = (day: number) => new Date(2026, 9, day, 14, 18, 42);
+
+/**
+ * Eleven words played before #12, as Figma's device has: 91% found, the last
+ * four in a row. Figma's best streak of 7 cannot go with them, so it is 6.
+ */
+function pastDailyWords(): Record<number, string[]> {
+  const fillers = ['stare', 'cloud', 'giant', 'pound', 'hatch', 'match'];
+  const played = (puzzle: number, guesses: number, found: boolean) =>
+    found
+      ? [...fillers.slice(0, guesses - 1), dailyAnswer(puzzle)]
+      : fillers.slice(0, 6);
+  const lengths = [3, 2, 3, 4, 3, 5, 0, 4, 3, 4, 5];
+  return Object.fromEntries(
+    lengths.map((guesses, index) => [
+      index + 1,
+      played(index + 1, guesses || 6, guesses > 0),
+    ]),
+  );
+}
+
+const yourGuesses = (page: Page) =>
+  page.getByRole('group', { name: 'Your guesses' });
+
+/** Guesses each word in turn, waiting for each to be marked. */
+async function guessWords(page: Page, words: readonly string[]) {
+  for (const word of words) {
+    const count = (await guessesOf(page)).length;
+    await typeGuess(page, word);
+    await expect
+      .poll(async () => (await guessesOf(page)).length)
+      .toBe(count + 1);
+  }
+}
+
+test('Daily Word on your own', async ({ player }) => {
+  test.setTimeout(300_000);
+  const kept = { 'daily-word:puzzles': JSON.stringify(pastDailyWords()) };
+  const maya = await player('Maya', desktop);
+  await maya.clock.setFixedTime(dailyWordDay(16));
+  await keepOnDevice(maya, kept);
+  await maya.goto('/games/daily-word/solo');
+  await expect(yourGuesses(maya)).toBeVisible();
+  await shot(maya, 'DW01');
+
+  // Word #12 is UNITE.
+  await guessWords(maya, ['stare', 'cloud']);
+  await maya.keyboard.type('unt');
+  await shot(maya, 'DW02');
+  await maya.keyboard.type('ie');
+  await maya.keyboard.press('Enter');
+  await expect.poll(async () => (await guessesOf(maya)).length).toBe(3);
+  await typeGuess(maya, 'blant');
+  await expect(maya.getByText('Not in the word list')).toBeVisible();
+  await shot(maya, 'DW03');
+  for (let i = 0; i < 5; i++) await maya.keyboard.press('Backspace');
+  await typeGuess(maya, 'unite');
+  await expect(
+    maya.getByRole('heading', { name: 'Found in 4.' }),
+  ).toBeVisible();
+  await shot(maya, 'DW04');
+
+  await maya.getByRole('button', { name: 'Practice word' }).click();
+  await solve(maya);
+  await expect(
+    maya.getByRole('heading', { name: /^Found in \d\.$/ }),
+  ).toBeVisible();
+  await shot(maya, 'DW06');
+
+  // The next day's word, #13, is SPECK: six guesses that miss it.
+  await maya.clock.setFixedTime(dailyWordDay(17));
+  await maya.goto('/games/daily-word/solo');
+  await expect(yourGuesses(maya)).toBeVisible();
+  await guessWords(maya, [
+    'hatch',
+    'match',
+    'latch',
+    'batch',
+    'patch',
+    'catch',
+  ]);
+  await expect(
+    maya.getByRole('heading', { name: 'Not this time.' }),
+  ).toBeVisible();
+  await shot(maya, 'DW05');
+
+  const onPhone = await player('Maya', phone);
+  await onPhone.clock.setFixedTime(dailyWordDay(16));
+  await keepOnDevice(onPhone, kept);
+  await onPhone.goto('/games/daily-word/solo');
+  await expect(yourGuesses(onPhone)).toBeVisible();
+  await guessWords(onPhone, ['stare', 'cloud']);
+  await onPhone.keyboard.type('unt');
+  await shot(onPhone, 'DW12');
+});
+
+/**
+ * Plays a guess on the way to the word: Figma's own, or, should the seed's
+ * word be that one, a word that is never an answer, so it still misses.
+ */
+const missing = (answer: string) => (word: string) =>
+  word === answer ? 'tears' : word;
+
+/**
+ * Figma's guesses, then the word itself. Each is waited for until it is
+ * marked, but for the word found last, which ends the word at once.
+ */
+async function findIt(
+  page: Page,
+  answer: string,
+  misses: readonly string[],
+  last = false,
+) {
+  await guessWords(page, misses.map(missing(answer)));
+  if (last) await typeGuess(page, answer);
+  else await guessWords(page, [answer]);
+}
+
+async function say(page: Page, text: string, onPhone = false) {
+  if (onPhone) await page.getByRole('tab', { name: 'Chat' }).click();
+  const box = page.getByRole('textbox', { name: 'Message' });
+  await box.fill(text);
+  await box.press('Enter');
+  await expect(page.getByText(text, { exact: true }).last()).toBeVisible();
+  // Back to the board, whose keys are not heard while the chat has focus.
+  await box.blur();
+  if (onPhone) {
+    await page.getByRole('tab', { name: 'Board' }).click();
+    // A thumb on the on-screen keys leaves the tab without a focus ring.
+    await page.getByRole('tab', { name: 'Board' }).blur();
+  }
+}
+
+test('a Daily Word game', async ({ player }) => {
+  test.setTimeout(600_000);
+  const maya = await player('Maya', desktop);
+  const sam = await player('Sam', desktop);
+  const ryan = await player('Ryan', desktop);
+  const leo = await player('Leo', phone);
+  const seats = [maya, sam, ryan, leo];
+
+  await maya.goto('/games/daily-word/new');
+  await maya.getByLabel('Password (optional)').fill('otters');
+  await shot(maya, 'DW11');
+  const link = await createRoom(maya, 'daily-word');
+  for (const seat of [sam, ryan, leo]) await joinRoom(seat, link);
+  await startGame(maya);
+
+  const wordOn = async (word: number) => {
+    for (const seat of seats) {
+      // After the last word's reveal, which runs its own clock.
+      await expect(
+        turnOf(seat).getByText(`Word ${word} of 3`, { exact: true }),
+      ).toBeVisible({ timeout: 15_000 });
+      await expect(yourGuesses(seat)).toBeVisible();
+    }
+  };
+
+  // The server deals from the seed in screens.config.ts, so the words are
+  // known here and Figma's story plays the same whatever they are.
+  const [first, second, third] = roomWords(
+    seededRandom(seedNumber(process.env.DAILY_WORD_SEED!)),
+    3,
+    new Date(),
+  );
+
+  // Word 1: everybody finds it in three.
+  await wordOn(1);
+  for (const seat of seats) {
+    await findIt(seat, first, ['stare', 'cloud'], seat === seats.at(-1));
+  }
+
+  // Word 2, as Figma tells it: Maya finds it while the others are guessing.
+  await wordOn(2);
+  const miss = missing(second);
+  await say(ryan, 'good luck');
+  await findIt(maya, second, ['stare', 'hoist']);
+  await say(leo, 'how?!', true);
+  await guessWords(sam, ['crane', 'south', 'moist'].map(miss));
+  await guessWords(ryan, ['audio', 'those', 'shoot', 'boost'].map(miss));
+  await guessWords(leo, ['lemon', 'sport', 'frost'].map(miss));
+  await sam.keyboard.type(second.slice(0, 3));
+  await shot(sam, 'DW07');
+  await leo.keyboard.type(second.slice(0, 3));
+  await shot(leo, 'DW13');
+  await leo.getByRole('tab', { name: /^Players/ }).click();
+  await shot(leo, 'DW14');
+  await leo.getByRole('tab', { name: 'Board' }).click();
+  await leo.getByRole('tab', { name: 'Board' }).blur();
+  for (let i = 0; i < 3; i++) await leo.keyboard.press('Backspace');
+
+  // Sam finds it in four; Ryan and Leo guess on.
+  for (let i = 0; i < 3; i++) await sam.keyboard.press('Backspace');
+  await findIt(sam, second, []);
+  await guessWords(ryan, [miss('roost')]);
+  await guessWords(leo, [miss('hoist')]);
+  await expect(
+    turnOf(sam).getByText('Got it in 4! +', { exact: false }),
+  ).toBeVisible();
+  await shot(sam, 'DW08');
+
+  // Leo finds it in five and Ryan's last guess misses, which ends the word.
+  await findIt(leo, second, []);
+  // Ryan's sixth guess is the last of the word, which ends at once.
+  await typeGuess(ryan, miss('hoist'));
+  const results = sam.getByRole('heading', { name: 'Word 2 results' });
+  await expect(results).toBeVisible();
+  await expect(
+    turnOf(sam).getByText(second.toUpperCase(), { exact: true }),
+  ).toBeVisible();
+  await say(ryan, 'HOIST was so close');
+  expect(await shotWhile(sam, 'DW09', results)).toBe(true);
+
+  // Word 3, as Figma's boards have it, and the game is over.
+  await wordOn(3);
+  await findIt(ryan, third, ['stale', 'alike']);
+  await findIt(sam, third, ['crane', 'plate', 'blame']);
+  await findIt(maya, third, ['share', 'blade', 'place', 'flake']);
+  await findIt(leo, third, ['audio', 'trend', 'slick', 'plumb', 'clamp'], true);
+  await expect(maya.getByText('Game over', { exact: true })).toBeVisible({
+    timeout: 15_000,
+  });
+  await say(sam, 'by nine points!');
+  await say(leo, 'gg', true);
+  await shot(maya, 'DW10');
 });

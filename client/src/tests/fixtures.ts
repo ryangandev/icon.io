@@ -1,9 +1,13 @@
 import type {
+  DailyWordRoomState,
   DrawAndGuessRoomState,
+  LiarsDiceRoomState,
+  HushRoomState,
   Make24RoomState,
   MinesweeperRoomState,
   PairsRoomState,
   PlayerInfo,
+  TriosRoomState,
 } from '../../../shared/wire-types';
 
 /** The viewer in every fixture, and the room's host unless a test says not. */
@@ -105,6 +109,88 @@ export function pairsState(
     turnPlayerId: null,
     nextPlayerId: null,
     lastMiss: [],
+    lastGame: null,
+    ...overrides,
+  };
+}
+
+export function triosState(
+  overrides: Partial<TriosRoomState> = {},
+): TriosRoomState {
+  return {
+    ...room,
+    gameType: 'trios',
+    trios: 10,
+    phase: 'waiting',
+    found: 0,
+    table: [],
+    deckLeft: 0,
+    lastTrio: null,
+    hint: [],
+    searchingMs: 0,
+    lockedOutMs: 0,
+    myMiss: [],
+    lastGame: null,
+    ...overrides,
+  };
+}
+
+export function liarsDiceState(
+  overrides: Partial<LiarsDiceRoomState> = {},
+): LiarsDiceRoomState {
+  return {
+    ...room,
+    maxPlayers: 6,
+    gameType: 'liars-dice',
+    dicePerPlayer: 3,
+    phase: 'waiting',
+    round: 0,
+    cups: [],
+    bids: [],
+    turnPlayerId: null,
+    nextPlayerId: null,
+    reveal: null,
+    lastGame: null,
+    ...overrides,
+  };
+}
+
+export function hushState(
+  overrides: Partial<HushRoomState> = {},
+): HushRoomState {
+  return {
+    ...room,
+    maxPlayers: 4,
+    gameType: 'hush',
+    phase: 'waiting',
+    level: 0,
+    levels: 7,
+    lives: 3,
+    hand: [],
+    table: {
+      p1: { held: 0, ready: false },
+      p2: { held: 0, ready: false },
+    },
+    pile: [],
+    discards: [],
+    lastMistake: null,
+    lastLevel: null,
+    lastGame: null,
+    ...overrides,
+  };
+}
+
+export function dailyWordState(
+  overrides: Partial<DailyWordRoomState> = {},
+): DailyWordRoomState {
+  return {
+    ...room,
+    gameType: 'daily-word',
+    rounds: 3,
+    phase: 'waiting',
+    round: 0,
+    boards: [],
+    lastRound: null,
     lastGame: null,
     ...overrides,
   };

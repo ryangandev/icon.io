@@ -7,6 +7,8 @@ export {
   type AvatarProps,
   type AvatarTone,
 } from './components/avatar';
+export { Bid, type BidProps } from './components/bid';
+export { BidPicker, type BidPickerProps } from './components/bid-picker';
 export {
   Button,
   ButtonLink,
@@ -33,6 +35,13 @@ export {
   URGENT_SECONDS,
   type CountdownProps,
 } from './components/countdown';
+export { Cup, type CupProps, type CupState } from './components/cup';
+export {
+  Die,
+  type DieFace,
+  type DieProps,
+  type DieState,
+} from './components/die';
 export { Dialog, DialogClose, type DialogProps } from './components/dialog';
 export {
   BRUSH_SIZES,
@@ -47,7 +56,26 @@ export {
   type HeaderProps,
   type Viewer,
 } from './components/header';
+export {
+  HushCard,
+  type HushCardProps,
+  type HushCardState,
+} from './components/hush-card';
 export { Icon, type GlyphName, type IconProps } from './components/icon';
+export { Keyboard, type KeyboardProps } from './components/keyboard';
+export {
+  LetterKey,
+  type LetterKeyProps,
+  type LetterKeyState,
+} from './components/letter-key';
+export {
+  LetterTile,
+  MARK_WORDS,
+  type LetterTileProps,
+  type LetterTileSize,
+  type LetterTileState,
+} from './components/letter-tile';
+export { Lives, livesLabel, type LivesProps } from './components/lives';
 export {
   MineCell,
   type MineCellProps,
@@ -88,6 +116,11 @@ export {
   type PlayerRowProps,
   type PlayerRowState,
 } from './components/player-row';
+export {
+  RaceBoard,
+  type RaceBoardProps,
+  type RaceBoardState,
+} from './components/race-board';
 export { RoomBar, type RoomBarProps } from './components/room-bar';
 export {
   RoomRow,
@@ -104,10 +137,22 @@ export { StatList, type Stat } from './components/stat-list';
 export { Tag, type TagProps, type TagTone } from './components/tag';
 export { TextField, type TextFieldProps } from './components/text-field';
 export {
+  TriosCard,
+  type TriosCardProps,
+  type TriosCardSize,
+  type TriosCardState,
+} from './components/trios-card';
+export { TriosShape, type TriosShapeProps } from './components/trios-shape';
+export {
   TurnBar,
   type TurnBarKind,
   type TurnBarProps,
 } from './components/turn-bar';
+export {
+  WordBoard,
+  type WordBoardProps,
+  type WordBoardRow,
+} from './components/word-board';
 export { WordChoice, type WordChoiceProps } from './components/word-choice';
 export { Wordmark } from './components/wordmark';
 export { brushes, type BrushName } from './generated/brushes';

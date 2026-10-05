@@ -115,8 +115,8 @@
                 "componentId": "26:16856",
                 "props": {
                   "Meta": "The safest cell was picked for you: 0% risk, so +0",
-                  "Main": "Time ran out",
-                  "Label": "Round 4 results"
+                  "Label": "Round 4 results",
+                  "Main": "Time ran out"
                 },
                 "overrides": [
                   {
@@ -1463,6 +1463,7 @@
                     "componentProperties": {
                       "Icon": "24:4994",
                       "You": false,
+                      "Show score": true,
                       "Host": false,
                       "Name": "Leo",
                       "Score": "80",
@@ -1479,8 +1480,21 @@
                     }
                   },
                   {
+                    "path": "Player 1 / Details / Status line / Status icon / check",
+                    "strokes": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  },
+                  {
+                    "path": "Player 1 / Details / Status line / Status icon / check",
+                    "strokes": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  },
+                  {
                     "path": "Player 2",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": true,
                       "Status": "Auto-picked · +0",
                       "Host": false,
@@ -1499,8 +1513,21 @@
                     }
                   },
                   {
+                    "path": "Player 2 / Details / Status line / Status icon / clock",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 2 / Details / Status line / Status icon / clock",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
                     "path": "Player 3",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": true,
                       "Status": "Hit a mine · −82",
                       "Host": false,
@@ -1519,10 +1546,65 @@
                     }
                   },
                   {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
                     "path": "Player 4",
                     "componentProperties": {
                       "Icon": "24:4994",
                       "You": false,
+                      "Show score": true,
                       "Host": true,
                       "Name": "Maya",
                       "Score": "−61",
@@ -1537,6 +1619,18 @@
                       "Initials": "MA",
                       "Tone": "Peach"
                     }
+                  },
+                  {
+                    "path": "Player 4 / Details / Status line / Status icon / check",
+                    "strokes": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  },
+                  {
+                    "path": "Player 4 / Details / Status line / Status icon / check",
+                    "strokes": [
+                      "$Zumpo · UI:color/ink"
+                    ]
                   }
                 ]
               },
@@ -1558,6 +1652,7 @@
                   {
                     "path": "Messages / Message 1",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "good luck",
                       "Name": "Ryan",
                       "Kind": "Player"
@@ -1567,6 +1662,7 @@
                     "path": "Messages / Message 2",
                     "componentProperties": {
                       "Name": "System",
+                      "Alert icon": "24:5071",
                       "Message": "Maya hit a mine (11% risk): −109",
                       "Kind": "Alert"
                     }
@@ -1574,6 +1670,7 @@
                   {
                     "path": "Messages / Message 3",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "ouch",
                       "Name": "Maya",
                       "Kind": "Player"
@@ -1583,6 +1680,7 @@
                     "path": "Messages / Message 4",
                     "componentProperties": {
                       "Name": "System",
+                      "Alert icon": "24:5071",
                       "Message": "Ryan hit a mine (38% risk): −82",
                       "Kind": "Alert"
                     }

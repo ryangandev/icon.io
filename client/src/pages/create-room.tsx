@@ -6,17 +6,23 @@ import type {
   PairsBoard,
   RoomCreateRequest,
 } from '../../../shared/wire-types';
+import {
+  DICE_PER_PLAYER,
+  type DicePerPlayer,
+} from '../../../shared/liars-dice';
 import { Button, ButtonLink, Notice, SelectField, TextField } from '../ui';
+import { GAME_LENGTHS as TRIOS_LENGTHS } from '../../../shared/trios';
 import { gameInfo, lobbyPath, roomPath } from '../games/catalog';
 import { plural } from '../games/plural';
 import { DIFFICULTIES, boardDetail } from '../minesweeper/boards';
+import { levelsFor } from '../../../shared/hush';
 import {
   BOARDS as PAIRS_BOARDS,
   boardDetail as pairsBoardDetail,
 } from '../pairs/boards';
 import { useConnectedSession } from '../net/session';
 import { REQUEST_TIMEOUT_MS } from '../net/socket';
-import { ConnectionFailed } from '../shell/connection-failed';
+import { ConnectionLost } from '../shell/connection-lost';
 import { FormPage } from '../shell/form-page';
 import { Page } from '../shell/page';
 import { Stage } from '../shell/stage';
@@ -28,14 +34,22 @@ const ROOM_NAME_MAX_LENGTH = 40;
 const PASSWORD_MAX_LENGTH = 20;
 const ROUNDS = [1, 2, 3, 4] as const;
 const HANDS = [5, 10] as const;
+const WORDS = [3, 5] as const;
+/** What each Liar's Dice game is like. */
+const DICE_DETAIL: Record<DicePerPlayer, string> = {
+  3: 'The quick game, and the usual one.',
+  5: 'The classic: longer, best with 2–4 players.',
+};
 
 /**
- * DL04-DL06, DL10, DL11, ML04-ML06, ML10, MO05, T10, PR08: a new room, with
- * its settings.
+ * DL04-DL06, DL10, DL11, ML04-ML06, ML10, MO05, T10, PR08, TS10, HU09, DW11: a
+ * new room, with its settings.
+ * DL04-DL06, DL10, DL11, ML04-ML06, ML10, MO05, T10, PR08, LD07, HU09, DW11:
+ * a new room, with its settings.
  */
 export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   const game = gameInfo(gameType);
-  const { socket, status, name } = useConnectedSession();
+  const { socket, lost, name } = useConnectedSession();
   const navigate = useNavigate();
 
   const [roomName, setRoomName] = useState(() =>
@@ -48,9 +62,12 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   const [difficulty, setDifficulty] = useState<MinesweeperDifficulty>('Small');
   const [hands, setHands] = useState(5);
   const [pairsBoard, setPairsBoard] = useState<PairsBoard>('Small');
+  const [trios, setTrios] = useState<number>(TRIOS_LENGTHS[0]);
+  const [dicePerPlayer, setDicePerPlayer] = useState<DicePerPlayer>(3);
+  const [words, setWords] = useState(3);
   const [password, setPassword] = useState('');
   const [pending, setPending] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const [failed, setFailed] = useState<'error' | 'full' | null>(null);
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -74,10 +91,18 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
             ? { difficulty }
             : gameType === 'make-24'
               ? { hands }
-              : { board: pairsBoard },
+              : gameType === 'pairs'
+                ? { board: pairsBoard }
+                : gameType === 'trios'
+                  ? { trios }
+                  : gameType === 'liars-dice'
+                    ? { dicePerPlayer }
+                    : gameType === 'daily-word'
+                      ? { rounds: words }
+                      : {},
     };
     setPending(true);
-    setFailed(false);
+    setFailed(null);
     try {
       const answer = await socket
         .timeout(REQUEST_TIMEOUT_MS)
@@ -86,20 +111,20 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
         navigate(roomPath(gameType, answer.roomId), { replace: true });
         return;
       }
-      setFailed(true);
+      setFailed(answer.error.type === 'tooManyRooms' ? 'full' : 'error');
     } catch {
-      setFailed(true);
+      setFailed('error');
     }
     setPending(false);
   };
 
   const subtitle = 'Make a little space for your next game.';
-  if (status === 'failed') {
+  if (lost) {
     return (
       <Page>
         <LobbyHeading game={game} subtitle={subtitle} />
         <Stage>
-          <ConnectionFailed />
+          <ConnectionLost />
         </Stage>
       </Page>
     );
@@ -133,7 +158,9 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
     >
       {failed && (
         <Notice tone="error">
-          We couldn’t create the room. Please try again.
+          {failed === 'full'
+            ? 'Zumpo is full right now. Join a room, or try again in a little while.'
+            : 'We couldn’t create the room. Please try again.'}
         </Notice>
       )}
       <TextField
@@ -152,7 +179,12 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
       />
       <SelectField
         label="Seats"
-        helper={`Choose 2–${game.maxPlayers} seats.`}
+        helper={
+          gameType === 'hush'
+            ? // Hush has no settings of its own; its length is its seats.
+              `Choose 2–${game.maxPlayers} seats. 2 players play ${levelsFor(2)} levels, ${game.maxPlayers} play ${levelsFor(game.maxPlayers)}.`
+            : `Choose 2–${game.maxPlayers} seats.`
+        }
         options={seatCounts(game.maxPlayers).map((count) => ({
           value: count,
           label: plural(count, 'player'),
@@ -185,6 +217,19 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
           onValueChange={setHands}
           name="hands"
         />
+      ) : gameType === 'liars-dice' ? (
+        <SelectField
+          label="Dice each"
+          helper={DICE_DETAIL[dicePerPlayer]}
+          options={DICE_PER_PLAYER.map((count) => ({
+            value: count,
+            label: `${count} dice`,
+            detail: DICE_DETAIL[count],
+          }))}
+          value={dicePerPlayer}
+          onValueChange={setDicePerPlayer}
+          name="dicePerPlayer"
+        />
       ) : gameType === 'pairs' ? (
         <SelectField
           label="Board"
@@ -198,7 +243,31 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
           onValueChange={setPairsBoard}
           name="board"
         />
-      ) : (
+      ) : gameType === 'trios' ? (
+        <SelectField
+          label="Trios"
+          helper="10 or 20 trios a game."
+          options={TRIOS_LENGTHS.map((count) => ({
+            value: count,
+            label: plural(count, 'trio'),
+          }))}
+          value={trios}
+          onValueChange={setTrios}
+          name="trios"
+        />
+      ) : gameType === 'daily-word' ? (
+        <SelectField
+          label="Words"
+          helper="3 or 5 words, 2 minutes each."
+          options={WORDS.map((count) => ({
+            value: count,
+            label: plural(count, 'word'),
+          }))}
+          value={words}
+          onValueChange={setWords}
+          name="words"
+        />
+      ) : gameType === 'minesweeper' ? (
         <SelectField
           label="Board"
           helper={boardDetail(difficulty)}
@@ -211,7 +280,7 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
           onValueChange={setDifficulty}
           name="board"
         />
-      )}
+      ) : null}
       <TextField
         label="Password (optional)"
         helper={`Leave blank for an open room. Up to ${PASSWORD_MAX_LENGTH} characters.`}

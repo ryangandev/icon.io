@@ -1,0 +1,115 @@
+{
+  "format": 1,
+  "code": "game-artwork-trios",
+  "title": "Game artwork / Trios",
+  "id": "79:89466",
+  "section": "07 / Trios / complete flow",
+  "reviewNotes": [
+    "Game artwork / Trios · 580 × 120, for the game card on the hub. Tagline: “Spot three cards that are all the same or all different, in every way.” Facts: “Solo or 2–8 players”."
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "79:89466",
+    "name": "Game artwork / Trios",
+    "x": 4660,
+    "y": 3050,
+    "w": 580,
+    "h": 120,
+    "fills": [
+      "$Zumpo · UI:color/paper"
+    ],
+    "radius": "$Zumpo · UI:radius/16",
+    "clip": true,
+    "layout": {
+      "mode": "row",
+      "gap": 16,
+      "justify": "center",
+      "align": "center",
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "FRAME",
+        "id": "79:89467",
+        "name": "Cards",
+        "w": 464,
+        "h": 76,
+        "wSize": "hug",
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "79:89468",
+            "name": "Trios card / Default / One blue striped triangle",
+            "w": 110,
+            "h": 76,
+            "component": "Zumpo/Trios card",
+            "variant": {
+              "Count": "1",
+              "State": "Default",
+              "Size": "Compact"
+            },
+            "componentId": "45:63822",
+            "props": {
+              "Shape": "Zumpo/Trios shape / Shape=Triangle, Fill=Striped, Colour=Blue, Stripes=Fine"
+            }
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:89484",
+            "name": "Trios card / Found / One coral solid circle",
+            "w": 110,
+            "h": 76,
+            "component": "Zumpo/Trios card",
+            "variant": {
+              "Count": "1",
+              "State": "Found",
+              "Size": "Compact"
+            },
+            "componentId": "45:63864"
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:89490",
+            "name": "Trios card / Found / Two blue striped triangles",
+            "w": 110,
+            "h": 76,
+            "component": "Zumpo/Trios card",
+            "variant": {
+              "Count": "2",
+              "State": "Found",
+              "Size": "Compact"
+            },
+            "componentId": "45:63869",
+            "props": {
+              "Shape": "Zumpo/Trios shape / Shape=Triangle, Fill=Striped, Colour=Blue, Stripes=Fine"
+            }
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:89519",
+            "name": "Trios card / Found / Three ink outlined squares",
+            "w": 110,
+            "h": 76,
+            "component": "Zumpo/Trios card",
+            "variant": {
+              "Count": "3",
+              "State": "Found",
+              "Size": "Compact"
+            },
+            "componentId": "45:63876",
+            "props": {
+              "Shape": "Zumpo/Trios shape / Shape=Square, Fill=Outline, Colour=Ink, Stripes=Fine"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

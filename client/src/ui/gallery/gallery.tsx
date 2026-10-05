@@ -7,6 +7,8 @@ import '../zumpo.css';
 import {
   Avatar,
   AVATAR_TONES,
+  Bid,
+  BidPicker,
   Button,
   Card,
   ChoiceList,
@@ -14,22 +16,30 @@ import {
   ChatInput,
   ChatMessage,
   Countdown,
+  Cup,
   Dialog,
   DialogClose,
+  Die,
   DrawingToolbar,
   Header,
   Icon,
+  Keyboard,
+  LetterKey,
+  LetterTile,
   MineCell,
   MobileTabs,
   Notice,
   NumberCard,
   OperatorKey,
   PairsCard,
+  HushCard,
+  Lives,
   PairsSymbol,
   symbolName,
   PickMarker,
   PickResult,
   PlayerRow,
+  RaceBoard,
   RoomBar,
   RoomRow,
   Scoreboard,
@@ -37,11 +47,15 @@ import {
   StatList,
   Tag,
   TextField,
+  TriosCard,
+  TriosShape,
   TurnBar,
+  WordBoard,
   WordChoice,
   Wordmark,
   type BrushName,
   type BrushSize,
+  type DieFace,
   type GlyphName,
 } from '..';
 import { glyphs } from '../generated/glyphs';
@@ -50,6 +64,19 @@ import { Specimen } from './specimen';
 import styles from './gallery.module.css';
 
 const noop = () => {};
+
+/** Trios cards for the gallery, with how many shapes each shows. */
+const TRIOS_SPECIMENS = [
+  [40, 2],
+  [0, 1],
+  [80, 3],
+  [41, 2],
+] as const;
+
+const cap = (word: string) => `${word[0].toUpperCase()}${word.slice(1)}`;
+
+const BID_TEXT =
+  'Figma rounds each of the three text runs up to a whole pixel, 2 px in all; the stroke and spacing match.';
 
 const CLOCK_CELLS =
   'Wider on purpose: DM Sans has no tabular figures, so each digit sits in a fixed cell and the clock never changes width as it ticks.';
@@ -457,6 +484,19 @@ export default function Gallery() {
             style={{ margin: 0, padding: 0, listStyle: 'none', width: '100%' }}
           >
             <PlayerRow {...PLAYERS.sam} status="Waiting" score={180} host you />
+          </ul>
+        </Specimen>
+        <Specimen family="player-row" label="Show score off" width={312}>
+          <ul
+            style={{ margin: 0, padding: 0, listStyle: 'none', width: '100%' }}
+          >
+            <PlayerRow
+              {...PLAYERS.maya}
+              {...SAMPLE_AVATAR}
+              status="Level cleared"
+              statusIcon="check"
+              state="scored"
+            />
           </ul>
         </Specimen>
       </Family>
@@ -879,6 +919,433 @@ export default function Gallery() {
             </Specimen>
           ))}
         </div>
+      </Family>
+
+      <Family name="Trios card" file="trios-card">
+        {(
+          [
+            ['regular', 'Regular', ['Default', 'Selected', 'Found', 'Wrong']],
+            ['compact', 'Compact', ['Default', 'Selected', 'Found', 'Wrong']],
+            ['mini', 'Mini', ['Default', 'Found']],
+          ] as const
+        ).map(([cardSize, sizeName, states]) => (
+          <div key={cardSize} className={styles.cellRow}>
+            {states.map((state, index) => {
+              // Every count, colour, shape and fill appears in a row.
+              const [card, count] = TRIOS_SPECIMENS[index];
+              return (
+                <Specimen
+                  key={state}
+                  family="trios-card"
+                  variant={`Count=${count}, State=${state}, Size=${sizeName}`}
+                  label={`${state}, ${sizeName}`}
+                >
+                  <TriosCard
+                    card={card}
+                    state={state.toLowerCase() as Lowercase<typeof state>}
+                    size={cardSize}
+                    badge={
+                      state === 'Found' && cardSize !== 'mini'
+                        ? 'MA'
+                        : undefined
+                    }
+                  />
+                </Specimen>
+              );
+            })}
+            {cardSize !== 'mini' && (
+              <Specimen label={`Hinted, ${sizeName}`}>
+                <TriosCard card={62} size={cardSize} badge="Hint" />
+              </Specimen>
+            )}
+          </div>
+        ))}
+      </Family>
+
+      <Family
+        name="Trios shape"
+        file="trios-shape"
+        note="Three shapes, three fills, three colours: 27 in all, scaled as a whole on smaller cards."
+      >
+        {(['circle', 'triangle', 'square'] as const).map((shape) => (
+          <div key={shape} className={styles.cellRow}>
+            {(['solid', 'striped', 'outline'] as const).flatMap((fill) =>
+              (['coral', 'blue', 'ink'] as const).map((tone) => (
+                <Specimen
+                  key={`${fill}-${tone}`}
+                  family="trios-shape"
+                  variant={`Shape=${cap(shape)}, Fill=${cap(fill)}, Colour=${cap(tone)}`}
+                  label={`${cap(tone)} ${fill}`}
+                >
+                  <TriosShape shape={shape} fill={fill} colour={tone} />
+                </Specimen>
+              )),
+            )}
+          </div>
+        ))}
+      </Family>
+
+      <Family name="Die" file="die">
+        {(['regular', 'compact'] as const).map((dieSize) => {
+          const sizeName = dieSize === 'regular' ? 'Regular' : 'Compact';
+          return (
+            <div key={dieSize} className={styles.cellRow}>
+              {([1, 2, 3, 4, 5, 6] as const).map((face) => (
+                <Specimen
+                  key={face}
+                  family="die"
+                  variant={`Face=${face}, State=Default, Size=${sizeName}`}
+                  label={String(face)}
+                >
+                  <Die face={face} size={dieSize} />
+                </Specimen>
+              ))}
+              {(
+                [
+                  [5, 'counted', 'Counted'],
+                  [1, 'wild', 'Wild'],
+                  [2, 'dim', 'Dim'],
+                ] as const
+              ).map(([face, state, stateName]) => (
+                <Specimen
+                  key={state}
+                  family="die"
+                  variant={`Face=${face}, State=${stateName}, Size=${sizeName}`}
+                  label={stateName}
+                >
+                  <Die face={face} state={state} size={dieSize} />
+                </Specimen>
+              ))}
+              {(['hidden', 'empty'] as const).map((face) => (
+                <Specimen
+                  key={face}
+                  family="die"
+                  variant={`Face=${face === 'hidden' ? 'Hidden' : 'Empty'}, State=Default, Size=${sizeName}`}
+                  label={face === 'hidden' ? 'Hidden' : 'Empty'}
+                >
+                  <Die face={face} size={dieSize} />
+                </Specimen>
+              ))}
+            </div>
+          );
+        })}
+      </Family>
+
+      <Family name="Bid" file="bid">
+        <Specimen family="bid" variant="Kind=Latest" deviation={BID_TEXT}>
+          <Bid name="Leo" count={5} face={5} latest />
+        </Specimen>
+        <Specimen family="bid" variant="Kind=Earlier" deviation={BID_TEXT}>
+          <Bid name="Leo" count={5} face={5} />
+        </Specimen>
+      </Family>
+
+      <Family
+        name="Cup"
+        file="cup"
+        note="Row is the phone table's cup in a 3-dice game; it fills its row, 350 px in Figma."
+      >
+        {(
+          [
+            ['regular', 'stack'],
+            ['compact', 'stack'],
+            ['compact', 'row'],
+          ] as const
+        ).map(([cupSize, layout]) => (
+          <div key={`${cupSize}-${layout}`} className={styles.cellRow}>
+            {(
+              [
+                ['default', 'Default'],
+                ['turn', 'Turn'],
+                ['lost', 'Lost'],
+              ] as const
+            ).map(([state, stateName]) => (
+              <Specimen
+                key={state}
+                family="cup"
+                variant={`State=${stateName}, Dice=${cupSize === 'regular' ? 'Regular' : 'Compact'}, Layout=${layout === 'stack' ? 'Stack' : 'Row'}`}
+                width={layout === 'row' ? 350 : undefined}
+              >
+                <Cup
+                  name="Leo"
+                  initials="LE"
+                  tone="lime"
+                  detail="3 dice"
+                  state={state}
+                  size={cupSize}
+                  layout={layout}
+                  dice={
+                    cupSize === 'regular'
+                      ? ([5, 4, 1] as const).map((face: DieFace) => ({ face }))
+                      : [
+                          { face: 'hidden' },
+                          { face: 'hidden' },
+                          { face: 'hidden' },
+                        ]
+                  }
+                />
+              </Specimen>
+            ))}
+          </div>
+        ))}
+      </Family>
+
+      <Family
+        name="Bid picker"
+        file="bid-picker"
+        note="It takes the width it is given, as beside your cup; Phone is the same picker in a column narrower than its 518 px row."
+      >
+        {(
+          [
+            ['Desktop', 518],
+            ['Phone', 342],
+          ] as const
+        ).map(([layout, width]) => (
+          <Specimen
+            key={layout}
+            family="bid-picker"
+            variant={`Layout=${layout}`}
+            width={width}
+          >
+            <BidPicker
+              count={5}
+              face={6}
+              onCountChange={noop}
+              onFaceChange={noop}
+              canFewer={false}
+              canMore
+              bidLabel="Bid five 6s"
+              onBid={noop}
+              onCall={noop}
+            />
+          </Specimen>
+        ))}
+      </Family>
+
+      <Family
+        name="Hush card"
+        file="hush-card"
+        note="Hush's numbered cards: in a hand, next to play, on top of the pile, played under it, or discarded by a mistake."
+      >
+        {(['large', 'regular', 'small'] as const).map((cardSize) => {
+          const sizeName = cardSize[0].toUpperCase() + cardSize.slice(1);
+          return (
+            <div key={cardSize} className={styles.cellRow}>
+              {(
+                [
+                  ['Hand', 'hand'],
+                  ['Next', 'next'],
+                  ['Pile', 'pile'],
+                  ['Played', 'played'],
+                  ['Discarded', 'discarded'],
+                ] as const
+              ).map(([state, kind]) => (
+                <Specimen
+                  key={kind}
+                  family="hush-card"
+                  variant={`State=${state}, Size=${sizeName}`}
+                  label={state}
+                >
+                  <HushCard value={41} state={kind} size={cardSize} />
+                </Specimen>
+              ))}
+            </div>
+          );
+        })}
+      </Family>
+
+      <Family
+        name="Lives"
+        file="lives"
+        note="A Hush team's lives, as hearts full or lost; the hub card hides the label."
+      >
+        {[3, 2, 1, 0].map((lives) => (
+          <Specimen
+            key={lives}
+            family="lives"
+            variant={`Lives=${lives}`}
+            label={`${lives}`}
+          >
+            <Lives lives={lives} />
+          </Specimen>
+        ))}
+        <Specimen family="lives" label="Show label off">
+          <Lives lives={2} showLabel={false} />
+        </Specimen>
+      </Family>
+
+      <Family name="Letter tile" file="letter-tile">
+        {(
+          [
+            ['regular', 'Regular'],
+            ['compact', 'Compact'],
+            ['small', 'Small'],
+            ['mini', 'Mini'],
+          ] as const
+        ).map(([tileSize, sizeName]) => (
+          <div key={tileSize} className={styles.cellRow}>
+            {(
+              [
+                ['Empty', 'empty'],
+                ['Typed', 'typed'],
+                ['Correct', 'correct'],
+                ['Present', 'present'],
+                ['Absent', 'absent'],
+              ] as const
+            )
+              // A Mini tile is another player's, marks only: never typed into.
+              .filter(([, state]) => tileSize !== 'mini' || state !== 'typed')
+              .map(([stateName, state]) => (
+                <Specimen
+                  key={state}
+                  family="letter-tile"
+                  variant={`State=${stateName}, Size=${sizeName}`}
+                  label={`${stateName} · ${sizeName}`}
+                >
+                  <LetterTile
+                    letter={state === 'empty' ? undefined : 'A'}
+                    state={state}
+                    size={tileSize}
+                  />
+                </Specimen>
+              ))}
+          </div>
+        ))}
+      </Family>
+
+      <Family name="Letter key" file="letter-key">
+        {(
+          [
+            ['regular', 'Regular'],
+            ['compact', 'Compact'],
+          ] as const
+        ).map(([keySize, sizeName]) => (
+          <div key={keySize} className={styles.cellRow}>
+            {(
+              [
+                ['Plain', 'plain'],
+                ['Correct', 'correct'],
+                ['Present', 'present'],
+                ['Absent', 'absent'],
+              ] as const
+            ).map(([stateName, state]) => (
+              <Specimen
+                key={state}
+                family="letter-key"
+                variant={`Kind=Letter, State=${stateName}, Size=${sizeName}`}
+                label={`${stateName} · ${sizeName}`}
+              >
+                <LetterKey
+                  letter="q"
+                  state={state}
+                  size={keySize}
+                  onPress={noop}
+                />
+              </Specimen>
+            ))}
+            {(
+              [
+                ['Enter', 'enter'],
+                ['Delete', 'delete'],
+              ] as const
+            ).map(([kindName, kind]) => (
+              <Specimen
+                key={kind}
+                family="letter-key"
+                variant={`Kind=${kindName}, State=Plain, Size=${sizeName}`}
+                label={`${kindName} · ${sizeName}`}
+              >
+                <LetterKey kind={kind} size={keySize} onPress={noop} />
+              </Specimen>
+            ))}
+          </div>
+        ))}
+        <div className={styles.cellRow}>
+          <Specimen label="Disabled">
+            <LetterKey letter="q" onPress={noop} disabled />
+          </Specimen>
+        </div>
+      </Family>
+
+      <Family
+        name="Keyboard"
+        file="keyboard"
+        note="One component: it takes the Phone layout in a container narrower than the Desktop one."
+      >
+        {(
+          [
+            ['Desktop', 472],
+            ['Phone', 336],
+          ] as const
+        ).map(([layout, width]) => (
+          <Specimen
+            key={layout}
+            family="keyboard"
+            variant={`Layout=${layout}`}
+            width={width}
+          >
+            <Keyboard onLetter={noop} onEnter={noop} onDelete={noop} />
+          </Specimen>
+        ))}
+      </Family>
+
+      <Family name="Word board" file="word-board">
+        <div className={styles.cellRow}>
+          {(
+            [
+              ['regular', 'Regular'],
+              ['compact', 'Compact'],
+              ['small', 'Small'],
+              ['mini', 'Mini'],
+            ] as const
+          ).map(([boardSize, sizeName]) => (
+            <Specimen
+              key={boardSize}
+              family="word-board"
+              variant={`Size=${sizeName}`}
+            >
+              <WordBoard
+                rows={[]}
+                size={boardSize}
+                label={`${sizeName} board`}
+              />
+            </Specimen>
+          ))}
+        </div>
+      </Family>
+
+      <Family name="Race board" file="race-board">
+        {(
+          [
+            ['mini', 'Mini'],
+            ['small', 'Small'],
+          ] as const
+        ).map(([boardSize, boardName]) => (
+          <div key={boardSize} className={styles.cellRow}>
+            {(
+              [
+                ['Guessing', 'guessing'],
+                ['Found', 'found'],
+                ['Out', 'out'],
+              ] as const
+            ).map(([stateName, state]) => (
+              <Specimen
+                key={state}
+                family="race-board"
+                variant={`State=${stateName}, Board=${boardName}`}
+                label={`${stateName} · ${boardName}`}
+              >
+                <RaceBoard
+                  name="Maya"
+                  status="Found · +431"
+                  state={state}
+                  board={boardSize}
+                  rows={[]}
+                />
+              </Specimen>
+            ))}
+          </div>
+        ))}
       </Family>
 
       <Family name="Pick result" file="pick-result">

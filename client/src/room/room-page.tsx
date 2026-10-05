@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Navigate, useBlocker, useNavigate, type Location } from 'react-router';
 import type { GameType } from '../../../shared/wire-types';
 import { Button, ButtonLink, Card, TextField } from '../ui';
@@ -7,11 +15,14 @@ import { DrawAndGuessRoom } from '../draw-and-guess/room';
 import { MinesweeperRoom } from '../minesweeper/room';
 import { Make24Room } from '../make-24/room';
 import { PairsRoom } from '../pairs/room';
+import { TriosRoom } from '../trios/room';
+import { LiarsDiceRoom } from '../liars-dice/room';
+import { HushRoom } from '../hush/room';
 import { useSession } from '../net/session';
 import { REQUEST_TIMEOUT_MS } from '../net/socket';
 import { useLobby } from '../net/use-lobby';
 import { useRoom, type RoomConnection, type Snapshot } from '../net/use-room';
-import { ConnectionFailed } from '../shell/connection-failed';
+import { ConnectionLost } from '../shell/connection-lost';
 import { FormPage } from '../shell/form-page';
 import { Page } from '../shell/page';
 import { Stage } from '../shell/stage';
@@ -21,6 +32,9 @@ import { LobbyHeading, lobbyHeading } from '../pages/lobby';
 import { Confetti } from './confetti';
 import { InviteDialog, LeaveDialog } from './dialogs';
 import { RoomContext, type Room } from './room-context';
+
+// Daily Word brings its word lists, so it loads only when played.
+const DailyWordRoom = lazy(() => import('../daily-word/room'));
 
 /**
  * /games/:game/rooms/:roomId: takes a seat, asking for a password if the room
@@ -54,7 +68,7 @@ export default function RoomPage({
       return (
         <Page>
           <Stage>
-            <ConnectionFailed />
+            <ConnectionLost />
           </Stage>
         </Page>
       );
@@ -102,6 +116,20 @@ export default function RoomPage({
       );
     case 'expired':
       return <ExpiredPage gameType={gameType} />;
+    case 'closed':
+      return (
+        <Page>
+          <Stage>
+            <Card
+              title="Zumpo just restarted."
+              description="Rooms close when Zumpo restarts for an update, so this one has ended. Find another room or start your own."
+              actions={
+                <ButtonLink to={lobbyPath(gameType)}>Back to rooms</ButtonLink>
+              }
+            />
+          </Stage>
+        </Page>
+      );
     case 'seated':
       // A link with the wrong game in it still reaches the room.
       if (stage.snapshot.state.gameType !== gameType) {
@@ -251,11 +279,17 @@ function SeatedRoom({
 
   // A game that ends while the room is open is celebrated; a finished game
   // found on arrival or after a refresh is not. Each one gets its own burst.
+  // A Hush team can lose together, and a loss is not celebrated.
   const [wasPlaying, setWasPlaying] = useState(state.isGameStarted);
   const [celebrations, setCelebrations] = useState(0);
   if (state.isGameStarted !== wasPlaying) {
     setWasPlaying(state.isGameStarted);
-    if (!state.isGameStarted && state.lastGame && !state.lastGame.endedEarly) {
+    if (
+      !state.isGameStarted &&
+      state.lastGame &&
+      !state.lastGame.endedEarly &&
+      !(state.gameType === 'hush' && !state.lastGame.won)
+    ) {
       setCelebrations((count) => count + 1);
     }
   }
@@ -342,8 +376,18 @@ function SeatedRoom({
         <MinesweeperRoom />
       ) : state.gameType === 'make-24' ? (
         <Make24Room />
-      ) : (
+      ) : state.gameType === 'liars-dice' ? (
+        <LiarsDiceRoom />
+      ) : state.gameType === 'pairs' ? (
         <PairsRoom />
+      ) : state.gameType === 'trios' ? (
+        <TriosRoom />
+      ) : state.gameType === 'hush' ? (
+        <HushRoom />
+      ) : (
+        <Suspense>
+          <DailyWordRoom />
+        </Suspense>
       )}
       {celebrations > 0 && <Confetti key={celebrations} />}
       <InviteDialog

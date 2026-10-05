@@ -25,7 +25,15 @@
  * Which game a room is playing. Every room-layer payload carries it, and it is
  * the key the server's module registry is keyed by.
  */
-type GameType = 'draw-and-guess' | 'minesweeper' | 'make-24' | 'pairs';
+type GameType =
+  | 'draw-and-guess'
+  | 'minesweeper'
+  | 'make-24'
+  | 'pairs'
+  | 'trios'
+  | 'liars-dice'
+  | 'hush'
+  | 'daily-word';
 
 type RoomStatus = 'Open' | 'Full' | 'In Progress';
 
@@ -98,6 +106,8 @@ type ErrorType =
   | 'gameAlreadyStarted'
   | 'notRoomOwner'
   | 'notRoomMember'
+  /** The server holds as many rooms as it will; none can be made for now. */
+  | 'tooManyRooms'
   | 'invalidRequest';
 
 interface RoomError {
@@ -122,7 +132,14 @@ interface RoomCreateRequest {
   password: string;
   /** The game's own half, which only its module can read. */
   settings:
-    DrawAndGuessSettings | MinesweeperSettings | Make24Settings | PairsSettings;
+    | DrawAndGuessSettings
+    | MinesweeperSettings
+    | Make24Settings
+    | PairsSettings
+    | TriosSettings
+    | LiarsDiceSettings
+    | HushSettings
+    | DailyWordSettings;
 }
 
 interface DrawAndGuessSettings {
@@ -145,6 +162,24 @@ type PairsBoard = 'Small' | 'Large';
 
 interface PairsSettings {
   board: PairsBoard;
+}
+
+interface TriosSettings {
+  /** Trios in a game: 10 or 20. */
+  trios: number;
+}
+
+interface LiarsDiceSettings {
+  /** Dice each player starts a game with: 3 or 5. */
+  dicePerPlayer: number;
+}
+
+/** Hush has nothing to choose but the seats; its level count follows them. */
+type HushSettings = Record<string, never>;
+
+interface DailyWordSettings {
+  /** Words a game has: 3 or 5. */
+  rounds: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -185,11 +220,34 @@ interface PairsLobbyRoomInfo extends LobbyRoomInfo {
   board: PairsBoard;
 }
 
+interface TriosLobbyRoomInfo extends LobbyRoomInfo {
+  gameType: 'trios';
+  trios: number;
+}
+
+interface LiarsDiceLobbyRoomInfo extends LobbyRoomInfo {
+  gameType: 'liars-dice';
+  dicePerPlayer: number;
+}
+
+interface HushLobbyRoomInfo extends LobbyRoomInfo {
+  gameType: 'hush';
+}
+
+interface DailyWordLobbyRoomInfo extends LobbyRoomInfo {
+  gameType: 'daily-word';
+  rounds: number;
+}
+
 type AnyLobbyRoomInfo =
   | DrawAndGuessLobbyRoomInfo
   | MinesweeperLobbyRoomInfo
   | Make24LobbyRoomInfo
-  | PairsLobbyRoomInfo;
+  | PairsLobbyRoomInfo
+  | TriosLobbyRoomInfo
+  | LiarsDiceLobbyRoomInfo
+  | HushLobbyRoomInfo
+  | DailyWordLobbyRoomInfo;
 
 // ---------------------------------------------------------------------------
 // Rooms
@@ -437,11 +495,306 @@ interface PairsRoomState extends RoomState {
   lastGame: PairsGameSummary | null;
 }
 
+/**
+ * waiting: no game; finding: everybody looks for a trio; taken: a trio just
+ * taken stays on the table for everybody, before new cards are dealt.
+ */
+type TriosPhase = 'waiting' | 'finding' | 'taken';
+
+/** A trio somebody took: who, and the three cards from where they lay. */
+interface TriosTrio {
+  playerId: string;
+  username: string;
+  /** The three cards, from 0 to 80, in the order of `places`. */
+  cards: number[];
+  /** Where on the table they lay, in order. */
+  places: number[];
+}
+
+interface TriosGameSummary extends GameSummary {
+  /** Trios a game has: 10 or 20. */
+  trios: number;
+  /** Trios found; fewer when the game ended early. */
+  found: number;
+}
+
+/**
+ * A Trios room, as one player may see it. Points are trios found. The deck's
+ * order never leaves the server; a lockout and its cards are the viewer's own.
+ */
+interface TriosRoomState extends RoomState {
+  gameType: 'trios';
+  trios: number;
+  phase: TriosPhase;
+  found: number;
+  /**
+   * The twelve cards in their places, row by row: the table in play, or the
+   * last game's as it ended; empty before the first game.
+   */
+  table: number[];
+  deckLeft: number;
+  /** The latest trio taken this game, kept after the refill. */
+  lastTrio: TriosTrio | null;
+  /** The places the hints have marked, in order: none, one or two. */
+  hint: number[];
+  /**
+   * How long everybody has been looking at the table in play without a trio,
+   * during `finding`; 0 otherwise.
+   */
+  searchingMs: number;
+  /** How long this player is still locked out after a wrong claim; 0 if not. */
+  lockedOutMs: number;
+  /** This player's three cards that were not a trio, while locked out. */
+  myMiss: number[];
+  lastGame: TriosGameSummary | null;
+}
+
+/**
+ * waiting: no game; bidding: the player whose turn it is raises or calls Liar;
+ * reveal: every cup is open after a call.
+ */
+type LiarsDicePhase = 'waiting' | 'bidding' | 'reveal';
+
+/** At least `count` dice on the table show `face` (2 to 6; ones are wild). */
+interface LiarsDiceBid {
+  playerId: string;
+  count: number;
+  face: number;
+}
+
+/**
+ * A player's place at the table. `dice` is sent only when this viewer may see
+ * them: their own during bidding, everybody's during a reveal and after a game.
+ */
+interface LiarsDiceCup {
+  playerId: string;
+  /** Dice left, after the call being revealed; 0 for a player who is out. */
+  diceLeft: number;
+  /** The dice rolled this round, each 1 to 6, or null when hidden. */
+  dice: number[] | null;
+  /** The round this player lost their last die in; null while still in. */
+  outInRound: number | null;
+}
+
+/** What a call found. */
+interface LiarsDiceReveal {
+  /** The bid called. */
+  bid: LiarsDiceBid;
+  callerId: string;
+  /** Dice that counted towards the bid's face, wild ones included. */
+  matched: number;
+  /** How many of those were wild ones. */
+  wild: number;
+  /** Who lost a die: the caller when the bid stood, the bidder when it was a lie. */
+  loserId: string;
+  /** Whether that was their last die. */
+  out: boolean;
+}
+
+/** A place in a finished game; points are the dice left. */
+interface LiarsDiceStanding extends Standing {
+  /** The round the player lost their last die in; null for whoever kept dice. */
+  outInRound: number | null;
+}
+
+interface LiarsDiceGameSummary extends GameSummary {
+  dicePerPlayer: number;
+  /** Rounds played. */
+  rounds: number;
+  /** Winner first, then everybody else by how long they lasted; never shared. */
+  standings: LiarsDiceStanding[];
+}
+
+/** A Liar's Dice room, as one player may see it. Points are dice left. */
+interface LiarsDiceRoomState extends RoomState {
+  gameType: 'liars-dice';
+  dicePerPlayer: number;
+  phase: LiarsDicePhase;
+  /** The round in play or being revealed, from 1; 0 before the first game. */
+  round: number;
+  /** Every seated player at the table, in turn order, those who are out included. */
+  cups: LiarsDiceCup[];
+  /** This round's bids in order; the last is the bid in front of the player whose turn it is. */
+  bids: LiarsDiceBid[];
+  /** Whose turn it is; null during a reveal and between games. */
+  turnPlayerId: string | null;
+  /** Whose turn comes next: the next player still in. */
+  nextPlayerId: string | null;
+  /** The call being revealed, and after a game the last one; null otherwise. */
+  reveal: LiarsDiceReveal | null;
+  lastGame: LiarsDiceGameSummary | null;
+}
+
+/**
+ * waiting: no game; ready: everybody presses Ready, and nobody holds cards
+ * yet; countdown: the hands are dealt, and play opens when it ends; playing:
+ * anybody plays their lowest card; mistake: a card went over a lower one, and
+ * play stops for a moment; paused: a player who holds cards has dropped;
+ * cleared: the level is done. The chat is locked from countdown to paused.
+ */
+type HushPhase =
+  | 'waiting'
+  | 'ready'
+  | 'countdown'
+  | 'playing'
+  | 'mistake'
+  | 'paused'
+  | 'cleared';
+
+/** A card on the pile, and who played it. */
+interface HushPlay {
+  card: number;
+  playerId: string;
+}
+
+/**
+ * A card that left a hand without being played: under a card played over it
+ * (`mistake`), or with a player who left (`left`).
+ */
+interface HushDiscard {
+  card: number;
+  playerId: string;
+  reason: 'mistake' | 'left';
+}
+
+/** What everybody may know about one player's hand. */
+interface HushSeat {
+  /** How many cards they hold. */
+  held: number;
+  /** Whether they have pressed Ready for the coming level. */
+  ready: boolean;
+}
+
+/** The play that just cost a life, while it shows. */
+interface HushMistake {
+  playerId: string;
+  card: number;
+  /** Every card under it, from every hand, lowest first. */
+  discarded: HushDiscard[];
+}
+
+/** One level of a game, as it went. */
+interface HushLevelRecord {
+  level: number;
+  livesLost: number;
+  /** A clean level wins back a lost life. */
+  lifeBack: boolean;
+  /** False for the level the game ended on without clearing it. */
+  cleared: boolean;
+}
+
+/** A player's cards still held when the game ended, shown to everybody. */
+interface HushHeld {
+  playerId: string;
+  cards: number[];
+}
+
+/** Every player's points are the levels the team cleared: one result for all. */
+interface HushGameSummary extends GameSummary {
+  levels: number;
+  levelsCleared: number;
+  won: boolean;
+  /** Lives left at the end. */
+  lives: number;
+  history: HushLevelRecord[];
+  held: HushHeld[];
+}
+
+/** A Hush room, as one player may see it: their own cards and nobody else's. */
+interface HushRoomState extends RoomState {
+  gameType: 'hush';
+  phase: HushPhase;
+  /** The level being played, from 1; 0 between games. */
+  level: number;
+  /** Levels in this game; between games, what a game would have now. */
+  levels: number;
+  lives: number;
+  /** The viewer's own cards, lowest first. */
+  hand: number[];
+  /** Every seated player's card count and ready state, by player id. */
+  table: Record<string, HushSeat>;
+  /** This level's pile, lowest first; between games, the last one as it ended. */
+  pile: HushPlay[];
+  /** This level's discards, lowest first. */
+  discards: HushDiscard[];
+  /** While `mistake` shows. */
+  lastMistake: HushMistake | null;
+  /** While `cleared` shows: the level just cleared. */
+  lastLevel: HushLevelRecord | null;
+  lastGame: HushGameSummary | null;
+}
+
+/** waiting: no game; guessing: a word is open; reveal: its results are shown. */
+type DailyWordPhase = 'waiting' | 'guessing' | 'reveal';
+
+/**
+ * A letter of a guess: in its place, in the word elsewhere, or not in it (or
+ * not as many times).
+ */
+type DailyWordMark = 'correct' | 'present' | 'absent';
+
+/** One guess. Its word is null on another player's board while a round runs. */
+interface DailyWordRow {
+  word: string | null;
+  marks: DailyWordMark[];
+}
+
+/** guessing: still at it; found: all five correct; out: six guesses, not found. */
+type DailyWordBoardStatus = 'guessing' | 'found' | 'out';
+
+/** One player's board for a round. */
+interface DailyWordBoard {
+  playerId: string;
+  username: string;
+  rows: DailyWordRow[];
+  status: DailyWordBoardStatus;
+  /** What finding the word earned; 0 until found. */
+  points: number;
+  /** Whole seconds that were left on the round's clock when found; 0 before. */
+  secondsLeft: number;
+}
+
+/** A finished round: the word, and every board with its letters, best first. */
+interface DailyWordRoundResult {
+  word: string;
+  boards: DailyWordBoard[];
+}
+
+interface DailyWordGameSummary extends GameSummary {
+  /** Rounds played; fewer than the game's when it ended early. */
+  rounds: number;
+  /** How many of those words each player found, by player id. */
+  found: Record<string, number>;
+}
+
+/**
+ * A Daily Word room, as one player may see it.
+ *
+ * While a round runs the word is in nobody's snapshot, and every board but the
+ * viewer's own carries its marks only, never its letters.
+ */
+interface DailyWordRoomState extends RoomState {
+  gameType: 'daily-word';
+  rounds: number;
+  phase: DailyWordPhase;
+  /** The round open or being revealed, from 1; 0 between games. */
+  round: number;
+  /** Every player's board for the open round, in seat order; empty otherwise. */
+  boards: DailyWordBoard[];
+  /** The latest finished round, which stays after the game ends. */
+  lastRound: DailyWordRoundResult | null;
+  lastGame: DailyWordGameSummary | null;
+}
+
 type AnyRoomState =
   | DrawAndGuessRoomState
   | MinesweeperRoomState
   | Make24RoomState
-  | PairsRoomState;
+  | PairsRoomState
+  | TriosRoomState
+  | LiarsDiceRoomState
+  | HushRoomState
+  | DailyWordRoomState;
 
 // ---------------------------------------------------------------------------
 // Chat and the drawing
@@ -532,6 +885,23 @@ interface ClientToServerEvents {
 
   /** Turning over the card at `index`, on your turn. */
   'pairs:flip': (roomId: string, index: number) => void;
+
+  /** Three cards claimed as a trio, by their numbers, on the third pick. */
+  'trios:claim': (roomId: string, cards: number[]) => void;
+  /** Raising to at least `count` dice showing `face`, on your turn. */
+  'ld:bid': (roomId: string, count: number, face: number) => void;
+  /** Calling Liar on the bid in front of you, on your turn. */
+  'ld:call': (roomId: string) => void;
+
+  /** Ready for the coming level; once a level, and only before it starts. */
+  'hush:ready': (roomId: string) => void;
+  /** Playing `card`, which must still be the player's lowest. */
+  'hush:play': (roomId: string, card: number) => void;
+  /**
+   * A guess at the open word, lowercase. Refused as `invalidRequest` with the
+   * reason; an accepted one arrives marked in the next snapshot.
+   */
+  'dw:guess': (roomId: string, word: string, ack: Ack<Result>) => void;
 }
 
 interface ServerToClientEvents {
@@ -540,6 +910,19 @@ interface ServerToClientEvents {
    * is, which the client stores for the next one.
    */
   'session:ready': (session: SessionInfo) => void;
+  /**
+   * Another connection presented this one's identity, a duplicated tab most
+   * likely, and took over; this one is closed next. A client that reconnected
+   * on its own would take the identity back, and the two would trade it
+   * forever, so it waits for the player to choose.
+   */
+  'session:replaced': () => void;
+  /**
+   * The server is shutting down, for a deploy or a restart, and every room
+   * goes with it. Sent to every connection just before it is closed, so a
+   * room page can say why its room ended rather than find it missing later.
+   */
+  'server:closing': () => void;
 
   'lobby:rooms': (gameType: GameType, rooms: AnyLobbyRoomInfo[]) => void;
 
@@ -617,6 +1000,42 @@ export type {
   PairsCardView,
   PairsGameSummary,
   PairsRoomState,
+  TriosSettings,
+  TriosLobbyRoomInfo,
+  TriosPhase,
+  TriosTrio,
+  TriosGameSummary,
+  TriosRoomState,
+  LiarsDiceSettings,
+  LiarsDiceLobbyRoomInfo,
+  LiarsDicePhase,
+  LiarsDiceBid,
+  LiarsDiceCup,
+  LiarsDiceReveal,
+  LiarsDiceStanding,
+  LiarsDiceGameSummary,
+  LiarsDiceRoomState,
+  HushSettings,
+  HushLobbyRoomInfo,
+  HushPhase,
+  HushPlay,
+  HushDiscard,
+  HushSeat,
+  HushMistake,
+  HushLevelRecord,
+  HushHeld,
+  HushGameSummary,
+  HushRoomState,
+  DailyWordSettings,
+  DailyWordLobbyRoomInfo,
+  DailyWordPhase,
+  DailyWordMark,
+  DailyWordRow,
+  DailyWordBoardStatus,
+  DailyWordBoard,
+  DailyWordRoundResult,
+  DailyWordGameSummary,
+  DailyWordRoomState,
   AnyRoomState,
   ChatMessageKind,
   ChatMessage,

@@ -4,7 +4,7 @@ import styles from './solo-result.module.css';
 
 /**
  * A finished game on your own, over the board it was played on (MS04, T05,
- * PR04): how it went, its numbers and what next.
+ * PR04, DW04-DW06): how it went, its numbers and what next.
  */
 export function SoloResult({
   title,
@@ -16,7 +16,8 @@ export function SoloResult({
   title: string;
   /** How it compares with the best on this device. */
   body: string;
-  stats: readonly Stat[];
+  /** None for a game that keeps no numbers, such as a practice word. */
+  stats?: readonly Stat[];
   /** Buttons, primary first. */
   actions: ReactNode;
 }) {
@@ -28,7 +29,7 @@ export function SoloResult({
         </h2>
         <p className={styles.body}>{body}</p>
       </div>
-      <StatList stats={stats} />
+      {stats && <StatList stats={stats} />}
       <div className={styles.actions}>{actions}</div>
     </section>
   );

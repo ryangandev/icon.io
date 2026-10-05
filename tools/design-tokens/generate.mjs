@@ -270,14 +270,6 @@ ${stages.join('\n')}
 `;
 }
 
-// Exports made before the exporter kept arc data read every ellipse as a
-// disc. Until the next export carries it, these are the arcs Figma draws,
-// measured from its preview; an export that has arc data wins.
-const ARCS_BEFORE_EXPORT = {
-  Ring: { start: 0, end: 360, inner: 0.5 },
-  Half: { start: 180, end: 360, inner: 0 },
-};
-
 const n = (value) => String(round(value));
 
 // An ellipse in its own w × h box as path data: a disc, a ring, or a slice
@@ -337,8 +329,10 @@ function pairsSymbolsTs() {
     const placed = (d, fill, x = shape.x, y = shape.y) =>
       `  { name: '${name}', d: '${d}', x: ${n(x)}, y: ${n(y)}, fill: '${fill}' },`;
     if (shape.type === 'ELLIPSE') {
-      const arc = shape.arc ?? ARCS_BEFORE_EXPORT[name.split(' ')[0]];
-      return placed(ellipsePath(shape.w, shape.h, arc), fillOf(shape.fills[0]));
+      return placed(
+        ellipsePath(shape.w, shape.h, shape.arc),
+        fillOf(shape.fills[0]),
+      );
     }
     if (shape.type === 'RECTANGLE') {
       return placed(

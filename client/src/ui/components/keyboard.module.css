@@ -1,0 +1,24 @@
+/* Zumpo/Keyboard. */
+.container {
+  container-type: inline-size;
+  width: 100%;
+}
+
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--zumpo-space-8);
+}
+
+.row {
+  display: flex;
+  gap: var(--zumpo-space-8);
+}
+
+/* The Phone layout, below the Desktop layout's 472 px. */
+@container (max-width: 471px) {
+  .row {
+    gap: var(--zumpo-space-4);
+  }
+}

@@ -1,0 +1,1103 @@
+{
+  "format": 1,
+  "name": "Zumpo/Keyboard",
+  "id": "44:62351",
+  "type": "COMPONENT_SET",
+  "key": "3a072e9580816c87fc50c62dee4b1f8e8703452e",
+  "description": "Daily Word: the on-screen keyboard, QWERTY with Enter and Delete. Each key's State shows what its letter is known to be.",
+  "properties": {
+    "Layout": {
+      "type": "variant",
+      "default": "Desktop",
+      "options": [
+        "Desktop",
+        "Phone"
+      ]
+    }
+  },
+  "defaultVariant": "Layout=Desktop",
+  "variants": [
+    {
+      "name": "Layout=Desktop",
+      "id": "44:62227",
+      "props": {
+        "Layout": "Desktop"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62227",
+        "name": "Layout=Desktop",
+        "x": 24,
+        "y": 24,
+        "w": 472,
+        "h": 184,
+        "wSize": "hug",
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/8",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "44:62228",
+            "name": "Row 1",
+            "w": 472,
+            "h": 56,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62229",
+                "name": "Key / Q",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62231",
+                "name": "Key / W",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "W"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62233",
+                "name": "Key / E",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "E"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62235",
+                "name": "Key / R",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "R"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62237",
+                "name": "Key / T",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "T"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62239",
+                "name": "Key / Y",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "Y"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62241",
+                "name": "Key / U",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "U"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62243",
+                "name": "Key / I",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "I"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62245",
+                "name": "Key / O",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "O"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62247",
+                "name": "Key / P",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "P"
+                }
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62249",
+            "name": "Row 2",
+            "w": 424,
+            "h": 56,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62250",
+                "name": "Key / A",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "A"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62252",
+                "name": "Key / S",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "S"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62254",
+                "name": "Key / D",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "D"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62256",
+                "name": "Key / F",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "F"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62258",
+                "name": "Key / G",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "G"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62260",
+                "name": "Key / H",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "H"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62262",
+                "name": "Key / J",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "J"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62264",
+                "name": "Key / K",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "K"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62266",
+                "name": "Key / L",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "L"
+                }
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62268",
+            "name": "Row 3",
+            "w": 472,
+            "h": 56,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62269",
+                "name": "Key / Enter",
+                "w": 64,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Enter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62011"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62271",
+                "name": "Key / Z",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "Z"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62273",
+                "name": "Key / X",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "X"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62275",
+                "name": "Key / C",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "C"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62277",
+                "name": "Key / V",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "V"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62279",
+                "name": "Key / B",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "B"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62281",
+                "name": "Key / N",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "N"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62283",
+                "name": "Key / M",
+                "w": 40,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62003",
+                "props": {
+                  "Letter": "M"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62285",
+                "name": "Key / Delete",
+                "w": 64,
+                "h": 56,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Delete",
+                  "State": "Plain",
+                  "Size": "Regular"
+                },
+                "componentId": "44:62013"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Layout=Phone",
+      "id": "44:62289",
+      "props": {
+        "Layout": "Phone"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "44:62289",
+        "name": "Layout=Phone",
+        "x": 520,
+        "y": 24,
+        "w": 336,
+        "h": 148,
+        "wSize": "hug",
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/8",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "44:62290",
+            "name": "Row 1",
+            "w": 336,
+            "h": 44,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62291",
+                "name": "Key / Q",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62293",
+                "name": "Key / W",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "W"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62295",
+                "name": "Key / E",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "E"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62297",
+                "name": "Key / R",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "R"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62299",
+                "name": "Key / T",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "T"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62301",
+                "name": "Key / Y",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "Y"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62303",
+                "name": "Key / U",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "U"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62305",
+                "name": "Key / I",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "I"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62307",
+                "name": "Key / O",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "O"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62309",
+                "name": "Key / P",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "P"
+                }
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62311",
+            "name": "Row 2",
+            "w": 302,
+            "h": 44,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62312",
+                "name": "Key / A",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "A"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62314",
+                "name": "Key / S",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "S"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62316",
+                "name": "Key / D",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "D"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62318",
+                "name": "Key / F",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "F"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62320",
+                "name": "Key / G",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "G"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62322",
+                "name": "Key / H",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "H"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62324",
+                "name": "Key / J",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "J"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62326",
+                "name": "Key / K",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "K"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62328",
+                "name": "Key / L",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "L"
+                }
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "44:62330",
+            "name": "Row 3",
+            "w": 336,
+            "h": 44,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "44:62331",
+                "name": "Key / Enter",
+                "w": 47,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Enter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62025"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62333",
+                "name": "Key / Z",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "Z"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62335",
+                "name": "Key / X",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "X"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62337",
+                "name": "Key / C",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "C"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62339",
+                "name": "Key / V",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "V"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62341",
+                "name": "Key / B",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "B"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62343",
+                "name": "Key / N",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "N"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62345",
+                "name": "Key / M",
+                "w": 30,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Letter",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62017",
+                "props": {
+                  "Letter": "M"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "44:62347",
+                "name": "Key / Delete",
+                "w": 47,
+                "h": 44,
+                "component": "Zumpo/Letter key",
+                "variant": {
+                  "Kind": "Delete",
+                  "State": "Plain",
+                  "Size": "Compact"
+                },
+                "componentId": "44:62027"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

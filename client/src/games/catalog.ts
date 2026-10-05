@@ -15,8 +15,8 @@ export interface GameInfo {
   facts: string;
   /** The most seats a room may have; every game needs two to start. */
   maxPlayers: number;
-  /** What a score counts, when it is not points. */
-  scoreUnit?: string;
+  /** What a score counts, when it is not points: one, and many when not one plus "s". */
+  scoreUnit?: string | readonly [one: string, many: string];
   /** The lobby's "How to play" card: a summary, then one fact per line. */
   lobbySummary: string;
   lobbyFacts: readonly string[];
@@ -167,6 +167,151 @@ On your own, clear the board in as few turns as you can; your time breaks a tie.
       ],
     },
   },
+  {
+    type: 'trios',
+    name: 'Trios',
+    tone: 'peach',
+    tagline:
+      'Spot three cards that are all the same or all different, in every way.',
+    phoneTagline: 'Spot three that are all the same or all different.',
+    facts: 'Solo or 2–8 players',
+    maxPlayers: 8,
+    scoreUnit: 'trio',
+    lobbySummary:
+      'Everybody looks at the same twelve cards at once. Pick three that are all the same or all different in every feature, and the trio is yours.',
+    lobbyFacts: [
+      '2–8 players',
+      '10 or 20 trios a game',
+      'A wrong trio locks you out for 3s',
+      'No trio for 30s? A card is marked',
+    ],
+    rules: `2–8 players · 10 or 20 trios
+
+Every card has four features: its colour (coral, blue or ink), its shape (circle, triangle or square), how many shapes it shows (one, two or three) and its fill (solid, striped or outlined). Three cards are a trio when, for each feature on its own, they are all the same or all different. Two circles and a square are never a trio.
+
+Twelve cards are on the table, always with a trio among them. Everyone looks at the same table at the same time, and there are no turns. Pick three cards; your third pick claims them, and nobody sees your picks before then.
+
+The first trio claimed is taken, for 1 point: everyone sees it, and who found it, for 2 seconds, then three new cards take its place. Three that are not a trio lock you out for 3 seconds, and never cost a point. If nobody finds a trio for 30 seconds, one card of a trio is marked for everyone, and 30 seconds later a second.
+
+The game ends after its 10 or 20 trios. Whoever found the most wins.
+
+On your own, a run is ten trios against one clock. A wrong pick adds 5 seconds; Hint marks a card of a trio for 10 seconds, twice at most. Your best time is kept on this device, and Challenge a friend sends them the same deal.`,
+    createDescription:
+      'Everybody looks at the same twelve cards, and the first to pick a trio takes it. 10 trios is about three minutes.',
+    solo: {
+      summary:
+        'Twelve cards on the table, and three of them make a trio. Find ten as fast as you can.',
+      facts: [
+        'Ten trios against one clock',
+        'Colour, shape, count and fill: each all the same or all different',
+        'A wrong pick adds 5 seconds; a hint adds 10',
+        'Your best time is kept on this device',
+      ],
+    },
+  },
+  {
+    type: 'liars-dice',
+    name: 'Liar’s Dice',
+    tone: 'lime',
+    tagline: 'Roll in secret. Bid on the whole table. Call the bluff.',
+    phoneTagline: 'Roll in secret. Bid. Call the bluff.',
+    facts: 'Solo or 2–6 players',
+    maxPlayers: 6,
+    scoreUnit: ['die', 'dice'],
+    lobbySummary:
+      'Everybody rolls dice nobody else can see, then bids on what the whole table holds. Call Liar on a bid you doubt: whoever was wrong loses a die. The last player with dice wins.',
+    lobbyFacts: [
+      '2–6 players',
+      '3 or 5 dice each',
+      '20s a turn · 5s reveal',
+      'Ones are wild',
+    ],
+    rules: `2–6 players · 3 or 5 dice each
+
+Everybody rolls their dice in secret, then takes turns bidding on the whole table: at least so many dice showing one face. Ones are wild: they count as any face, so nobody bids on them. About a third of the dice show any face, ones included.
+
+On your turn, raise the bid or call Liar. A raise is more dice of any face, or as many dice of a higher face. You have 20 seconds; run out and Liar is called for you, or one 2 is bid if nobody has bid yet.
+
+Call Liar and every cup opens for 5 seconds. If the table holds at least as many as the bid said, the caller loses a die; if not, the bidder does. Whoever lost a die opens the next round. Lose your last die and you are out; the last player with dice wins.
+
+On your own, play 1 to 5 bots with no clock, and go on to the next round when you are ready. Your wins are kept on this device.`,
+    createDescription:
+      'Take turns bidding on everybody’s dice. 3 dice each is a quick game; 5 is the classic.',
+    solo: {
+      summary: 'Roll in secret. Bid on the whole table. Call the bluff.',
+      facts: [
+        '1 to 5 bots, 3 or 5 dice each',
+        'No clock: your turn waits for you',
+        'Ones are wild, so nobody bids on them',
+        'Your wins are kept on this device',
+      ],
+    },
+  },
+  {
+    type: 'hush',
+    name: 'Hush',
+    tone: 'sand',
+    tagline: 'No turns, no talking. Play every card in order, together.',
+    facts: '2–4 players',
+    maxPlayers: 4,
+    scoreUnit: 'level',
+    lobbySummary:
+      'Everybody holds numbered cards. Without a word, the team plays them all onto one pile, lowest first. There are no turns: anybody plays at any moment.',
+    lobbyFacts: [
+      '2–4 players, playing together',
+      'Level 1 deals one card each, level 2 two, and so on',
+      'No turns, no clock and no chat while a level is played',
+      '3 lives; a level without a slip wins one back',
+    ],
+    rules: `2–4 players · 7, 6 or 5 levels
+
+Everybody holds numbered cards from 1 to 100, and the whole table plays them onto one pile, lowest first. There are no turns: anybody plays their lowest card at any moment. Nobody may say a word, so the chat is locked while a level is played.
+
+Level 1 deals one card each, level 2 two, and so on. Before each level everybody presses Ready; then the cards are dealt, and play opens after a 3-second countdown.
+
+Play a card while somebody still holds a lower one, and the team loses a life: every lower card is shown and discarded, and play stops for 3 seconds. The team has 3 lives, and a level without a slip wins one back.
+
+Clear the last level to win together. Two players play 7 levels, three play 6 and four play 5. A player who drops pauses the level until they are back; if their seat goes, their cards are discarded and no life is lost.`,
+    createDescription:
+      'Play every card in order, together, without a word. Fewer players play more levels.',
+  },
+  {
+    type: 'daily-word',
+    name: 'Daily Word',
+    tone: 'blue',
+    tagline: 'Five letters, six guesses. A new word every day.',
+    facts: 'Solo or 2–8 players',
+    maxPlayers: 8,
+    lobbySummary:
+      'Everyone gets the same hidden five-letter word at once, with six guesses each. Fewer guesses score more.',
+    lobbyFacts: [
+      '2–8 players',
+      '3 or 5 words',
+      '2 minutes for each word',
+      'Others see your marks, never your letters',
+    ],
+    rules: `2–8 players · 3 or 5 words
+
+Find a hidden five-letter word in six guesses. Every guess must be a real word. After each one, every letter is marked: a green square is in the right place, a coral circle is in the word but somewhere else, and a flat grey tile is not in the word.
+
+A letter is marked only as many times as it is in the word, and a letter in its right place counts first. A guess that is not a word, or one you already made, is turned back and costs nothing.
+
+Everyone guesses the same word at the same time, with 2 minutes for each. Finding it pays 100 points for every guess you had left over, plus up to 50 for the time left. Others see your marks as you go, never your letters, and once you find it your chat waits until the word is revealed.
+
+On your own, there is one word a day, the same for everybody, and a new one at your midnight. Your stats and streak are kept on this device. After it, play practice words as long as you like, and Challenge a friend sends them the same word.`,
+    createDescription:
+      'Every word is two minutes. Three words is a quick game.',
+    solo: {
+      summary:
+        'One word a day, the same for everybody. Six guesses to find it.',
+      facts: [
+        'Every guess must be a real five-letter word',
+        'Green square: right place. Coral circle: somewhere else. Grey: not in it',
+        'A new word at your midnight; your streak is kept on this device',
+        'Practice words after it, as many as you like',
+      ],
+    },
+  },
 ];
 
 export function gameInfo(type: GameType): GameInfo {
@@ -189,5 +334,9 @@ export const roomPath = (type: GameType, roomId: string) =>
   `/games/${type}/rooms/${roomId}`;
 
 /** "3 points", "1 pair": a score in its game's own unit. */
-export const scoreOf = (gameType: GameType, score: number): string =>
-  plural(score, gameInfo(gameType).scoreUnit ?? 'point');
+export function scoreOf(gameType: GameType, score: number): string {
+  const unit = gameInfo(gameType).scoreUnit ?? 'point';
+  return typeof unit === 'string'
+    ? plural(score, unit)
+    : plural(score, unit[0], unit[1]);
+}

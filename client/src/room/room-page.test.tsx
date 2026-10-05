@@ -160,6 +160,48 @@ describe('a room page', () => {
     expect(fake.sentArgs('room:leave')).toEqual([]);
   });
 
+  it('says the room closed when the server shuts down', async () => {
+    const fake = server();
+    await renderApp(ROOM, { fake });
+    act(() => fake.serverEmits('room:state', minesweeperState()));
+
+    act(() => fake.serverEmits('server:closing'));
+    act(() => fake.drop('io server disconnect'));
+    expect(screen.getByText('Zumpo just restarted.')).toBeInTheDocument();
+
+    // The server that comes back has never heard of the room, and the page
+    // does not ask it.
+    const requestsBefore = fake.requests.length;
+    await act(async () => fake.open());
+    expect(screen.getByText('Zumpo just restarted.')).toBeInTheDocument();
+    expect(fake.requests.length).toBe(requestsBefore);
+    expect(screen.getByRole('link', { name: 'Back to rooms' })).toHaveAttribute(
+      'href',
+      '/games/minesweeper',
+    );
+  });
+
+  it('hands the room to another tab, and takes it back on request', async () => {
+    const user = userEvent.setup();
+    const fake = server();
+    await renderApp(ROOM, { fake });
+    act(() => fake.serverEmits('room:state', minesweeperState()));
+
+    act(() => fake.serverEmits('session:replaced'));
+    act(() => fake.drop('io server disconnect'));
+    expect(
+      screen.getByText('Zumpo is open in another tab.'),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Leave room' })).toBeNull();
+
+    await user.click(screen.getByRole('button', { name: 'Use this tab' }));
+    await act(async () => fake.open());
+    expect(
+      screen.getByRole('button', { name: 'Leave room' }),
+    ).toBeInTheDocument();
+    expect(fake.sentArgs('room:leave')).toEqual([]);
+  });
+
   it('invites with the whole link, ready to copy', async () => {
     const user = userEvent.setup();
     const fake = server();

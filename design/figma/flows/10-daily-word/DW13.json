@@ -1,0 +1,469 @@
+{
+  "format": 1,
+  "code": "DW13",
+  "title": "Phone · room board",
+  "id": "79:102604",
+  "section": "10 / Daily Word / complete flow",
+  "reviewNotes": [
+    "DW13 · 390 px room, Board tab: your board and keyboard. The others’ boards are on the Players tab."
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "79:102604",
+    "name": "DW13 / Phone · room board",
+    "x": 5150,
+    "y": 2552,
+    "w": 390,
+    "h": 924,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        "$Zumpo · UI:space/20",
+        "$Zumpo · UI:space/20",
+        32,
+        "$Zumpo · UI:space/20"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "79:102605",
+        "name": "Zumpo/Room bar",
+        "w": 350,
+        "h": 68,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Phone"
+        },
+        "componentId": "39:19277",
+        "props": {
+          "Game": "Daily Word"
+        },
+        "overrides": [
+          {
+            "path": "Room identity / Room context / Room",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Maya’s room",
+              "Tone": "Sand"
+            }
+          },
+          {
+            "path": "Room identity / Room context / Phase",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Word 2 of 3",
+              "Tone": "Blue"
+            }
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "79:102606",
+        "name": "Zumpo/Mobile tabs",
+        "w": 350,
+        "h": 34,
+        "hSize": "hug",
+        "component": "Zumpo/Mobile tabs",
+        "variant": {
+          "View": "Board"
+        },
+        "componentId": "9:416",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 34,
+            "width": 350
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "79:102607",
+        "name": "Zumpo/Turn bar",
+        "w": 350,
+        "h": 144,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Turn bar",
+        "variant": {
+          "Kind": "Status",
+          "Layout": "Phone"
+        },
+        "componentId": "27:22192",
+        "props": {
+          "Main": "Find the word",
+          "Category": false,
+          "Meta": "Maya found it",
+          "Label": "Word 2 of 3"
+        },
+        "overrides": [
+          {
+            "path": "Top / Eyebrow / Category",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Small · 9 × 9",
+              "Tone": "Sand"
+            }
+          },
+          {
+            "path": "Top / Countdown",
+            "componentProperties": {
+              "Label": "to guess",
+              "Time": "01:06",
+              "Tone": "Running"
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "79:102608",
+        "name": "Table",
+        "w": 350,
+        "h": 512,
+        "wSize": "fill",
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/20",
+          "pad": [
+            "$Zumpo · UI:space/8",
+            0
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "79:102674",
+            "name": "Your board",
+            "w": 272,
+            "h": 328,
+            "wSize": "hug",
+            "hSize": "hug",
+            "component": "Zumpo/Word board",
+            "variant": {
+              "Size": "Compact"
+            },
+            "componentId": "44:62975",
+            "overrides": [
+              {
+                "path": "Row 1 / Tile 1",
+                "componentProperties": {
+                  "Letter": "C",
+                  "State": "Absent",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 1 / Tile 2",
+                "componentProperties": {
+                  "Letter": "R",
+                  "State": "Absent",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 1 / Tile 3",
+                "componentProperties": {
+                  "Letter": "A",
+                  "State": "Absent",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 1 / Tile 4",
+                "componentProperties": {
+                  "Letter": "N",
+                  "State": "Absent",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 1 / Tile 5",
+                "componentProperties": {
+                  "Letter": "E",
+                  "State": "Absent",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 2 / Tile 1",
+                "componentProperties": {
+                  "Letter": "S",
+                  "State": "Present",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 2 / Tile 2",
+                "componentProperties": {
+                  "Letter": "O",
+                  "State": "Present",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 2 / Tile 3",
+                "componentProperties": {
+                  "Letter": "U",
+                  "State": "Absent",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 2 / Tile 4",
+                "componentProperties": {
+                  "Letter": "T",
+                  "State": "Present",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 2 / Tile 5",
+                "componentProperties": {
+                  "Letter": "H",
+                  "State": "Present",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 3 / Tile 1",
+                "componentProperties": {
+                  "Letter": "M",
+                  "State": "Absent",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 3 / Tile 2",
+                "componentProperties": {
+                  "Letter": "O",
+                  "State": "Present",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 3 / Tile 3",
+                "componentProperties": {
+                  "Letter": "I",
+                  "State": "Absent",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 3 / Tile 4",
+                "componentProperties": {
+                  "Letter": "S",
+                  "State": "Correct",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 3 / Tile 5",
+                "componentProperties": {
+                  "Letter": "T",
+                  "State": "Correct",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 4 / Tile 1",
+                "componentProperties": {
+                  "Letter": "G",
+                  "State": "Typed",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 4 / Tile 2",
+                "componentProperties": {
+                  "Letter": "H",
+                  "State": "Typed",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 4 / Tile 3",
+                "componentProperties": {
+                  "Letter": "O",
+                  "State": "Typed",
+                  "Size": "Compact"
+                }
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "79:102729",
+            "name": "Keyboard",
+            "w": 336,
+            "h": 148,
+            "wSize": "hug",
+            "hSize": "hug",
+            "component": "Zumpo/Keyboard",
+            "variant": {
+              "Layout": "Phone"
+            },
+            "componentId": "44:62289",
+            "overrides": [
+              {
+                "path": "Row 1 / Key / E",
+                "componentProperties": {
+                  "Letter": "E",
+                  "Kind": "Letter",
+                  "State": "Absent",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 1 / Key / R",
+                "componentProperties": {
+                  "Letter": "R",
+                  "Kind": "Letter",
+                  "State": "Absent",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 1 / Key / T",
+                "componentProperties": {
+                  "Letter": "T",
+                  "Kind": "Letter",
+                  "State": "Correct",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 1 / Key / U",
+                "componentProperties": {
+                  "Letter": "U",
+                  "Kind": "Letter",
+                  "State": "Absent",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 1 / Key / I",
+                "componentProperties": {
+                  "Letter": "I",
+                  "Kind": "Letter",
+                  "State": "Absent",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 1 / Key / O",
+                "componentProperties": {
+                  "Letter": "O",
+                  "Kind": "Letter",
+                  "State": "Present",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 2 / Key / A",
+                "componentProperties": {
+                  "Letter": "A",
+                  "Kind": "Letter",
+                  "State": "Absent",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 2 / Key / S",
+                "componentProperties": {
+                  "Letter": "S",
+                  "Kind": "Letter",
+                  "State": "Correct",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 2 / Key / H",
+                "componentProperties": {
+                  "Letter": "H",
+                  "Kind": "Letter",
+                  "State": "Present",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 3 / Key / C",
+                "componentProperties": {
+                  "Letter": "C",
+                  "Kind": "Letter",
+                  "State": "Absent",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 3 / Key / N",
+                "componentProperties": {
+                  "Letter": "N",
+                  "Kind": "Letter",
+                  "State": "Absent",
+                  "Size": "Compact"
+                }
+              },
+              {
+                "path": "Row 3 / Key / M",
+                "componentProperties": {
+                  "Letter": "M",
+                  "Kind": "Letter",
+                  "State": "Absent",
+                  "Size": "Compact"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "79:102622",
+        "name": "Footer",
+        "w": 350,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "79:102623",
+            "w": 350,
+            "h": 18,
+            "hSize": "hug",
+            "text": "A little play. Good company.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    ]
+  }
+}

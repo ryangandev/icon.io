@@ -12,6 +12,11 @@ export interface CountdownProps {
   label: string;
   /** Someone else is acting, or a reveal is on. */
   waiting?: boolean;
+  /**
+   * False for a clock that ends nothing you are doing, such as the time to a
+   * hint: it keeps its running tone to the end and never turns urgent.
+   */
+  deadline?: boolean;
   className?: string;
 }
 
@@ -26,11 +31,12 @@ export function Countdown({
   seconds,
   label,
   waiting = false,
+  deadline = true,
   className,
 }: CountdownProps) {
   const tone = waiting
     ? 'waiting'
-    : seconds <= URGENT_SECONDS
+    : deadline && seconds <= URGENT_SECONDS
       ? 'urgent'
       : 'running';
   return (

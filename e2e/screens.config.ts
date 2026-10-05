@@ -7,6 +7,9 @@ import { defineConfig, devices } from '@playwright/test';
  * only the rooms a screen means to show.
  */
 const PORT = Number(process.env.SCREENS_PORT ?? 3320);
+// Daily Word deals a room's words from this seed, so Figma's story plays the
+// same every time; the screens spec reads it to know the words.
+process.env.DAILY_WORD_SEED ??= 'figma';
 
 export default defineConfig({
   testDir: 'screens',
@@ -23,6 +26,10 @@ export default defineConfig({
     cwd: '..',
     url: `http://localhost:${PORT}`,
     reuseExistingServer: false,
-    env: { NODE_ENV: 'production', PORT: String(PORT) },
+    env: {
+      NODE_ENV: 'production',
+      PORT: String(PORT),
+      DAILY_WORD_SEED: process.env.DAILY_WORD_SEED,
+    },
   },
 });

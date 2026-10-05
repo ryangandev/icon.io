@@ -115,8 +115,8 @@
                 "componentId": "26:16856",
                 "props": {
                   "Meta": "10 mines · 2 hit so far",
-                  "Main": "Pick a cell",
-                  "Label": "Round 5"
+                  "Label": "Round 5",
+                  "Main": "Pick a cell"
                 },
                 "overrides": [
                   {
@@ -1056,6 +1056,7 @@
                   {
                     "path": "Player 1",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Picking",
                       "Host": false,
@@ -1076,6 +1077,7 @@
                   {
                     "path": "Player 2",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": true,
                       "Status": "Locked in",
                       "Host": false,
@@ -1094,8 +1096,21 @@
                     }
                   },
                   {
+                    "path": "Player 2 / Details / Status line / Status icon / lock",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 2 / Details / Status line / Status icon / lock",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
                     "path": "Player 3",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Picking",
                       "Host": false,
@@ -1116,6 +1131,7 @@
                   {
                     "path": "Player 4",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Picking",
                       "Host": true,
@@ -1153,6 +1169,7 @@
                   {
                     "path": "Messages / Message 1",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "good luck",
                       "Name": "Ryan",
                       "Kind": "Player"
@@ -1162,6 +1179,7 @@
                     "path": "Messages / Message 2",
                     "componentProperties": {
                       "Name": "System",
+                      "Alert icon": "24:5071",
                       "Message": "Maya hit a mine (11% risk): −109",
                       "Kind": "Alert"
                     }
@@ -1169,6 +1187,7 @@
                   {
                     "path": "Messages / Message 3",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "ouch",
                       "Name": "Maya",
                       "Kind": "Player"
@@ -1178,6 +1197,7 @@
                     "path": "Messages / Message 4",
                     "componentProperties": {
                       "Name": "System",
+                      "Alert icon": "24:5071",
                       "Message": "Ryan hit a mine (38% risk): −82",
                       "Kind": "Alert"
                     }
@@ -1185,6 +1205,7 @@
                   {
                     "path": "Messages / Message 5",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "how was that 38%",
                       "Name": "Ryan",
                       "Kind": "Player"

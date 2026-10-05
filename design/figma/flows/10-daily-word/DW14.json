@@ -1,0 +1,369 @@
+{
+  "format": 1,
+  "code": "DW14",
+  "title": "Phone · room players",
+  "id": "79:102804",
+  "section": "10 / Daily Word / complete flow",
+  "reviewNotes": [
+    "DW14 · 390 px room, Players tab: the scores, then the race as marks only."
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "79:102804",
+    "name": "DW14 / Phone · room players",
+    "x": 5640,
+    "y": 2552,
+    "w": 390,
+    "h": 1066,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        "$Zumpo · UI:space/20",
+        "$Zumpo · UI:space/20",
+        32,
+        "$Zumpo · UI:space/20"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "79:102805",
+        "name": "Zumpo/Room bar",
+        "w": 350,
+        "h": 68,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Phone"
+        },
+        "componentId": "39:19277",
+        "props": {
+          "Game": "Daily Word"
+        },
+        "overrides": [
+          {
+            "path": "Room identity / Room context / Room",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Maya’s room",
+              "Tone": "Sand"
+            }
+          },
+          {
+            "path": "Room identity / Room context / Phase",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Word 2 of 3",
+              "Tone": "Blue"
+            }
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "79:102806",
+        "name": "Zumpo/Mobile tabs",
+        "w": 350,
+        "h": 34,
+        "hSize": "hug",
+        "component": "Zumpo/Mobile tabs",
+        "variant": {
+          "View": "Players"
+        },
+        "componentId": "9:16075",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 34,
+            "width": 350
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "79:102880",
+        "name": "Zumpo/Scoreboard",
+        "w": 350,
+        "h": 304,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Scoreboard",
+        "componentId": "9:320",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 304,
+            "width": 350
+          },
+          {
+            "path": "Player 1",
+            "componentProperties": {
+              "Icon": "24:4994",
+              "You": false,
+              "Show score": true,
+              "Host": true,
+              "Name": "Maya",
+              "Score": "756",
+              "Status icon": true,
+              "Status": "Found it · +431",
+              "State": "Scored"
+            }
+          },
+          {
+            "path": "Player 1 / Avatar",
+            "componentProperties": {
+              "Initials": "MA",
+              "Tone": "Peach"
+            }
+          },
+          {
+            "path": "Player 1 / Details / Status line / Status icon / check",
+            "strokes": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "path": "Player 1 / Details / Status line / Status icon / check",
+            "strokes": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
+          {
+            "path": "Player 2",
+            "componentProperties": {
+              "Show score": true,
+              "Status icon": false,
+              "Status": "Guessing",
+              "Host": false,
+              "You": false,
+              "Score": "417",
+              "Icon": "24:5053",
+              "Name": "Ryan",
+              "State": "Default"
+            }
+          },
+          {
+            "path": "Player 3",
+            "componentProperties": {
+              "Show score": true,
+              "Status icon": false,
+              "Status": "Guessing",
+              "Host": false,
+              "You": true,
+              "Score": "314",
+              "Icon": "24:5053",
+              "Name": "Sam",
+              "State": "Default"
+            }
+          },
+          {
+            "path": "Player 3 / Avatar",
+            "componentProperties": {
+              "Initials": "SA",
+              "Tone": "Sand"
+            }
+          },
+          {
+            "path": "Player 4",
+            "componentProperties": {
+              "Show score": true,
+              "Status icon": false,
+              "Status": "Guessing",
+              "Host": false,
+              "You": false,
+              "Score": "205",
+              "Icon": "24:5053",
+              "Name": "Leo",
+              "State": "Default"
+            }
+          },
+          {
+            "path": "Player 4 / Avatar",
+            "componentProperties": {
+              "Initials": "LE",
+              "Tone": "Lime"
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "79:103067",
+        "name": "The others",
+        "w": 350,
+        "h": 494,
+        "wSize": "fill",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/24",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/16",
+          "pad": "$Zumpo · UI:space/20",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "79:103068",
+            "name": "Heading space",
+            "w": 174,
+            "h": 52,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "79:103069",
+                "w": 125,
+                "h": 30,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "The others",
+                "textStyle": "Zumpo/Heading",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "79:103070",
+                "w": 174,
+                "h": 18,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Their marks, never their letters",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/muted"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "79:103071",
+            "name": "Boards",
+            "w": 308,
+            "h": 384,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "wrap": true,
+              "crossGap": "$Zumpo · UI:space/12",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "79:103072",
+                "name": "Race board / Maya",
+                "w": 120,
+                "h": 186,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Race board",
+                "variant": {
+                  "State": "Found",
+                  "Board": "Mini"
+                },
+                "componentId": "44:63532"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "79:103113",
+                "name": "Race board / Ryan",
+                "w": 120,
+                "h": 186,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Race board",
+                "variant": {
+                  "State": "Guessing",
+                  "Board": "Mini"
+                },
+                "componentId": "44:63491",
+                "props": {
+                  "Status": "4 guesses",
+                  "Name": "Ryan"
+                }
+              },
+              {
+                "type": "INSTANCE",
+                "id": "79:103154",
+                "name": "Race board / Leo",
+                "w": 120,
+                "h": 186,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Race board",
+                "variant": {
+                  "State": "Guessing",
+                  "Board": "Mini"
+                },
+                "componentId": "44:63491",
+                "props": {
+                  "Status": "3 guesses",
+                  "Name": "Leo"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "79:102822",
+        "name": "Footer",
+        "w": 350,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "79:102823",
+            "w": 350,
+            "h": 18,
+            "hSize": "hug",
+            "text": "A little play. Good company.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,866 @@
+{
+  "format": 1,
+  "code": "LD09",
+  "title": "Room · your turn",
+  "id": "72:78706",
+  "section": "08 / Liar's Dice / complete flow",
+  "reviewNotes": [
+    "LD09 · Round 3, 10 dice on the table. Sam holds a 5 and a wild 1, so five 5s needs three more among the 8 dice he cannot see (about a third each). The picker opens on the smallest raise, five 6s; Fewer is off because four 6s is not a raise. 20 seconds a turn; out of time calls Liar."
+  ],
+  "frame": {
+    "type": "FRAME",
+    "id": "72:78706",
+    "name": "LD09 / Room · your turn",
+    "x": 40,
+    "y": 2950,
+    "w": 1440,
+    "h": 785,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        24,
+        "$Zumpo · UI:space/64",
+        32,
+        "$Zumpo · UI:space/64"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "72:78707",
+        "name": "Zumpo/Room bar",
+        "w": 1312,
+        "h": 48,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Desktop"
+        },
+        "componentId": "39:19276",
+        "props": {
+          "Game": "Liar’s Dice"
+        },
+        "overrides": [
+          {
+            "path": "Room identity / Room",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Maya’s room",
+              "Tone": "Sand"
+            }
+          },
+          {
+            "path": "Room identity / Phase",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Round 3",
+              "Tone": "Blue"
+            }
+          },
+          {
+            "path": "Action / Leave room",
+            "reactions": [
+              {
+                "on": "on_click",
+                "do": [
+                  {
+                    "nav": "navigate",
+                    "to": "9:2528",
+                    "toName": "ML01 / Room list · open, private, full and playing states",
+                    "transition": "dissolve"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "72:78708",
+        "name": "Board & room",
+        "w": 1312,
+        "h": 615,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/24",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "72:78709",
+            "name": "Board stage",
+            "w": 944,
+            "h": 552,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/16",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "72:78710",
+                "name": "Zumpo/Turn bar",
+                "w": 944,
+                "h": 92,
+                "wSize": "fill",
+                "hSize": "hug",
+                "component": "Zumpo/Turn bar",
+                "variant": {
+                  "Kind": "Status",
+                  "Layout": "Desktop"
+                },
+                "componentId": "26:16856",
+                "props": {
+                  "Meta": "Leo bid five 5s",
+                  "Label": "Your turn",
+                  "Main": "Raise, or call Liar",
+                  "Category": false
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 92,
+                    "width": 944
+                  },
+                  {
+                    "path": "Turn / Eyebrow / Category",
+                    "componentProperties": {
+                      "Icon": "24:5010",
+                      "Show icon": false,
+                      "Label": "Small · 9 × 9",
+                      "Tone": "Sand"
+                    }
+                  },
+                  {
+                    "path": "Countdown",
+                    "componentProperties": {
+                      "Label": "to bid",
+                      "Time": "00:12",
+                      "Tone": "Running"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "72:78711",
+                "name": "Table panel",
+                "w": 944,
+                "h": 444,
+                "wSize": "fill",
+                "hSize": "hug",
+                "fills": [
+                  "$Zumpo · UI:color/paper"
+                ],
+                "strokes": [
+                  "$Zumpo · UI:color/line"
+                ],
+                "strokeAlign": "inside",
+                "radius": "$Zumpo · UI:radius/24",
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/24",
+                  "pad": "$Zumpo · UI:space/24",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "FRAME",
+                    "id": "72:79081",
+                    "name": "Other cups",
+                    "w": 894,
+                    "h": 118,
+                    "wSize": "fill",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "row",
+                      "gap": "$Zumpo · UI:space/16",
+                      "wrap": true,
+                      "crossGap": 16,
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "INSTANCE",
+                        "id": "72:79082",
+                        "name": "Cup / Maya",
+                        "w": 211.5,
+                        "h": 118,
+                        "hSize": "hug",
+                        "component": "Zumpo/Cup",
+                        "variant": {
+                          "State": "Default",
+                          "Dice": "Compact",
+                          "Layout": "Stack"
+                        },
+                        "componentId": "44:62463",
+                        "props": {
+                          "Name": "Maya"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "counterAxisSizingMode": "FIXED",
+                            "height": 118,
+                            "width": 211.5
+                          },
+                          {
+                            "path": "Player / Avatar",
+                            "componentProperties": {
+                              "Initials": "MA",
+                              "Tone": "Peach"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "72:79102",
+                        "name": "Cup / Ryan",
+                        "w": 211.5,
+                        "h": 118,
+                        "hSize": "hug",
+                        "component": "Zumpo/Cup",
+                        "variant": {
+                          "State": "Default",
+                          "Dice": "Compact",
+                          "Layout": "Stack"
+                        },
+                        "componentId": "44:62463",
+                        "props": {
+                          "Detail": "2 dice",
+                          "Name": "Ryan"
+                        },
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "counterAxisSizingMode": "FIXED",
+                            "height": 118,
+                            "width": 211.5
+                          },
+                          {
+                            "path": "Player / Avatar",
+                            "componentProperties": {
+                              "Initials": "RG",
+                              "Tone": "Blue"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "72:79122",
+                        "name": "Cup / Leo",
+                        "w": 211.5,
+                        "h": 118,
+                        "hSize": "hug",
+                        "component": "Zumpo/Cup",
+                        "variant": {
+                          "State": "Default",
+                          "Dice": "Compact",
+                          "Layout": "Stack"
+                        },
+                        "componentId": "44:62463",
+                        "overrides": [
+                          {
+                            "path": ".",
+                            "counterAxisSizingMode": "FIXED",
+                            "height": 118,
+                            "width": 211.5
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "72:79141",
+                    "name": "Bids",
+                    "w": 894,
+                    "h": 76,
+                    "wSize": "fill",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "column",
+                      "gap": "$Zumpo · UI:space/8",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "72:79142",
+                        "name": "Label",
+                        "w": 103,
+                        "h": 20,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "text": "Bids this round",
+                        "textStyle": "Zumpo/Label",
+                        "fills": [
+                          "$Zumpo · UI:color/muted"
+                        ]
+                      },
+                      {
+                        "type": "FRAME",
+                        "id": "72:79143",
+                        "name": "Bid list",
+                        "w": 894,
+                        "h": 48,
+                        "wSize": "fill",
+                        "hSize": "hug",
+                        "clip": true,
+                        "layout": {
+                          "mode": "row",
+                          "gap": "$Zumpo · UI:space/8",
+                          "wrap": true,
+                          "crossGap": 8,
+                          "strokesIncluded": true
+                        },
+                        "children": [
+                          {
+                            "type": "INSTANCE",
+                            "id": "72:79144",
+                            "name": "Bid / Ryan 2 × 2",
+                            "w": 134,
+                            "h": 46,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "component": "Zumpo/Bid",
+                            "variant": {
+                              "Kind": "Earlier"
+                            },
+                            "componentId": "44:61992",
+                            "props": {
+                              "Count": "2",
+                              "Face": "Zumpo/Die / Face=2, State=Default, Size=Compact",
+                              "Name": "Ryan"
+                            },
+                            "overrides": [
+                              {
+                                "path": ".",
+                                "height": 46,
+                                "width": 134
+                              }
+                            ]
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "72:79156",
+                            "name": "Bid / Leo 2 × 5",
+                            "w": 125,
+                            "h": 46,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "component": "Zumpo/Bid",
+                            "variant": {
+                              "Kind": "Earlier"
+                            },
+                            "componentId": "44:61992",
+                            "props": {
+                              "Count": "2"
+                            },
+                            "overrides": [
+                              {
+                                "path": ".",
+                                "height": 46,
+                                "width": 125
+                              }
+                            ]
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "72:79171",
+                            "name": "Bid / You 3 × 5",
+                            "w": 125,
+                            "h": 46,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "component": "Zumpo/Bid",
+                            "variant": {
+                              "Kind": "Earlier"
+                            },
+                            "componentId": "44:61992",
+                            "props": {
+                              "Count": "3",
+                              "Name": "You"
+                            },
+                            "overrides": [
+                              {
+                                "path": ".",
+                                "height": 46,
+                                "width": 125
+                              }
+                            ]
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "72:79186",
+                            "name": "Bid / Maya 3 × 6",
+                            "w": 137,
+                            "h": 46,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "component": "Zumpo/Bid",
+                            "variant": {
+                              "Kind": "Earlier"
+                            },
+                            "componentId": "44:61992",
+                            "props": {
+                              "Count": "3",
+                              "Face": "Zumpo/Die / Face=6, State=Default, Size=Compact",
+                              "Name": "Maya"
+                            },
+                            "overrides": [
+                              {
+                                "path": ".",
+                                "height": 46,
+                                "width": 137
+                              }
+                            ]
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "72:79202",
+                            "name": "Bid / Ryan 4 × 5",
+                            "w": 135,
+                            "h": 46,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "component": "Zumpo/Bid",
+                            "variant": {
+                              "Kind": "Earlier"
+                            },
+                            "componentId": "44:61992",
+                            "props": {
+                              "Count": "4",
+                              "Name": "Ryan"
+                            },
+                            "overrides": [
+                              {
+                                "path": ".",
+                                "height": 46,
+                                "width": 135
+                              }
+                            ]
+                          },
+                          {
+                            "type": "INSTANCE",
+                            "id": "72:79217",
+                            "name": "Bid / Leo 5 × 5",
+                            "w": 128,
+                            "h": 48,
+                            "wSize": "hug",
+                            "hSize": "hug",
+                            "component": "Zumpo/Bid",
+                            "variant": {
+                              "Kind": "Latest"
+                            },
+                            "componentId": "44:61982"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "72:79232",
+                    "name": "Your cup",
+                    "w": 894,
+                    "h": 152,
+                    "wSize": "fill",
+                    "hSize": "hug",
+                    "clip": true,
+                    "layout": {
+                      "mode": "row",
+                      "gap": "$Zumpo · UI:space/32",
+                      "strokesIncluded": true
+                    },
+                    "children": [
+                      {
+                        "type": "INSTANCE",
+                        "id": "72:79233",
+                        "name": "Cup / Sam",
+                        "w": 220,
+                        "h": 144,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "component": "Zumpo/Cup",
+                        "variant": {
+                          "State": "Turn",
+                          "Dice": "Regular",
+                          "Layout": "Stack"
+                        },
+                        "componentId": "44:62389",
+                        "props": {
+                          "You": true,
+                          "Detail": "Your turn",
+                          "Name": "Sam"
+                        },
+                        "overrides": [
+                          {
+                            "path": "Player / Avatar",
+                            "componentProperties": {
+                              "Initials": "SA",
+                              "Tone": "Sand"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "INSTANCE",
+                        "id": "72:79272",
+                        "name": "Zumpo/Bid picker",
+                        "w": 518,
+                        "h": 152,
+                        "wSize": "hug",
+                        "hSize": "hug",
+                        "component": "Zumpo/Bid picker",
+                        "variant": {
+                          "Layout": "Desktop"
+                        },
+                        "componentId": "44:62778"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "72:78755",
+            "name": "Room sidebar",
+            "w": 344,
+            "h": 615,
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/24",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "72:78756",
+                "name": "Zumpo/Scoreboard",
+                "w": 344,
+                "h": 304,
+                "hSize": "hug",
+                "component": "Zumpo/Scoreboard",
+                "componentId": "9:320",
+                "overrides": [
+                  {
+                    "path": "Heading / Count",
+                    "characters": "4 / 6"
+                  },
+                  {
+                    "path": "Player 1",
+                    "componentProperties": {
+                      "Show score": true,
+                      "Status icon": false,
+                      "Status": "Up next",
+                      "Host": true,
+                      "You": false,
+                      "Score": "3",
+                      "Icon": "24:4994",
+                      "Name": "Maya",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 1 / Avatar",
+                    "componentProperties": {
+                      "Initials": "MA",
+                      "Tone": "Peach"
+                    }
+                  },
+                  {
+                    "path": "Player 1 / Details / Status line / Status icon / check",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 1 / Details / Status line / Status icon / check",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 2",
+                    "componentProperties": {
+                      "Show score": true,
+                      "Status icon": false,
+                      "Status": "Bid five 5s",
+                      "Host": false,
+                      "You": false,
+                      "Score": "3",
+                      "Icon": "24:4994",
+                      "Name": "Leo",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 2 / Avatar",
+                    "componentProperties": {
+                      "Initials": "LE",
+                      "Tone": "Lime"
+                    }
+                  },
+                  {
+                    "path": "Player 2 / Details / Status line / Status icon / check",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 2 / Details / Status line / Status icon / check",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3",
+                    "componentProperties": {
+                      "Show score": true,
+                      "Icon": "24:5071",
+                      "Status icon": false,
+                      "You": true,
+                      "Name": "Sam",
+                      "Status": "Bidding",
+                      "Host": false,
+                      "Score": "2",
+                      "State": "Highlight"
+                    }
+                  },
+                  {
+                    "path": "Player 3 / Avatar",
+                    "componentProperties": {
+                      "Initials": "SA",
+                      "Tone": "Sand"
+                    }
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 4",
+                    "componentProperties": {
+                      "Show score": true,
+                      "Status icon": false,
+                      "Status": "Bid four 5s",
+                      "Host": false,
+                      "You": false,
+                      "Score": "2",
+                      "Icon": "24:4994",
+                      "Name": "Ryan",
+                      "State": "Default"
+                    }
+                  },
+                  {
+                    "path": "Player 4 / Avatar",
+                    "componentProperties": {
+                      "Initials": "RG",
+                      "Tone": "Blue"
+                    }
+                  },
+                  {
+                    "path": "Player 4 / Details / Status line / Status icon / check",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 4 / Details / Status line / Status icon / check",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "72:78757",
+                "name": "Zumpo/Chat",
+                "w": 344,
+                "h": 287,
+                "hSize": "hug",
+                "component": "Zumpo/Chat",
+                "componentId": "9:334",
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 287,
+                    "width": 344
+                  },
+                  {
+                    "path": "Messages / Message 1",
+                    "componentProperties": {
+                      "Alert icon": "24:4999",
+                      "Name": "Ryan",
+                      "Message": "Ryan called Liar on four 3s: there were five. Ryan loses a die.",
+                      "Kind": "System"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 2",
+                    "componentProperties": {
+                      "Alert icon": "24:4999",
+                      "Message": "five. trust me",
+                      "Name": "Leo",
+                      "Kind": "Player"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 3",
+                    "componentProperties": {
+                      "Alert icon": "24:4999",
+                      "Message": "sure, Leo",
+                      "Name": "Maya",
+                      "Kind": "Player"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 4",
+                    "componentProperties": {
+                      "Alert icon": "24:4999",
+                      "Message": "hmm",
+                      "Name": "Sam",
+                      "Kind": "Player"
+                    }
+                  },
+                  {
+                    "path": "Messages / Message 5",
+                    "visible": false
+                  },
+                  {
+                    "path": "Messages / Message 6",
+                    "visible": false
+                  },
+                  {
+                    "path": "Chat input",
+                    "componentProperties": {
+                      "Placeholder": "Say something…",
+                      "State": "Default"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "72:78758",
+        "name": "Footer",
+        "w": 1312,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "72:78759",
+            "w": 650,
+            "h": 18,
+            "hSize": "hug",
+            "text": "Good company. One more round.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "72:78760",
+            "w": 115,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "zumpo. / play a little",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

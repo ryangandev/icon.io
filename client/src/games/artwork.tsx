@@ -1,11 +1,17 @@
 import {
+  Die,
+  HushCard,
+  LetterTile,
+  Lives,
   MineCell,
   NumberCard,
   PairsCard,
   PickMarker,
   symbolNamed,
   Tag,
+  TriosCard,
 } from '../ui';
+import { cx } from '../ui/cx';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import {
   turtle,
@@ -25,8 +31,16 @@ export function GameArtwork({ type }: { type: GameType }) {
         <BoardArtwork />
       ) : type === 'make-24' ? (
         <HandArtwork />
-      ) : (
+      ) : type === 'liars-dice' ? (
+        <DiceArtwork />
+      ) : type === 'pairs' ? (
         <PairsArtwork />
+      ) : type === 'trios' ? (
+        <TriosArtwork />
+      ) : type === 'hush' ? (
+        <PileArtwork />
+      ) : (
+        <WordArtwork />
       )}
     </div>
   );
@@ -126,6 +140,27 @@ function PairsArtwork() {
   );
 }
 
+/**
+ * A table at a call: the dice that count towards five 5s, a wild one among
+ * them, one that does not, and cups still hidden. A phone keeps the first four.
+ */
+function DiceArtwork() {
+  return (
+    <div className={styles.dice}>
+      <Die face="hidden" label={null} />
+      <Die face={5} state="counted" label={null} />
+      <Die face={1} state="wild" label={null} />
+      <Die face={5} state="counted" label={null} />
+      <span className={styles.lastCell}>
+        <Die face={2} state="dim" label={null} />
+      </span>
+      <span className={styles.lastCell}>
+        <Die face="hidden" label={null} />
+      </span>
+    </div>
+  );
+}
+
 /** A strip of a board mid-game: numbers, a safe pick, a mine. */
 function BoardArtwork() {
   return (
@@ -143,6 +178,67 @@ function BoardArtwork() {
       <span className={styles.lastCell}>
         <MineCell state={{ kind: 'open', adjacent: 1 }} row={0} column={5} />
       </span>
+    </div>
+  );
+}
+
+/** A card that is not in it, and a trio found: every feature different. */
+function TriosArtwork() {
+  // A phone's narrower card shows only the trio, as mini cards.
+  const phone = useMediaQuery(PHONE);
+  const size = phone ? 'mini' : 'compact';
+  return (
+    <div className={styles.trios}>
+      {!phone && <TriosCard card={37} size={size} />}
+      {[0, 40, 80].map((card) => (
+        <TriosCard key={card} card={card} state="found" size={size} />
+      ))}
+    </div>
+  );
+}
+
+/**
+ * A pile mid-level: three cards played, the top one, and two lives left. A
+ * phone keeps the pile's top three, as MO03 draws it.
+ */
+function PileArtwork() {
+  return (
+    <div className={styles.pile}>
+      {[12, 27, 45].map((value, index) => (
+        <HushCard
+          key={value}
+          value={value}
+          state="played"
+          size="small"
+          className={index === 0 ? styles.wideOnly : undefined}
+        />
+      ))}
+      <HushCard value={58} state="pile" size="small" />
+      <Lives
+        lives={2}
+        showLabel={false}
+        className={cx(styles.lives, styles.wideOnly)}
+      />
+    </div>
+  );
+}
+
+/** A guess against PLANT: two letters elsewhere, one in place, two not in it.
+    The phone card keeps the first three, as MO03 does. */
+function WordArtwork() {
+  const marks = ['present', 'absent', 'correct', 'absent', 'present'] as const;
+  const tiles = [...'TRAIL'].map((letter, index) => (
+    <LetterTile
+      key={index}
+      letter={letter}
+      state={marks[index]}
+      size="regular"
+    />
+  ));
+  return (
+    <div className={styles.word}>
+      {tiles.slice(0, 3)}
+      <span className={styles.wordTail}>{tiles.slice(3)}</span>
     </div>
   );
 }

@@ -1,5 +1,4 @@
 import { chatRequest, parseArgs } from '../validation.js';
-import type { PlayerSessionRegistry } from '../player-session.js';
 import type { RoomRegistry } from './registry.js';
 import { onClientEvent, type IoSocket } from './emit.js';
 
@@ -13,19 +12,14 @@ import { onClientEvent, type IoSocket } from './emit.js';
  * leaves as chat is posted to the whole room, the sender included, under the
  * name on their seat.
  */
-const chatEventsHandler = (
-  socket: IoSocket,
-  registry: RoomRegistry,
-  sessions: PlayerSessionRegistry,
-) => {
+const chatEventsHandler = (socket: IoSocket, registry: RoomRegistry) => {
   onClientEvent(socket, 'chat:send', (...rawArgs: unknown[]) => {
     const validated = parseArgs(chatRequest, rawArgs, 'chat:send');
     if (!validated) return;
     const [roomId, text] = validated;
 
     // Only players in the room may talk in it.
-    const playerId = sessions.playerIdFor(socket.id);
-    if (!playerId) return;
+    const playerId = socket.data.playerId;
     const room = registry.lookup.get(roomId);
     if (!room?.playerList[playerId]) return;
 

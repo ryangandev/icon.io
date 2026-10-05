@@ -115,8 +115,8 @@
                 "componentId": "26:16856",
                 "props": {
                   "Meta": "99 mines · 4 hit so far",
-                  "Main": "Pick a cell",
-                  "Label": "Round 19"
+                  "Label": "Round 19",
+                  "Main": "Pick a cell"
                 },
                 "overrides": [
                   {
@@ -3147,6 +3147,7 @@
                   {
                     "path": "Player 1",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Picking",
                       "Host": true,
@@ -3167,6 +3168,7 @@
                   {
                     "path": "Player 2",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": true,
                       "Status": "Locked in",
                       "Host": false,
@@ -3178,8 +3180,21 @@
                     }
                   },
                   {
+                    "path": "Player 2 / Details / Status line / Status icon / lock",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 2 / Details / Status line / Status icon / lock",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
                     "path": "Player 3",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Picking",
                       "Host": false,
@@ -3200,6 +3215,7 @@
                   {
                     "path": "Player 4",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": true,
                       "Status": "Locked in",
                       "Host": false,
@@ -3216,6 +3232,18 @@
                       "Initials": "LE",
                       "Tone": "Lime"
                     }
+                  },
+                  {
+                    "path": "Player 4 / Details / Status line / Status icon / lock",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 4 / Details / Status line / Status icon / lock",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
                   }
                 ]
               },
@@ -3237,6 +3265,7 @@
                   {
                     "path": "Messages / Message 1",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "this board is huge",
                       "Name": "Leo",
                       "Kind": "Player"
@@ -3245,6 +3274,7 @@
                   {
                     "path": "Messages / Message 2",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "take the zeros",
                       "Name": "Maya",
                       "Kind": "Player"
@@ -3253,6 +3283,7 @@
                   {
                     "path": "Messages / Message 3",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "there are no zeros left",
                       "Name": "Ryan",
                       "Kind": "Player"

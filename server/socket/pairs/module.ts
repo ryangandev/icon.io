@@ -40,9 +40,6 @@ const createPairsModule = (
     onDisconnect: () => {},
     onReturn: () => {},
 
-    disposeRoom: (roomId) => engine.disposeRoom(roomId),
-    dispose: () => engine.dispose(),
-
     registerHandlers: (socket: IoSocket) => {
       onClientEvent(socket, 'pairs:flip', (...rawArgs: unknown[]) => {
         const validated = parseArgs(flipRequest, rawArgs, 'pairs:flip');
@@ -50,8 +47,7 @@ const createPairsModule = (
         const [roomId, index] = validated;
 
         // Identity comes from the connection, never from the payload.
-        const playerId = ctx.sessions.playerIdFor(socket.id);
-        if (!playerId) return;
+        const playerId = socket.data.playerId;
 
         engine.flip(roomId, playerId, index);
       });

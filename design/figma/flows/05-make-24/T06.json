@@ -127,8 +127,9 @@
                 "componentId": "26:16856",
                 "props": {
                   "Meta": "Use each number once",
+                  "Label": "Hand 3 of 5",
                   "Main": "Make 24",
-                  "Label": "Hand 3 of 5"
+                  "Category": false
                 },
                 "overrides": [
                   {
@@ -143,8 +144,7 @@
                       "Show icon": false,
                       "Label": "Small · 9 × 9",
                       "Tone": "Sand"
-                    },
-                    "visible": false
+                    }
                   },
                   {
                     "path": "Countdown",
@@ -556,6 +556,7 @@
                     "componentProperties": {
                       "Icon": "24:4994",
                       "You": false,
+                      "Show score": true,
                       "Host": true,
                       "Name": "Maya",
                       "Score": "342",
@@ -572,8 +573,21 @@
                     }
                   },
                   {
+                    "path": "Player 1 / Details / Status line / Status icon / check",
+                    "strokes": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  },
+                  {
+                    "path": "Player 1 / Details / Status line / Status icon / check",
+                    "strokes": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  },
+                  {
                     "path": "Player 2",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Solving",
                       "Host": false,
@@ -592,8 +606,21 @@
                     }
                   },
                   {
+                    "path": "Player 2 / Details / Status line / Status icon / check",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 2 / Details / Status line / Status icon / check",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
                     "path": "Player 3",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Solving",
                       "Host": false,
@@ -612,8 +639,63 @@
                     }
                   },
                   {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 3 / Details / Status line / Status icon / mine",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
                     "path": "Player 4",
                     "componentProperties": {
+                      "Show score": true,
                       "Status icon": false,
                       "Status": "Solving",
                       "Host": false,
@@ -630,6 +712,18 @@
                       "Initials": "LE",
                       "Tone": "Lime"
                     }
+                  },
+                  {
+                    "path": "Player 4 / Details / Status line / Status icon / check",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  },
+                  {
+                    "path": "Player 4 / Details / Status line / Status icon / check",
+                    "strokes": [
+                      "$Zumpo · UI:color/muted"
+                    ]
                   }
                 ]
               },
@@ -651,6 +745,7 @@
                   {
                     "path": "Messages / Message 1",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "good luck",
                       "Name": "Ryan",
                       "Kind": "Player"
@@ -659,6 +754,7 @@
                   {
                     "path": "Messages / Message 2",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Name": "System",
                       "Message": "Maya solved it! (+127)",
                       "Kind": "Success"
@@ -667,6 +763,7 @@
                   {
                     "path": "Messages / Message 3",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Message": "already?!",
                       "Name": "Leo",
                       "Kind": "Player"
@@ -675,6 +772,7 @@
                   {
                     "path": "Messages / Message 4",
                     "componentProperties": {
+                      "Alert icon": "24:4999",
                       "Name": "System",
                       "Message": "Ryan hit a mine (38% risk): −82",
                       "Kind": "Alert"

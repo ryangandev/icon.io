@@ -1,30 +1,46 @@
 import type { AddressInfo } from 'node:net';
 import { io as createClient, type Socket } from 'socket.io-client';
-import { createZumpoServer, type ZumpoServer } from '../../app.js';
+import {
+  createZumpoServer,
+  type CreateZumpoServerOptions,
+  type ZumpoServer,
+} from '../../app.js';
 import type {
+  LiarsDiceDurationsInSeconds,
+  DailyWordDurationsInSeconds,
+  HushDurationsInSeconds,
   Make24DurationsInSeconds,
   MinesweeperDurationsInSeconds,
   PairsDurationsInSeconds,
   PhaseDurationsInSeconds,
+  TriosDurationsInSeconds,
 } from '../../libs/game-clock.js';
 import type { MinesweeperState } from '../../socket/minesweeper/index.js';
 import type { Make24State } from '../../socket/make-24/index.js';
 import type { PairsState } from '../../socket/pairs/index.js';
+import type { TriosState } from '../../socket/trios/index.js';
+import type { LiarsDiceState } from '../../socket/liars-dice/index.js';
+import type { HushState } from '../../socket/hush/index.js';
+import type { DailyWordState } from '../../socket/daily-word/index.js';
 import type {
   AnyLobbyRoomInfo,
   AnyRoomState,
   ChatMessage,
   ClientToServerEvents,
+  DailyWordRoomState,
   DrawAndGuessRoomState,
   DrawAndGuessState,
   GameType,
   HandshakeAuth,
+  LiarsDiceRoomState,
+  HushRoomState,
   Make24RoomState,
   MinesweeperDifficulty,
   MinesweeperRoomState,
   PairsBoard,
   PairsRoomState,
   PlayerIdentity,
+  TriosRoomState,
   ServerToClientEvent,
   ServerToClientEvents,
 } from '../../models/types.js';
@@ -74,6 +90,44 @@ const FAST_PAIRS: PairsDurationsInSeconds = {
   show: 0.3,
 };
 
+/**
+ * A taken trio on show long enough to assert on, a lockout that outlasts a
+ * second claim, and hints that come quickly but not before a test can claim.
+ */
+const FAST_TRIOS: TriosDurationsInSeconds = {
+  taken: 0.3,
+  lockout: 0.5,
+  hint: 0.8,
+};
+
+/**
+ * A turn long enough to bid or call deliberately inside it, and a reveal long
+ * enough to assert on before the next round is rolled.
+ */
+const FAST_LIARS_DICE: LiarsDiceDurationsInSeconds = {
+  turn: 1,
+  reveal: 0.3,
+};
+
+/**
+ * A countdown and a mistake long enough to assert on inside them, and a
+ * cleared level short enough that a game of several levels fits in a test.
+ */
+const FAST_HUSH: HushDurationsInSeconds = {
+  countdown: 0.2,
+  mistake: 0.3,
+  cleared: 0.2,
+};
+
+/**
+ * A round long enough to type several guesses deliberately inside it, and
+ * results short enough that a game of three words still finishes in a test.
+ */
+const FAST_DAILY_WORD: DailyWordDurationsInSeconds = {
+  round: 2,
+  reveal: 0.1,
+};
+
 /** A client socket typed on the contract, from the client's side of it. */
 type ClientSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -116,6 +170,7 @@ const startTestServer = async (
   minesweeperDurations: MinesweeperDurationsInSeconds = FAST_MINESWEEPER,
   make24Durations: Make24DurationsInSeconds = FAST_MAKE24,
   pairsDurations: PairsDurationsInSeconds = FAST_PAIRS,
+  overrides: CreateZumpoServerOptions = {},
 ): Promise<TestServer> => {
   const server = createZumpoServer({
     serveClient: false,
@@ -123,7 +178,12 @@ const startTestServer = async (
     minesweeperDurations,
     make24Durations,
     pairsDurations,
+    triosDurations: FAST_TRIOS,
+    liarsDiceDurations: FAST_LIARS_DICE,
+    hushDurations: FAST_HUSH,
+    dailyWordDurations: FAST_DAILY_WORD,
     graceInSeconds,
+    ...overrides,
   });
 
   await new Promise<void>((resolve) => {
@@ -260,6 +320,34 @@ const waitForPairsState = (
   predicate: (state: PairsRoomState) => boolean = () => true,
   timeoutMs = 3000,
 ) => waitForState<PairsRoomState>(client, predicate, timeoutMs);
+
+/** And for Trios. */
+const waitForTriosState = (
+  client: ClientSocket,
+  predicate: (state: TriosRoomState) => boolean = () => true,
+  timeoutMs = 3000,
+) => waitForState<TriosRoomState>(client, predicate, timeoutMs);
+
+/** And for Liar's Dice. */
+const waitForLiarsDiceState = (
+  client: ClientSocket,
+  predicate: (state: LiarsDiceRoomState) => boolean = () => true,
+  timeoutMs = 3000,
+) => waitForState<LiarsDiceRoomState>(client, predicate, timeoutMs);
+
+/** And for Hush. */
+const waitForHushState = (
+  client: ClientSocket,
+  predicate: (state: HushRoomState) => boolean = () => true,
+  timeoutMs = 3000,
+) => waitForState<HushRoomState>(client, predicate, timeoutMs);
+
+/** And for Daily Word. */
+const waitForDailyWordState = (
+  client: ClientSocket,
+  predicate: (state: DailyWordRoomState) => boolean = () => true,
+  timeoutMs = 3000,
+) => waitForState<DailyWordRoomState>(client, predicate, timeoutMs);
 
 /** Resolves with the next chat message that satisfies `predicate`. */
 const waitForChat = async (
@@ -418,6 +506,61 @@ const createPairsRoom = async (
   return answer.roomId;
 };
 
+/** Creates a Trios room, with its creator seated, and returns its id. */
+const createTriosRoom = async (
+  client: ClientSocket,
+  options: { username?: string; trios?: number; maxPlayers?: number } = {},
+): Promise<string> => {
+  const answer = await client.timeout(3000).emitWithAck('room:create', {
+    gameType: 'trios',
+    roomName: 'Odd ones in',
+    username: options.username ?? 'Owner',
+    maxPlayers: options.maxPlayers ?? 4,
+    password: '',
+    settings: { trios: options.trios ?? 10 },
+  });
+  if (!answer.ok) throw new Error(`room:create refused: ${answer.error.type}`);
+  return answer.roomId;
+};
+
+/** Creates a Liar's Dice room, with its creator seated, and returns its id. */
+const createLiarsDiceRoom = async (
+  client: ClientSocket,
+  options: {
+    username?: string;
+    dicePerPlayer?: number;
+    maxPlayers?: number;
+  } = {},
+): Promise<string> => {
+  const answer = await client.timeout(3000).emitWithAck('room:create', {
+    gameType: 'liars-dice',
+    roomName: 'Tavern',
+    username: options.username ?? 'Owner',
+    maxPlayers: options.maxPlayers ?? 4,
+    password: '',
+    settings: { dicePerPlayer: options.dicePerPlayer ?? 3 },
+  });
+  if (!answer.ok) throw new Error(`room:create refused: ${answer.error.type}`);
+  return answer.roomId;
+};
+
+/** Creates a Hush room, with its creator seated, and returns its id. */
+const createHushRoom = async (
+  client: ClientSocket,
+  options: { username?: string; maxPlayers?: number } = {},
+): Promise<string> => {
+  const answer = await client.timeout(3000).emitWithAck('room:create', {
+    gameType: 'hush',
+    roomName: 'Quiet corner',
+    username: options.username ?? 'Owner',
+    maxPlayers: options.maxPlayers ?? 4,
+    password: '',
+    settings: {},
+  });
+  if (!answer.ok) throw new Error(`room:create refused: ${answer.error.type}`);
+  return answer.roomId;
+};
+
 /** Takes a seat, and fails the test if the server refuses it. */
 const joinRoom = async (
   client: ClientSocket,
@@ -525,7 +668,7 @@ const serverRoom = (
   harness: TestServer,
   roomId: string,
 ): Room<DrawAndGuessState> =>
-  harness.server.rooms[roomId] as Room<DrawAndGuessState>;
+  harness.server.rooms.get(roomId) as Room<DrawAndGuessState>;
 
 /**
  * The same, for Minesweeper. Tests reach through to the hidden layout on
@@ -536,11 +679,11 @@ const minesweeperRoom = (
   harness: TestServer,
   roomId: string,
 ): Room<MinesweeperState> =>
-  harness.server.rooms[roomId] as Room<MinesweeperState>;
+  harness.server.rooms.get(roomId) as Room<MinesweeperState>;
 
 /** The server's own Make 24 room, with every hand of the game in it. */
 const make24Room = (harness: TestServer, roomId: string): Room<Make24State> =>
-  harness.server.rooms[roomId] as Room<Make24State>;
+  harness.server.rooms.get(roomId) as Room<Make24State>;
 
 /** Seats Alice and Bob in a Make 24 room and deals the first hand. */
 const playToFirstHand = async (harness: TestServer, hands = 5) => {
@@ -567,7 +710,83 @@ const playToFirstHand = async (harness: TestServer, hands = 5) => {
  * deliberately, and it is exactly what a client is never sent.
  */
 const pairsRoom = (harness: TestServer, roomId: string): Room<PairsState> =>
-  harness.server.rooms[roomId] as Room<PairsState>;
+  harness.server.rooms.get(roomId) as Room<PairsState>;
+
+/**
+ * The server's own Trios room. Tests read the deck through it to know what is
+ * coming; the table they can read off any snapshot, as a player could.
+ */
+const triosRoom = (harness: TestServer, roomId: string): Room<TriosState> =>
+  harness.server.rooms.get(roomId) as Room<TriosState>;
+
+/**
+ * The server's own Liar's Dice room. Tests read and set the dice through it on
+ * purpose: a call can only be played deliberately by knowing what the cups
+ * hold, which is exactly what a client is never sent.
+ */
+const liarsDiceRoom = (
+  harness: TestServer,
+  roomId: string,
+): Room<LiarsDiceState> =>
+  harness.server.rooms.get(roomId) as Room<LiarsDiceState>;
+
+/**
+ * The server's own Hush room. Tests read the hands through it on purpose:
+ * knowing who holds what is the only way to play a mistake deliberately, and
+ * it is exactly what a client is never sent.
+ */
+const hushRoom = (harness: TestServer, roomId: string): Room<HushState> =>
+  harness.server.rooms.get(roomId) as Room<HushState>;
+
+/** Creates a Daily Word room, with its creator seated, and returns its id. */
+const createDailyWordRoom = async (
+  client: ClientSocket,
+  options: { username?: string; rounds?: number; maxPlayers?: number } = {},
+): Promise<string> => {
+  const answer = await client.timeout(3000).emitWithAck('room:create', {
+    gameType: 'daily-word',
+    roomName: 'Word table',
+    username: options.username ?? 'Owner',
+    maxPlayers: options.maxPlayers ?? 4,
+    password: '',
+    settings: { rounds: options.rounds ?? 3 },
+  });
+  if (!answer.ok) throw new Error(`room:create refused: ${answer.error.type}`);
+  return answer.roomId;
+};
+
+/**
+ * The server's own Daily Word room. Tests read the words through it on
+ * purpose: knowing the word is the only way to find it deliberately, and it is
+ * exactly what a client is never sent.
+ */
+const dailyWordRoom = (
+  harness: TestServer,
+  roomId: string,
+): Room<DailyWordState> =>
+  harness.server.rooms.get(roomId) as Room<DailyWordState>;
+
+/** Seats Alice and Bob in a Daily Word room and opens the first word. */
+const playToFirstWord = async (harness: TestServer, rounds = 3) => {
+  const alice = await harness.connect();
+  const bob = await harness.connect();
+
+  const roomId = await createDailyWordRoom(alice, {
+    username: 'Alice',
+    rounds,
+  });
+  await joinRoom(bob, roomId, 'Bob');
+
+  const round = waitForDailyWordState(
+    alice,
+    (state) => state.phase === 'guessing' && state.round === 1,
+    5000,
+  );
+  await startGame(alice, roomId);
+  const first = await round;
+
+  return { roomId, alice, bob, first };
+};
 
 /** Seats two players in a Minesweeper room and opens the first round. */
 const playToFirstRound = async (harness: TestServer) => {
@@ -594,6 +813,10 @@ export {
   FAST_MINESWEEPER,
   FAST_MAKE24,
   FAST_PAIRS,
+  FAST_TRIOS,
+  FAST_LIARS_DICE,
+  FAST_HUSH,
+  FAST_DAILY_WORD,
   startTestServer,
   waitFor,
   waitForState,
@@ -601,6 +824,10 @@ export {
   waitForMineState,
   waitForMake24State,
   waitForPairsState,
+  waitForTriosState,
+  waitForLiarsDiceState,
+  waitForHushState,
+  waitForDailyWordState,
   waitForChat,
   collect,
   collectChat,
@@ -611,6 +838,10 @@ export {
   createMinesweeperRoom,
   createMake24Room,
   createPairsRoom,
+  createTriosRoom,
+  createLiarsDiceRoom,
+  createHushRoom,
+  createDailyWordRoom,
   joinRoom,
   startGame,
   syncRoom,
@@ -623,5 +854,10 @@ export {
   make24Room,
   playToFirstHand,
   pairsRoom,
+  triosRoom,
+  liarsDiceRoom,
+  hushRoom,
+  dailyWordRoom,
+  playToFirstWord,
 };
 export type { TestServer, TestClient, ClientSocket };

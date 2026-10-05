@@ -39,7 +39,11 @@ export function TurnBar({
   return (
     <div className={cx(styles.container, className)}>
       <section
-        className={cx(styles.bar, category == null && styles.untagged)}
+        className={cx(
+          styles.bar,
+          category == null && styles.untagged,
+          category == null && !countdown && styles.topless,
+        )}
         aria-label="Turn"
       >
         {category != null && <Tag className={styles.tag}>{category}</Tag>}

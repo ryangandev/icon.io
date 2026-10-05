@@ -1,0 +1,51 @@
+/* Zumpo/Race board. The outline is an inset shadow, so a find never moves
+   the boards beside it. */
+.race {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--zumpo-space-8);
+  padding: var(--zumpo-space-12);
+  border-radius: var(--zumpo-radius-12);
+  box-shadow: inset 0 0 0 1px var(--zumpo-line);
+  background: var(--zumpo-paper);
+}
+
+.small {
+  gap: var(--zumpo-space-12);
+  padding: var(--zumpo-space-16);
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  /* A long name is cut short rather than widening the board. */
+  contain: inline-size;
+}
+
+.name {
+  overflow: hidden;
+  font: var(--zumpo-text-label);
+  letter-spacing: var(--zumpo-text-label-tracking);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-small);
+  letter-spacing: var(--zumpo-text-small-tracking);
+  white-space: nowrap;
+}
+
+.found {
+  box-shadow: inset 0 0 0 2px var(--zumpo-green);
+}
+
+.found .status {
+  color: var(--zumpo-green);
+}
+
+.out {
+  background: var(--zumpo-cream);
+}
