@@ -2,6 +2,7 @@ import type { AddressInfo } from 'node:net';
 import { io as createClient, type Socket } from 'socket.io-client';
 import { createZumpoServer, type ZumpoServer } from '../../app.js';
 import type {
+  HushDurationsInSeconds,
   Make24DurationsInSeconds,
   MinesweeperDurationsInSeconds,
   PairsDurationsInSeconds,
@@ -10,6 +11,7 @@ import type {
 import type { MinesweeperState } from '../../socket/minesweeper/index.js';
 import type { Make24State } from '../../socket/make-24/index.js';
 import type { PairsState } from '../../socket/pairs/index.js';
+import type { HushState } from '../../socket/hush/index.js';
 import type {
   AnyLobbyRoomInfo,
   AnyRoomState,
@@ -19,6 +21,7 @@ import type {
   DrawAndGuessState,
   GameType,
   HandshakeAuth,
+  HushRoomState,
   Make24RoomState,
   MinesweeperDifficulty,
   MinesweeperRoomState,
@@ -74,6 +77,16 @@ const FAST_PAIRS: PairsDurationsInSeconds = {
   show: 0.3,
 };
 
+/**
+ * A countdown and a mistake long enough to assert on inside them, and a
+ * cleared level short enough that a game of several levels fits in a test.
+ */
+const FAST_HUSH: HushDurationsInSeconds = {
+  countdown: 0.2,
+  mistake: 0.3,
+  cleared: 0.2,
+};
+
 /** A client socket typed on the contract, from the client's side of it. */
 type ClientSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -116,6 +129,7 @@ const startTestServer = async (
   minesweeperDurations: MinesweeperDurationsInSeconds = FAST_MINESWEEPER,
   make24Durations: Make24DurationsInSeconds = FAST_MAKE24,
   pairsDurations: PairsDurationsInSeconds = FAST_PAIRS,
+  hushDurations: HushDurationsInSeconds = FAST_HUSH,
 ): Promise<TestServer> => {
   const server = createZumpoServer({
     serveClient: false,
@@ -123,6 +137,7 @@ const startTestServer = async (
     minesweeperDurations,
     make24Durations,
     pairsDurations,
+    hushDurations,
     graceInSeconds,
   });
 
@@ -260,6 +275,13 @@ const waitForPairsState = (
   predicate: (state: PairsRoomState) => boolean = () => true,
   timeoutMs = 3000,
 ) => waitForState<PairsRoomState>(client, predicate, timeoutMs);
+
+/** And for Hush. */
+const waitForHushState = (
+  client: ClientSocket,
+  predicate: (state: HushRoomState) => boolean = () => true,
+  timeoutMs = 3000,
+) => waitForState<HushRoomState>(client, predicate, timeoutMs);
 
 /** Resolves with the next chat message that satisfies `predicate`. */
 const waitForChat = async (
@@ -418,6 +440,23 @@ const createPairsRoom = async (
   return answer.roomId;
 };
 
+/** Creates a Hush room, with its creator seated, and returns its id. */
+const createHushRoom = async (
+  client: ClientSocket,
+  options: { username?: string; maxPlayers?: number } = {},
+): Promise<string> => {
+  const answer = await client.timeout(3000).emitWithAck('room:create', {
+    gameType: 'hush',
+    roomName: 'Quiet corner',
+    username: options.username ?? 'Owner',
+    maxPlayers: options.maxPlayers ?? 4,
+    password: '',
+    settings: {},
+  });
+  if (!answer.ok) throw new Error(`room:create refused: ${answer.error.type}`);
+  return answer.roomId;
+};
+
 /** Takes a seat, and fails the test if the server refuses it. */
 const joinRoom = async (
   client: ClientSocket,
@@ -569,6 +608,14 @@ const playToFirstHand = async (harness: TestServer, hands = 5) => {
 const pairsRoom = (harness: TestServer, roomId: string): Room<PairsState> =>
   harness.server.rooms[roomId] as Room<PairsState>;
 
+/**
+ * The server's own Hush room. Tests read the hands through it on purpose:
+ * knowing who holds what is the only way to play a mistake deliberately, and
+ * it is exactly what a client is never sent.
+ */
+const hushRoom = (harness: TestServer, roomId: string): Room<HushState> =>
+  harness.server.rooms[roomId] as Room<HushState>;
+
 /** Seats two players in a Minesweeper room and opens the first round. */
 const playToFirstRound = async (harness: TestServer) => {
   const alice = await harness.connect();
@@ -594,6 +641,7 @@ export {
   FAST_MINESWEEPER,
   FAST_MAKE24,
   FAST_PAIRS,
+  FAST_HUSH,
   startTestServer,
   waitFor,
   waitForState,
@@ -601,6 +649,7 @@ export {
   waitForMineState,
   waitForMake24State,
   waitForPairsState,
+  waitForHushState,
   waitForChat,
   collect,
   collectChat,
@@ -611,6 +660,7 @@ export {
   createMinesweeperRoom,
   createMake24Room,
   createPairsRoom,
+  createHushRoom,
   joinRoom,
   startGame,
   syncRoom,
@@ -623,5 +673,6 @@ export {
   make24Room,
   playToFirstHand,
   pairsRoom,
+  hushRoom,
 };
 export type { TestServer, TestClient, ClientSocket };
