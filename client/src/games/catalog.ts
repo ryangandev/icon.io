@@ -170,9 +170,7 @@ On your own, clear the board in as few turns as you can; your time breaks a tie.
   {
     type: 'hush',
     name: 'Hush',
-    // TODO(platform pass): blue is provisional; the hub tones of all eight
-    // games are settled together.
-    tone: 'blue',
+    tone: 'sand',
     tagline: 'No turns, no talking. Play every card in order, together.',
     facts: '2–4 players',
     maxPlayers: 4,
