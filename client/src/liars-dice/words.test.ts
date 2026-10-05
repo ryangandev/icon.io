@@ -5,6 +5,7 @@ import { countDetail, naming, revealBar, verdict } from './words';
 const NAMES: Record<string, string> = { leo: 'Leo', sam: 'Sam', maya: 'Maya' };
 const asSam = naming('sam', (id) => NAMES[id]);
 const asMaya = naming('maya', (id) => NAMES[id]);
+const asLeo = naming('leo', (id) => NAMES[id]);
 
 // LD10: Sam called Liar on Leo's five 5s; there were five, two of them wild.
 const ld10: LiarsDiceReveal = {
@@ -29,6 +30,7 @@ describe('the words of a reveal', () => {
 
   it('says who was right, to you and to everybody else', () => {
     expect(verdict(ld10, asMaya)).toBe('Leo’s bid stands');
+    expect(verdict(ld10, asLeo)).toBe('Your bid stands');
     expect(revealBar(ld10, asSam)).toEqual({
       label: 'You called Liar',
       main: 'Leo’s bid stands',

@@ -64,7 +64,7 @@ export function lossLine(reveal: LiarsDiceReveal, who: Naming): string {
 /** After the count: "Leo’s bid stands", "a lie, so Sam is out". */
 export function verdict(reveal: LiarsDiceReveal, who: Naming): string {
   return stood(reveal)
-    ? `${who(reveal.bid.playerId).possessive} bid stands`
+    ? `${capital(who(reveal.bid.playerId).possessive)} bid stands`
     : `a lie, so ${lossLine(reveal, who)}`;
 }
 
