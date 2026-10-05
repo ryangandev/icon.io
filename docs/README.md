@@ -24,6 +24,7 @@ Where to find the answer, without searching the repository.
 | Make 24 rules, scoring, solo runs, code                | [games/make-24.md](games/make-24.md)                                                                                            |
 | Pairs rules, turns, solo games, code                   | [games/pairs.md](games/pairs.md)                                                                                                |
 | Trios rules, claims, hints, solo runs, code            | [games/trios.md](games/trios.md)                                                                                                |
+| Hush rules, levels, lives, pauses, code                | [games/hush.md](games/hush.md)                                                                                                  |
 | Daily Word rules, word lists, scoring, code            | [games/daily-word.md](games/daily-word.md)                                                                                      |
 | Brand, visual direction, the Figma file                | [design.md](design.md)                                                                                                          |
 | The design system in code, reviewing it against Figma  | [design.md#in-code](design.md#in-code), then [architecture.md#client](architecture.md#client)                                   |

@@ -96,6 +96,13 @@
       'answer answer answer';
   }
 
+  /* Figma's Top row off: with neither a tag nor a clock, no empty row. */
+  .topless {
+    grid-template-areas:
+      'label label label'
+      'answer answer answer';
+  }
+
   .clock {
     margin: 0 0 8px;
   }

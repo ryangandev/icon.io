@@ -72,6 +72,10 @@ const BUCKET_FOR_EVENT: Record<ClientToServerEvent, BucketName> = {
   'pairs:flip': 'room',
   // A claim is three picks, so a human makes one a second at most.
   'trios:claim': 'room',
+  // Once a level; and a play is one card, so even a run of a player's own
+  // cards in a row stays inside the burst.
+  'hush:ready': 'room',
+  'hush:play': 'room',
   // Six guesses a word, typed out a letter at a time.
   'dw:guess': 'room',
 };

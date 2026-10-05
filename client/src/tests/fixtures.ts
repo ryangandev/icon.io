@@ -1,6 +1,7 @@
 import type {
   DailyWordRoomState,
   DrawAndGuessRoomState,
+  HushRoomState,
   Make24RoomState,
   MinesweeperRoomState,
   PairsRoomState,
@@ -128,6 +129,31 @@ export function triosState(
     searchingMs: 0,
     lockedOutMs: 0,
     myMiss: [],
+    lastGame: null,
+    ...overrides,
+  };
+}
+
+export function hushState(
+  overrides: Partial<HushRoomState> = {},
+): HushRoomState {
+  return {
+    ...room,
+    maxPlayers: 4,
+    gameType: 'hush',
+    phase: 'waiting',
+    level: 0,
+    levels: 7,
+    lives: 3,
+    hand: [],
+    table: {
+      p1: { held: 0, ready: false },
+      p2: { held: 0, ready: false },
+    },
+    pile: [],
+    discards: [],
+    lastMistake: null,
+    lastLevel: null,
     lastGame: null,
     ...overrides,
   };

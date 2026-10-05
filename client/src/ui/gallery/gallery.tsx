@@ -28,6 +28,8 @@ import {
   NumberCard,
   OperatorKey,
   PairsCard,
+  HushCard,
+  Lives,
   PairsSymbol,
   symbolName,
   PickMarker,
@@ -474,6 +476,19 @@ export default function Gallery() {
             style={{ margin: 0, padding: 0, listStyle: 'none', width: '100%' }}
           >
             <PlayerRow {...PLAYERS.sam} status="Waiting" score={180} host you />
+          </ul>
+        </Specimen>
+        <Specimen family="player-row" label="Show score off" width={312}>
+          <ul
+            style={{ margin: 0, padding: 0, listStyle: 'none', width: '100%' }}
+          >
+            <PlayerRow
+              {...PLAYERS.maya}
+              {...SAMPLE_AVATAR}
+              status="Level cleared"
+              statusIcon="check"
+              state="scored"
+            />
           </ul>
         </Specimen>
       </Family>
@@ -939,6 +954,81 @@ export default function Gallery() {
         ))}
       </Family>
 
+      <Family
+        name="Trios shape"
+        file="trios-shape"
+        note="Three shapes, three fills, three colours: 27 in all, scaled as a whole on smaller cards."
+      >
+        {(['circle', 'triangle', 'square'] as const).map((shape) => (
+          <div key={shape} className={styles.cellRow}>
+            {(['solid', 'striped', 'outline'] as const).flatMap((fill) =>
+              (['coral', 'blue', 'ink'] as const).map((tone) => (
+                <Specimen
+                  key={`${fill}-${tone}`}
+                  family="trios-shape"
+                  variant={`Shape=${cap(shape)}, Fill=${cap(fill)}, Colour=${cap(tone)}`}
+                  label={`${cap(tone)} ${fill}`}
+                >
+                  <TriosShape shape={shape} fill={fill} colour={tone} />
+                </Specimen>
+              )),
+            )}
+          </div>
+        ))}
+      </Family>
+
+      <Family
+        name="Hush card"
+        file="hush-card"
+        note="Hush's numbered cards: in a hand, next to play, on top of the pile, played under it, or discarded by a mistake."
+      >
+        {(['large', 'regular', 'small'] as const).map((cardSize) => {
+          const sizeName = cardSize[0].toUpperCase() + cardSize.slice(1);
+          return (
+            <div key={cardSize} className={styles.cellRow}>
+              {(
+                [
+                  ['Hand', 'hand'],
+                  ['Next', 'next'],
+                  ['Pile', 'pile'],
+                  ['Played', 'played'],
+                  ['Discarded', 'discarded'],
+                ] as const
+              ).map(([state, kind]) => (
+                <Specimen
+                  key={kind}
+                  family="hush-card"
+                  variant={`State=${state}, Size=${sizeName}`}
+                  label={state}
+                >
+                  <HushCard value={41} state={kind} size={cardSize} />
+                </Specimen>
+              ))}
+            </div>
+          );
+        })}
+      </Family>
+
+      <Family
+        name="Lives"
+        file="lives"
+        note="A Hush team's lives, as hearts full or lost; the hub card hides the label."
+      >
+        {[3, 2, 1, 0].map((lives) => (
+          <Specimen
+            key={lives}
+            family="lives"
+            variant={`Lives=${lives}`}
+            label={`${lives}`}
+          >
+            <Lives lives={lives} />
+          </Specimen>
+        ))}
+        <Specimen family="lives" label="Show label off">
+          <Lives lives={2} showLabel={false} />
+        </Specimen>
+      </Family>
+
       <Family name="Letter tile" file="letter-tile">
         {(
           [
@@ -974,29 +1064,6 @@ export default function Gallery() {
                   />
                 </Specimen>
               ))}
-          </div>
-        ))}
-      </Family>
-
-      <Family
-        name="Trios shape"
-        file="trios-shape"
-        note="Three shapes, three fills, three colours: 27 in all, scaled as a whole on smaller cards."
-      >
-        {(['circle', 'triangle', 'square'] as const).map((shape) => (
-          <div key={shape} className={styles.cellRow}>
-            {(['solid', 'striped', 'outline'] as const).flatMap((fill) =>
-              (['coral', 'blue', 'ink'] as const).map((tone) => (
-                <Specimen
-                  key={`${fill}-${tone}`}
-                  family="trios-shape"
-                  variant={`Shape=${cap(shape)}, Fill=${cap(fill)}, Colour=${cap(tone)}`}
-                  label={`${cap(tone)} ${fill}`}
-                >
-                  <TriosShape shape={shape} fill={fill} colour={tone} />
-                </Specimen>
-              )),
-            )}
           </div>
         ))}
       </Family>

@@ -1,0 +1,75 @@
+/* Zumpo/Hush card. Outlines are inset shadows, as on the Number card, so a
+   card keeps its size whatever its state. */
+.card {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--zumpo-radius-16);
+  box-shadow:
+    var(--zumpo-shadow-cell-edge),
+    inset 0 0 0 1px var(--zumpo-line);
+  background: var(--zumpo-paper);
+  color: var(--zumpo-ink);
+  white-space: nowrap;
+}
+
+.large {
+  width: 168px;
+  height: 216px;
+  border-radius: var(--zumpo-radius-24);
+  font: var(--zumpo-text-hero);
+  letter-spacing: var(--zumpo-text-hero-tracking);
+}
+
+.regular {
+  width: 96px;
+  height: 128px;
+  font: var(--zumpo-text-title);
+  letter-spacing: var(--zumpo-text-title-tracking);
+}
+
+.small {
+  width: 60px;
+  height: 80px;
+  border-radius: var(--zumpo-radius-12);
+  font: var(--zumpo-text-heading);
+  letter-spacing: var(--zumpo-text-heading-tracking);
+}
+
+/* A heavy outline is 3 px, 2 px on a Small card. */
+.next,
+.pile,
+.discarded {
+  --heavy: 3px;
+}
+
+.small.next,
+.small.pile,
+.small.discarded {
+  --heavy: 2px;
+}
+
+.next {
+  box-shadow:
+    var(--zumpo-shadow-cell-edge),
+    inset 0 0 0 var(--heavy) var(--zumpo-ink);
+}
+
+.pile {
+  box-shadow:
+    var(--zumpo-shadow-cell-edge),
+    inset 0 0 0 var(--heavy) var(--zumpo-green);
+  background: var(--zumpo-lime);
+}
+
+.played {
+  background: var(--zumpo-sand);
+}
+
+.discarded {
+  box-shadow:
+    var(--zumpo-shadow-cell-edge),
+    inset 0 0 0 var(--heavy) var(--zumpo-danger);
+  color: var(--zumpo-danger);
+}

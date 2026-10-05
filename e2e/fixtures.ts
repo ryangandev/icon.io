@@ -14,6 +14,7 @@ export type GameType =
   | 'make-24'
   | 'pairs'
   | 'trios'
+  | 'hush'
   | 'daily-word';
 
 export interface PlayerOptions {

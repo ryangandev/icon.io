@@ -86,6 +86,25 @@ const pairsDurationsInSeconds: PairsDurationsInSeconds = {
   show: readSecondsFromEnv('PAIRS_SHOW_SECONDS', 2),
 };
 
+/**
+ * Hush's clock. A level itself has none: the waiting is the game, so only the
+ * moments around it are timed.
+ */
+interface HushDurationsInSeconds {
+  /** From everybody being ready to the first card that may be played. */
+  countdown: number;
+  /** How long play stops after a mistake, for everybody to see it. */
+  mistake: number;
+  /** How long a cleared level shows before the next one's Ready. */
+  cleared: number;
+}
+
+const hushDurationsInSeconds: HushDurationsInSeconds = {
+  countdown: readSecondsFromEnv('HUSH_COUNTDOWN_SECONDS', 3),
+  mistake: readSecondsFromEnv('HUSH_MISTAKE_SECONDS', 3),
+  cleared: readSecondsFromEnv('HUSH_CLEARED_SECONDS', 4),
+};
+
 /** Daily Word's clock: one word for everybody at once, then its results. */
 interface DailyWordDurationsInSeconds {
   /** How long everybody has to find the word. */
@@ -139,6 +158,7 @@ export {
   make24DurationsInSeconds,
   pairsDurationsInSeconds,
   triosDurationsInSeconds,
+  hushDurationsInSeconds,
   dailyWordDurationsInSeconds,
   reconnectGraceInSeconds,
 };
@@ -148,5 +168,6 @@ export type {
   Make24DurationsInSeconds,
   PairsDurationsInSeconds,
   TriosDurationsInSeconds,
+  HushDurationsInSeconds,
   DailyWordDurationsInSeconds,
 };

@@ -22,6 +22,7 @@ import {
   type Guessed,
 } from '../play/daily-word';
 import { missHand, solveHand, startHand } from '../play/make-24';
+import { deal, handOf, play, pressReady, readyUp } from '../play/hush';
 import {
   clearABoard,
   hiddenCell,
@@ -1105,6 +1106,163 @@ test('a Trios game', async ({ player }) => {
   await pickTrio(maya);
   await expect(sam.getByText('Game over', { exact: true })).toBeVisible();
   await shot(sam, 'TS09');
+});
+
+test('a Hush game', async ({ player }) => {
+  test.setTimeout(600_000);
+  const maya = await player('Maya', desktop);
+  const sam = await player('Sam', desktop);
+  const ryan = await player('Ryan', desktop);
+  const leo = await player('Leo', phone);
+  const seats = [maya, sam, ryan, leo];
+
+  await maya.goto('/games/hush/new');
+  const password = maya.getByLabel('Password (optional)');
+  await password.fill('otters');
+  // HU09 draws the form at rest, with no field focused.
+  await password.blur();
+  await shot(maya, 'HU09');
+  const link = await createRoom(maya, 'hush');
+  for (const seat of [sam, ryan, leo]) await joinRoom(seat, link);
+  await startGame(maya);
+
+  const levelOn = async (level: number) => {
+    for (const seat of seats) {
+      await expect(
+        turnOf(seat).getByText(`Level ${level} of 5`, { exact: true }),
+      ).toBeVisible({ timeout: 15_000 });
+      await expect(turnOf(seat).getByText('Get ready')).toBeVisible();
+    }
+  };
+  /** Every card still held, played in order: a clean finish. */
+  const playOut = async () => {
+    for (const { page, card } of await deal(seats)) {
+      await play(page, card, seats);
+    }
+  };
+  /**
+   * A card played too soon: only a lowest card can be played, so the highest
+   * of those.
+   */
+  const slip = async () => {
+    const lowests = await Promise.all(
+      seats.map(async (page) => ({ page, card: (await handOf(page))[0] })),
+    );
+    const over = lowests.toSorted((a, b) => b.card - a.card)[0];
+    await play(over.page, over.card, [over.page]);
+  };
+  /** Play goes on after a slip, unless it took every card still held. */
+  const goOn = () =>
+    expect(turnOf(maya).getByText(/^(Hush|Level cleared!)$/)).toBeVisible({
+      timeout: 10_000,
+    });
+
+  // Level 1 is played clean, and level 2 costs a life, as in Figma's story;
+  // Leo looks at level 2 from his phone.
+  await levelOn(1);
+  await readyUp(seats);
+  await playOut();
+  await levelOn(2);
+  await pressReady([maya]);
+  await expect(turnOf(leo).getByText('Maya is ready.')).toBeVisible();
+  await shot(leo, 'HU11');
+  await readyUp(seats.filter((seat) => seat !== maya));
+  await slip();
+  await goOn();
+  await playOut();
+
+  // Level 3: Maya and Ryan are ready, then the rest, and the cards are dealt.
+  await levelOn(3);
+  await pressReady([maya, ryan]);
+  await expect(turnOf(sam).getByText('Maya and Ryan are ready.')).toBeVisible();
+  await shot(sam, 'HU01');
+  await pressReady([leo, sam]);
+  const counting = turnOf(sam).getByText('Everybody holds 3 cards.');
+  await expect(counting).toBeVisible();
+  expect(await shotWhile(sam, 'HU02', counting), 'the countdown captured').toBe(
+    true,
+  );
+  await expect(sam.getByRole('button', { name: /^Play \d+$/ })).toBeVisible({
+    timeout: 10_000,
+  });
+
+  // A few cards in order, while Sam and Leo still hold some, as Figma's are.
+  let played = 0;
+  for (const { page, card } of await deal(seats)) {
+    const keeps = [sam, leo].includes(page) && (await handOf(page)).length < 2;
+    if (played === 4 || keeps) break;
+    await play(page, card, seats);
+    played++;
+  }
+  await shot(sam, 'HU03');
+  await shot(leo, 'HU10');
+
+  // Leo drops, holding cards: the level waits for him.
+  const restore = await dropConnection(leo);
+  await expect(turnOf(sam).getByText('Paused')).toBeVisible();
+  await shot(sam, 'HU05');
+  restore();
+  await expect(leo.getByRole('button', { name: 'Leave room' })).toBeVisible({
+    timeout: 20_000,
+  });
+  await expect(sam.getByRole('button', { name: /^Play \d+$/ })).toBeVisible({
+    timeout: 10_000,
+  });
+
+  // A card over somebody's lower one: a life lost. The smallest such slip
+  // that Sam does not make, so his hand stays as Figma draws it.
+  const lowests = (
+    await Promise.all(
+      seats.map(async (page) => ({ page, card: (await handOf(page))[0] })),
+    )
+  )
+    .filter(({ card }) => card !== undefined)
+    .toSorted((a, b) => a.card - b.card);
+  const over = lowests.slice(1).find(({ page }) => page !== sam);
+  expect(over, 'a card over another player’s').toBeDefined();
+  await play(over!.page, over!.card, [over!.page]);
+  const lost = turnOf(sam).getByText(/One life lost\.$/);
+  await expect(lost).toBeVisible();
+  expect(await shotWhile(sam, 'HU04', lost), 'the mistake captured').toBe(true);
+  await goOn();
+  await playOut();
+
+  // Level 4, clean, wins the life back.
+  await levelOn(4);
+  await readyUp(seats);
+  await playOut();
+  const lifeBack = turnOf(sam).getByText('Not one slip: a life back.');
+  await expect(lifeBack).toBeVisible();
+  expect(
+    await shotWhile(sam, 'HU06', lifeBack),
+    'the cleared level captured',
+  ).toBe(true);
+
+  // Level 5, the last: the team wins.
+  await levelOn(5);
+  await readyUp(seats);
+  await playOut();
+  await expect(
+    maya.getByRole('heading', { name: 'All 5 levels cleared.' }),
+  ).toBeVisible();
+  await shot(maya, 'HU07');
+
+  // Another game, each level lost to a card played too soon, until the
+  // lives run out.
+  await maya.getByRole('button', { name: 'Play again' }).click();
+  for (let level = 1; level <= 3; level++) {
+    await levelOn(level);
+    await readyUp(seats);
+    await slip();
+    if (level < 3) {
+      await goOn();
+      await playOut();
+    }
+  }
+  await expect(
+    maya.getByRole('heading', { name: 'Out of lives on level 3.' }),
+  ).toBeVisible({ timeout: 15_000 });
+  await shot(maya, 'HU08');
 });
 
 /*

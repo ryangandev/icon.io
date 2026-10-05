@@ -5,6 +5,7 @@ import * as url from 'node:url';
 import path from 'node:path';
 import type {
   DailyWordDurationsInSeconds,
+  HushDurationsInSeconds,
   Make24DurationsInSeconds,
   MinesweeperDurationsInSeconds,
   PairsDurationsInSeconds,
@@ -22,6 +23,7 @@ import { createMinesweeperModule } from './socket/minesweeper/index.js';
 import { createMake24Module } from './socket/make-24/index.js';
 import { createPairsModule } from './socket/pairs/index.js';
 import { createTriosModule } from './socket/trios/index.js';
+import { createHushModule } from './socket/hush/index.js';
 import { createDailyWordModule } from './socket/daily-word/index.js';
 import { clientDepartureOnDisconnectHandler } from './socket/client-disconnect-handler.js';
 import { playerSessionHandler } from './socket/player-session-handler.js';
@@ -71,6 +73,8 @@ interface CreateZumpoServerOptions {
   pairsDurations?: PairsDurationsInSeconds;
   /** A taken trio's pause, a lockout and the hint clock. Shortened by tests. */
   triosDurations?: TriosDurationsInSeconds;
+  /** Hush's countdown, mistake pause and cleared level. Shortened by tests. */
+  hushDurations?: HushDurationsInSeconds;
   /** A Daily Word round and its results. Shortened by tests. */
   dailyWordDurations?: DailyWordDurationsInSeconds;
   /** How long a dropped player keeps their seat. Shortened by tests. */
@@ -112,6 +116,7 @@ const createZumpoServer = (
     make24Durations,
     pairsDurations,
     triosDurations,
+    hushDurations,
     dailyWordDurations,
     graceInSeconds,
     maxRooms = DEFAULT_MAX_ROOMS,
@@ -150,6 +155,11 @@ const createZumpoServer = (
   registry.register(createMake24Module(registry.context, make24Durations));
   registry.register(createPairsModule(registry.context, pairsDurations));
   registry.register(createTriosModule(registry.context, triosDurations));
+  // A Hush level waits for a dropped player as long as their seat is held,
+  // and shows that wait as its clock.
+  registry.register(
+    createHushModule(registry.context, hushDurations, graceInSeconds),
+  );
   registry.register(
     createDailyWordModule(registry.context, dailyWordDurations),
   );

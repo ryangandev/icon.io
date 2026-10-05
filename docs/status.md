@@ -36,7 +36,7 @@ Decided by Ryan, and the frame for every design and implementation choice:
 ## Next
 
 Four more games, chosen by Ryan on 2026-10-05, are designed in Figma: Trios (section 07), Liar's Dice (08), Hush (09) and Daily Word (10).
-Daily Word and Trios are merged; Liar's Dice and Hush are being built, each on its own branch, and merge one at a time.
+Daily Word, Hush and Trios are merged; Liar's Dice follows.
 Trios, Liar's Dice and Daily Word play on your own and in rooms; Hush is rooms only, because it needs at least two players.
 Their behaviour contracts land in `docs/games/` with each game.
 The hub, home and How to play screens (P01, P04, P13, P14, MO01, MO03) already show all eight games, so until every game is merged, `npm run design:compare` finds those screens with more cards than the code.
