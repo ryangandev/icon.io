@@ -1,7 +1,6 @@
 import express, { type Request, type Response } from 'express';
 import { createServer, type Server as HttpServer } from 'node:http';
 import { Server } from 'socket.io';
-import cors from 'cors';
 import * as url from 'node:url';
 import path from 'node:path';
 import type {
@@ -37,6 +36,22 @@ import type {
 /** At most one "you are being throttled" line per socket per this long. */
 const THROTTLE_LOG_INTERVAL_MS = 5000;
 
+/**
+ * The most rooms the server holds at once. Each is small, but they live in
+ * memory, and a client can open connections faster than people play.
+ */
+const DEFAULT_MAX_ROOMS = 500;
+
+/**
+ * The largest packet a client may send. The biggest real one, a room's
+ * settings or a hand's solution, is well under a kilobyte; socket.io's default
+ * of a megabyte would be parsed in full before anything checked it.
+ */
+const MAX_PACKET_BYTES = 16 * 1024;
+
+/** How long closing waits for connections to take their last packet. */
+const CLOSE_FLUSH_MS = 1000;
+
 interface CreateZumpoServerOptions {
   /** Defaults to `process.env.CORS_ORIGIN`, then the Vite dev server. */
   corsOrigin?: string;
@@ -52,13 +67,15 @@ interface CreateZumpoServerOptions {
   pairsDurations?: PairsDurationsInSeconds;
   /** How long a dropped player keeps their seat. Shortened by tests. */
   graceInSeconds?: number;
+  /** The most rooms open at once. Lowered by tests. */
+  maxRooms?: number;
 }
 
 interface ZumpoServer {
   httpServer: HttpServer;
   io: IoServer;
-  /** The live room registry, exposed so tests can assert on server state. */
-  rooms: Record<string, Room>;
+  /** Every room by id, exposed so tests can assert on server state. */
+  rooms: ReadonlyMap<string, Room>;
   /** Exposed so tests can assert on identities outliving their sockets. */
   sessions: PlayerSessionRegistry;
   close: () => Promise<void>;
@@ -87,6 +104,7 @@ const createZumpoServer = (
     make24Durations,
     pairsDurations,
     graceInSeconds,
+    maxRooms = DEFAULT_MAX_ROOMS,
   } = options;
 
   const app = express();
@@ -94,8 +112,6 @@ const createZumpoServer = (
   // build/server/app.js serves the SPA that Vite builds into build/public.
   const publicStaticFolder = path.join(__dirname, '..', 'public');
 
-  app.use(express.json());
-  app.use(cors());
   app.use(express.static(publicStaticFolder));
 
   const httpServer = createServer(app);
@@ -105,13 +121,14 @@ const createZumpoServer = (
       cors: {
         origin: corsOrigin,
       },
+      maxHttpBufferSize: MAX_PACKET_BYTES,
     },
   );
 
   // All of these are created once for the server rather than per connection:
   // they own timers and identities that outlive any single socket.
   const sessions = createPlayerSessionRegistry();
-  const registry = createRoomRegistry(io, sessions);
+  const registry = createRoomRegistry(io);
 
   // Every game the server knows how to run. A module is registered once and
   // then reached only through the registry - the room layer below never names
@@ -165,6 +182,7 @@ const createZumpoServer = (
     // Identity first, from the handshake: every handler below reads the player
     // id off the connection, and this runs before any event from it is read.
     playerSessionHandler(
+      io,
       socket,
       sessions,
       membership.graceMs,
@@ -174,14 +192,25 @@ const createZumpoServer = (
 
     // The room layer: lobbies, seats, ownership, chat. None of it knows which
     // game it is running.
-    lobbyEventsHandler(socket, registry, sessions);
-    roomEventsHandler(socket, registry, sessions, membership);
-    chatEventsHandler(socket, registry, sessions);
+    lobbyEventsHandler(socket, registry, membership, maxRooms);
+    roomEventsHandler(socket, registry, membership);
+    chatEventsHandler(socket, registry);
 
     // And then each game's own events.
     for (const gameType of registry.registeredTypes()) {
       registry.moduleFor(gameType)?.registerHandlers(socket);
     }
+  });
+
+  // What the host polls to know the process is up and answering, before the
+  // SPA catch-all below would answer it with a page. The counts are what a
+  // glance at a running server wants, and nothing a lobby does not show.
+  app.get('/healthz', (_req: Request, res: Response) => {
+    res.json({
+      status: 'ok',
+      rooms: registry.count(),
+      connections: io.engine.clientsCount,
+    });
   });
 
   if (serveClient) {
@@ -204,13 +233,31 @@ const createZumpoServer = (
   }
 
   /**
-   * Closes every live connection before the HTTP server, because socket.io
-   * keep-alives will otherwise hold the process open long past the test that
-   * created them.
+   * Shuts the server down: tells every connection first, then closes them
+   * before the HTTP server, because socket.io keep-alives would otherwise hold
+   * the process open long past the test that created them.
+   *
+   * Rooms live in this process, so they end here. Each page is told so before
+   * its connection goes, and can say why its room closed instead of finding it
+   * missing after the reconnect. `io.close()` alone would cut the transports
+   * with that last packet still unsent, so the sockets are disconnected first,
+   * which flushes it, and given a moment to finish.
    */
   const close = async (): Promise<void> => {
     registry.dispose();
     membership.dispose();
+
+    const closed = [...io.sockets.sockets.values()].map(
+      (socket) =>
+        new Promise<void>((resolve) => socket.conn.once('close', resolve)),
+    );
+    io.emit('server:closing');
+    io.disconnectSockets(true);
+    await Promise.race([
+      Promise.all(closed),
+      new Promise((resolve) => setTimeout(resolve, CLOSE_FLUSH_MS).unref()),
+    ]);
+
     await io.close();
     await new Promise<void>((resolve) => {
       if (!httpServer.listening) {
@@ -221,7 +268,7 @@ const createZumpoServer = (
     });
   };
 
-  return { httpServer, io, rooms: registry.all, sessions, close };
+  return { httpServer, io, rooms: registry.rooms, sessions, close };
 };
 
 export { createZumpoServer };

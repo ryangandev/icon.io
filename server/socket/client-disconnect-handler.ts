@@ -16,7 +16,7 @@ const clientDepartureOnDisconnectHandler = (
 ) => {
   socket.on('disconnect', () => {
     console.log('client: ' + socket.id + ' disconnected');
-    membership.handleDisconnect(socket.id);
+    membership.handleDisconnect(socket.data.playerId, socket.id);
   });
 };
 

@@ -3,7 +3,6 @@ import {
   gameOverMessage,
   getRandomElementFromSet,
   getRemainingPhaseMs,
-  getRoomStatus,
   resetPoints,
 } from '../libs/utils.js';
 
@@ -14,18 +13,6 @@ import {
  * module's `toLobbyInfo`/`toRoomState` - all of which are covered in
  * `draw-and-guess-state.test.ts`.
  */
-
-describe('getRoomStatus', () => {
-  it('reports a started game as in progress regardless of size', () => {
-    expect(getRoomStatus(2, 4, true)).toBe('In Progress');
-    expect(getRoomStatus(4, 4, true)).toBe('In Progress');
-  });
-
-  it('reports a room as full only at capacity', () => {
-    expect(getRoomStatus(3, 4, false)).toBe('Open');
-    expect(getRoomStatus(4, 4, false)).toBe('Full');
-  });
-});
 
 describe('getRemainingPhaseMs', () => {
   it('is zero for an idle room rather than a large negative number', () => {

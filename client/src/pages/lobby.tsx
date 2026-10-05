@@ -12,7 +12,7 @@ import { roomSetting } from '../games/room-setting';
 import { useLobby } from '../net/use-lobby';
 import { useSession } from '../net/session';
 import { initialsOf, toneOf } from '../players/avatar';
-import { ConnectionFailed } from '../shell/connection-failed';
+import { ConnectionLost } from '../shell/connection-lost';
 import { Page } from '../shell/page';
 import { PageHeading, type PageHeadingProps } from '../shell/page-heading';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
@@ -21,7 +21,7 @@ import styles from './lobby.module.css';
 /** DL01-DL03, ML01-ML03, MO04: a game's rooms, live. */
 export default function LobbyPage({ gameType }: { gameType: GameType }) {
   const game = gameInfo(gameType);
-  const { status } = useSession();
+  const { lost } = useSession();
   const rooms = useLobby(gameType);
   const phone = useMediaQuery(PHONE);
 
@@ -42,8 +42,8 @@ export default function LobbyPage({ gameType }: { gameType: GameType }) {
           subtitle="Join a room or make one for your friends."
         />
       )}
-      {status === 'failed' ? (
-        <ConnectionFailed />
+      {lost ? (
+        <ConnectionLost />
       ) : (
         <>
           <div className={styles.actions}>

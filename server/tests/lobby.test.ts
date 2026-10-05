@@ -156,7 +156,9 @@ describe('the lobby', () => {
       points: 0,
       isConnected: true,
     });
-    expect(harness.server.rooms[roomId]?.playerList[client.playerId]).toEqual({
+    expect(
+      harness.server.rooms.get(roomId)?.playerList[client.playerId],
+    ).toEqual({
       username: 'Ada',
       points: 0,
       isConnected: true,
@@ -165,7 +167,7 @@ describe('the lobby', () => {
 
   it('refuses a create request the UI could not have sent', async () => {
     const client = await harness.connect();
-    const before = Object.keys(harness.server.rooms).length;
+    const before = harness.server.rooms.size;
 
     for (const payload of [
       {
@@ -183,7 +185,7 @@ describe('the lobby', () => {
       });
     }
 
-    expect(Object.keys(harness.server.rooms)).toHaveLength(before);
+    expect(harness.server.rooms.size).toBe(before);
   });
 
   it('refuses a room for a game the server does not run', async () => {
@@ -205,7 +207,7 @@ describe('the lobby', () => {
    */
   it('refuses a room whose game-specific settings do not parse', async () => {
     const client = await harness.connect();
-    const before = Object.keys(harness.server.rooms).length;
+    const before = harness.server.rooms.size;
 
     for (const settings of [{ rounds: 99 }, { rounds: 'two' }, {}, undefined]) {
       const answer = await request(client, 'room:create', {
@@ -215,7 +217,7 @@ describe('the lobby', () => {
       expect(answer.error?.type).toBe('invalidRequest');
     }
 
-    expect(Object.keys(harness.server.rooms)).toHaveLength(before);
+    expect(harness.server.rooms.size).toBe(before);
   });
 
   it('survives a malformed payload without dropping the connection', async () => {
@@ -231,7 +233,7 @@ describe('the lobby', () => {
 
   it('still handles a create request sent without an acknowledgement', async () => {
     const client = await harness.connect();
-    const before = Object.keys(harness.server.rooms).length;
+    const before = harness.server.rooms.size;
 
     (client as unknown as { emit: (...args: unknown[]) => void }).emit(
       'room:create',
@@ -239,7 +241,7 @@ describe('the lobby', () => {
     );
     await settle();
 
-    expect(Object.keys(harness.server.rooms)).toHaveLength(before + 1);
+    expect(harness.server.rooms.size).toBe(before + 1);
     expect(client.connected).toBe(true);
   });
 });

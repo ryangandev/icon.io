@@ -1,9 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import type {
-  PlayerInfo,
-  RoomStatus,
-  Standing,
-} from '../../shared/wire-types.js';
+import type { PlayerInfo, Standing } from '../../shared/wire-types.js';
 
 /**
  * Helpers that belong to no particular game.
@@ -23,18 +19,6 @@ const getRandomInt = (min: number, max: number) => {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
-};
-
-const getRoomStatus = (
-  currentSize: number,
-  maxSize: number,
-  isStarted: boolean = false,
-): RoomStatus => {
-  if (isStarted) {
-    return 'In Progress';
-  }
-
-  return currentSize === maxSize ? 'Full' : 'Open';
 };
 
 /**
@@ -96,7 +80,6 @@ export {
   gameOverMessage,
   generateRoomId,
   getRandomInt,
-  getRoomStatus,
   getRemainingPhaseMs,
   getRandomElementFromSet,
   resetPoints,

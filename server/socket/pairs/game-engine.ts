@@ -1,11 +1,8 @@
 import type { PairsSettings } from '../../models/types.js';
 import { RequestError } from '../../models/error.js';
+import { seatCount } from '../../libs/rooms/seats.js';
 import type { GameContext, Room } from '../../libs/rooms/types.js';
-import {
-  gameOverMessage,
-  getRoomStatus,
-  resetPoints,
-} from '../../libs/utils.js';
+import { gameOverMessage, resetPoints } from '../../libs/utils.js';
 import {
   pairsDurationsInSeconds as defaultDurations,
   type PairsDurationsInSeconds,
@@ -26,35 +23,8 @@ const createPairsGameEngine = (
   ctx: GameContext,
   durations: PairsDurationsInSeconds = defaultDurations,
 ) => {
-  /** One per room: either the open turn or a miss on show. */
-  const turnTimers = new Map<string, NodeJS.Timeout>();
-
   const roomOf = (roomId: string): PairsRoom | undefined =>
     ctx.rooms.ofType<PairsState>(roomId, 'pairs');
-
-  const clearTurnTimer = (roomId: string) => {
-    const pending = turnTimers.get(roomId);
-    if (pending) {
-      clearTimeout(pending);
-      turnTimers.delete(roomId);
-    }
-  };
-
-  const schedule = (
-    roomId: string,
-    durationInSeconds: number,
-    onDue: () => void,
-  ) => {
-    clearTurnTimer(roomId);
-    turnTimers.set(
-      roomId,
-      setTimeout(() => {
-        turnTimers.delete(roomId);
-        // The room may have been emptied and deleted while we waited.
-        if (roomOf(roomId)) onDue();
-      }, durationInSeconds * 1000),
-    );
-  };
 
   const startGame = (room: PairsRoom, playerId: string) => {
     if (room.owner.playerId !== playerId) {
@@ -69,7 +39,7 @@ const createPairsGameEngine = (
         'The game has already started.',
       );
     }
-    if (room.currentPlayerCount < MIN_PLAYERS_TO_START) {
+    if (seatCount(room) < MIN_PLAYERS_TO_START) {
       throw new RequestError(
         'notEnoughPlayers',
         `At least ${MIN_PLAYERS_TO_START} players are required to start.`,
@@ -85,11 +55,6 @@ const createPairsGameEngine = (
     game.lastGame = null;
     room.playerList = resetPoints(room.playerList);
     room.isGameStarted = true;
-    room.status = getRoomStatus(
-      room.currentPlayerCount,
-      room.maxPlayers,
-      room.isGameStarted,
-    );
 
     console.log(`Pairs started in room ${room.roomId}, ${game.board} board.`);
 
@@ -114,11 +79,8 @@ const createPairsGameEngine = (
     game.phase = 'flipping';
     game.turnPlayerId = playerId;
     game.up = [];
-    room.phaseEndsAt = Date.now() + durations.turn * 1000;
-
+    ctx.rooms.startPhase(room, durations.turn, () => passTurn(room));
     ctx.rooms.emitState(room);
-
-    schedule(room.roomId, durations.turn, () => passTurn(room));
   };
 
   /** The turn goes to the next player, and any card still up turns back. */
@@ -154,9 +116,8 @@ const createPairsGameEngine = (
     if (game.deck[first] !== game.deck[second]) {
       // A miss stays up for everybody to remember, then the turn passes.
       game.phase = 'showing';
-      room.phaseEndsAt = Date.now() + durations.show * 1000;
+      ctx.rooms.startPhase(room, durations.show, () => passTurn(room));
       ctx.rooms.emitState(room);
-      schedule(room.roomId, durations.show, () => passTurn(room));
       return;
     }
 
@@ -183,7 +144,7 @@ const createPairsGameEngine = (
     room: PairsRoom,
     { endedEarly }: { endedEarly: boolean },
   ) => {
-    clearTurnTimer(room.roomId);
+    ctx.rooms.stopPhase(room);
     const game = room.game;
 
     const standings = Object.entries(room.playerList)
@@ -207,12 +168,6 @@ const createPairsGameEngine = (
     game.up = [];
     game.order = [];
     game.turnPlayerId = null;
-    room.phaseEndsAt = 0;
-    room.status = getRoomStatus(
-      room.currentPlayerCount,
-      room.maxPlayers,
-      room.isGameStarted,
-    );
 
     ctx.rooms.emitState(room);
     ctx.rooms.announce(
@@ -227,7 +182,7 @@ const createPairsGameEngine = (
   const handlePlayerDeparture = (room: PairsRoom, playerId: string) => {
     if (!room.isGameStarted) return;
 
-    if (room.currentPlayerCount < MIN_PLAYERS_TO_START) {
+    if (seatCount(room) < MIN_PLAYERS_TO_START) {
       ctx.rooms.announce(
         room.roomId,
         'alert',
@@ -244,18 +199,10 @@ const createPairsGameEngine = (
     }
   };
 
-  const disposeRoom = (roomId: string) => clearTurnTimer(roomId);
-
-  const dispose = () => {
-    for (const roomId of new Set(turnTimers.keys())) clearTurnTimer(roomId);
-  };
-
   return {
     startGame,
     flip,
     handlePlayerDeparture,
-    disposeRoom,
-    dispose,
   };
 };
 

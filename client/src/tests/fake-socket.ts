@@ -121,9 +121,13 @@ export class FakeSocket {
     this.fire('session:ready', this.session);
   }
 
-  /** The connection drops, and the client starts retrying. */
+  /**
+   * The connection drops, and the client starts retrying, unless the server
+   * closed it, which the real client leaves to the app to retry.
+   */
   drop(reason = 'transport close'): void {
     this.connected = false;
+    if (reason === 'io server disconnect') this.active = false;
     this.fire('disconnect', reason);
   }
 
