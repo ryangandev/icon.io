@@ -5,6 +5,7 @@ import cors from 'cors';
 import * as url from 'node:url';
 import path from 'node:path';
 import type {
+  HushDurationsInSeconds,
   Make24DurationsInSeconds,
   MinesweeperDurationsInSeconds,
   PairsDurationsInSeconds,
@@ -20,6 +21,7 @@ import { createDrawAndGuessModule } from './socket/draw-and-guess/index.js';
 import { createMinesweeperModule } from './socket/minesweeper/index.js';
 import { createMake24Module } from './socket/make-24/index.js';
 import { createPairsModule } from './socket/pairs/index.js';
+import { createHushModule } from './socket/hush/index.js';
 import { clientDepartureOnDisconnectHandler } from './socket/client-disconnect-handler.js';
 import { playerSessionHandler } from './socket/player-session-handler.js';
 import {
@@ -50,6 +52,8 @@ interface CreateZumpoServerOptions {
   make24Durations?: Make24DurationsInSeconds;
   /** A Pairs turn and a miss on show. Shortened by tests. */
   pairsDurations?: PairsDurationsInSeconds;
+  /** Hush's countdown, mistake pause and cleared level. Shortened by tests. */
+  hushDurations?: HushDurationsInSeconds;
   /** How long a dropped player keeps their seat. Shortened by tests. */
   graceInSeconds?: number;
 }
@@ -86,6 +90,7 @@ const createZumpoServer = (
     minesweeperDurations,
     make24Durations,
     pairsDurations,
+    hushDurations,
     graceInSeconds,
   } = options;
 
@@ -122,6 +127,11 @@ const createZumpoServer = (
   );
   registry.register(createMake24Module(registry.context, make24Durations));
   registry.register(createPairsModule(registry.context, pairsDurations));
+  // A Hush level waits for a dropped player as long as their seat is held,
+  // and shows that wait as its clock.
+  registry.register(
+    createHushModule(registry.context, hushDurations, graceInSeconds),
+  );
 
   const membership = createRoomMembership(
     io,
