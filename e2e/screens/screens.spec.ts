@@ -1047,7 +1047,7 @@ test('Liar’s Dice on your own', async ({ player }) => {
     }, LIARS_DICE_RECORD);
     await maya.getByRole('button', { name: 'Play again' }).click();
   }
-  expect([...shown].sort()).toEqual(['LD02', 'LD03', 'LD04', 'LD05', 'LD06']);
+  expect(shown).toEqual(new Set(['LD02', 'LD03', 'LD04', 'LD05', 'LD06']));
 
   const onPhone = await player('Maya', phone);
   await onPhone.clock.install();
@@ -1158,15 +1158,9 @@ test('a Liar’s Dice game', async ({ player }) => {
     }
     await move(mover);
   }
-  expect([...shown].sort()).toEqual([
-    'LD07',
-    'LD08',
-    'LD09',
-    'LD10',
-    'LD11',
-    'LD14',
-    'LD15',
-  ]);
+  expect(shown).toEqual(
+    new Set(['LD07', 'LD08', 'LD09', 'LD10', 'LD11', 'LD14', 'LD15']),
+  );
   await shot(sam, 'LD12');
 });
 
