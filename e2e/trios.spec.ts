@@ -36,7 +36,9 @@ test('two players race for trios until the game is over', async ({
   // for half a second here, too short to catch under load; the table's last
   // trio and the chat say so for good.
   await pickTrio(maya);
-  await expect(leo.getByText('1 of 10 trios')).toBeVisible();
+  for (const page of [maya, leo]) {
+    await expect(page.getByText('1 of 10 trios')).toBeVisible();
+  }
   await expect(leo.getByText('Last trio: Maya')).toBeVisible();
   await expect(leo.getByText('Maya found a trio! (+1)')).toBeVisible();
 
