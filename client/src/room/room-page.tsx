@@ -48,6 +48,7 @@ export default function RoomPage({
   gameType: GameType;
   roomId: string;
 }) {
+  const m = useMessages();
   const connection = useRoom(roomId);
   const { stage } = connection;
 
@@ -57,10 +58,10 @@ export default function RoomPage({
         <Page>
           <Stage>
             <Card
-              title="Getting the room ready…"
-              description="Connecting to Zumpo. This normally takes a moment."
+              title={m.room.connectingTitle}
+              description={m.room.connectingDescription}
             >
-              <StatusLine>Connecting…</StatusLine>
+              <StatusLine>{m.room.connecting}</StatusLine>
             </Card>
           </Stage>
         </Page>
@@ -86,16 +87,15 @@ export default function RoomPage({
     case 'unavailable':
       return (
         <Page>
-          <LobbyHeading
-            game={gameInfo(gameType)}
-            subtitle="Join a room or make one for your friends."
-          />
+          <LobbyHeading game={gameInfo(gameType)} subtitle={m.lobby.subtitle} />
           <Stage>
             <Card
-              title="That room moved on."
-              description="It filled up, started playing, or closed before you joined. Choose another room."
+              title={m.room.unavailableTitle}
+              description={m.room.unavailableDescription}
               actions={
-                <ButtonLink to={lobbyPath(gameType)}>Back to rooms</ButtonLink>
+                <ButtonLink to={lobbyPath(gameType)}>
+                  {m.room.backToRooms}
+                </ButtonLink>
               }
             />
           </Stage>
@@ -106,10 +106,12 @@ export default function RoomPage({
         <Page>
           <Stage>
             <Card
-              title="This room has packed up."
-              description="The room no longer exists. Find another room or start your own."
+              title={m.room.notFoundTitle}
+              description={m.room.notFoundDescription}
               actions={
-                <ButtonLink to={lobbyPath(gameType)}>Back to rooms</ButtonLink>
+                <ButtonLink to={lobbyPath(gameType)}>
+                  {m.room.backToRooms}
+                </ButtonLink>
               }
             />
           </Stage>
@@ -122,10 +124,12 @@ export default function RoomPage({
         <Page>
           <Stage>
             <Card
-              title="Zumpo just restarted."
-              description="Rooms close when Zumpo restarts for an update, so this one has ended. Find another room or start your own."
+              title={m.room.closedTitle}
+              description={m.room.closedDescription}
               actions={
-                <ButtonLink to={lobbyPath(gameType)}>Back to rooms</ButtonLink>
+                <ButtonLink to={lobbyPath(gameType)}>
+                  {m.room.backToRooms}
+                </ButtonLink>
               }
             />
           </Stage>
@@ -153,17 +157,20 @@ export default function RoomPage({
 
 /** P08: the seat was released while this player was away. */
 function ExpiredPage({ gameType }: { gameType: GameType }) {
+  const m = useMessages();
   return (
     <Page>
       <Stage>
         <Card
-          title="Let’s find you a fresh start."
-          description="We couldn’t reconnect. Your seat may have been released. You can return to the room list."
+          title={m.room.expiredTitle}
+          description={m.room.expiredDescription}
           actions={
             <>
-              <ButtonLink to={lobbyPath(gameType)}>Back to rooms</ButtonLink>
+              <ButtonLink to={lobbyPath(gameType)}>
+                {m.room.backToRooms}
+              </ButtonLink>
               <ButtonLink to="/" variant="secondary" icon="back">
-                Back to games
+                {m.shell.backToGames}
               </ButtonLink>
             </>
           }
@@ -201,17 +208,13 @@ function PasswordPage({
   // The lobby knows the room's name; a link alone does not.
   const rooms = useLobby(gameType);
   const roomName = rooms?.find((room) => room.roomId === roomId)?.roomName;
-  const description = `Enter the password for ${roomName ?? 'this room'}.`;
+  const description = m.room.passwordDescription(roomName);
 
   return (
     <FormPage
-      heading={lobbyHeading(
-        gameInfo(gameType),
-        'Join a room or make one for your friends.',
-        m,
-      )}
-      phone={{ eyebrow: 'Come on in', subtitle: description }}
-      title="This room has a secret."
+      heading={lobbyHeading(gameInfo(gameType), m.lobby.subtitle, m)}
+      phone={{ eyebrow: m.room.comeIn, subtitle: description }}
+      title={m.room.passwordTitle}
       description={description}
       onSubmit={(event) => {
         event.preventDefault();
@@ -220,26 +223,22 @@ function PasswordPage({
       actions={
         pending ? undefined : (
           <>
-            <Button type="submit">Join room</Button>
+            <Button type="submit">{m.room.join}</Button>
             <ButtonLink
               to={lobbyPath(gameType)}
               variant="secondary"
               icon="back"
             >
-              Back to rooms
+              {m.room.backToRooms}
             </ButtonLink>
           </>
         )
       }
     >
       <TextField
-        label="Room password"
-        helper={
-          phone
-            ? 'Ask the host for the password.'
-            : 'Ask the host for the room password.'
-        }
-        error={rejected ? 'That password didn’t work. Try again.' : undefined}
+        label={m.room.password}
+        helper={phone ? m.room.passwordPhoneHelper : m.room.passwordHelper}
+        error={rejected ? m.room.passwordRejected : undefined}
         ref={field}
         type="password"
         value={password}
@@ -248,7 +247,7 @@ function PasswordPage({
         autoFocus
         name="password"
       />
-      {pending && <StatusLine>Joining the room…</StatusLine>}
+      {pending && <StatusLine>{m.room.joining}</StatusLine>}
     </FormPage>
   );
 }

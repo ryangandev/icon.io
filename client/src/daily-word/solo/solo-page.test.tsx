@@ -134,3 +134,34 @@ describe('formatWait', () => {
     expect(formatWait((9 * 3600 + 41 * 60 + 18) * 1000)).toBe('9:41:18');
   });
 });
+
+describe('Daily Word on your own in Chinese', () => {
+  it('translates errors, results, statistics and copied shares while keeping the word English', async () => {
+    await renderApp('/games/daily-word/solo', { locale: 'zh' });
+    const bar = within(screen.getByRole('region', { name: '当前回合' }));
+    expect(await bar.findByText('猜出单词')).toBeVisible();
+    expect(screen.getByText('单词 #1')).toBeVisible();
+    expect(screen.getByRole('heading', { name: '怎么看标记' })).toBeVisible();
+    expect(screen.getByRole('group', { name: '你的猜词' })).toBeVisible();
+    await guess('xxxxx');
+    expect(screen.getByText('词库里没有这个词')).toBeVisible();
+    await user.keyboard(
+      '{Backspace}{Backspace}{Backspace}{Backspace}{Backspace}',
+    );
+    await guess(TODAY);
+    expect(screen.getByRole('heading', { name: '1 次猜中。' })).toBeVisible();
+    expect(
+      screen.getByText(`答案是 ${TODAY.toUpperCase()}。连胜开始了。`),
+    ).toBeVisible();
+    expect(
+      screen.getByRole('heading', { name: '此设备上的记录' }),
+    ).toBeVisible();
+    expect(screen.getByText('猜中率')).toBeVisible();
+    expect(screen.getByText('当前连胜')).toBeVisible();
+    expect(screen.getByText('距下一个单词')).toBeVisible();
+    expect(screen.getByLabelText('1 个单词用 1 次猜中')).toBeVisible();
+    await user.click(screen.getByRole('button', { name: '分享' }));
+    expect(await screen.findByRole('button', { name: '已复制' })).toBeVisible();
+    expect(await navigator.clipboard.readText()).toContain('每日单词 #1 1/6');
+  });
+});

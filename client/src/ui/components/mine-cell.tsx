@@ -1,3 +1,4 @@
+import { useMessages, type Messages } from '../../i18n';
 import { useRef, type PointerEvent, type ReactNode } from 'react';
 import { cx } from '../cx';
 import { Icon } from './icon';
@@ -39,22 +40,24 @@ export interface MineCellProps {
 /** How long a touch is held before it flags instead of opening. */
 const LONG_PRESS_MS = 450;
 
-function describe(state: MineCellState): string {
+function describe(state: MineCellState, m: Messages): string {
   switch (state.kind) {
     case 'hidden':
-      return 'hidden';
+      return m.ui.mine.hidden;
     case 'picked':
-      return 'your pick';
+      return m.ui.mine.picked;
     case 'mine':
-      return 'mine';
+      return m.ui.mine.mine;
     case 'flag':
-      return 'flagged';
+      return m.ui.mine.flag;
     case 'wrong-flag':
-      return 'flagged, no mine';
+      return m.ui.mine.wrongFlag;
     case 'hit':
-      return 'the mine you hit';
+      return m.ui.mine.hit;
     case 'open':
-      return state.adjacent === 0 ? 'empty' : `${state.adjacent} adjacent`;
+      return state.adjacent === 0
+        ? m.ui.mine.empty
+        : m.ui.mine.adjacent(state.adjacent);
   }
 }
 
@@ -68,6 +71,7 @@ export function MineCell({
   column,
   marker,
 }: MineCellProps) {
+  const m = useMessages();
   const compact = size === 'compact';
   const iconSize = compact
     ? { picked: 12, mine: 16, flag: 12 }
@@ -85,7 +89,7 @@ export function MineCell({
       (state.kind === 'hidden' || state.kind === 'flag') &&
       styles.pickable,
   );
-  const label = `Row ${row + 1}, column ${column + 1}: ${describe(state)}`;
+  const label = m.ui.position(row + 1, column + 1, describe(state, m));
   const press = useLongPress(onMark);
 
   // A grid cell of the board's role="grid"; an actionable one holds a button

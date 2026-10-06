@@ -40,7 +40,7 @@ export function RoomBar({
   phase,
   onHowToPlay,
   onLeave,
-  leaveLabel = 'Leave room',
+  leaveLabel,
   viewer,
   viewerMenu,
   className,
@@ -70,7 +70,7 @@ export function RoomBar({
         iconOnly={phone}
         onClick={onHowToPlay}
       >
-        How to play
+        {m.ui.room.howToPlay}
       </Button>
       {onLeave && (
         <Button
@@ -79,7 +79,7 @@ export function RoomBar({
           iconOnly={phone}
           onClick={onLeave}
         >
-          {leaveLabel}
+          {leaveLabel ?? m.ui.room.leave}
         </Button>
       )}
       {viewer && <ViewerAvatar viewer={viewer} menu={viewerMenu} />}

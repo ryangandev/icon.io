@@ -5,7 +5,7 @@ import type {
 } from '../../../shared/wire-types';
 import { formatFraction, isTarget, type Step } from '../../../shared/make-24';
 import { PickResult, TurnBar, type TurnBarProps } from '../ui';
-import { plural } from '../i18n/en/plural';
+import { useMessages, type Messages } from '../i18n';
 import { useSecondsLeft } from '../net/use-seconds-left';
 import { initialsOf, toneOf } from '../players/avatar';
 import { EndedEarlyPanel, ResultsPanel, WaitingPanel } from '../room/panels';
@@ -24,10 +24,9 @@ import styles from './room.module.css';
 
 type Room = RoomOf<Make24RoomState>;
 
-const SOLVED_CHAT = 'Solved! Chat opens when the hand ends.';
-
 /** T06-T09, T12: a Make 24 room, before, during and after a game. */
 export function Make24Room() {
+  const m = useMessages();
   const room = useRoomContext<Make24RoomState>();
   const { state } = room;
   const players = rankedPlayers(state);
@@ -38,12 +37,12 @@ export function Make24Room() {
     <RoomLayout
       phase={
         inGame
-          ? { tone: 'blue', label: `Hand ${state.hand} of ${state.hands}` }
+          ? { tone: 'blue', label: m.make24.hand(state.hand, state.hands) }
           : ended && !ended.endedEarly
-            ? { tone: 'lime', label: 'Game over' }
+            ? { tone: 'lime', label: m.make24.gameOver }
             : ended && players.length < 2
-              ? { tone: 'peach', label: 'Game ended' }
-              : { tone: 'blue', label: 'Waiting room' }
+              ? { tone: 'peach', label: m.make24.gameEnded }
+              : { tone: 'blue', label: m.make24.waitingRoom }
       }
       stage={
         inGame ? (
@@ -53,16 +52,17 @@ export function Make24Room() {
           <BetweenGames room={room} />
         )
       }
-      players={players.map((seat) => playerLine(state, seat))}
+      players={players.map((seat) => playerLine(state, seat, m))}
       chat={{
-        placeholder: 'Say something…',
-        lockedReason: solvedOpenHand ? SOLVED_CHAT : undefined,
+        placeholder: m.make24.messagePlaceholder,
+        lockedReason: solvedOpenHand ? m.make24.solvedChat : undefined,
       }}
     />
   );
 }
 
 function BetweenGames({ room }: { room: Room }) {
+  const m = useMessages();
   const { state, startGame, starting } = room;
   const count = Object.keys(state.playerList).length;
   const summary = state.lastGame;
@@ -72,7 +72,7 @@ function BetweenGames({ room }: { room: Room }) {
       <>
         <ResultsPanel
           summary={summary}
-          detail={`${plural(summary.hands, 'hand')}.`}
+          detail={m.make24.resultsDetail(summary.hands)}
           onPlayAgain={startGame}
           starting={starting}
         />
@@ -83,9 +83,9 @@ function BetweenGames({ room }: { room: Room }) {
   if (summary?.endedEarly && count < 2) return <EndedEarlyPanel />;
   return (
     <WaitingPanel
-      aloneTitle="A little better with company."
-      setup={`${plural(count, 'player')}, ${plural(state.hands, 'hand')}. Every hand, everyone gets the same four numbers at once, and quicker answers score more.`}
-      guestSetup={`${plural(count, 'player')}, ${plural(state.hands, 'hand')}.`}
+      aloneTitle={m.make24.aloneTitle}
+      setup={m.make24.setup(count, state.hands)}
+      guestSetup={m.make24.guestSetup(count, state.hands)}
       onStart={startGame}
       starting={starting}
     />
@@ -94,6 +94,7 @@ function BetweenGames({ room }: { room: Room }) {
 
 /** T06-T08, T12: one hand: the turn bar, then the table or its results. */
 function Hand({ room }: { room: Room }) {
+  const m = useMessages();
   const { state, receivedAt, reconnecting, socket } = room;
   const seconds = useSecondsLeft(state.phaseEndsInMs, receivedAt, reconnecting);
   const [steps, setSteps] = useState<readonly Step[]>([]);
@@ -113,17 +114,16 @@ function Hand({ room }: { room: Room }) {
   if (state.phase === 'reveal') {
     return (
       <>
-        <TurnBar {...turnBar(room, seconds, cards)} />
+        <TurnBar {...turnBar(room, seconds, cards, m)} />
         <HandResults state={state} />
       </>
     );
   }
 
-  const donePrompt =
-    'Nice. The hand ends when everyone solves it or time runs out.';
+  const donePrompt = m.make24.donePrompt;
   return (
     <>
-      <TurnBar {...turnBar(room, seconds, cards)} />
+      <TurnBar {...turnBar(room, seconds, cards, m)} />
       <TablePanel>
         {state.mySolve && !madeIt ? (
           // A refresh keeps the solve but not the steps that made it.
@@ -152,6 +152,7 @@ function Hand({ room }: { room: Room }) {
 
 /** T08, T09: a finished hand's cards, and how everybody did. */
 function HandResults({ state }: { state: Make24RoomState }) {
+  const m = useMessages();
   const deal = state.lastDeal;
   // The hand the results belong to: the one being revealed, or the last of
   // a finished game.
@@ -164,7 +165,7 @@ function HandResults({ state }: { state: Make24RoomState }) {
       <DealtCards deal={deal} />
       <section className={styles.results} aria-labelledby="hand-results">
         <h2 id="hand-results" className={styles.resultsTitle}>
-          Hand {hand} results
+          {m.make24.handResults(hand)}
         </h2>
         <ul className={styles.resultList}>
           {state.lastHand.map((result) => (
@@ -174,8 +175,8 @@ function HandResults({ state }: { state: Make24RoomState }) {
               initials={initialsOf(result.username)}
               tone={toneOf(result.username)}
               outcome={result.solved ? 'safe' : 'auto'}
-              label={result.solved ? 'Solved' : 'Out of time'}
-              detail={resultDetail(result)}
+              label={result.solved ? m.make24.solved : m.make24.outOfTime}
+              detail={resultDetail(result, m)}
               points={result.points}
             />
           ))}
@@ -186,47 +187,48 @@ function HandResults({ state }: { state: Make24RoomState }) {
 }
 
 /** "(8 − 6) × 3 × 4 · 46 s left", or "No answer". */
-function resultDetail(result: Make24HandResult): string {
+function resultDetail(result: Make24HandResult, m: Messages): string {
   return result.solved
-    ? `${result.expression} · ${result.secondsLeft} s left`
-    : 'No answer';
+    ? m.make24.resultDetail(result.expression, result.secondsLeft)
+    : m.make24.noAnswer;
 }
 
 function turnBar(
   room: Room,
   seconds: number,
   cards: ReturnType<typeof cardsAfter>,
+  m: Messages,
 ): TurnBarProps {
   const { state, playerId, reconnecting } = room;
   const clock = (label: string, waiting = false) =>
     reconnecting
-      ? { seconds, label: 'paused', waiting: true }
+      ? { seconds, label: m.make24.paused, waiting: true }
       : { seconds, label, waiting };
-  const label = `Hand ${state.hand} of ${state.hands}`;
+  const label = m.make24.hand(state.hand, state.hands);
 
   if (state.phase === 'reveal') {
     const mine = state.lastHand.find((result) => result.playerId === playerId);
     const base = {
-      label: `${label} results`,
+      label: m.make24.handResultsLabel(state.hand, state.hands),
       kind: 'status' as const,
       countdown: clock(
-        state.hand < state.hands ? 'next hand' : 'final scores',
+        state.hand < state.hands ? m.make24.nextHand : m.make24.finalScores,
         true,
       ),
     };
     if (mine?.solved) {
       return {
         ...base,
-        main: `+${mine.points} for you`,
-        meta: `Solved with ${plural(mine.secondsLeft, 'second')} left`,
+        main: m.make24.pointsForYou(mine.points),
+        meta: m.make24.solvedWithTime(mine.secondsLeft),
       };
     }
     return {
       ...base,
-      main: 'Out of time',
+      main: m.make24.outOfTime,
       meta: state.lastSolution
-        ? `One way: ${state.lastSolution}`
-        : 'Next hand in a moment',
+        ? m.make24.oneWay(state.lastSolution)
+        : m.make24.nextHandSoon,
     };
   }
 
@@ -242,54 +244,62 @@ function turnBar(
     return {
       label,
       kind: 'status',
-      main: `Solved! +${state.mySolve.points}`,
+      main: m.make24.solvedPoints(state.mySolve.points),
       meta: waitingFor.length
-        ? `Waiting for ${listNames(waitingFor)}`
-        : 'Everyone solved it',
-      countdown: clock('to solve'),
+        ? m.make24.waitingFor(listNames(waitingFor, m))
+        : m.make24.everyoneSolved,
+      countdown: clock(m.make24.toSolve),
     };
   }
   if (cards.length === 1 && !isTarget(cards[0].value)) {
     return {
       label,
       kind: 'status',
-      main: `That makes ${formatFraction(cards[0].value)}`,
-      meta: 'Undo a step or start over',
-      countdown: clock('to solve'),
+      main: m.make24.makes(formatFraction(cards[0].value)),
+      meta: m.make24.undoPrompt,
+      countdown: clock(m.make24.toSolve),
     };
   }
   const solvers = state.solved.map((solve) => solve.username);
   return {
     label,
     kind: 'status',
-    main: 'Make 24',
+    main: m.games.of['make-24'].name,
     meta: solvers.length
-      ? `${listNames(solvers)} solved it`
-      : 'Use each number once',
-    countdown: clock('to solve'),
+      ? m.make24.solvers(listNames(solvers, m))
+      : m.make24.useEachNumber,
+    countdown: clock(m.make24.toSolve),
   };
 }
 
 /** One player's line on the scoreboard. */
-function playerLine(state: Make24RoomState, seat: Seat): PlayerLine {
+function playerLine(
+  state: Make24RoomState,
+  seat: Seat,
+  m: Messages,
+): PlayerLine {
   if (!seat.isConnected) {
-    return { seat, status: 'Away', statusIcon: 'away', state: 'away' };
+    return { seat, status: m.make24.away, statusIcon: 'away', state: 'away' };
   }
-  if (!state.isGameStarted) return { seat, status: 'Waiting' };
+  if (!state.isGameStarted) return { seat, status: m.make24.waiting };
   if (state.phase === 'reveal') {
     const result = state.lastHand.find((r) => r.playerId === seat.playerId);
-    if (!result) return { seat, status: 'Waiting' };
+    if (!result) return { seat, status: m.make24.waiting };
     return result.solved
-      ? { seat, status: `Solved · +${result.points}`, statusIcon: 'check' }
-      : { seat, status: 'Out of time', statusIcon: 'clock' };
+      ? {
+          seat,
+          status: m.make24.solvedStatusPoints(result.points),
+          statusIcon: 'check',
+        }
+      : { seat, status: m.make24.outOfTime, statusIcon: 'clock' };
   }
   const solve = state.solved.find((s) => s.playerId === seat.playerId);
   return solve
     ? {
         seat,
-        status: `Solved · +${solve.points}`,
+        status: m.make24.solvedStatusPoints(solve.points),
         statusIcon: 'check',
         state: 'scored',
       }
-    : { seat, status: 'Solving' };
+    : { seat, status: m.make24.solving };
 }

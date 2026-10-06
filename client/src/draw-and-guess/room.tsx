@@ -14,7 +14,7 @@ import {
   type BrushSize,
   type TurnBarProps,
 } from '../ui';
-import { plural } from '../i18n/en/plural';
+import { useMessages, type Messages } from '../i18n';
 import { useSecondsLeft } from '../net/use-seconds-left';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import { EndedEarlyPanel, ResultsPanel, WaitingPanel } from '../room/panels';
@@ -28,6 +28,7 @@ type Room = RoomOf<DrawAndGuessRoomState>;
 
 /** D01-D15: a Draw & Guess room, before, during and after a game. */
 export function DrawAndGuessRoom() {
+  const m = useMessages();
   const room = useRoomContext<DrawAndGuessRoomState>();
   const { state } = room;
   const players = rankedPlayers(state);
@@ -46,29 +47,29 @@ export function DrawAndGuessRoom() {
         inGame
           ? {
               tone: 'blue',
-              label: `Round ${state.currentRound} of ${state.rounds}`,
+              label: m.drawAndGuess.round(state.currentRound, state.rounds),
             }
           : ended && !ended.endedEarly
-            ? { tone: 'lime', label: 'Game over' }
+            ? { tone: 'lime', label: m.drawAndGuess.gameOver }
             : ended && count < 2
-              ? { tone: 'peach', label: 'Game ended' }
-              : { tone: 'blue', label: 'Waiting room' }
+              ? { tone: 'peach', label: m.drawAndGuess.gameEnded }
+              : { tone: 'blue', label: m.drawAndGuess.waitingRoom }
       }
       notice={<DrawerAway room={room} />}
       stage={inGame ? <Turn room={room} /> : <BetweenGames room={room} />}
-      players={players.map((seat) => playerLine(state, seat))}
+      players={players.map((seat) => playerLine(state, seat, m))}
       chat={{
         placeholder:
           drawing && !isDrawer && !scored
-            ? 'Type your guess…'
-            : 'Say something…',
-        lockedReason: chatLock(state, isDrawer, scored),
+            ? m.drawAndGuess.guessPlaceholder
+            : m.drawAndGuess.messagePlaceholder,
+        lockedReason: chatLock(state, isDrawer, scored, m),
       }}
       boardInput={
         inGame && !isDrawer && state.phase !== 'choosing'
           ? drawing && !scored
-            ? 'Guess'
-            : 'Message'
+            ? m.drawAndGuess.guess
+            : m.drawAndGuess.message
           : undefined
       }
     />
@@ -77,30 +78,34 @@ export function DrawAndGuessRoom() {
 
 /** D10: the drawer dropped; the turn waits a few seconds for them. */
 function DrawerAway({ room }: { room: Room }) {
+  const m = useMessages();
   const { state, receivedAt } = room;
   const seconds = useSecondsLeft(state.drawerHoldEndsInMs, receivedAt);
   if (!state.isGameStarted || state.drawerHoldEndsInMs <= 0) return null;
   const drawer =
-    state.playerList[state.currentDrawer]?.username ?? 'The drawer';
+    state.playerList[state.currentDrawer]?.username ?? m.drawAndGuess.drawer;
   return (
     <Notice tone="pending">
-      {drawer} lost connection. Their turn is skipped if they are not back
-      within {plural(Math.max(1, seconds), 'second')}.
+      {m.drawAndGuess.drawerAway(drawer, Math.max(1, seconds))}
     </Notice>
   );
 }
 
 function BetweenGames({ room }: { room: Room }) {
+  const m = useMessages();
   const { state, startGame, starting } = room;
   const count = Object.keys(state.playerList).length;
-  const rounds = plural(state.rounds, 'round');
   const summary = state.lastGame;
 
   if (summary && !summary.endedEarly) {
     return (
       <ResultsPanel
         summary={summary}
-        detail={`${plural(summary.rounds, 'round')} of ${summary.wordCategory}, ${plural(summary.turns, 'turn')}.`}
+        detail={m.drawAndGuess.resultsDetail(
+          summary.rounds,
+          summary.wordCategory,
+          summary.turns,
+        )}
         onPlayAgain={startGame}
         starting={starting}
       />
@@ -109,9 +114,9 @@ function BetweenGames({ room }: { room: Room }) {
   if (summary?.endedEarly && count < 2) return <EndedEarlyPanel />;
   return (
     <WaitingPanel
-      aloneTitle="A little better with two."
-      setup={`${plural(count, 'player')}, ${rounds}. The word category is drawn at random when the game starts.`}
-      guestSetup={`${plural(count, 'player')}, ${rounds}.`}
+      aloneTitle={m.drawAndGuess.aloneTitle}
+      setup={m.drawAndGuess.setup(count, state.rounds)}
+      guestSetup={m.drawAndGuess.guestSetup(count, state.rounds)}
       onStart={startGame}
       starting={starting}
     />
@@ -119,11 +124,20 @@ function BetweenGames({ room }: { room: Room }) {
 }
 
 /** One player's line on the scoreboard. */
-function playerLine(state: DrawAndGuessRoomState, seat: Seat): PlayerLine {
+function playerLine(
+  state: DrawAndGuessRoomState,
+  seat: Seat,
+  m: Messages,
+): PlayerLine {
   if (!seat.isConnected) {
-    return { seat, status: 'Away', statusIcon: 'away', state: 'away' };
+    return {
+      seat,
+      status: m.drawAndGuess.away,
+      statusIcon: 'away',
+      state: 'away',
+    };
   }
-  if (!state.isGameStarted) return { seat, status: 'Waiting' };
+  if (!state.isGameStarted) return { seat, status: m.drawAndGuess.waiting };
 
   const isDrawer = seat.playerId === state.currentDrawer;
   const gained = state.turnPoints[seat.playerId] ?? 0;
@@ -134,37 +148,46 @@ function playerLine(state: DrawAndGuessRoomState, seat: Seat): PlayerLine {
       return isDrawer
         ? {
             seat,
-            status: 'Choosing a word',
+            status: m.drawAndGuess.choosing,
             statusIcon: 'brush',
             state: 'highlight',
           }
-        : { seat, status: 'Waiting' };
+        : { seat, status: m.drawAndGuess.waiting };
     case 'drawing':
       if (isDrawer) {
         return {
           seat,
-          status: 'Drawing',
+          status: m.drawAndGuess.drawing,
           statusIcon: 'brush',
           state: 'highlight',
         };
       }
       return scored
-        ? { seat, status: 'Guessed it', statusIcon: 'check', state: 'scored' }
-        : { seat, status: 'Guessing' };
+        ? {
+            seat,
+            status: m.drawAndGuess.guessed,
+            statusIcon: 'check',
+            state: 'scored',
+          }
+        : { seat, status: m.drawAndGuess.guessing };
     case 'reveal':
       if (isDrawer) {
-        return { seat, status: `Drew it · +${gained}`, statusIcon: 'brush' };
+        return {
+          seat,
+          status: m.drawAndGuess.drewPoints(gained),
+          statusIcon: 'brush',
+        };
       }
       return scored
         ? {
             seat,
-            status: `Guessed it · +${gained}`,
+            status: m.drawAndGuess.guessedPoints(gained),
             statusIcon: 'check',
             state: 'scored',
           }
-        : { seat, status: 'Missed it' };
+        : { seat, status: m.drawAndGuess.missed };
     default:
-      return { seat, status: 'Waiting' };
+      return { seat, status: m.drawAndGuess.waiting };
   }
 }
 
@@ -173,12 +196,13 @@ const DEFAULT_SIZE: BrushSize = 10;
 
 /** D04-D12: the turn bar, then the canvas or the word choices. */
 function Turn({ room }: { room: Room }) {
+  const m = useMessages();
   const { state, receivedAt, reconnecting, playerId, socket, canvas } = room;
   const phone = useMediaQuery(PHONE);
   const seconds = useSecondsLeft(state.phaseEndsInMs, receivedAt, reconnecting);
   const isDrawer = state.currentDrawer === playerId;
   const drawerName =
-    state.playerList[state.currentDrawer]?.username ?? 'The drawer';
+    state.playerList[state.currentDrawer]?.username ?? m.drawAndGuess.drawer;
   const [colour, setColour] = useState<BrushName>(DEFAULT_COLOUR);
   const [size, setSize] = useState<BrushSize>(DEFAULT_SIZE);
   const roomId = state.roomId;
@@ -230,7 +254,7 @@ function Turn({ room }: { room: Room }) {
 
   return (
     <>
-      <TurnBar {...turnBar(room, seconds, drawerName, phone)} />
+      <TurnBar {...turnBar(room, seconds, drawerName, phone, m)} />
       {canDraw && (
         <DrawingToolbar
           colour={colour}
@@ -261,7 +285,7 @@ function Turn({ room }: { room: Room }) {
             (state.phase === 'choosing' ? (
               <p className={styles.waiting}>
                 <Icon glyph="brush" size={32} />
-                {drawerName}’s drawing will appear here.
+                {m.drawAndGuess.drawingAppears(drawerName)}
               </p>
             ) : null)
           }
@@ -280,15 +304,16 @@ function turnBar(
   seconds: number,
   drawerName: string,
   phone: boolean,
+  m: Messages,
 ): TurnBarProps {
   const { state, playerId, reconnecting } = room;
   const isDrawer = state.currentDrawer === playerId;
   const scored = state.scoredThisTurn.includes(playerId);
-  const category = state.wordCategory;
+  const category = m.drawAndGuess.category(state.wordCategory);
   const letters = state.hint.replaceAll(' ', '').length;
   const clock = (label: string, waiting = false) =>
     reconnecting
-      ? { seconds, label: 'paused', waiting: true }
+      ? { seconds, label: m.drawAndGuess.paused, waiting: true }
       : { seconds, label, waiting };
 
   switch (state.phase) {
@@ -296,74 +321,72 @@ function turnBar(
       return isDrawer
         ? {
             category,
-            label: 'Your turn to draw',
+            label: m.drawAndGuess.yourTurn,
             kind: 'status',
-            main: 'Pick a word',
-            meta: 'Only you can see these',
-            countdown: clock('to choose'),
+            main: m.drawAndGuess.pickWord,
+            meta: m.drawAndGuess.privateChoices,
+            countdown: clock(m.drawAndGuess.toChoose),
           }
         : {
             category,
-            label: 'Next up',
+            label: m.drawAndGuess.nextUp,
             kind: 'status',
-            main: `${drawerName} is choosing a word`,
-            meta: 'Get ready to guess',
-            countdown: clock('to choose', true),
+            main: m.drawAndGuess.choosingWord(drawerName),
+            meta: m.drawAndGuess.readyToGuess,
+            countdown: clock(m.drawAndGuess.toChoose, true),
           };
     case 'drawing':
       if (isDrawer) {
         return {
           category,
           label: state.wordAutoPicked
-            ? 'Time ran out, so this one was picked for you'
-            : 'Draw this',
+            ? m.drawAndGuess.autoPicked
+            : m.drawAndGuess.drawThis,
           kind: 'word',
           main: state.word ?? '',
-          meta: 'Only you can see the word',
-          countdown: clock('left'),
+          meta: m.drawAndGuess.privateWord,
+          countdown: clock(m.drawAndGuess.left),
         };
       }
       return scored
         ? {
             category,
-            label: `You got it! +${state.turnPoints[playerId] ?? 0}`,
+            label: m.drawAndGuess.youGotIt(state.turnPoints[playerId] ?? 0),
             kind: 'hint',
             main: state.hint,
-            meta: 'Waiting for the others',
-            countdown: clock('left'),
+            meta: m.drawAndGuess.waitingOthers,
+            countdown: clock(m.drawAndGuess.left),
           }
         : {
             category,
-            label: 'Guess the word',
+            label: m.drawAndGuess.guessWord,
             kind: 'hint',
             main: state.hint,
-            meta: phone
-              ? plural(letters, 'letter')
-              : `${plural(letters, 'letter')} · type your guess in the chat`,
-            countdown: clock('left'),
+            meta: m.drawAndGuess.letters(letters, phone),
+            countdown: clock(m.drawAndGuess.left),
           };
     default:
       return {
         category,
-        label: 'The word was',
+        label: m.drawAndGuess.wordWas,
         kind: 'status',
         main: state.word ?? '',
-        meta: turnPointsLine(state),
-        countdown: clock('next turn', true),
+        meta: turnPointsLine(state, m),
+        countdown: clock(m.drawAndGuess.nextTurn, true),
       };
   }
 }
 
 /** "Maya +74 · Sam +112 · Ryan +72": the drawer, then each guesser. */
-function turnPointsLine(state: DrawAndGuessRoomState): string {
+function turnPointsLine(state: DrawAndGuessRoomState, m: Messages): string {
   const drawer = state.currentDrawer;
   const scorers = state.scoredThisTurn.filter((id) => id !== drawer);
-  if (!scorers.length) return 'Nobody got it this time';
+  if (!scorers.length) return m.drawAndGuess.nobodyGuessed;
   return [drawer, ...scorers]
     .map((id) => {
       const name = state.playerList[id]?.username;
       const points = state.turnPoints[id] ?? 0;
-      return name ? `${name} +${points}` : null;
+      return name ? m.drawAndGuess.playerPoints(name, points) : null;
     })
     .filter(Boolean)
     .join(' · ');
@@ -377,10 +400,11 @@ function chatLock(
   state: DrawAndGuessRoomState,
   isDrawer: boolean,
   scored: boolean,
+  m: Messages,
 ): string | undefined {
   if (isDrawer && state.phase !== 'reveal') {
-    return 'You’re drawing. Chat opens after your turn.';
+    return m.drawAndGuess.drawingChatLocked;
   }
-  if (scored && state.isGameStarted) return 'You got it. Chat opens next turn.';
+  if (scored && state.isGameStarted) return m.drawAndGuess.guessedChatLocked;
   return undefined;
 }

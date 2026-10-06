@@ -1,5 +1,6 @@
 import { Chat, ChatMessage, type ChatProps, type GlyphName } from '../ui';
 import { useMessages } from '../i18n';
+import { chatText } from './notice-text';
 import { useRoomContext } from './room-context';
 
 /**
@@ -24,12 +25,12 @@ export function RoomChat({
           kind={message.kind}
           alertIcon={alertIcon}
           name={
-            message.playerId === room.playerId
+            message.kind === 'player' && message.playerId === room.playerId
               ? m.chat.you(message.username ?? '')
               : message.username
           }
         >
-          {message.text}
+          {chatText(message, m)}
         </ChatMessage>
       ))}
     </Chat>

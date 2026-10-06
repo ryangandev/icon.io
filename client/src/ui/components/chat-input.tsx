@@ -1,3 +1,4 @@
+import { useMessages } from '../../i18n';
 import { useState, type FormEvent } from 'react';
 import { cx } from '../cx';
 import { Icon } from './icon';
@@ -22,11 +23,12 @@ export interface ChatInputProps {
 /** Zumpo/Chat input: the one box for chat and, in Draw & Guess, guesses. */
 export function ChatInput({
   onSend,
-  placeholder = 'Type a guess or say hi…',
+  placeholder,
   lockedReason,
-  label = 'Message',
+  label,
   className,
 }: ChatInputProps) {
+  const m = useMessages();
   const [text, setText] = useState('');
   const locked = lockedReason != null;
 
@@ -48,15 +50,19 @@ export function ChatInput({
         className={styles.input}
         value={text}
         onChange={(event) => setText(event.target.value)}
-        placeholder={lockedReason ?? placeholder}
+        placeholder={lockedReason ?? placeholder ?? m.ui.chat.placeholder}
         maxLength={CHAT_MAX_LENGTH}
         disabled={locked}
-        aria-label={label}
+        aria-label={label ?? m.ui.chat.message}
         autoComplete="off"
         enterKeyHint="send"
       />
       {!locked && (
-        <button type="submit" className={styles.send} aria-label="Send">
+        <button
+          type="submit"
+          className={styles.send}
+          aria-label={m.ui.chat.send}
+        >
           <Icon glyph="back" size={16} className={styles.arrow} />
         </button>
       )}

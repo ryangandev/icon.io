@@ -1,3 +1,5 @@
+import { notices } from '../../../client/src/i18n/en/notices.js';
+import { chatText } from '../../../client/src/room/notice-text.js';
 import type { AddressInfo } from 'node:net';
 import { io as createClient, type Socket } from 'socket.io-client';
 import {
@@ -861,3 +863,7 @@ export {
   playToFirstWord,
 };
 export type { TestServer, TestClient, ClientSocket };
+
+/** Visible English text, without adding wording to the server's wire. */
+export const textOf = (message: ChatMessage): string =>
+  chatText(message, { notices });

@@ -1,9 +1,6 @@
 import type { ReactNode } from 'react';
-import {
-  bidWords,
-  counts,
-  type Bid as BidOf,
-} from '../../../shared/liars-dice';
+import { useMessages, type Messages } from '../i18n';
+import { counts, type Bid as BidOf } from '../../../shared/liars-dice';
 import type { LiarsDiceReveal } from '../../../shared/wire-types';
 import {
   Bid,
@@ -78,19 +75,23 @@ function diceOf(
 function cupLine(
   seat: TableSeat,
   props: TableProps,
+  m: Messages,
 ): { detail: string; state: CupState } {
   const { reveal, turnId, nextId, youId } = props;
   const you = seat.id === youId;
   if (reveal) {
     if (seat.id === reveal.loserId) {
-      return { detail: reveal.out ? 'Out' : 'Lost a die', state: 'lost' };
+      return {
+        detail: reveal.out ? m.liarsDice.out : m.liarsDice.lostDie,
+        state: 'lost',
+      };
     }
     if (seat.id === reveal.callerId) {
-      return { detail: 'Called Liar', state: 'default' };
+      return { detail: m.liarsDice.calledLiar, state: 'default' };
     }
     if (seat.id === reveal.bid.playerId) {
       return {
-        detail: `Bid ${bidWords(reveal.bid)}`,
+        detail: m.liarsDice.bidLabel(reveal.bid),
         state: 'default',
       };
     }
@@ -98,24 +99,30 @@ function cupLine(
   if (seat.diceLeft === 0) {
     return {
       detail:
-        seat.outInRound === null ? 'Out' : `Out in round ${seat.outInRound}`,
+        seat.outInRound === null
+          ? m.liarsDice.out
+          : m.liarsDice.outRound(seat.outInRound),
       state: 'default',
     };
   }
   if (seat.id === turnId) {
-    return { detail: you ? 'Your turn' : 'Deciding', state: 'turn' };
+    return {
+      detail: you ? m.liarsDice.yourTurn : m.liarsDice.deciding,
+      state: 'turn',
+    };
   }
   if (you && seat.id === nextId)
-    return { detail: 'You go next', state: 'default' };
-  return { detail: diceWord(seat.diceLeft), state: 'default' };
+    return { detail: m.liarsDice.youNext, state: 'default' };
+  return { detail: diceWord(seat.diceLeft, m), state: 'default' };
 }
 
 function cupProps(
   seat: TableSeat,
   props: TableProps,
   size: CupProps['size'],
+  m: Messages,
 ): CupProps {
-  const line = cupLine(seat, props);
+  const line = cupLine(seat, props, m);
   return {
     name: seat.name,
     initials: initialsOf(seat.name),
@@ -133,13 +140,14 @@ function cupProps(
  * A player out of dice leaves the table, unless a call has just put them out.
  */
 export function Table(props: TableProps) {
+  const m = useMessages();
   const {
     seats,
     youId,
     bids,
     reveal,
     who,
-    countLabel = 'The count',
+    countLabel = m.liarsDice.count,
     beside,
   } = props;
   const others = seats.filter(
@@ -159,7 +167,7 @@ export function Table(props: TableProps) {
             <Cup
               key={seat.id}
               layout={phone && !fiveDice ? 'row' : 'stack'}
-              {...cupProps(seat, props, 'compact')}
+              {...cupProps(seat, props, 'compact', m)}
             />
           ))}
         </div>
@@ -170,14 +178,16 @@ export function Table(props: TableProps) {
         bids.length > 0 && (
           <section className={styles.bids} aria-labelledby="ld-bids">
             <h3 id="ld-bids" className={styles.label}>
-              Bids this round
+              {m.liarsDice.bidsRound}
             </h3>
             <ol className={styles.bidList}>
               {bids.map((bid, index) => (
                 <li key={index}>
                   <Bid
                     name={
-                      who(bid.playerId).you ? 'You' : who(bid.playerId).name
+                      who(bid.playerId).you
+                        ? m.liarsDice.youLabel
+                        : who(bid.playerId).name
                     }
                     count={bid.count}
                     face={bid.face as DieFace}
@@ -191,7 +201,7 @@ export function Table(props: TableProps) {
       )}
       {you && (
         <div className={styles.yours}>
-          <Cup {...cupProps(you, props, 'regular')} />
+          <Cup {...cupProps(you, props, 'regular', m)} />
           {beside}
         </div>
       )}
@@ -209,6 +219,7 @@ export function CountLine({
   who: Naming;
   label: string;
 }) {
+  const m = useMessages();
   return (
     <section className={styles.count} aria-labelledby="ld-count">
       <h3 id="ld-count" className={styles.label}>
@@ -219,14 +230,14 @@ export function CountLine({
         <Die
           face={reveal.bid.face as DieFace}
           state="counted"
-          label={`${reveal.bid.face}s`}
+          label={m.liarsDice.face(reveal.bid.face)}
         />
-        <span className={styles.detail}>{countDetail(reveal)}</span>
+        <span className={styles.detail}>{countDetail(reveal, m)}</span>
         <span className={styles.outcome}>
           <span className={styles.detail} aria-hidden="true">
             →
           </span>
-          <span className={styles.verdict}>{verdict(reveal, who)}</span>
+          <span className={styles.verdict}>{verdict(reveal, who, m)}</span>
         </span>
       </p>
     </section>

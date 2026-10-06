@@ -1,3 +1,4 @@
+import { textOf } from './helpers/test-server.js';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { DailyWordRoomState } from '../models/types.js';
 import {
@@ -176,7 +177,7 @@ describe('a round', () => {
     expect(board.points).toBeGreaterThan(500);
     expect(board.points).toBeLessThanOrEqual(550);
     expect(state.playerList[alice.playerId].points).toBe(board.points);
-    expect(message.text).toBe(`Alice got it in 2! (+${board.points})`);
+    expect(textOf(message)).toBe(`Alice got it in 2! (+${board.points})`);
     expect(JSON.stringify(state)).not.toContain(`"${word}"`);
   });
 
@@ -201,7 +202,7 @@ describe('a round', () => {
     // Bob, still guessing, may talk.
     const heard = waitForChat(alice, (m) => m.kind === 'player');
     bob.emit('chat:send', roomId, 'hmm');
-    expect((await heard).text).toBe('hmm');
+    expect(textOf(await heard)).toBe('hmm');
   });
 
   it('lets a player who is out of guesses talk, and says so on their board', async () => {
@@ -217,7 +218,7 @@ describe('a round', () => {
 
     const heard = waitForChat(alice, (m) => m.kind === 'player');
     bob.emit('chat:send', roomId, 'no idea');
-    expect((await heard).text).toBe('no idea');
+    expect(textOf(await heard)).toBe('no idea');
   });
 
   it('ends early once everybody is done, and reveals every board', async () => {
@@ -227,7 +228,9 @@ describe('a round', () => {
       alice,
       (s) => s.phase === 'reveal' && s.round === 1,
     );
-    const said = waitForChat(alice, (m) => m.text.startsWith('The word was'));
+    const said = waitForChat(alice, (m) =>
+      textOf(m).startsWith('The word was'),
+    );
     await guess(alice, roomId, word);
     for (const miss of missesFor(word)) await guess(bob, roomId, miss);
 
@@ -244,7 +247,7 @@ describe('a round', () => {
       points: 0,
     });
     expect(results.lastRound!.boards[1].rows[0].word).toBe(missesFor(word)[0]);
-    expect((await said).text).toBe(`The word was ${word.toUpperCase()}.`);
+    expect(textOf(await said)).toBe(`The word was ${word.toUpperCase()}.`);
 
     const next = await waitForDailyWordState(
       alice,

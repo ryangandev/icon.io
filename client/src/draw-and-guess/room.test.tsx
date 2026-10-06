@@ -1,9 +1,12 @@
-import { screen, within } from '@testing-library/react';
+import { act, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { drawAndGuessState, ME } from '../tests/fixtures';
 import { onPhone } from '../tests/phone';
 import { renderSeated } from '../tests/seated';
+import { renderApp } from '../tests/render-app';
+import { FakeSocket } from '../tests/fake-socket';
+import { roomPath } from '../games/catalog';
 
 /** The phone's Board tab. */
 const board = () => within(screen.getByRole('tabpanel', { name: 'Board' }));
@@ -17,6 +20,41 @@ const turn = {
 };
 
 describe('a Draw & Guess room', () => {
+  it('translates the turn and chat in Chinese while keeping the word choices English', async () => {
+    const user = userEvent.setup();
+    const fake = new FakeSocket();
+    fake.answer('room:sync', () => ({ ok: true as const }));
+    await renderApp(roomPath('draw-and-guess', 'r1'), { locale: 'zh', fake });
+    const state = drawAndGuessState({
+      ...turn,
+      phase: 'choosing',
+      currentDrawer: ME,
+      wordChoices: ['turtle', 'zebra', 'owl'],
+    });
+    act(() => fake.serverEmits('room:state', state));
+    expect(screen.getByText('选一个词')).toBeInTheDocument();
+    expect(screen.getByText('动物')).toBeInTheDocument();
+    expect(screen.getByText('第 1 轮，共 2 轮')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /zebra/ }));
+    expect(fake.sentArgs('dg:select-word')).toEqual([['r1', 'zebra']]);
+
+    act(() =>
+      fake.serverEmits('room:state', {
+        ...state,
+        phase: 'drawing',
+        word: 'zebra',
+        wordChoices: undefined,
+        hint: '_ _ _ _ _',
+      }),
+    );
+    expect(screen.getByText('zebra')).toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toHaveAttribute(
+      'placeholder',
+      '你正在画画，回合结束后才能聊天。',
+    );
+    expect(screen.getByRole('img', { name: '绘画画布' })).toBeInTheDocument();
+  });
+
   it('offers the drawer their words, and only the drawer', async () => {
     const user = userEvent.setup();
     const { fake } = await renderSeated(

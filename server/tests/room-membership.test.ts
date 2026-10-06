@@ -1,3 +1,4 @@
+import { textOf } from './helpers/test-server.js';
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { seatCount } from '../libs/rooms/seats.js';
@@ -55,13 +56,13 @@ describe('joining and leaving a room', () => {
 
     const guest = await harness.connect();
     const announced = waitForChat(owner, (message) =>
-      message.text.includes('Grace'),
+      textOf(message).includes('Grace'),
     );
     await joinRoom(guest, roomId, 'Grace');
 
     expect(await announced).toMatchObject({
       kind: 'system',
-      text: 'Grace has joined the room.',
+      notice: { type: 'room:joined', name: 'Grace' },
     });
   });
 
@@ -160,7 +161,7 @@ describe('joining and leaving a room', () => {
 
     expect(state.currentPlayerCount).toBe(2);
     expect(state.roomId).toBe(roomId);
-    expect(messages.map((message) => message.text)).toEqual([
+    expect(messages.map((message) => textOf(message))).toEqual([
       'Ada created the room.',
       'Late has joined the room.',
     ]);
@@ -227,7 +228,7 @@ describe('joining and leaving a room', () => {
       (state) => !state.playerList[owner.playerId],
     );
     const announced = waitForChat(guest, (message) =>
-      message.text.includes('owner'),
+      textOf(message).includes('owner'),
     );
     owner.emit('room:leave', roomId);
 
@@ -237,7 +238,7 @@ describe('joining and leaving a room', () => {
     });
     expect(await announced).toMatchObject({
       kind: 'alert',
-      text: 'Previous owner Ada has left the room. Grace is now the owner.',
+      notice: { type: 'room:owner-left', name: 'Ada', owner: 'Grace' },
     });
   });
 
@@ -248,13 +249,13 @@ describe('joining and leaving a room', () => {
     await joinRoom(guest, roomId, 'Grace');
 
     const announced = waitForChat(owner, (message) =>
-      message.text.includes('left'),
+      textOf(message).includes('left'),
     );
     guest.emit('room:leave', roomId);
 
     expect(await announced).toMatchObject({
       kind: 'alert',
-      text: 'Grace has left the room.',
+      notice: { type: 'room:left', name: 'Grace' },
     });
   });
 

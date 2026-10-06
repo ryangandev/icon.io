@@ -1,3 +1,4 @@
+import { useMessages } from '../../i18n';
 import { cx } from '../cx';
 import { Avatar, type AvatarTone } from './avatar';
 import { Icon, type GlyphName } from './icon';
@@ -46,6 +47,7 @@ export function PlayerRow({
   as: Row = 'li',
   className,
 }: PlayerRowProps) {
+  const m = useMessages();
   return (
     <Row
       className={cx(
@@ -62,13 +64,13 @@ export function PlayerRow({
             <Icon
               glyph="crown"
               size={16}
-              label="Host"
+              label={m.ui.host}
               className={styles.host}
             />
           )}
           {you && (
             <Tag size="compact" tone={state === 'highlight' ? 'paper' : 'sand'}>
-              You
+              {m.ui.you}
             </Tag>
           )}
         </span>

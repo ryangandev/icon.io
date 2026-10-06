@@ -192,6 +192,25 @@ describe('the home page', () => {
 });
 
 describe('a lobby', () => {
+  it('shows the room list and each room’s setting in Chinese', async () => {
+    const { fake } = await renderApp('/games/minesweeper', { locale: 'zh' });
+    expect(
+      screen.getByRole('heading', { name: '扫雷房间' }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: '创建房间' })).toHaveAttribute(
+      'href',
+      '/games/minesweeper/new',
+    );
+    expect(screen.getByText('正在寻找玩伴…')).toBeInTheDocument();
+    act(() => fake.serverEmits('lobby:rooms', 'minesweeper', [lobbyRoom]));
+    const row = screen.getByRole('article', { name: 'Friday table' });
+    expect(within(row).getByText('房主 Maya · 小 9 × 9')).toBeInTheDocument();
+    expect(screen.getByText('1 个房间 · 实时更新')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: '你的名字：Ryan' }),
+    ).toBeInTheDocument();
+  });
+
   it('lists the rooms live and joins one', async () => {
     const user = userEvent.setup();
     const { fake, router } = await renderApp('/games/minesweeper');
@@ -249,6 +268,35 @@ describe('how to play', () => {
 });
 
 describe('making a room', () => {
+  it('creates a room with Chinese fields, board options and validation', async () => {
+    const user = userEvent.setup();
+    const { fake } = await renderApp('/games/minesweeper/new', {
+      locale: 'zh',
+    });
+    const field = screen.getByLabelText('房间名称');
+    expect(field).toHaveValue('Ryan的房间');
+    expect(screen.getByText('9 × 9 · 10 个雷')).toBeInTheDocument();
+    await user.clear(field);
+    await user.click(screen.getByRole('button', { name: '创建房间' }));
+    expect(screen.getByText('给房间起个名字。')).toBeInTheDocument();
+    expect(field).toHaveFocus();
+    await user.type(field, '周五游戏');
+    await user.click(screen.getByRole('combobox', { name: '棋盘' }));
+    await user.click(await screen.findByRole('option', { name: /^中/ }));
+    await user.click(screen.getByRole('button', { name: '创建房间' }));
+    await waitFor(() =>
+      expect(fake.requests).toContainEqual({
+        event: 'room:create',
+        args: [
+          expect.objectContaining({
+            roomName: '周五游戏',
+            settings: { difficulty: 'Medium' },
+          }),
+        ],
+      }),
+    );
+  });
+
   it('asks for a name before it sends anything', async () => {
     const user = userEvent.setup();
     const { fake } = await renderApp('/games/minesweeper/new');

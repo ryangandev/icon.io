@@ -1,4 +1,5 @@
 import type { AnyRoomState, PlayerInfo } from '../../../shared/wire-types';
+import type { Messages } from '../i18n';
 
 export interface Seat extends PlayerInfo {
   playerId: string;
@@ -25,15 +26,11 @@ export function placesOf(standings: readonly { points: number }[]): number[] {
 }
 
 /** "Ryan", "Ryan and Maya", "Ryan, Maya and Sam". */
-export function listNames(names: readonly string[]): string {
-  if (names.length <= 1) return names.join('');
-  return `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
+export function listNames(names: readonly string[], m: Messages): string {
+  return m.room.listNames(names);
 }
 
 /** "1st", "2nd", "3rd", "4th"… */
-export function ordinal(place: number): string {
-  const tens = place % 100;
-  if (tens >= 11 && tens <= 13) return `${place}th`;
-  const suffix = ['th', 'st', 'nd', 'rd'][place % 10] ?? 'th';
-  return `${place}${suffix}`;
+export function ordinal(place: number, m: Messages): string {
+  return m.room.ordinal(place);
 }

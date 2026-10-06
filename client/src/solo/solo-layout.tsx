@@ -37,11 +37,11 @@ export function SoloLayout({ gameType, phase, stage, side }: SoloLayoutProps) {
         <RoomBar
           layout={phone ? 'phone' : 'desktop'}
           game={m.games.of[gameType].name}
-          room="On your own"
+          room={m.solo.onYourOwn}
           phase={phase}
           onHowToPlay={() => setRules(true)}
           onLeave={() => navigate('/')}
-          leaveLabel="Leave"
+          leaveLabel={m.solo.leave}
           viewer={viewer}
           viewerMenu={viewerMenu}
         />

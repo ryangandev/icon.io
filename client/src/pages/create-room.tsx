@@ -14,13 +14,9 @@ import { Button, ButtonLink, Notice, SelectField, TextField } from '../ui';
 import { GAME_LENGTHS as TRIOS_LENGTHS } from '../../../shared/trios';
 import { gameInfo, lobbyPath, roomPath } from '../games/catalog';
 import { useMessages } from '../i18n';
-import { plural } from '../i18n/en/plural';
-import { DIFFICULTIES, boardDetail } from '../minesweeper/boards';
+import { DIFFICULTIES } from '../../../shared/minesweeper';
 import { levelsFor } from '../../../shared/hush';
-import {
-  BOARDS as PAIRS_BOARDS,
-  boardDetail as pairsBoardDetail,
-} from '../pairs/boards';
+import { BOARDS as PAIRS_BOARDS } from '../../../shared/pairs';
 import { useConnectedSession } from '../net/session';
 import { REQUEST_TIMEOUT_MS } from '../net/socket';
 import { ConnectionLost } from '../shell/connection-lost';
@@ -36,11 +32,6 @@ const PASSWORD_MAX_LENGTH = 20;
 const ROUNDS = [1, 2, 3, 4] as const;
 const HANDS = [5, 10] as const;
 const WORDS = [3, 5] as const;
-/** What each Liar's Dice game is like. */
-const DICE_DETAIL: Record<DicePerPlayer, string> = {
-  3: 'The quick game, and the usual one.',
-  5: 'The classic: longer, best with 2–4 players.',
-};
 
 /**
  * DL04-DL06, DL10, DL11, ML04-ML06, ML10, MO05, T10, PR08, TS10, HU09, DW11: a
@@ -56,7 +47,7 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   const navigate = useNavigate();
 
   const [roomName, setRoomName] = useState(() =>
-    `${name}’s room`.slice(0, ROOM_NAME_MAX_LENGTH),
+    m.createRoom.defaultName(name).slice(0, ROOM_NAME_MAX_LENGTH),
   );
   const [nameMissing, setNameMissing] = useState(false);
   const nameField = useRef<HTMLInputElement>(null);
@@ -121,7 +112,7 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
     setPending(false);
   };
 
-  const subtitle = 'Make a little space for your next game.';
+  const subtitle = m.createRoom.subtitle;
   if (lost) {
     return (
       <Page>
@@ -136,24 +127,24 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
     <FormPage
       heading={lobbyHeading(game, subtitle, m)}
       phone={{
-        eyebrow: 'Make a room',
+        eyebrow: m.createRoom.eyebrow,
         title: (
           <>
-            A little room <br />
-            for you.
+            {m.createRoom.titleLines[0]} <br />
+            {m.createRoom.titleLines[1]}
           </>
         ),
-        subtitle: `${text.name} · room settings`,
+        subtitle: m.createRoom.settings(text.name),
       }}
-      title="A little room for you."
+      title={m.createRoom.title}
       description={text.createDescription}
       onSubmit={submit}
       actions={
         pending ? undefined : (
           <>
-            <Button type="submit">Create room</Button>
+            <Button type="submit">{m.createRoom.create}</Button>
             <ButtonLink to={lobbyPath(gameType)} variant="secondary">
-              Cancel
+              {m.createRoom.cancel}
             </ButtonLink>
           </>
         )
@@ -161,16 +152,14 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
     >
       {failed && (
         <Notice tone="error">
-          {failed === 'full'
-            ? 'Zumpo is full right now. Join a room, or try again in a little while.'
-            : 'We couldn’t create the room. Please try again.'}
+          {failed === 'full' ? m.createRoom.full : m.createRoom.failed}
         </Notice>
       )}
       <TextField
-        label="Room name"
+        label={m.createRoom.roomName}
         ref={nameField}
-        helper={`Up to ${ROOM_NAME_MAX_LENGTH} characters.`}
-        error={nameMissing ? 'Give your room a name.' : undefined}
+        helper={m.createRoom.nameHelper(ROOM_NAME_MAX_LENGTH)}
+        error={nameMissing ? m.createRoom.nameMissing : undefined}
         value={roomName}
         onValueChange={(next: string) => {
           setRoomName(next);
@@ -181,16 +170,20 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
         name="roomName"
       />
       <SelectField
-        label="Seats"
+        label={m.createRoom.seats}
         helper={
           gameType === 'hush'
             ? // Hush has no settings of its own; its length is its seats.
-              `Choose 2–${game.maxPlayers} seats. 2 players play ${levelsFor(2)} levels, ${game.maxPlayers} play ${levelsFor(game.maxPlayers)}.`
-            : `Choose 2–${game.maxPlayers} seats.`
+              m.createRoom.hushSeatsHelper(
+                game.maxPlayers,
+                levelsFor(2),
+                levelsFor(game.maxPlayers),
+              )
+            : m.createRoom.seatsHelper(game.maxPlayers)
         }
         options={seatCounts(game.maxPlayers).map((count) => ({
           value: count,
-          label: plural(count, 'player'),
+          label: m.createRoom.players(count),
         }))}
         value={seats}
         onValueChange={setSeats}
@@ -198,11 +191,11 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
       />
       {gameType === 'draw-and-guess' ? (
         <SelectField
-          label="Rounds"
-          helper="1, 2, 3 or 4 rounds."
+          label={m.createRoom.rounds}
+          helper={m.createRoom.roundsHelper}
           options={ROUNDS.map((count) => ({
             value: count,
-            label: plural(count, 'round'),
+            label: m.createRoom.roundCount(count),
           }))}
           value={rounds}
           onValueChange={setRounds}
@@ -210,11 +203,11 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
         />
       ) : gameType === 'make-24' ? (
         <SelectField
-          label="Hands"
-          helper="5 or 10 hands, 60 seconds each."
+          label={m.createRoom.hands}
+          helper={m.createRoom.handsHelper}
           options={HANDS.map((count) => ({
             value: count,
-            label: plural(count, 'hand'),
+            label: m.createRoom.handCount(count),
           }))}
           value={hands}
           onValueChange={setHands}
@@ -222,12 +215,12 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
         />
       ) : gameType === 'liars-dice' ? (
         <SelectField
-          label="Dice each"
-          helper={DICE_DETAIL[dicePerPlayer]}
+          label={m.createRoom.diceEach}
+          helper={m.createRoom.diceDetail(dicePerPlayer)}
           options={DICE_PER_PLAYER.map((count) => ({
             value: count,
-            label: `${count} dice`,
-            detail: DICE_DETAIL[count],
+            label: m.createRoom.diceCount(count),
+            detail: m.createRoom.diceDetail(count),
           }))}
           value={dicePerPlayer}
           onValueChange={setDicePerPlayer}
@@ -235,12 +228,12 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
         />
       ) : gameType === 'pairs' ? (
         <SelectField
-          label="Board"
-          helper={pairsBoardDetail(pairsBoard)}
+          label={m.createRoom.board}
+          helper={m.createRoom.pairsDetail(pairsBoard)}
           options={PAIRS_BOARDS.map((board) => ({
             value: board,
-            label: board,
-            detail: pairsBoardDetail(board),
+            label: m.createRoom.boardName(board),
+            detail: m.createRoom.pairsDetail(board),
           }))}
           value={pairsBoard}
           onValueChange={setPairsBoard}
@@ -248,11 +241,11 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
         />
       ) : gameType === 'trios' ? (
         <SelectField
-          label="Trios"
-          helper="10 or 20 trios a game."
+          label={m.createRoom.trios}
+          helper={m.createRoom.triosHelper}
           options={TRIOS_LENGTHS.map((count) => ({
             value: count,
-            label: plural(count, 'trio'),
+            label: m.createRoom.trioCount(count),
           }))}
           value={trios}
           onValueChange={setTrios}
@@ -260,11 +253,11 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
         />
       ) : gameType === 'daily-word' ? (
         <SelectField
-          label="Words"
-          helper="3 or 5 words, 2 minutes each."
+          label={m.createRoom.words}
+          helper={m.createRoom.wordsHelper}
           options={WORDS.map((count) => ({
             value: count,
-            label: plural(count, 'word'),
+            label: m.createRoom.wordCount(count),
           }))}
           value={words}
           onValueChange={setWords}
@@ -272,12 +265,12 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
         />
       ) : gameType === 'minesweeper' ? (
         <SelectField
-          label="Board"
-          helper={boardDetail(difficulty)}
+          label={m.createRoom.board}
+          helper={m.createRoom.minesweeperDetail(difficulty)}
           options={DIFFICULTIES.map((board) => ({
             value: board,
-            label: board,
-            detail: boardDetail(board),
+            label: m.createRoom.boardName(board),
+            detail: m.createRoom.minesweeperDetail(board),
           }))}
           value={difficulty}
           onValueChange={setDifficulty}
@@ -285,8 +278,8 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
         />
       ) : null}
       <TextField
-        label="Password (optional)"
-        helper={`Leave blank for an open room. Up to ${PASSWORD_MAX_LENGTH} characters.`}
+        label={m.createRoom.password}
+        helper={m.createRoom.passwordHelper(PASSWORD_MAX_LENGTH)}
         type="password"
         value={password}
         onValueChange={(next: string) => setPassword(next)}
@@ -294,7 +287,7 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
         autoComplete="new-password"
         name="password"
       />
-      {pending && <StatusLine>Creating your room…</StatusLine>}
+      {pending && <StatusLine>{m.createRoom.creating}</StatusLine>}
     </FormPage>
   );
 }

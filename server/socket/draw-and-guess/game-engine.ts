@@ -1,4 +1,7 @@
-import type { ChatMessageKind } from '../../../shared/wire-types.js';
+import type {
+  ChatMessageKind,
+  RoomNotice,
+} from '../../../shared/wire-types.js';
 import type { DrawAndGuessState } from '../../models/types.js';
 import { RequestError } from '../../models/error.js';
 import { seatCount } from '../../libs/rooms/seats.js';
@@ -110,8 +113,8 @@ const createDrawAndGuessGameEngine = (
   const announce = (
     roomId: string,
     kind: Exclude<ChatMessageKind, 'player'>,
-    text: string,
-  ) => ctx.rooms.announce(roomId, kind, text);
+    notice: RoomNotice,
+  ) => ctx.rooms.announce(roomId, kind, notice);
 
   const emitState = (room: DrawAndGuessRoom) => ctx.rooms.emitState(room);
 
@@ -211,11 +214,10 @@ const createDrawAndGuessGameEngine = (
       `Game started in room ${room.roomId} with category "${room.game.wordCategory}".`,
     );
 
-    announce(
-      room.roomId,
-      'system',
-      `Game has started! The word category for this game is "${room.game.wordCategory}"!`,
-    );
+    announce(room.roomId, 'system', {
+      type: 'dg:started',
+      category: room.game.wordCategory,
+    });
     emitLobbyRoomList();
 
     startNewRound(room);
@@ -371,7 +373,7 @@ const createDrawAndGuessGameEngine = (
     game.wordCategory = '';
 
     emitState(room);
-    announce(room.roomId, 'system', 'Game has ended!');
+    announce(room.roomId, 'system', { type: 'game:ended' });
     emitLobbyRoomList();
   };
 
@@ -389,21 +391,13 @@ const createDrawAndGuessGameEngine = (
     if (!room.isGameStarted) return;
 
     if (seatCount(room) < MIN_PLAYERS_TO_START) {
-      announce(
-        room.roomId,
-        'alert',
-        'Not enough players left to continue. Game has ended.',
-      );
+      announce(room.roomId, 'alert', { type: 'game:interrupted' });
       endGame(room, { endedEarly: true });
       return;
     }
 
     if (room.game.currentDrawer === playerId) {
-      announce(
-        room.roomId,
-        'alert',
-        'The drawer left the room. Skipping to the next turn.',
-      );
+      announce(room.roomId, 'alert', { type: 'dg:drawer-left' });
       endTurn(room);
     }
   };
@@ -449,7 +443,7 @@ const createDrawAndGuessGameEngine = (
     );
     if (stillGuessing.length > 0) return;
 
-    announce(room.roomId, 'system', 'Everybody guessed the word!');
+    announce(room.roomId, 'system', { type: 'dg:all-guessed' });
     beginReviewingPhase(room);
   };
 
@@ -493,11 +487,11 @@ const createDrawAndGuessGameEngine = (
     addTurnPoints(room, game.currentDrawer, award.drawer);
     game.scoredThisTurn.add(playerId);
 
-    announce(
-      room.roomId,
-      'success',
-      `${guesser.username} guessed the correct word! (+${award.guesser})`,
-    );
+    announce(room.roomId, 'success', {
+      type: 'dg:guessed',
+      name: guesser.username,
+      points: award.guesser,
+    });
     emitState(room);
 
     // If that was the last player who could still guess, there is nothing
@@ -524,11 +518,7 @@ const createDrawAndGuessGameEngine = (
     if (room.game.currentDrawer !== playerId) return;
 
     if (room.game.phase === 'choosing') {
-      announce(
-        room.roomId,
-        'alert',
-        'The drawer lost connection. Skipping to the next turn.',
-      );
+      announce(room.roomId, 'alert', { type: 'dg:drawer-lost' });
       endTurn(room);
       return;
     }
@@ -550,11 +540,7 @@ const createDrawAndGuessGameEngine = (
       if (room.game.currentDrawer !== playerId) return;
       if (room.playerList[playerId]?.isConnected) return;
 
-      announce(
-        room.roomId,
-        'alert',
-        'The drawer did not come back. Skipping to the next turn.',
-      );
+      announce(room.roomId, 'alert', { type: 'dg:drawer-timeout' });
       endTurn(room);
     });
     emitState(room);
@@ -569,7 +555,7 @@ const createDrawAndGuessGameEngine = (
     if (!drawerHolds.has(room.roomId)) return;
 
     clearDrawerHold(room);
-    announce(room.roomId, 'system', 'The drawer is back. Carry on!');
+    announce(room.roomId, 'system', { type: 'dg:drawer-returned' });
     emitState(room);
   };
 

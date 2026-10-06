@@ -2,7 +2,7 @@ import type { DailyWordBoard, DailyWordSettings } from '../../models/types.js';
 import { RequestError } from '../../models/error.js';
 import { seatCount } from '../../libs/rooms/seats.js';
 import type { GameContext, Room } from '../../libs/rooms/types.js';
-import { gameOverMessage, resetPoints } from '../../libs/utils.js';
+import { gameOverNotice, resetPoints } from '../../libs/utils.js';
 import {
   dailyWordDurationsInSeconds as defaultDurations,
   type DailyWordDurationsInSeconds,
@@ -95,11 +95,11 @@ const createDailyWordGameEngine = (
       `Daily Word started in room ${room.roomId}, ${game.rounds} words.`,
     );
 
-    ctx.rooms.announce(
-      room.roomId,
-      'system',
-      `Game has started! ${game.rounds} words, ${durations.round} seconds each.`,
-    );
+    ctx.rooms.announce(room.roomId, 'system', {
+      type: 'dw:started',
+      rounds: game.rounds,
+      seconds: durations.round,
+    });
     ctx.rooms.emitLobby('daily-word');
 
     beginRound(room);
@@ -152,11 +152,12 @@ const createDailyWordGameEngine = (
       game.found.set(playerId, (game.found.get(playerId) ?? 0) + 1);
 
       ctx.rooms.emitState(room);
-      ctx.rooms.announce(
-        room.roomId,
-        'success',
-        `${player.username} got it in ${board.guesses.length}! (+${board.points})`,
-      );
+      ctx.rooms.announce(room.roomId, 'success', {
+        type: 'dw:solved',
+        name: player.username,
+        guesses: board.guesses.length,
+        points: board.points,
+      });
     } else {
       ctx.rooms.emitState(room);
     }
@@ -210,11 +211,10 @@ const createDailyWordGameEngine = (
     );
 
     ctx.rooms.emitState(room);
-    ctx.rooms.announce(
-      room.roomId,
-      'system',
-      `The word was ${word.toUpperCase()}.`,
-    );
+    ctx.rooms.announce(room.roomId, 'system', {
+      type: 'dw:revealed',
+      word: word.toUpperCase(),
+    });
   };
 
   /** The last round's results stay, for the results screen and a refresh. */
@@ -253,7 +253,7 @@ const createDailyWordGameEngine = (
     game.boards.clear();
 
     ctx.rooms.emitState(room);
-    ctx.rooms.announce(room.roomId, 'system', gameOverMessage(standings));
+    ctx.rooms.announce(room.roomId, 'system', gameOverNotice(standings));
     ctx.rooms.emitLobby('daily-word');
   };
 
@@ -265,11 +265,7 @@ const createDailyWordGameEngine = (
     if (!room.isGameStarted) return;
 
     if (seatCount(room) < MIN_PLAYERS_TO_START) {
-      ctx.rooms.announce(
-        room.roomId,
-        'alert',
-        'Not enough players left to continue. Game has ended.',
-      );
+      ctx.rooms.announce(room.roomId, 'alert', { type: 'game:interrupted' });
       endGame(room, { endedEarly: true });
       return;
     }

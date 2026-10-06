@@ -37,6 +37,7 @@ export function RoomPanel({
 }
 
 function InviteButton({ primary = false }: { primary?: boolean }) {
+  const m = useMessages();
   const { openInvite } = useRoomContext();
   return (
     <Button
@@ -44,7 +45,7 @@ function InviteButton({ primary = false }: { primary?: boolean }) {
       icon="link"
       onClick={openInvite}
     >
-      Invite friends
+      {m.room.invite}
     </Button>
   );
 }
@@ -55,13 +56,14 @@ function InviteButton({ primary = false }: { primary?: boolean }) {
  * to say who they really are (P19).
  */
 function usePickedName(): { notice?: string; change?: ReactNode } {
+  const m = useMessages();
   const { namePicked } = useSession();
   const { state, playerId } = useRoomContext();
   const seat = state.playerList[playerId];
   if (!namePicked || !seat) return {};
   return {
-    notice: `You’re ${seat.username} for now. Pick a name your friends will know.`,
-    change: <NameMenuButton>Change name</NameMenuButton>,
+    notice: m.room.pickedName(seat.username),
+    change: <NameMenuButton>{m.shell.name.changeName}</NameMenuButton>,
   };
 }
 
@@ -86,14 +88,15 @@ export function WaitingPanel({
   starting: boolean;
 }) {
   const { state, isHost } = useRoomContext();
-  const gameName = useMessages().games.of[state.gameType].name;
+  const m = useMessages();
+  const gameName = m.games.of[state.gameType].name;
   const count = Object.keys(state.playerList).length;
   const picked = usePickedName();
 
   if (!isHost) {
     return (
       <RoomPanel
-        title={`Waiting for ${state.owner.username} to start.`}
+        title={m.room.waitingForHost(state.owner.username)}
         notice={picked.notice}
         actions={
           <>
@@ -102,7 +105,7 @@ export function WaitingPanel({
           </>
         }
       >
-        {guestSetup} Only the host can start the game.
+        {m.room.guestSetup(guestSetup)}
       </RoomPanel>
     );
   }
@@ -118,21 +121,20 @@ export function WaitingPanel({
           </>
         }
       >
-        {gameName} needs at least 2 players. Share the room so a friend can
-        join, and the game can start.
+        {m.room.needsPlayers(gameName)}
       </RoomPanel>
     );
   }
   return (
     <RoomPanel
-      title="Everyone’s here?"
+      title={m.room.everyoneHere}
       notice={picked.notice}
       actions={
         starting ? (
-          <StatusLine>Starting the game…</StatusLine>
+          <StatusLine>{m.room.starting}</StatusLine>
         ) : (
           <>
-            <Button onClick={onStart}>Start game</Button>
+            <Button onClick={onStart}>{m.room.start}</Button>
             <InviteButton />
             {picked.change}
           </>
@@ -147,10 +149,11 @@ export function WaitingPanel({
 /** D15, M16: the game ended because everyone else left. */
 export function EndedEarlyPanel() {
   const { state } = useRoomContext();
-  const gameName = useMessages().games.of[state.gameType].name;
+  const m = useMessages();
+  const gameName = m.games.of[state.gameType].name;
   return (
     <RoomPanel
-      title="Everyone else left."
+      title={m.room.everyoneLeft}
       actions={
         <>
           <InviteButton primary />
@@ -159,13 +162,12 @@ export function EndedEarlyPanel() {
             variant="secondary"
             icon="back"
           >
-            Back to rooms
+            {m.room.backToRooms}
           </ButtonLink>
         </>
       }
     >
-      {gameName} needs at least 2 players, so the game has ended. You are the
-      host now: invite friends to start a new one.
+      {m.room.endedEarly(gameName)}
     </RoomPanel>
   );
 }
@@ -188,16 +190,15 @@ export function ResultsFrame({
   starting: boolean;
 }) {
   const { state, isHost } = useRoomContext();
+  const m = useMessages();
   const count = Object.keys(state.playerList).length;
   const actions = !isHost ? (
-    <StatusLine>
-      Waiting for {state.owner.username} to start another game.
-    </StatusLine>
+    <StatusLine>{m.room.waitingForAgain(state.owner.username)}</StatusLine>
   ) : starting ? (
-    <StatusLine>Starting the game…</StatusLine>
+    <StatusLine>{m.room.starting}</StatusLine>
   ) : count >= 2 ? (
     <>
-      <Button onClick={onPlayAgain}>Play again</Button>
+      <Button onClick={onPlayAgain}>{m.room.playAgain}</Button>
       <InviteButton />
     </>
   ) : (
@@ -259,16 +260,25 @@ export function ResultsPanel<Summary extends GameSummary>({
     <ResultsFrame
       title={
         winners.length === 0
-          ? 'Game over.'
+          ? m.room.gameOver
           : winners.length === 1
-            ? `${winners[0].username} wins with ${scoreOf(m, state.gameType, winners[0].points)}.`
-            : `${listNames(winners.map((w) => w.username))} tie with ${scoreOf(m, state.gameType, winners[0].points)}.`
+            ? m.room.wins(
+                winners[0].username,
+                scoreOf(m, state.gameType, winners[0].points),
+              )
+            : m.room.ties(
+                listNames(
+                  winners.map((w) => w.username),
+                  m,
+                ),
+                scoreOf(m, state.gameType, winners[0].points),
+              )
       }
-      detail={place > 1 ? `${detail} You finished ${ordinal(place)}.` : detail}
+      detail={place > 1 ? m.room.finished(detail, ordinal(place, m)) : detail}
       onPlayAgain={onPlayAgain}
       starting={starting}
     >
-      <ol className={styles.ranking} aria-label="Standings">
+      <ol className={styles.ranking} aria-label={m.room.standings}>
         {standings.map((standing, index) => {
           const seat = state.playerList[standing.playerId];
           const standingPlace = places[index];
@@ -285,8 +295,8 @@ export function ResultsPanel<Summary extends GameSummary>({
                   statusOf
                     ? statusOf(standing, standingPlace)
                     : standingPlace === 1
-                      ? 'Winner'
-                      : `${ordinal(standingPlace)} place`,
+                      ? m.room.winner
+                      : m.room.place(ordinal(standingPlace, m)),
                   standingDetail?.(standing.playerId),
                 ]
                   .filter(Boolean)

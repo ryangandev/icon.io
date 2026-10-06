@@ -1,3 +1,4 @@
+import { useMessages } from '../../i18n';
 import { cx } from '../cx';
 import styles from './hush-card.module.css';
 
@@ -27,11 +28,12 @@ export function HushCard({
   size = 'regular',
   className,
 }: HushCardProps) {
+  const m = useMessages();
   return (
     <span
       className={cx(styles.card, styles[size], styles[state], className)}
       role="img"
-      aria-label={state === 'discarded' ? `${value}, discarded` : String(value)}
+      aria-label={state === 'discarded' ? m.ui.discarded(value) : String(value)}
     >
       {value}
     </span>

@@ -806,15 +806,87 @@ type AnyRoomState =
  */
 type ChatMessageKind = 'player' | 'system' | 'alert' | 'success';
 
-interface ChatMessage {
-  /** Unique within the room, in order. */
-  id: number;
-  kind: ChatMessageKind;
-  /** The speaker, for player messages. */
-  playerId?: string;
-  username?: string;
-  text: string;
-}
+/** A room announcement, containing facts rather than a chosen language. */
+type RoomNotice =
+  | { type: 'room:created'; name: string }
+  | { type: 'room:joined'; name: string }
+  | { type: 'room:renamed'; before: string; name: string }
+  | { type: 'room:owner-left'; name: string; owner: string }
+  | { type: 'room:left'; name: string }
+  | { type: 'room:disconnected'; name: string }
+  | { type: 'room:reconnected'; name: string }
+  | { type: 'game:ended' }
+  | { type: 'game:interrupted' }
+  | {
+      type: 'game:over';
+      names: string[];
+      points: number;
+      unit: 'point' | 'pair' | 'trio' | 'die';
+    }
+  | { type: 'dg:started'; category: WordCategory }
+  | { type: 'dg:drawer-left' }
+  | { type: 'dg:drawer-lost' }
+  | { type: 'dg:drawer-timeout' }
+  | { type: 'dg:drawer-returned' }
+  | { type: 'dg:all-guessed' }
+  | { type: 'dg:guessed'; name: string; points: number }
+  | { type: 'ms:started'; mines: number; width: number; height: number }
+  | { type: 'ms:mine'; name: string; risk: number; points: number }
+  | { type: 'make24:started'; hands: number; seconds: number }
+  | { type: 'make24:solved'; name: string; points: number }
+  | { type: 'pairs:started'; pairs: number; seconds: number }
+  | { type: 'pairs:found'; name: string }
+  | { type: 'trios:started'; trios: number }
+  | { type: 'trios:found'; name: string }
+  | { type: 'ld:started'; dice: number; seconds: number }
+  | {
+      type: 'ld:auto-bid';
+      name: string;
+      bid: Pick<LiarsDiceBid, 'count' | 'face'>;
+    }
+  | { type: 'ld:auto-call'; name: string }
+  | {
+      type: 'ld:called';
+      name: string;
+      bid: Pick<LiarsDiceBid, 'count' | 'face'>;
+      matched: number;
+      loser: string;
+    }
+  | { type: 'ld:out'; name: string }
+  | { type: 'ld:reroll' }
+  | { type: 'hush:started'; levels: number; lives: number }
+  | {
+      type: 'hush:mistake';
+      name: string;
+      card: number;
+      held: { name: string; cards: number[] }[];
+    }
+  | { type: 'hush:cleared'; level: number; clean: boolean; lifeBack: boolean }
+  | { type: 'hush:won'; levels: number }
+  | { type: 'hush:lost'; level: number; cleared: number; levels: number }
+  | { type: 'hush:discarded'; cards: number[] }
+  | { type: 'dw:started'; rounds: number; seconds: number }
+  | { type: 'dw:solved'; name: string; guesses: number; points: number }
+  | { type: 'dw:revealed'; word: string };
+
+/** A player speaks verbatim; announcements are rendered by each viewer. */
+type ChatMessage =
+  | {
+      id: number;
+      kind: 'player';
+      playerId: string;
+      username: string;
+      text: string;
+      notice?: never;
+    }
+  | {
+      id: number;
+      kind: Exclude<ChatMessageKind, 'player'>;
+      notice: RoomNotice;
+      text?: never;
+      playerId?: never;
+      username?: never;
+    };
 
 interface Coordinate {
   x: number;
@@ -1043,6 +1115,7 @@ export type {
   DailyWordGameSummary,
   DailyWordRoomState,
   AnyRoomState,
+  RoomNotice,
   ChatMessageKind,
   ChatMessage,
   Coordinate,

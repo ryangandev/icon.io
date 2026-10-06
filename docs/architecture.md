@@ -262,12 +262,13 @@ Everything is built so that a third language is one more catalog file, and so th
 ### The catalog
 
 Every word a player reads comes from [`client/src/i18n/`](../client/src/i18n/index.tsx): `en/` holds the English catalog, one module per area of the app (`shell`, `home`, `games`, `room`, one per game, and so on), and `zh/` mirrors it file for file.
-The catalog is plain TypeScript, not JSON: a message with a value in it is a function (`joined: (name) => \`${name} has joined the room.\``), so each language orders its own sentence and handles its own plurals, and `Messages`is`typeof en`, so a key missing or misspelled in `zh/`fails`npm run typecheck`rather than showing English at runtime.
-There is no string-key lookup and no runtime library:`useMessages()`returns the current language's catalog, and components read`m.room.leave` with autocomplete.
+The catalog is plain TypeScript, not JSON: a message with values is a function, so each language orders its own sentence and handles its own plurals.
+`Messages` is `typeof en`, so a key missing or misspelled in `zh/` fails `npm run typecheck` rather than showing English at runtime.
+There is no runtime library: `useMessages()` returns the current language's catalog, and components read `m.room.leave` with autocomplete.
 Code outside React takes the catalog as a parameter rather than importing a language.
-English grammar helpers (`plural`, `countWord`) live in `en/`because they are English, and`zh/` writes its own.
+English grammar helpers (`plural`, `countWord`) live in `en/` because they are English, and `zh/` writes its own.
 
-What stays English on purpose: the wordmark, the footer's `zumpo. / play a little`, and the games' own content, because the Draw & Guess word bank and Daily Word's words are the games (see [status](status.md#open-decisions) for a Chinese word bank).
+What stays English on purpose: the wordmark, the footer's `zumpo. / play a little`, and the games' own content, because the Draw & Guess word bank and Daily Word's words are gameplay content; a Chinese word bank would be its own feature.
 A player's name is theirs, in any script; a first visit's random name is picked in the visitor's language, so a Chinese visitor starts as 活泼水獭 rather than Sleepy Otter.
 
 Pages switch at once when the language changes: `LocaleProvider` wraps the app above the session, holds the locale, and sets `<html lang>` so fonts and screen readers follow.
@@ -277,12 +278,16 @@ Chinese copy puts a space between a number and the characters around it ("2 轮"
 ### Notices on the wire
 
 The server posts to a room's chat, and it has players reading two languages, so it never words anything.
-A line nobody said is a `RoomNotice` in `shared/wire-types.d.ts`: what happened and its facts (`{ type: 'room:joined', name }`, `{ type: 'dg:guessed', name, points }`), namespaced like the events, and each client words it from its own catalog in [`room/notice-text.ts`](../client/src/room/notice-text.ts).
+A line nobody said is a `RoomNotice` in `shared/wire-types.d.ts`: what happened and its facts (`{ type: 'room:joined', name }`, `{ type: 'dg:guessed', name, points }`), namespaced like the events, and each client words it from its own catalog with an exhaustive discriminant switch in [`room/notice-text.ts`](../client/src/room/notice-text.ts).
 `ChatMessage` is a union: a player's line carries `text`, a notice line carries `notice`, so a client cannot render one as the other.
 Errors stay typed by `RoomError.type` and are worded by the client; `message` is for logs.
+The notice payload carries only public facts: Hush cards already discarded, a called bid and count after its reveal, and game standings after the game ends.
+Player chat is rendered verbatim in both languages.
 Any text the server sends that a player reads is a bug.
 
-Tests run in English: the client suite's `renderApp` and the e2e players start as English browsers unless a test passes `locale: 'zh'`, and the Figma comparison is English because the Figma file is.
+Tests run in English by default; the client suite and e2e players take `locale: 'zh'` for Chinese coverage.
+The e2e suite includes players reading different languages in one room, history switching language, a refresh preserving the choice, and a Chinese phone visitor creating a room.
+The Figma comparison is English because the Figma file is.
 
 ### Adding a language
 

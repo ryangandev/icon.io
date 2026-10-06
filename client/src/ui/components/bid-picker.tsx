@@ -1,3 +1,4 @@
+import { useMessages } from '../../i18n';
 import { useId } from 'react';
 import { cx } from '../cx';
 import { Button } from './button';
@@ -46,21 +47,22 @@ export function BidPicker({
   onCall,
   className,
 }: BidPickerProps) {
+  const m = useMessages();
   const id = useId();
   return (
     <div className={cx(styles.container, className)}>
-      <div className={styles.picker} role="group" aria-label="Your bid">
+      <div className={styles.picker} role="group" aria-label={m.ui.dice.picker}>
         <div className={styles.controls}>
           <div className={styles.field}>
             <span className={styles.label} id={`${id}-count`}>
-              How many
+              {m.ui.dice.howMany}
             </span>
             <div className={styles.stepper}>
               <Button
                 variant="secondary"
                 disabled={!canFewer}
                 onClick={() => onCountChange(count - 1)}
-                aria-label="Fewer"
+                aria-label={m.ui.dice.fewer}
               >
                 −
               </Button>
@@ -75,7 +77,7 @@ export function BidPicker({
                 variant="secondary"
                 disabled={!canMore}
                 onClick={() => onCountChange(count + 1)}
-                aria-label="More"
+                aria-label={m.ui.dice.more}
               >
                 +
               </Button>
@@ -83,7 +85,7 @@ export function BidPicker({
           </div>
           <div className={styles.field}>
             <span className={styles.label} id={`${id}-face`}>
-              Showing
+              {m.ui.dice.showing}
             </span>
             <div
               className={styles.faces}
@@ -96,7 +98,7 @@ export function BidPicker({
                   type="button"
                   role="radio"
                   aria-checked={option === face}
-                  aria-label={`${option}s`}
+                  aria-label={m.ui.dice.face(option)}
                   className={styles.face}
                   disabled={!openFaces.includes(option)}
                   onClick={() => onFaceChange(option)}
@@ -115,7 +117,7 @@ export function BidPicker({
           <Button onClick={onBid}>{bidLabel}</Button>
           {onCall && (
             <Button variant="danger" onClick={onCall}>
-              Call Liar
+              {m.ui.dice.call}
             </Button>
           )}
         </div>

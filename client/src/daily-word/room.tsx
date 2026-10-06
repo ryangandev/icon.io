@@ -3,9 +3,9 @@ import type {
   DailyWordBoard,
   DailyWordRoomState,
 } from '../../../shared/wire-types';
-import { checkGuess, GUESS_PROBLEM_TEXT } from '../../../shared/daily-word';
+import { checkGuess, type GuessProblem } from '../../../shared/daily-word';
 import { RaceBoard, TurnBar, type TurnBarProps } from '../ui';
-import { plural } from '../i18n/en/plural';
+import { useMessages, type Messages } from '../i18n';
 import { REQUEST_TIMEOUT_MS } from '../net/socket';
 import { useSecondsLeft } from '../net/use-seconds-left';
 import { EndedEarlyPanel, ResultsPanel, WaitingPanel } from '../room/panels';
@@ -26,13 +26,12 @@ type Room = RoomOf<DailyWordRoomState>;
 interface Draft {
   round: number;
   typed: string;
-  problem: string | null;
+  problem: GuessProblem | 'network' | null;
 }
-
-const FOUND_CHAT = 'You got it. Chat opens after the reveal.';
 
 /** DW07-DW10, DW13, DW14: a Daily Word room, before, during and after a game. */
 export function DailyWordRoom() {
+  const m = useMessages();
   const room = useRoomContext<DailyWordRoomState>();
   const { state, playerId } = room;
   const phone = useMediaQuery(PHONE);
@@ -50,12 +49,15 @@ export function DailyWordRoom() {
     <RoomLayout
       phase={
         inGame
-          ? { tone: 'blue', label: `Word ${state.round} of ${state.rounds}` }
+          ? {
+              tone: 'blue',
+              label: m.dailyWord.wordOf(state.round, state.rounds),
+            }
           : ended && !ended.endedEarly
-            ? { tone: 'lime', label: 'Game over' }
+            ? { tone: 'lime', label: m.dailyWord.gameOver }
             : ended && players.length < 2
-              ? { tone: 'peach', label: 'Game ended' }
-              : { tone: 'blue', label: 'Waiting room' }
+              ? { tone: 'peach', label: m.dailyWord.gameEnded }
+              : { tone: 'blue', label: m.dailyWord.waitingRoom }
       }
       stage={
         inGame ? (
@@ -74,11 +76,13 @@ export function DailyWordRoom() {
           <BetweenGames room={room} />
         )
       }
-      players={players.map((seat) => playerLine(state, seat))}
+      players={players.map((seat) => playerLine(state, seat, m))}
       chat={{
-        placeholder: 'Say something…',
+        placeholder: m.dailyWord.chatPlaceholder,
         lockedReason:
-          guessing && mine?.status === 'found' ? FOUND_CHAT : undefined,
+          guessing && mine?.status === 'found'
+            ? m.dailyWord.foundChat
+            : undefined,
       }}
       playersAside={phone && guessing ? <Others room={room} /> : undefined}
     />
@@ -88,6 +92,7 @@ export function DailyWordRoom() {
 export default DailyWordRoom;
 
 function BetweenGames({ room }: { room: Room }) {
+  const m = useMessages();
   const { state, startGame, starting } = room;
   const count = Object.keys(state.playerList).length;
   const summary = state.lastGame;
@@ -97,9 +102,9 @@ function BetweenGames({ room }: { room: Room }) {
       <>
         <ResultsPanel
           summary={summary}
-          detail={`${plural(summary.rounds, 'word')}.`}
+          detail={m.dailyWord.wordsDetail(summary.rounds)}
           standingDetail={(id) =>
-            `${plural(summary.found[id] ?? 0, 'word')} found`
+            m.dailyWord.wordsFound(summary.found[id] ?? 0)
           }
           onPlayAgain={startGame}
           starting={starting}
@@ -111,9 +116,9 @@ function BetweenGames({ room }: { room: Room }) {
   if (summary?.endedEarly && count < 2) return <EndedEarlyPanel />;
   return (
     <WaitingPanel
-      aloneTitle="A little better with company."
-      setup={`${plural(count, 'player')}, ${plural(state.rounds, 'word')}. Everyone guesses the same hidden word at once, and fewer guesses score more.`}
-      guestSetup={`${plural(count, 'player')}, ${plural(state.rounds, 'word')}.`}
+      aloneTitle={m.dailyWord.alone}
+      setup={m.dailyWord.setup(count, state.rounds)}
+      guestSetup={m.dailyWord.guestSetup(count, state.rounds)}
       onStart={startGame}
       starting={starting}
     />
@@ -130,11 +135,12 @@ function Round({
   draft: Draft;
   onDraft: (draft: Draft) => void;
 }) {
+  const m = useMessages();
   const { state, receivedAt, reconnecting, socket, playerId } = room;
   const seconds = useSecondsLeft(state.phaseEndsInMs, receivedAt, reconnecting);
   const phone = useMediaQuery(PHONE);
   const { typed, problem } = draft;
-  const setProblem = (next: string) =>
+  const setProblem = (next: GuessProblem | 'network') =>
     onDraft({ round: state.round, typed, problem: next });
   const [sending, setSending] = useState(false);
   const mine = state.boards.find((board) => board.playerId === playerId);
@@ -142,7 +148,7 @@ function Round({
   if (state.phase === 'reveal' || !mine) {
     return (
       <>
-        <TurnBar {...turnBar(room, seconds, mine)} />
+        <TurnBar {...turnBar(room, seconds, mine, m)} />
         <RoundResults state={state} />
       </>
     );
@@ -169,7 +175,7 @@ function Round({
         rows.map((row) => row.word),
       );
       if (local) {
-        setProblem(GUESS_PROBLEM_TEXT[local]);
+        setProblem(local);
         return;
       }
       setSending(true);
@@ -178,9 +184,15 @@ function Round({
           .timeout(REQUEST_TIMEOUT_MS)
           .emitWithAck('dw:guess', state.roomId, typed);
         if (answer.ok) change('');
-        else setProblem(answer.error.message);
+        else {
+          const rejected = checkGuess(
+            typed,
+            rows.map((row) => row.word),
+          );
+          setProblem(rejected ?? 'network');
+        }
       } catch {
-        setProblem('That guess did not reach the room. Try again.');
+        setProblem('network');
       }
       setSending(false);
     },
@@ -188,18 +200,26 @@ function Round({
 
   return (
     <>
-      <TurnBar {...turnBar(room, seconds, mine)} />
+      <TurnBar {...turnBar(room, seconds, mine, m)} />
       <BoardPanel>
         <div className={styles.table}>
           <PlayArea
             rows={rows}
             typed={done ? '' : typed}
-            problem={done ? null : problem}
+            problem={
+              done
+                ? null
+                : problem === 'network'
+                  ? m.dailyWord.guessFailed
+                  : problem
+                    ? m.dailyWord.problem(problem)
+                    : null
+            }
             prompt={
               done
                 ? mine.status === 'found'
-                  ? 'You found it. Watch the others until the reveal.'
-                  : 'Out of guesses. Watch the others until the reveal.'
+                  ? m.dailyWord.foundWatch
+                  : m.dailyWord.outWatch
                 : undefined
             }
             typing={typing}
@@ -216,6 +236,7 @@ function Round({
 
 /** DW07, DW08, DW14: everybody else's board, marks only. */
 function Others({ room }: { room: Room }) {
+  const m = useMessages();
   const { state, playerId } = room;
   const others = state.boards.filter((board) => board.playerId !== playerId);
   if (others.length === 0) return null;
@@ -223,16 +244,16 @@ function Others({ room }: { room: Room }) {
     <section className={styles.others} aria-labelledby="the-others">
       <div className={styles.heading}>
         <h2 id="the-others" className={styles.title}>
-          The others
+          {m.dailyWord.others}
         </h2>
-        <p className={styles.note}>Their marks, never their letters</p>
+        <p className={styles.note}>{m.dailyWord.marksOnly}</p>
       </div>
       <div className={styles.boards}>
         {others.map((board) => (
           <RaceBoard
             key={board.playerId}
             name={board.username}
-            status={raceStatus(board)}
+            status={raceStatus(board, m)}
             state={board.status}
             rows={board.rows}
           />
@@ -242,14 +263,14 @@ function Others({ room }: { room: Room }) {
   );
 }
 
-const raceStatus = (board: DailyWordBoard): string =>
+const raceStatus = (board: DailyWordBoard, m: Messages): string =>
   board.status === 'found'
-    ? `Found · +${board.points}`
+    ? m.dailyWord.foundPoints(board.points)
     : board.status === 'out'
-      ? 'Out of guesses'
+      ? m.dailyWord.outOfGuesses
       : board.rows.length === 0
-        ? 'No guesses yet'
-        : plural(board.rows.length, 'guess', 'guesses');
+        ? m.dailyWord.noGuesses
+        : m.dailyWord.guessesCount(board.rows.length);
 
 /**
  * DW09, DW10: a finished word's boards, with their letters, best first. On a
@@ -257,6 +278,7 @@ const raceStatus = (board: DailyWordBoard): string =>
  * Small boards do not fit across.
  */
 function RoundResults({ state }: { state: DailyWordRoomState }) {
+  const m = useMessages();
   const phone = useMediaQuery(PHONE);
   const result = state.lastRound;
   if (!result) return null;
@@ -268,11 +290,11 @@ function RoundResults({ state }: { state: DailyWordRoomState }) {
       <section className={styles.results} aria-labelledby="word-results">
         <div className={styles.heading}>
           <h2 id="word-results" className={styles.title}>
-            Word {round} results
+            {m.dailyWord.wordResults(round)}
           </h2>
           {!state.isGameStarted && (
             <p className={styles.body}>
-              The word was {result.word.toUpperCase()}.
+              {m.dailyWord.wordWas(result.word.toUpperCase())}
             </p>
           )}
         </div>
@@ -283,8 +305,8 @@ function RoundResults({ state }: { state: DailyWordRoomState }) {
               name={board.username}
               status={
                 board.status === 'found'
-                  ? `Found in ${board.rows.length} · +${board.points}`
-                  : 'Missed'
+                  ? m.dailyWord.foundInPoints(board.rows.length, board.points)
+                  : m.dailyWord.missed
               }
               state={board.status === 'found' ? 'found' : 'out'}
               board="small"
@@ -302,27 +324,30 @@ function turnBar(
   room: Room,
   seconds: number,
   mine: DailyWordBoard | undefined,
+  m: Messages,
 ): TurnBarProps {
   const { state, playerId, reconnecting } = room;
   const clock = (label: string, waiting = false) =>
     reconnecting
-      ? { seconds, label: 'paused', waiting: true }
+      ? { seconds, label: m.dailyWord.paused, waiting: true }
       : { seconds, label, waiting };
-  const label = `Word ${state.round} of ${state.rounds}`;
+  const label = m.dailyWord.wordOf(state.round, state.rounds);
 
   if (state.phase === 'reveal') {
     const result = state.lastRound;
     const me = result?.boards.find((board) => board.playerId === playerId);
     return {
-      label: 'The word was',
+      label: m.dailyWord.wordWasLabel,
       kind: 'status',
       main: result ? result.word.toUpperCase() : '',
       meta:
         me?.status === 'found'
-          ? `You found it in ${me.rows.length} for +${me.points}`
-          : 'You did not find it this time',
+          ? m.dailyWord.youFound(me.rows.length, me.points)
+          : m.dailyWord.youMissed,
       countdown: clock(
-        state.round < state.rounds ? 'next word' : 'final scores',
+        state.round < state.rounds
+          ? m.dailyWord.nextWord
+          : m.dailyWord.finalScores,
         true,
       ),
     };
@@ -340,22 +365,22 @@ function turnBar(
     return {
       label,
       kind: 'status',
-      main: `Got it in ${mine.rows.length}! +${mine.points}`,
+      main: m.dailyWord.gotIt(mine.rows.length, mine.points),
       meta: waitingFor.length
-        ? `Waiting for ${listNames(waitingFor)}`
-        : 'Everyone is done',
-      countdown: clock('to guess'),
+        ? m.dailyWord.waitingFor(listNames(waitingFor, m))
+        : m.dailyWord.everyoneDone,
+      countdown: clock(m.dailyWord.toGuess),
     };
   }
   if (mine?.status === 'out') {
     return {
       label,
       kind: 'status',
-      main: 'Out of guesses',
+      main: m.dailyWord.outOfGuesses,
       meta: waitingFor.length
-        ? `Waiting for ${listNames(waitingFor)}`
-        : 'Everyone is done',
-      countdown: clock('to guess'),
+        ? m.dailyWord.waitingFor(listNames(waitingFor, m))
+        : m.dailyWord.everyoneDone,
+      countdown: clock(m.dailyWord.toGuess),
     };
   }
   const finders = state.boards
@@ -365,38 +390,52 @@ function turnBar(
     label,
     kind: 'status',
     // The board counts the guesses; the bar keeps to the race (DW07, DW13).
-    main: 'Find the word',
+    main: m.dailyWord.findWord,
     meta: finders.length
-      ? `${listNames(finders)} found it`
-      : 'Fewer guesses score more',
-    countdown: clock('to guess'),
+      ? m.dailyWord.namesFound(listNames(finders, m))
+      : m.dailyWord.fewerScore,
+    countdown: clock(m.dailyWord.toGuess),
   };
 }
 
 /** One player's line on the scoreboard. */
-function playerLine(state: DailyWordRoomState, seat: Seat): PlayerLine {
+function playerLine(
+  state: DailyWordRoomState,
+  seat: Seat,
+  m: Messages,
+): PlayerLine {
   if (!seat.isConnected) {
-    return { seat, status: 'Away', statusIcon: 'away', state: 'away' };
+    return {
+      seat,
+      status: m.dailyWord.away,
+      statusIcon: 'away',
+      state: 'away',
+    };
   }
-  if (!state.isGameStarted) return { seat, status: 'Waiting' };
+  if (!state.isGameStarted) return { seat, status: m.dailyWord.waiting };
   if (state.phase === 'reveal') {
     const board = state.lastRound?.boards.find(
       (b) => b.playerId === seat.playerId,
     );
-    if (!board) return { seat, status: 'Waiting' };
+    if (!board) return { seat, status: m.dailyWord.waiting };
     return board.status === 'found'
-      ? { seat, status: `Found it · +${board.points}`, statusIcon: 'check' }
-      : { seat, status: 'Missed' };
+      ? {
+          seat,
+          status: m.dailyWord.foundItPoints(board.points),
+          statusIcon: 'check',
+        }
+      : { seat, status: m.dailyWord.missed };
   }
   const board = state.boards.find((b) => b.playerId === seat.playerId);
   if (board?.status === 'found') {
     return {
       seat,
-      status: `Found it · +${board.points}`,
+      status: m.dailyWord.foundItPoints(board.points),
       statusIcon: 'check',
       state: 'scored',
     };
   }
-  if (board?.status === 'out') return { seat, status: 'Out of guesses' };
-  return { seat, status: 'Guessing' };
+  if (board?.status === 'out')
+    return { seat, status: m.dailyWord.outOfGuesses };
+  return { seat, status: m.dailyWord.guessing };
 }

@@ -1,13 +1,8 @@
+import { useMessages, type Messages } from '../i18n';
 import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react';
 import type { DailyWordMark } from '../../../shared/wire-types';
 import { keyMarks, WORD_LENGTH } from '../../../shared/daily-word';
-import {
-  Keyboard,
-  MARK_WORDS,
-  Notice,
-  WordBoard,
-  type WordBoardRow,
-} from '../ui';
+import { Keyboard, Notice, WordBoard, type WordBoardRow } from '../ui';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import { cx } from '../ui/cx';
 import styles from './play.module.css';
@@ -71,11 +66,15 @@ export function useTypingKeys(typing: Typing, enabled: boolean) {
 }
 
 /** What a checked guess said, for a screen reader: "STARE: S not in the word, …". */
-export function describeRow(word: string, marks: readonly DailyWordMark[]) {
-  const letters = [...word.toUpperCase()]
-    .map((letter, index) => `${letter} ${MARK_WORDS[marks[index]]}`)
-    .join(', ');
-  return `${word.toUpperCase()}: ${letters}.`;
+export function describeRow(
+  word: string,
+  marks: readonly DailyWordMark[],
+  m: Messages,
+) {
+  const letters = [...word.toUpperCase()].map((letter, index) =>
+    m.dailyWord.rowLetter(letter, m.ui.word.marks[marks[index]]),
+  );
+  return m.dailyWord.row(word.toUpperCase(), letters);
 }
 
 /**
@@ -107,6 +106,7 @@ export function PlayArea({
   disabled?: boolean;
   className?: string;
 }) {
+  const m = useMessages();
   const phone = useMediaQuery(PHONE);
   const { play, over } = useNoteOverBoard(problem ? rows.length : null);
   useTypingKeys(typing, keyboard && !disabled);
@@ -117,7 +117,7 @@ export function PlayArea({
         rows={rows}
         typed={typed.slice(0, WORD_LENGTH)}
         size={phone ? 'compact' : 'regular'}
-        label="Your guesses"
+        label={m.dailyWord.yourGuesses}
       />
       {phone || !prompt ? (
         // With nothing to say under the board, or no room for it on a phone,
@@ -147,7 +147,7 @@ export function PlayArea({
         />
       )}
       <p className={styles.announce} aria-live="polite">
-        {last ? describeRow(last.word, last.marks) : ''}
+        {last ? describeRow(last.word, last.marks, m) : ''}
       </p>
     </div>
   );

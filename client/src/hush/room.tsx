@@ -11,7 +11,7 @@ import {
   TurnBar,
   type TurnBarProps,
 } from '../ui';
-import { plural } from '../i18n/en/plural';
+import { useMessages, type Messages } from '../i18n';
 import { useSecondsLeft } from '../net/use-seconds-left';
 import { initialsOf, toneOf } from '../players/avatar';
 import { EndedEarlyPanel, ResultsFrame, WaitingPanel } from '../room/panels';
@@ -27,10 +27,9 @@ type Phase = HushRoomState['phase'];
 /** The phases a level is played in: the hands are out, and it is hushed. */
 const HUSHED: readonly Phase[] = ['countdown', 'playing', 'mistake', 'paused'];
 
-const HUSHED_CHAT = 'Hush. Chat opens when the level ends.';
-
 /** HU01-HU08: a Hush room, before, during and after a game. */
 export function HushRoom() {
+  const m = useMessages();
   const room = useRoomContext<HushRoomState>();
   const { state } = room;
   const players = rankedPlayers(state);
@@ -40,19 +39,21 @@ export function HushRoom() {
     <RoomLayout
       phase={
         inGame
-          ? { tone: 'blue', label: `Level ${state.level} of ${state.levels}` }
+          ? { tone: 'blue', label: m.hush.levelOf(state.level, state.levels) }
           : ended && !ended.endedEarly
-            ? { tone: 'lime', label: 'Game over' }
+            ? { tone: 'lime', label: m.hush.gameOver }
             : ended && players.length < 2
-              ? { tone: 'peach', label: 'Game ended' }
-              : { tone: 'blue', label: 'Waiting room' }
+              ? { tone: 'peach', label: m.hush.gameEnded }
+              : { tone: 'blue', label: m.hush.waitingRoom }
       }
       stage={inGame ? <Level room={room} /> : <BetweenGames room={room} />}
-      players={players.map((seat) => playerLine(state, seat))}
+      players={players.map((seat) => playerLine(state, seat, m))}
       chat={{
-        placeholder: 'Say something…',
+        placeholder: m.hush.chatPlaceholder,
         lockedReason:
-          inGame && HUSHED.includes(state.phase) ? HUSHED_CHAT : undefined,
+          inGame && HUSHED.includes(state.phase)
+            ? m.hush.hushedChat
+            : undefined,
       }}
       // Everybody's points are the levels the team cleared; the rows say
       // what each player holds instead.
@@ -62,14 +63,21 @@ export function HushRoom() {
 }
 
 /** A player by name, or "You" ("you" inside a sentence). */
-function nameIn(room: Room, playerId: string, first = true): string {
-  if (playerId === room.playerId) return first ? 'You' : 'you';
-  return room.state.playerList[playerId]?.username ?? 'A player';
+function nameIn(
+  room: Room,
+  playerId: string,
+  m: Messages,
+  first = true,
+): string {
+  if (playerId === room.playerId) return m.hush.you(first);
+  return room.state.playerList[playerId]?.username ?? m.hush.player;
 }
 
-const cardsOf = (cards: readonly number[]) => listNames(cards.map(String));
+const cardsOf = (cards: readonly number[], m: Messages) =>
+  listNames(cards.map(String), m);
 
 function BetweenGames({ room }: { room: Room }) {
+  const m = useMessages();
   const { state, startGame, starting } = room;
   const count = Object.keys(state.playerList).length;
   const summary = state.lastGame;
@@ -82,11 +90,13 @@ function BetweenGames({ room }: { room: Room }) {
         {state.pile.length > 0 && (
           <TablePanel>
             <TableHead
-              title={`Level ${summary.history.at(-1)?.level ?? state.levels}`}
+              title={m.hush.level(
+                summary.history.at(-1)?.level ?? state.levels,
+              )}
               note={
                 summary.won
-                  ? `All ${plural(state.pile.length + state.discards.length, 'card')}`
-                  : 'As it ended'
+                  ? m.hush.allCards(state.pile.length + state.discards.length)
+                  : m.hush.asEnded
               }
               lives={summary.lives}
             />
@@ -99,9 +109,9 @@ function BetweenGames({ room }: { room: Room }) {
   if (summary?.endedEarly && count < 2) return <EndedEarlyPanel />;
   return (
     <WaitingPanel
-      aloneTitle="A little better with company."
-      setup={`${plural(count, 'player')}, ${plural(state.levels, 'level')}. Play every card in order, together, without a word.`}
-      guestSetup={`${plural(count, 'player')}, ${plural(state.levels, 'level')}.`}
+      aloneTitle={m.hush.alone}
+      setup={m.hush.setup(count, state.levels)}
+      guestSetup={m.hush.guestSetup(count, state.levels)}
       onStart={startGame}
       starting={starting}
     />
@@ -109,53 +119,49 @@ function BetweenGames({ room }: { room: Room }) {
 }
 
 /** "Level 2: a life lost". */
-function levelLine(record: HushLevelRecord, last: boolean, lost: boolean) {
-  const prefix = `Level ${record.level}`;
+function levelLine(
+  record: HushLevelRecord,
+  last: boolean,
+  lost: boolean,
+  m: Messages,
+) {
   if (!record.cleared && last && lost) {
     return {
       tone: 'peach',
       icon: 'alert',
-      text: `${prefix}: the last life lost`,
+      text: m.hush.lastLife(record.level),
     } as const;
   }
   if (!record.cleared) {
     return {
       tone: 'peach',
       icon: 'alert',
-      text: `${prefix}: not finished`,
+      text: m.hush.unfinished(record.level),
     } as const;
   }
   if (record.livesLost === 0) {
     return {
       tone: 'lime',
       icon: 'check',
-      text: record.lifeBack
-        ? `${prefix}: clean, a life back`
-        : `${prefix}: clean`,
+      text: m.hush.clean(record.level, record.lifeBack),
     } as const;
   }
   return {
     tone: 'peach',
     icon: 'alert',
-    text:
-      record.livesLost === 1
-        ? `${prefix}: a life lost`
-        : `${prefix}: ${plural(record.livesLost, 'life', 'lives')} lost`,
+    text: m.hush.livesLost(record.level, record.livesLost),
   } as const;
 }
 
 /** HU07, HU08: the team's result. Nobody is ranked; every level is listed. */
 function Results({ room, summary }: { room: Room; summary: HushGameSummary }) {
+  const m = useMessages();
   const { startGame, starting } = room;
   const lostOn = summary.history.at(-1)?.level ?? summary.levelsCleared + 1;
-  const title = summary.won
-    ? `All ${plural(summary.levels, 'level')} cleared.`
-    : `Out of lives on level ${lostOn}.`;
+  const title = summary.won ? m.hush.won(summary.levels) : m.hush.lost(lostOn);
   const detail = summary.won
-    ? summary.lives === 0
-      ? 'Together.'
-      : `Together, with ${plural(summary.lives, 'life', 'lives')} to spare.`
-    : `${summary.levelsCleared} of ${plural(summary.levels, 'level')} cleared, together.`;
+    ? m.hush.wonDetail(summary.lives)
+    : m.hush.lostDetail(summary.levelsCleared, summary.levels);
 
   return (
     <ResultsFrame
@@ -166,7 +172,7 @@ function Results({ room, summary }: { room: Room; summary: HushGameSummary }) {
     >
       <section className={styles.block} aria-labelledby="hush-levels">
         <h3 id="hush-levels" className={styles.blockTitle}>
-          Level by level
+          {m.hush.levelByLevel}
         </h3>
         <ul className={styles.levels}>
           {summary.history.map((record, index) => {
@@ -174,6 +180,7 @@ function Results({ room, summary }: { room: Room; summary: HushGameSummary }) {
               record,
               index === summary.history.length - 1,
               !summary.won,
+              m,
             );
             return (
               <li key={record.level}>
@@ -188,7 +195,7 @@ function Results({ room, summary }: { room: Room; summary: HushGameSummary }) {
       {summary.won ? (
         <section className={styles.block} aria-labelledby="hush-team">
           <h3 id="hush-team" className={styles.blockTitle}>
-            Played by
+            {m.hush.playedBy}
           </h3>
           <ul className={styles.team}>
             {summary.standings.map(({ playerId, username }) => (
@@ -205,7 +212,7 @@ function Results({ room, summary }: { room: Room; summary: HushGameSummary }) {
       ) : (
         <section className={styles.block} aria-labelledby="hush-held">
           <h3 id="hush-held" className={styles.blockTitle}>
-            Still held
+            {m.hush.stillHeld}
           </h3>
           <ul className={styles.held}>
             {summary.standings.map(({ playerId, username }) => {
@@ -221,7 +228,7 @@ function Results({ room, summary }: { room: Room; summary: HushGameSummary }) {
                   {cards.length > 0 ? (
                     <ol
                       className={styles.heldCards}
-                      aria-label={`${username} held`}
+                      aria-label={m.hush.playerHeld(username)}
                     >
                       {cards.map((card) => (
                         <li key={card}>
@@ -230,7 +237,7 @@ function Results({ room, summary }: { room: Room; summary: HushGameSummary }) {
                       ))}
                     </ol>
                   ) : (
-                    <span className={styles.nothing}>Nothing left</span>
+                    <span className={styles.nothing}>{m.hush.nothingLeft}</span>
                   )}
                 </li>
               );
@@ -244,20 +251,19 @@ function Results({ room, summary }: { room: Room; summary: HushGameSummary }) {
 
 /** HU01-HU06: a level: the turn bar, then the table. */
 function Level({ room }: { room: Room }) {
+  const m = useMessages();
   const { state, receivedAt, reconnecting } = room;
   const seconds = useSecondsLeft(state.phaseEndsInMs, receivedAt, reconnecting);
   return (
     <>
-      <TurnBar {...turnBar(room, seconds)} />
+      <TurnBar {...turnBar(room, seconds, m)} />
       <TablePanel>
-        <TableHead {...tableHead(state)} />
+        <TableHead {...tableHead(state, m)} />
         <Pile
           pile={state.pile}
           discards={state.discards}
           empty={
-            state.phase === 'ready'
-              ? 'Cards are dealt when everyone is ready'
-              : 'The lowest card in the room goes here'
+            state.phase === 'ready' ? m.hush.dealtWhenReady : m.hush.lowestHere
           }
         />
         <Divider />
@@ -270,34 +276,34 @@ function Level({ room }: { room: Room }) {
 const cardsLeft = (state: HushRoomState) =>
   Object.values(state.table).reduce((sum, seat) => sum + seat.held, 0);
 
-function tableHead(state: HushRoomState) {
+function tableHead(state: HushRoomState, m: Messages) {
   const { phase, level, lives, pile, discards } = state;
   if (phase === 'ready') {
     return {
-      title: `Level ${level}`,
-      note: `${plural(level, 'card')} each`,
+      title: m.hush.level(level),
+      note: m.hush.cardsEach(level),
       lives,
     };
   }
   if (phase === 'cleared') {
     return {
-      title: 'The pile',
+      title: m.hush.pile,
       note:
         discards.length === 0
-          ? `All ${plural(pile.length, 'card')} played`
-          : `${plural(pile.length, 'card')} played, ${discards.length} discarded`,
+          ? m.hush.allPlayed(pile.length)
+          : m.hush.playedDiscarded(pile.length, discards.length),
       lives,
     };
   }
   const left = cardsLeft(state);
   return {
-    title: 'The pile',
+    title: m.hush.pile,
     note:
       pile.length === 0
-        ? 'Lowest first'
+        ? m.hush.lowestFirst
         : left === 0
-          ? 'No cards left'
-          : `${plural(left, 'card')} to go`,
+          ? m.hush.noCards
+          : m.hush.cardsToGo(left),
     lives,
   };
 }
@@ -313,6 +319,7 @@ const awayHolders = (state: HushRoomState) =>
 
 /** The viewer's side of the table, phase by phase. */
 function Hand({ room }: { room: Room }) {
+  const m = useMessages();
   const { state, playerId, socket, reconnecting } = room;
   const { phase, hand } = state;
   const ready = state.table[playerId]?.ready ?? false;
@@ -321,23 +328,23 @@ function Hand({ room }: { room: Room }) {
     case 'ready':
       return (
         <HandRow
-          label={ready ? 'You’re ready' : 'Ready when you are'}
-          message="The chat locks when the level starts, and opens when it ends."
+          label={ready ? m.hush.yourReady : m.hush.readyWhen}
+          message={m.hush.chatTiming}
           action={
             !ready && !reconnecting ? (
               <Button onClick={() => socket.emit('hush:ready', state.roomId)}>
-                I’m ready
+                {m.hush.readyButton}
               </Button>
             ) : undefined
           }
-          status={ready ? 'Waiting for the others.' : undefined}
+          status={ready ? m.hush.waitingOthers : undefined}
         />
       );
     case 'cleared':
       return (
         <HandRow
-          label="Next up"
-          message={`Level ${state.level + 1} deals ${plural(state.level + 1, 'card')} each. Everyone presses Ready again.`}
+          label={m.hush.nextUp}
+          message={m.hush.nextLevel(state.level + 1)}
         />
       );
     default:
@@ -345,51 +352,46 @@ function Hand({ room }: { room: Room }) {
   }
 
   if (hand.length === 0) {
-    return (
-      <HandRow
-        label="Your hand"
-        message="Nothing left to play. Watch the pile, without a word."
-      />
-    );
+    return <HandRow label={m.hush.hand} message={m.hush.handEmpty} />;
   }
   if (phase === 'playing' && !reconnecting) {
     const next = hand[0];
     return (
       <HandRow
-        label="Your hand"
+        label={m.hush.hand}
         cards={hand}
         action={
           <Button onClick={() => socket.emit('hush:play', state.roomId, next)}>
-            Play {next}
+            {m.hush.play(next)}
           </Button>
         }
-        status="Only your lowest card can be played."
+        status={m.hush.onlyLowest}
       />
     );
   }
-  const away = awayHolders(state).map((id) => nameIn(room, id));
+  const away = awayHolders(state).map((id) => nameIn(room, id, m));
   return (
     <HandRow
-      label="Your hand"
+      label={m.hush.hand}
       cards={hand}
       status={
         phase === 'countdown'
-          ? 'Play opens in a moment.'
+          ? m.hush.opensSoon
           : phase === 'paused'
-            ? `Play goes on with a countdown when ${listNames(away)} ${away.length === 1 ? 'is' : 'are'} back.`
-            : 'Play goes on in a moment.'
+            ? m.hush.returns(listNames(away, m), away.length)
+            : m.hush.goesSoon
       }
     />
   );
 }
 
-function turnBar(room: Room, seconds: number): TurnBarProps {
+function turnBar(room: Room, seconds: number, m: Messages): TurnBarProps {
   const { state, reconnecting, playerId } = room;
-  const label = `Level ${state.level} of ${state.levels}`;
+  const label = m.hush.levelOf(state.level, state.levels);
   // Nobody acts while any of these clocks runs, so each one waits.
   const clock = (forWhat: string) => ({
     seconds,
-    label: reconnecting ? 'paused' : forWhat,
+    label: reconnecting ? m.hush.pausedClock : forWhat,
     waiting: true,
   });
 
@@ -398,62 +400,71 @@ function turnBar(room: Room, seconds: number): TurnBarProps {
       const seats = Object.entries(state.table);
       const readyNames = seats
         .filter(([, seat]) => seat.ready)
-        .map(([id]) => nameIn(room, id));
+        .map(([id]) => nameIn(room, id, m));
       const waitingFor = seats
         .filter(([, seat]) => !seat.ready)
-        .map(([id]) => nameIn(room, id));
+        .map(([id]) => nameIn(room, id, m));
       const meReady = state.table[playerId]?.ready ?? false;
       return {
         label,
         kind: 'status',
-        main: 'Get ready',
+        main: m.hush.getReady,
         meta: meReady
-          ? `Waiting for ${listNames(waitingFor)}.`
+          ? m.hush.waitingFor(listNames(waitingFor, m))
           : readyNames.length > 0
-            ? `${listNames(readyNames)} ${readyNames.length === 1 ? 'is' : 'are'} ready.`
-            : 'Press Ready when you’re settled.',
+            ? m.hush.namesReady(listNames(readyNames, m), readyNames.length)
+            : m.hush.pressReady,
       };
     }
     case 'countdown':
       return {
         label,
         kind: 'status',
-        main: 'Hush',
-        meta: `Everybody holds ${plural(state.level, 'card')}.`,
-        countdown: clock('to start'),
+        main: m.hush.hush,
+        meta: m.hush.everyoneHolds(state.level),
+        countdown: clock(m.hush.toStart),
       };
     case 'mistake': {
       const mistake = state.lastMistake;
       if (!mistake) break;
       const holders = [...new Set(mistake.discarded.map((d) => d.playerId))];
-      const held = holders.map(
-        (holder, index) =>
-          `${nameIn(room, holder, index === 0)} still held ${cardsOf(
+      const held = holders.map((holder, index) =>
+        m.hush.heldCards(
+          nameIn(room, holder, m, index === 0),
+          cardsOf(
             mistake.discarded
               .filter((d) => d.playerId === holder)
               .map((d) => d.card),
-          )}`,
+            m,
+          ),
+        ),
       );
       return {
         label,
         kind: 'status',
-        main: `${nameIn(room, mistake.playerId)} played ${mistake.card}`,
-        meta: `${listNames(held)}. One life lost.`,
-        countdown: clock('to go on'),
+        main: m.hush.playedCard(
+          nameIn(room, mistake.playerId, m),
+          mistake.card,
+        ),
+        meta: m.hush.mistake(listNames(held, m)),
+        countdown: clock(m.hush.toGoOn),
       };
     }
     case 'paused': {
       const away = awayHolders(state);
-      const names = listNames(away.map((id) => nameIn(room, id)));
+      const names = listNames(
+        away.map((id) => nameIn(room, id, m)),
+        m,
+      );
       return {
         label,
         kind: 'status',
-        main: 'Paused',
+        main: m.hush.paused,
         meta:
           away.length === 1
-            ? `Waiting for ${names}, who still holds ${plural(state.table[away[0]].held, 'card')}.`
-            : `Waiting for ${names}, who still hold cards.`,
-        countdown: clock('seat held'),
+            ? m.hush.waitingHolder(names, state.table[away[0]].held)
+            : m.hush.waitingHolders(names),
+        countdown: clock(m.hush.seatHeld),
       };
     }
     case 'cleared': {
@@ -461,13 +472,13 @@ function turnBar(room: Room, seconds: number): TurnBarProps {
       return {
         label,
         kind: 'status',
-        main: 'Level cleared!',
+        main: m.hush.cleared,
         meta: last?.lifeBack
-          ? 'Not one slip: a life back.'
+          ? m.hush.cleanLifeBack
           : last?.livesLost === 0
-            ? 'Not one slip.'
-            : `It cost ${plural(last?.livesLost ?? 0, 'life', 'lives')}.`,
-        countdown: clock(`to level ${state.level + 1}`),
+            ? m.hush.cleanLevel
+            : m.hush.costLives(last?.livesLost ?? 0),
+        countdown: clock(m.hush.toLevel(state.level + 1)),
       };
     }
     default:
@@ -476,32 +487,32 @@ function turnBar(room: Room, seconds: number): TurnBarProps {
   return {
     label,
     kind: 'status',
-    main: 'Hush',
-    meta: 'Play your lowest card when it feels right.',
+    main: m.hush.hush,
+    meta: m.hush.playWhen,
   };
 }
 
 /** One player's line on the scoreboard: what they hold, never a score. */
-function playerLine(state: HushRoomState, seat: Seat): PlayerLine {
+function playerLine(state: HushRoomState, seat: Seat, m: Messages): PlayerLine {
   const held = state.table[seat.playerId]?.held ?? 0;
   if (!seat.isConnected) {
     return {
       seat,
-      status: held > 0 ? `Away, ${plural(held, 'card')}` : 'Away',
+      status: held > 0 ? m.hush.awayCards(held) : m.hush.away,
       statusIcon: 'away',
       state: 'away',
     };
   }
-  if (!state.isGameStarted) return { seat, status: 'Waiting' };
+  if (!state.isGameStarted) return { seat, status: m.hush.waiting };
   switch (state.phase) {
     case 'ready':
       return state.table[seat.playerId]?.ready
-        ? { seat, status: 'Ready', statusIcon: 'check', state: 'scored' }
-        : { seat, status: 'Getting ready' };
+        ? { seat, status: m.hush.ready, statusIcon: 'check', state: 'scored' }
+        : { seat, status: m.hush.gettingReady };
     case 'cleared':
       return {
         seat,
-        status: 'Level cleared',
+        status: m.hush.levelCleared,
         statusIcon: 'check',
         state: 'scored',
       };
@@ -512,10 +523,7 @@ function playerLine(state: HushRoomState, seat: Seat): PlayerLine {
       if (lost.length > 0) {
         return {
           seat,
-          status:
-            held === 0
-              ? `Lost ${cardsOf(lost)}, no cards left`
-              : `Lost ${cardsOf(lost)}, ${plural(held, 'card')} left`,
+          status: m.hush.lostCards(cardsOf(lost, m), held),
           statusIcon: 'alert',
         };
       }
@@ -524,5 +532,5 @@ function playerLine(state: HushRoomState, seat: Seat): PlayerLine {
     default:
       break;
   }
-  return { seat, status: held > 0 ? plural(held, 'card') : 'No cards left' };
+  return { seat, status: held > 0 ? m.hush.cards(held) : m.hush.noCards };
 }

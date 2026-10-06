@@ -87,7 +87,7 @@ export function RoomLayout({
   const input = {
     onSend: room.sendChat,
     placeholder: chat.placeholder,
-    lockedReason: reconnecting ? 'Reconnecting…' : chat.lockedReason,
+    lockedReason: reconnecting ? m.room.reconnecting : chat.lockedReason,
   };
 
   const scoreboard = (
@@ -130,8 +130,7 @@ export function RoomLayout({
     >
       {reconnecting ? (
         <Notice tone="pending">
-          Reconnecting to {state.roomName}… Your seat and score are kept for{' '}
-          {seconds} seconds.
+          {m.room.reconnectingNotice(state.roomName, seconds)}
         </Notice>
       ) : (
         notice
@@ -143,7 +142,7 @@ export function RoomLayout({
           tabs={[
             {
               value: 'board',
-              label: 'Board',
+              label: m.room.board,
               panel: (
                 <div className={styles.stage}>
                   {stage}
@@ -153,7 +152,7 @@ export function RoomLayout({
             },
             {
               value: 'players',
-              label: `Players · ${players.length}`,
+              label: m.room.players(players.length),
               panel: playersAside ? (
                 <div className={styles.side}>
                   {scoreboard}
@@ -163,7 +162,7 @@ export function RoomLayout({
                 scoreboard
               ),
             },
-            { value: 'chat', label: 'Chat', panel: chatPanel },
+            { value: 'chat', label: m.room.chat, panel: chatPanel },
           ]}
         />
       ) : (

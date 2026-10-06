@@ -1,9 +1,11 @@
-import { screen, within } from '@testing-library/react';
+import { act, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import type { HushRoomState } from '../../../shared/wire-types';
 import { hushState, ME } from '../tests/fixtures';
 import { renderSeated } from '../tests/seated';
+import { renderApp } from '../tests/render-app';
+import { FakeSocket } from '../tests/fake-socket';
 
 /** Ryan (the viewer) and Maya, three cards each, on level 3 of 7. */
 const playing: HushRoomState = hushState({
@@ -332,5 +334,47 @@ describe('a Hush room', () => {
       '93',
     ]);
     expect(screen.getByText('Nothing left')).toBeInTheDocument();
+  });
+});
+
+describe('a Hush room in Chinese', () => {
+  it('translates ready, the hand, and the quiet chat while preserving actions', async () => {
+    const user = userEvent.setup();
+    const fake = new FakeSocket();
+    fake.answer('room:sync', () => ({ ok: true as const }));
+    await renderApp('/games/hush/rooms/r1', { locale: 'zh', fake });
+    act(() =>
+      fake.serverEmits(
+        'room:state',
+        hushState({
+          isGameStarted: true,
+          phase: 'ready',
+          level: 3,
+          lives: 2,
+          table: {
+            p1: { held: 0, ready: false },
+            p2: { held: 0, ready: true },
+          },
+        }),
+      ),
+    );
+    const bar = within(screen.getByRole('region', { name: '当前回合' }));
+    expect(bar.getByText('第 3 / 7 关')).toBeVisible();
+    expect(bar.getByText('准备开始')).toBeVisible();
+    expect(bar.getByText('Maya 准备好了。')).toBeVisible();
+    expect(screen.getByRole('img', { name: '2 条生命' })).toBeVisible();
+    await user.click(screen.getByRole('button', { name: '我准备好了' }));
+    expect(fake.sentArgs('hush:ready')).toEqual([['r1']]);
+
+    act(() => fake.serverEmits('room:state', playing));
+    expect(screen.getByRole('region', { name: '你的手牌' })).toBeVisible();
+    expect(screen.getByText('只能打出你最小的牌。')).toBeVisible();
+    await user.click(screen.getByRole('button', { name: '出 41' }));
+    expect(fake.sentArgs('hush:play')).toEqual([['r1', 41]]);
+    expect(screen.getByRole('textbox', { name: '消息' })).toBeDisabled();
+    expect(screen.getByRole('textbox', { name: '消息' })).toHaveAttribute(
+      'placeholder',
+      '嘘。关卡结束后才能聊天。',
+    );
   });
 });

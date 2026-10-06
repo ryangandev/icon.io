@@ -1,3 +1,4 @@
+import { useMessages } from '../../i18n';
 import { cx } from '../cx';
 import { Countdown, type CountdownProps } from './countdown';
 import { Tag } from './tag';
@@ -36,6 +37,7 @@ export function TurnBar({
   countdown,
   className,
 }: TurnBarProps) {
+  const m = useMessages();
   return (
     <div className={cx(styles.container, className)}>
       <section
@@ -44,7 +46,7 @@ export function TurnBar({
           category == null && styles.untagged,
           category == null && !countdown && styles.topless,
         )}
-        aria-label="Turn"
+        aria-label={m.ui.turn}
       >
         {category != null && <Tag className={styles.tag}>{category}</Tag>}
         <span className={styles.label}>{label}</span>

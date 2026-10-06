@@ -10,8 +10,7 @@ import {
   type TurnBarProps,
 } from '../../ui';
 import { gameInfo, soloPath } from '../../games/catalog';
-import { useMessages } from '../../i18n';
-import { plural } from '../../i18n/en/plural';
+import { useMessages, type Messages } from '../../i18n';
 import { FormPage } from '../../shell/form-page';
 import {
   ChallengeButton,
@@ -112,21 +111,23 @@ function RunPicker({
   onStart: () => void;
 }) {
   const game = gameInfo('trios');
-  const text = useMessages().games.of[game.type];
+  const m = useMessages();
+  const text = m.games.of[game.type];
   const best = readBest(BEST_KEY);
-  const rule =
-    'In a trio, each of colour, shape, count and fill is all the same or all different across the three cards. A wrong pick adds 5 seconds.';
-  const description = challenge ? `A friend sent you this deal. ${rule}` : rule;
+  const rule = m.trios.solo.rule;
+  const description = challenge
+    ? m.trios.solo.challengeDescription(rule)
+    : rule;
 
   return (
     <FormPage
       heading={{
-        eyebrow: 'On your own',
+        eyebrow: m.solo.onYourOwn,
         title: text.name,
         subtitle: text.solo?.summary,
       }}
       phone={{ eyebrow: text.name, subtitle: description }}
-      title="Ten trios, one clock."
+      title={m.trios.solo.title}
       description={description}
       onSubmit={(event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -134,26 +135,24 @@ function RunPicker({
       }}
       actions={
         <>
-          <Button type="submit">Start</Button>
+          <Button type="submit">{m.trios.solo.start}</Button>
           <ButtonLink to="/" variant="secondary" icon="back">
-            Back to games
+            {m.shell.backToGames}
           </ButtonLink>
         </>
       }
     >
       <div className={styles.example}>
         <MiniTrio cards={[0, 40, 80]} />
-        <span className={styles.exampleText}>
-          A trio: every feature differs.
-        </span>
+        <span className={styles.exampleText}>{m.trios.solo.example}</span>
       </div>
       <StatList
         className={styles.stats}
         stats={[
-          { label: 'Trios', value: String(RUN_TRIOS) },
+          { label: m.trios.solo.trios, value: String(RUN_TRIOS) },
           {
-            label: 'Your best on this device',
-            value: best === null ? 'Not yet' : formatDuration(best),
+            label: m.trios.solo.yourBest,
+            value: best === null ? m.trios.solo.notYet : formatDuration(best),
             tone: best === null ? 'muted' : undefined,
           },
         ]}
@@ -178,6 +177,7 @@ function RunView({
   seed: string;
   onPlayAgain: () => void;
 }) {
+  const m = useMessages();
   const [run, setRun] = useState(() => newRun(seed, Date.now()));
   const [finish, setFinish] = useState<Finish | null>(null);
   const now = useClock(run.trioStartedAt !== null);
@@ -210,27 +210,32 @@ function RunView({
     return (
       <SoloLayout
         gameType="trios"
-        phase={{ tone: 'lime', label: 'Run complete' }}
+        phase={{ tone: 'lime', label: m.trios.solo.complete }}
         stage={
           <>
             <SoloResult
-              title={`${RUN_TRIOS} trios in ${time}.`}
-              body={finishBody(finish)}
+              title={m.trios.solo.resultTitle(RUN_TRIOS, time)}
+              body={finishBody(finish, m)}
               stats={[
                 {
-                  label: 'Wrong picks',
-                  value: costOf(wrongPicks, WRONG_PENALTY_MS),
+                  label: m.trios.solo.wrongPicks,
+                  value: costOf(wrongPicks, WRONG_PENALTY_MS, m),
                 },
-                { label: 'Hints', value: costOf(hints, HINT_PENALTY_MS) },
                 {
-                  label: 'Fastest trio',
+                  label: m.trios.solo.hints,
+                  value: costOf(hints, HINT_PENALTY_MS, m),
+                },
+                {
+                  label: m.trios.solo.fastest,
                   value:
-                    fastestMs === null ? 'None' : formatDuration(fastestMs),
+                    fastestMs === null
+                      ? m.trios.solo.none
+                      : formatDuration(fastestMs),
                 },
               ]}
               actions={
                 <>
-                  <Button onClick={onPlayAgain}>Play again</Button>
+                  <Button onClick={onPlayAgain}>{m.room.playAgain}</Button>
                   <ChallengeButton link={link} />
                 </>
               }
@@ -242,14 +247,14 @@ function RunView({
         }
         side={
           <>
-            <Card kind="panel" title="Best on this device">
+            <Card kind="panel" title={m.trios.solo.best}>
               <StatList
                 className={styles.stats}
-                stats={dayBests(finish, timeMs)}
+                stats={dayBests(finish, timeMs, m)}
               />
             </Card>
             <ChallengeCard
-              description={`They get this same deal and try to beat ${time}.`}
+              description={m.trios.solo.challenge(time)}
               link={link}
             />
           </>
@@ -260,18 +265,18 @@ function RunView({
 
   const best = readBest(BEST_KEY);
   const { wrongPicks, hints } = summary(run);
-  const label = `Trio ${trioNumber(run)} of ${RUN_TRIOS}`;
+  const label = m.trios.solo.progress(trioNumber(run), RUN_TRIOS);
   return (
     <SoloLayout
       gameType="trios"
       phase={{ tone: 'blue', label }}
       stage={
         <>
-          <TriosTurnBar lines={1} {...turnBar(run, now, label)} />
+          <TriosTurnBar lines={1} {...turnBar(run, now, label, m)} />
           <TablePanel>
             <TriosTable
               cards={run.deal.table}
-              places={placesOf(run)}
+              places={placesOf(run, m)}
               onPick={
                 canPick(run)
                   ? (place) => setRun(pick(run, place, Date.now()))
@@ -283,7 +288,7 @@ function RunView({
             {run.hints < MAX_HINTS && (
               <TableTools>
                 <Button variant="quiet" onClick={() => setRun(hint(run))}>
-                  Hint, +10 s
+                  {m.trios.solo.hintButton}
                 </Button>
               </TableTools>
             )}
@@ -292,26 +297,34 @@ function RunView({
       }
       side={
         <>
-          <Card kind="panel" title="This run">
+          <Card kind="panel" title={m.trios.solo.thisRun}>
             <StatList
               className={styles.stats}
               stats={[
-                { label: 'Found', value: String(run.results.length) },
                 {
-                  label: 'Wrong picks',
-                  value: costOf(wrongPicks + run.wrongPicks, WRONG_PENALTY_MS),
+                  label: m.trios.solo.found,
+                  value: String(run.results.length),
                 },
-                { label: 'Hints', value: String(hints + run.hints) },
+                {
+                  label: m.trios.solo.wrongPicks,
+                  value: costOf(
+                    wrongPicks + run.wrongPicks,
+                    WRONG_PENALTY_MS,
+                    m,
+                  ),
+                },
+                { label: m.trios.solo.hints, value: String(hints + run.hints) },
               ]}
             />
           </Card>
-          <Card kind="panel" title="Best on this device">
+          <Card kind="panel" title={m.trios.solo.best}>
             <StatList
               className={styles.stats}
               stats={[
                 {
-                  label: 'Ten trios',
-                  value: best === null ? 'Not yet' : formatDuration(best),
+                  label: m.trios.solo.tenTrios,
+                  value:
+                    best === null ? m.trios.solo.notYet : formatDuration(best),
                   tone: best === null ? 'muted' : undefined,
                 },
               ]}
@@ -324,14 +337,14 @@ function RunView({
 }
 
 /** "1, +0:05". */
-const costOf = (count: number, each: number) =>
-  count ? `${count}, +${formatDuration(count * each)}` : '0';
+const costOf = (count: number, each: number, m: Messages) =>
+  m.trios.solo.cost(count, formatDuration(count * each));
 
 /** What each place shows: the picks, three just judged, and the hints. */
-function placesOf(run: SoloRun): Record<number, PlaceView> {
+function placesOf(run: SoloRun, m: Messages): Record<number, PlaceView> {
   const places: Record<number, PlaceView> = {};
   for (const place of hintedPlaces(run)) {
-    places[place] = { badge: 'Hint', badgeLabel: 'hint' };
+    places[place] = { badge: m.trios.hint, badgeLabel: m.trios.hintBadge };
   }
   for (const place of run.picked) {
     places[place] = { ...places[place], state: 'selected' };
@@ -347,13 +360,18 @@ function placesOf(run: SoloRun): Record<number, PlaceView> {
   return places;
 }
 
-function turnBar(run: SoloRun, now: number, label: string): TurnBarProps {
+function turnBar(
+  run: SoloRun,
+  now: number,
+  label: string,
+  m: Messages,
+): TurnBarProps {
   const base = {
     label,
     kind: 'status' as const,
     countdown: {
       seconds: Math.floor(runTime(run, now) / 1000),
-      label: 'run time',
+      label: m.trios.solo.runTime,
       waiting: true,
     },
   };
@@ -362,75 +380,75 @@ function turnBar(run: SoloRun, now: number, label: string): TurnBarProps {
     const last = run.results.at(-1)!;
     return {
       ...base,
-      main: 'A trio!',
-      meta: `Found in ${formatDuration(last.ms)}`,
+      main: m.trios.solo.trio,
+      meta: m.trios.solo.foundIn(formatDuration(last.ms)),
     };
   }
   if (flash) {
     return {
       ...base,
-      main: 'Not a trio, +5 s',
+      main: m.trios.solo.wrong,
       meta:
-        whyNotATrio(flash.places.map((place) => run.deal.table[place])) ??
-        undefined,
+        whyNotATrio(
+          flash.places.map((place) => run.deal.table[place]),
+          m,
+        ) ?? undefined,
     };
   }
   return {
     ...base,
     main:
       run.picked.length === 2
-        ? 'Pick a third card'
+        ? m.trios.pickThird
         : run.picked.length === 1
-          ? 'Pick two more'
-          : 'Find a trio',
-    meta: 'All the same or all different in every feature',
+          ? m.trios.pickTwo
+          : m.trios.findTrio,
+    meta: m.trios.solo.features,
   };
 }
 
-function finishBody({ previous, isBest }: Finish): string {
-  if (previous === null) return 'Your first run on this device.';
+function finishBody({ previous, isBest }: Finish, m: Messages): string {
+  if (previous === null) return m.trios.solo.firstRun;
   return isBest
-    ? `A new best on this device. Your last best was ${formatDuration(previous)}.`
-    : `Your best on this device is ${formatDuration(previous)}.`;
+    ? m.trios.solo.newBest(formatDuration(previous))
+    : m.trios.solo.previousBest(formatDuration(previous));
 }
 
 /** The best of the last few days played, today's in green if this run set it. */
-function dayBests(finish: Finish, timeMs: number): Stat[] {
+function dayBests(finish: Finish, timeMs: number, m: Messages): Stat[] {
   const days = readDayBests(BEST_KEY).slice(0, DAYS_SHOWN);
   // Storage may keep nothing; this run is still today's.
   if (days.length === 0) {
-    return [{ label: 'Today', value: formatDuration(timeMs), tone: 'green' }];
+    return [
+      { label: m.solo.today, value: formatDuration(timeMs), tone: 'green' },
+    ];
   }
   return days.map(({ day, result }, index) => ({
-    label: dayLabel(day, finish.at),
+    label: dayLabel(day, finish.at, m),
     value: formatDuration(result),
     tone: index === 0 && finish.isDayBest ? 'green' : undefined,
   }));
 }
 
 /** "1 wrong pick", "2 hints", or both. */
-function trioNote({ wrongPicks, hints }: TrioResult): string {
-  return [
-    wrongPicks ? plural(wrongPicks, 'wrong pick') : '',
-    hints ? plural(hints, 'hint') : '',
-  ]
-    .filter(Boolean)
-    .join(', ');
+function trioNote({ wrongPicks, hints }: TrioResult, m: Messages): string {
+  return m.trios.solo.note(wrongPicks, hints);
 }
 
 /** TS04: every trio of the run, and how long it took. */
 function EveryTrio({ results }: { results: readonly TrioResult[] }) {
+  const m = useMessages();
   return (
     <section className={styles.trios} aria-labelledby="every-trio">
       <h2 id="every-trio" className={styles.heading}>
-        Every trio
+        {m.trios.solo.everyTrio}
       </h2>
       <ol className={styles.list}>
         {results.map((result, index) => (
           <li key={index} className={styles.trio}>
             <span className={styles.number}>{index + 1}</span>
             <MiniTrio cards={result.cards} />
-            <span className={styles.note}>{trioNote(result)}</span>
+            <span className={styles.note}>{trioNote(result, m)}</span>
             <span className={styles.time}>{formatDuration(result.ms)}</span>
           </li>
         ))}

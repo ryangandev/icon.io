@@ -1,3 +1,4 @@
+import { useMessages } from '../../i18n';
 import { cx } from '../cx';
 import { WordBoard, type WordBoardRow } from './word-board';
 import styles from './race-board.module.css';
@@ -32,6 +33,7 @@ export function RaceBoard({
   layout = 'column',
   rows,
 }: RaceBoardProps) {
+  const m = useMessages();
   return (
     <div
       className={cx(
@@ -45,7 +47,7 @@ export function RaceBoard({
         <span className={styles.name}>{name}</span>
         <span className={styles.status}>{status}</span>
       </div>
-      <WordBoard rows={rows} size={board} label={`${name}’s board`} />
+      <WordBoard rows={rows} size={board} label={m.ui.word.board(name)} />
     </div>
   );
 }

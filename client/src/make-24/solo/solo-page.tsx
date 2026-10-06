@@ -16,7 +16,7 @@ import {
   type TurnBarProps,
 } from '../../ui';
 import { gameInfo, soloPath } from '../../games/catalog';
-import { useMessages } from '../../i18n';
+import { useMessages, type Messages } from '../../i18n';
 import { FormPage } from '../../shell/form-page';
 import {
   ChallengeButton,
@@ -114,22 +114,21 @@ function RunPicker({
   challenge: boolean;
   onStart: () => void;
 }) {
+  const m = useMessages();
   const game = gameInfo('make-24');
-  const text = useMessages().games.of[game.type];
+  const text = m.games.of[game.type];
   const best = readBest(BEST_KEY);
-  const description = challenge
-    ? 'A friend sent you these ten hands. Use each number once to make 24. Stuck? Skip the hand for 30 seconds on the clock.'
-    : 'Use each number once to make 24. Stuck? Skip the hand for 30 seconds on the clock.';
+  const description = m.make24.solo.description(challenge);
 
   return (
     <FormPage
       heading={{
-        eyebrow: 'On your own',
+        eyebrow: m.make24.solo.onYourOwn,
         title: text.name,
         subtitle: text.solo?.summary,
       }}
       phone={{ eyebrow: text.name, subtitle: description }}
-      title="Ten hands, one clock."
+      title={m.make24.solo.tenHandsClock}
       description={description}
       onSubmit={(event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -137,9 +136,9 @@ function RunPicker({
       }}
       actions={
         <>
-          <Button type="submit">Start</Button>
+          <Button type="submit">{m.make24.solo.start}</Button>
           <ButtonLink to="/" variant="secondary" icon="back">
-            Back to games
+            {m.make24.solo.backToGames}
           </ButtonLink>
         </>
       }
@@ -147,10 +146,10 @@ function RunPicker({
       <StatList
         className={styles.stats}
         stats={[
-          { label: 'Hands', value: String(RUN_HANDS) },
+          { label: m.make24.solo.hands, value: String(RUN_HANDS) },
           {
-            label: 'Your best on this device',
-            value: best === null ? 'Not yet' : formatDuration(best),
+            label: m.make24.solo.yourBestOnDevice,
+            value: best === null ? m.make24.solo.notYet : formatDuration(best),
             tone: best === null ? 'muted' : undefined,
           },
         ]}
@@ -175,6 +174,7 @@ function RunView({
   seed: string;
   onPlayAgain: () => void;
 }) {
+  const m = useMessages();
   const [run, setRun] = useState(() => newRun(seed, Date.now()));
   const [finish, setFinish] = useState<Finish | null>(null);
   const now = useClock(run.handStartedAt !== null);
@@ -214,30 +214,37 @@ function RunView({
     return (
       <SoloLayout
         gameType="make-24"
-        phase={{ tone: 'lime', label: 'Run complete' }}
+        phase={{ tone: 'lime', label: m.make24.solo.runComplete }}
         stage={
           <>
             <SoloResult
-              title={`${RUN_HANDS} hands in ${time}.`}
-              body={finishBody(finish)}
+              title={m.make24.solo.finishedIn(RUN_HANDS, time)}
+              body={finishBody(finish, m)}
               stats={[
-                { label: 'Solved', value: String(solved) },
+                { label: m.make24.solved, value: String(solved) },
                 {
-                  label: 'Skipped',
+                  label: m.make24.solo.skipped,
                   value: skipped
-                    ? `${skipped}, +${formatDuration(skipped * SKIP_PENALTY_MS)}`
+                    ? m.make24.solo.skippedPenalty(
+                        skipped,
+                        formatDuration(skipped * SKIP_PENALTY_MS),
+                      )
                     : '0',
                 },
                 {
-                  label: 'Fastest hand',
+                  label: m.make24.solo.fastestHand,
                   value:
-                    fastestMs === null ? 'None' : formatDuration(fastestMs),
+                    fastestMs === null
+                      ? m.make24.solo.none
+                      : formatDuration(fastestMs),
                   tone: fastestMs === null ? 'muted' : undefined,
                 },
               ]}
               actions={
                 <>
-                  <Button onClick={onPlayAgain}>Play again</Button>
+                  <Button onClick={onPlayAgain}>
+                    {m.make24.solo.playAgain}
+                  </Button>
                   <ChallengeButton link={link} />
                 </>
               }
@@ -249,14 +256,14 @@ function RunView({
         }
         side={
           <>
-            <Card kind="panel" title="Best on this device">
+            <Card kind="panel" title={m.make24.solo.bestOnDevice}>
               <StatList
                 className={styles.stats}
-                stats={dayBests(finish, timeMs)}
+                stats={dayBests(finish, timeMs, m)}
               />
             </Card>
             <ChallengeCard
-              description={`They get these same ten hands and try to beat ${time}.`}
+              description={m.make24.solo.challengeDescription(time)}
               link={link}
             />
           </>
@@ -270,17 +277,17 @@ function RunView({
   return (
     <SoloLayout
       gameType="make-24"
-      phase={{ tone: 'blue', label: `Hand ${run.hand + 1} of ${RUN_HANDS}` }}
+      phase={{ tone: 'blue', label: m.make24.hand(run.hand + 1, RUN_HANDS) }}
       stage={
         <>
-          <TurnBar {...turnBar(run, now, last)} />
+          <TurnBar {...turnBar(run, now, last, m)} />
           <TablePanel>
             {last?.skipped ? (
               <FinalCard
                 value="24"
                 formula={formatExpression(last.expression)}
                 state="made"
-                prompt="One way to make it. Next hand in a moment."
+                prompt={m.make24.solo.skippedPrompt}
               />
             ) : (
               <HandTable
@@ -289,13 +296,13 @@ function RunView({
                 onStep={(step) => play(takeStep(run, step, Date.now()))}
                 onUndo={() => play(undo(run))}
                 onStartOver={() => play(startOver(run))}
-                done={last ? 'Next hand in a moment.' : undefined}
+                done={last ? m.make24.solo.nextHandPrompt : undefined}
                 extraTool={
                   <Button
                     variant="quiet"
                     onClick={() => play(skip(run, Date.now()))}
                   >
-                    Skip, +30 s
+                    {m.make24.solo.skip}
                   </Button>
                 }
               />
@@ -306,23 +313,30 @@ function RunView({
       }
       side={
         <>
-          <Card kind="panel" title="This run">
-            <StatList
-              className={styles.stats}
-              stats={[
-                { label: 'Hand', value: `${run.hand + 1} of ${RUN_HANDS}` },
-                { label: 'Solved', value: String(summary(run).solved) },
-                { label: 'Skipped', value: String(summary(run).skipped) },
-              ]}
-            />
-          </Card>
-          <Card kind="panel" title="Best on this device">
+          <Card kind="panel" title={m.make24.solo.thisRun}>
             <StatList
               className={styles.stats}
               stats={[
                 {
-                  label: 'Ten hands',
-                  value: best === null ? 'Not yet' : formatDuration(best),
+                  label: m.make24.solo.hand,
+                  value: m.make24.solo.handProgress(run.hand + 1, RUN_HANDS),
+                },
+                { label: m.make24.solved, value: String(summary(run).solved) },
+                {
+                  label: m.make24.solo.skipped,
+                  value: String(summary(run).skipped),
+                },
+              ]}
+            />
+          </Card>
+          <Card kind="panel" title={m.make24.solo.bestOnDevice}>
+            <StatList
+              className={styles.stats}
+              stats={[
+                {
+                  label: m.make24.solo.tenHands,
+                  value:
+                    best === null ? m.make24.solo.notYet : formatDuration(best),
                   tone: best === null ? 'muted' : undefined,
                 },
               ]}
@@ -338,53 +352,68 @@ function turnBar(
   run: SoloRun,
   now: number,
   last: HandResult | null,
+  m: Messages,
 ): TurnBarProps {
   const base = {
-    label: `Hand ${run.hand + 1} of ${RUN_HANDS}`,
+    label: m.make24.hand(run.hand + 1, RUN_HANDS),
     kind: 'status' as const,
     countdown: {
       seconds: Math.floor(runTime(run, now) / 1000),
-      label: 'run time',
+      label: m.make24.solo.runTime,
       waiting: true,
     },
   };
   if (last?.skipped) {
-    return { ...base, main: 'Skipped', meta: '30 seconds on the clock' };
+    return {
+      ...base,
+      main: m.make24.solo.skipped,
+      meta: m.make24.solo.skipPenalty,
+    };
   }
   if (last) {
     return {
       ...base,
-      main: '24! Nice.',
-      meta: `Solved in ${formatDuration(last.ms)}`,
+      main: m.make24.solo.nice,
+      meta: m.make24.solo.solvedIn(formatDuration(last.ms)),
     };
   }
   const cards = cardsAfter(run.deals[run.hand], run.steps);
   if (cards.length === 1 && !isTarget(cards[0].value)) {
     return {
       ...base,
-      main: `That makes ${formatFraction(cards[0].value)}`,
-      meta: 'Undo a step or start over',
+      main: m.make24.makes(formatFraction(cards[0].value)),
+      meta: m.make24.undoPrompt,
     };
   }
-  return { ...base, main: 'Make 24', meta: 'Use each number once' };
+  return {
+    ...base,
+    main: m.games.of['make-24'].name,
+    meta: m.make24.useEachNumber,
+  };
 }
 
-function finishBody({ previous, isBest }: Finish): string {
-  if (previous === null) return 'Your first run on this device.';
+function finishBody({ previous, isBest }: Finish, m: Messages): string {
+  if (previous === null) return m.make24.solo.firstRun;
   return isBest
-    ? `A new best on this device. Your last best was ${formatDuration(previous)}.`
-    : `Your best on this device is ${formatDuration(previous)}.`;
+    ? m.make24.solo.newBest(formatDuration(previous))
+    : m.make24.solo.previousBest(formatDuration(previous));
 }
 
 /** The best of the last few days played, today's in green if this run set it. */
-function dayBests(finish: Finish, timeMs: number): Stat[] {
+function dayBests(finish: Finish, timeMs: number, m: Messages): Stat[] {
   const days = readDayBests(BEST_KEY).slice(0, DAYS_SHOWN);
   // Storage may keep nothing; this run is still today's.
   if (days.length === 0) {
-    return [{ label: 'Today', value: formatDuration(timeMs), tone: 'green' }];
+    return [
+      {
+        label: m.make24.solo.today,
+        value: formatDuration(timeMs),
+        tone: 'green',
+      },
+    ];
   }
   return days.map(({ day, result }, index) => ({
-    label: dayLabel(day, finish.at),
+    label: dayLabel(day, finish.at, m),
     value: formatDuration(result),
     tone: index === 0 && finish.isDayBest ? 'green' : undefined,
   }));
@@ -392,10 +421,11 @@ function dayBests(finish: Finish, timeMs: number): Stat[] {
 
 /** T05: every hand of the run, how it went and how long it took. */
 function EveryHand({ results }: { results: readonly HandResult[] }) {
+  const m = useMessages();
   return (
     <section className={styles.hands} aria-labelledby="every-hand">
       <h2 id="every-hand" className={styles.heading}>
-        Every hand
+        {m.make24.solo.everyHand}
       </h2>
       <ol className={styles.list}>
         {results.map((result, index) => (
@@ -406,7 +436,9 @@ function EveryHand({ results }: { results: readonly HandResult[] }) {
               className={result.skipped ? styles.skipped : styles.expression}
             >
               {result.skipped
-                ? `Skipped · ${formatExpression(result.expression)}`
+                ? m.make24.solo.skippedExpression(
+                    formatExpression(result.expression),
+                  )
                 : formatExpression(result.expression)}
             </span>
             <span className={styles.time}>{formatDuration(result.ms)}</span>

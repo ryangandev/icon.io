@@ -11,7 +11,6 @@ import {
 import {
   deal,
   levelsFor,
-  listOf,
   MIN_PLAYERS,
   START_LIVES,
 } from '../../../shared/hush.js';
@@ -22,10 +21,8 @@ type HushRoom = Room<HushState>;
 /** The phases a level is being played in: its hands are out, and it is hushed. */
 const IN_LEVEL = new Set(['countdown', 'playing', 'mistake', 'paused']);
 
-const cardsOf = (cards: readonly number[]): string => listOf(cards.map(String));
-
 const nameOf = (room: HushRoom, playerId: string) =>
-  room.playerList[playerId]?.username ?? 'A player';
+  room.playerList[playerId]?.username ?? '';
 
 const cardsLeft = (room: HushRoom) =>
   Object.values(room.game.hands).reduce((sum, hand) => sum + hand.length, 0);
@@ -97,11 +94,11 @@ const createHushGameEngine = (
 
     console.log(`Hush started in room ${room.roomId}, ${game.levels} levels.`);
 
-    ctx.rooms.announce(
-      room.roomId,
-      'system',
-      `Game has started! ${game.levels} levels and ${START_LIVES} lives. Not a word while a level is played.`,
-    );
+    ctx.rooms.announce(room.roomId, 'system', {
+      type: 'hush:started',
+      levels: game.levels,
+      lives: START_LIVES,
+    });
     ctx.rooms.emitLobby('hush');
 
     beginReady(room, 1);
@@ -230,19 +227,18 @@ const createHushGameEngine = (
     game.lastMistake = { playerId, card, discarded: under };
 
     const holders = [...new Set(under.map((discard) => discard.playerId))];
-    const held = holders.map(
-      (holder) =>
-        `${nameOf(room, holder)} held ${cardsOf(
-          under
-            .filter((discard) => discard.playerId === holder)
-            .map((discard) => discard.card),
-        )}`,
-    );
-    ctx.rooms.announce(
-      room.roomId,
-      'alert',
-      `${nameOf(room, playerId)} played ${card}, but ${listOf(held)}.`,
-    );
+    const held = holders.map((holder) => ({
+      name: nameOf(room, holder),
+      cards: under
+        .filter((discard) => discard.playerId === holder)
+        .map((discard) => discard.card),
+    }));
+    ctx.rooms.announce(room.roomId, 'alert', {
+      type: 'hush:mistake',
+      name: nameOf(room, playerId),
+      card,
+      held,
+    });
 
     if (game.lives === 0) {
       endGame(room, { won: false, endedEarly: false });
@@ -291,15 +287,12 @@ const createHushGameEngine = (
       return;
     }
 
-    ctx.rooms.announce(
-      room.roomId,
-      'success',
-      lifeBack
-        ? `Level ${game.level} cleared without a slip: a life back!`
-        : clean
-          ? `Level ${game.level} cleared without a slip!`
-          : `Level ${game.level} cleared!`,
-    );
+    ctx.rooms.announce(room.roomId, 'success', {
+      type: 'hush:cleared',
+      level: game.level,
+      clean,
+      lifeBack,
+    });
     game.phase = 'cleared';
     game.lastLevel = record;
     timed(room, durations.cleared, () => beginReady(room, room.game.level + 1));
@@ -366,17 +359,17 @@ const createHushGameEngine = (
 
     ctx.rooms.emitState(room);
     if (won) {
-      ctx.rooms.announce(
-        room.roomId,
-        'success',
-        `All ${game.lastGame.levels} levels cleared. Well played!`,
-      );
+      ctx.rooms.announce(room.roomId, 'success', {
+        type: 'hush:won',
+        levels: game.lastGame.levels,
+      });
     } else if (!endedEarly) {
-      ctx.rooms.announce(
-        room.roomId,
-        'alert',
-        `Out of lives on level ${lostOn}: ${levelsCleared} of ${game.lastGame.levels} levels cleared.`,
-      );
+      ctx.rooms.announce(room.roomId, 'alert', {
+        type: 'hush:lost',
+        level: lostOn,
+        cleared: levelsCleared,
+        levels: game.lastGame.levels,
+      });
     }
     ctx.rooms.emitLobby('hush');
   };
@@ -425,11 +418,7 @@ const createHushGameEngine = (
     }
 
     if (seatCount(room) < MIN_PLAYERS) {
-      ctx.rooms.announce(
-        room.roomId,
-        'alert',
-        'Not enough players left to continue. Game has ended.',
-      );
+      ctx.rooms.announce(room.roomId, 'alert', { type: 'game:interrupted' });
       endGame(room, { won: false, endedEarly: true });
       return;
     }
@@ -439,7 +428,7 @@ const createHushGameEngine = (
         room.roomId,
         'system',
         // The room has just said who left; their name is gone with the seat.
-        `Their ${cardsOf(cards)} ${cards.length === 1 ? 'is' : 'are'} discarded, with no life lost.`,
+        { type: 'hush:discarded', cards },
       );
     }
 

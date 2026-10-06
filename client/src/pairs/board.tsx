@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { PairsCard, type PairsCardState } from '../ui';
 import { cx } from '../ui/cx';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
+import { useMessages } from '../i18n';
 import styles from './board.module.css';
 
 export interface PairsGridProps {
@@ -16,6 +17,7 @@ export interface PairsGridProps {
  * compact cards, so it fits without panning.
  */
 export function PairsGrid({ cards, onFlip }: PairsGridProps) {
+  const m = useMessages();
   const phone = useMediaQuery(PHONE);
   const side = Math.round(Math.sqrt(cards.length));
   const size = phone && side > 4 ? 'compact' : 'regular';
@@ -26,7 +28,7 @@ export function PairsGrid({ cards, onFlip }: PairsGridProps) {
     <div
       className={cx(styles.board, size === 'compact' && styles.compact)}
       role="grid"
-      aria-label="Cards"
+      aria-label={m.pairs.cards}
     >
       {rows.map((row, r) => (
         <div key={r} className={styles.row} role="row">

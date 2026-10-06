@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useMessages } from '../i18n';
 import {
   TriosCard,
   TurnBar,
@@ -33,9 +34,10 @@ export interface TriosTableProps {
  * look.
  */
 export function TriosTable({ cards, places = {}, onPick }: TriosTableProps) {
+  const m = useMessages();
   const phone = useMediaQuery(PHONE);
   return (
-    <div className={styles.table} role="group" aria-label="Table">
+    <div className={styles.table} role="group" aria-label={m.trios.table}>
       {cards.map((card, place) => (
         <TriosCard
           key={place}
@@ -91,9 +93,10 @@ export function LastTrio({
   finder: string;
   cards: readonly number[];
 }) {
+  const m = useMessages();
   return (
     <div className={styles.lastTrio}>
-      <span className={styles.lastLabel}>Last trio: {finder}</span>
+      <span className={styles.lastLabel}>{m.trios.lastTrio(finder)}</span>
       <MiniTrio cards={cards} />
     </div>
   );
