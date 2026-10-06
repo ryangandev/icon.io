@@ -33,11 +33,6 @@ Decided by Ryan, and the frame for every design and implementation choice:
 
 ## Waiting on Ryan
 
-- The game list proposal in Figma section 11 (GL00-GL05), proposed on 2026-10-06 as eight games made the home and games pages long.
-  Every game becomes a smaller `Zumpo/Game card`: a tile, four across on a desktop, and a row with the game's signature piece as its icon on a phone.
-  Games are sorted by kind, not by player count, because six of the eight play both on your own and in a room: Puzzles (Daily Word, Make 24, Minesweeper), Spot & remember (Trios, Pairs) and Party (Draw & Guess, Liar's Dice, Hush).
-  On a desktop the kinds are `Zumpo/Filter chip` filters over one grid; on a phone each kind also gets a heading.
-  GL00 has the reasoning; the approved P01, P04, MO01 and MO03 stay as they are until it is approved, then the code follows.
 - Whether a Minesweeper refresh should hold the round.
   A refresh drops the connection for a moment, and the room does not wait for a disconnected player, so if everyone else has already locked in, the round resolves without the refreshing player's pick.
   That contradicts the rule "A refresh loses nothing" in [minesweeper.md](games/minesweeper.md); the rules are kept as they are until you decide.
