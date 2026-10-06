@@ -704,6 +704,7 @@ test('a Minesweeper game', async ({ player }) => {
     sam.page.getByText('The safest cell was picked for you', { exact: false }),
   ).toBeVisible({ timeout: 30_000 });
   await shot(sam.page, 'M10');
+  await shot(leo.page, 'MO19');
 
   // Then everybody picks, riskiest first, until somebody finds a mine and
   // the board is done.
