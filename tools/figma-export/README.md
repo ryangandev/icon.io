@@ -35,6 +35,7 @@ npm run design:export
 ```
 
 [via-bridge.mjs](via-bridge.mjs) runs this plugin's own `code.js` through the bridge, minus its plugin-window wiring, zips the files the same way `ui.html` does, and hands the zip to `design:import`.
+A full export with previews runs several minutes; the bridge waits up to `--timeout` seconds (default 1800) for it, and the plugin polls for nothing else while it runs.
 
 ## Guarantees
 

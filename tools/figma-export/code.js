@@ -1597,7 +1597,9 @@ class Exporter {
     const started = Date.now();
     const page =
       figma.root.children.find((p) => p.id === '0:1') || figma.currentPage;
-    await page.loadAsync();
+    // The current page is always loaded; loading it again asks Figma's
+    // servers, and that call hangs when the desktop app has lost them.
+    if (page !== figma.currentPage) await page.loadAsync();
 
     const tokens = await this.exportTokens();
 
