@@ -41,6 +41,7 @@
 }
 
 .send {
+  position: relative;
   display: flex;
   flex: none;
   align-items: center;
@@ -54,6 +55,15 @@
   background: var(--zumpo-coral);
   color: var(--zumpo-ink);
   cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* The button keeps Figma's 28 px, but a tap lands anywhere in the 44 px
+   around it, the size a thumb needs. */
+.send::before {
+  content: '';
+  position: absolute;
+  inset: calc(-1 * var(--zumpo-space-8));
 }
 
 @media (hover: hover) {
