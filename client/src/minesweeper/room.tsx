@@ -3,7 +3,7 @@ import type {
   MinesweeperRoomState,
 } from '../../../shared/wire-types';
 import { PickResult, TurnBar, type TurnBarProps } from '../ui';
-import { plural } from '../games/plural';
+import { plural } from '../i18n/en/plural';
 import { useSecondsLeft } from '../net/use-seconds-left';
 import { initialsOf, toneOf } from '../players/avatar';
 import { EndedEarlyPanel, ResultsPanel, WaitingPanel } from '../room/panels';

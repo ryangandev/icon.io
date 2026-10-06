@@ -13,7 +13,8 @@ import {
   type TurnBarProps,
 } from '../../ui';
 import { gameInfo } from '../../games/catalog';
-import { plural } from '../../games/plural';
+import { useMessages } from '../../i18n';
+import { plural } from '../../i18n/en/plural';
 import { FormPage } from '../../shell/form-page';
 import { PHONE, useMediaQuery } from '../../shell/use-media-query';
 import {
@@ -91,6 +92,7 @@ function BoardPicker({
   onStart: (difficulty: MinesweeperDifficulty) => void;
 }) {
   const game = gameInfo('minesweeper');
+  const text = useMessages().games.of[game.type];
   const [difficulty, setDifficulty] = useState<MinesweeperDifficulty>(() => {
     const last = readStored(LAST_BOARD);
     return isDifficulty(last) ? last : 'Small';
@@ -102,10 +104,10 @@ function BoardPicker({
     <FormPage
       heading={{
         eyebrow: 'On your own',
-        title: game.name,
-        subtitle: game.solo?.summary,
+        title: text.name,
+        subtitle: text.solo?.summary,
       }}
-      phone={{ eyebrow: game.name, subtitle: description }}
+      phone={{ eyebrow: text.name, subtitle: description }}
       title="Pick a board."
       description={description}
       onSubmit={(event: FormEvent<HTMLFormElement>) => {

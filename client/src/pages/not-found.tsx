@@ -1,16 +1,18 @@
 import { ButtonLink, Card } from '../ui';
+import { useMessages } from '../i18n';
 import { Page } from '../shell/page';
 import { Stage } from '../shell/stage';
 
 /** P10: any path the app does not know. */
 export default function NotFoundPage() {
+  const m = useMessages().shell.notFound;
   return (
     <Page>
       <Stage>
         <Card
-          title="A little lost?"
-          description="We couldn’t find this page. There are still good games waiting for you."
-          actions={<ButtonLink to="/">Back home</ButtonLink>}
+          title={m.title}
+          description={m.description}
+          actions={<ButtonLink to="/">{m.backHome}</ButtonLink>}
         />
       </Stage>
     </Page>

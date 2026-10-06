@@ -5,7 +5,7 @@ import type {
 } from '../../../shared/wire-types';
 import { formatFraction, isTarget, type Step } from '../../../shared/make-24';
 import { PickResult, TurnBar, type TurnBarProps } from '../ui';
-import { plural } from '../games/plural';
+import { plural } from '../i18n/en/plural';
 import { useSecondsLeft } from '../net/use-seconds-left';
 import { initialsOf, toneOf } from '../players/avatar';
 import { EndedEarlyPanel, ResultsPanel, WaitingPanel } from '../room/panels';

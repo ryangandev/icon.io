@@ -11,6 +11,7 @@ import { Navigate, useBlocker, useNavigate, type Location } from 'react-router';
 import type { GameType } from '../../../shared/wire-types';
 import { Button, ButtonLink, Card, TextField } from '../ui';
 import { gameInfo, lobbyPath, roomPath, scoreOf } from '../games/catalog';
+import { useMessages } from '../i18n';
 import { DrawAndGuessRoom } from '../draw-and-guess/room';
 import { MinesweeperRoom } from '../minesweeper/room';
 import { Make24Room } from '../make-24/room';
@@ -186,6 +187,7 @@ function PasswordPage({
   pending: boolean;
   onSubmit: (password: string) => void;
 }) {
+  const m = useMessages();
   const [password, setPassword] = useState('');
   const field = useRef<HTMLInputElement>(null);
   const phone = useMediaQuery(PHONE);
@@ -206,6 +208,7 @@ function PasswordPage({
       heading={lobbyHeading(
         gameInfo(gameType),
         'Join a room or make one for your friends.',
+        m,
       )}
       phone={{ eyebrow: 'Come on in', subtitle: description }}
       title="This room has a secret."
@@ -271,6 +274,7 @@ function SeatedRoom({
   reconnecting: boolean;
   connection: RoomConnection;
 }) {
+  const m = useMessages();
   const { socket, playerId, reconnectGraceMs } = useSession();
   const navigate = useNavigate();
   const { state, receivedAt } = snapshot;
@@ -400,7 +404,7 @@ function SeatedRoom({
         open={blocked && !sure}
         roomName={state.roomName}
         inGame={state.isGameStarted}
-        score={scoreOf(state.gameType, room.me.points)}
+        score={scoreOf(m, state.gameType, room.me.points)}
         onStay={() => blocker.reset?.()}
         onLeave={() => {
           leave();

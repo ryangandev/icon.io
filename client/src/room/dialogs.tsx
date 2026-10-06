@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { Button, Dialog, DialogClose, TextField } from '../ui';
 import type { GameInfo } from '../games/catalog';
+import { useMessages } from '../i18n';
 import { useCopy } from '../shell/use-copy';
 import styles from './dialogs.module.css';
 
@@ -66,15 +67,16 @@ export function RulesDialog({
   /** The rules of the game on your own rather than in a room. */
   solo?: boolean;
 }) {
+  const text = useMessages().games.of[game.type];
   const rules =
-    solo && game.solo
-      ? game.solo
-      : { summary: game.lobbySummary, facts: game.lobbyFacts };
+    solo && text.solo
+      ? text.solo
+      : { summary: text.lobbySummary, facts: text.lobbyFacts };
   return (
     <Dialog
       open={open}
       onOpenChange={onOpenChange}
-      title={`How to play ${game.name}`}
+      title={`How to play ${text.name}`}
       description={rules.summary}
       actions={<DialogClose render={<Button>Back to the game</Button>} />}
     >

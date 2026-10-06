@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
 import type { GameSummary } from '../../../shared/wire-types';
 import { Button, ButtonLink, Notice, PlayerRow } from '../ui';
-import { gameInfo, lobbyPath, scoreOf } from '../games/catalog';
+import { lobbyPath, scoreOf } from '../games/catalog';
+import { useMessages } from '../i18n';
 import { initialsOf, toneOf } from '../players/avatar';
 import { useSession } from '../net/session';
 import { NameMenuButton } from '../shell/name-menu';
@@ -85,7 +86,7 @@ export function WaitingPanel({
   starting: boolean;
 }) {
   const { state, isHost } = useRoomContext();
-  const game = gameInfo(state.gameType);
+  const gameName = useMessages().games.of[state.gameType].name;
   const count = Object.keys(state.playerList).length;
   const picked = usePickedName();
 
@@ -117,7 +118,7 @@ export function WaitingPanel({
           </>
         }
       >
-        {game.name} needs at least 2 players. Share the room so a friend can
+        {gameName} needs at least 2 players. Share the room so a friend can
         join, and the game can start.
       </RoomPanel>
     );
@@ -146,7 +147,7 @@ export function WaitingPanel({
 /** D15, M16: the game ended because everyone else left. */
 export function EndedEarlyPanel() {
   const { state } = useRoomContext();
-  const game = gameInfo(state.gameType);
+  const gameName = useMessages().games.of[state.gameType].name;
   return (
     <RoomPanel
       title="Everyone else left."
@@ -163,7 +164,7 @@ export function EndedEarlyPanel() {
         </>
       }
     >
-      {game.name} needs at least 2 players, so the game has ended. You are the
+      {gameName} needs at least 2 players, so the game has ended. You are the
       host now: invite friends to start a new one.
     </RoomPanel>
   );
@@ -245,6 +246,7 @@ export function ResultsPanel<Summary extends GameSummary>({
   /** Under each name; "Winner", then "2nd place" and so on, unless given. */
   statusOf?: (standing: Summary['standings'][number], place: number) => string;
 }) {
+  const m = useMessages();
   const { state, playerId } = useRoomContext();
   const { standings } = summary;
   const places = ranked
@@ -259,8 +261,8 @@ export function ResultsPanel<Summary extends GameSummary>({
         winners.length === 0
           ? 'Game over.'
           : winners.length === 1
-            ? `${winners[0].username} wins with ${scoreOf(state.gameType, winners[0].points)}.`
-            : `${listNames(winners.map((w) => w.username))} tie with ${scoreOf(state.gameType, winners[0].points)}.`
+            ? `${winners[0].username} wins with ${scoreOf(m, state.gameType, winners[0].points)}.`
+            : `${listNames(winners.map((w) => w.username))} tie with ${scoreOf(m, state.gameType, winners[0].points)}.`
       }
       detail={place > 1 ? `${detail} You finished ${ordinal(place)}.` : detail}
       onPlayAgain={onPlayAgain}

@@ -10,7 +10,8 @@ import {
   type TurnBarProps,
 } from '../../ui';
 import { gameInfo, soloPath } from '../../games/catalog';
-import { plural } from '../../games/plural';
+import { useMessages } from '../../i18n';
+import { plural } from '../../i18n/en/plural';
 import { FormPage } from '../../shell/form-page';
 import {
   ChallengeButton,
@@ -111,6 +112,7 @@ function RunPicker({
   onStart: () => void;
 }) {
   const game = gameInfo('trios');
+  const text = useMessages().games.of[game.type];
   const best = readBest(BEST_KEY);
   const rule =
     'In a trio, each of colour, shape, count and fill is all the same or all different across the three cards. A wrong pick adds 5 seconds.';
@@ -120,10 +122,10 @@ function RunPicker({
     <FormPage
       heading={{
         eyebrow: 'On your own',
-        title: game.name,
-        subtitle: game.solo?.summary,
+        title: text.name,
+        subtitle: text.solo?.summary,
       }}
-      phone={{ eyebrow: game.name, subtitle: description }}
+      phone={{ eyebrow: text.name, subtitle: description }}
       title="Ten trios, one clock."
       description={description}
       onSubmit={(event: FormEvent<HTMLFormElement>) => {

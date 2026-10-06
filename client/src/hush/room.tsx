@@ -11,7 +11,7 @@ import {
   TurnBar,
   type TurnBarProps,
 } from '../ui';
-import { plural } from '../games/plural';
+import { plural } from '../i18n/en/plural';
 import { useSecondsLeft } from '../net/use-seconds-left';
 import { initialsOf, toneOf } from '../players/avatar';
 import { EndedEarlyPanel, ResultsFrame, WaitingPanel } from '../room/panels';

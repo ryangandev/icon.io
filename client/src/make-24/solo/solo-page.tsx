@@ -16,6 +16,7 @@ import {
   type TurnBarProps,
 } from '../../ui';
 import { gameInfo, soloPath } from '../../games/catalog';
+import { useMessages } from '../../i18n';
 import { FormPage } from '../../shell/form-page';
 import {
   ChallengeButton,
@@ -114,6 +115,7 @@ function RunPicker({
   onStart: () => void;
 }) {
   const game = gameInfo('make-24');
+  const text = useMessages().games.of[game.type];
   const best = readBest(BEST_KEY);
   const description = challenge
     ? 'A friend sent you these ten hands. Use each number once to make 24. Stuck? Skip the hand for 30 seconds on the clock.'
@@ -123,10 +125,10 @@ function RunPicker({
     <FormPage
       heading={{
         eyebrow: 'On your own',
-        title: game.name,
-        subtitle: game.solo?.summary,
+        title: text.name,
+        subtitle: text.solo?.summary,
       }}
-      phone={{ eyebrow: game.name, subtitle: description }}
+      phone={{ eyebrow: text.name, subtitle: description }}
       title="Ten hands, one clock."
       description={description}
       onSubmit={(event: FormEvent<HTMLFormElement>) => {

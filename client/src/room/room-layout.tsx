@@ -1,8 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import {
-  Chat,
   ChatInput,
-  ChatMessage,
   MobileTabs,
   Notice,
   PlayerRow,
@@ -13,10 +11,12 @@ import {
   type TagTone,
 } from '../ui';
 import { gameInfo } from '../games/catalog';
+import { useMessages } from '../i18n';
 import { initialsOf, toneOf } from '../players/avatar';
 import { Page, useViewer } from '../shell/page';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import { RulesDialog } from './dialogs';
+import { RoomChat } from './room-chat';
 import { useRoomContext } from './room-context';
 import type { Seat } from './players';
 import styles from './room-layout.module.css';
@@ -76,6 +76,7 @@ export function RoomLayout({
   const room = useRoomContext();
   const { state, reconnecting, reconnectGraceMs } = room;
   const game = gameInfo(state.gameType);
+  const m = useMessages();
   const phone = useMediaQuery(PHONE);
   const [view, setView] = useState<View>('board');
   const [rules, setRules] = useState(false);
@@ -108,24 +109,7 @@ export function RoomLayout({
     </Scoreboard>
   );
 
-  const chatPanel = (
-    <Chat input={input}>
-      {room.chat.map((message) => (
-        <ChatMessage
-          key={message.id}
-          kind={message.kind}
-          alertIcon={chat.alertIcon}
-          name={
-            message.playerId === room.playerId
-              ? `${message.username} (you)`
-              : message.username
-          }
-        >
-          {message.text}
-        </ChatMessage>
-      ))}
-    </Chat>
-  );
+  const chatPanel = <RoomChat input={input} alertIcon={chat.alertIcon} />;
 
   const seconds = Math.round(reconnectGraceMs / 1000);
 
@@ -134,7 +118,7 @@ export function RoomLayout({
       header={
         <RoomBar
           layout={phone ? 'phone' : 'desktop'}
-          game={game.name}
+          game={m.games.of[state.gameType].name}
           room={state.roomName}
           phase={phase}
           onHowToPlay={() => setRules(true)}

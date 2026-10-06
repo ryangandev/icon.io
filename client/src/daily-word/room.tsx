@@ -5,7 +5,7 @@ import type {
 } from '../../../shared/wire-types';
 import { checkGuess, GUESS_PROBLEM_TEXT } from '../../../shared/daily-word';
 import { RaceBoard, TurnBar, type TurnBarProps } from '../ui';
-import { plural } from '../games/plural';
+import { plural } from '../i18n/en/plural';
 import { REQUEST_TIMEOUT_MS } from '../net/socket';
 import { useSecondsLeft } from '../net/use-seconds-left';
 import { EndedEarlyPanel, ResultsPanel, WaitingPanel } from '../room/panels';

@@ -14,7 +14,8 @@ import {
   type TurnBarProps,
 } from '../../ui';
 import { gameInfo } from '../../games/catalog';
-import { plural } from '../../games/plural';
+import { useMessages } from '../../i18n';
+import { plural } from '../../i18n/en/plural';
 import { useSession } from '../../net/session';
 import { listNames, ordinal } from '../../room/players';
 import { FormPage } from '../../shell/form-page';
@@ -97,6 +98,7 @@ export function LiarsDiceSolo() {
 /** LD01: how many bots, and how many dice each. */
 function TablePicker({ onStart }: { onStart: (picks: SoloPicks) => void }) {
   const game = gameInfo('liars-dice');
+  const text = useMessages().games.of[game.type];
   const [picks, setPicks] = useState(readPicks);
   const description =
     recordLine(readRecord()) ??
@@ -105,10 +107,10 @@ function TablePicker({ onStart }: { onStart: (picks: SoloPicks) => void }) {
     <FormPage
       heading={{
         eyebrow: 'On your own',
-        title: game.name,
-        subtitle: game.solo?.summary,
+        title: text.name,
+        subtitle: text.solo?.summary,
       }}
-      phone={{ eyebrow: game.name, subtitle: description }}
+      phone={{ eyebrow: text.name, subtitle: description }}
       title="Pick a table."
       description={description}
       onSubmit={(event: FormEvent<HTMLFormElement>) => {

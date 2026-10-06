@@ -14,7 +14,7 @@ import {
   type BrushSize,
   type TurnBarProps,
 } from '../ui';
-import { plural } from '../games/plural';
+import { plural } from '../i18n/en/plural';
 import { useSecondsLeft } from '../net/use-seconds-left';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import { EndedEarlyPanel, ResultsPanel, WaitingPanel } from '../room/panels';

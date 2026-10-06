@@ -13,7 +13,8 @@ import {
 import { Button, ButtonLink, Notice, SelectField, TextField } from '../ui';
 import { GAME_LENGTHS as TRIOS_LENGTHS } from '../../../shared/trios';
 import { gameInfo, lobbyPath, roomPath } from '../games/catalog';
-import { plural } from '../games/plural';
+import { useMessages } from '../i18n';
+import { plural } from '../i18n/en/plural';
 import { DIFFICULTIES, boardDetail } from '../minesweeper/boards';
 import { levelsFor } from '../../../shared/hush';
 import {
@@ -49,6 +50,8 @@ const DICE_DETAIL: Record<DicePerPlayer, string> = {
  */
 export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   const game = gameInfo(gameType);
+  const m = useMessages();
+  const text = m.games.of[gameType];
   const { socket, lost, name } = useConnectedSession();
   const navigate = useNavigate();
 
@@ -131,7 +134,7 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
   }
   return (
     <FormPage
-      heading={lobbyHeading(game, subtitle)}
+      heading={lobbyHeading(game, subtitle, m)}
       phone={{
         eyebrow: 'Make a room',
         title: (
@@ -140,10 +143,10 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
             for you.
           </>
         ),
-        subtitle: `${game.name} · room settings`,
+        subtitle: `${text.name} · room settings`,
       }}
       title="A little room for you."
-      description={game.createDescription}
+      description={text.createDescription}
       onSubmit={submit}
       actions={
         pending ? undefined : (

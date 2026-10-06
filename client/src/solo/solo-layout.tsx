@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import type { GameType } from '../../../shared/wire-types';
 import { RoomBar, type TagTone } from '../ui';
 import { gameInfo } from '../games/catalog';
+import { useMessages } from '../i18n';
 import { RulesDialog } from '../room/dialogs';
 import { Page, useViewer } from '../shell/page';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
@@ -24,6 +25,7 @@ export interface SoloLayoutProps {
  */
 export function SoloLayout({ gameType, phase, stage, side }: SoloLayoutProps) {
   const game = gameInfo(gameType);
+  const m = useMessages();
   const phone = useMediaQuery(PHONE);
   const navigate = useNavigate();
   const { viewer, viewerMenu } = useViewer();
@@ -34,7 +36,7 @@ export function SoloLayout({ gameType, phase, stage, side }: SoloLayoutProps) {
       header={
         <RoomBar
           layout={phone ? 'phone' : 'desktop'}
-          game={game.name}
+          game={m.games.of[gameType].name}
           room="On your own"
           phase={phase}
           onHowToPlay={() => setRules(true)}

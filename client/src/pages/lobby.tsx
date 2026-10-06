@@ -7,8 +7,9 @@ import {
   roomPath,
   type GameInfo,
 } from '../games/catalog';
-import { plural } from '../games/plural';
+import { plural } from '../i18n/en/plural';
 import { roomSetting } from '../games/room-setting';
+import { useMessages, type Messages } from '../i18n';
 import { useLobby } from '../net/use-lobby';
 import { useSession } from '../net/session';
 import { initialsOf, toneOf } from '../players/avatar';
@@ -22,6 +23,8 @@ import styles from './lobby.module.css';
 /** DL01-DL03, ML01-ML03, MO04: a game's rooms, live. */
 export default function LobbyPage({ gameType }: { gameType: GameType }) {
   const game = gameInfo(gameType);
+  const m = useMessages();
+  const gameName = m.games.of[gameType].name;
   const { lost, name } = useSession();
   const rooms = useLobby(gameType);
   const phone = useMediaQuery(PHONE);
@@ -34,7 +37,7 @@ export default function LobbyPage({ gameType }: { gameType: GameType }) {
           eyebrow="Play together"
           title="Find your room."
           subtitle={
-            rooms ? `${game.name} · ${plural(rooms.length, 'room')}` : game.name
+            rooms ? `${gameName} · ${plural(rooms.length, 'room')}` : gameName
           }
         />
       ) : (
@@ -94,8 +97,13 @@ export default function LobbyPage({ gameType }: { gameType: GameType }) {
 export function lobbyHeading(
   game: GameInfo,
   subtitle: string,
+  m: Messages,
 ): PageHeadingProps {
-  return { eyebrow: 'Play together', title: `${game.name} rooms`, subtitle };
+  return {
+    eyebrow: 'Play together',
+    title: `${m.games.of[game.type].name} rooms`,
+    subtitle,
+  };
 }
 
 export function LobbyHeading({
@@ -105,7 +113,8 @@ export function LobbyHeading({
   game: GameInfo;
   subtitle: string;
 }) {
-  return <PageHeading {...lobbyHeading(game, subtitle)} />;
+  const m = useMessages();
+  return <PageHeading {...lobbyHeading(game, subtitle, m)} />;
 }
 
 function statusOf(room: AnyLobbyRoomInfo): RoomRowStatus {
@@ -123,6 +132,7 @@ function RoomList({
   counted: boolean;
 }) {
   const navigate = useNavigate();
+  const m = useMessages();
   return (
     <>
       <ul className={styles.list} aria-label="Rooms">
@@ -130,7 +140,7 @@ function RoomList({
           <RoomRow
             key={room.roomId}
             name={room.roomName}
-            details={`Hosted by ${room.owner.username} · ${roomSetting(room)}`}
+            details={`Hosted by ${room.owner.username} · ${roomSetting(room, m)}`}
             host={{
               initials: initialsOf(room.owner.username),
               tone: toneOf(room.owner.username),
@@ -183,13 +193,14 @@ function Loading() {
 }
 
 function Rules({ game }: { game: GameInfo }) {
+  const text = useMessages().games.of[game.type];
   return (
     <aside className={styles.rules} aria-labelledby="lobby-rules">
       <h2 id="lobby-rules" className={styles.rulesTitle}>
         How to play
       </h2>
-      <p className={styles.rulesText}>{game.lobbySummary}</p>
-      <p className={styles.rulesText}>{game.lobbyFacts.join('\n')}</p>
+      <p className={styles.rulesText}>{text.lobbySummary}</p>
+      <p className={styles.rulesText}>{text.lobbyFacts.join('\n')}</p>
     </aside>
   );
 }

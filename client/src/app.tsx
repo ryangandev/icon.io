@@ -9,6 +9,7 @@ import {
   type RouteObject,
 } from 'react-router';
 import { isGameType } from './games/catalog';
+import { LocaleProvider } from './i18n';
 import { SessionProvider } from './net/session';
 import CreateRoomPage from './pages/create-room';
 import HomePage from './pages/home';
@@ -82,8 +83,10 @@ const router = createBrowserRouter(routes);
 
 export function App() {
   return (
-    <SessionProvider>
-      <RouterProvider router={router} />
-    </SessionProvider>
+    <LocaleProvider>
+      <SessionProvider>
+        <RouterProvider router={router} />
+      </SessionProvider>
+    </LocaleProvider>
   );
 }

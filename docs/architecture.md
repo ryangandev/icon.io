@@ -174,6 +174,7 @@ Whenever anything visible in a room changes, every seated, connected player is s
 A client renders the latest snapshot and keeps no game state of its own, so a refresh, a reconnect or a missed event cannot leave it out of step.
 Changes made in one synchronous run are coalesced, so a turn that ends and the next that starts arrive as one snapshot; nothing may count snapshots.
 Only the drawing (`dg:canvas:*`) and the chat (`chat:message`, `chat:history`) travel as increments, because they are streams.
+A chat line is either what a player typed or a `RoomNotice`, the facts of something that happened, which each client words in its own language ([languages](#notices-on-the-wire)).
 
 A request that can fail takes an acknowledgement as its last argument and is answered once with a `Result`: `{ ok: true, ... }` or `{ ok: false, error: { type, message } }`.
 `onClientRequest` splits the acknowledgement off (the last argument, if it is a function), answers `invalidRequest` when the arguments do not parse, and does nothing harmful when a client sent none.
@@ -252,6 +253,43 @@ Serving the client from a different host than the server needs that changed firs
 The canvas bitmap is 798 × 598, scaled to the screen's pixel ratio; pointer positions are mapped into that space.
 It takes pointer events, so mouse, pen and touch all draw, and `touch-action: none` keeps a finger drawing rather than scrolling.
 The server never echoes a drawer's own strokes, so the drawer's input is applied locally as well as sent.
+
+## Languages
+
+The UI speaks English and Chinese, and the player picks either from the footer's language switch on any page; their choice is kept in `localStorage` (`zumpo:locale`), and a first visit follows the browser's languages.
+Everything is built so that a third language is one more catalog file, and so that the server never has to know what language anyone reads.
+
+### The catalog
+
+Every word a player reads comes from [`client/src/i18n/`](../client/src/i18n/index.tsx): `en/` holds the English catalog, one module per area of the app (`shell`, `home`, `games`, `room`, one per game, and so on), and `zh/` mirrors it file for file.
+The catalog is plain TypeScript, not JSON: a message with a value in it is a function (`joined: (name) => \`${name} has joined the room.\``), so each language orders its own sentence and handles its own plurals, and `Messages`is`typeof en`, so a key missing or misspelled in `zh/`fails`npm run typecheck`rather than showing English at runtime.
+There is no string-key lookup and no runtime library:`useMessages()`returns the current language's catalog, and components read`m.room.leave` with autocomplete.
+Code outside React takes the catalog as a parameter rather than importing a language.
+English grammar helpers (`plural`, `countWord`) live in `en/`because they are English, and`zh/` writes its own.
+
+What stays English on purpose: the wordmark, the footer's `zumpo. / play a little`, and the games' own content, because the Draw & Guess word bank and Daily Word's words are the games (see [status](status.md#open-decisions) for a Chinese word bank).
+A player's name is theirs, in any script; a first visit's random name is picked in the visitor's language, so a Chinese visitor starts as 活泼水獭 rather than Sleepy Otter.
+
+Pages switch at once when the language changes: `LocaleProvider` wraps the app above the session, holds the locale, and sets `<html lang>` so fonts and screen readers follow.
+The Paper Pop fonts have no Chinese glyphs; the font stacks end in `system-ui`, so Chinese text sets in the system's own sans (PingFang, Microsoft YaHei, Noto Sans CJK) and nothing is loaded for it.
+Chinese copy puts a space between a number and the characters around it ("2 轮"), as the common style guides do.
+
+### Notices on the wire
+
+The server posts to a room's chat, and it has players reading two languages, so it never words anything.
+A line nobody said is a `RoomNotice` in `shared/wire-types.d.ts`: what happened and its facts (`{ type: 'room:joined', name }`, `{ type: 'dg:guessed', name, points }`), namespaced like the events, and each client words it from its own catalog in [`room/notice-text.ts`](../client/src/room/notice-text.ts).
+`ChatMessage` is a union: a player's line carries `text`, a notice line carries `notice`, so a client cannot render one as the other.
+Errors stay typed by `RoomError.type` and are worded by the client; `message` is for logs.
+Any text the server sends that a player reads is a bug.
+
+Tests run in English: the client suite's `renderApp` and the e2e players start as English browsers unless a test passes `locale: 'zh'`, and the Figma comparison is English because the Figma file is.
+
+### Adding a language
+
+1. Add it to `Locale` and `LOCALE_NAMES` in `i18n/locale.ts`, and teach `detectLocale` its language tags.
+2. Copy `en/` to the new folder and translate; `typeof en` on each module keeps the shape honest.
+3. Add random name lists in `players/random-name.ts`, each pair within the server's 18 characters.
+4. Add it to `MESSAGES` in `i18n/index.tsx`; the footer switch lists `LOCALES`.
 
 ## Configuration
 

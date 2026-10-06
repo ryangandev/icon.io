@@ -15,6 +15,7 @@ Where to find the answer, without searching the repository.
 | Player identity, refresh and disconnects               | [architecture.md#identity-and-reconnection](architecture.md#identity-and-reconnection)                                          |
 | Event names and payload types                          | [architecture.md#the-wire-contract](architecture.md#the-wire-contract)                                                          |
 | Routes, guards and the socket on the client            | [architecture.md#client](architecture.md#client)                                                                                |
+| Languages, the message catalog, notices on the wire    | [architecture.md#languages](architecture.md#languages)                                                                          |
 | Environment variables, production build                | [architecture.md#configuration](architecture.md#configuration)                                                                  |
 | Adding a new game                                      | [architecture.md#adding-a-game](architecture.md#adding-a-game)                                                                  |
 | How to test, and what the suites cannot see            | [architecture.md#testing](architecture.md#testing)                                                                              |

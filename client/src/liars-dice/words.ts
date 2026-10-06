@@ -1,6 +1,6 @@
 import { bidWords, numberWord, type Bid } from '../../../shared/liars-dice';
 import type { LiarsDiceReveal } from '../../../shared/wire-types';
-import { plural } from '../games/plural';
+import { plural } from '../i18n/en/plural';
 
 /** "1 die", "3 dice". */
 export const diceWord = (count: number) => plural(count, 'die', 'dice');

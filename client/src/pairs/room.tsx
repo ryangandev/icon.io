@@ -1,7 +1,7 @@
 import type { PairsCardView, PairsRoomState } from '../../../shared/wire-types';
 import { PAIRS_BOARDS } from '../../../shared/pairs';
 import { TurnBar, type PairsCardState, type TurnBarProps } from '../ui';
-import { plural } from '../games/plural';
+import { plural } from '../i18n/en/plural';
 import { useSecondsLeft } from '../net/use-seconds-left';
 import { EndedEarlyPanel, ResultsPanel, WaitingPanel } from '../room/panels';
 import { rankedPlayers, type Seat } from '../room/players';

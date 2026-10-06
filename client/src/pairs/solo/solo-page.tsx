@@ -14,7 +14,8 @@ import {
   type TurnBarProps,
 } from '../../ui';
 import { gameInfo, soloPath } from '../../games/catalog';
-import { plural } from '../../games/plural';
+import { useMessages } from '../../i18n';
+import { plural } from '../../i18n/en/plural';
 import { FormPage } from '../../shell/form-page';
 import { PHONE, useMediaQuery } from '../../shell/use-media-query';
 import {
@@ -118,6 +119,7 @@ function BoardPicker({
   onStart: (board: PairsBoard) => void;
 }) {
   const game = gameInfo('pairs');
+  const text = useMessages().games.of[game.type];
   const [board, setBoard] = useState<PairsBoard>(() => {
     if (challenge) return challenge;
     const last = readStored(LAST_BOARD);
@@ -131,10 +133,10 @@ function BoardPicker({
     <FormPage
       heading={{
         eyebrow: 'On your own',
-        title: game.name,
-        subtitle: game.solo?.summary,
+        title: text.name,
+        subtitle: text.solo?.summary,
       }}
-      phone={{ eyebrow: game.name, subtitle: description }}
+      phone={{ eyebrow: text.name, subtitle: description }}
       title="Pick a board."
       description={description}
       onSubmit={(event: FormEvent<HTMLFormElement>) => {

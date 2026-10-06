@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { TriosRoomState } from '../../../shared/wire-types';
 import type { TurnBarProps } from '../ui';
-import { plural } from '../games/plural';
+import { plural } from '../i18n/en/plural';
 import { useSecondsLeft } from '../net/use-seconds-left';
 import { useSecondsSince } from '../net/use-seconds-since';
 import { initialsOf } from '../players/avatar';
