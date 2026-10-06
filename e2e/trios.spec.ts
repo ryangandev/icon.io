@@ -80,19 +80,22 @@ test('a player with no name finds ten trios on their own', async ({
 
   const turn = turnOf(sam);
   await expect(turn.getByText('Trio 1 of 10')).toBeVisible();
-  // A wrong pick costs five seconds, never a trio.
+  // A wrong pick costs five seconds, never a trio. What the turn says about
+  // a pick lasts 600 ms, too short to catch under load; the run keeps count.
+  const thisRun = sam.getByRole('region', { name: 'This run' });
   await pickMiss(sam);
-  await expect(turn.getByText('Not a trio, +5 s')).toBeVisible();
-  await expect(
-    sam.getByRole('region', { name: 'This run' }).getByText('1, +0:05'),
-  ).toBeVisible();
+  await expect(thisRun.getByText('1, +0:05')).toBeVisible();
 
   for (let trio = 1; trio <= 10; trio++) {
     await expect(turn.getByText(`Trio ${trio} of 10`)).toBeVisible();
     await readyToFind(sam);
     await pickTrio(sam);
     // The last trio ends the run at once.
-    if (trio < 10) await expect(turn.getByText('A trio!')).toBeVisible();
+    if (trio < 10) {
+      await expect(thisRun.getByRole('definition').first()).toHaveText(
+        String(trio),
+      );
+    }
   }
 
   await expect(
