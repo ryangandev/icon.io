@@ -1,0 +1,284 @@
+{
+  "format": 1,
+  "name": "Zumpo/Toggle chip",
+  "id": "95:113244",
+  "type": "COMPONENT_SET",
+  "key": "0fe9645869bca07048c4baa27deb7863498e7248",
+  "description": "One choice of several that can be on together, such as the word categories a room draws from. On shows lime and a tick, as a selected option does; Off shows a plus, so a chip keeps its width when toggled. Hover darkens the border; keyboard focus is the shared 2 px ink ring. Use Filter chip when exactly one in a row is chosen.",
+  "properties": {
+    "Label": {
+      "type": "text",
+      "default": "Animals"
+    },
+    "State": {
+      "type": "variant",
+      "default": "Off",
+      "options": [
+        "Off",
+        "Hover",
+        "On"
+      ]
+    }
+  },
+  "defaultVariant": "State=Off",
+  "variants": [
+    {
+      "name": "State=Off",
+      "id": "95:113229",
+      "props": {
+        "State": "Off"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "95:113229",
+        "name": "State=Off",
+        "w": 109,
+        "h": 38,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/999",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            "$Zumpo · UI:space/8",
+            "$Zumpo · UI:space/16",
+            "$Zumpo · UI:space/8",
+            "$Zumpo · UI:space/12"
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "95:113230",
+            "name": "Icon",
+            "w": 16,
+            "h": 16,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "plus"
+            },
+            "componentId": "24:5049",
+            "overrides": [
+              {
+                "path": ".",
+                "height": 16,
+                "width": 16
+              },
+              {
+                "path": "plus",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "plus",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "95:113233",
+            "name": "Label",
+            "w": 55,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Animals",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Hover",
+      "id": "95:113234",
+      "props": {
+        "State": "Hover"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "95:113234",
+        "name": "State=Hover",
+        "w": 109,
+        "h": 38,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/999",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            "$Zumpo · UI:space/8",
+            "$Zumpo · UI:space/16",
+            "$Zumpo · UI:space/8",
+            "$Zumpo · UI:space/12"
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "95:113235",
+            "name": "Icon",
+            "w": 16,
+            "h": 16,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "plus"
+            },
+            "componentId": "24:5049",
+            "overrides": [
+              {
+                "path": ".",
+                "height": 16,
+                "width": 16
+              },
+              {
+                "path": "plus",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "plus",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "95:113238",
+            "name": "Label",
+            "w": 55,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Animals",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=On",
+      "id": "95:113239",
+      "props": {
+        "State": "On"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "95:113239",
+        "name": "State=On",
+        "w": 109,
+        "h": 38,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/999",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            "$Zumpo · UI:space/8",
+            "$Zumpo · UI:space/16",
+            "$Zumpo · UI:space/8",
+            "$Zumpo · UI:space/12"
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "95:113240",
+            "name": "Icon",
+            "w": 16,
+            "h": 16,
+            "component": "Zumpo/Icon",
+            "variant": {
+              "Glyph": "check"
+            },
+            "componentId": "24:4994",
+            "overrides": [
+              {
+                "path": ".",
+                "height": 16,
+                "width": 16
+              },
+              {
+                "path": "check",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "path": "check",
+                "strokes": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "95:113243",
+            "name": "Label",
+            "w": 55,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Animals",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

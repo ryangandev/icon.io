@@ -4,7 +4,7 @@
   "id": "44:63737",
   "type": "COMPONENT_SET",
   "key": "8611538df52ca59fed7cfbfe8cb8ae561a82447b",
-  "description": "Daily Word: one player's board beside their name. Mini during a round shows marks only, never letters; Small at the reveal shows the letters.",
+  "description": "Daily Word: one player's board beside their name. Mini during a round shows marks only, never letters; Small at the reveal shows the letters. Row, for a phone’s reveal: the name and status beside the Small board, in the 350 px a 390 px screen has, since two Small boards do not fit side by side.",
   "properties": {
     "Name": {
       "type": "text",
@@ -30,21 +30,30 @@
         "Mini",
         "Small"
       ]
+    },
+    "Layout": {
+      "type": "variant",
+      "default": "Column",
+      "options": [
+        "Column",
+        "Row"
+      ]
     }
   },
-  "defaultVariant": "State=Guessing, Board=Mini",
+  "defaultVariant": "State=Guessing, Board=Mini, Layout=Column",
   "variants": [
     {
-      "name": "State=Guessing, Board=Mini",
+      "name": "State=Guessing, Board=Mini, Layout=Column",
       "id": "44:63491",
       "props": {
         "State": "Guessing",
-        "Board": "Mini"
+        "Board": "Mini",
+        "Layout": "Column"
       },
       "node": {
         "type": "COMPONENT",
         "id": "44:63491",
-        "name": "State=Guessing, Board=Mini",
+        "name": "State=Guessing, Board=Mini, Layout=Column",
         "x": 24,
         "y": 24,
         "w": 120,
@@ -132,16 +141,17 @@
       }
     },
     {
-      "name": "State=Found, Board=Mini",
+      "name": "State=Found, Board=Mini, Layout=Column",
       "id": "44:63532",
       "props": {
         "State": "Found",
-        "Board": "Mini"
+        "Board": "Mini",
+        "Layout": "Column"
       },
       "node": {
         "type": "COMPONENT",
         "id": "44:63532",
-        "name": "State=Found, Board=Mini",
+        "name": "State=Found, Board=Mini, Layout=Column",
         "x": 168,
         "y": 24,
         "w": 120,
@@ -230,16 +240,17 @@
       }
     },
     {
-      "name": "State=Out, Board=Mini",
+      "name": "State=Out, Board=Mini, Layout=Column",
       "id": "44:63573",
       "props": {
         "State": "Out",
-        "Board": "Mini"
+        "Board": "Mini",
+        "Layout": "Column"
       },
       "node": {
         "type": "COMPONENT",
         "id": "44:63573",
-        "name": "State=Out, Board=Mini",
+        "name": "State=Out, Board=Mini, Layout=Column",
         "x": 312,
         "y": 24,
         "w": 120,
@@ -327,16 +338,17 @@
       }
     },
     {
-      "name": "State=Guessing, Board=Small",
+      "name": "State=Guessing, Board=Small, Layout=Column",
       "id": "44:63614",
       "props": {
         "State": "Guessing",
-        "Board": "Small"
+        "Board": "Small",
+        "Layout": "Column"
       },
       "node": {
         "type": "COMPONENT",
         "id": "44:63614",
-        "name": "State=Guessing, Board=Small",
+        "name": "State=Guessing, Board=Small, Layout=Column",
         "x": 24,
         "y": 234,
         "w": 208,
@@ -424,16 +436,17 @@
       }
     },
     {
-      "name": "State=Found, Board=Small",
+      "name": "State=Found, Board=Small, Layout=Column",
       "id": "44:63655",
       "props": {
         "State": "Found",
-        "Board": "Small"
+        "Board": "Small",
+        "Layout": "Column"
       },
       "node": {
         "type": "COMPONENT",
         "id": "44:63655",
-        "name": "State=Found, Board=Small",
+        "name": "State=Found, Board=Small, Layout=Column",
         "x": 256,
         "y": 234,
         "w": 208,
@@ -522,16 +535,17 @@
       }
     },
     {
-      "name": "State=Out, Board=Small",
+      "name": "State=Out, Board=Small, Layout=Column",
       "id": "44:63696",
       "props": {
         "State": "Out",
-        "Board": "Small"
+        "Board": "Small",
+        "Layout": "Column"
       },
       "node": {
         "type": "COMPONENT",
         "id": "44:63696",
-        "name": "State=Out, Board=Small",
+        "name": "State=Out, Board=Small, Layout=Column",
         "x": 488,
         "y": 234,
         "w": 208,
@@ -604,6 +618,313 @@
           {
             "type": "INSTANCE",
             "id": "44:63700",
+            "name": "Board",
+            "w": 176,
+            "h": 212,
+            "wSize": "hug",
+            "hSize": "hug",
+            "component": "Zumpo/Word board",
+            "variant": {
+              "Size": "Small"
+            },
+            "componentId": "44:63012"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Guessing, Board=Small, Layout=Row",
+      "id": "96:115004",
+      "props": {
+        "State": "Guessing",
+        "Board": "Small",
+        "Layout": "Row"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "96:115004",
+        "name": "State=Guessing, Board=Small, Layout=Row",
+        "x": 24,
+        "y": 552,
+        "w": 350,
+        "h": 244,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/16",
+          "pad": "$Zumpo · UI:space/16"
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "96:115005",
+            "name": "Head",
+            "w": 126,
+            "h": 38,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "96:115006",
+                "name": "Name",
+                "w": 126,
+                "h": 20,
+                "wSize": "fill",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Name"
+                },
+                "text": "Maya",
+                "textStyle": "Zumpo/Label",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "autoResize": "height",
+                "truncate": {
+                  "maxLines": 1
+                }
+              },
+              {
+                "type": "TEXT",
+                "id": "96:115007",
+                "name": "Status",
+                "w": 126,
+                "h": 18,
+                "wSize": "fill",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Status"
+                },
+                "text": "Found · +431",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/muted"
+                ],
+                "autoResize": "height"
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "96:115008",
+            "name": "Board",
+            "w": 176,
+            "h": 212,
+            "wSize": "hug",
+            "hSize": "hug",
+            "component": "Zumpo/Word board",
+            "variant": {
+              "Size": "Small"
+            },
+            "componentId": "44:63012"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Found, Board=Small, Layout=Row",
+      "id": "96:115045",
+      "props": {
+        "State": "Found",
+        "Board": "Small",
+        "Layout": "Row"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "96:115045",
+        "name": "State=Found, Board=Small, Layout=Row",
+        "x": 398,
+        "y": 552,
+        "w": 350,
+        "h": 244,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/green"
+        ],
+        "strokeWeight": 2,
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/16",
+          "pad": "$Zumpo · UI:space/16"
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "96:115046",
+            "name": "Head",
+            "w": 126,
+            "h": 38,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "96:115047",
+                "name": "Name",
+                "w": 126,
+                "h": 20,
+                "wSize": "fill",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Name"
+                },
+                "text": "Maya",
+                "textStyle": "Zumpo/Label",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "autoResize": "height",
+                "truncate": {
+                  "maxLines": 1
+                }
+              },
+              {
+                "type": "TEXT",
+                "id": "96:115048",
+                "name": "Status",
+                "w": 126,
+                "h": 18,
+                "wSize": "fill",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Status"
+                },
+                "text": "Found · +431",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/green"
+                ],
+                "autoResize": "height"
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "96:115049",
+            "name": "Board",
+            "w": 176,
+            "h": 212,
+            "wSize": "hug",
+            "hSize": "hug",
+            "component": "Zumpo/Word board",
+            "variant": {
+              "Size": "Small"
+            },
+            "componentId": "44:63012"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Out, Board=Small, Layout=Row",
+      "id": "96:115086",
+      "props": {
+        "State": "Out",
+        "Board": "Small",
+        "Layout": "Row"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "96:115086",
+        "name": "State=Out, Board=Small, Layout=Row",
+        "x": 772,
+        "y": 552,
+        "w": 350,
+        "h": 244,
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/cream"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/12",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/16",
+          "pad": "$Zumpo · UI:space/16"
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "96:115087",
+            "name": "Head",
+            "w": 126,
+            "h": 38,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "96:115088",
+                "name": "Name",
+                "w": 126,
+                "h": 20,
+                "wSize": "fill",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Name"
+                },
+                "text": "Maya",
+                "textStyle": "Zumpo/Label",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "autoResize": "height",
+                "truncate": {
+                  "maxLines": 1
+                }
+              },
+              {
+                "type": "TEXT",
+                "id": "96:115089",
+                "name": "Status",
+                "w": 126,
+                "h": 18,
+                "wSize": "fill",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Status"
+                },
+                "text": "Found · +431",
+                "textStyle": "Zumpo/Small",
+                "fills": [
+                  "$Zumpo · UI:color/muted"
+                ],
+                "autoResize": "height"
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "96:115090",
             "name": "Board",
             "w": 176,
             "h": 212,

@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "exportedAt": "2026-10-06T06:50:22.546Z",
+  "exportedAt": "2026-10-06T16:07:31.257Z",
   "file": {
     "key": "pd5Hgp7zbT2cMqQNan35uY",
     "name": "Zumpo · Paper Pop flows",
@@ -13,15 +13,15 @@
     "previews": true
   },
   "counts": {
-    "flows": 167,
-    "componentFamilies": 50,
+    "flows": 171,
+    "componentFamilies": 52,
     "outsideComponents": 0,
     "svgs": 85,
-    "seconds": 39,
-    "nodes": 10017,
-    "instances": 5514,
-    "grids": 66,
-    "gridCells": 2207
+    "seconds": 33,
+    "nodes": 10302,
+    "instances": 5688,
+    "grids": 69,
+    "gridCells": 2252
   },
   "tokens": {
     "collections": [
@@ -128,6 +128,13 @@
       "file": "components/chat-message.json",
       "preview": "previews/components/chat-message.png",
       "variants": 4
+    },
+    {
+      "name": "Zumpo/Chip field",
+      "id": "95:113407",
+      "file": "components/chip-field.json",
+      "preview": "previews/components/chip-field.png",
+      "variants": 2
     },
     {
       "name": "Zumpo/Countdown",
@@ -295,7 +302,7 @@
       "id": "27:19237",
       "file": "components/pick-result.json",
       "preview": "previews/components/pick-result.png",
-      "variants": 3
+      "variants": 6
     },
     {
       "name": "Zumpo/Player row",
@@ -309,7 +316,7 @@
       "id": "44:63737",
       "file": "components/race-board.json",
       "preview": "previews/components/race-board.png",
-      "variants": 6
+      "variants": 9
     },
     {
       "name": "Zumpo/Room bar",
@@ -368,6 +375,13 @@
       "variants": 6
     },
     {
+      "name": "Zumpo/Toggle chip",
+      "id": "95:113244",
+      "file": "components/toggle-chip.json",
+      "preview": "previews/components/toggle-chip.png",
+      "variants": 3
+    },
+    {
       "name": "Zumpo/Trios card",
       "id": "45:63927",
       "file": "components/trios-card.json",
@@ -423,7 +437,7 @@
           "id": "9:14702",
           "size": [
             1440,
-            1561
+            1586
           ],
           "file": "flows/00-guide/review-guide.json",
           "preview": "previews/00-guide/review-guide.png",
@@ -715,7 +729,7 @@
           "id": "9:1014",
           "size": [
             1440,
-            1248
+            1502
           ],
           "file": "flows/02-draw-and-guess/DL04.json",
           "preview": "previews/02-draw-and-guess/DL04.png",
@@ -727,7 +741,7 @@
           "id": "9:1067",
           "size": [
             1440,
-            1248
+            1502
           ],
           "file": "flows/02-draw-and-guess/DL05.json",
           "preview": "previews/02-draw-and-guess/DL05.png",
@@ -739,7 +753,7 @@
           "id": "9:1120",
           "size": [
             1440,
-            1220
+            1474
           ],
           "file": "flows/02-draw-and-guess/DL06.json",
           "preview": "previews/02-draw-and-guess/DL06.png",
@@ -967,7 +981,7 @@
           "id": "9:15843",
           "size": [
             1440,
-            1248
+            1502
           ],
           "file": "flows/02-draw-and-guess/DL10.json",
           "preview": "previews/02-draw-and-guess/DL10.png",
@@ -979,10 +993,22 @@
           "id": "9:15898",
           "size": [
             1440,
-            1248
+            1502
           ],
           "file": "flows/02-draw-and-guess/DL11.json",
           "preview": "previews/02-draw-and-guess/DL11.png",
+          "isFlow": true
+        },
+        {
+          "code": "D16",
+          "title": "Host · game settings",
+          "id": "95:114256",
+          "size": [
+            1440,
+            790
+          ],
+          "file": "flows/02-draw-and-guess/D16.json",
+          "preview": "previews/02-draw-and-guess/D16.png",
           "isFlow": true
         }
       ],
@@ -1415,7 +1441,7 @@
           "id": "9:10193",
           "size": [
             390,
-            945
+            1291
           ],
           "file": "flows/04-mobile/MO05.json",
           "preview": "previews/04-mobile/MO05.png",
@@ -1511,7 +1537,7 @@
           "id": "9:11134",
           "size": [
             390,
-            1096
+            1152
           ],
           "file": "flows/04-mobile/MO13.json",
           "preview": "previews/04-mobile/MO13.png",
@@ -1576,12 +1602,25 @@
           "file": "flows/04-mobile/MO18.json",
           "preview": "previews/04-mobile/MO18.png",
           "isFlow": true
+        },
+        {
+          "code": "MO19",
+          "title": "Mines · result, an auto-pick",
+          "id": "96:115189",
+          "size": [
+            390,
+            1152
+          ],
+          "file": "flows/04-mobile/MO19.json",
+          "preview": "previews/04-mobile/MO19.png",
+          "isFlow": true
         }
       ],
       "notes": [
         "MO01 · Home / rows under a heading per kind, with filters that scroll sideways. Every way in is one tap.",
         "MO17 · A second tab with the same player took over. This one waits until Use this tab takes the player back; the other tab then shows this card.",
-        "MO18 · Zumpo restarted for an update, which closes every room. Everyone in the room sees this card in place of the game."
+        "MO18 · Zumpo restarted for an update, which closes every room. Everyone in the room sees this card in place of the game.",
+        "MO19 · 390 px, M10’s round seen from Leo’s phone: time ran out on Sam and the safest cell was picked for him. The result rows are the Pick result’s Phone layout, the name above the outcome and its detail, so the Auto-picked tag never squeezes the name; MO13 uses it too."
       ]
     },
     {
@@ -2566,6 +2605,30 @@
           "isFlow": true
         },
         {
+          "code": "DW15",
+          "title": "Phone · the reveal",
+          "id": "97:115499",
+          "size": [
+            390,
+            1474
+          ],
+          "file": "flows/10-daily-word/DW15.json",
+          "preview": "previews/10-daily-word/DW15.png",
+          "isFlow": true
+        },
+        {
+          "code": "DW16",
+          "title": "Phone · final scores",
+          "id": "97:116186",
+          "size": [
+            390,
+            1854
+          ],
+          "file": "flows/10-daily-word/DW16.json",
+          "preview": "previews/10-daily-word/DW16.png",
+          "isFlow": true
+        },
+        {
           "code": "game-artwork-daily-word",
           "title": "Game artwork / Daily Word",
           "id": "79:95130",
@@ -2590,8 +2653,14 @@
           "isFlow": false
         }
       ],
-      "notes": []
+      "notes": [
+        "DW15 · 390 px room, the reveal, as DW09 from Leo’s phone: the word and his score, then every board with its letters, best first. Each is the Race board’s Row layout, name and status beside the board, since two Small boards do not fit the width.",
+        "DW16 · 390 px room, game over, as DW10 from Leo’s phone: the ranking with how many words each found, then the last word’s boards in the Row layout. Totals: Maya 325 + 431 + 208, Sam 314 + 322 + 319, Ryan 417 + 0 + 434, Leo 205 + 208 + 101."
+      ]
     }
   ],
-  "warnings": []
+  "warnings": [
+    "Expected 50 component families, found 52",
+    "Expected 170 flow frames, found 171"
+  ]
 }

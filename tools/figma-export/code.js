@@ -30,7 +30,7 @@ const FLOW_SECTIONS = [
   { id: '43:61073', prefix: '10', dir: '10-daily-word' },
 ];
 const SHARED_SECTION = { id: '9:198', name: 'Shared pieces' };
-const EXPECTED_FLOWS = 167;
+const EXPECTED_FLOWS = 170;
 const EXPECTED_FAMILIES = 50;
 
 const FLOW_CODE = /^([A-Z]{1,2}\d{2})\b/;
@@ -1597,7 +1597,9 @@ class Exporter {
     const started = Date.now();
     const page =
       figma.root.children.find((p) => p.id === '0:1') || figma.currentPage;
-    await page.loadAsync();
+    // The current page is always loaded; loading it again asks Figma's
+    // servers, and that call hangs when the desktop app has lost them.
+    if (page !== figma.currentPage) await page.loadAsync();
 
     const tokens = await this.exportTokens();
 
