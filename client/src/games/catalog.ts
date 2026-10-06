@@ -1,16 +1,42 @@
 import type { GameType } from '../../../shared/wire-types';
 import { plural } from './plural';
 
+/**
+ * What a game has you do; every game has exactly one, and the home page sorts
+ * and filters by it (docs/design.md).
+ */
+export type GameKind = 'party' | 'puzzles' | 'spot-and-remember';
+
+/** The kinds, and the line under each kind's heading, alphabetically. */
+export const GAME_KINDS: readonly {
+  kind: GameKind;
+  name: string;
+  about: string;
+}[] = [
+  { kind: 'party', name: 'Party', about: 'Draw, bluff and read the room.' },
+  {
+    kind: 'puzzles',
+    name: 'Puzzles',
+    about: 'One answer to find, at your own pace or in a race.',
+  },
+  {
+    kind: 'spot-and-remember',
+    name: 'Spot & remember',
+    about: 'Sharp eyes and a good memory.',
+  },
+];
+
 /** What every page says about a game outside its room. */
 export interface GameInfo {
   type: GameType;
   name: string;
+  kind: GameKind;
   /** The game's surface colour on the home, games and rules pages. */
   tone: 'peach' | 'blue' | 'lime' | 'sand';
-  /** One line on the game cards. */
+  /** One line on the game cards; two at most on a tile. */
   tagline: string;
-  /** A shorter one for a phone's narrower card. */
-  phoneTagline?: string;
+  /** A shorter one for a phone's row, where the tagline takes three lines. */
+  rowTagline?: string;
   /** The game card's paper tag. */
   facts: string;
   /** The most seats a room may have; every game needs two to start. */
@@ -32,6 +58,7 @@ export const GAMES: readonly GameInfo[] = [
   {
     type: 'draw-and-guess',
     name: 'Draw & Guess',
+    kind: 'party',
     tone: 'peach',
     tagline: 'One draws. Everyone else tries to get there first.',
     facts: '2–8 players · 1–4 rounds',
@@ -57,6 +84,7 @@ Faster guesses earn more, from 50 to 150 points, and the drawer gets two fifths 
   {
     type: 'minesweeper',
     name: 'Minesweeper',
+    kind: 'puzzles',
     tone: 'blue',
     tagline: 'Clear a board on your own, or share one and pick in secret.',
     facts: 'Solo or 2–8 players',
@@ -95,10 +123,9 @@ On your own, it is classic Minesweeper: open every safe cell without hitting a m
   {
     type: 'make-24',
     name: 'Make 24',
+    kind: 'puzzles',
     tone: 'lime',
-    tagline:
-      'Four numbers. Plus, minus, times, divide. Make 24 before anyone else.',
-    phoneTagline: 'Four numbers. Plus, minus, times, divide. Make 24.',
+    tagline: 'Four numbers. Plus, minus, times, divide. Make 24.',
     facts: 'Solo or 2–8 players',
     maxPlayers: 8,
     lobbySummary:
@@ -133,8 +160,10 @@ On your own, a run is ten hands against one clock. Skip a hand you are stuck on,
   {
     type: 'pairs',
     name: 'Pairs',
+    kind: 'spot-and-remember',
     tone: 'sand',
     tagline: 'Flip two cards. Remember where everything is. Find every pair.',
+    rowTagline: 'Flip two cards. Remember where everything is.',
     facts: 'Solo or 2–6 players',
     maxPlayers: 6,
     scoreUnit: 'pair',
@@ -170,10 +199,9 @@ On your own, clear the board in as few turns as you can; your time breaks a tie.
   {
     type: 'trios',
     name: 'Trios',
+    kind: 'spot-and-remember',
     tone: 'peach',
-    tagline:
-      'Spot three cards that are all the same or all different, in every way.',
-    phoneTagline: 'Spot three that are all the same or all different.',
+    tagline: 'Spot three that are all the same or all different.',
     facts: 'Solo or 2–8 players',
     maxPlayers: 8,
     scoreUnit: 'trio',
@@ -212,9 +240,9 @@ On your own, a run is ten trios against one clock. A wrong pick adds 5 seconds; 
   {
     type: 'liars-dice',
     name: 'Liar’s Dice',
+    kind: 'party',
     tone: 'lime',
     tagline: 'Roll in secret. Bid on the whole table. Call the bluff.',
-    phoneTagline: 'Roll in secret. Bid. Call the bluff.',
     facts: 'Solo or 2–6 players',
     maxPlayers: 6,
     scoreUnit: ['die', 'dice'],
@@ -250,6 +278,7 @@ On your own, play 1 to 5 bots with no clock, and go on to the next round when yo
   {
     type: 'hush',
     name: 'Hush',
+    kind: 'party',
     tone: 'sand',
     tagline: 'No turns, no talking. Play every card in order, together.',
     facts: '2–4 players',
@@ -278,6 +307,7 @@ Clear the last level to win together. Two players play 7 levels, three play 6 an
   {
     type: 'daily-word',
     name: 'Daily Word',
+    kind: 'puzzles',
     tone: 'blue',
     tagline: 'Five letters, six guesses. A new word every day.',
     facts: 'Solo or 2–8 players',
@@ -313,6 +343,17 @@ On your own, there is one word a day, the same for everybody, and a new one at y
     },
   },
 ];
+
+/** A kind's games, alphabetically. */
+export function gamesOfKind(kind: GameKind): GameInfo[] {
+  return GAMES.filter((game) => game.kind === kind).toSorted((a, b) =>
+    a.name.localeCompare(b.name),
+  );
+}
+
+export function isGameKind(value: string | null): value is GameKind {
+  return GAME_KINDS.some((entry) => entry.kind === value);
+}
 
 export function gameInfo(type: GameType): GameInfo {
   const game = GAMES.find((candidate) => candidate.type === type);

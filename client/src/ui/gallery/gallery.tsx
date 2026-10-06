@@ -21,6 +21,7 @@ import {
   DialogClose,
   Die,
   DrawingToolbar,
+  FilterChip,
   Header,
   Icon,
   Keyboard,
@@ -58,6 +59,8 @@ import {
   type DieFace,
   type GlyphName,
 } from '..';
+import { GAMES } from '../../games/catalog';
+import { GameCard } from '../../games/game-card';
 import { glyphs } from '../generated/glyphs';
 import { pairsSymbols } from '../generated/pairs-symbols';
 import { Specimen } from './specimen';
@@ -260,6 +263,19 @@ export default function Gallery() {
         </Specimen>
         <Specimen family="tag" label="Compact">
           <Tag size="compact">You</Tag>
+        </Specimen>
+      </Family>
+
+      <Family name="Filter chip" file="filter-chip">
+        <Specimen family="filter-chip" variant="State=Default">
+          <FilterChip selected={false} onSelect={() => {}}>
+            Puzzles
+          </FilterChip>
+        </Specimen>
+        <Specimen family="filter-chip" variant="State=Selected">
+          <FilterChip selected onSelect={() => {}}>
+            Puzzles
+          </FilterChip>
         </Specimen>
       </Family>
 
@@ -1388,6 +1404,29 @@ export default function Gallery() {
             ]}
           />
         </Specimen>
+      </Family>
+
+      <Family name="Game card" file="game-card">
+        {GAMES.map((game) => (
+          <Specimen
+            key={`${game.type}-tile`}
+            family="game-card"
+            variant={`Game=${game.name}, Layout=Tile`}
+            width={310}
+          >
+            <GameCard game={game} layout="tile" />
+          </Specimen>
+        ))}
+        {GAMES.map((game) => (
+          <Specimen
+            key={`${game.type}-row`}
+            family="game-card"
+            variant={`Game=${game.name}, Layout=Row`}
+            width={350}
+          >
+            <GameCard game={game} layout="row" />
+          </Specimen>
+        ))}
       </Family>
 
       <Family name="Header and wordmark" file="header">

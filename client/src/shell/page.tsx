@@ -6,9 +6,10 @@ import { initialsOf, toneOf } from '../players/avatar';
 import { namePath } from './require-name';
 import styles from './page.module.css';
 
+// Games is the home page, and stays current on every game's own pages.
 const LINKS = [
-  { label: 'Games', to: '/games' },
-  { label: 'How to play', to: '/how-to-play' },
+  { label: 'Games', to: '/', section: '/games' },
+  { label: 'How to play', to: '/how-to-play', section: '/how-to-play' },
 ] as const;
 
 /**
@@ -25,9 +26,13 @@ export function Page({
   const { pathname } = useLocation();
   const { viewer, viewerMenu } = useViewer();
 
-  const links = LINKS.map((link) => ({
-    ...link,
-    current: pathname === link.to || pathname.startsWith(`${link.to}/`),
+  const links = LINKS.map(({ label, to, section }) => ({
+    label,
+    to,
+    current:
+      pathname === to ||
+      pathname === section ||
+      pathname.startsWith(`${section}/`),
   }));
 
   return (

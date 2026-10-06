@@ -52,11 +52,9 @@ async function startRun() {
 }
 
 describe('Make 24 on your own', () => {
-  it('is offered from the games page', async () => {
-    await renderApp('/games');
-    const make24 = screen.getByRole('heading', {
-      name: 'Make 24',
-    }).parentElement!;
+  it('is offered on the home page', async () => {
+    await renderApp('/');
+    const make24 = screen.getByRole('region', { name: 'Make 24' });
     expect(
       within(make24).getByRole('link', { name: 'Play solo' }),
     ).toHaveAttribute('href', '/games/make-24/solo');

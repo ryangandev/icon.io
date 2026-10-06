@@ -1,0 +1,58 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-24);
+}
+
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--zumpo-space-12);
+}
+
+.title,
+.kindName {
+  font: var(--zumpo-text-heading);
+  letter-spacing: var(--zumpo-text-heading-tracking);
+}
+
+.filters {
+  display: flex;
+  gap: var(--zumpo-space-8);
+}
+
+/* Four tiles across at the page's full width, fewer as it narrows: a tile
+   needs room for its artwork. */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(296px, 1fr));
+  gap: var(--zumpo-space-24);
+}
+
+/* A phone's filters scroll sideways, out to the screen's edges. */
+.strip {
+  margin: 0 calc(-1 * var(--zumpo-space-20));
+  padding: 0 var(--zumpo-space-20);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.kind {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-12);
+}
+
+.kindHeading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zumpo-space-4);
+}
+
+.about {
+  color: var(--zumpo-muted);
+  font: var(--zumpo-text-body);
+  letter-spacing: var(--zumpo-text-body-tracking);
+}

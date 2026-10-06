@@ -50,7 +50,62 @@ describe('choosing a name', () => {
     });
     await user.type(screen.getByLabelText('Your name'), 'Ryan');
     await user.click(screen.getByRole('button', { name: 'Let’s play' }));
-    expect(router.state.location.pathname).toBe('/games');
+    expect(router.state.location.pathname).toBe('/');
+  });
+});
+
+/** The games' names on the home page, in the order shown. */
+const tiles = () =>
+  within(screen.getByRole('region', { name: 'Pick a game' }))
+    .getAllByRole('heading', { level: 3 })
+    .map((heading) => heading.textContent);
+
+describe('the home page', () => {
+  it('lists every game by kind, then by name', async () => {
+    await renderApp('/');
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'Pick a game' }),
+    ).toBeInTheDocument();
+    expect(tiles()).toEqual([
+      'Draw & Guess',
+      'Hush',
+      'Liar’s Dice',
+      'Daily Word',
+      'Make 24',
+      'Minesweeper',
+      'Pairs',
+      'Trios',
+    ]);
+  });
+
+  it('filters to one kind, and keeps the filter in the address', async () => {
+    const user = userEvent.setup();
+    const { router } = await renderApp('/');
+    const filters = screen.getByRole('group', { name: 'Kind of game' });
+    expect(
+      within(filters).getByRole('button', { name: 'All' }),
+    ).toHaveAttribute('aria-pressed', 'true');
+
+    await user.click(within(filters).getByRole('button', { name: 'Puzzles' }));
+    expect(router.state.location.search).toBe('?kind=puzzles');
+    expect(tiles()).toEqual(['Daily Word', 'Make 24', 'Minesweeper']);
+    expect(
+      within(filters).getByRole('button', { name: 'Puzzles' }),
+    ).toHaveAttribute('aria-pressed', 'true');
+
+    await user.click(within(filters).getByRole('button', { name: 'All' }));
+    expect(router.state.location.search).toBe('');
+    expect(tiles()).toHaveLength(8);
+  });
+
+  it('shows every game for a kind it does not know', async () => {
+    await renderApp('/?kind=cards');
+    expect(tiles()).toHaveLength(8);
+  });
+
+  it('is where the old games page leads', async () => {
+    const { router } = await renderApp('/games', { name: '' });
+    expect(router.state.location.pathname).toBe('/');
   });
 });
 
@@ -223,26 +278,34 @@ describe('making a Hush room', () => {
 });
 
 describe('on a phone', () => {
-  it('keeps one way in on the front door', async () => {
+  it('lists the games under a heading per kind', async () => {
     onPhone();
     await renderApp('/');
     expect(screen.getByText('A little play')).toBeInTheDocument();
     expect(
       screen.getByText('Good games for good company.'),
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole('link', { name: 'Let’s play' }),
-    ).toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: 'Browse games' })).toBeNull();
+    expect(screen.queryByRole('link', { name: 'Let’s play' })).toBeNull();
     expect(screen.queryByText(/Play solo starts at once/)).toBeNull();
+    const party = screen.getByRole('region', { name: 'Party' });
+    expect(
+      within(party)
+        .getAllByRole('heading', { level: 3 })
+        .map((heading) => heading.textContent),
+    ).toEqual(['Draw & Guess', 'Hush', 'Liar’s Dice']);
+    expect(
+      within(party).getByText('Draw, bluff and read the room.'),
+    ).toBeInTheDocument();
   });
 
-  it('greets the player above the games', async () => {
+  it('filters to one kind', async () => {
     onPhone();
-    await renderApp('/games', { name: 'Maya' });
-    expect(screen.getByText('Hey, Maya')).toBeInTheDocument();
+    const user = userEvent.setup();
+    await renderApp('/');
+    await user.click(screen.getByRole('button', { name: 'Spot & remember' }));
+    expect(screen.queryByRole('region', { name: 'Party' })).toBeNull();
     expect(
-      screen.getByText(/little games, alone or together\./),
+      screen.getByRole('region', { name: 'Spot & remember' }),
     ).toBeInTheDocument();
   });
 

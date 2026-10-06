@@ -49,6 +49,7 @@ export {
   type BrushSize,
   type DrawingToolbarProps,
 } from './components/drawing-toolbar';
+export { FilterChip, type FilterChipProps } from './components/filter-chip';
 export {
   Header,
   type HeaderLink,

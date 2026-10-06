@@ -1,8 +1,8 @@
+import type { ReactNode } from 'react';
 import {
   Die,
   HushCard,
   LetterTile,
-  Lives,
   MineCell,
   NumberCard,
   PairsCard,
@@ -11,8 +11,6 @@ import {
   Tag,
   TriosCard,
 } from '../ui';
-import { cx } from '../ui/cx';
-import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import {
   turtle,
   TURTLE_SIZE,
@@ -21,32 +19,26 @@ import {
 import type { GameType } from '../../../shared/wire-types';
 import styles from './artwork.module.css';
 
-/** The paper panel on a game card that shows what the game looks like. */
-export function GameArtwork({ type }: { type: GameType }) {
+/**
+ * The paper panel on a game card that shows what the game looks like: a strip
+ * of play on a tile, the game's signature piece as a row's icon.
+ */
+export function GameArtwork({
+  type,
+  size,
+}: {
+  type: GameType;
+  size: 'tile' | 'icon';
+}) {
+  const Art = (size === 'tile' ? TILES : ICONS)[type];
   return (
-    <div className={styles.artwork} aria-hidden="true">
-      {type === 'draw-and-guess' ? (
-        <DrawingArtwork />
-      ) : type === 'minesweeper' ? (
-        <BoardArtwork />
-      ) : type === 'make-24' ? (
-        <HandArtwork />
-      ) : type === 'liars-dice' ? (
-        <DiceArtwork />
-      ) : type === 'pairs' ? (
-        <PairsArtwork />
-      ) : type === 'trios' ? (
-        <TriosArtwork />
-      ) : type === 'hush' ? (
-        <PileArtwork />
-      ) : (
-        <WordArtwork />
-      )}
+    <div className={styles[size]} aria-hidden="true">
+      <Art />
     </div>
   );
 }
 
-/** The finished turtle at a third of its size, and the word it was. */
+/** The finished turtle at 0.26 of its size, and the word it was. */
 function DrawingArtwork() {
   return (
     <>
@@ -91,25 +83,20 @@ export function TurtleDrawing({ className }: { className?: string }) {
   );
 }
 
-/** A hand, and what it makes. */
+/** A hand, on cards smaller than any in play. */
 function HandArtwork() {
   return (
     <div className={styles.hand}>
       {[8, 4, 7, 1].map((value) => (
         <NumberCard key={value} value={String(value)} size="compact" />
       ))}
-      <span className={styles.answer}>
-        <NumberCard value="24" state="solved" size="compact" />
-      </span>
     </div>
   );
 }
 
 /** A row of a board mid-game: a pair just found, one matched before. */
 function PairsArtwork() {
-  // The phone card's cards are compact, and it drops the last, as in Figma.
-  const phone = useMediaQuery(PHONE);
-  const size = phone ? 'compact' : 'regular';
+  const size = 'compact';
   const star = symbolNamed('Star Orange');
   const circle = symbolNamed('Circle Coral');
   return (
@@ -133,17 +120,11 @@ function PairsArtwork() {
         row={0}
         column={3}
       />
-      {!phone && (
-        <PairsCard state={{ kind: 'down' }} size={size} row={0} column={4} />
-      )}
     </div>
   );
 }
 
-/**
- * A table at a call: the dice that count towards five 5s, a wild one among
- * them, one that does not, and cups still hidden. A phone keeps the first four.
- */
+/** A table at a call: a cup still hidden, and dice that count, one wild. */
 function DiceArtwork() {
   return (
     <div className={styles.dice}>
@@ -151,12 +132,6 @@ function DiceArtwork() {
       <Die face={5} state="counted" label={null} />
       <Die face={1} state="wild" label={null} />
       <Die face={5} state="counted" label={null} />
-      <span className={styles.lastCell}>
-        <Die face={2} state="dim" label={null} />
-      </span>
-      <span className={styles.lastCell}>
-        <Die face="hidden" label={null} />
-      </span>
     </div>
   );
 }
@@ -175,70 +150,123 @@ function BoardArtwork() {
       />
       <MineCell state={{ kind: 'mine' }} row={0} column={3} />
       <MineCell state={{ kind: 'hidden' }} row={0} column={4} />
-      <span className={styles.lastCell}>
-        <MineCell state={{ kind: 'open', adjacent: 1 }} row={0} column={5} />
-      </span>
     </div>
   );
 }
 
-/** A card that is not in it, and a trio found: every feature different. */
+/** A trio found: every feature different. */
 function TriosArtwork() {
-  // A phone's narrower card shows only the trio, as mini cards.
-  const phone = useMediaQuery(PHONE);
-  const size = phone ? 'mini' : 'compact';
   return (
     <div className={styles.trios}>
-      {!phone && <TriosCard card={37} size={size} />}
       {[0, 40, 80].map((card) => (
-        <TriosCard key={card} card={card} state="found" size={size} />
+        <TriosCard key={card} card={card} state="found" size="mini" />
       ))}
     </div>
   );
 }
 
-/**
- * A pile mid-level: three cards played, the top one, and two lives left. A
- * phone keeps the pile's top three, as MO03 draws it.
- */
+/** The top of a pile mid-level: two cards played, and the one on top. */
 function PileArtwork() {
   return (
     <div className={styles.pile}>
-      {[12, 27, 45].map((value, index) => (
-        <HushCard
-          key={value}
-          value={value}
-          state="played"
-          size="small"
-          className={index === 0 ? styles.wideOnly : undefined}
-        />
+      {[27, 45].map((value) => (
+        <HushCard key={value} value={value} state="played" size="small" />
       ))}
       <HushCard value={58} state="pile" size="small" />
-      <Lives
-        lives={2}
-        showLabel={false}
-        className={cx(styles.lives, styles.wideOnly)}
-      />
     </div>
   );
 }
 
-/** A guess against PLANT: two letters elsewhere, one in place, two not in it.
-    The phone card keeps the first three, as MO03 does. */
+/** The start of a guess against PLANT: one letter elsewhere, one not in it,
+    one in place. */
 function WordArtwork() {
-  const marks = ['present', 'absent', 'correct', 'absent', 'present'] as const;
-  const tiles = [...'TRAIL'].map((letter, index) => (
-    <LetterTile
-      key={index}
-      letter={letter}
-      state={marks[index]}
-      size="regular"
-    />
-  ));
+  const marks = ['present', 'absent', 'correct'] as const;
   return (
     <div className={styles.word}>
-      {tiles.slice(0, 3)}
-      <span className={styles.wordTail}>{tiles.slice(3)}</span>
+      {[...'TRA'].map((letter, index) => (
+        <LetterTile
+          key={index}
+          letter={letter}
+          state={marks[index]}
+          size="regular"
+        />
+      ))}
     </div>
   );
 }
+
+const TILES: Readonly<Record<GameType, () => ReactNode>> = {
+  'draw-and-guess': DrawingArtwork,
+  minesweeper: BoardArtwork,
+  'make-24': HandArtwork,
+  pairs: PairsArtwork,
+  trios: TriosArtwork,
+  'liars-dice': DiceArtwork,
+  hush: PileArtwork,
+  'daily-word': WordArtwork,
+};
+
+/** Each game's signature piece, in a row's 80 px icon. */
+const ICONS: Readonly<Record<GameType, () => ReactNode>> = {
+  'draw-and-guess': () => <TurtleDrawing className={styles.iconTurtle} />,
+  minesweeper: () => (
+    <div className={styles.iconGrid}>
+      <MineCell
+        state={{ kind: 'open', adjacent: 1 }}
+        size="compact"
+        row={0}
+        column={0}
+      />
+      <MineCell state={{ kind: 'hidden' }} size="compact" row={0} column={1} />
+      <MineCell
+        state={{ kind: 'open', adjacent: 2 }}
+        size="compact"
+        row={1}
+        column={0}
+      />
+      <MineCell state={{ kind: 'mine' }} size="compact" row={1} column={1} />
+    </div>
+  ),
+  'make-24': () => (
+    <span className={styles.iconSolved}>
+      <NumberCard value="24" state="solved" size="compact" />
+    </span>
+  ),
+  pairs: () => (
+    <PairsCard
+      state={{ kind: 'up', symbol: symbolNamed('Star Orange') }}
+      size="compact"
+      row={0}
+      column={0}
+    />
+  ),
+  // Two coral solid circles (shared/trios.ts)
+  trios: () => <TriosCard card={3} state="found" size="mini" />,
+  'liars-dice': () => (
+    <div className={styles.iconGrid}>
+      <Die face={5} state="counted" size="compact" label={null} />
+      <Die face={1} state="wild" size="compact" label={null} />
+      <Die face="hidden" size="compact" label={null} />
+      <Die face={5} state="counted" size="compact" label={null} />
+    </div>
+  ),
+  hush: () => (
+    <span className={styles.iconPile}>
+      <HushCard value={58} state="pile" size="small" />
+    </span>
+  ),
+  'daily-word': () => (
+    <div className={styles.iconGrid}>
+      {(
+        [
+          ['W', 'present'],
+          ['O', 'absent'],
+          ['R', 'correct'],
+          ['D', 'correct'],
+        ] as const
+      ).map(([letter, state]) => (
+        <LetterTile key={letter} letter={letter} state={state} size="small" />
+      ))}
+    </div>
+  ),
+};

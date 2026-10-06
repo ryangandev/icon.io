@@ -62,9 +62,9 @@ async function startRun() {
 }
 
 describe('Trios on your own', () => {
-  it('is offered from the games page', async () => {
-    await renderApp('/games');
-    const trios = screen.getByRole('heading', { name: 'Trios' }).parentElement!;
+  it('is offered on the home page', async () => {
+    await renderApp('/');
+    const trios = screen.getByRole('region', { name: 'Trios' });
     expect(
       within(trios).getByRole('link', { name: 'Play solo' }),
     ).toHaveAttribute('href', '/games/trios/solo');

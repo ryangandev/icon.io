@@ -155,8 +155,7 @@ test('platform pages', async ({ player }) => {
   await shot(visitor, 'P03');
 
   const sam = await player('Sam', desktop);
-  await sam.goto('/games');
-  await shot(sam, 'P04');
+  await sam.goto('/');
   await sam.getByRole('button', { name: 'Sam: your name' }).click();
   await expect(sam.getByRole('dialog', { name: 'Sam' })).toBeVisible();
   await shot(sam, 'P13');
@@ -176,9 +175,6 @@ test('platform pages', async ({ player }) => {
   await shot(newcomer, 'MO01');
   await newcomer.goto('/name');
   await shot(newcomer, 'MO02');
-  const samOnPhone = await player('Sam', phone);
-  await samOnPhone.goto('/games');
-  await shot(samOnPhone, 'MO03');
 });
 
 test('before a connection, and when it fails', async ({ player }) => {

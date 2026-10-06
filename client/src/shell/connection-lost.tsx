@@ -26,7 +26,7 @@ export function ConnectionLost() {
           <Button onClick={connect}>
             {replaced ? 'Use this tab' : 'Try again'}
           </Button>
-          <ButtonLink to="/games" variant="secondary" icon="back">
+          <ButtonLink to="/" variant="secondary" icon="back">
             Back to games
           </ButtonLink>
         </>
