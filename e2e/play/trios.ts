@@ -6,7 +6,7 @@ import {
   isTrio,
   TABLE_SIZE,
 } from '../../shared/trios.js';
-import { expect } from '../fixtures';
+import { expect, labelsIn } from '../fixtures';
 
 /** Playing Trios as a player does: by what the cards' labels say. */
 
@@ -20,10 +20,10 @@ const PLACES = Array.from({ length: TABLE_SIZE }, (_, place) => place);
 
 /** The cards on the table, place by place, read from their labels. */
 export async function tableOf(page: Page): Promise<number[]> {
-  const labels = await page
-    .getByRole('group', { name: 'Table' })
-    .locator(':scope > [aria-label]')
-    .evaluateAll((cards) => cards.map((card) => card.ariaLabel ?? ''));
+  const labels = await labelsIn(
+    page.getByRole('group', { name: 'Table' }),
+    ':scope > [aria-label]',
+  );
   return labels.map((label) => {
     const card = CARD_BY_NAME.get(label.split(',')[0]);
     if (card === undefined) throw new Error(`No card is called "${label}"`);

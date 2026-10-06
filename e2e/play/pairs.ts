@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test';
-import { expect } from '../fixtures';
+import { expect, labelsIn } from '../fixtures';
 
 /** Playing Pairs as a player does: by what the cards' labels say. */
 
@@ -14,10 +14,10 @@ const LABEL = /^(Row \d+, column \d+): (.+?)(, matched)?$/;
 
 /** Every card on the board, as its label reads. */
 export async function boardOf(page: Page): Promise<CardSeen[]> {
-  const labels = await page
-    .getByRole('grid', { name: 'Cards' })
-    .locator('[aria-label^="Row "]')
-    .evaluateAll((cards) => cards.map((card) => card.ariaLabel ?? ''));
+  const labels = await labelsIn(
+    page.getByRole('grid', { name: 'Cards' }),
+    '[aria-label^="Row "]',
+  );
   return labels.map((label) => {
     const [, place, symbol, matched] = LABEL.exec(label)!;
     return {

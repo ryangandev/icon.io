@@ -2,6 +2,7 @@ import {
   expect,
   test as base,
   type BrowserContext,
+  type Locator,
   type Page,
   type WebSocketRoute,
 } from '@playwright/test';
@@ -119,6 +120,22 @@ export interface RoomSettings {
   dice?: 3 | 5;
   /** Daily Word: how many words. */
   words?: 3 | 5;
+}
+
+/**
+ * The labels of everything matching the CSS `selector` inside `container`,
+ * read in one go. `evaluateAll` finds the elements and reads them in two
+ * steps, and a card turned in between has moved its label to another element.
+ */
+export function labelsIn(container: Locator, selector: string) {
+  return container.evaluate(
+    (root, inner) =>
+      Array.from(
+        root.querySelectorAll(inner),
+        (element) => element.getAttribute('aria-label') ?? '',
+      ),
+    selector,
+  );
 }
 
 /** Makes a room through the create page and returns its link. */
