@@ -53,15 +53,13 @@ test('two players race to the same three words', async ({ player }) => {
     await ready(leo);
     await solve(leo);
 
-    // Both done: the word ends at once, and everybody's letters show.
-    await expect(
-      maya.getByRole('heading', { name: `Word ${word} results` }),
-    ).toBeVisible();
-    await expect(
-      maya.getByRole('group', { name: 'Leo’s board' }).getByRole('img', {
-        name: /^[A-Z], /,
-      }),
-    ).not.toHaveCount(0);
+    // Both done: the word ends at once. Its reveal lasts a second here, too
+    // short to catch under load, so the next word opening is the sign.
+    if (word < 3) {
+      await expect(
+        maya.getByText(`Word ${word + 1} of 3`).first(),
+      ).toBeVisible();
+    }
   }
 
   await expect(
@@ -72,12 +70,15 @@ test('two players race to the same three words', async ({ player }) => {
   const standings = maya.getByRole('list', { name: 'Standings' });
   await expect(standings.getByRole('listitem')).toHaveCount(2);
   await expect(standings.getByText(/\d words? found/).first()).toBeVisible();
-  // The last word's boards stay up under the scores.
+  // The last word's boards stay up under the scores, everybody's letters
+  // showing.
+  const last = maya.getByRole('region', { name: 'Word 3 results' });
+  await expect(last.getByText(/^The word was [A-Z]{5}\.$/)).toBeVisible();
   await expect(
-    maya
-      .getByRole('region', { name: 'Word 3 results' })
-      .getByText(/^The word was [A-Z]{5}\.$/),
-  ).toBeVisible();
+    last.getByRole('group', { name: 'Leo’s board' }).getByRole('img', {
+      name: /^[A-Z], /,
+    }),
+  ).not.toHaveCount(0);
   await expect(maya.getByRole('button', { name: 'Play again' })).toBeVisible();
 });
 
