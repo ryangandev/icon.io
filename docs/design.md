@@ -18,7 +18,7 @@ They are not copied here, so there is one place to change them.
 | Section                              | Id         | Contents                                              |
 | ------------------------------------ | ---------- | ----------------------------------------------------- |
 | 00 / Review guide & flow map         | `9:14700`  | Review order, the real rules, which UX is new         |
-| 01 / Platform & shared flows         | `9:431`    | P01-P20, desktop                                      |
+| 01 / Platform & shared flows         | `9:431`    | P01-P20 without P04, desktop                          |
 | 02 / Draw & Guess / complete flow    | `9:866`    | DL01-DL11 lobby, D01-D15 room, desktop                |
 | 03 / Minesweeper / complete flow     | `9:2526`   | ML01-ML10 lobby, M01-M16 room, MS01-MS05 solo         |
 | 04 / Mobile / 390px flow adaptations | `9:10060`  | MO01-MO18, the main flows at 390 px                   |
