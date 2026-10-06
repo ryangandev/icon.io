@@ -148,37 +148,69 @@ test.afterAll(writeReport);
 test('platform pages', async ({ player }) => {
   const visitor = await player('Sam', { ...desktop, named: false });
   await visitor.goto('/');
-  await shot(visitor, 'P01');
-  await visitor.goto('/name');
+  await expect(visitor.getByRole('dialog', { name: /^You’re / })).toBeVisible();
   await shot(visitor, 'P02');
-  await visitor.getByRole('button', { name: 'Let’s play' }).click();
+  await visitor.getByRole('button', { name: 'Change name' }).click();
+  await visitor.getByRole('textbox', { name: 'Your name' }).fill('');
+  await visitor.getByRole('button', { name: 'Save' }).click();
+  await expect(
+    visitor.getByText('Enter a name with at least one visible character.'),
+  ).toBeVisible();
   await shot(visitor, 'P03');
 
-  const sam = await player('Sam', desktop);
-  await sam.goto('/games');
-  await shot(sam, 'P04');
-  await sam.getByRole('button', { name: 'Sam: your name' }).click();
-  await expect(sam.getByRole('dialog', { name: 'Sam' })).toBeVisible();
-  await shot(sam, 'P13');
-  await sam.keyboard.press('Escape');
-  await sam.goto('/games/draw-and-guess/rooms/gone');
+  const maya = await player('Maya', desktop);
+  await maya.goto('/');
+  await shot(maya, 'P01');
+  await maya.getByRole('button', { name: 'Maya: your name' }).click();
+  await expect(maya.getByRole('dialog', { name: 'Your name' })).toBeVisible();
+  await shot(maya, 'P13');
+  await maya.keyboard.press('Escape');
+  await maya.goto('/games/draw-and-guess/rooms/gone');
   await expect(
-    sam.getByRole('heading', { name: 'This room has packed up.' }),
+    maya.getByRole('heading', { name: 'This room has packed up.' }),
   ).toBeVisible();
-  await shot(sam, 'P09');
-  await sam.goto('/no-such-page');
-  await shot(sam, 'P10');
-  await sam.goto('/how-to-play');
-  await shot(sam, 'P14');
+  await shot(maya, 'P09');
+  await maya.goto('/no-such-page');
+  await shot(maya, 'P10');
+  await maya.goto('/how-to-play');
+  await shot(maya, 'P14');
 
-  const newcomer = await player('Sam', { ...phone, named: false });
-  await newcomer.goto('/');
-  await shot(newcomer, 'MO01');
-  await newcomer.goto('/name');
-  await shot(newcomer, 'MO02');
   const samOnPhone = await player('Sam', phone);
-  await samOnPhone.goto('/games');
-  await shot(samOnPhone, 'MO03');
+  await samOnPhone.goto('/');
+  await shot(samOnPhone, 'MO01');
+  await samOnPhone.getByRole('button', { name: 'Sam: your name' }).click();
+  await expect(
+    samOnPhone.getByRole('dialog', { name: 'Your name' }),
+  ).toBeVisible();
+  await shot(samOnPhone, 'MO02');
+});
+
+test('a picked name in a room, and changing it there', async ({ player }) => {
+  const maya = await player('Maya', desktop);
+  const link = await createRoom(maya, 'draw-and-guess', {
+    name: 'Maya’s room',
+    seats: 4,
+    rounds: 2,
+  });
+  await joinRoom(await player('Ryan', desktop), link);
+  const leo = await player('Brave Noodle', desktop);
+  await joinRoom(leo, link);
+  await leo.getByRole('button', { name: 'Brave Noodle: your name' }).click();
+  await leo.getByRole('textbox', { name: 'Your name' }).fill('Leo');
+  await leo.getByRole('button', { name: 'Save' }).click();
+  await expect(maya.getByText('Brave Noodle is now Leo.')).toBeVisible();
+
+  const otter = await player('Sleepy Otter', { ...desktop, picked: true });
+  await joinRoom(otter, link);
+  await expect(
+    otter.getByText(
+      'You’re Sleepy Otter for now. Pick a name your friends will know.',
+    ),
+  ).toBeVisible();
+  await shot(otter, 'P19');
+  await otter.getByRole('button', { name: 'Sleepy Otter: your name' }).click();
+  await otter.getByRole('textbox', { name: 'Your name' }).fill('Sam');
+  await shot(otter, 'P20');
 });
 
 test('before a connection, and when it fails', async ({ player }) => {

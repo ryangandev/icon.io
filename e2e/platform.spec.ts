@@ -1,67 +1,123 @@
+import type { Page } from '@playwright/test';
 import { createRoom, expect, joinRoom, test } from './fixtures';
 
-test('a first visit asks for a name on the way to the games', async ({
+/** The name a first visit picked, as the avatar says it. */
+async function pickedName(page: Page): Promise<string> {
+  const label = await page
+    .getByRole('button', { name: /: your name$/ })
+    .getAttribute('aria-label');
+  return label!.replace(/: your name$/, '');
+}
+
+test('a first visit starts with a picked name, introduced once', async ({
   player,
 }) => {
   const sam = await player('Sam', { named: false });
   await sam.goto('/');
-  await sam.getByRole('link', { name: 'Let’s play' }).click();
+  const name = await pickedName(sam);
+  expect(name).toMatch(/^\w+ \w+$/);
 
-  const name = sam.getByRole('textbox', { name: 'Your name' });
-  await sam.getByRole('button', { name: 'Let’s play' }).click();
-  await expect(name).toBeFocused();
-  await expect(name).toHaveAttribute('aria-invalid', 'true');
-
-  await name.fill('Sam');
-  await sam.getByRole('button', { name: 'Let’s play' }).click();
+  const hint = sam.getByRole('dialog', { name: `You’re ${name}.` });
   await expect(
-    sam.getByRole('heading', { name: 'What are we playing?' }),
+    hint.getByText('We picked a name so you can jump right in.', {
+      exact: false,
+    }),
   ).toBeVisible();
+  await hint.getByRole('button', { name: 'Got it' }).click();
+  await expect(hint).toBeHidden();
+  await sam.reload();
+  await expect(
+    sam.getByRole('button', { name: `${name}: your name` }),
+  ).toBeVisible();
+  await expect(hint).toBeHidden();
 
+  // Nothing stands between the visitor and a room.
+  await sam.getByRole('link', { name: 'Let’s play' }).click();
   await sam
     .getByRole('region', { name: 'Minesweeper' })
     .getByRole('link', { name: 'Find a room' })
     .click();
   await expect(sam).toHaveURL(/\/games\/minesweeper$/);
-});
-
-test('a named player goes home and straight back into a game', async ({
-  player,
-}) => {
-  const sam = await player('Sam', { named: false });
-  await sam.goto('/');
-  await sam.getByRole('link', { name: 'Let’s play' }).click();
-  await sam.getByRole('textbox', { name: 'Your name' }).fill('Sam');
-  await sam.getByRole('button', { name: 'Let’s play' }).click();
   await expect(
-    sam.getByRole('heading', { name: 'What are we playing?' }),
+    sam.getByRole('button', { name: `Playing as ${name}` }),
   ).toBeVisible();
-
-  await sam.getByRole('link', { name: 'Zumpo home' }).click();
-  await sam
-    .getByRole('region', { name: 'Draw & Guess' })
-    .getByRole('link', { name: 'Find a room' })
-    .click();
-  await expect(sam).toHaveURL(/\/games\/draw-and-guess$/);
-
-  await sam.getByRole('link', { name: 'Zumpo home' }).click();
-  await sam.getByRole('link', { name: 'Let’s play' }).click();
-  await expect(sam).toHaveURL(/\/games$/);
 });
 
-test('a player changes their name from the header', async ({ player }) => {
+test('a player changes their name in place, for good', async ({ player }) => {
   const sam = await player('Sam');
   await sam.goto('/games/minesweeper');
   await sam.getByRole('button', { name: 'Sam: your name' }).click();
-  await sam.getByRole('button', { name: 'Change name' }).click();
 
   const name = sam.getByRole('textbox', { name: 'Your name' });
   await expect(name).toHaveValue('Sam');
+  await expect(name).toBeFocused();
+  await name.fill(' ');
+  await sam.getByRole('button', { name: 'Save' }).click();
+  await expect(name).toHaveAttribute('aria-invalid', 'true');
+  await expect(name).toBeFocused();
+
+  await sam.getByRole('button', { name: 'Roll a name' }).click();
+  await expect(name).toHaveValue(/^\w+ \w+$/);
   await name.fill('Samira');
-  await sam.getByRole('button', { name: 'Let’s play' }).click();
+  await name.press('Enter');
+  await expect(sam.getByRole('dialog', { name: 'Your name' })).toBeHidden();
+  await expect(sam).toHaveURL(/\/games\/minesweeper$/);
+  await expect(
+    sam.getByRole('button', { name: 'Playing as Samira' }),
+  ).toBeVisible();
+
+  await sam.reload();
   await expect(
     sam.getByRole('button', { name: 'Samira: your name' }),
   ).toBeVisible();
+});
+
+test('a new name reaches everyone in the room at once', async ({ player }) => {
+  const maya = await player('Maya');
+  const leo = await player('Leo');
+  const link = await createRoom(maya, 'draw-and-guess');
+  await joinRoom(leo, link);
+  const players = maya.getByRole('region', { name: 'Players' });
+  await expect(players.getByText('Leo')).toBeVisible();
+
+  await leo.getByRole('button', { name: 'Leo: your name' }).click();
+  await leo.getByRole('textbox', { name: 'Your name' }).fill('Leon');
+  await leo.getByRole('button', { name: 'Save' }).click();
+  await expect(players.getByText('Leon')).toBeVisible();
+  await expect(maya.getByText('Leo is now Leon.')).toBeVisible();
+  await expect(leo.getByText('Leo is now Leon.')).toBeVisible();
+
+  // Somebody else's name, in any case, gets a number.
+  await leo.getByRole('button', { name: 'Leon: your name' }).click();
+  await leo.getByRole('textbox', { name: 'Your name' }).fill('maya');
+  await leo.getByRole('button', { name: 'Save' }).click();
+  await expect(players.getByText('maya 2')).toBeVisible();
+  await expect(maya.getByText('Leon is now maya 2.')).toBeVisible();
+  // Changing a name is not a way out of the room.
+  await expect(leo).toHaveURL(link);
+});
+
+test('a friend from an invite link is asked for a name they know', async ({
+  player,
+}) => {
+  const maya = await player('Maya');
+  const friend = await player('Friend', { named: false });
+  const link = await createRoom(maya, 'draw-and-guess');
+  await joinRoom(friend, link);
+  const name = await pickedName(friend);
+
+  const nudge = friend.getByText(
+    `You’re ${name} for now. Pick a name your friends will know.`,
+  );
+  await expect(nudge).toBeVisible();
+  await friend.getByRole('button', { name: 'Change name' }).click();
+  await friend.getByRole('textbox', { name: 'Your name' }).fill('Ava');
+  await friend.getByRole('button', { name: 'Save' }).click();
+  await expect(nudge).toBeHidden();
+  await expect(
+    maya.getByRole('region', { name: 'Players' }).getByText('Ava'),
+  ).toBeVisible();
+  await expect(maya.getByText(`${name} is now Ava.`)).toBeVisible();
 });
 
 test('a friend joins from the invite link', async ({ player }) => {

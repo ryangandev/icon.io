@@ -21,8 +21,13 @@ export type GameType =
 export interface PlayerOptions {
   /** A 390 px touch screen, as Figma's mobile frames. */
   phone?: boolean;
-  /** False for a first visit, before the player has chosen a name. */
+  /**
+   * False for a first visit, which starts with a name picked for them;
+   * otherwise they go by `name`, chosen and introduced long ago.
+   */
   named?: boolean;
+  /** `name` is the one picked for them, its hint seen, as after a first visit. */
+  picked?: boolean;
   /** Routes the player's connection through the test, for `dropConnection`. */
   droppable?: boolean;
   /** Device pixels per CSS pixel; Figma's previews are at 1. */
@@ -49,6 +54,7 @@ export const test = base.extend<Fixtures>({
     const errors: string[] = [];
     await use(async (name, options = {}) => {
       const { phone = false, named = true, droppable = false } = options;
+      const { picked = false } = options;
       const { scale = phone ? 2 : 1, server } = options;
       const context = await browser.newContext({
         ...(phone
@@ -66,11 +72,19 @@ export const test = base.extend<Fixtures>({
       });
       contexts.push(context);
       if (named) {
-        await context.addInitScript((given) => {
-          if (!sessionStorage.getItem('zumpo:name')) {
-            sessionStorage.setItem('zumpo:name', given);
-          }
-        }, name);
+        await context.addInitScript(
+          ([given, isPicked]) => {
+            // Only once: a name changed during the test outlives a reload.
+            if (!localStorage.getItem('zumpo:name')) {
+              localStorage.setItem(
+                'zumpo:name',
+                JSON.stringify({ name: given, picked: isPicked }),
+              );
+              localStorage.setItem('zumpo:name-hint', 'seen');
+            }
+          },
+          [name, picked] as const,
+        );
       }
       const page = await context.newPage();
       if (droppable) await wire(page);
