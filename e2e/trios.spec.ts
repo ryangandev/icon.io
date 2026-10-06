@@ -32,11 +32,13 @@ test('two players race for trios until the game is over', async ({
   await expect(turnOf(maya).getByText('Find a trio')).toBeVisible();
   await expect(maya.getByLabel(/, not a trio$/)).toHaveCount(0);
 
-  // Maya takes the first trio, and Leo sees who took it.
+  // Maya takes the first trio, and Leo sees who took it. The turn bar says so
+  // for half a second here, too short to catch under load; the table's last
+  // trio and the chat say so for good.
   await pickTrio(maya);
-  await expect(turnOf(maya).getByText('You found a trio!')).toBeVisible();
-  await expect(turnOf(leo).getByText('Maya found a trio')).toBeVisible();
   await expect(leo.getByText('1 of 10 trios')).toBeVisible();
+  await expect(leo.getByText('Last trio: Maya')).toBeVisible();
+  await expect(leo.getByText('Maya found a trio! (+1)')).toBeVisible();
 
   // Maya takes six in all and Leo four; the lockout is long over by then.
   for (let trio = 2; trio <= 10; trio++) {

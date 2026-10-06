@@ -114,6 +114,25 @@ describe('a Trios room', () => {
     expect(turn().getByText('Pick two more')).toBeInTheDocument();
   });
 
+  it('tells the finder the trio is theirs', async () => {
+    await renderSeated({
+      ...finding,
+      phase: 'taken',
+      phaseEndsInMs: 2_000,
+      found: 5,
+      lastTrio: {
+        playerId: ME,
+        username: 'Ryan',
+        cards: [63, 2, 46],
+        places: [1, 8, 11],
+      },
+    });
+    expect(turn().getByText('You found a trio!')).toBeInTheDocument();
+    expect(
+      screen.getByRole('img', { name: `${cardName(2)}, found, by you` }),
+    ).toBeInTheDocument();
+  });
+
   it('locks you out after three that are not a trio, and says why', async () => {
     await renderSeated({
       ...finding,
