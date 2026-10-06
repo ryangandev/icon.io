@@ -19,6 +19,7 @@ const CONTENT: Record<string, string> = {
   D13: 'The chat holds the whole game, more than Figma’s example of it.',
   D14: 'The chat holds the whole game, more than Figma’s example of it.',
   M04: 'The chat starts with the room’s join messages, which Figma leaves out.',
+  MO16: 'The chat holds the round so far, which depends on who drew first; Figma’s example has six lines of talk.',
   MO14: 'Figma shows round 19, whose shorter line fits beside "Pick a cell"; round 1’s wraps.',
   T07: 'The chat starts with the room’s join messages, which Figma leaves out.',
   T08: 'The chat starts with the room’s join messages, which Figma leaves out.',
