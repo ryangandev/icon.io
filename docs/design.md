@@ -63,6 +63,7 @@ Decisions from the design review rounds (their reports are in git history):
 - Brush colours are `color/brush/*` tokens, and the drawer's controls are one `Zumpo/Drawing toolbar`.
 - Minesweeper shows each round's outcome as `Zumpo/Pick result` rows: who picked how risky a cell, and what it paid.
   On a phone the row is its Phone layout, two lines with the name above the outcome tag and its detail, so a long tag such as Auto-picked never squeezes the name (MO13, MO19); Make 24's hand results are the same rows.
+- Daily Word's reveal lists every board as a `Zumpo/Race board` with its letters, best first; on a phone each is the Row layout, the name beside the board, one under another (DW15, DW16), since two Small boards do not fit across.
 - No disabled primary buttons: a request in flight is a status line, and an action you cannot take is not shown.
 - Dialogs (leave, invite) sit over the screen they come from, behind a scrim.
 - Example data follows one story with four players (Maya, Ryan, Leo, Sam), each with a fixed avatar colour, and every score is computed with the real formula.

@@ -1713,6 +1713,13 @@ test('a Daily Word game', async ({ player }) => {
   ).toBeVisible();
   await say(ryan, 'HOIST was so close');
   expect(await shotWhile(sam, 'DW09', results)).toBe(true);
+  expect(
+    await shotWhile(
+      leo,
+      'DW15',
+      leo.getByRole('heading', { name: 'Word 2 results' }),
+    ),
+  ).toBe(true);
 
   // Word 3, as Figma's boards have it, and the game is over.
   await wordOn(3);
@@ -1726,4 +1733,5 @@ test('a Daily Word game', async ({ player }) => {
   await say(sam, 'by nine points!');
   await say(leo, 'gg', true);
   await shot(maya, 'DW10');
+  await shot(leo, 'DW16');
 });
