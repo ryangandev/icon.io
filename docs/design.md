@@ -21,7 +21,7 @@ They are not copied here, so there is one place to change them.
 | 01 / Platform & shared flows         | `9:431`    | P01-P20 without P04, desktop                          |
 | 02 / Draw & Guess / complete flow    | `9:866`    | DL01-DL11 lobby, D01-D15 room, desktop                |
 | 03 / Minesweeper / complete flow     | `9:2526`   | ML01-ML10 lobby, M01-M16 room, MS01-MS05 solo         |
-| 04 / Mobile / 390px flow adaptations | `9:10060`  | MO01-MO18, the main flows at 390 px                   |
+| 04 / Mobile / 390px flow adaptations | `9:10060`  | MO01-MO18 without MO03, the main flows at 390 px      |
 | 05 / Make 24 / complete flow         | `40:60741` | T01-T05 solo, T06-T10 room, T11-T12 phone             |
 | 06 / Pairs / complete flow           | `40:60743` | PR01-PR04 solo, PR05-PR08 room, PR09-PR10 phone       |
 | 07 / Trios / complete flow           | `43:61070` | TS01-TS04 solo, TS05-TS10 room, TS11-TS12 phone       |
@@ -49,6 +49,13 @@ Three early Paper Pop concepts (`3:53`, `3:54`, `3:55`) sit above the flows for 
 
 Decisions from the design review rounds (their reports are in git history):
 
+- One page lists every game: the home page (P01, MO01) is also the games page, so there is no separate games hub and the hero has no buttons to it; Ryan chose this on 2026-10-05.
+  Each game is a `Zumpo/Game card`, a tile four across on a desktop and a row on a phone, whose icon is the game's signature piece.
+  Games are sorted by kind, not by player count, because six of the eight play both on your own and in a room and every game has rooms: Party, Puzzles and Spot & remember, each kind and its games in alphabetical order.
+  How a game can be played stays a fact on its card ("Solo or 2–8 players").
+  A row of `Zumpo/Filter chip`s above the games shows one kind; on a phone each kind also has a heading, because the list is long.
+  Past about sixteen games, a desktop should give each kind its own shelf too.
+  The hero's right side holds real game pieces, as the first Paper Pop concept drew paper objects there.
 - A game card says how it can be played and its buttons are the way in: Play solo first where the game has it, because one click starts it with nobody to wait for, then Find a room.
   You pick the game, then how to play it, so a game without a solo mode never shows an empty entry.
 - A game screen states the turn in one `Zumpo/Turn bar` above the canvas or board: what is happening, whose turn, and the server's countdown.

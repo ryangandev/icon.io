@@ -1,6 +1,18 @@
-.actions {
+.hero {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: var(--zumpo-space-12);
+  justify-content: space-between;
+  gap: var(--zumpo-space-24);
+}
+
+/* The heading keeps P01's 664 px column beside the art. */
+.hero > :first-child {
+  flex: 0 1 664px;
+}
+
+/* The art needs the page's full width beside the heading. */
+@media (max-width: 1279px) {
+  .art {
+    display: none;
+  }
 }

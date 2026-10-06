@@ -1,0 +1,48 @@
+.art {
+  position: relative;
+  flex: none;
+  width: 560px;
+  height: 300px;
+}
+
+.backdrop,
+.piece,
+.word,
+.coral,
+.lime {
+  position: absolute;
+  transform-origin: 0 0;
+}
+
+.piece {
+  display: flex;
+}
+
+.word {
+  display: flex;
+  gap: var(--zumpo-space-8);
+}
+
+.backdrop,
+.coral,
+.lime {
+  border-radius: var(--zumpo-radius-999);
+}
+
+.backdrop {
+  width: 280px;
+  height: 280px;
+  background: var(--zumpo-blue);
+}
+
+.coral {
+  width: 40px;
+  height: 40px;
+  background: var(--zumpo-coral);
+}
+
+.lime {
+  width: 22px;
+  height: 22px;
+  background: var(--zumpo-lime);
+}

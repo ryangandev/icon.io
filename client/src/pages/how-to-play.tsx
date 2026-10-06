@@ -1,6 +1,6 @@
 import { ButtonLink } from '../ui';
 import { cx } from '../ui/cx';
-import { GAMES, lobbyPath } from '../games/catalog';
+import { GAMES } from '../games/catalog';
 import { GameWaysIn } from '../games/game-card';
 import { Page } from '../shell/page';
 import { PageHeading } from '../shell/page-heading';
@@ -26,16 +26,12 @@ export default function HowToPlayPage() {
               {game.name}
             </h2>
             <p className={styles.rules}>{game.rules}</p>
-            <GameWaysIn
-              game={game}
-              to={lobbyPath(game.type)}
-              className={styles.action}
-            />
+            <GameWaysIn game={game} className={styles.action} />
           </section>
         ))}
       </div>
       <div>
-        <ButtonLink to="/games" variant="secondary" icon="back">
+        <ButtonLink to="/" variant="secondary" icon="back">
           Back to games
         </ButtonLink>
       </div>

@@ -214,9 +214,9 @@ Routes live in [`app.tsx`](../client/src/app.tsx), on a data router so a room ca
 
 | Path                         | Page                                                        |
 | ---------------------------- | ----------------------------------------------------------- |
-| `/`                          | Home                                                        |
+| `/`                          | Home, and every game; `?kind=` filters to one kind          |
 | `/how-to-play`               | Every game's rules                                          |
-| `/games`                     | The games                                                   |
+| `/games`                     | Redirects home, for old links                               |
 | `/games/:game`               | A game's lobby                                              |
 | `/games/:game/new`           | Making a room                                               |
 | `/games/:game/solo`          | The game on your own; `?board=` and the like pick the setup |

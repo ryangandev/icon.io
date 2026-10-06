@@ -16,9 +16,14 @@ const NOT_CAPTURED: Record<string, string> = {
  * a layout difference to fix or to note in docs/design.md.
  */
 const CONTENT: Record<string, string> = {
+  P02: 'Figma crops the home page to its top, around the Name menu; the capture is the whole page.',
+  P03: 'Figma crops the home page to its top, around the Name menu; the capture is the whole page.',
+  P13: 'Figma crops the home page to its top, around the Name menu; the capture is the whole page.',
+  MO02: 'Figma crops the home page to its top, around the Name menu; the capture is the whole page.',
   D13: 'The chat holds the whole game, more than Figma’s example of it.',
   D14: 'The chat holds the whole game, more than Figma’s example of it.',
   M04: 'The chat starts with the room’s join messages, which Figma leaves out.',
+  MO16: 'The chat holds the round so far, which depends on who drew first; Figma’s example has six lines of talk.',
   MO14: 'Figma shows round 19, whose shorter line fits beside "Pick a cell"; round 1’s wraps.',
   T07: 'The chat starts with the room’s join messages, which Figma leaves out.',
   T08: 'The chat starts with the room’s join messages, which Figma leaves out.',

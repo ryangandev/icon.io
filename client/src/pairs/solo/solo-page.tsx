@@ -144,7 +144,7 @@ function BoardPicker({
       actions={
         <>
           <Button type="submit">Start</Button>
-          <ButtonLink to="/games" variant="secondary" icon="back">
+          <ButtonLink to="/" variant="secondary" icon="back">
             Back to games
           </ButtonLink>
         </>

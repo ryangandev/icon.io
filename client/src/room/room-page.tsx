@@ -161,7 +161,7 @@ function ExpiredPage({ gameType }: { gameType: GameType }) {
           actions={
             <>
               <ButtonLink to={lobbyPath(gameType)}>Back to rooms</ButtonLink>
-              <ButtonLink to="/games" variant="secondary" icon="back">
+              <ButtonLink to="/" variant="secondary" icon="back">
                 Back to games
               </ButtonLink>
             </>

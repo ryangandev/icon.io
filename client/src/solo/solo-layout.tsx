@@ -38,7 +38,7 @@ export function SoloLayout({ gameType, phase, stage, side }: SoloLayoutProps) {
           room="On your own"
           phase={phase}
           onHowToPlay={() => setRules(true)}
-          onLeave={() => navigate('/games')}
+          onLeave={() => navigate('/')}
           leaveLabel="Leave"
           viewer={viewer}
           viewerMenu={viewerMenu}

@@ -33,16 +33,12 @@ beforeEach(() => {
 
 describe('Play solo', () => {
   it('is offered on the games that have it', async () => {
-    await renderApp('/games');
-    const minesweeper = screen.getByRole('heading', {
-      name: 'Minesweeper',
-    }).parentElement!;
+    await renderApp('/');
+    const minesweeper = screen.getByRole('region', { name: 'Minesweeper' });
     expect(
       within(minesweeper).getByRole('link', { name: 'Play solo' }),
     ).toHaveAttribute('href', '/games/minesweeper/solo');
-    const draw = screen.getByRole('heading', {
-      name: 'Draw & Guess',
-    }).parentElement!;
+    const draw = screen.getByRole('region', { name: 'Draw & Guess' });
     expect(within(draw).queryByRole('link', { name: 'Play solo' })).toBeNull();
   });
 
@@ -67,7 +63,7 @@ describe('Play solo', () => {
     ).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Leave' }));
-    expect(router.state.location.pathname).toBe('/games');
+    expect(router.state.location.pathname).toBe('/');
     await router.navigate('/games/minesweeper/solo');
     expect(
       await screen.findByRole('radio', { name: /Large · 30 × 16/ }),

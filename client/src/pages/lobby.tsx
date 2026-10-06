@@ -48,7 +48,7 @@ export default function LobbyPage({ gameType }: { gameType: GameType }) {
       ) : (
         <>
           <div className={styles.actions}>
-            <ButtonLink to="/games" variant="secondary" icon="back">
+            <ButtonLink to="/" variant="secondary" icon="back">
               Back to games
             </ButtonLink>
             {phone ? (
