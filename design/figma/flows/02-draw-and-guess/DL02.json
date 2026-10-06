@@ -49,8 +49,8 @@
                 "do": [
                   {
                     "nav": "navigate",
-                    "to": "40:22071",
-                    "toName": "P04 / Games hub"
+                    "to": "9:433",
+                    "toName": "P01 / Home"
                   }
                 ]
               }
@@ -173,8 +173,8 @@
                     "do": [
                       {
                         "nav": "navigate",
-                        "to": "40:22071",
-                        "toName": "P04 / Games hub",
+                        "to": "9:433",
+                        "toName": "P01 / Home",
                         "transition": "dissolve"
                       }
                     ]
@@ -189,8 +189,8 @@
                 "do": [
                   {
                     "nav": "navigate",
-                    "to": "40:22071",
-                    "toName": "P04 / Games hub",
+                    "to": "9:433",
+                    "toName": "P01 / Home",
                     "transition": "dissolve"
                   }
                 ]
@@ -198,25 +198,83 @@
             ]
           },
           {
-            "type": "INSTANCE",
-            "id": "9:962",
-            "name": "Action / Create a room",
-            "w": 138,
+            "type": "FRAME",
+            "id": "90:112589",
+            "name": "End",
+            "w": 320,
             "h": 48,
             "wSize": "hug",
-            "component": "Zumpo/Button",
-            "variant": {
-              "Style": "Primary",
-              "State": "Default"
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/12",
+              "align": "center",
+              "strokesIncluded": true
             },
-            "componentId": "4:15",
-            "props": {
-              "Label": "Create a room"
-            },
-            "overrides": [
+            "children": [
               {
-                "path": ".",
-                "height": 48,
+                "type": "INSTANCE",
+                "id": "90:112582",
+                "name": "Action / Playing as",
+                "w": 170,
+                "h": 48,
+                "wSize": "hug",
+                "component": "Zumpo/Button",
+                "variant": {
+                  "Style": "Quiet",
+                  "State": "Default"
+                },
+                "componentId": "4:21",
+                "props": {
+                  "Icon": "Zumpo/Icon / Glyph=edit",
+                  "Show icon": true,
+                  "Label": "Playing as Sam"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 48,
+                    "width": 170
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "9:962",
+                "name": "Action / Create a room",
+                "w": 138,
+                "h": 48,
+                "wSize": "hug",
+                "component": "Zumpo/Button",
+                "variant": {
+                  "Style": "Primary",
+                  "State": "Default"
+                },
+                "componentId": "4:15",
+                "props": {
+                  "Label": "Create a room"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 48,
+                    "reactions": [
+                      {
+                        "on": "on_click",
+                        "do": [
+                          {
+                            "nav": "navigate",
+                            "to": "9:1014",
+                            "toName": "DL04 / Create room · game-specific settings",
+                            "transition": "dissolve"
+                          }
+                        ]
+                      }
+                    ],
+                    "width": 138
+                  }
+                ],
                 "reactions": [
                   {
                     "on": "on_click",
@@ -228,20 +286,6 @@
                         "transition": "dissolve"
                       }
                     ]
-                  }
-                ],
-                "width": 138
-              }
-            ],
-            "reactions": [
-              {
-                "on": "on_click",
-                "do": [
-                  {
-                    "nav": "navigate",
-                    "to": "9:1014",
-                    "toName": "DL04 / Create room · game-specific settings",
-                    "transition": "dissolve"
                   }
                 ]
               }

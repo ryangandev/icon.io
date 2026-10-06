@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "exportedAt": "2026-10-05T20:09:32.672Z",
+  "exportedAt": "2026-10-06T06:10:38.723Z",
   "file": {
     "key": "pd5Hgp7zbT2cMqQNan35uY",
     "name": "Zumpo · Paper Pop flows",
@@ -14,12 +14,12 @@
   },
   "counts": {
     "flows": 167,
-    "componentFamilies": 47,
+    "componentFamilies": 50,
     "outsideComponents": 0,
-    "svgs": 83,
+    "svgs": 85,
     "seconds": 26,
-    "nodes": 10125,
-    "instances": 5594,
+    "nodes": 10017,
+    "instances": 5514,
     "grids": 66,
     "gridCells": 2207
   },
@@ -158,6 +158,20 @@
       "variants": 2
     },
     {
+      "name": "Zumpo/Filter chip",
+      "id": "90:107177",
+      "file": "components/filter-chip.json",
+      "preview": "previews/components/filter-chip.png",
+      "variants": 3
+    },
+    {
+      "name": "Zumpo/Game card",
+      "id": "90:105409",
+      "file": "components/game-card.json",
+      "preview": "previews/components/game-card.png",
+      "variants": 16
+    },
+    {
       "name": "Zumpo/Header",
       "id": "4:39",
       "file": "components/header.json",
@@ -176,7 +190,7 @@
       "id": "24:5086",
       "file": "components/icon.json",
       "preview": "previews/components/icon.png",
-      "variants": 23
+      "variants": 24
     },
     {
       "name": "Zumpo/Input",
@@ -225,6 +239,13 @@
       "id": "9:16089",
       "file": "components/mobile-tabs.json",
       "preview": "previews/components/mobile-tabs.png",
+      "variants": 3
+    },
+    {
+      "name": "Zumpo/Name menu",
+      "id": "90:110743",
+      "file": "components/name-menu.json",
+      "preview": "previews/components/name-menu.png",
       "variants": 3
     },
     {
@@ -418,11 +439,11 @@
       "flows": [
         {
           "code": "P01",
-          "title": "Public home",
+          "title": "Home",
           "id": "9:433",
           "size": [
             1440,
-            2237
+            1400
           ],
           "file": "flows/01-platform/P01.json",
           "preview": "previews/01-platform/P01.png",
@@ -430,11 +451,11 @@
         },
         {
           "code": "P02",
-          "title": "Choose your name",
-          "id": "9:479",
+          "title": "First visit · a name picked for you",
+          "id": "90:110744",
           "size": [
             1440,
-            839
+            640
           ],
           "file": "flows/01-platform/P02.json",
           "preview": "previews/01-platform/P02.png",
@@ -443,25 +464,13 @@
         {
           "code": "P03",
           "title": "Name validation",
-          "id": "9:512",
+          "id": "90:111133",
           "size": [
             1440,
-            837
+            640
           ],
           "file": "flows/01-platform/P03.json",
           "preview": "previews/01-platform/P03.png",
-          "isFlow": true
-        },
-        {
-          "code": "P04",
-          "title": "Games hub",
-          "id": "40:22071",
-          "size": [
-            1440,
-            1975
-          ],
-          "file": "flows/01-platform/P04.json",
-          "preview": "previews/01-platform/P04.png",
           "isFlow": true
         },
         {
@@ -562,11 +571,11 @@
         },
         {
           "code": "P13",
-          "title": "Session menu",
-          "id": "9:823",
+          "title": "Name menu",
+          "id": "90:111529",
           "size": [
             1440,
-            1975
+            640
           ],
           "file": "flows/01-platform/P13.json",
           "preview": "previews/01-platform/P13.png",
@@ -630,6 +639,30 @@
           ],
           "file": "flows/01-platform/P18.json",
           "preview": "previews/01-platform/P18.png",
+          "isFlow": true
+        },
+        {
+          "code": "P19",
+          "title": "Room · a name picked for you",
+          "id": "90:112599",
+          "size": [
+            1440,
+            716
+          ],
+          "file": "flows/01-platform/P19.json",
+          "preview": "previews/01-platform/P19.png",
+          "isFlow": true
+        },
+        {
+          "code": "P20",
+          "title": "Room · changing your name",
+          "id": "90:112887",
+          "size": [
+            1440,
+            746
+          ],
+          "file": "flows/01-platform/P20.json",
+          "preview": "previews/01-platform/P20.png",
           "isFlow": true
         }
       ],
@@ -1346,7 +1379,7 @@
           "id": "9:10062",
           "size": [
             390,
-            3800
+            2485
           ],
           "file": "flows/04-mobile/MO01.json",
           "preview": "previews/04-mobile/MO01.png",
@@ -1354,26 +1387,14 @@
         },
         {
           "code": "MO02",
-          "title": "Name gate",
-          "id": "9:10098",
+          "title": "Name menu",
+          "id": "90:112234",
           "size": [
             390,
-            608
+            560
           ],
           "file": "flows/04-mobile/MO02.json",
           "preview": "previews/04-mobile/MO02.png",
-          "isFlow": true
-        },
-        {
-          "code": "MO03",
-          "title": "Games hub",
-          "id": "40:22265",
-          "size": [
-            390,
-            3728
-          ],
-          "file": "flows/04-mobile/MO03.json",
-          "preview": "previews/04-mobile/MO03.png",
           "isFlow": true
         },
         {
@@ -1382,7 +1403,7 @@
           "id": "9:10156",
           "size": [
             390,
-            815
+            887
           ],
           "file": "flows/04-mobile/MO04.json",
           "preview": "previews/04-mobile/MO04.png",
@@ -1558,7 +1579,7 @@
         }
       ],
       "notes": [
-        "MO03 · 390px / responsive redesign Each card says how it can be played: Play solo starts at once, without a name; Find a room is the room flow.",
+        "MO01 · Home / rows under a heading per kind, with filters that scroll sideways. Every way in is one tap.",
         "MO17 · A second tab with the same player took over. This one waits until Use this tab takes the player back; the other tab then shows this card.",
         "MO18 · Zumpo restarted for an update, which closes every room. Everyone in the room sees this card in place of the game."
       ]
