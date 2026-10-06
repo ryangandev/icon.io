@@ -251,8 +251,13 @@ const raceStatus = (board: DailyWordBoard): string =>
         ? 'No guesses yet'
         : plural(board.rows.length, 'guess', 'guesses');
 
-/** DW09, DW10: a finished word's boards, with their letters, best first. */
+/**
+ * DW09, DW10: a finished word's boards, with their letters, best first. On a
+ * phone (DW15, DW16) they stand in a column, each a Row board, since two
+ * Small boards do not fit across.
+ */
 function RoundResults({ state }: { state: DailyWordRoomState }) {
+  const phone = useMediaQuery(PHONE);
   const result = state.lastRound;
   if (!result) return null;
   const round = state.isGameStarted
@@ -283,6 +288,7 @@ function RoundResults({ state }: { state: DailyWordRoomState }) {
               }
               state={board.status === 'found' ? 'found' : 'out'}
               board="small"
+              layout={phone ? 'row' : 'column'}
               rows={board.rows}
             />
           ))}
