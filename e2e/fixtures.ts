@@ -165,9 +165,27 @@ export async function joinRoom(page: Page, link: string): Promise<void> {
   await expect(page.getByRole('button', { name: 'Leave room' })).toBeVisible();
 }
 
-async function choose(page: Page, field: string, option: RegExp) {
-  await page.getByLabel(field).click();
+/**
+ * Picks `option` from the select menu labelled `field`, as a player does.
+ *
+ * The menu slides in, and a click on an option still moving is retried, each
+ * retry scrolling the page another way. The menu follows the scroll, and can
+ * move between the press and the release: the click lands on the backdrop,
+ * the menu closes, and the field keeps its old value. So the click waits for
+ * the menu to settle, and the field has to show the choice.
+ */
+export async function choose(page: Page, field: string, option: RegExp) {
+  const trigger = page.getByLabel(field);
+  await trigger.click();
+  await page.getByRole('listbox').evaluate(async (list) => {
+    const moving: Animation[] = [];
+    for (let node: Element | null = list; node; node = node.parentElement) {
+      moving.push(...node.getAnimations());
+    }
+    await Promise.all(moving.map((animation) => animation.finished));
+  });
   await page.getByRole('option', { name: option }).click();
+  await expect(trigger).toHaveText(option);
 }
 
 /** A droppable player's connection, routed through the test. */

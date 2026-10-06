@@ -2,6 +2,7 @@ import { mkdirSync } from 'node:fs';
 import path from 'node:path';
 import type { Locator, Page } from '@playwright/test';
 import {
+  choose,
   createRoom,
   dropConnection,
   duplicateTab,
@@ -956,8 +957,7 @@ test('a Pairs game', async ({ player }) => {
   const seats = [maya, sam, ryan, leo];
 
   await maya.goto('/games/pairs/new');
-  await maya.getByLabel('Board').click();
-  await maya.getByRole('option', { name: /^Large/ }).click();
+  await choose(maya, 'Board', /^Large/);
   await maya.getByLabel('Password (optional)').fill('otters');
   await shot(maya, 'PR08');
   const link = await createRoom(maya, 'pairs', { board: 'Large' });
