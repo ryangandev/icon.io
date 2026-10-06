@@ -28,7 +28,8 @@ test('two players play every card in order, together, without a word', async ({
   );
   const [low, high] = await deal(both);
   await play(high.page, high.card, [high.page]);
-  await expect(turn(low.page).getByText(/One life lost\.$/)).toBeVisible();
+  // The turn bar says so for a second here, too short to catch under load;
+  // the lives, the discard and the chat say so for good.
   await expect(low.page.getByRole('img', { name: '2 lives' })).toBeVisible();
   await expect(
     low.page.getByRole('img', { name: `${low.card}, discarded` }),
@@ -42,7 +43,7 @@ test('two players play every card in order, together, without a word', async ({
   ).toBeVisible();
 
   // Level 1 is cleared, not cleanly; the chat opens between levels.
-  await expect(turn(maya).getByText('Level cleared!')).toBeVisible();
+  await expect(maya.getByText('Level 1 cleared!')).toBeVisible();
   await expect(chat(maya)).toBeEnabled();
 
   // Every other level is played clean; the first wins the life back.
@@ -54,7 +55,9 @@ test('two players play every card in order, together, without a word', async ({
       await play(page, card, both);
     }
     if (level === 2) {
-      await expect(maya.getByText('Not one slip: a life back.')).toBeVisible();
+      await expect(
+        maya.getByText('Level 2 cleared without a slip: a life back!'),
+      ).toBeVisible();
       await expect(maya.getByRole('img', { name: '3 lives' })).toBeVisible();
     }
   }
@@ -107,6 +110,5 @@ test('a level waits for a player who dropped, and goes on when they are back', a
     timeout: 20_000,
   });
   for (const { page, card } of held) await play(page, card, [maya, leo]);
-  await expect(turn.getByText('Level cleared!')).toBeVisible();
-  await expect(turn.getByText('Not one slip.')).toBeVisible();
+  await expect(maya.getByText('Level 1 cleared without a slip!')).toBeVisible();
 });
