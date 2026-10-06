@@ -96,6 +96,23 @@ describe('a name', () => {
     ]);
   });
 
+  it('makes a picked name theirs when saved unchanged, and tells the seats', async () => {
+    const user = userEvent.setup();
+    const { fake } = await renderApp('/games', {
+      name: 'Sleepy Otter',
+      picked: true,
+    });
+    await user.click(avatar());
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    expect(JSON.parse(localStorage.getItem('zumpo:name')!)).toEqual({
+      name: 'Sleepy Otter',
+      picked: false,
+    });
+    expect(fake.sentArgs('player:rename')).toEqual([
+      ['Sleepy Otter', expect.any(Function)],
+    ]);
+  });
+
   it('rolls another random name to save', async () => {
     const user = userEvent.setup();
     await renderApp('/games');

@@ -51,12 +51,20 @@ export function Page({
   );
 }
 
-/** The viewer's avatar and the name menu it opens. */
-export function useViewer({ hint = false } = {}): {
+/**
+ * The viewer's avatar and the name menu it opens. `seatName` is the name a
+ * room gave them, numbered when somebody else there has theirs, so the avatar
+ * matches their row.
+ */
+export function useViewer({
+  hint = false,
+  seatName,
+}: { hint?: boolean; seatName?: string } = {}): {
   viewer: Viewer;
   viewerMenu: ViewerMenu;
 } {
-  const { name } = useSession();
+  const session = useSession();
+  const name = seatName ?? session.name;
   const viewerMenu = useViewerMenu({ hint });
   return {
     viewer: {

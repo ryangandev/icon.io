@@ -16,7 +16,7 @@ import { randomName } from '../players/random-name';
  * the menu's popup, so it opens with the current name every time.
  */
 function NameForm({ onSaved }: { onSaved: () => void }) {
-  const { name, namePicked, setName } = useSession();
+  const { name, setName } = useSession();
   const [value, setValue] = useState(name);
   const [error, setError] = useState<string>();
 
@@ -34,8 +34,9 @@ function NameForm({ onSaved }: { onSaved: () => void }) {
           setError('Enter a name with at least one visible character.');
           return false;
         }
-        // Saving the picked name unchanged still makes it theirs.
-        if (chosen !== name || namePicked) setName(chosen);
+        // Always sent: the picked name saved unchanged becomes theirs, and a
+        // seat still under an older name, such as another tab's, catches up.
+        setName(chosen);
         onSaved();
         return true;
       }}
