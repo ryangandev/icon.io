@@ -33,7 +33,9 @@ export interface PickResultProps {
 /**
  * Zumpo/Pick result: one player's pick in the round summary under the board.
  * It never names the cell; the board's markers show where. Make 24 lists a
- * hand's solves with it too.
+ * hand's solves with it too. Desktop is one line; on a phone (the Phone
+ * layout) the name stands above the tag and its detail, so a long tag such
+ * as "Auto-picked" never squeezes the name.
  */
 export function PickResult({
   name,
@@ -49,14 +51,16 @@ export function PickResult({
     <li className={cx(styles.row, outcome === 'mine' && styles.mine)}>
       <Avatar initials={initials} tone={tone} />
       <span className={styles.name}>{name}</span>
-      <Tag {...tag}>{label ?? outcomeLabel}</Tag>
-      <span className={styles.detail}>
-        {detail.split(' · ').map((part, index) => (
-          <span key={index}>
-            {index > 0 && ' · '}
-            <span className={styles.part}>{part}</span>
-          </span>
-        ))}
+      <span className={styles.outcome}>
+        <Tag {...tag}>{label ?? outcomeLabel}</Tag>
+        <span className={styles.detail}>
+          {detail.split(' · ').map((part, index) => (
+            <span key={index}>
+              {index > 0 && ' · '}
+              <span className={styles.part}>{part}</span>
+            </span>
+          ))}
+        </span>
       </span>
       <span className={styles.points}>
         {points > 0 ? `+${points}` : points < 0 ? `−${-points}` : '0'}
