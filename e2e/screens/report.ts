@@ -25,6 +25,7 @@ const CONTENT: Record<string, string> = {
   M04: 'The chat starts with the room’s join messages, which Figma leaves out.',
   MO16: 'The chat holds the round so far, which depends on who drew first; Figma’s example has six lines of talk.',
   MO14: 'Figma shows round 19, whose shorter line fits beside "Pick a cell"; round 1’s wraps.',
+  MO19: 'Figma shows round 4, a mine hit and an auto-pick at 0% risk; the test’s round 2 shares one cell among four, whose longer detail wraps under the Auto-picked tag.',
   T07: 'The chat starts with the room’s join messages, which Figma leaves out.',
   T08: 'The chat starts with the room’s join messages, which Figma leaves out.',
   PR05: 'The chat starts with the room’s join messages, which Figma leaves out.',
