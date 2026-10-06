@@ -144,6 +144,7 @@ Code differs from Figma on purpose in a few places:
 
 - The countdown is up to 7 px wider: DM Sans has no tabular figures, so each digit has a fixed cell and the clock keeps its width as it ticks.
 - The chat input's text is 16 px on touch screens, where Figma's 12 px would make iOS zoom the page on focus.
+- The chat's send button and the brush swatches keep Figma's drawn size, but take a tap from an invisible area 44 px tall around them, the size a thumb needs; on a phone the swatches sit 8 px apart, so there the area grows only up and down.
 - Hover and focus never change a control's size; Figma's hover variants are wider only because strokes count in its auto layout.
 - The chat hugs its messages and scrolls past 358 px of them, so a full chat ends level with the canvas; Figma's empty chats (D01, M01) keep the 354 px of the component's sample messages, which code does not reserve.
 - Figma rounds auto-width text boxes up to whole pixels, so a hugging component can be up to a pixel narrower in code.

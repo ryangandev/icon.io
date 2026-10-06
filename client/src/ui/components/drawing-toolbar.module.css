@@ -19,6 +19,7 @@
 }
 
 .swatch {
+  position: relative;
   flex: none;
   width: 28px;
   height: 28px;
@@ -28,6 +29,16 @@
   border-radius: 50%;
   box-shadow: inset 0 0 0 1px var(--zumpo-line);
   cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* A swatch keeps Figma's size, but a tap lands anywhere in the 44 px around
+   it, the size a thumb needs; on a phone the swatches sit 8 px apart, so the
+   area grows only up and down there. */
+.swatch::before {
+  content: '';
+  position: absolute;
+  inset: calc(-1 * var(--zumpo-space-8));
 }
 
 /* The chosen colour: a 2 px paper ring inside a 2 px ink ring. */
@@ -125,6 +136,10 @@
   .swatch {
     width: 22px;
     height: 22px;
+  }
+
+  .swatch::before {
+    inset: calc(-1 * var(--zumpo-space-12)) calc(-1 * var(--zumpo-space-4));
   }
 
   .divider,
