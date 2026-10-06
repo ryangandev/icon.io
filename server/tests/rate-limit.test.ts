@@ -7,7 +7,6 @@ import {
   joinRoom,
   playToDrawingPhase,
   request,
-  settle,
   startGame,
   startTestServer,
   waitForDrawState,
@@ -120,7 +119,12 @@ describe('a throttled socket', () => {
 
     const relayed = collect(guesser, 'dg:canvas:clear');
     for (let i = 0; i < 200; i++) drawer.emit('dg:draw:clear', roomId);
-    await settle(300);
+    // A socket's events are handled in order and sent in order, so once the
+    // drawer's next request is answered every clear has been handled, and once
+    // the guesser's is, every relay has arrived. A fixed wait was too short
+    // when the suite ran under load.
+    await request(drawer, 'room:sync', roomId);
+    await request(guesser, 'room:sync', roomId);
 
     expect(relayed.length).toBeGreaterThan(0);
     expect(relayed.length).toBeLessThanOrEqual(RULES.canvasCommand.burst + 2);
