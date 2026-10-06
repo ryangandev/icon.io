@@ -31,7 +31,7 @@ const FLOW_SECTIONS = [
 ];
 const SHARED_SECTION = { id: '9:198', name: 'Shared pieces' };
 const EXPECTED_FLOWS = 167;
-const EXPECTED_FAMILIES = 47;
+const EXPECTED_FAMILIES = 50;
 
 const FLOW_CODE = /^([A-Z]{1,2}\d{2})\b/;
 const PATH_TYPES = ['VECTOR', 'BOOLEAN_OPERATION', 'STAR', 'POLYGON', 'LINE'];

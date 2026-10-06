@@ -120,8 +120,7 @@ function cupProps(
     name: seat.name,
     initials: initialsOf(seat.name),
     tone: toneOf(seat.name),
-    // On your own without a name you are just "You", which needs no tag.
-    you: seat.id === props.youId && seat.name !== 'You',
+    you: seat.id === props.youId,
     size,
     dice: diceOf(seat, props.dicePerPlayer, props.reveal),
     ...line,

@@ -1,6 +1,12 @@
 import { asFailure, failure, invalidRequest } from '../../models/error.js';
 import { roomStatus } from './seats.js';
-import { joinRoomRequest, parseArgs, roomIdOnly } from '../validation.js';
+import {
+  joinRoomRequest,
+  parseArgs,
+  renameRequest,
+  roomIdOnly,
+} from '../validation.js';
+import { nameInRoom, renamePlayer } from './names.js';
 import type { RoomMembership } from './membership.js';
 import type { RoomRegistry } from './registry.js';
 import {
@@ -11,7 +17,7 @@ import {
 } from './emit.js';
 
 /**
- * Joining, leaving, re-syncing and starting: the four things every room does
+ * Joining, leaving, re-syncing, starting and renaming: what every room does
  * regardless of what is played in it.
  *
  * Each request is answered through its acknowledgement, success or the reason
@@ -33,7 +39,7 @@ const roomEventsHandler = (
       reply(invalidRequest());
       return;
     }
-    const [roomId, username, password] = validated;
+    const [roomId, wanted, password] = validated;
 
     // Identity comes from the connection, never from the payload: the client
     // proved who it was during the handshake, and this is the result.
@@ -63,10 +69,15 @@ const roomEventsHandler = (
       }
 
       membership.leaveAllBut(playerId, roomId);
-      room.playerList[playerId] = { username, points: 0, isConnected: true };
+      room.playerList[playerId] = {
+        username: nameInRoom(room, playerId, wanted),
+        points: 0,
+        isConnected: true,
+      };
     }
-    // A seat already held keeps the name it was taken with: standings,
-    // ownership and the chat all know the player by it.
+    // A seat already held keeps its name: only `player:rename` changes it, and
+    // tells the room when it does.
+    const username = room.playerList[playerId].username;
 
     socket.join(roomId);
     reply({ ok: true });
@@ -162,6 +173,40 @@ const roomEventsHandler = (
     } catch (error) {
       reply(asFailure(error));
       return;
+    }
+    reply({ ok: true });
+  });
+
+  /**
+   * A new name for every seat the player holds, which is one room at most.
+   * Each room shows it at once and says so in its chat; the lobby too when the
+   * player owns the room, because its table names the host. A player with no
+   * seat has nothing to update here: the next room they join is told the new
+   * name then.
+   */
+  onClientRequest(socket, 'player:rename', (args, reply) => {
+    const validated = parseArgs(renameRequest, args, 'player:rename');
+    if (!validated) {
+      reply(invalidRequest());
+      return;
+    }
+    const [wanted] = validated;
+    const playerId = socket.data.playerId;
+
+    for (const room of registry.roomsHeldBy(playerId)) {
+      const before = room.playerList[playerId].username;
+      const username = nameInRoom(room, playerId, wanted);
+      if (username === before) continue;
+      renamePlayer(room, playerId, username);
+      registry.lookup.announce(
+        room.roomId,
+        'system',
+        `${before} is now ${username}.`,
+      );
+      registry.lookup.emitState(room);
+      if (room.owner.playerId === playerId) {
+        registry.lookup.emitLobby(room.gameType);
+      }
     }
     reply({ ok: true });
   });

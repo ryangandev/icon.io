@@ -17,40 +17,122 @@ const lobbyRoom: MinesweeperLobbyRoomInfo = {
   difficulty: 'Small',
 };
 
-describe('choosing a name', () => {
-  it('is asked for before any game page', async () => {
-    const { router } = await renderApp('/games/minesweeper', { name: '' });
-    expect(router.state.location.pathname).toBe('/name');
-    expect(router.state.location.search).toBe('?next=%2Fgames%2Fminesweeper');
+/** The viewer's avatar in the header, which opens the name menu. */
+const avatar = () => screen.getByRole('button', { name: /: your name$/ });
+
+describe('a name', () => {
+  it('is picked on a first visit, so any page opens at once', async () => {
+    const { router } = await renderApp('/games/minesweeper', {
+      firstVisit: true,
+    });
+    expect(router.state.location.pathname).toBe('/games/minesweeper');
+    const stored = JSON.parse(localStorage.getItem('zumpo:name')!) as {
+      name: string;
+      picked: boolean;
+    };
+    expect(stored.picked).toBe(true);
+    expect(avatar()).toHaveAccessibleName(`${stored.name}: your name`);
+    // The word about it waits for the front door.
+    expect(screen.queryByText(/We picked a name/)).toBeNull();
   });
 
-  it('needs a visible character, then continues where the player was going', async () => {
+  it('is introduced once on the front door', async () => {
     const user = userEvent.setup();
-    const { router } = await renderApp('/name?next=%2Fgames%2Fminesweeper', {
-      name: '',
-    });
+    const first = await renderApp('/', { firstVisit: true });
+    const { name } = JSON.parse(localStorage.getItem('zumpo:name')!) as {
+      name: string;
+    };
+    expect(
+      screen.getByRole('dialog', { name: `You’re ${name}.` }),
+    ).toHaveTextContent(
+      'We picked a name so you can jump right in. Change it here anytime.',
+    );
 
-    await user.type(screen.getByLabelText('Your name'), '   ');
-    await user.click(screen.getByRole('button', { name: 'Let’s play' }));
+    await user.click(screen.getByRole('button', { name: 'Got it' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    first.unmount();
+
+    await renderApp('/', { name, picked: true });
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  it('can be changed from the introduction', async () => {
+    const user = userEvent.setup();
+    await renderApp('/', { firstVisit: true });
+    await user.click(screen.getByRole('button', { name: 'Change name' }));
+    expect(screen.getByRole('dialog', { name: 'Your name' })).toBeVisible();
+    expect(screen.getByRole('textbox', { name: 'Your name' })).toHaveFocus();
+    expect(localStorage.getItem('zumpo:name-hint')).toBe('seen');
+  });
+
+  it('changes in place, from the avatar on any page', async () => {
+    const user = userEvent.setup();
+    const { fake, router } = await renderApp('/games');
+    await user.click(avatar());
+
+    const field = screen.getByRole('textbox', { name: 'Your name' });
+    expect(field).toHaveValue('Ryan');
+    expect(field).toHaveFocus();
+    await user.clear(field);
+    await user.type(field, '   ');
+    await user.click(screen.getByRole('button', { name: 'Save' }));
     expect(
       screen.getByText('Enter a name with at least one visible character.'),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText('Your name')).toHaveFocus();
+    expect(field).toHaveFocus();
 
-    await user.type(screen.getByLabelText('Your name'), ' Ryan ');
-    await user.click(screen.getByRole('button', { name: 'Let’s play' }));
-    expect(router.state.location.pathname).toBe('/games/minesweeper');
-    expect(sessionStorage.getItem('zumpo:name')).toBe('Ryan');
+    await user.clear(field);
+    await user.type(field, ' Grace ');
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(avatar()).toHaveAccessibleName('Grace: your name');
+    expect(router.state.location.pathname).toBe('/games');
+    expect(JSON.parse(localStorage.getItem('zumpo:name')!)).toEqual({
+      name: 'Grace',
+      picked: false,
+    });
+    expect(fake.sentArgs('player:rename')).toEqual([
+      ['Grace', expect.any(Function)],
+    ]);
   });
 
-  it('never continues to another site', async () => {
+  it('makes a picked name theirs when saved unchanged, and tells the seats', async () => {
     const user = userEvent.setup();
-    const { router } = await renderApp('/name?next=%2F%2Fevil.example', {
-      name: '',
+    const { fake } = await renderApp('/games', {
+      name: 'Sleepy Otter',
+      picked: true,
     });
-    await user.type(screen.getByLabelText('Your name'), 'Ryan');
-    await user.click(screen.getByRole('button', { name: 'Let’s play' }));
-    expect(router.state.location.pathname).toBe('/games');
+    await user.click(avatar());
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    expect(JSON.parse(localStorage.getItem('zumpo:name')!)).toEqual({
+      name: 'Sleepy Otter',
+      picked: false,
+    });
+    expect(fake.sentArgs('player:rename')).toEqual([
+      ['Sleepy Otter', expect.any(Function)],
+    ]);
+  });
+
+  it('rolls another random name to save', async () => {
+    const user = userEvent.setup();
+    await renderApp('/games');
+    await user.click(avatar());
+    await user.click(screen.getByRole('button', { name: 'Roll a name' }));
+    const field = screen.getByRole<HTMLInputElement>('textbox', {
+      name: 'Your name',
+    });
+    expect(field.value).toMatch(/^\w+ \w+$/);
+    expect(field.value).not.toBe('Ryan');
+    expect(field).toHaveFocus();
+  });
+
+  it('is shown in a lobby, and changed from there', async () => {
+    const user = userEvent.setup();
+    await renderApp('/games/minesweeper');
+    await user.click(screen.getByRole('button', { name: 'Playing as Ryan' }));
+    expect(screen.getByRole('textbox', { name: 'Your name' })).toHaveValue(
+      'Ryan',
+    );
   });
 });
 
@@ -87,7 +169,7 @@ const rules = (name: string) => within(screen.getByRole('region', { name }));
 
 describe('how to play', () => {
   it('offers each game its ways in beside its rules', async () => {
-    await renderApp('/how-to-play', { name: '' });
+    await renderApp('/how-to-play');
 
     expect(
       rules('Draw & Guess').getByRole('link', { name: 'Find a room' }),
@@ -214,7 +296,7 @@ describe('making a Hush room', () => {
   });
 
   it('offers only rooms, beside its rules', async () => {
-    await renderApp('/how-to-play', { name: '' });
+    await renderApp('/how-to-play');
     expect(
       rules('Hush').getByRole('link', { name: 'Find a room' }),
     ).toHaveAttribute('href', '/games/hush');
@@ -244,29 +326,6 @@ describe('on a phone', () => {
     expect(
       screen.getByText(/little games, alone or together\./),
     ).toBeInTheDocument();
-  });
-
-  it('asks for a name straight on the page', async () => {
-    onPhone();
-    await renderApp('/name', { name: '' });
-    expect(
-      screen.getByRole('heading', {
-        level: 1,
-        name: 'What should we call you?',
-      }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('A little step before the fun.'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('Up to 18 characters. No signup.'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('form', { name: 'What should we call you?' }),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByText('Your name will appear in rooms, chat, and scores.'),
-    ).toBeNull();
   });
 
   it('counts the rooms in the heading', async () => {

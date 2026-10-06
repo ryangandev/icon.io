@@ -46,10 +46,10 @@ describe('Play solo', () => {
     expect(within(draw).queryByRole('link', { name: 'Play solo' })).toBeNull();
   });
 
-  it('needs no name, and remembers the board', async () => {
+  it('plays on a first visit, and remembers the board', async () => {
     const user = userEvent.setup();
     const { router } = await renderApp('/games/minesweeper/solo', {
-      name: '',
+      firstVisit: true,
     });
     expect(router.state.location.pathname).toBe('/games/minesweeper/solo');
     expect(screen.getByText('Pick a board.')).toBeInTheDocument();
@@ -66,9 +66,8 @@ describe('Play solo', () => {
       turn().getByText('Your first click is always safe'),
     ).toBeInTheDocument();
 
-    // Leave goes home without a name: the games page would ask for one.
     await user.click(screen.getByRole('button', { name: 'Leave' }));
-    expect(router.state.location.pathname).toBe('/');
+    expect(router.state.location.pathname).toBe('/games');
     await router.navigate('/games/minesweeper/solo');
     expect(
       await screen.findByRole('radio', { name: /Large · 30 × 16/ }),
@@ -80,7 +79,7 @@ describe('a board on your own', () => {
   it('opens, flags and chords', async () => {
     const user = userEvent.setup();
     smallBoard(7);
-    await renderApp('/games/minesweeper/solo?board=Small', { name: '' });
+    await renderApp('/games/minesweeper/solo?board=Small');
 
     await user.click(cell(5, 5));
     // The first click always opens an area; an empty cell has nothing to do.
@@ -112,7 +111,7 @@ describe('a board on your own', () => {
   it('is lost on a mine, and starts again', async () => {
     const user = userEvent.setup();
     const layout = smallBoard(7);
-    await renderApp('/games/minesweeper/solo?board=Small', { name: '' });
+    await renderApp('/games/minesweeper/solo?board=Small');
     await user.click(cell(5, 5));
 
     const mine = layout.indexOf(true);
@@ -134,7 +133,7 @@ describe('a board on your own', () => {
   it('is won by opening every safe cell, and keeps the best', async () => {
     const user = userEvent.setup();
     const layout = smallBoard(7);
-    await renderApp('/games/minesweeper/solo?board=Small', { name: '' });
+    await renderApp('/games/minesweeper/solo?board=Small');
     await user.click(cell(5, 5));
     layout.forEach((isMine, index) => {
       const target = screen.queryByRole('button', {
@@ -165,7 +164,7 @@ describe('a board on your own', () => {
     onPhone();
     const user = userEvent.setup();
     smallBoard(7);
-    await renderApp('/games/minesweeper/solo?board=Small', { name: '' });
+    await renderApp('/games/minesweeper/solo?board=Small');
     await user.click(cell(5, 5));
     expect(turn().getByText('Long-press to flag')).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Flag' }));

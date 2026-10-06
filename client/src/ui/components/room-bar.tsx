@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { cx } from '../cx';
 import { Button } from './button';
-import { ViewerAvatar, type HeaderMenu, type Viewer } from './header';
+import { ViewerAvatar, type Viewer, type ViewerMenu } from './header';
 import { Tag, type TagTone } from './tag';
 import { Wordmark } from './wordmark';
 import styles from './room-bar.module.css';
@@ -23,7 +23,7 @@ export interface RoomBarProps {
   /** "Leave room"; a game on your own has no room, so it says "Leave". */
   leaveLabel?: string;
   viewer?: Viewer;
-  viewerMenu?: HeaderMenu;
+  viewerMenu?: ViewerMenu;
   className?: string;
 }
 

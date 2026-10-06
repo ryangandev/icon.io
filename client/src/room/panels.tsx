@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react';
 import type { GameSummary } from '../../../shared/wire-types';
-import { Button, ButtonLink, PlayerRow } from '../ui';
+import { Button, ButtonLink, Notice, PlayerRow } from '../ui';
 import { gameInfo, lobbyPath, scoreOf } from '../games/catalog';
 import { initialsOf, toneOf } from '../players/avatar';
+import { useSession } from '../net/session';
+import { NameMenuButton } from '../shell/name-menu';
 import { StatusLine } from '../shell/status-line';
 import { listNames, ordinal, placesOf } from './players';
 import { useRoomContext } from './room-context';
@@ -12,10 +14,13 @@ import styles from './panels.module.css';
 export function RoomPanel({
   title,
   children,
+  notice,
   actions,
 }: {
   title: ReactNode;
   children: ReactNode;
+  /** Something for the viewer alone, between the text and the actions. */
+  notice?: ReactNode;
   actions?: ReactNode;
 }) {
   return (
@@ -24,6 +29,7 @@ export function RoomPanel({
         {title}
       </h2>
       <p className={styles.body}>{children}</p>
+      {notice && <Notice className={styles.notice}>{notice}</Notice>}
       {actions && <div className={styles.actions}>{actions}</div>}
     </section>
   );
@@ -40,6 +46,22 @@ function InviteButton({ primary = false }: { primary?: boolean }) {
       Invite friends
     </Button>
   );
+}
+
+/**
+ * While the viewer still has the name picked for them, which a friend who came
+ * from an invite link likely does: who the room thinks they are, and the way
+ * to say who they really are (P19).
+ */
+function usePickedName(): { notice?: string; change?: ReactNode } {
+  const { namePicked } = useSession();
+  const { state, playerId } = useRoomContext();
+  const seat = state.playerList[playerId];
+  if (!namePicked || !seat) return {};
+  return {
+    notice: `You’re ${seat.username} for now. Pick a name your friends will know.`,
+    change: <NameMenuButton>Change name</NameMenuButton>,
+  };
 }
 
 /**
@@ -65,12 +87,19 @@ export function WaitingPanel({
   const { state, isHost } = useRoomContext();
   const game = gameInfo(state.gameType);
   const count = Object.keys(state.playerList).length;
+  const picked = usePickedName();
 
   if (!isHost) {
     return (
       <RoomPanel
         title={`Waiting for ${state.owner.username} to start.`}
-        actions={<InviteButton />}
+        notice={picked.notice}
+        actions={
+          <>
+            <InviteButton />
+            {picked.change}
+          </>
+        }
       >
         {guestSetup} Only the host can start the game.
       </RoomPanel>
@@ -78,7 +107,16 @@ export function WaitingPanel({
   }
   if (count < 2) {
     return (
-      <RoomPanel title={aloneTitle} actions={<InviteButton primary />}>
+      <RoomPanel
+        title={aloneTitle}
+        notice={picked.notice}
+        actions={
+          <>
+            <InviteButton primary />
+            {picked.change}
+          </>
+        }
+      >
         {game.name} needs at least 2 players. Share the room so a friend can
         join, and the game can start.
       </RoomPanel>
@@ -87,6 +125,7 @@ export function WaitingPanel({
   return (
     <RoomPanel
       title="Everyone’s here?"
+      notice={picked.notice}
       actions={
         starting ? (
           <StatusLine>Starting the game…</StatusLine>
@@ -94,6 +133,7 @@ export function WaitingPanel({
           <>
             <Button onClick={onStart}>Start game</Button>
             <InviteButton />
+            {picked.change}
           </>
         )
       }

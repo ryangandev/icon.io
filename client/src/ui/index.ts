@@ -52,9 +52,9 @@ export {
 export {
   Header,
   type HeaderLink,
-  type HeaderMenu,
   type HeaderProps,
   type Viewer,
+  type ViewerMenu,
 } from './components/header';
 export {
   HushCard,
@@ -86,6 +86,15 @@ export {
   type MobileTab,
   type MobileTabsProps,
 } from './components/mobile-tabs';
+export {
+  NameMenu,
+  NameMenuForm,
+  NameMenuHint,
+  NAME_MAX_LENGTH,
+  type NameMenuFormProps,
+  type NameMenuHintProps,
+  type NameMenuProps,
+} from './components/name-menu';
 export { Notice, type NoticeProps, type NoticeTone } from './components/notice';
 export {
   NumberCard,

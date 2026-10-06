@@ -44,9 +44,7 @@ const pause = (ms: number) => act(() => vi.advanceTimersByTime(ms));
 
 /** Starts the run `SEED` deals. */
 async function startRun() {
-  const view = await renderApp(`/games/make-24/solo?seed=${SEED}`, {
-    name: '',
-  });
+  const view = await renderApp(`/games/make-24/solo?seed=${SEED}`);
   await user.click(screen.getByRole('button', { name: 'Start' }));
   return view;
 }
@@ -62,8 +60,10 @@ describe('Make 24 on your own', () => {
     ).toHaveAttribute('href', '/games/make-24/solo');
   });
 
-  it('needs no name, and starts when asked', async () => {
-    const { router } = await renderApp('/games/make-24/solo', { name: '' });
+  it('starts on a first visit when asked', async () => {
+    const { router } = await renderApp('/games/make-24/solo', {
+      firstVisit: true,
+    });
     expect(router.state.location.pathname).toBe('/games/make-24/solo');
     expect(screen.getByText('Ten hands, one clock.')).toBeInTheDocument();
     expect(screen.getByText('Not yet')).toBeInTheDocument();
@@ -76,7 +76,7 @@ describe('Make 24 on your own', () => {
   });
 
   it('plays a challenge’s own hands', async () => {
-    await renderApp(`/games/make-24/solo?seed=${SEED}`, { name: '' });
+    await renderApp(`/games/make-24/solo?seed=${SEED}`);
     expect(
       screen.getByText(/^A friend sent you these ten hands\./),
     ).toBeInTheDocument();

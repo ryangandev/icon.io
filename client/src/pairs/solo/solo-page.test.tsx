@@ -48,9 +48,7 @@ async function flipCard(index: number) {
 
 /** Starts the challenge deck `SEED` deals on a Small board. */
 async function startChallenge() {
-  const view = await renderApp(`/games/pairs/solo?board=Small&seed=${SEED}`, {
-    name: '',
-  });
+  const view = await renderApp(`/games/pairs/solo?board=Small&seed=${SEED}`);
   await user.click(screen.getByRole('button', { name: 'Start' }));
   return view;
 }
@@ -64,8 +62,10 @@ describe('Pairs on your own', () => {
     ).toHaveAttribute('href', '/games/pairs/solo');
   });
 
-  it('needs no name, and offers both boards', async () => {
-    const { router } = await renderApp('/games/pairs/solo', { name: '' });
+  it('offers both boards on a first visit', async () => {
+    const { router } = await renderApp('/games/pairs/solo', {
+      firstVisit: true,
+    });
     expect(router.state.location.pathname).toBe('/games/pairs/solo');
     expect(screen.getByText('Pick a board.')).toBeInTheDocument();
     expect(
@@ -81,9 +81,7 @@ describe('Pairs on your own', () => {
   });
 
   it('plays a challenge’s own deck, on its own board', async () => {
-    await renderApp(`/games/pairs/solo?board=Small&seed=${SEED}`, {
-      name: '',
-    });
+    await renderApp(`/games/pairs/solo?board=Small&seed=${SEED}`);
     expect(
       screen.getByText(/^A friend sent you this deck\./),
     ).toBeInTheDocument();

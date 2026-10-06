@@ -58,7 +58,8 @@ Each game registers a module implementing `GameModule` in [`libs/rooms/types.ts`
 | `seats.ts`                  | Seats taken and the lobby status, worked out rather than stored         |
 | `timers.ts`                 | Timers kept per room, which go when their room does                     |
 | `lobby-events.ts`           | List rooms, create a room and seat its creator                          |
-| `room-events.ts`            | Join, leave, sync and start, answered through acknowledgements          |
+| `room-events.ts`            | Join, leave, sync, start and rename, answered through acknowledgements  |
+| `names.ts`                  | The name a player goes by in a room, and renaming them everywhere       |
 | `chat-events.ts`            | Talking in a room, after the game has had its say                       |
 | `emit.ts`                   | Typed emit helpers, and `onClientRequest` for acknowledged requests     |
 
@@ -78,6 +79,11 @@ A module reaches the layer through the `GameContext` it is handed: the typed Soc
 
 A room's chat is a log on the room (`Room.chat`), not a stream: every message gets the next id in that room, the last 100 are kept, and a page that syncs is sent them as `chat:history`.
 A player's message is posted under the name on their seat; anything else is an announcement with a `kind` (`system`, `alert` or `success`) the client styles it by.
+
+A player's name is written wherever a room records them: the seat, the owner, and any `{ playerId, username }` record in a module's state, such as the last game's standings.
+`player:rename` changes it in every one of those at once through `renamePlayer` ([`names.ts`](../server/libs/rooms/names.ts)), which walks the room's plain data, so a module that keeps a player's name in that shape needs nothing else to follow a rename.
+The chat is left alone: what was said was said under the old name, and the room is told who became whom.
+Two players in a room never go by one name, whatever its case: joining or renaming as a name somebody else has adds the first free number ("Sam 2"), shortening the name to keep it within 18 characters.
 
 Two boundaries had to be drawn for the layer to be an abstraction rather than Draw & Guess wearing a hat:
 
@@ -119,7 +125,7 @@ The server decides everything a player could gain by lying about.
 - **A snapshot is built per viewer.** `toRoomState(room, viewerId)` leaves out whatever that player may not know (the word for a guesser, another player's pick), and only the registry sends `room:state`, one player at a time.
   A module changes its state and calls `rooms.emitState(room)`; it never emits a snapshot itself, because a room-wide emit would send everybody the same view.
 - **A game on your own is the exception, and runs in the browser.**
-  With nobody else in it there is nothing to gain by lying, so solo play needs no name, opens no socket, and keeps its bests in the device's `localStorage` ([`solo/`](../client/src/solo/)).
+  With nobody else in it there is nothing to gain by lying, so solo play opens no socket, and keeps its bests in the device's `localStorage` ([`solo/`](../client/src/solo/)).
   Its rules are still one copy: anything a room plays too, such as board sizes or a deal, comes from `shared/*.ts`.
 - **Every inbound event is validated** with zod ([`validation.ts`](../server/libs/validation.ts)) before it reaches game state, and **rate-limited** before that ([`rate-limit.ts`](../server/libs/rate-limit.ts)): one token bucket per kind of event, per socket, because a drawing phase is a stream of coordinates and joining a room is a click.
 - **What a client can make the server hold is bounded, not only how fast.** A packet may be at most 16 KB (socket.io's default is 1 MB, parsed in full before zod sees it), one player holds one seat, and the server holds at most 500 rooms; past that, `room:create` is refused with `tooManyRooms` ([`app.ts`](../server/app.ts)).
@@ -133,6 +139,8 @@ A client presents the identity it holds, or `null`, in the Socket.IO handshake (
 Identity is part of the handshake rather than a first event because the client flushes whatever it sent while offline the moment it connects, before its own `connect` handler runs; as an event, a quick first click reached the server before the identity did and was refused.
 Each id is paired with a secret token only its owner receives; without it any player could take any seat, because every id in a room is broadcast to everyone in it.
 The client keeps both in `sessionStorage`: per tab, surviving a reload, which is exactly the lifetime a seat should have.
+The name is the browser's rather than the tab's: it lives in `localStorage`, with whether it is still the one picked on the first visit, so a new tab or a visit next week starts with it.
+Two tabs are still two players; they begin with the same name, and a room numbers the second.
 There are no accounts: this is a way to be the same player across a refresh, not the same person across a visit.
 
 Which player a connection speaks for is settled in the handshake and kept on the socket (`socket.data.playerId`), so every handler reads it from there and never from a payload.
@@ -207,7 +215,6 @@ Routes live in [`app.tsx`](../client/src/app.tsx), on a data router so a room ca
 | Path                         | Page                                                        |
 | ---------------------------- | ----------------------------------------------------------- |
 | `/`                          | Home                                                        |
-| `/name?next=`                | Choosing a name, then on to `next` (only a path in the app) |
 | `/how-to-play`               | Every game's rules                                          |
 | `/games`                     | The games                                                   |
 | `/games/:game`               | A game's lobby                                              |
@@ -215,7 +222,7 @@ Routes live in [`app.tsx`](../client/src/app.tsx), on a data router so a room ca
 | `/games/:game/solo`          | The game on your own; `?board=` and the like pick the setup |
 | `/games/:game/rooms/:roomId` | A room, and the link a host shares                          |
 
-Everything under `/games` but a game on your own needs a name and sends a player without one to `/name` first, then back.
+Every page opens without asking for anything first: a first visit is given a random name, changed in place from the Name menu ([design](design.md#names)).
 The room URL carries the game so that a page which cannot reach the room (a password, a room that moved on) still knows which game it belongs to; a link with the wrong game in it redirects to the right one.
 
 ### Talking to the server
@@ -223,7 +230,8 @@ The room URL carries the game so that a page which cannot reach the room (a pass
 [`net/`](../client/src/net/) is the only code that touches the socket, typed on the wire contract's two event maps:
 
 - **`session.tsx`** owns the one socket.
-  The first page that needs the server connects it; every handshake presents the stored identity, the session goes online at `session:ready`, and the identity and the chosen name are kept in `sessionStorage` (see [identity](#identity-and-reconnection)).
+  The first page that needs the server connects it; every handshake presents the stored identity, the session goes online at `session:ready`, and the identity is kept in `sessionStorage` and the name in `localStorage` (see [identity](#identity-and-reconnection)).
+  `setName` saves a new name and sends `player:rename`, which Socket.IO holds until it is back online if it is not.
   Its status (`connecting`, `online`, `reconnecting`, `failed`) is what pages show, and `connection` numbers the live connection anew on every `session:ready` (null while offline), so anything the server keeps per connection is set up again by an effect keyed on it.
 - **`use-lobby.ts`** subscribes to one game's rooms while online.
 - **`use-room.ts`** takes a seat: `room:sync` first, then `room:join` when the server says this player has no seat, then the password page if the room has one.
@@ -232,7 +240,7 @@ The room URL carries the game so that a page which cannot reach the room (a pass
 - Requests use `emitWithAck` with a 10 second timeout, and a request that times out is treated as a failure the page can show.
 
 A room page renders the latest `room:state` and nothing else: the client keeps no game state, advances no phase, and counts each clock down from the snapshot that carried it.
-Leaving is routed through the navigation blocker, whatever started it (the Leave room button, the wordmark, Change name, the browser's back button), and it sends `room:leave` before the page goes.
+Leaving is routed through the navigation blocker, whatever started it (the Leave room button, the wordmark, the browser's back button), and it sends `room:leave` before the page goes.
 Only Leave room between games goes at once; it marks its navigation with `state.via`, and anything else asks first, mid-game or not ([design](design.md#the-room-bar)).
 Leaving is never done in an effect's cleanup, where React's development double-mount would give the seat up on arrival.
 

@@ -79,7 +79,9 @@ export function RoomLayout({
   const phone = useMediaQuery(PHONE);
   const [view, setView] = useState<View>('board');
   const [rules, setRules] = useState(false);
-  const { viewer, viewerMenu } = useViewer();
+  const { viewer, viewerMenu } = useViewer({
+    seatName: state.playerList[room.playerId]?.username,
+  });
 
   const input = {
     onSend: room.sendChat,

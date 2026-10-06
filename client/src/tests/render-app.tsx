@@ -7,17 +7,31 @@ import { FakeSocket } from './fake-socket';
 
 /**
  * The whole app at `path`, talking to a fake server, with a player who has
- * already chosen a name unless `name` says otherwise.
+ * chosen `name` themselves. `picked` makes it the name picked for them, with
+ * the hint about it already seen; `firstVisit` stores nothing at all.
  */
 export async function renderApp(
   path: string,
   {
     name = 'Ryan',
+    picked = false,
+    firstVisit = false,
     fake = new FakeSocket(),
-  }: { name?: string; fake?: FakeSocket } = {},
+  }: {
+    name?: string;
+    picked?: boolean;
+    firstVisit?: boolean;
+    fake?: FakeSocket;
+  } = {},
 ) {
   sessionStorage.clear();
-  if (name) sessionStorage.setItem('zumpo:name', name);
+  if (firstVisit) {
+    localStorage.removeItem('zumpo:name');
+    localStorage.removeItem('zumpo:name-hint');
+  } else {
+    localStorage.setItem('zumpo:name', JSON.stringify({ name, picked }));
+    localStorage.setItem('zumpo:name-hint', 'seen');
+  }
   fake.session = { playerId: ME, token: 't1', reconnectGraceMs: 30_000 };
   const router = createMemoryRouter(routes, { initialEntries: [path] });
   const view = render(
