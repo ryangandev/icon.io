@@ -193,8 +193,11 @@ export async function joinRoom(page: Page, link: string): Promise<void> {
  */
 export async function choose(page: Page, field: string, option: RegExp) {
   const trigger = page.getByLabel(field);
+  const menu = page.getByRole('listbox');
+  // The menu picked from last slides out after the pick.
+  await expect(menu).toHaveCount(0);
   await trigger.click();
-  await page.getByRole('listbox').evaluate(async (list) => {
+  await menu.evaluate(async (list) => {
     const moving: Animation[] = [];
     for (let node: Element | null = list; node; node = node.parentElement) {
       moving.push(...node.getAnimations());
