@@ -16,18 +16,22 @@ test('two players pick until the board is done', async ({ player }) => {
     leo.getByRole('region', { name: 'Players' }).getByText('Locked in'),
   ).toBeVisible();
   await leo.getByRole('button', { name: HIDDEN }).last().click();
-  await expect(maya.getByText(/Round 1 results/).first()).toBeVisible();
 
+  // The reveal between rounds lasts half a second here, too short to catch
+  // under load, so the rounds are told apart by their numbers.
   const over = maya.getByText('Game over', { exact: true });
-  while (!(await over.isVisible())) {
-    const open = maya.getByText('Pick a cell').or(over);
+  for (let round = 2; ; round++) {
+    const open = maya
+      .getByRole('region', { name: 'Turn' })
+      .getByText(`Round ${round}`, { exact: true })
+      .or(over);
     await expect(open).toBeVisible();
     if (await over.isVisible()) break;
+    await expect(maya.getByText('Pick a cell')).toBeVisible();
     // Both always pick, so no round waits out its clock; the last cell left
     // can take both picks, which split its points.
     await maya.getByRole('button', { name: HIDDEN }).first().click();
     await leo.getByRole('button', { name: HIDDEN }).last().click();
-    await expect(maya.getByText('Pick a cell')).toBeHidden();
   }
 
   // The winner is celebrated with a burst of confetti that clears itself.
