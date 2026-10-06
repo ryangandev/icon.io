@@ -14,7 +14,6 @@ import {
 } from '../../ui';
 import { gameInfo } from '../../games/catalog';
 import { plural } from '../../games/plural';
-import { useSession } from '../../net/session';
 import { FormPage } from '../../shell/form-page';
 import { PHONE, useMediaQuery } from '../../shell/use-media-query';
 import {
@@ -57,7 +56,7 @@ function boardLabel(difficulty: MinesweeperDifficulty): string {
 /**
  * MS01-MS05: Minesweeper on your own. Without a board in the address it asks
  * for one; `?board=Medium` plays one. It all runs here: nothing reaches the
- * server, and there is no name to ask for.
+ * server.
  */
 export function MinesweeperSolo() {
   const [params, setParams] = useSearchParams();
@@ -92,7 +91,6 @@ function BoardPicker({
   onStart: (difficulty: MinesweeperDifficulty) => void;
 }) {
   const game = gameInfo('minesweeper');
-  const { name } = useSession();
   const [difficulty, setDifficulty] = useState<MinesweeperDifficulty>(() => {
     const last = readStored(LAST_BOARD);
     return isDifficulty(last) ? last : 'Small';
@@ -117,11 +115,7 @@ function BoardPicker({
       actions={
         <>
           <Button type="submit">Start</Button>
-          <ButtonLink
-            to={name ? '/games' : '/'}
-            variant="secondary"
-            icon="back"
-          >
+          <ButtonLink to="/games" variant="secondary" icon="back">
             Back to games
           </ButtonLink>
         </>

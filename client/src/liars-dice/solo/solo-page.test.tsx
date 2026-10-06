@@ -46,8 +46,10 @@ describe('Liar’s Dice on your own', () => {
     ).toHaveAttribute('href', '/games/liars-dice/solo');
   });
 
-  it('needs no name, and starts three bots with three dice each', async () => {
-    const { router } = await renderApp('/games/liars-dice/solo', { name: '' });
+  it('starts at once on a first visit, with three bots and three dice each', async () => {
+    const { router } = await renderApp('/games/liars-dice/solo', {
+      firstVisit: true,
+    });
     expect(router.state.location.pathname).toBe('/games/liars-dice/solo');
     expect(screen.getByText('Pick a table.')).toBeInTheDocument();
     expect(screen.getByRole('combobox', { name: 'Bots' })).toHaveTextContent(
@@ -60,7 +62,10 @@ describe('Liar’s Dice on your own', () => {
       name: /^(Pip|Juno|Otto|Remy|Wren)$/,
     });
     expect(cups).toHaveLength(3);
-    const yours = within(screen.getByRole('region', { name: 'You' }));
+    const { name } = JSON.parse(localStorage.getItem('zumpo:name')!) as {
+      name: string;
+    };
+    const yours = within(screen.getByRole('region', { name: `${name} (you)` }));
     expect(yours.getAllByRole('img', { name: /^[1-6]$/ })).toHaveLength(3);
     for (const cup of cups) {
       expect(
@@ -71,7 +76,7 @@ describe('Liar’s Dice on your own', () => {
 
   it('offers the last table picked first', async () => {
     writePicks({ bots: 5, dicePerPlayer: 5 });
-    await renderApp('/games/liars-dice/solo', { name: '' });
+    await renderApp('/games/liars-dice/solo');
     expect(screen.getByRole('combobox', { name: 'Bots' })).toHaveTextContent(
       '5 bots',
     );
@@ -106,7 +111,7 @@ describe('Liar’s Dice on your own', () => {
   });
 
   it('waits for you, and says what a bot bid', async () => {
-    await renderApp('/games/liars-dice/solo', { name: '' });
+    await renderApp('/games/liars-dice/solo');
     await user.click(screen.getByRole('button', { name: 'Start' }));
     for (let step = 0; step < 6; step++) {
       if (screen.queryByRole('group', { name: 'Your bid' })) break;

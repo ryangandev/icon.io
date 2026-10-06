@@ -37,6 +37,31 @@ describe('a Minesweeper room', () => {
     expect(fake.requests.at(-1)).toEqual({ event: 'game:start', args: ['r1'] });
   });
 
+  it('asks a player still on a picked name for one their friends know', async () => {
+    const user = userEvent.setup();
+    const { fake } = await renderSeated(minesweeperState(), { picked: true });
+
+    expect(
+      screen.getByText(
+        'You’re Ryan for now. Pick a name your friends will know.',
+      ),
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Change name' }));
+    const field = screen.getByRole('textbox', { name: 'Your name' });
+    await user.clear(field);
+    await user.type(field, 'Grace{Enter}');
+    expect(fake.sentArgs('player:rename')).toEqual([
+      ['Grace', expect.any(Function)],
+    ]);
+    expect(screen.queryByText(/Pick a name your friends will know/)).toBeNull();
+  });
+
+  it('says nothing about a name the player chose', async () => {
+    await renderSeated(minesweeperState());
+    expect(screen.queryByText(/Pick a name your friends will know/)).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Change name' })).toBeNull();
+  });
+
   it('locks in one pick per round', async () => {
     const user = userEvent.setup();
     const { fake, update } = await renderSeated(picking);

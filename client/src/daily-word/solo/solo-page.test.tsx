@@ -42,7 +42,7 @@ async function guess(word: string) {
 
 describe('Daily Word on your own', () => {
   it('is today’s word, found and counted on this device', async () => {
-    await renderApp('/games/daily-word/solo', { name: '' });
+    await renderApp('/games/daily-word/solo');
     expect(await turn().findByText('Find the word')).toBeInTheDocument();
     expect(screen.getByText('Word #1')).toBeInTheDocument();
 
@@ -69,7 +69,7 @@ describe('Daily Word on your own', () => {
   });
 
   it('turns away a word it does not know, without spending a guess', async () => {
-    await renderApp('/games/daily-word/solo', { name: '' });
+    await renderApp('/games/daily-word/solo');
     await turn().findByText('Find the word');
     await guess('xxxxx');
     expect(screen.getByText('Not in the word list')).toBeInTheDocument();
@@ -77,7 +77,7 @@ describe('Daily Word on your own', () => {
   });
 
   it('remembers a finished day, and moves on at midnight', async () => {
-    const view = await renderApp('/games/daily-word/solo', { name: '' });
+    const view = await renderApp('/games/daily-word/solo');
     await turn().findByText('Find the word');
     for (const word of misses(TODAY, 6)) await guess(word);
     expect(
@@ -85,7 +85,7 @@ describe('Daily Word on your own', () => {
     ).toBeInTheDocument();
     view.unmount();
 
-    await renderApp('/games/daily-word/solo', { name: '' });
+    await renderApp('/games/daily-word/solo');
     expect(
       await screen.findByRole('heading', { name: 'Not this time.' }),
     ).toBeInTheDocument();
@@ -97,7 +97,7 @@ describe('Daily Word on your own', () => {
 
   it('plays a challenge link’s word, then offers today’s', async () => {
     const answer = practiceAnswer(SEED);
-    await renderApp(`/games/daily-word/solo?seed=${SEED}`, { name: '' });
+    await renderApp(`/games/daily-word/solo?seed=${SEED}`);
     expect(await screen.findByText('A friend’s word')).toBeInTheDocument();
     await guess(answer);
 
@@ -116,7 +116,7 @@ describe('Daily Word on your own', () => {
 
   it('puts the cards under the board on a phone', async () => {
     onPhone();
-    await renderApp('/games/daily-word/solo', { name: '' });
+    await renderApp('/games/daily-word/solo');
     await turn().findByText('Find the word');
     await guess(TODAY);
     const board = screen.getByRole('group', { name: 'Your guesses' });

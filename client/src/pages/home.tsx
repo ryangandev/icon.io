@@ -14,7 +14,7 @@ export default function HomePage() {
   // A phone keeps one way in and shorter copy, so the games show sooner.
   const phone = useMediaQuery(PHONE);
   return (
-    <Page>
+    <Page nameHint>
       <PageHeading
         eyebrow={phone ? 'A little play' : 'A little play goes a long way'}
         title={'A little play.\nA lot of fun.'}

@@ -26,8 +26,12 @@ function Retry() {
 }
 
 function Naming() {
-  const { name, setName } = useSession();
-  return <button onClick={() => setName('Ryan')}>name: {name}</button>;
+  const { name, namePicked, setName } = useSession();
+  return (
+    <button onClick={() => setName(' Ryan ')}>
+      name: {name} {namePicked ? 'picked' : 'chosen'}
+    </button>
+  );
 }
 
 function setup(children = <Status />) {
@@ -39,7 +43,10 @@ function setup(children = <Status />) {
 }
 
 describe('the session', () => {
-  beforeEach(() => sessionStorage.clear());
+  beforeEach(() => {
+    sessionStorage.clear();
+    localStorage.clear();
+  });
 
   it('still connects after a development double mount', () => {
     const fake = new FakeSocket();
@@ -141,10 +148,30 @@ describe('the session', () => {
     expect(fake.active).toBe(true);
   });
 
-  it('remembers the chosen name for this tab', async () => {
+  it('picks a name on a first visit and keeps it for the next', () => {
+    const first = render(
+      <SessionProvider socket={new FakeSocket().asSocket()}>
+        <Naming />
+      </SessionProvider>,
+    );
+    const picked = screen.getByRole('button').textContent;
+    expect(picked).toMatch(/^name: \w+ \w+ picked$/);
+    first.unmount();
+
     setup(<Naming />);
+    expect(screen.getByRole('button')).toHaveTextContent(picked!);
+  });
+
+  it('remembers a chosen name for this browser and renames every seat', async () => {
+    const fake = setup(<Naming />);
     await userEvent.click(screen.getByRole('button'));
-    expect(screen.getByText('name: Ryan')).toBeInTheDocument();
-    expect(sessionStorage.getItem('zumpo:name')).toBe('Ryan');
+    expect(screen.getByText('name: Ryan chosen')).toBeInTheDocument();
+    expect(JSON.parse(localStorage.getItem('zumpo:name')!)).toEqual({
+      name: 'Ryan',
+      picked: false,
+    });
+    expect(fake.sentArgs('player:rename')).toEqual([
+      ['Ryan', expect.any(Function)],
+    ]);
   });
 });

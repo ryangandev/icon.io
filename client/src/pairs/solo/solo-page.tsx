@@ -15,7 +15,6 @@ import {
 } from '../../ui';
 import { gameInfo, soloPath } from '../../games/catalog';
 import { plural } from '../../games/plural';
-import { useSession } from '../../net/session';
 import { FormPage } from '../../shell/form-page';
 import { PHONE, useMediaQuery } from '../../shell/use-media-query';
 import {
@@ -63,7 +62,7 @@ const turnsLabel = (best: PairsBest) => plural(best.turns, 'turn');
 /**
  * PR01-PR04, PR09: Pairs on your own. `?board=Large&seed=k3f9x2` is a
  * challenge: the same deck somebody else played. It all runs here: nothing
- * reaches the server, and there is no name to ask for.
+ * reaches the server.
  */
 export function PairsSolo() {
   const [params, setParams] = useSearchParams();
@@ -119,7 +118,6 @@ function BoardPicker({
   onStart: (board: PairsBoard) => void;
 }) {
   const game = gameInfo('pairs');
-  const { name } = useSession();
   const [board, setBoard] = useState<PairsBoard>(() => {
     if (challenge) return challenge;
     const last = readStored(LAST_BOARD);
@@ -146,11 +144,7 @@ function BoardPicker({
       actions={
         <>
           <Button type="submit">Start</Button>
-          <ButtonLink
-            to={name ? '/games' : '/'}
-            variant="secondary"
-            icon="back"
-          >
+          <ButtonLink to="/games" variant="secondary" icon="back">
             Back to games
           </ButtonLink>
         </>
