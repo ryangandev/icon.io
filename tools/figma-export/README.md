@@ -1,7 +1,7 @@
 # Figma export plugin
 
 A local, read-only Figma development plugin that snapshots the Zumpo design file into one zip: tokens, the Shared pieces components, every flow screen as compact JSON, every vector drawing as SVG, and optional PNG previews.
-It exists because the Figma MCP and REST API limits on a Starter plan are too low to read 165 screens.
+It exists because the Figma MCP and REST API limits on a Starter plan are too low to read 167 screens.
 Why the output looks the way it does, and where it goes, is in [docs/design.md](../../docs/design.md#figma-export).
 
 ## Load it once

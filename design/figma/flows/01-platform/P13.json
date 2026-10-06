@@ -1,21 +1,20 @@
 {
   "format": 1,
   "code": "P13",
-  "title": "Session menu",
-  "id": "9:823",
+  "title": "Name menu",
+  "id": "90:111529",
   "section": "01 / Platform & shared flows",
   "reviewNotes": [
-    "P13 · Named session / logout returns home"
+    "P13 · Name menu / change it in place from the avatar on any page, or from Playing as in a lobby. Roll a name fills in a new random one; Save applies it everywhere, every seat included, and this browser remembers it."
   ],
   "frame": {
     "type": "FRAME",
-    "id": "9:823",
-    "name": "P13 / Session menu",
+    "id": "90:111529",
+    "name": "P13 / Name menu",
     "x": 40,
     "y": 5391,
     "w": 1440,
-    "h": 1975,
-    "hSize": "hug",
+    "h": 640,
     "fills": [
       "$Zumpo · UI:color/cream"
     ],
@@ -34,7 +33,7 @@
     "children": [
       {
         "type": "INSTANCE",
-        "id": "9:824",
+        "id": "90:111530",
         "name": "Zumpo/Header",
         "w": 1312,
         "h": 104,
@@ -50,7 +49,7 @@
                   {
                     "nav": "navigate",
                     "to": "9:433",
-                    "toName": "P01 / Public home"
+                    "toName": "P01 / Home"
                   }
                 ]
               }
@@ -61,2259 +60,279 @@
             "componentProperties": {
               "Initials": "MA",
               "Tone": "Peach"
-            }
+            },
+            "visible": true
           }
         ]
       },
       {
         "type": "FRAME",
-        "id": "9:834",
-        "name": "Page heading",
+        "id": "90:111531",
+        "name": "Hero",
         "w": 1312,
-        "h": 121,
-        "hSize": "hug",
-        "layout": {
-          "mode": "column",
-          "gap": "$Zumpo · UI:space/12",
-          "strokesIncluded": true
-        },
-        "children": [
-          {
-            "type": "INSTANCE",
-            "id": "24:6590",
-            "name": "Tag / WELCOME BACK, MAYA",
-            "w": 155,
-            "h": 30,
-            "wSize": "hug",
-            "hSize": "hug",
-            "component": "Zumpo/Tag",
-            "variant": {
-              "Tone": "Sand"
-            },
-            "componentId": "24:6511",
-            "props": {
-              "Label": "WELCOME BACK, MAYA"
-            },
-            "overrides": [
-              {
-                "path": ".",
-                "height": 30,
-                "width": 155
-              }
-            ]
-          },
-          {
-            "type": "TEXT",
-            "id": "9:837",
-            "w": 1312,
-            "h": 42,
-            "hSize": "hug",
-            "text": "What are we playing?",
-            "textStyle": "Zumpo/Title",
-            "fills": [
-              "$Zumpo · UI:color/ink"
-            ],
-            "autoResize": "height"
-          },
-          {
-            "type": "TEXT",
-            "id": "9:838",
-            "w": 1312,
-            "h": 25,
-            "hSize": "hug",
-            "text": "Eight little games. Play on your own, or bring some good company.",
-            "textStyle": "Zumpo/Body",
-            "fills": [
-              "$Zumpo · UI:color/muted"
-            ],
-            "autoResize": "height"
-          }
-        ]
-      },
-      {
-        "type": "FRAME",
-        "id": "9:839",
-        "name": "Games",
-        "w": 1312,
-        "h": 1604,
+        "h": 300,
+        "wSize": "fill",
         "hSize": "hug",
         "layout": {
           "mode": "row",
-          "gap": "$Zumpo · UI:space/24",
-          "wrap": true,
-          "crossGap": 24,
+          "justify": "space_between",
           "align": "center",
           "strokesIncluded": true
         },
         "children": [
           {
             "type": "FRAME",
-            "id": "79:104262",
-            "name": "Draw & Guess",
-            "w": 644,
-            "h": 383,
+            "id": "90:111532",
+            "name": "Page heading",
+            "w": 664,
+            "h": 235,
             "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/peach"
-            ],
-            "strokes": [
-              "$Zumpo · UI:color/line"
-            ],
-            "strokeAlign": "inside",
-            "radius": "$Zumpo · UI:radius/24",
             "layout": {
               "mode": "column",
-              "gap": "$Zumpo · UI:space/16",
-              "pad": "$Zumpo · UI:space/32",
+              "gap": "$Zumpo · UI:space/12",
               "strokesIncluded": true
             },
             "children": [
               {
-                "type": "TEXT",
-                "id": "79:104263",
-                "w": 580,
-                "h": 30,
-                "hSize": "hug",
-                "text": "Draw & Guess",
-                "textStyle": "Zumpo/Heading",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "TEXT",
-                "id": "79:104264",
-                "w": 580,
-                "h": 25,
-                "hSize": "hug",
-                "text": "One draws. Everyone else tries to get there first.",
-                "textStyle": "Zumpo/Body",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
-              {
                 "type": "INSTANCE",
-                "id": "79:104265",
-                "name": "Tag / 2–8 players · 1–4 rounds",
-                "w": 162,
+                "id": "90:111533",
+                "name": "Tag / A LITTLE PLAY GOES A LONG WAY",
+                "w": 214,
                 "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
                 "component": "Zumpo/Tag",
                 "variant": {
-                  "Tone": "Paper"
+                  "Tone": "Sand"
                 },
-                "componentId": "24:6531",
+                "componentId": "24:6511",
                 "props": {
-                  "Label": "2–8 players · 1–4 rounds"
+                  "Label": "A LITTLE PLAY GOES A LONG WAY"
                 },
                 "overrides": [
                   {
                     "path": ".",
                     "height": 30,
-                    "width": 162
+                    "width": 214
                   }
                 ]
               },
               {
-                "type": "FRAME",
-                "id": "79:104266",
-                "name": "Game artwork / Draw & Guess",
-                "w": 580,
-                "h": 120,
+                "type": "TEXT",
+                "id": "90:111534",
+                "name": "A little play. A lot of fun.",
+                "w": 1312,
+                "h": 156,
+                "hSize": "hug",
+                "text": "A little play.\nA lot of fun.",
+                "textStyle": "Zumpo/Hero",
                 "fills": [
-                  "$Zumpo · UI:color/paper"
+                  "$Zumpo · UI:color/ink"
                 ],
-                "radius": "$Zumpo · UI:radius/16",
-                "clip": true,
-                "layout": {
-                  "mode": "row",
-                  "gap": 16,
-                  "justify": "center",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "INSTANCE",
-                    "id": "79:104267",
-                    "name": "Drawing / Turtle",
-                    "w": 153.6,
-                    "h": 102.4,
-                    "component": "Sample / Turtle drawing",
-                    "variant": {
-                      "Stage": "Done"
-                    },
-                    "componentId": "27:17566"
-                  },
-                  {
-                    "type": "INSTANCE",
-                    "id": "79:104268",
-                    "name": "Tag / turtle",
-                    "w": 76,
-                    "h": 30,
-                    "wSize": "hug",
-                    "hSize": "hug",
-                    "component": "Zumpo/Tag",
-                    "variant": {
-                      "Tone": "Lime"
-                    },
-                    "componentId": "24:6521",
-                    "props": {
-                      "Show icon": true,
-                      "Icon": "Zumpo/Icon / Glyph=check",
-                      "Label": "turtle"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 30,
-                        "width": 76
-                      }
-                    ]
-                  }
-                ]
+                "autoResize": "height"
               },
               {
-                "type": "INSTANCE",
-                "id": "79:104269",
-                "name": "Action / Find a room",
-                "w": 121,
-                "h": 48,
-                "wSize": "hug",
-                "component": "Zumpo/Button",
-                "variant": {
-                  "Style": "Primary",
-                  "State": "Default"
-                },
-                "componentId": "4:15",
-                "props": {
-                  "Label": "Find a room"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 48,
-                    "reactions": [
-                      {
-                        "on": "on_click",
-                        "do": [
-                          {
-                            "nav": "navigate",
-                            "to": "9:868",
-                            "toName": "DL01 / Room list · open, private, full and playing states",
-                            "transition": "dissolve"
-                          }
-                        ]
-                      }
-                    ],
-                    "width": 121
-                  }
+                "type": "TEXT",
+                "id": "90:111535",
+                "w": 1312,
+                "h": 25,
+                "hSize": "hug",
+                "text": "Draw, guess, spot, bluff and remember. On your own, or with good company.",
+                "textStyle": "Zumpo/Body",
+                "fills": [
+                  "$Zumpo · UI:color/muted"
                 ],
-                "reactions": [
-                  {
-                    "on": "on_click",
-                    "do": [
-                      {
-                        "nav": "navigate",
-                        "to": "9:868",
-                        "toName": "DL01 / Room list · open, private, full and playing states",
-                        "transition": "dissolve"
-                      }
-                    ]
-                  }
-                ]
+                "autoResize": "height"
               }
             ]
           },
           {
             "type": "FRAME",
-            "id": "79:104270",
-            "name": "Minesweeper",
-            "w": 644,
-            "h": 383,
-            "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/blue"
-            ],
-            "strokes": [
-              "$Zumpo · UI:color/line"
-            ],
-            "strokeAlign": "inside",
-            "radius": "$Zumpo · UI:radius/24",
-            "layout": {
-              "mode": "column",
-              "gap": "$Zumpo · UI:space/16",
-              "pad": "$Zumpo · UI:space/32",
-              "strokesIncluded": true
-            },
+            "id": "90:111536",
+            "name": "Hero art",
+            "w": 560,
+            "h": 300,
             "children": [
               {
-                "type": "TEXT",
-                "id": "79:104271",
-                "w": 580,
-                "h": 30,
-                "hSize": "hug",
-                "text": "Minesweeper",
-                "textStyle": "Zumpo/Heading",
+                "type": "ELLIPSE",
+                "id": "90:111537",
+                "name": "Soft blue backdrop",
+                "x": 150,
+                "y": 10,
+                "w": 280,
+                "h": 280,
                 "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "TEXT",
-                "id": "79:104272",
-                "name": "A shared board. Hidden picks. A little friendly rivalry.",
-                "w": 580,
-                "h": 25,
-                "hSize": "hug",
-                "text": "Clear a board on your own, or share one and pick in secret.",
-                "textStyle": "Zumpo/Body",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
+                  "$Zumpo · UI:color/blue"
+                ]
               },
               {
                 "type": "INSTANCE",
-                "id": "79:104273",
-                "name": "Tag / Solo or 2–8 players",
-                "w": 134,
-                "h": 30,
-                "wSize": "hug",
-                "hSize": "hug",
-                "component": "Zumpo/Tag",
+                "id": "90:111538",
+                "name": "Zumpo/Number card",
+                "x": 140,
+                "y": 40,
+                "w": 112,
+                "h": 144,
+                "rotation": 8,
+                "component": "Zumpo/Number card",
                 "variant": {
-                  "Tone": "Paper"
+                  "State": "Solved",
+                  "Size": "Regular"
                 },
-                "componentId": "24:6531",
+                "componentId": "40:22042",
                 "props": {
-                  "Label": "Solo or 2–8 players"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 30,
-                    "width": 134
-                  }
-                ]
-              },
-              {
-                "type": "FRAME",
-                "id": "79:104274",
-                "name": "Game artwork / Minesweeper",
-                "w": 580,
-                "h": 120,
-                "fills": [
-                  "$Zumpo · UI:color/paper"
-                ],
-                "radius": "$Zumpo · UI:radius/16",
-                "clip": true,
-                "layout": {
-                  "mode": "row",
-                  "gap": 16,
-                  "justify": "center",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "FRAME",
-                    "id": "79:104275",
-                    "name": "Cells",
-                    "w": 284,
-                    "h": 44,
-                    "wSize": "hug",
-                    "hSize": "hug",
-                    "layout": {
-                      "mode": "row",
-                      "gap": "$Zumpo · UI:space/4",
-                      "align": "center",
-                      "strokesIncluded": true
-                    },
-                    "children": [
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104276",
-                        "name": "Zumpo/Mine cell",
-                        "w": 44,
-                        "h": 44,
-                        "component": "Zumpo/Mine cell",
-                        "variant": {
-                          "State": "1",
-                          "Size": "Regular"
-                        },
-                        "componentId": "24:7241"
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104277",
-                        "name": "Zumpo/Mine cell",
-                        "w": 44,
-                        "h": 44,
-                        "component": "Zumpo/Mine cell",
-                        "variant": {
-                          "State": "Hidden",
-                          "Size": "Regular"
-                        },
-                        "componentId": "24:7235"
-                      },
-                      {
-                        "type": "FRAME",
-                        "id": "79:104278",
-                        "name": "Pick / SA",
-                        "w": 44,
-                        "h": 44,
-                        "children": [
-                          {
-                            "type": "INSTANCE",
-                            "id": "79:104279",
-                            "name": "Zumpo/Mine cell",
-                            "x": 0,
-                            "y": 0,
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Mine cell",
-                            "variant": {
-                              "State": "2",
-                              "Size": "Regular"
-                            },
-                            "componentId": "24:7243"
-                          },
-                          {
-                            "type": "INSTANCE",
-                            "id": "79:104280",
-                            "name": "Zumpo/Pick marker",
-                            "x": 0,
-                            "y": 0,
-                            "w": 44,
-                            "h": 44,
-                            "component": "Zumpo/Pick marker",
-                            "variant": {
-                              "Outcome": "Safe",
-                              "Size": "Regular"
-                            },
-                            "componentId": "24:7302"
-                          }
-                        ]
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104281",
-                        "name": "Zumpo/Mine cell",
-                        "w": 44,
-                        "h": 44,
-                        "component": "Zumpo/Mine cell",
-                        "variant": {
-                          "State": "Mine",
-                          "Size": "Regular"
-                        },
-                        "componentId": "24:7257"
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104282",
-                        "name": "Zumpo/Mine cell",
-                        "w": 44,
-                        "h": 44,
-                        "component": "Zumpo/Mine cell",
-                        "variant": {
-                          "State": "Hidden",
-                          "Size": "Regular"
-                        },
-                        "componentId": "24:7235"
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104283",
-                        "name": "Zumpo/Mine cell",
-                        "w": 44,
-                        "h": 44,
-                        "component": "Zumpo/Mine cell",
-                        "variant": {
-                          "State": "1",
-                          "Size": "Regular"
-                        },
-                        "componentId": "24:7241"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "FRAME",
-                "id": "79:104284",
-                "name": "Actions",
-                "w": 236,
-                "h": 48,
-                "wSize": "hug",
-                "hSize": "hug",
-                "layout": {
-                  "mode": "row",
-                  "gap": "$Zumpo · UI:space/12",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "INSTANCE",
-                    "id": "79:104285",
-                    "name": "Action / Play solo",
-                    "w": 101,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
-                    "variant": {
-                      "Style": "Primary",
-                      "State": "Default"
-                    },
-                    "componentId": "4:15",
-                    "props": {
-                      "Label": "Play solo"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 48,
-                        "reactions": [
-                          {
-                            "on": "on_click",
-                            "do": [
-                              {
-                                "nav": "navigate",
-                                "to": "40:57385",
-                                "toName": "MS01 / Solo · choose a board",
-                                "transition": "dissolve"
-                              }
-                            ]
-                          }
-                        ],
-                        "width": 101
-                      }
-                    ],
-                    "reactions": [
-                      {
-                        "on": "on_click",
-                        "do": [
-                          {
-                            "nav": "navigate",
-                            "to": "40:57385",
-                            "toName": "MS01 / Solo · choose a board",
-                            "transition": "dissolve"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "type": "INSTANCE",
-                    "id": "79:104286",
-                    "name": "Action / Find a room",
-                    "w": 123,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
-                    "variant": {
-                      "Style": "Secondary",
-                      "State": "Default"
-                    },
-                    "componentId": "4:18",
-                    "props": {
-                      "Label": "Find a room"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 48,
-                        "width": 123
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "FRAME",
-            "id": "79:104287",
-            "name": "Make 24",
-            "w": 644,
-            "h": 383,
-            "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/lime"
-            ],
-            "strokes": [
-              "$Zumpo · UI:color/line"
-            ],
-            "strokeAlign": "inside",
-            "radius": "$Zumpo · UI:radius/24",
-            "layout": {
-              "mode": "column",
-              "gap": "$Zumpo · UI:space/16",
-              "pad": "$Zumpo · UI:space/32",
-              "strokesIncluded": true
-            },
-            "children": [
-              {
-                "type": "TEXT",
-                "id": "79:104288",
-                "name": "Draw & Guess",
-                "w": 580,
-                "h": 30,
-                "hSize": "hug",
-                "text": "Make 24",
-                "textStyle": "Zumpo/Heading",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "TEXT",
-                "id": "79:104289",
-                "name": "One draws. Everyone else tries to get there first.",
-                "w": 580,
-                "h": 25,
-                "hSize": "hug",
-                "text": "Four numbers. Plus, minus, times, divide. Make 24 before anyone else.",
-                "textStyle": "Zumpo/Body",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
+                  "Value": "24"
+                }
               },
               {
                 "type": "INSTANCE",
-                "id": "79:104290",
-                "name": "Tag / Solo or 2–8 players",
-                "w": 134,
-                "h": 30,
-                "wSize": "hug",
-                "hSize": "hug",
-                "component": "Zumpo/Tag",
+                "id": "90:111539",
+                "name": "Zumpo/Trios card",
+                "x": 330,
+                "y": 36,
+                "w": 110,
+                "h": 76,
+                "rotation": -7,
+                "component": "Zumpo/Trios card",
                 "variant": {
-                  "Tone": "Paper"
+                  "Count": "3",
+                  "State": "Found",
+                  "Size": "Compact"
                 },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "Solo or 2–8 players"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 30,
-                    "width": 134
-                  }
-                ]
+                "componentId": "45:63876"
               },
               {
                 "type": "FRAME",
-                "id": "79:104291",
-                "name": "Game artwork / Make 24",
-                "w": 580,
-                "h": 120,
-                "fills": [
-                  "$Zumpo · UI:color/paper"
-                ],
-                "radius": "$Zumpo · UI:radius/16",
-                "clip": true,
-                "layout": {
-                  "mode": "row",
-                  "gap": 16,
-                  "justify": "center",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "FRAME",
-                    "id": "79:104292",
-                    "name": "Cards",
-                    "w": 412,
-                    "h": 100,
-                    "wSize": "hug",
-                    "hSize": "hug",
-                    "layout": {
-                      "mode": "row",
-                      "gap": "$Zumpo · UI:space/8",
-                      "align": "center",
-                      "strokesIncluded": true
-                    },
-                    "children": [
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104293",
-                        "name": "Number card / 8",
-                        "w": 76,
-                        "h": 100,
-                        "component": "Zumpo/Number card",
-                        "variant": {
-                          "State": "Default",
-                          "Size": "Compact"
-                        },
-                        "componentId": "40:22048"
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104294",
-                        "name": "Number card / 4",
-                        "w": 76,
-                        "h": 100,
-                        "component": "Zumpo/Number card",
-                        "variant": {
-                          "State": "Default",
-                          "Size": "Compact"
-                        },
-                        "componentId": "40:22048",
-                        "props": {
-                          "Value": "4"
-                        }
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104295",
-                        "name": "Number card / 7",
-                        "w": 76,
-                        "h": 100,
-                        "component": "Zumpo/Number card",
-                        "variant": {
-                          "State": "Default",
-                          "Size": "Compact"
-                        },
-                        "componentId": "40:22048",
-                        "props": {
-                          "Value": "7"
-                        }
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104296",
-                        "name": "Number card / 1",
-                        "w": 76,
-                        "h": 100,
-                        "component": "Zumpo/Number card",
-                        "variant": {
-                          "State": "Default",
-                          "Size": "Compact"
-                        },
-                        "componentId": "40:22048",
-                        "props": {
-                          "Value": "1"
-                        }
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104297",
-                        "name": "Number card / 24",
-                        "w": 76,
-                        "h": 100,
-                        "component": "Zumpo/Number card",
-                        "variant": {
-                          "State": "Solved",
-                          "Size": "Compact"
-                        },
-                        "componentId": "40:22057",
-                        "props": {
-                          "Value": "24"
-                        }
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "FRAME",
-                "id": "79:104298",
-                "name": "Actions",
-                "w": 236,
-                "h": 48,
+                "id": "90:111540",
+                "name": "Word",
+                "x": 236,
+                "y": 196,
+                "w": 208,
+                "h": 64,
+                "rotation": 3,
                 "wSize": "hug",
                 "hSize": "hug",
-                "layout": {
-                  "mode": "row",
-                  "gap": "$Zumpo · UI:space/12",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "INSTANCE",
-                    "id": "79:104299",
-                    "name": "Action / Play solo",
-                    "w": 101,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
-                    "variant": {
-                      "Style": "Primary",
-                      "State": "Default"
-                    },
-                    "componentId": "4:15",
-                    "props": {
-                      "Label": "Play solo"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 48,
-                        "reactions": [
-                          {
-                            "on": "on_click",
-                            "do": [
-                              {
-                                "nav": "navigate",
-                                "to": "40:40052",
-                                "toName": "T01 / Solo · ready to start",
-                                "transition": "dissolve"
-                              }
-                            ]
-                          }
-                        ],
-                        "width": 101
-                      }
-                    ],
-                    "reactions": [
-                      {
-                        "on": "on_click",
-                        "do": [
-                          {
-                            "nav": "navigate",
-                            "to": "40:40052",
-                            "toName": "T01 / Solo · ready to start",
-                            "transition": "dissolve"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "type": "INSTANCE",
-                    "id": "79:104300",
-                    "name": "Action / Find a room",
-                    "w": 123,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
-                    "variant": {
-                      "Style": "Secondary",
-                      "State": "Default"
-                    },
-                    "componentId": "4:18",
-                    "props": {
-                      "Label": "Find a room"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 48,
-                        "width": 123
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "FRAME",
-            "id": "79:104301",
-            "name": "Pairs",
-            "w": 644,
-            "h": 383,
-            "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/sand"
-            ],
-            "strokes": [
-              "$Zumpo · UI:color/line"
-            ],
-            "strokeAlign": "inside",
-            "radius": "$Zumpo · UI:radius/24",
-            "layout": {
-              "mode": "column",
-              "gap": "$Zumpo · UI:space/16",
-              "pad": "$Zumpo · UI:space/32",
-              "strokesIncluded": true
-            },
-            "children": [
-              {
-                "type": "TEXT",
-                "id": "79:104302",
-                "name": "Draw & Guess",
-                "w": 580,
-                "h": 30,
-                "hSize": "hug",
-                "text": "Pairs",
-                "textStyle": "Zumpo/Heading",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "TEXT",
-                "id": "79:104303",
-                "name": "One draws. Everyone else tries to get there first.",
-                "w": 580,
-                "h": 25,
-                "hSize": "hug",
-                "text": "Flip two cards. Remember where everything is. Find every pair.",
-                "textStyle": "Zumpo/Body",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "INSTANCE",
-                "id": "79:104304",
-                "name": "Tag / Solo or 2–6 players",
-                "w": 134,
-                "h": 30,
-                "wSize": "hug",
-                "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
-                },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "Solo or 2–6 players"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 30,
-                    "width": 134
-                  }
-                ]
-              },
-              {
-                "type": "FRAME",
-                "id": "79:104305",
-                "name": "Game artwork / Pairs",
-                "w": 580,
-                "h": 120,
-                "fills": [
-                  "$Zumpo · UI:color/paper"
-                ],
-                "radius": "$Zumpo · UI:radius/16",
-                "clip": true,
-                "layout": {
-                  "mode": "row",
-                  "gap": 16,
-                  "justify": "center",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "FRAME",
-                    "id": "79:104306",
-                    "name": "Cards",
-                    "w": 432,
-                    "h": 80,
-                    "wSize": "hug",
-                    "hSize": "hug",
-                    "layout": {
-                      "mode": "row",
-                      "gap": "$Zumpo · UI:space/8",
-                      "align": "center",
-                      "strokesIncluded": true
-                    },
-                    "children": [
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104307",
-                        "name": "Pairs card / Down",
-                        "w": 80,
-                        "h": 80,
-                        "component": "Zumpo/Pairs card",
-                        "variant": {
-                          "State": "Down",
-                          "Size": "Regular"
-                        },
-                        "componentId": "40:22013"
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104308",
-                        "name": "Pairs card / Up / Star Orange",
-                        "w": 80,
-                        "h": 80,
-                        "component": "Zumpo/Pairs card",
-                        "variant": {
-                          "State": "Up",
-                          "Size": "Regular"
-                        },
-                        "componentId": "40:22016",
-                        "props": {
-                          "Symbol": "Zumpo/Pairs symbol / Symbol=Star Orange"
-                        }
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104309",
-                        "name": "Pairs card / Up / Star Orange",
-                        "w": 80,
-                        "h": 80,
-                        "component": "Zumpo/Pairs card",
-                        "variant": {
-                          "State": "Up",
-                          "Size": "Regular"
-                        },
-                        "componentId": "40:22016",
-                        "props": {
-                          "Symbol": "Zumpo/Pairs symbol / Symbol=Star Orange"
-                        }
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104310",
-                        "name": "Pairs card / Matched / Circle Coral",
-                        "w": 80,
-                        "h": 80,
-                        "component": "Zumpo/Pairs card",
-                        "variant": {
-                          "State": "Matched",
-                          "Size": "Regular"
-                        },
-                        "componentId": "40:22019",
-                        "overrides": [
-                          {
-                            "path": "Zumpo/Pairs symbol",
-                            "opacity": 0.35
-                          }
-                        ]
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104311",
-                        "name": "Pairs card / Down",
-                        "w": 80,
-                        "h": 80,
-                        "component": "Zumpo/Pairs card",
-                        "variant": {
-                          "State": "Down",
-                          "Size": "Regular"
-                        },
-                        "componentId": "40:22013"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "FRAME",
-                "id": "79:104312",
-                "name": "Actions",
-                "w": 236,
-                "h": 48,
-                "wSize": "hug",
-                "hSize": "hug",
-                "layout": {
-                  "mode": "row",
-                  "gap": "$Zumpo · UI:space/12",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "INSTANCE",
-                    "id": "79:104313",
-                    "name": "Action / Play solo",
-                    "w": 101,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
-                    "variant": {
-                      "Style": "Primary",
-                      "State": "Default"
-                    },
-                    "componentId": "4:15",
-                    "props": {
-                      "Label": "Play solo"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 48,
-                        "reactions": [
-                          {
-                            "on": "on_click",
-                            "do": [
-                              {
-                                "nav": "navigate",
-                                "to": "40:49758",
-                                "toName": "PR01 / Solo · choose a board",
-                                "transition": "dissolve"
-                              }
-                            ]
-                          }
-                        ],
-                        "width": 101
-                      }
-                    ],
-                    "reactions": [
-                      {
-                        "on": "on_click",
-                        "do": [
-                          {
-                            "nav": "navigate",
-                            "to": "40:49758",
-                            "toName": "PR01 / Solo · choose a board",
-                            "transition": "dissolve"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "type": "INSTANCE",
-                    "id": "79:104314",
-                    "name": "Action / Find a room",
-                    "w": 123,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
-                    "variant": {
-                      "Style": "Secondary",
-                      "State": "Default"
-                    },
-                    "componentId": "4:18",
-                    "props": {
-                      "Label": "Find a room"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 48,
-                        "width": 123
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "FRAME",
-            "id": "79:104315",
-            "name": "Trios",
-            "w": 644,
-            "h": 383,
-            "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/peach"
-            ],
-            "strokes": [
-              "$Zumpo · UI:color/line"
-            ],
-            "strokeAlign": "inside",
-            "radius": "$Zumpo · UI:radius/24",
-            "layout": {
-              "mode": "column",
-              "gap": "$Zumpo · UI:space/16",
-              "pad": "$Zumpo · UI:space/32",
-              "strokesIncluded": true
-            },
-            "children": [
-              {
-                "type": "TEXT",
-                "id": "79:104316",
-                "name": "Title",
-                "w": 580,
-                "h": 30,
-                "hSize": "hug",
-                "text": "Trios",
-                "textStyle": "Zumpo/Heading",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "TEXT",
-                "id": "79:104317",
-                "name": "Tagline",
-                "w": 580,
-                "h": 25,
-                "hSize": "hug",
-                "text": "Spot three cards that are all the same or all different, in every way.",
-                "textStyle": "Zumpo/Body",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "INSTANCE",
-                "id": "79:104318",
-                "name": "Tag / Solo or 2–8 players",
-                "w": 134,
-                "h": 30,
-                "wSize": "hug",
-                "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
-                },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "Solo or 2–8 players"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 30,
-                    "width": 134
-                  }
-                ]
-              },
-              {
-                "type": "FRAME",
-                "id": "79:104319",
-                "name": "Game artwork / Trios",
-                "w": 580,
-                "h": 120,
-                "fills": [
-                  "$Zumpo · UI:color/paper"
-                ],
-                "radius": "$Zumpo · UI:radius/16",
-                "clip": true,
-                "layout": {
-                  "mode": "row",
-                  "gap": 16,
-                  "justify": "center",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "FRAME",
-                    "id": "79:104320",
-                    "name": "Cards",
-                    "w": 464,
-                    "h": 76,
-                    "wSize": "hug",
-                    "hSize": "hug",
-                    "layout": {
-                      "mode": "row",
-                      "gap": "$Zumpo · UI:space/8",
-                      "align": "center",
-                      "strokesIncluded": true
-                    },
-                    "children": [
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104321",
-                        "name": "Trios card / Default / One blue striped triangle",
-                        "w": 110,
-                        "h": 76,
-                        "component": "Zumpo/Trios card",
-                        "variant": {
-                          "Count": "1",
-                          "State": "Default",
-                          "Size": "Compact"
-                        },
-                        "componentId": "45:63822",
-                        "props": {
-                          "Shape": "Zumpo/Trios shape / Shape=Triangle, Fill=Striped, Colour=Blue, Stripes=Fine"
-                        }
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104322",
-                        "name": "Trios card / Found / One coral solid circle",
-                        "w": 110,
-                        "h": 76,
-                        "component": "Zumpo/Trios card",
-                        "variant": {
-                          "Count": "1",
-                          "State": "Found",
-                          "Size": "Compact"
-                        },
-                        "componentId": "45:63864"
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104323",
-                        "name": "Trios card / Found / Two blue striped triangles",
-                        "w": 110,
-                        "h": 76,
-                        "component": "Zumpo/Trios card",
-                        "variant": {
-                          "Count": "2",
-                          "State": "Found",
-                          "Size": "Compact"
-                        },
-                        "componentId": "45:63869",
-                        "props": {
-                          "Shape": "Zumpo/Trios shape / Shape=Triangle, Fill=Striped, Colour=Blue, Stripes=Fine"
-                        }
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104324",
-                        "name": "Trios card / Found / Three ink outlined squares",
-                        "w": 110,
-                        "h": 76,
-                        "component": "Zumpo/Trios card",
-                        "variant": {
-                          "Count": "3",
-                          "State": "Found",
-                          "Size": "Compact"
-                        },
-                        "componentId": "45:63876",
-                        "props": {
-                          "Shape": "Zumpo/Trios shape / Shape=Square, Fill=Outline, Colour=Ink, Stripes=Fine"
-                        }
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "FRAME",
-                "id": "79:104325",
-                "name": "Actions",
-                "w": 236,
-                "h": 48,
-                "wSize": "hug",
-                "hSize": "hug",
-                "layout": {
-                  "mode": "row",
-                  "gap": "$Zumpo · UI:space/12",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "INSTANCE",
-                    "id": "79:104326",
-                    "name": "Action / Play solo",
-                    "w": 101,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
-                    "variant": {
-                      "Style": "Primary",
-                      "State": "Default"
-                    },
-                    "componentId": "4:15",
-                    "props": {
-                      "Label": "Play solo"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 48,
-                        "reactions": [
-                          {
-                            "on": "on_click",
-                            "do": [
-                              {
-                                "nav": "navigate",
-                                "to": "40:49758",
-                                "toName": "PR01 / Solo · choose a board",
-                                "transition": "dissolve"
-                              }
-                            ]
-                          }
-                        ],
-                        "width": 101
-                      }
-                    ],
-                    "reactions": [
-                      {
-                        "on": "on_click",
-                        "do": [
-                          {
-                            "nav": "navigate",
-                            "to": "40:49758",
-                            "toName": "PR01 / Solo · choose a board",
-                            "transition": "dissolve"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "type": "INSTANCE",
-                    "id": "79:104327",
-                    "name": "Action / Find a room",
-                    "w": 123,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
-                    "variant": {
-                      "Style": "Secondary",
-                      "State": "Default"
-                    },
-                    "componentId": "4:18",
-                    "props": {
-                      "Label": "Find a room"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 48,
-                        "width": 123
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "FRAME",
-            "id": "79:104328",
-            "name": "Daily Word",
-            "w": 644,
-            "h": 383,
-            "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/blue"
-            ],
-            "strokes": [
-              "$Zumpo · UI:color/line"
-            ],
-            "strokeAlign": "inside",
-            "radius": "$Zumpo · UI:radius/24",
-            "layout": {
-              "mode": "column",
-              "gap": "$Zumpo · UI:space/16",
-              "pad": "$Zumpo · UI:space/32",
-              "strokesIncluded": true
-            },
-            "children": [
-              {
-                "type": "TEXT",
-                "id": "79:104329",
-                "name": "Title",
-                "w": 580,
-                "h": 30,
-                "hSize": "hug",
-                "text": "Daily Word",
-                "textStyle": "Zumpo/Heading",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "TEXT",
-                "id": "79:104330",
-                "name": "Tagline",
-                "w": 580,
-                "h": 25,
-                "hSize": "hug",
-                "text": "Five letters, six guesses. A new word every day.",
-                "textStyle": "Zumpo/Body",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "INSTANCE",
-                "id": "79:104331",
-                "name": "Tag / Solo or 2–8 players",
-                "w": 134,
-                "h": 30,
-                "wSize": "hug",
-                "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
-                },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "Solo or 2–8 players"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 30,
-                    "width": 134
-                  }
-                ]
-              },
-              {
-                "type": "FRAME",
-                "id": "79:104332",
-                "name": "Game artwork / Daily Word",
-                "w": 580,
-                "h": 120,
-                "fills": [
-                  "$Zumpo · UI:color/paper"
-                ],
-                "radius": "$Zumpo · UI:radius/16",
-                "clip": true,
-                "layout": {
-                  "mode": "row",
-                  "gap": 16,
-                  "justify": "center",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "FRAME",
-                    "id": "79:104333",
-                    "name": "Tiles",
-                    "w": 352,
-                    "h": 64,
-                    "wSize": "hug",
-                    "hSize": "hug",
-                    "layout": {
-                      "mode": "row",
-                      "gap": "$Zumpo · UI:space/8",
-                      "align": "center",
-                      "strokesIncluded": true
-                    },
-                    "children": [
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104334",
-                        "name": "Tile / T",
-                        "w": 64,
-                        "h": 64,
-                        "component": "Zumpo/Letter tile",
-                        "variant": {
-                          "State": "Present",
-                          "Size": "Regular"
-                        },
-                        "componentId": "44:61318",
-                        "props": {
-                          "Letter": "T"
-                        }
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104335",
-                        "name": "Tile / R",
-                        "w": 64,
-                        "h": 64,
-                        "component": "Zumpo/Letter tile",
-                        "variant": {
-                          "State": "Absent",
-                          "Size": "Regular"
-                        },
-                        "componentId": "44:61320",
-                        "props": {
-                          "Letter": "R"
-                        }
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104336",
-                        "name": "Tile / A",
-                        "w": 64,
-                        "h": 64,
-                        "component": "Zumpo/Letter tile",
-                        "variant": {
-                          "State": "Correct",
-                          "Size": "Regular"
-                        },
-                        "componentId": "44:61316"
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104337",
-                        "name": "Tile / I",
-                        "w": 64,
-                        "h": 64,
-                        "component": "Zumpo/Letter tile",
-                        "variant": {
-                          "State": "Absent",
-                          "Size": "Regular"
-                        },
-                        "componentId": "44:61320",
-                        "props": {
-                          "Letter": "I"
-                        }
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104338",
-                        "name": "Tile / L",
-                        "w": 64,
-                        "h": 64,
-                        "component": "Zumpo/Letter tile",
-                        "variant": {
-                          "State": "Present",
-                          "Size": "Regular"
-                        },
-                        "componentId": "44:61318",
-                        "props": {
-                          "Letter": "L"
-                        }
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "FRAME",
-                "id": "79:104339",
-                "name": "Actions",
-                "w": 236,
-                "h": 48,
-                "wSize": "hug",
-                "hSize": "hug",
-                "layout": {
-                  "mode": "row",
-                  "gap": "$Zumpo · UI:space/12",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "INSTANCE",
-                    "id": "79:104340",
-                    "name": "Action / Play solo",
-                    "w": 101,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
-                    "variant": {
-                      "Style": "Primary",
-                      "State": "Default"
-                    },
-                    "componentId": "4:15",
-                    "props": {
-                      "Label": "Play solo"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 48,
-                        "reactions": [
-                          {
-                            "on": "on_click",
-                            "do": [
-                              {
-                                "nav": "navigate",
-                                "to": "40:49758",
-                                "toName": "PR01 / Solo · choose a board",
-                                "transition": "dissolve"
-                              }
-                            ]
-                          }
-                        ],
-                        "width": 101
-                      }
-                    ],
-                    "reactions": [
-                      {
-                        "on": "on_click",
-                        "do": [
-                          {
-                            "nav": "navigate",
-                            "to": "40:49758",
-                            "toName": "PR01 / Solo · choose a board",
-                            "transition": "dissolve"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "type": "INSTANCE",
-                    "id": "79:104341",
-                    "name": "Action / Find a room",
-                    "w": 123,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
-                    "variant": {
-                      "Style": "Secondary",
-                      "State": "Default"
-                    },
-                    "componentId": "4:18",
-                    "props": {
-                      "Label": "Find a room"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 48,
-                        "width": 123
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "FRAME",
-            "id": "79:104342",
-            "name": "Liar’s Dice",
-            "w": 644,
-            "h": 383,
-            "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/lime"
-            ],
-            "strokes": [
-              "$Zumpo · UI:color/line"
-            ],
-            "strokeAlign": "inside",
-            "radius": "$Zumpo · UI:radius/24",
-            "layout": {
-              "mode": "column",
-              "gap": "$Zumpo · UI:space/16",
-              "pad": "$Zumpo · UI:space/32",
-              "strokesIncluded": true
-            },
-            "children": [
-              {
-                "type": "TEXT",
-                "id": "79:104343",
-                "name": "Title",
-                "w": 580,
-                "h": 30,
-                "hSize": "hug",
-                "text": "Liar’s Dice",
-                "textStyle": "Zumpo/Heading",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "TEXT",
-                "id": "79:104344",
-                "name": "Tagline",
-                "w": 580,
-                "h": 25,
-                "hSize": "hug",
-                "text": "Roll in secret. Bid on the whole table. Call the bluff.",
-                "textStyle": "Zumpo/Body",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "INSTANCE",
-                "id": "79:104345",
-                "name": "Tag / Solo or 2–6 players",
-                "w": 134,
-                "h": 30,
-                "wSize": "hug",
-                "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
-                },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "Solo or 2–6 players"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 30,
-                    "width": 134
-                  }
-                ]
-              },
-              {
-                "type": "FRAME",
-                "id": "79:104346",
-                "name": "Game artwork / Liar’s Dice",
-                "w": 580,
-                "h": 120,
-                "fills": [
-                  "$Zumpo · UI:color/paper"
-                ],
-                "radius": "$Zumpo · UI:radius/16",
-                "clip": true,
                 "layout": {
                   "mode": "row",
                   "gap": "$Zumpo · UI:space/8",
-                  "justify": "center",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "FRAME",
-                    "id": "79:104347",
-                    "name": "Dice",
-                    "w": 376,
-                    "h": 56,
-                    "wSize": "hug",
-                    "hSize": "hug",
-                    "clip": true,
-                    "layout": {
-                      "mode": "row",
-                      "gap": "$Zumpo · UI:space/8",
-                      "align": "center",
-                      "strokesIncluded": true
-                    },
-                    "children": [
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104348",
-                        "name": "Die 1",
-                        "w": 56,
-                        "h": 56,
-                        "component": "Zumpo/Die",
-                        "variant": {
-                          "Face": "Hidden",
-                          "State": "Default",
-                          "Size": "Regular"
-                        },
-                        "componentId": "44:61226"
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104349",
-                        "name": "Die 2",
-                        "w": 56,
-                        "h": 56,
-                        "component": "Zumpo/Die",
-                        "variant": {
-                          "Face": "5",
-                          "State": "Counted",
-                          "Size": "Regular"
-                        },
-                        "componentId": "44:61193"
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104350",
-                        "name": "Die 3",
-                        "w": 56,
-                        "h": 56,
-                        "component": "Zumpo/Die",
-                        "variant": {
-                          "Face": "1",
-                          "State": "Wild",
-                          "Size": "Regular"
-                        },
-                        "componentId": "44:61147"
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104351",
-                        "name": "Die 4",
-                        "w": 56,
-                        "h": 56,
-                        "component": "Zumpo/Die",
-                        "variant": {
-                          "Face": "5",
-                          "State": "Counted",
-                          "Size": "Regular"
-                        },
-                        "componentId": "44:61193"
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104352",
-                        "name": "Die 5",
-                        "w": 56,
-                        "h": 56,
-                        "component": "Zumpo/Die",
-                        "variant": {
-                          "Face": "2",
-                          "State": "Dim",
-                          "Size": "Regular"
-                        },
-                        "componentId": "44:61157"
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104353",
-                        "name": "Last die (desktop only)",
-                        "w": 56,
-                        "h": 56,
-                        "component": "Zumpo/Die",
-                        "variant": {
-                          "Face": "Hidden",
-                          "State": "Default",
-                          "Size": "Regular"
-                        },
-                        "componentId": "44:61226"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "FRAME",
-                "id": "79:104354",
-                "name": "Actions",
-                "w": 236,
-                "h": 48,
-                "wSize": "hug",
-                "hSize": "hug",
-                "layout": {
-                  "mode": "row",
-                  "gap": "$Zumpo · UI:space/12",
-                  "align": "center",
                   "strokesIncluded": true
                 },
                 "children": [
                   {
                     "type": "INSTANCE",
-                    "id": "79:104355",
-                    "name": "Action / Play solo",
-                    "w": 101,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
+                    "id": "90:111541",
+                    "name": "Zumpo/Letter tile",
+                    "w": 64,
+                    "h": 64,
+                    "component": "Zumpo/Letter tile",
                     "variant": {
-                      "Style": "Primary",
-                      "State": "Default"
+                      "State": "Correct",
+                      "Size": "Regular"
                     },
-                    "componentId": "4:15",
+                    "componentId": "44:61316",
                     "props": {
-                      "Label": "Play solo"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 48,
-                        "reactions": [
-                          {
-                            "on": "on_click",
-                            "do": [
-                              {
-                                "nav": "navigate",
-                                "to": "40:49758",
-                                "toName": "PR01 / Solo · choose a board",
-                                "transition": "dissolve"
-                              }
-                            ]
-                          }
-                        ],
-                        "width": 101
-                      }
-                    ],
-                    "reactions": [
-                      {
-                        "on": "on_click",
-                        "do": [
-                          {
-                            "nav": "navigate",
-                            "to": "40:49758",
-                            "toName": "PR01 / Solo · choose a board",
-                            "transition": "dissolve"
-                          }
-                        ]
-                      }
-                    ]
+                      "Letter": "F"
+                    }
                   },
                   {
                     "type": "INSTANCE",
-                    "id": "79:104356",
-                    "name": "Action / Find a room",
-                    "w": 123,
-                    "h": 48,
-                    "wSize": "hug",
-                    "component": "Zumpo/Button",
+                    "id": "90:111542",
+                    "name": "Zumpo/Letter tile",
+                    "w": 64,
+                    "h": 64,
+                    "component": "Zumpo/Letter tile",
                     "variant": {
-                      "Style": "Secondary",
-                      "State": "Default"
+                      "State": "Present",
+                      "Size": "Regular"
                     },
-                    "componentId": "4:18",
+                    "componentId": "44:61318",
                     "props": {
-                      "Label": "Find a room"
-                    },
-                    "overrides": [
-                      {
-                        "path": ".",
-                        "height": 48,
-                        "width": 123
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "FRAME",
-            "id": "79:104357",
-            "name": "Hush",
-            "w": 644,
-            "h": 383,
-            "hSize": "hug",
-            "fills": [
-              "$Zumpo · UI:color/sand"
-            ],
-            "strokes": [
-              "$Zumpo · UI:color/line"
-            ],
-            "strokeAlign": "inside",
-            "radius": "$Zumpo · UI:radius/24",
-            "layout": {
-              "mode": "column",
-              "gap": "$Zumpo · UI:space/16",
-              "pad": "$Zumpo · UI:space/32",
-              "strokesIncluded": true
-            },
-            "children": [
-              {
-                "type": "TEXT",
-                "id": "79:104358",
-                "name": "Title",
-                "w": 580,
-                "h": 30,
-                "hSize": "hug",
-                "text": "Hush",
-                "textStyle": "Zumpo/Heading",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "TEXT",
-                "id": "79:104359",
-                "name": "Tagline",
-                "w": 580,
-                "h": 25,
-                "hSize": "hug",
-                "text": "No turns, no talking. Play every card in order, together.",
-                "textStyle": "Zumpo/Body",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
-              },
-              {
-                "type": "INSTANCE",
-                "id": "79:104360",
-                "name": "Tag / 2–4 players",
-                "w": 91,
-                "h": 30,
-                "wSize": "hug",
-                "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
-                },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "2–4 players"
-                },
-                "overrides": [
+                      "Letter": "U"
+                    }
+                  },
                   {
-                    "path": ".",
-                    "height": 30,
-                    "width": 91
-                  }
-                ]
-              },
-              {
-                "type": "FRAME",
-                "id": "79:104361",
-                "name": "Game artwork / Hush",
-                "w": 580,
-                "h": 120,
-                "fills": [
-                  "$Zumpo · UI:color/paper"
-                ],
-                "radius": "$Zumpo · UI:radius/16",
-                "clip": true,
-                "layout": {
-                  "mode": "row",
-                  "gap": 16,
-                  "justify": "center",
-                  "align": "center",
-                  "strokesIncluded": true
-                },
-                "children": [
-                  {
-                    "type": "FRAME",
-                    "id": "79:104362",
-                    "name": "Pile",
-                    "w": 356,
-                    "h": 80,
-                    "wSize": "hug",
-                    "hSize": "hug",
-                    "clip": true,
-                    "layout": {
-                      "mode": "row",
-                      "gap": "$Zumpo · UI:space/8",
-                      "align": "center",
-                      "strokesIncluded": true
+                    "type": "INSTANCE",
+                    "id": "90:111543",
+                    "name": "Zumpo/Letter tile",
+                    "w": 64,
+                    "h": 64,
+                    "component": "Zumpo/Letter tile",
+                    "variant": {
+                      "State": "Correct",
+                      "Size": "Regular"
                     },
-                    "children": [
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104363",
-                        "name": "Hush card / 12",
-                        "w": 60,
-                        "h": 80,
-                        "component": "Zumpo/Hush card",
-                        "variant": {
-                          "State": "Played",
-                          "Size": "Small"
-                        },
-                        "componentId": "44:61114",
-                        "props": {
-                          "Value": "12"
-                        }
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104364",
-                        "name": "Hush card / 27",
-                        "w": 60,
-                        "h": 80,
-                        "component": "Zumpo/Hush card",
-                        "variant": {
-                          "State": "Played",
-                          "Size": "Small"
-                        },
-                        "componentId": "44:61114",
-                        "props": {
-                          "Value": "27"
-                        }
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104365",
-                        "name": "Hush card / 45",
-                        "w": 60,
-                        "h": 80,
-                        "component": "Zumpo/Hush card",
-                        "variant": {
-                          "State": "Played",
-                          "Size": "Small"
-                        },
-                        "componentId": "44:61114",
-                        "props": {
-                          "Value": "45"
-                        }
-                      },
-                      {
-                        "type": "INSTANCE",
-                        "id": "79:104366",
-                        "name": "Hush card / 58",
-                        "w": 60,
-                        "h": 80,
-                        "component": "Zumpo/Hush card",
-                        "variant": {
-                          "State": "Pile",
-                          "Size": "Small"
-                        },
-                        "componentId": "44:61112",
-                        "props": {
-                          "Value": "58"
-                        }
-                      },
-                      {
-                        "type": "FRAME",
-                        "id": "79:104367",
-                        "name": "Lives",
-                        "w": 84,
-                        "h": 18,
-                        "wSize": "hug",
-                        "hSize": "hug",
-                        "clip": true,
-                        "layout": {
-                          "mode": "row",
-                          "pad": [
-                            0,
-                            0,
-                            0,
-                            "$Zumpo · UI:space/16"
-                          ],
-                          "strokesIncluded": true
-                        },
-                        "children": [
-                          {
-                            "type": "INSTANCE",
-                            "id": "79:104368",
-                            "name": "Zumpo/Lives",
-                            "w": 68,
-                            "h": 18,
-                            "wSize": "hug",
-                            "hSize": "hug",
-                            "component": "Zumpo/Lives",
-                            "variant": {
-                              "Lives": "2"
-                            },
-                            "componentId": "44:61125",
-                            "props": {
-                              "Show label": false
-                            },
-                            "overrides": [
-                              {
-                                "path": ".",
-                                "height": 18,
-                                "width": 68
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
+                    "componentId": "44:61316",
+                    "props": {
+                      "Letter": "N"
+                    }
                   }
                 ]
               },
               {
                 "type": "INSTANCE",
-                "id": "79:104369",
-                "name": "Action / Find a room",
-                "w": 121,
-                "h": 48,
-                "wSize": "hug",
-                "component": "Zumpo/Button",
+                "id": "90:111544",
+                "name": "Zumpo/Die",
+                "x": 470,
+                "y": 150,
+                "w": 56,
+                "h": 56,
+                "rotation": -12,
+                "component": "Zumpo/Die",
                 "variant": {
-                  "Style": "Primary",
-                  "State": "Default"
+                  "Face": "5",
+                  "State": "Counted",
+                  "Size": "Regular"
                 },
-                "componentId": "4:15",
+                "componentId": "44:61193"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "90:111545",
+                "name": "Zumpo/Pairs card",
+                "x": 40,
+                "y": 170,
+                "w": 80,
+                "h": 80,
+                "rotation": 10,
+                "component": "Zumpo/Pairs card",
+                "variant": {
+                  "State": "Up",
+                  "Size": "Regular"
+                },
+                "componentId": "40:22016",
                 "props": {
-                  "Label": "Find a room"
+                  "Symbol": "Zumpo/Pairs symbol / Symbol=Star Orange"
                 },
                 "overrides": [
                   {
-                    "path": ".",
-                    "height": 48,
-                    "reactions": [
-                      {
-                        "on": "on_click",
-                        "do": [
-                          {
-                            "nav": "navigate",
-                            "to": "9:868",
-                            "toName": "DL01 / Room list · open, private, full and playing states",
-                            "transition": "dissolve"
-                          }
-                        ]
-                      }
-                    ],
-                    "width": 121
+                    "path": "Symbol",
+                    "height": 44,
+                    "width": 44
                   }
-                ],
-                "reactions": [
-                  {
-                    "on": "on_click",
-                    "do": [
-                      {
-                        "nav": "navigate",
-                        "to": "9:868",
-                        "toName": "DL01 / Room list · open, private, full and playing states",
-                        "transition": "dissolve"
-                      }
-                    ]
-                  }
+                ]
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "90:111546",
+                "name": "Coral pebble",
+                "x": 470,
+                "y": 40,
+                "w": 40,
+                "h": 40,
+                "fills": [
+                  "$Zumpo · UI:color/coral"
+                ]
+              },
+              {
+                "type": "ELLIPSE",
+                "id": "90:111547",
+                "name": "Little lime pebble",
+                "x": 110,
+                "y": 120,
+                "w": 22,
+                "h": 22,
+                "fills": [
+                  "$Zumpo · UI:color/lime"
                 ]
               }
             ]
@@ -2322,128 +341,309 @@
       },
       {
         "type": "FRAME",
-        "id": "9:858",
-        "name": "Maya",
-        "x": 1056,
-        "y": 112,
-        "absolute": true,
-        "w": 320,
-        "h": 251,
+        "id": "90:111548",
+        "name": "Games",
+        "w": 1312,
+        "h": 774,
+        "wSize": "fill",
         "hSize": "hug",
-        "fills": [
-          "$Zumpo · UI:color/paper"
-        ],
-        "strokes": [
-          "$Zumpo · UI:color/line"
-        ],
-        "strokeAlign": "inside",
-        "radius": "$Zumpo · UI:radius/24",
-        "effects": [
-          {
-            "type": "drop_shadow",
-            "color": "#282B251F",
-            "offset": [
-              0,
-              8
-            ],
-            "radius": 24
-          }
-        ],
-        "effectStyle": "Zumpo/Menu lift",
         "layout": {
           "mode": "column",
-          "gap": "$Zumpo · UI:space/16",
-          "pad": "$Zumpo · UI:space/32",
+          "gap": "$Zumpo · UI:space/24",
           "strokesIncluded": true
         },
         "children": [
           {
-            "type": "TEXT",
-            "id": "9:859",
-            "w": 254,
-            "h": 30,
+            "type": "FRAME",
+            "id": "90:111549",
+            "name": "Games heading",
+            "w": 1312,
+            "h": 38,
             "wSize": "fill",
             "hSize": "hug",
-            "text": "Maya",
-            "textStyle": "Zumpo/Heading",
-            "fills": [
-              "$Zumpo · UI:color/ink"
-            ],
-            "autoResize": "height"
-          },
-          {
-            "type": "TEXT",
-            "id": "9:860",
-            "name": "Your name is saved for this browser session.",
-            "w": 254,
-            "h": 75,
-            "wSize": "fill",
-            "hSize": "hug",
-            "text": "Your name is saved for this browser session. Changing it takes you back to the start.",
-            "textStyle": "Zumpo/Body",
-            "fills": [
-              "$Zumpo · UI:color/muted"
-            ],
-            "autoResize": "height"
-          },
-          {
-            "type": "INSTANCE",
-            "id": "9:861",
-            "name": "Action / Change name",
-            "w": 254,
-            "h": 48,
-            "wSize": "fill",
-            "component": "Zumpo/Button",
-            "variant": {
-              "Style": "Secondary",
-              "State": "Default"
+            "layout": {
+              "mode": "row",
+              "justify": "space_between",
+              "align": "center",
+              "strokesIncluded": true
             },
-            "componentId": "4:18",
-            "props": {
-              "Icon": "Zumpo/Icon / Glyph=edit",
-              "Show icon": true,
-              "Label": "Change name"
-            },
-            "overrides": [
+            "children": [
               {
-                "path": ".",
-                "height": 48,
-                "primaryAxisSizingMode": "FIXED",
-                "reactions": [
+                "type": "TEXT",
+                "id": "90:111550",
+                "name": "Title",
+                "w": 140,
+                "h": 30,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Pick a game",
+                "textStyle": "Zumpo/Heading",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "90:111551",
+                "name": "Filters",
+                "w": 388,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "strokesIncluded": true
+                },
+                "children": [
                   {
-                    "on": "on_click",
-                    "do": [
+                    "type": "INSTANCE",
+                    "id": "90:111552",
+                    "name": "Filter / All",
+                    "w": 52,
+                    "h": 38,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Filter chip",
+                    "variant": {
+                      "State": "Selected"
+                    },
+                    "componentId": "90:107175",
+                    "props": {
+                      "Label": "All"
+                    },
+                    "overrides": [
                       {
-                        "nav": "navigate",
-                        "to": "9:433",
-                        "toName": "P01 / Public home",
-                        "transition": "dissolve"
+                        "path": ".",
+                        "height": 38,
+                        "width": 52
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "90:111553",
+                    "name": "Filter / Party",
+                    "w": 71,
+                    "h": 38,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Filter chip",
+                    "variant": {
+                      "State": "Default"
+                    },
+                    "componentId": "90:107171",
+                    "props": {
+                      "Label": "Party"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 38,
+                        "width": 71
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "90:111554",
+                    "name": "Filter / Puzzles",
+                    "w": 85,
+                    "h": 38,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Filter chip",
+                    "variant": {
+                      "State": "Default"
+                    },
+                    "componentId": "90:107171"
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "90:111555",
+                    "name": "Filter / Spot & remember",
+                    "w": 156,
+                    "h": 38,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Filter chip",
+                    "variant": {
+                      "State": "Default"
+                    },
+                    "componentId": "90:107171",
+                    "props": {
+                      "Label": "Spot & remember"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 38,
+                        "width": 156
                       }
                     ]
                   }
-                ],
-                "width": 254
-              }
-            ],
-            "reactions": [
-              {
-                "on": "on_click",
-                "do": [
-                  {
-                    "nav": "navigate",
-                    "to": "9:433",
-                    "toName": "P01 / Public home",
-                    "transition": "dissolve"
-                  }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "90:111556",
+            "name": "Cards",
+            "w": 1312,
+            "h": 712,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/24",
+              "wrap": true,
+              "crossGap": "$Zumpo · UI:space/24",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "90:111557",
+                "name": "Zumpo/Game card",
+                "w": 310,
+                "h": 344,
+                "hSize": "hug",
+                "component": "Zumpo/Game card",
+                "variant": {
+                  "Game": "Draw & Guess",
+                  "Layout": "Tile"
+                },
+                "componentId": "90:104955"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "90:111558",
+                "name": "Zumpo/Game card",
+                "w": 310,
+                "h": 344,
+                "hSize": "hug",
+                "component": "Zumpo/Game card",
+                "variant": {
+                  "Game": "Hush",
+                  "Layout": "Tile"
+                },
+                "componentId": "90:105310"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "90:111559",
+                "name": "Zumpo/Game card",
+                "w": 310,
+                "h": 344,
+                "hSize": "hug",
+                "component": "Zumpo/Game card",
+                "variant": {
+                  "Game": "Liar’s Dice",
+                  "Layout": "Tile"
+                },
+                "componentId": "90:105242"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "90:111560",
+                "name": "Zumpo/Game card",
+                "w": 310,
+                "h": 344,
+                "hSize": "hug",
+                "component": "Zumpo/Game card",
+                "variant": {
+                  "Game": "Daily Word",
+                  "Layout": "Tile"
+                },
+                "componentId": "90:105349"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "90:111561",
+                "name": "Zumpo/Game card",
+                "w": 310,
+                "h": 344,
+                "hSize": "hug",
+                "component": "Zumpo/Game card",
+                "variant": {
+                  "Game": "Make 24",
+                  "Layout": "Tile"
+                },
+                "componentId": "90:105074"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "90:111562",
+                "name": "Zumpo/Game card",
+                "w": 310,
+                "h": 344,
+                "hSize": "hug",
+                "component": "Zumpo/Game card",
+                "variant": {
+                  "Game": "Minesweeper",
+                  "Layout": "Tile"
+                },
+                "componentId": "90:105002"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "90:111563",
+                "name": "Zumpo/Game card",
+                "w": 310,
+                "h": 344,
+                "hSize": "hug",
+                "component": "Zumpo/Game card",
+                "variant": {
+                  "Game": "Pairs",
+                  "Layout": "Tile"
+                },
+                "componentId": "90:105129"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "90:111564",
+                "name": "Zumpo/Game card",
+                "w": 310,
+                "h": 344,
+                "hSize": "hug",
+                "component": "Zumpo/Game card",
+                "variant": {
+                  "Game": "Trios",
+                  "Layout": "Tile"
+                },
+                "componentId": "90:105184"
               }
             ]
           }
         ]
       },
       {
+        "type": "INSTANCE",
+        "id": "90:111565",
+        "name": "Zumpo/Notice",
+        "w": 1312,
+        "h": 52,
+        "hSize": "hug",
+        "component": "Zumpo/Notice",
+        "variant": {
+          "Tone": "Info"
+        },
+        "componentId": "9:227",
+        "props": {
+          "Message": "Play solo starts at once. Rooms start with 2 players, so grab a friend."
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 52,
+            "width": 1312
+          }
+        ]
+      },
+      {
         "type": "FRAME",
-        "id": "9:863",
+        "id": "90:111566",
         "name": "Footer",
         "w": 1312,
         "h": 18,
@@ -2458,7 +658,7 @@
         "children": [
           {
             "type": "TEXT",
-            "id": "9:864",
+            "id": "90:111567",
             "w": 650,
             "h": 18,
             "hSize": "hug",
@@ -2471,7 +671,7 @@
           },
           {
             "type": "TEXT",
-            "id": "9:865",
+            "id": "90:111568",
             "w": 115,
             "h": 18,
             "wSize": "hug",
@@ -2481,6 +681,28 @@
             "fills": [
               "$Zumpo · UI:color/muted"
             ]
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "90:111903",
+        "name": "Zumpo/Name menu",
+        "x": 1056,
+        "y": 112,
+        "absolute": true,
+        "w": 320,
+        "h": 245,
+        "hSize": "hug",
+        "component": "Zumpo/Name menu",
+        "variant": {
+          "State": "Edit"
+        },
+        "componentId": "90:110693",
+        "overrides": [
+          {
+            "path": ".",
+            "layoutPositioning": "ABSOLUTE"
           }
         ]
       }

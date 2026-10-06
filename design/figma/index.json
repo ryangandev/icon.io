@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "exportedAt": "2026-10-06T06:04:22.330Z",
+  "exportedAt": "2026-10-06T06:15:06.087Z",
   "file": {
     "key": "pd5Hgp7zbT2cMqQNan35uY",
     "name": "Zumpo · Paper Pop flows",
@@ -13,13 +13,13 @@
     "previews": true
   },
   "counts": {
-    "flows": 165,
-    "componentFamilies": 49,
+    "flows": 167,
+    "componentFamilies": 50,
     "outsideComponents": 0,
-    "svgs": 84,
-    "seconds": 26,
-    "nodes": 9957,
-    "instances": 5483,
+    "svgs": 85,
+    "seconds": 28,
+    "nodes": 10017,
+    "instances": 5514,
     "grids": 66,
     "gridCells": 2207
   },
@@ -242,6 +242,13 @@
       "variants": 3
     },
     {
+      "name": "Zumpo/Name menu",
+      "id": "90:110743",
+      "file": "components/name-menu.json",
+      "preview": "previews/components/name-menu.png",
+      "variants": 3
+    },
+    {
       "name": "Zumpo/Notice",
       "id": "9:240",
       "file": "components/notice.json",
@@ -432,7 +439,7 @@
       "flows": [
         {
           "code": "P01",
-          "title": "Public home",
+          "title": "Home",
           "id": "9:433",
           "size": [
             1440,
@@ -444,11 +451,11 @@
         },
         {
           "code": "P02",
-          "title": "Choose your name",
-          "id": "9:479",
+          "title": "First visit · a name picked for you",
+          "id": "90:110744",
           "size": [
             1440,
-            839
+            640
           ],
           "file": "flows/01-platform/P02.json",
           "preview": "previews/01-platform/P02.png",
@@ -457,10 +464,10 @@
         {
           "code": "P03",
           "title": "Name validation",
-          "id": "9:512",
+          "id": "90:111133",
           "size": [
             1440,
-            837
+            640
           ],
           "file": "flows/01-platform/P03.json",
           "preview": "previews/01-platform/P03.png",
@@ -564,11 +571,11 @@
         },
         {
           "code": "P13",
-          "title": "Session menu",
-          "id": "9:823",
+          "title": "Name menu",
+          "id": "90:111529",
           "size": [
             1440,
-            1975
+            640
           ],
           "file": "flows/01-platform/P13.json",
           "preview": "previews/01-platform/P13.png",
@@ -632,6 +639,30 @@
           ],
           "file": "flows/01-platform/P18.json",
           "preview": "previews/01-platform/P18.png",
+          "isFlow": true
+        },
+        {
+          "code": "P19",
+          "title": "Room · a name picked for you",
+          "id": "90:112599",
+          "size": [
+            1440,
+            716
+          ],
+          "file": "flows/01-platform/P19.json",
+          "preview": "previews/01-platform/P19.png",
+          "isFlow": true
+        },
+        {
+          "code": "P20",
+          "title": "Room · changing your name",
+          "id": "90:112887",
+          "size": [
+            1440,
+            746
+          ],
+          "file": "flows/01-platform/P20.json",
+          "preview": "previews/01-platform/P20.png",
           "isFlow": true
         }
       ],
@@ -1356,11 +1387,11 @@
         },
         {
           "code": "MO02",
-          "title": "Name gate",
-          "id": "9:10098",
+          "title": "Name menu",
+          "id": "90:112234",
           "size": [
             390,
-            608
+            560
           ],
           "file": "flows/04-mobile/MO02.json",
           "preview": "previews/04-mobile/MO02.png",
@@ -1372,7 +1403,7 @@
           "id": "9:10156",
           "size": [
             390,
-            815
+            887
           ],
           "file": "flows/04-mobile/MO04.json",
           "preview": "previews/04-mobile/MO04.png",

@@ -18,7 +18,7 @@ They are not copied here, so there is one place to change them.
 | Section                              | Id         | Contents                                              |
 | ------------------------------------ | ---------- | ----------------------------------------------------- |
 | 00 / Review guide & flow map         | `9:14700`  | Review order, the real rules, which UX is new         |
-| 01 / Platform & shared flows         | `9:431`    | P01-P18 without P04, desktop                          |
+| 01 / Platform & shared flows         | `9:431`    | P01-P20 without P04, desktop                          |
 | 02 / Draw & Guess / complete flow    | `9:866`    | DL01-DL11 lobby, D01-D15 room, desktop                |
 | 03 / Minesweeper / complete flow     | `9:2526`   | ML01-ML10 lobby, M01-M16 room, MS01-MS05 solo         |
 | 04 / Mobile / 390px flow adaptations | `9:10060`  | MO01-MO18 without MO03, the main flows at 390 px      |
@@ -49,7 +49,7 @@ Three early Paper Pop concepts (`3:53`, `3:54`, `3:55`) sit above the flows for 
 
 Decisions from the design review rounds (their reports are in git history):
 
-- One page lists every game: the home page (P01, MO01) is also the games page, so there is no separate games hub and the hero has no buttons to it; Ryan chose this on 2026-10-06.
+- One page lists every game: the home page (P01, MO01) is also the games page, so there is no separate games hub and the hero has no buttons to it; Ryan chose this on 2026-10-05.
   Each game is a `Zumpo/Game card`, a tile four across on a desktop and a row on a phone, whose icon is the game's signature piece.
   Games are sorted by kind, not by player count, because six of the eight play both on your own and in a room and every game has rooms: Party, Puzzles and Spot & remember, each kind and its games in alphabetical order.
   How a game can be played stays a fact on its card ("Solo or 2–8 players").
@@ -89,7 +89,7 @@ Every room screen uses it (P07, P11, P12, P15, P16, D01-D15, M01-M16, MO07-MO16)
 
 ## Figma export
 
-The Figma MCP and REST API allowances on the Starter plan are too low to read 165 screens, so a local, read-only plugin in [tools/figma-export/](../tools/figma-export/README.md) snapshots the file instead.
+The Figma MCP and REST API allowances on the Starter plan are too low to read 167 screens, so a local, read-only plugin in [tools/figma-export/](../tools/figma-export/README.md) snapshots the file instead.
 It writes tokens, each Shared pieces family in full detail, one compact JSON per screen, every vector drawing as SVG, an audit of hardcoded values, and PNG previews.
 `FORMAT.md` inside each export documents the format.
 
