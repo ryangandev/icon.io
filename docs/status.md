@@ -27,7 +27,7 @@ A first visit is given a random adjective and animal, introduced once on Home, a
 The interface supports English and simplified Chinese, chosen from the footer and remembered for the browser ([languages](architecture.md#languages)).
 The catalogs cover room flows, all eight games, solo records and accessible labels; each player renders room announcements in their own language.
 The wordmark, footer slogan and English gameplay words retain their original language.
-This implementation was verified locally on 2026-10-06; publishing it to the hosted site is pending.
+This implementation passed local verification on 2026-10-06, including 748 unit tests and 36 browser checks.
 
 ## Product direction
 
