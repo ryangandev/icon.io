@@ -28,10 +28,11 @@ const FLOW_SECTIONS = [
   { id: '43:61071', prefix: '08', dir: '08-liars-dice' },
   { id: '43:61072', prefix: '09', dir: '09-hush' },
   { id: '43:61073', prefix: '10', dir: '10-daily-word' },
+  { id: '90:107487', prefix: '11', dir: '11-game-list-proposal' },
 ];
 const SHARED_SECTION = { id: '9:198', name: 'Shared pieces' };
-const EXPECTED_FLOWS = 167;
-const EXPECTED_FAMILIES = 47;
+const EXPECTED_FLOWS = 173;
+const EXPECTED_FAMILIES = 49;
 
 const FLOW_CODE = /^([A-Z]{1,2}\d{2})\b/;
 const PATH_TYPES = ['VECTOR', 'BOOLEAN_OPERATION', 'STAR', 'POLYGON', 'LINE'];

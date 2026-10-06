@@ -15,21 +15,22 @@ They are not copied here, so there is one place to change them.
 
 [Zumpo · Paper Pop flows](https://www.figma.com/design/pd5Hgp7zbT2cMqQNan35uY?node-id=9-14702), file key `pd5Hgp7zbT2cMqQNan35uY`, one page.
 
-| Section                              | Id         | Contents                                              |
-| ------------------------------------ | ---------- | ----------------------------------------------------- |
-| 00 / Review guide & flow map         | `9:14700`  | Review order, the real rules, which UX is new         |
-| 01 / Platform & shared flows         | `9:431`    | P01-P18, desktop                                      |
-| 02 / Draw & Guess / complete flow    | `9:866`    | DL01-DL11 lobby, D01-D15 room, desktop                |
-| 03 / Minesweeper / complete flow     | `9:2526`   | ML01-ML10 lobby, M01-M16 room, MS01-MS05 solo         |
-| 04 / Mobile / 390px flow adaptations | `9:10060`  | MO01-MO18, the main flows at 390 px                   |
-| 05 / Make 24 / complete flow         | `40:60741` | T01-T05 solo, T06-T10 room, T11-T12 phone             |
-| 06 / Pairs / complete flow           | `40:60743` | PR01-PR04 solo, PR05-PR08 room, PR09-PR10 phone       |
-| 07 / Trios / complete flow           | `43:61070` | TS01-TS04 solo, TS05-TS10 room, TS11-TS12 phone       |
-| 08 / Liar's Dice / complete flow     | `43:61071` | LD01-LD06 solo, LD07-LD12 room, LD13-LD15 phone       |
-| 09 / Hush / complete flow            | `43:61072` | HU01-HU09 room, HU10-HU11 phone                       |
-| 10 / Daily Word / complete flow      | `43:61073` | DW01-DW06 solo, DW07-DW11 room, DW12-DW14 phone       |
-| Shared pieces                        | `9:198`    | Component families, all named `Zumpo/…`               |
-| Archive                              | `9:197`    | Club Circuit and Pocket Studio, with their components |
+| Section                              | Id          | Contents                                              |
+| ------------------------------------ | ----------- | ----------------------------------------------------- |
+| 00 / Review guide & flow map         | `9:14700`   | Review order, the real rules, which UX is new         |
+| 01 / Platform & shared flows         | `9:431`     | P01-P18, desktop                                      |
+| 02 / Draw & Guess / complete flow    | `9:866`     | DL01-DL11 lobby, D01-D15 room, desktop                |
+| 03 / Minesweeper / complete flow     | `9:2526`    | ML01-ML10 lobby, M01-M16 room, MS01-MS05 solo         |
+| 04 / Mobile / 390px flow adaptations | `9:10060`   | MO01-MO18, the main flows at 390 px                   |
+| 05 / Make 24 / complete flow         | `40:60741`  | T01-T05 solo, T06-T10 room, T11-T12 phone             |
+| 06 / Pairs / complete flow           | `40:60743`  | PR01-PR04 solo, PR05-PR08 room, PR09-PR10 phone       |
+| 07 / Trios / complete flow           | `43:61070`  | TS01-TS04 solo, TS05-TS10 room, TS11-TS12 phone       |
+| 08 / Liar's Dice / complete flow     | `43:61071`  | LD01-LD06 solo, LD07-LD12 room, LD13-LD15 phone       |
+| 09 / Hush / complete flow            | `43:61072`  | HU01-HU09 room, HU10-HU11 phone                       |
+| 10 / Daily Word / complete flow      | `43:61073`  | DW01-DW06 solo, DW07-DW11 room, DW12-DW14 phone       |
+| 11 / Game list proposal              | `90:107487` | GL00 organizing, GL01-GL03 desktop, GL04-GL05 phone   |
+| Shared pieces                        | `9:198`     | Component families, all named `Zumpo/…`               |
+| Archive                              | `9:197`     | Club Circuit and Pocket Studio, with their components |
 
 Screens are 1440 px wide on desktop and 390 px on mobile, and each is named `<code> / <title>`.
 Review notes sit as loose text above each screen, outside the product UI.
@@ -82,7 +83,7 @@ Every room screen uses it (P07, P11, P12, P15, P16, D01-D15, M01-M16, MO07-MO16)
 
 ## Figma export
 
-The Figma MCP and REST API allowances on the Starter plan are too low to read 167 screens, so a local, read-only plugin in [tools/figma-export/](../tools/figma-export/README.md) snapshots the file instead.
+The Figma MCP and REST API allowances on the Starter plan are too low to read 173 screens, so a local, read-only plugin in [tools/figma-export/](../tools/figma-export/README.md) snapshots the file instead.
 It writes tokens, each Shared pieces family in full detail, one compact JSON per screen, every vector drawing as SVG, an audit of hardcoded values, and PNG previews.
 `FORMAT.md` inside each export documents the format.
 

@@ -1,0 +1,182 @@
+{
+  "format": 1,
+  "name": "Zumpo/Filter chip",
+  "id": "90:107177",
+  "type": "COMPONENT_SET",
+  "key": "e20056573a1c876a8be7ff1f55047a9674fa22e8",
+  "description": "One kind of game to show, above the game cards. Exactly one chip in a row is Selected; All is the first. Hover darkens the border; keyboard focus is the shared 2 px ink ring.",
+  "properties": {
+    "Label": {
+      "type": "text",
+      "default": "Puzzles"
+    },
+    "State": {
+      "type": "variant",
+      "default": "Default",
+      "options": [
+        "Default",
+        "Hover",
+        "Selected"
+      ]
+    }
+  },
+  "defaultVariant": "State=Default",
+  "variants": [
+    {
+      "name": "State=Default",
+      "id": "90:107171",
+      "props": {
+        "State": "Default"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "90:107171",
+        "name": "State=Default",
+        "w": 85,
+        "h": 38,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/999",
+        "layout": {
+          "mode": "row",
+          "pad": [
+            "$Zumpo · UI:space/8",
+            "$Zumpo · UI:space/16"
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "90:107172",
+            "name": "Label",
+            "w": 51,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Puzzles",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Hover",
+      "id": "90:107173",
+      "props": {
+        "State": "Hover"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "90:107173",
+        "name": "State=Hover",
+        "w": 85,
+        "h": 38,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/paper"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/999",
+        "layout": {
+          "mode": "row",
+          "pad": [
+            "$Zumpo · UI:space/8",
+            "$Zumpo · UI:space/16"
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "90:107174",
+            "name": "Label",
+            "w": 51,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Puzzles",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Selected",
+      "id": "90:107175",
+      "props": {
+        "State": "Selected"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "90:107175",
+        "name": "State=Selected",
+        "w": 85,
+        "h": 38,
+        "wSize": "hug",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/ink"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/999",
+        "layout": {
+          "mode": "row",
+          "pad": [
+            "$Zumpo · UI:space/8",
+            "$Zumpo · UI:space/16"
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "90:107176",
+            "name": "Label",
+            "w": 51,
+            "h": 20,
+            "wSize": "hug",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Label"
+            },
+            "text": "Puzzles",
+            "textStyle": "Zumpo/Label",
+            "fills": [
+              "$Zumpo · UI:color/cream"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

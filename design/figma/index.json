@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "exportedAt": "2026-10-05T20:09:32.672Z",
+  "exportedAt": "2026-10-06T05:52:31.920Z",
   "file": {
     "key": "pd5Hgp7zbT2cMqQNan35uY",
     "name": "Zumpo · Paper Pop flows",
@@ -13,13 +13,13 @@
     "previews": true
   },
   "counts": {
-    "flows": 167,
-    "componentFamilies": 47,
+    "flows": 173,
+    "componentFamilies": 49,
     "outsideComponents": 0,
     "svgs": 83,
     "seconds": 26,
-    "nodes": 10125,
-    "instances": 5594,
+    "nodes": 10547,
+    "instances": 5755,
     "grids": 66,
     "gridCells": 2207
   },
@@ -156,6 +156,20 @@
       "file": "components/drawing-toolbar.json",
       "preview": "previews/components/drawing-toolbar.png",
       "variants": 2
+    },
+    {
+      "name": "Zumpo/Filter chip",
+      "id": "90:107177",
+      "file": "components/filter-chip.json",
+      "preview": "previews/components/filter-chip.png",
+      "variants": 3
+    },
+    {
+      "name": "Zumpo/Game card",
+      "id": "90:105409",
+      "file": "components/game-card.json",
+      "preview": "previews/components/game-card.png",
+      "variants": 16
     },
     {
       "name": "Zumpo/Header",
@@ -2570,6 +2584,88 @@
         }
       ],
       "notes": []
+    },
+    {
+      "name": "11 / Game list proposal",
+      "id": "90:107487",
+      "dir": "11-game-list-proposal",
+      "flows": [
+        {
+          "code": "GL01",
+          "title": "Home",
+          "id": "90:107488",
+          "size": [
+            1440,
+            1423
+          ],
+          "file": "flows/11-game-list-proposal/GL01.json",
+          "preview": "previews/11-game-list-proposal/GL01.png",
+          "isFlow": true
+        },
+        {
+          "code": "GL02",
+          "title": "Games hub",
+          "id": "90:107936",
+          "size": [
+            1440,
+            1145
+          ],
+          "file": "flows/11-game-list-proposal/GL02.json",
+          "preview": "previews/11-game-list-proposal/GL02.png",
+          "isFlow": true
+        },
+        {
+          "code": "GL03",
+          "title": "Games hub, Puzzles",
+          "id": "90:108375",
+          "size": [
+            1440,
+            777
+          ],
+          "file": "flows/11-game-list-proposal/GL03.json",
+          "preview": "previews/11-game-list-proposal/GL03.png",
+          "isFlow": true
+        },
+        {
+          "code": "GL04",
+          "title": "Phone home",
+          "id": "90:108624",
+          "size": [
+            390,
+            2557
+          ],
+          "file": "flows/11-game-list-proposal/GL04.json",
+          "preview": "previews/11-game-list-proposal/GL04.png",
+          "isFlow": true
+        },
+        {
+          "code": "GL05",
+          "title": "Phone games hub",
+          "id": "90:109009",
+          "size": [
+            390,
+            2485
+          ],
+          "file": "flows/11-game-list-proposal/GL05.json",
+          "preview": "previews/11-game-list-proposal/GL05.png",
+          "isFlow": true
+        },
+        {
+          "code": "GL00",
+          "title": "How the games are organized",
+          "id": "90:109410",
+          "size": [
+            1440,
+            843
+          ],
+          "file": "flows/11-game-list-proposal/GL00.json",
+          "preview": "previews/11-game-list-proposal/GL00.png",
+          "isFlow": true
+        }
+      ],
+      "notes": [
+        "GL04 · Phone home / rows under a heading per kind; the filters scroll sideways. The icon is the game’s signature piece."
+      ]
     }
   ],
   "warnings": []

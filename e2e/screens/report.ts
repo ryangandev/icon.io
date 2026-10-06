@@ -8,6 +8,12 @@ export const COMPARE_DIR = path.join(ROOT, 'design/compare');
 /** Screens no state of the app shows, and why. */
 const NOT_CAPTURED: Record<string, string> = {
   M06: 'A round resolves the moment the last player locks in, so "everyone locked" is never on screen.',
+  GL00: 'The reasoning behind the game list proposal, not a screen.',
+  GL01: 'The game list proposal is waiting on review; the app draws P01.',
+  GL02: 'The game list proposal is waiting on review; the app draws P04.',
+  GL03: 'The game list proposal is waiting on review; the app has no filters yet.',
+  GL04: 'The game list proposal is waiting on review; the app draws MO01.',
+  GL05: 'The game list proposal is waiting on review; the app draws MO03.',
 };
 
 /**
