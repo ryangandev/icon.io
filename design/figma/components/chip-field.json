@@ -1,0 +1,963 @@
+{
+  "format": 1,
+  "name": "Zumpo/Chip field",
+  "id": "95:113407",
+  "type": "COMPONENT_SET",
+  "key": "aab11b5ddb71a99bc078f3b406886bb4aab767ff",
+  "description": "A labelled set of Toggle chips, any number on: a room's word categories. Action is a text button that turns every chip on or off (Choose all, Clear all). Error: none is on; the helper says so in danger red, as Input's does.",
+  "properties": {
+    "Label": {
+      "type": "text",
+      "default": "Word categories"
+    },
+    "Action": {
+      "type": "text",
+      "default": "Clear all"
+    },
+    "Show action": {
+      "type": "boolean",
+      "default": true
+    },
+    "Helper": {
+      "type": "text",
+      "default": "Each game draws one of these at random."
+    },
+    "State": {
+      "type": "variant",
+      "default": "Default",
+      "options": [
+        "Default",
+        "Error"
+      ]
+    }
+  },
+  "defaultVariant": "State=Default",
+  "variants": [
+    {
+      "name": "State=Default",
+      "id": "95:113245",
+      "props": {
+        "State": "Default"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "95:113245",
+        "name": "State=Default",
+        "w": 496,
+        "h": 230,
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/8",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "95:113246",
+            "name": "Heading",
+            "w": 496,
+            "h": 20,
+            "wSize": "fill",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "justify": "space_between",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "95:113247",
+                "name": "Label",
+                "w": 113,
+                "h": 20,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Label"
+                },
+                "text": "Word categories",
+                "textStyle": "Zumpo/Label",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "95:113248",
+                "name": "Action",
+                "w": 56,
+                "h": 20,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "visible": "Show action",
+                  "characters": "Action"
+                },
+                "text": "Clear all",
+                "textStyle": "Zumpo/Label",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "decoration": "underline"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "95:113249",
+            "name": "Chips",
+            "w": 496,
+            "h": 176,
+            "wSize": "fill",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "wrap": true,
+              "crossGap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "95:113250",
+                "name": "Actions",
+                "w": 107,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "On"
+                },
+                "componentId": "95:113239",
+                "props": {
+                  "Label": "Actions"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 107
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113255",
+                "name": "Animals",
+                "w": 109,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "On"
+                },
+                "componentId": "95:113239"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113260",
+                "name": "Clothing",
+                "w": 112,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "On"
+                },
+                "componentId": "95:113239",
+                "props": {
+                  "Label": "Clothing"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 112
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113265",
+                "name": "Electronics",
+                "w": 132,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "On"
+                },
+                "componentId": "95:113239",
+                "props": {
+                  "Label": "Electronics"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 132
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113270",
+                "name": "Fantasy",
+                "w": 108,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "On"
+                },
+                "componentId": "95:113239",
+                "props": {
+                  "Label": "Fantasy"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 108
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113275",
+                "name": "Food",
+                "w": 88,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "On"
+                },
+                "componentId": "95:113239",
+                "props": {
+                  "Label": "Food"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 88
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113280",
+                "name": "Fruits",
+                "w": 94,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "On"
+                },
+                "componentId": "95:113239",
+                "props": {
+                  "Label": "Fruits"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 94
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113285",
+                "name": "Household",
+                "w": 128,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "On"
+                },
+                "componentId": "95:113239",
+                "props": {
+                  "Label": "Household"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 128
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113290",
+                "name": "Jobs",
+                "w": 87,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "On"
+                },
+                "componentId": "95:113239",
+                "props": {
+                  "Label": "Jobs"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 87
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113295",
+                "name": "League of Legends",
+                "w": 182,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "On"
+                },
+                "componentId": "95:113239",
+                "props": {
+                  "Label": "League of Legends"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 182
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113300",
+                "name": "Music",
+                "w": 95,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "On"
+                },
+                "componentId": "95:113239",
+                "props": {
+                  "Label": "Music"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 95
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113305",
+                "name": "Nature",
+                "w": 102,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "On"
+                },
+                "componentId": "95:113239",
+                "props": {
+                  "Label": "Nature"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 102
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113310",
+                "name": "Places",
+                "w": 99,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "On"
+                },
+                "componentId": "95:113239",
+                "props": {
+                  "Label": "Places"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 99
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113315",
+                "name": "Sports",
+                "w": 100,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "On"
+                },
+                "componentId": "95:113239",
+                "props": {
+                  "Label": "Sports"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 100
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113320",
+                "name": "Vehicles",
+                "w": 113,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "On"
+                },
+                "componentId": "95:113239",
+                "props": {
+                  "Label": "Vehicles"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 113
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "95:113325",
+            "name": "Helper",
+            "w": 496,
+            "h": 18,
+            "wSize": "fill",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Helper"
+            },
+            "text": "Each game draws one of these at random.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State=Error",
+      "id": "95:113326",
+      "props": {
+        "State": "Error"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "95:113326",
+        "name": "State=Error",
+        "w": 496,
+        "h": 230,
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/8",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "95:113327",
+            "name": "Heading",
+            "w": 496,
+            "h": 20,
+            "wSize": "fill",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "justify": "space_between",
+              "align": "center",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "95:113328",
+                "name": "Label",
+                "w": 113,
+                "h": 20,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Label"
+                },
+                "text": "Word categories",
+                "textStyle": "Zumpo/Label",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "95:113329",
+                "name": "Action",
+                "w": 56,
+                "h": 20,
+                "wSize": "hug",
+                "hSize": "hug",
+                "propRefs": {
+                  "visible": "Show action",
+                  "characters": "Action"
+                },
+                "text": "Clear all",
+                "textStyle": "Zumpo/Label",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "decoration": "underline"
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "95:113330",
+            "name": "Chips",
+            "w": 496,
+            "h": 176,
+            "wSize": "fill",
+            "hSize": "hug",
+            "clip": true,
+            "layout": {
+              "mode": "row",
+              "gap": "$Zumpo · UI:space/8",
+              "wrap": true,
+              "crossGap": "$Zumpo · UI:space/8",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "95:113331",
+                "name": "Actions",
+                "w": 107,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "Off"
+                },
+                "componentId": "95:113229",
+                "props": {
+                  "Label": "Actions"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 107
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113336",
+                "name": "Animals",
+                "w": 109,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "Off"
+                },
+                "componentId": "95:113229"
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113341",
+                "name": "Clothing",
+                "w": 112,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "Off"
+                },
+                "componentId": "95:113229",
+                "props": {
+                  "Label": "Clothing"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 112
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113346",
+                "name": "Electronics",
+                "w": 132,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "Off"
+                },
+                "componentId": "95:113229",
+                "props": {
+                  "Label": "Electronics"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 132
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113351",
+                "name": "Fantasy",
+                "w": 108,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "Off"
+                },
+                "componentId": "95:113229",
+                "props": {
+                  "Label": "Fantasy"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 108
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113356",
+                "name": "Food",
+                "w": 88,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "Off"
+                },
+                "componentId": "95:113229",
+                "props": {
+                  "Label": "Food"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 88
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113361",
+                "name": "Fruits",
+                "w": 94,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "Off"
+                },
+                "componentId": "95:113229",
+                "props": {
+                  "Label": "Fruits"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 94
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113366",
+                "name": "Household",
+                "w": 128,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "Off"
+                },
+                "componentId": "95:113229",
+                "props": {
+                  "Label": "Household"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 128
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113371",
+                "name": "Jobs",
+                "w": 87,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "Off"
+                },
+                "componentId": "95:113229",
+                "props": {
+                  "Label": "Jobs"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 87
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113376",
+                "name": "League of Legends",
+                "w": 182,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "Off"
+                },
+                "componentId": "95:113229",
+                "props": {
+                  "Label": "League of Legends"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 182
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113381",
+                "name": "Music",
+                "w": 95,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "Off"
+                },
+                "componentId": "95:113229",
+                "props": {
+                  "Label": "Music"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 95
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113386",
+                "name": "Nature",
+                "w": 102,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "Off"
+                },
+                "componentId": "95:113229",
+                "props": {
+                  "Label": "Nature"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 102
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113391",
+                "name": "Places",
+                "w": 99,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "Off"
+                },
+                "componentId": "95:113229",
+                "props": {
+                  "Label": "Places"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 99
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113396",
+                "name": "Sports",
+                "w": 100,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "Off"
+                },
+                "componentId": "95:113229",
+                "props": {
+                  "Label": "Sports"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 100
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "95:113401",
+                "name": "Vehicles",
+                "w": 113,
+                "h": 38,
+                "wSize": "hug",
+                "hSize": "hug",
+                "component": "Zumpo/Toggle chip",
+                "variant": {
+                  "State": "Off"
+                },
+                "componentId": "95:113229",
+                "props": {
+                  "Label": "Vehicles"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 38,
+                    "width": 113
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "95:113406",
+            "name": "Helper",
+            "w": 496,
+            "h": 18,
+            "wSize": "fill",
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Helper"
+            },
+            "text": "Each game draws one of these at random.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/danger"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    }
+  ]
+}

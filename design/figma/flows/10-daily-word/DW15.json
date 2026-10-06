@@ -1,0 +1,1276 @@
+{
+  "format": 1,
+  "code": "DW15",
+  "title": "Phone · the reveal",
+  "id": "97:115499",
+  "section": "10 / Daily Word / complete flow",
+  "frame": {
+    "type": "FRAME",
+    "id": "97:115499",
+    "name": "DW15 / Phone · the reveal",
+    "x": 6130,
+    "y": 2552,
+    "w": 390,
+    "h": 1474,
+    "hSize": "hug",
+    "fills": [
+      "$Zumpo · UI:color/cream"
+    ],
+    "clip": true,
+    "layout": {
+      "mode": "column",
+      "gap": "$Zumpo · UI:space/24",
+      "pad": [
+        "$Zumpo · UI:space/20",
+        "$Zumpo · UI:space/20",
+        32,
+        "$Zumpo · UI:space/20"
+      ],
+      "strokesIncluded": true
+    },
+    "children": [
+      {
+        "type": "INSTANCE",
+        "id": "97:115500",
+        "name": "Zumpo/Room bar",
+        "w": 350,
+        "h": 68,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Room bar",
+        "variant": {
+          "Layout": "Phone"
+        },
+        "componentId": "39:19277",
+        "props": {
+          "Game": "Daily Word"
+        },
+        "overrides": [
+          {
+            "path": "Room identity / Room context / Room",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Maya’s room",
+              "Tone": "Sand"
+            }
+          },
+          {
+            "path": "Room identity / Room context / Phase",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Word 2 of 3",
+              "Tone": "Blue"
+            }
+          },
+          {
+            "path": "You",
+            "componentProperties": {
+              "Initials": "LE",
+              "Tone": "Lime"
+            }
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "97:115501",
+        "name": "Zumpo/Mobile tabs",
+        "w": 350,
+        "h": 34,
+        "hSize": "hug",
+        "component": "Zumpo/Mobile tabs",
+        "variant": {
+          "View": "Board"
+        },
+        "componentId": "9:416",
+        "overrides": [
+          {
+            "path": ".",
+            "height": 34,
+            "width": 350
+          }
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "97:115502",
+        "name": "Zumpo/Turn bar",
+        "w": 350,
+        "h": 144,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Turn bar",
+        "variant": {
+          "Kind": "Status",
+          "Layout": "Phone"
+        },
+        "componentId": "27:22192",
+        "props": {
+          "Main": "GHOST",
+          "Category": false,
+          "Meta": "You found it in 5 for +208",
+          "Label": "The word was"
+        },
+        "overrides": [
+          {
+            "path": "Top / Eyebrow / Category",
+            "componentProperties": {
+              "Icon": "24:5010",
+              "Show icon": false,
+              "Label": "Small · 9 × 9",
+              "Tone": "Sand"
+            }
+          },
+          {
+            "path": "Top / Countdown",
+            "componentProperties": {
+              "Label": "next word",
+              "Time": "00:06",
+              "Tone": "Waiting"
+            }
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "97:115503",
+        "name": "Word results",
+        "w": 350,
+        "h": 1062,
+        "wSize": "fill",
+        "hSize": "hug",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/20",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "FRAME",
+            "id": "97:115678",
+            "name": "Heading space",
+            "w": 173,
+            "h": 30,
+            "wSize": "hug",
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "97:115679",
+                "w": 173,
+                "h": 30,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Word 2 results",
+                "textStyle": "Zumpo/Heading",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "FRAME",
+            "id": "97:115680",
+            "name": "Boards",
+            "w": 350,
+            "h": 1012,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/12",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "INSTANCE",
+                "id": "97:115681",
+                "name": "Race board / Maya",
+                "w": 350,
+                "h": 244,
+                "wSize": "fill",
+                "hSize": "hug",
+                "component": "Zumpo/Race board",
+                "variant": {
+                  "State": "Found",
+                  "Board": "Small",
+                  "Layout": "Row"
+                },
+                "componentId": "96:115045",
+                "props": {
+                  "Status": "Found in 3 · +431"
+                },
+                "overrides": [
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "S",
+                      "State": "Present",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "T",
+                      "State": "Present",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "R",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "E",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "H",
+                      "State": "Present",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "O",
+                      "State": "Present",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "I",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "S",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "T",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "G",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "H",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "O",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "S",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "T",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Tile 1",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Tile 2",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Tile 3",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Tile 4",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Tile 5",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Tile 1",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Tile 2",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Tile 3",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Tile 4",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Tile 5",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Tile 1",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Tile 2",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Tile 3",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Tile 4",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Tile 5",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "97:115792",
+                "name": "Race board / Sam",
+                "w": 350,
+                "h": 244,
+                "wSize": "fill",
+                "hSize": "hug",
+                "component": "Zumpo/Race board",
+                "variant": {
+                  "State": "Found",
+                  "Board": "Small",
+                  "Layout": "Row"
+                },
+                "componentId": "96:115045",
+                "props": {
+                  "Status": "Found in 4 · +322",
+                  "Name": "Sam"
+                },
+                "overrides": [
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "C",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "R",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "N",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "E",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "S",
+                      "State": "Present",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "O",
+                      "State": "Present",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "U",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "T",
+                      "State": "Present",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "H",
+                      "State": "Present",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "M",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "O",
+                      "State": "Present",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "I",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "S",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "T",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "G",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "H",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "O",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "S",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "T",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Tile 1",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Tile 2",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Tile 3",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Tile 4",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Tile 5",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Tile 1",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Tile 2",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Tile 3",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Tile 4",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Tile 5",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "97:115913",
+                "name": "Race board / Leo",
+                "w": 350,
+                "h": 244,
+                "wSize": "fill",
+                "hSize": "hug",
+                "component": "Zumpo/Race board",
+                "variant": {
+                  "State": "Found",
+                  "Board": "Small",
+                  "Layout": "Row"
+                },
+                "componentId": "96:115045",
+                "props": {
+                  "Status": "Found in 5 · +208",
+                  "Name": "Leo"
+                },
+                "overrides": [
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "L",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "E",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "M",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "O",
+                      "State": "Present",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "N",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "S",
+                      "State": "Present",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "P",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "O",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "R",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "T",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "F",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "R",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "O",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "S",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "T",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "H",
+                      "State": "Present",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "O",
+                      "State": "Present",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "I",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "S",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "T",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "G",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "H",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "O",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "S",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "T",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Tile 1",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Tile 2",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Tile 3",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Tile 4",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Tile 5",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Empty",
+                      "Size": "Small"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "97:116044",
+                "name": "Race board / Ryan",
+                "w": 350,
+                "h": 244,
+                "wSize": "fill",
+                "hSize": "hug",
+                "component": "Zumpo/Race board",
+                "variant": {
+                  "State": "Out",
+                  "Board": "Small",
+                  "Layout": "Row"
+                },
+                "componentId": "96:115086",
+                "props": {
+                  "Status": "Missed",
+                  "Name": "Ryan"
+                },
+                "overrides": [
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "A",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "U",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "D",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "I",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 1 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "O",
+                      "State": "Present",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "T",
+                      "State": "Present",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "H",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "O",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "S",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 2 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "E",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "S",
+                      "State": "Present",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "H",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "O",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "O",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 3 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "T",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "B",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "O",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "O",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "S",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 4 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "T",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "R",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "O",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "O",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "S",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 5 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "T",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "H",
+                      "State": "Present",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "O",
+                      "State": "Present",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "I",
+                      "State": "Absent",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "S",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  },
+                  {
+                    "path": "Board / Row 6 / Zumpo/Letter tile",
+                    "componentProperties": {
+                      "Letter": "T",
+                      "State": "Correct",
+                      "Size": "Small"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "97:115506",
+        "name": "Footer",
+        "w": 350,
+        "h": 18,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/12",
+          "justify": "space_between",
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "97:115507",
+            "w": 350,
+            "h": 18,
+            "hSize": "hug",
+            "text": "A little play. Good company.",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ],
+            "autoResize": "height"
+          }
+        ]
+      }
+    ]
+  }
+}

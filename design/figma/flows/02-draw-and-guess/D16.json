@@ -1,21 +1,20 @@
 {
   "format": 1,
-  "code": "D02",
-  "title": "Host · ready to start",
-  "id": "9:1351",
+  "code": "D16",
+  "title": "Host · game settings",
+  "id": "95:114256",
   "section": "02 / Draw & Guess / complete flow",
   "reviewNotes": [
-    "D02 · Host · ready to start"
+    "D16 · Host · game settings"
   ],
   "frame": {
     "type": "FRAME",
-    "id": "9:1351",
-    "name": "D02 / Host · ready to start",
+    "id": "95:114256",
+    "name": "D16 / Host · game settings",
     "x": 3120,
-    "y": 2934,
+    "y": 8253,
     "w": 1440,
     "h": 790,
-    "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
     ],
@@ -34,7 +33,7 @@
     "children": [
       {
         "type": "INSTANCE",
-        "id": "39:19465",
+        "id": "95:114257",
         "name": "Zumpo/Room bar",
         "w": 1312,
         "h": 48,
@@ -85,7 +84,7 @@
       },
       {
         "type": "FRAME",
-        "id": "9:1376",
+        "id": "95:114258",
         "name": "Game & room",
         "w": 1312,
         "h": 620,
@@ -98,7 +97,7 @@
         "children": [
           {
             "type": "FRAME",
-            "id": "9:1377",
+            "id": "95:114259",
             "name": "Game stage",
             "w": 944,
             "h": 233,
@@ -111,7 +110,7 @@
             "children": [
               {
                 "type": "FRAME",
-                "id": "27:18083",
+                "id": "95:114260",
                 "name": "Waiting room",
                 "w": 944,
                 "h": 233,
@@ -134,7 +133,7 @@
                 "children": [
                   {
                     "type": "TEXT",
-                    "id": "27:18084",
+                    "id": "95:114261",
                     "w": 291,
                     "h": 42,
                     "wSize": "hug",
@@ -147,7 +146,7 @@
                   },
                   {
                     "type": "TEXT",
-                    "id": "27:18085",
+                    "id": "95:114262",
                     "w": 862,
                     "h": 25,
                     "wSize": "fill",
@@ -161,7 +160,7 @@
                   },
                   {
                     "type": "FRAME",
-                    "id": "27:18086",
+                    "id": "95:114263",
                     "name": "Actions",
                     "w": 472,
                     "h": 60,
@@ -182,7 +181,7 @@
                     "children": [
                       {
                         "type": "INSTANCE",
-                        "id": "27:18069",
+                        "id": "95:114264",
                         "name": "Action / Start game",
                         "w": 116,
                         "h": 48,
@@ -206,7 +205,7 @@
                       },
                       {
                         "type": "INSTANCE",
-                        "id": "27:18075",
+                        "id": "95:114265",
                         "name": "Action / Invite friends",
                         "w": 161,
                         "h": 48,
@@ -232,7 +231,7 @@
                       },
                       {
                         "type": "INSTANCE",
-                        "id": "95:114238",
+                        "id": "95:114266",
                         "name": "Action / Game settings",
                         "w": 171,
                         "h": 48,
@@ -252,31 +251,7 @@
                           {
                             "path": ".",
                             "height": 48,
-                            "reactions": [
-                              {
-                                "on": "on_click",
-                                "do": [
-                                  {
-                                    "nav": "navigate",
-                                    "to": "95:114256",
-                                    "toName": "D16 / Host · game settings"
-                                  }
-                                ]
-                              }
-                            ],
                             "width": 171
-                          }
-                        ],
-                        "reactions": [
-                          {
-                            "on": "on_click",
-                            "do": [
-                              {
-                                "nav": "navigate",
-                                "to": "95:114256",
-                                "toName": "D16 / Host · game settings"
-                              }
-                            ]
                           }
                         ]
                       }
@@ -288,7 +263,7 @@
           },
           {
             "type": "FRAME",
-            "id": "9:1384",
+            "id": "95:114267",
             "name": "Room sidebar",
             "w": 344,
             "h": 620,
@@ -301,7 +276,7 @@
             "children": [
               {
                 "type": "INSTANCE",
-                "id": "9:1385",
+                "id": "95:114268",
                 "name": "Zumpo/Scoreboard",
                 "w": 344,
                 "h": 304,
@@ -376,7 +351,7 @@
               },
               {
                 "type": "INSTANCE",
-                "id": "9:1415",
+                "id": "95:114269",
                 "name": "Zumpo/Chat",
                 "w": 344,
                 "h": 292,
@@ -453,7 +428,7 @@
       },
       {
         "type": "FRAME",
-        "id": "9:1428",
+        "id": "95:114270",
         "name": "Footer",
         "w": 1312,
         "h": 18,
@@ -468,7 +443,7 @@
         "children": [
           {
             "type": "TEXT",
-            "id": "9:1429",
+            "id": "95:114271",
             "w": 650,
             "h": 18,
             "hSize": "hug",
@@ -481,7 +456,7 @@
           },
           {
             "type": "TEXT",
-            "id": "9:1430",
+            "id": "95:114272",
             "w": 115,
             "h": 18,
             "wSize": "hug",
@@ -493,6 +468,300 @@
             ]
           }
         ]
+      },
+      {
+        "type": "RECTANGLE",
+        "id": "95:114273",
+        "name": "Scrim",
+        "x": 0,
+        "y": 0,
+        "absolute": true,
+        "w": 1440,
+        "h": 790,
+        "opacity": 0.4,
+        "fills": [
+          "$Zumpo · UI:color/ink"
+        ]
+      },
+      {
+        "type": "INSTANCE",
+        "id": "95:114274",
+        "name": "Dialog / Game settings",
+        "x": 440,
+        "y": 91,
+        "absolute": true,
+        "w": 560,
+        "h": 608,
+        "hSize": "hug",
+        "component": "Zumpo/Card",
+        "variant": {
+          "Kind": "Dialog"
+        },
+        "componentId": "35:13434",
+        "props": {
+          "Description": "The next game plays by these.",
+          "Title": "Game settings"
+        },
+        "overrides": [
+          {
+            "path": ".",
+            "height": 608,
+            "layoutPositioning": "ABSOLUTE",
+            "width": 560
+          }
+        ],
+        "slots": {
+          "Content": [
+            {
+              "type": "INSTANCE",
+              "id": "95:114470",
+              "name": "Zumpo/Input",
+              "w": 494,
+              "h": 113,
+              "wSize": "fill",
+              "hSize": "hug",
+              "component": "Zumpo/Input",
+              "variant": {
+                "State": "Default"
+              },
+              "componentId": "9:204",
+              "props": {
+                "Select": true,
+                "Helper": "1, 2, 3 or 4 rounds.",
+                "Value": "3 rounds",
+                "Label": "Rounds"
+              },
+              "overrides": [
+                {
+                  "path": "",
+                  "height": 113,
+                  "width": 494
+                }
+              ]
+            },
+            {
+              "type": "INSTANCE",
+              "id": "95:114527",
+              "name": "Zumpo/Chip field",
+              "w": 494,
+              "h": 230,
+              "wSize": "fill",
+              "hSize": "hug",
+              "component": "Zumpo/Chip field",
+              "variant": {
+                "State": "Default"
+              },
+              "componentId": "95:113245",
+              "props": {
+                "Action": "Choose all"
+              },
+              "overrides": [
+                {
+                  "path": "",
+                  "height": 230,
+                  "width": 494
+                },
+                {
+                  "path": "Chips / Actions",
+                  "componentProperties": {
+                    "Label": "Actions",
+                    "State": "Off"
+                  }
+                },
+                {
+                  "path": "Chips / Clothing",
+                  "componentProperties": {
+                    "Label": "Clothing",
+                    "State": "Off"
+                  }
+                },
+                {
+                  "path": "Chips / Electronics",
+                  "componentProperties": {
+                    "Label": "Electronics",
+                    "State": "Off"
+                  }
+                },
+                {
+                  "path": "Chips / Fantasy",
+                  "componentProperties": {
+                    "Label": "Fantasy",
+                    "State": "Off"
+                  }
+                },
+                {
+                  "path": "Chips / Fruits",
+                  "componentProperties": {
+                    "Label": "Fruits",
+                    "State": "Off"
+                  }
+                },
+                {
+                  "path": "Chips / Household",
+                  "componentProperties": {
+                    "Label": "Household",
+                    "State": "Off"
+                  }
+                },
+                {
+                  "path": "Chips / Jobs",
+                  "componentProperties": {
+                    "Label": "Jobs",
+                    "State": "Off"
+                  }
+                },
+                {
+                  "path": "Chips / League of Legends",
+                  "componentProperties": {
+                    "Label": "League of Legends",
+                    "State": "Off"
+                  }
+                },
+                {
+                  "path": "Chips / Music",
+                  "componentProperties": {
+                    "Label": "Music",
+                    "State": "Off"
+                  }
+                },
+                {
+                  "path": "Chips / Nature",
+                  "componentProperties": {
+                    "Label": "Nature",
+                    "State": "Off"
+                  }
+                },
+                {
+                  "path": "Chips / Sports",
+                  "componentProperties": {
+                    "Label": "Sports",
+                    "State": "Off"
+                  }
+                },
+                {
+                  "path": "Chips / Vehicles",
+                  "componentProperties": {
+                    "Label": "Vehicles",
+                    "State": "Off"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "FRAME",
+              "id": "I95:114274;35:13437;95:114277",
+              "name": "Actions",
+              "w": 496,
+              "h": 48,
+              "hSize": "hug",
+              "layout": {
+                "mode": "row",
+                "gap": "$Zumpo · UI:space/12",
+                "align": "center",
+                "strokesIncluded": true
+              },
+              "children": [
+                {
+                  "type": "INSTANCE",
+                  "id": "I95:114274;35:13437;95:114278",
+                  "name": "Action / Save",
+                  "w": 73,
+                  "h": 48,
+                  "wSize": "hug",
+                  "component": "Zumpo/Button",
+                  "variant": {
+                    "Style": "Primary",
+                    "State": "Default"
+                  },
+                  "componentId": "4:15",
+                  "props": {
+                    "Icon": "Zumpo/Icon / Glyph=check",
+                    "Label": "Save"
+                  },
+                  "overrides": [
+                    {
+                      "path": ".",
+                      "height": 48,
+                      "reactions": [
+                        {
+                          "on": "on_click",
+                          "do": [
+                            {
+                              "nav": "navigate",
+                              "to": "9:1351",
+                              "toName": "D02 / Host · ready to start"
+                            }
+                          ]
+                        }
+                      ],
+                      "width": 73
+                    }
+                  ],
+                  "reactions": [
+                    {
+                      "on": "on_click",
+                      "do": [
+                        {
+                          "nav": "navigate",
+                          "to": "9:1351",
+                          "toName": "D02 / Host · ready to start"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "INSTANCE",
+                  "id": "I95:114274;35:13437;95:114279",
+                  "name": "Action / Cancel",
+                  "w": 90,
+                  "h": 48,
+                  "wSize": "hug",
+                  "component": "Zumpo/Button",
+                  "variant": {
+                    "Style": "Secondary",
+                    "State": "Default"
+                  },
+                  "componentId": "4:18",
+                  "props": {
+                    "Label": "Cancel"
+                  },
+                  "overrides": [
+                    {
+                      "path": ".",
+                      "height": 48,
+                      "reactions": [
+                        {
+                          "on": "on_click",
+                          "do": [
+                            {
+                              "nav": "navigate",
+                              "to": "9:1351",
+                              "toName": "D02 / Host · ready to start"
+                            }
+                          ]
+                        }
+                      ],
+                      "width": 90
+                    }
+                  ],
+                  "reactions": [
+                    {
+                      "on": "on_click",
+                      "do": [
+                        {
+                          "nav": "navigate",
+                          "to": "9:1351",
+                          "toName": "D02 / Host · ready to start"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     ]
   }

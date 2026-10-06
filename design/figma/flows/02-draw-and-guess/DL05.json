@@ -14,7 +14,7 @@
     "x": 40,
     "y": 1542,
     "w": 1440,
-    "h": 1248,
+    "h": 1502,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -135,7 +135,8 @@
         "id": "9:1083",
         "name": "Dialog stage",
         "w": 1312,
-        "h": 877,
+        "h": 1131,
+        "hSize": "hug",
         "layout": {
           "mode": "row",
           "pad": [
@@ -152,7 +153,7 @@
             "id": "35:13541",
             "name": "A little room for you.",
             "w": 560,
-            "h": 765,
+            "h": 1019,
             "hSize": "hug",
             "component": "Zumpo/Card",
             "variant": {
@@ -165,7 +166,7 @@
             "overrides": [
               {
                 "path": ".",
-                "height": 765,
+                "height": 1019,
                 "width": 560
               }
             ],
@@ -225,6 +226,23 @@
                     "Helper": "1, 2, 3 or 4 rounds.",
                     "Value": "2 rounds",
                     "Label": "Rounds"
+                  }
+                },
+                {
+                  "type": "INSTANCE",
+                  "id": "95:113900",
+                  "name": "Zumpo/Chip field",
+                  "w": 496,
+                  "h": 230,
+                  "hSize": "hug",
+                  "component": "Zumpo/Chip field",
+                  "variant": {
+                    "State": "Error"
+                  },
+                  "componentId": "95:113326",
+                  "props": {
+                    "Action": "Choose all",
+                    "Helper": "Pick at least one category."
                   }
                 },
                 {
