@@ -11,7 +11,6 @@ import {
 } from '../../ui';
 import { gameInfo, soloPath } from '../../games/catalog';
 import { plural } from '../../games/plural';
-import { useSession } from '../../net/session';
 import { FormPage } from '../../shell/form-page';
 import {
   ChallengeButton,
@@ -70,8 +69,7 @@ const isSeed = (value: string | null): value is string =>
 /**
  * TS01-TS04, TS11: Trios on your own, a run of ten trios against one clock.
  * `?seed=` is a challenge: the same first table and deck somebody else
- * played. It all runs here: nothing reaches the server, and there is no
- * name to ask for.
+ * played. It all runs here: nothing reaches the server.
  */
 export function TriosSolo() {
   const [params, setParams] = useSearchParams();
@@ -113,7 +111,6 @@ function RunPicker({
   onStart: () => void;
 }) {
   const game = gameInfo('trios');
-  const { name } = useSession();
   const best = readBest(BEST_KEY);
   const rule =
     'In a trio, each of colour, shape, count and fill is all the same or all different across the three cards. A wrong pick adds 5 seconds.';
@@ -136,11 +133,7 @@ function RunPicker({
       actions={
         <>
           <Button type="submit">Start</Button>
-          <ButtonLink
-            to={name ? '/games' : '/'}
-            variant="secondary"
-            icon="back"
-          >
+          <ButtonLink to="/" variant="secondary" icon="back">
             Back to games
           </ButtonLink>
         </>

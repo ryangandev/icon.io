@@ -14,11 +14,9 @@ import CreateRoomPage from './pages/create-room';
 import HomePage from './pages/home';
 import HowToPlayPage from './pages/how-to-play';
 import LobbyPage from './pages/lobby';
-import NamePage from './pages/name';
 import NotFoundPage from './pages/not-found';
 import RoomPage from './room/room-page';
 import SoloPage from './solo/solo-page';
-import { RequireName } from './shell/require-name';
 
 // The design system gallery, for development only: the build drops it.
 const DesignGallery = import.meta.env.DEV
@@ -56,23 +54,13 @@ export const routes: RouteObject[] = [
     element: <Root />,
     children: [
       { path: '/', element: <HomePage /> },
-      { path: '/name', element: <NamePage /> },
       { path: '/how-to-play', element: <HowToPlayPage /> },
       // Every game is on the home page; old links to the games page land there.
       { path: '/games', element: <Navigate to="/" replace /> },
-      // A game on your own needs no name.
+      { path: '/games/:game', element: <GamePage page={LobbyPage} /> },
+      { path: '/games/:game/new', element: <GamePage page={CreateRoomPage} /> },
       { path: '/games/:game/solo', element: <GamePage page={SoloPage} /> },
-      {
-        element: <RequireName />,
-        children: [
-          { path: '/games/:game', element: <GamePage page={LobbyPage} /> },
-          {
-            path: '/games/:game/new',
-            element: <GamePage page={CreateRoomPage} />,
-          },
-          { path: '/games/:game/rooms/:roomId', element: <GameRoomPage /> },
-        ],
-      },
+      { path: '/games/:game/rooms/:roomId', element: <GameRoomPage /> },
       ...(DesignGallery
         ? [
             {

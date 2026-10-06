@@ -10,7 +10,8 @@ import {
 } from 'react';
 import type { SessionInfo } from '../../../shared/wire-types';
 import { createSocket, type ZumpoSocket } from './socket';
-import { readName, writeIdentity, writeName } from './storage';
+import { randomName } from '../players/random-name';
+import { readName, writeIdentity, writeName, type StoredName } from './storage';
 
 /**
  * Where the connection stands.
@@ -42,8 +43,17 @@ export interface Session {
    * lobby subscription or a room's listeners, is set up again for each.
    */
   connection: number | null;
-  /** The player's name for this browser session; '' until they choose one. */
+  /**
+   * The player's name: picked at random on the first visit, so there always
+   * is one, and remembered by this browser.
+   */
   name: string;
+  /** Still the name picked for them, rather than one they chose. */
+  namePicked: boolean;
+  /**
+   * The name they chose: remembered, and given to every seat they hold, which
+   * the server shows their room at once.
+   */
   setName: (name: string) => void;
   /**
    * Starts connecting, or starts over after a failure or a takeover;
@@ -76,7 +86,7 @@ export function SessionProvider({
   const [playerId, setPlayerId] = useState('');
   const [reconnectGraceMs, setReconnectGraceMs] = useState(0);
   const [identified, setIdentified] = useState(0);
-  const [name, setNameState] = useState(readName);
+  const [stored, setStored] = useState(firstName);
 
   useEffect(() => {
     let everOnline = false;
@@ -155,10 +165,18 @@ export function SessionProvider({
     socket.connect();
   }, [socket, setStatus]);
 
-  const setName = useCallback((next: string) => {
-    writeName(next);
-    setNameState(next);
-  }, []);
+  const setName = useCallback(
+    (next: string) => {
+      const chosen = { name: next.trim(), picked: false };
+      writeName(chosen);
+      setStored(chosen);
+      // Offline, socket.io holds this until the connection is back, and a
+      // player who has not connected yet has no seat to rename: the server
+      // answers and changes nothing. Either way there is nothing to report.
+      socket.emit('player:rename', chosen.name, () => {});
+    },
+    [socket],
+  );
 
   const connection = status === 'online' ? identified : null;
   const lost = status === 'failed' || status === 'replaced';
@@ -170,7 +188,8 @@ export function SessionProvider({
       playerId,
       reconnectGraceMs,
       connection,
-      name,
+      name: stored.name,
+      namePicked: stored.picked,
       setName,
       connect,
     }),
@@ -181,7 +200,7 @@ export function SessionProvider({
       playerId,
       reconnectGraceMs,
       connection,
-      name,
+      stored,
       setName,
       connect,
     ],
@@ -190,6 +209,15 @@ export function SessionProvider({
   return (
     <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
   );
+}
+
+/** The remembered name, or a new random one remembered from now on. */
+function firstName(): StoredName {
+  const remembered = readName();
+  if (remembered) return remembered;
+  const picked = { name: randomName(), picked: true };
+  writeName(picked);
+  return picked;
 }
 
 export function useSession(): Session {

@@ -365,7 +365,7 @@ export function isGameType(value: string | undefined): value is GameType {
   return GAMES.some((game) => game.type === value);
 }
 
-/** A game on your own; it needs no name. */
+/** A game on your own, which never reaches the server. */
 export const soloPath = (type: GameType) => `/games/${type}/solo`;
 
 /** The game's room list. */

@@ -44,7 +44,7 @@ Three early Paper Pop concepts (`3:53`, `3:54`, `3:55`) sit above the flows for 
 - Some screens are UX the old app never had: the final results panel, the leave confirmation, the invite sheet, mobile tabs and the rules dialog; Ryan approved them with the rest of the file.
 - Mobile covers the main flows, not a mobile version of every desktop state.
   Make 24, Pairs, Trios, Liar's Dice, Hush and Daily Word keep their phone screens in their own sections, and Minesweeper solo's (MS05) in 03.
-- Solo screens show a visitor with no name where it matters (MS01-MS05: no avatar); a visitor who has a name sees it as usual (T01-T05, PR01-PR04, TS01-TS04, LD01-LD06, DW01-DW06).
+- Every visitor has a name from the first page on, so every screen shows the viewer's avatar, solo screens included.
 - Prototype links are partial; this is a design, not a clickable spec of every control.
 
 Decisions from the design review rounds (their reports are in git history):
@@ -80,10 +80,23 @@ Every room screen uses it (P07, P11, P12, P15, P16, D01-D15, M01-M16, MO07-MO16)
 
 - A room has no links out but the wordmark: How to play opens over the room (P15), so a game is never lost to a rules check.
 - Leave room between games leaves at once; nothing is at stake and the click says what it means.
-- Every other way out asks first, mid-game and between games: Leave room mid-game, the wordmark, the browser's back button and Change name.
+- Every other way out asks first, mid-game and between games: Leave room mid-game, the wordmark and the browser's back button.
+  Changing your name is not a way out: it happens in place, so it never asks.
   Mid-game the dialog names the points that go (P11); between games only the seat (P16).
 - While reconnecting the bar has no Leave room; the notice under it says what is happening (P07).
 - The room screens' hidden notice layers are gone; the visible notices, such as D10's pending one, stay.
+
+### Names
+
+Ryan approved dropping the name step on 2026-10-05: it stood between every visitor and every game, and asked again in every new tab.
+Nobody is asked for a name any more.
+
+- A first visit picks a random name, an adjective and an animal such as Sleepy Otter, and this browser remembers it.
+- `Zumpo/Name menu` is the one place to change it: State=Edit is the field, Save and Roll a name, which fills in another random name (P13, MO02); State=Error is an empty name (P03).
+- It opens from the viewer's avatar on every page and in every room, and from Playing as in a lobby's actions (DL01-DL03, ML01-ML03, MO04).
+- State=Hint opens once from the avatar on a first visit (P02); Got it, Change name or any rename closes it for good.
+- A rename reaches every seat at once and the room's chat says so, as Brave Noodle becoming Leo does in P20; nothing is lost, so it never asks first.
+- While the name is still the picked one, a room's waiting card says so beside a Change name button (P19), because a friend who came from an invite link should be recognisable.
 
 [taste-skill](https://github.com/Leonxlnx/taste-skill)'s `design-taste-frontend` and `redesign-existing-projects` skills are useful review checklists, not authorities: they target landing pages, and where a rule contradicts the brand direction above (its cream-palette and single-accent rules, for example), the brand wins.
 
@@ -108,7 +121,7 @@ To review the design system, run `npm run dev -w client` (it needs no server) an
 Every specimen is captioned with its Figma variant, uses that variant's sample copy, and shows its size beside Figma's, in red when they differ by more than half a pixel.
 Each family's Figma preview sits under it at the same scale.
 
-`Zumpo/Card` is every focused surface: the one card of a name, create-room, password or error page (Kind=Focused), a dialog over a room (Dialog), and a panel in a page's column, such as an empty or loading lobby (Panel).
+`Zumpo/Card` is every focused surface: the one card of a create-room, password or error page (Kind=Focused), a dialog over a room (Dialog), and a panel in a page's column, such as an empty or loading lobby (Panel).
 Its Title and Description are text properties, and each screen puts its own fields, status and actions into its Content slot, so a change to the surface reaches all 28 screens that use it.
 In code the same three are `Card`, `Card kind="panel"` and `Dialog`, which shares the card's styles.
 
@@ -140,7 +153,6 @@ Code differs from Figma on purpose in a few places:
   The invite link's box grows to the whole link: two lines at P12's width, three on a phone, which Figma does not draw.
 - A game that ends while the room is open bursts into confetti in the brand accents and the sun brush's gold, at Ryan's request; Figma draws the results still, and a game found finished on arrival or after a refresh is not celebrated.
   It stays off when the system asks for reduced motion, and a Hush game the team lost is not celebrated.
-- The phone name page (MO02) keeps the desktop's Back home button beside Let’s play, as the other phone forms (MO05, MO06) lay out their buttons; MO02 stacks a Cancel under it.
 - Where Daily Word has no line under the board, on a phone and in a room while guessing, as Figma draws them, the "Not in the word list" note is said over the board instead, across the row under the one being fixed; Figma draws it only on your own (DW03).
 - The others' boards in a Daily Word room stand 12 px apart, not DW07's 16 px: three at 16 px are 2 px wider than the panel holds beside the Desktop keyboard, which Figma lets overflow.
 

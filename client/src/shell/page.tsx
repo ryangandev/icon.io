@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
-import { useLocation, useNavigate } from 'react-router';
-import { Button, Header, type HeaderMenu, type Viewer } from '../ui';
+import { useLocation } from 'react-router';
+import { Header, type Viewer, type ViewerMenu } from '../ui';
 import { useSession } from '../net/session';
 import { initialsOf, toneOf } from '../players/avatar';
-import { namePath } from './require-name';
+import { useViewerMenu } from './name-menu';
 import styles from './page.module.css';
 
 // Games is the home page, and stays current on every game's own pages.
@@ -18,13 +18,19 @@ const LINKS = [
  */
 export function Page({
   header,
+  nameHint = false,
   children,
 }: {
   header?: ReactNode;
+  /**
+   * Where a first visit lands: the name menu opens by itself once to say
+   * which name was picked (P02).
+   */
+  nameHint?: boolean;
   children: ReactNode;
 }) {
   const { pathname } = useLocation();
-  const { viewer, viewerMenu } = useViewer();
+  const { viewer, viewerMenu } = useViewer({ hint: nameHint });
 
   const links = LINKS.map(({ label, to, section }) => ({
     label,
@@ -51,34 +57,26 @@ export function Page({
 }
 
 /**
- * The viewer's avatar, once they have a name, and the session menu it opens:
- * who they are and the way to change it.
+ * The viewer's avatar and the name menu it opens. `seatName` is the name a
+ * room gave them, numbered when somebody else there has theirs, so the avatar
+ * matches their row.
  */
-export function useViewer(): { viewer?: Viewer; viewerMenu: HeaderMenu } {
-  const navigate = useNavigate();
-  const { name } = useSession();
+export function useViewer({
+  hint = false,
+  seatName,
+}: { hint?: boolean; seatName?: string } = {}): {
+  viewer: Viewer;
+  viewerMenu: ViewerMenu;
+} {
+  const session = useSession();
+  const name = seatName ?? session.name;
+  const viewerMenu = useViewerMenu({ hint });
   return {
-    viewer: name
-      ? {
-          initials: initialsOf(name),
-          tone: toneOf(name),
-          label: `${name}: your name`,
-        }
-      : undefined,
-    viewerMenu: {
-      title: name,
-      description:
-        'Your name is saved for this browser session. Changing it takes you back to the start.',
-      action: (
-        <Button
-          variant="secondary"
-          icon="edit"
-          className={styles.menuAction}
-          onClick={() => navigate(namePath('/games'))}
-        >
-          Change name
-        </Button>
-      ),
+    viewer: {
+      initials: initialsOf(name),
+      tone: toneOf(name),
+      label: `${name}: your name`,
     },
+    viewerMenu,
   };
 }

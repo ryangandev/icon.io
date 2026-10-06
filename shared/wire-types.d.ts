@@ -855,6 +855,12 @@ interface ClientToServerEvents {
    */
   'room:sync': (roomId: string, ack: Ack<Result>) => void;
   'room:leave': (roomId: string) => void;
+  /**
+   * The player's name from now on, in every seat they hold: each room is shown
+   * it at once and told in its chat. A name somebody else in the room already
+   * goes by gets a number after it there.
+   */
+  'player:rename': (username: string, ack: Ack<Result>) => void;
   'game:start': (roomId: string, ack: Ack<Result>) => void;
 
   /** Talking, and in Draw & Guess also guessing: the game decides which. */

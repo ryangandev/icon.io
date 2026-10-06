@@ -61,6 +61,8 @@ const BUCKET_FOR_EVENT: Record<ClientToServerEvent, BucketName> = {
   'room:create': 'room',
   'room:join': 'room',
   'room:leave': 'room',
+  // Saving a name is a click, and a name the same as before changes nothing.
+  'player:rename': 'room',
   'room:sync': 'room',
   'game:start': 'room',
   'dg:select-word': 'room',

@@ -21,6 +21,9 @@ Their behaviour contracts are in `docs/games/`.
 On 2026-10-05 Ryan chose to host it for a few testers on Render's free plan, and it is live at `zumpo.ryangan.me` ([architecture](architecture.md#deployment)).
 The server was hardened for that the same day ([#30](https://github.com/ryangandev/zumpo/pull/30)): a restart tells each room it closed, a duplicated tab takes over its player, what a client can make the server hold is bounded, and Render checks `/healthz`.
 
+The name step is gone, at Ryan's request on 2026-10-05, because asking for a name before anything else was the biggest friction in the product.
+A first visit is given a random adjective and animal, introduced once on Home, and anyone can change their name in place at any time, in a room too, where everyone sees it at once ([design](design.md#names)).
+
 ## Product direction
 
 Decided by Ryan, and the frame for every design and implementation choice:
@@ -65,6 +68,6 @@ Ideas worth doing next, roughly in order:
 ## Deliberately not doing
 
 - Migrating to Next.js: the redesign is a UI change, and the server model does not need it.
-- Accounts: a name and a per-tab identity are the product.
+- Accounts: a name for the browser and an identity per tab are the product.
 - Horizontal scaling: rooms and clocks live in one process (see [architecture](architecture.md#code-map)).
 - Changing game rules or timings as part of the redesign; rule changes are their own decisions.

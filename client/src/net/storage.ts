@@ -1,26 +1,33 @@
 import type { PlayerIdentity } from '../../../shared/wire-types';
 
 /*
- * Both live in sessionStorage: per tab, and surviving a reload, which is
- * exactly the lifetime of a seat at a table. localStorage would hand two tabs
- * one identity, and they would fight over one seat.
+ * The identity lives in sessionStorage: per tab, and surviving a reload, which
+ * is exactly the lifetime of a seat at a table. localStorage would hand two
+ * tabs one identity, and they would fight over one seat.
+ *
+ * The name lives in localStorage: it is what this browser calls its player,
+ * so a new tab or a visit next week starts with it. Two tabs are still two
+ * players; they just begin with the same name, and a room numbers the second.
  */
 
 const IDENTITY_KEY = 'zumpo:identity';
 const NAME_KEY = 'zumpo:name';
+const NAME_HINT_KEY = 'zumpo:name-hint';
 
-function read(key: string): string | null {
+type Store = 'sessionStorage' | 'localStorage';
+
+function read(store: Store, key: string): string | null {
   try {
-    return sessionStorage.getItem(key);
+    return window[store].getItem(key);
   } catch {
     // Storage can be blocked; the player is then simply new on every load.
     return null;
   }
 }
 
-function write(key: string, value: string): void {
+function write(store: Store, key: string, value: string): void {
   try {
-    sessionStorage.setItem(key, value);
+    window[store].setItem(key, value);
   } catch {
     // Nothing to do: the value still lives in memory for this page.
   }
@@ -28,7 +35,9 @@ function write(key: string, value: string): void {
 
 export function readIdentity(): PlayerIdentity | null {
   try {
-    const parsed = JSON.parse(read(IDENTITY_KEY) ?? 'null') as unknown;
+    const parsed = JSON.parse(
+      read('sessionStorage', IDENTITY_KEY) ?? 'null',
+    ) as unknown;
     if (
       parsed &&
       typeof parsed === 'object' &&
@@ -46,13 +55,49 @@ export function readIdentity(): PlayerIdentity | null {
 }
 
 export function writeIdentity({ playerId, token }: PlayerIdentity): void {
-  write(IDENTITY_KEY, JSON.stringify({ playerId, token }));
+  write('sessionStorage', IDENTITY_KEY, JSON.stringify({ playerId, token }));
 }
 
-export function readName(): string {
-  return read(NAME_KEY) ?? '';
+/**
+ * The player's name, and whether it is still the one picked for them on their
+ * first visit rather than one they chose.
+ */
+export interface StoredName {
+  name: string;
+  picked: boolean;
 }
 
-export function writeName(name: string): void {
-  write(NAME_KEY, name);
+export function readName(): StoredName | null {
+  try {
+    const parsed = JSON.parse(
+      read('localStorage', NAME_KEY) ?? 'null',
+    ) as unknown;
+    if (
+      parsed &&
+      typeof parsed === 'object' &&
+      'name' in parsed &&
+      'picked' in parsed &&
+      typeof parsed.name === 'string' &&
+      parsed.name.trim() !== '' &&
+      typeof parsed.picked === 'boolean'
+    ) {
+      return { name: parsed.name, picked: parsed.picked };
+    }
+  } catch {
+    // A malformed entry just means a new name is picked.
+  }
+  return null;
+}
+
+export function writeName({ name, picked }: StoredName): void {
+  write('localStorage', NAME_KEY, JSON.stringify({ name, picked }));
+}
+
+/** Whether the first visit's hint about the picked name has been seen. */
+export function readNameHintSeen(): boolean {
+  return read('localStorage', NAME_HINT_KEY) === 'seen';
+}
+
+export function writeNameHintSeen(): void {
+  write('localStorage', NAME_HINT_KEY, 'seen');
 }

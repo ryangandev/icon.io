@@ -15,7 +15,7 @@ import { z } from 'zod';
  * - out of the same primitives, which are exported for exactly that.
  */
 
-const USERNAME_MAX = 18; // matches the landing page input
+const USERNAME_MAX = 18; // matches the name field
 const ROOM_NAME_MAX = 40;
 const PASSWORD_MAX = 20;
 const MESSAGE_MAX = 40;
@@ -74,6 +74,7 @@ const handshakeAuth = z.object({
 const gameTypeOnly = z.tuple([gameType]);
 const joinRoomRequest = z.tuple([roomId, username, password]);
 const roomIdOnly = z.tuple([roomId]);
+const renameRequest = z.tuple([username]);
 /** The speaker is whoever holds the seat, so a message carries no name. */
 const chatRequest = z.tuple([roomId, trimmedString(MESSAGE_MAX)]);
 
@@ -117,6 +118,8 @@ export {
   gameTypeOnly,
   joinRoomRequest,
   roomIdOnly,
+  renameRequest,
   chatRequest,
   MESSAGE_MAX,
+  USERNAME_MAX,
 };

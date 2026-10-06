@@ -13,6 +13,7 @@ import { useLobby } from '../net/use-lobby';
 import { useSession } from '../net/session';
 import { initialsOf, toneOf } from '../players/avatar';
 import { ConnectionLost } from '../shell/connection-lost';
+import { NameMenuButton } from '../shell/name-menu';
 import { Page } from '../shell/page';
 import { PageHeading, type PageHeadingProps } from '../shell/page-heading';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
@@ -21,7 +22,7 @@ import styles from './lobby.module.css';
 /** DL01-DL03, ML01-ML03, MO04: a game's rooms, live. */
 export default function LobbyPage({ gameType }: { gameType: GameType }) {
   const game = gameInfo(gameType);
-  const { lost } = useSession();
+  const { lost, name } = useSession();
   const rooms = useLobby(gameType);
   const phone = useMediaQuery(PHONE);
 
@@ -50,8 +51,27 @@ export default function LobbyPage({ gameType }: { gameType: GameType }) {
             <ButtonLink to="/" variant="secondary" icon="back">
               Back to games
             </ButtonLink>
-            <ButtonLink to={createRoomPath(gameType)}>Create a room</ButtonLink>
+            {phone ? (
+              <ButtonLink to={createRoomPath(gameType)}>
+                Create a room
+              </ButtonLink>
+            ) : (
+              <div className={styles.end}>
+                <NameMenuButton variant="quiet">
+                  Playing as {name}
+                </NameMenuButton>
+                <ButtonLink to={createRoomPath(gameType)}>
+                  Create a room
+                </ButtonLink>
+              </div>
+            )}
           </div>
+          {phone && (
+            // A row of its own on a phone, its icon on the content's edge.
+            <div className={styles.playingAs}>
+              <NameMenuButton variant="quiet">Playing as {name}</NameMenuButton>
+            </div>
+          )}
           <div className={styles.layout}>
             <div className={styles.rooms}>
               {rooms === null ? (

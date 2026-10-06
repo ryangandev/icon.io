@@ -66,7 +66,7 @@ function recordLine(record: LiarsDiceRecord): string | null {
 
 /**
  * LD01-LD06, LD13: Liar's Dice on your own, against bots. It all runs here:
- * nothing reaches the server, and there is no name to ask for.
+ * nothing reaches the server.
  */
 export function LiarsDiceSolo() {
   // Each game is a fresh mount, so nothing carries over from the last.
@@ -97,7 +97,6 @@ export function LiarsDiceSolo() {
 /** LD01: how many bots, and how many dice each. */
 function TablePicker({ onStart }: { onStart: (picks: SoloPicks) => void }) {
   const game = gameInfo('liars-dice');
-  const { name } = useSession();
   const [picks, setPicks] = useState(readPicks);
   const description =
     recordLine(readRecord()) ??
@@ -119,11 +118,7 @@ function TablePicker({ onStart }: { onStart: (picks: SoloPicks) => void }) {
       actions={
         <>
           <Button type="submit">Start</Button>
-          <ButtonLink
-            to={name ? '/games' : '/'}
-            variant="secondary"
-            icon="back"
-          >
+          <ButtonLink to="/" variant="secondary" icon="back">
             Back to games
           </ButtonLink>
         </>
@@ -260,7 +255,7 @@ function SoloTable({
             <TurnBar {...turnBar(game)} />
           )}
           <Table
-            seats={seatsOf(game, name || 'You')}
+            seats={seatsOf(game, name)}
             youId={YOU}
             dicePerPlayer={game.dicePerPlayer}
             turnId={game.turnId}

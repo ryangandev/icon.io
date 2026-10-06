@@ -54,9 +54,7 @@ async function findTrio() {
 
 /** Starts the run `SEED` deals. */
 async function startRun() {
-  const view = await renderApp(`/games/trios/solo?seed=${SEED}`, {
-    name: '',
-  });
+  const view = await renderApp(`/games/trios/solo?seed=${SEED}`);
   await user.click(screen.getByRole('button', { name: 'Start' }));
   return view;
 }
@@ -70,8 +68,10 @@ describe('Trios on your own', () => {
     ).toHaveAttribute('href', '/games/trios/solo');
   });
 
-  it('needs no name, and deals when asked', async () => {
-    const { router } = await renderApp('/games/trios/solo', { name: '' });
+  it('deals on a first visit when asked', async () => {
+    const { router } = await renderApp('/games/trios/solo', {
+      firstVisit: true,
+    });
     expect(router.state.location.pathname).toBe('/games/trios/solo');
     expect(screen.getByText('Ten trios, one clock.')).toBeInTheDocument();
     expect(screen.getByText('Not yet')).toBeInTheDocument();
@@ -84,7 +84,7 @@ describe('Trios on your own', () => {
   });
 
   it('plays a challenge’s own deal', async () => {
-    await renderApp(`/games/trios/solo?seed=${SEED}`, { name: '' });
+    await renderApp(`/games/trios/solo?seed=${SEED}`);
     expect(
       screen.getByText(/^A friend sent you this deal\./),
     ).toBeInTheDocument();

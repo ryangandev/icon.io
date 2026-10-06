@@ -16,7 +16,6 @@ import {
   type TurnBarProps,
 } from '../../ui';
 import { gameInfo, soloPath } from '../../games/catalog';
-import { useSession } from '../../net/session';
 import { FormPage } from '../../shell/form-page';
 import {
   ChallengeButton,
@@ -73,7 +72,7 @@ const isSeed = (value: string | null): value is string =>
 /**
  * T01-T05, T11: Make 24 on your own, a run of ten hands against one clock.
  * `?seed=` is a challenge: the same ten hands somebody else played. It all
- * runs here: nothing reaches the server, and there is no name to ask for.
+ * runs here: nothing reaches the server.
  */
 export function Make24Solo() {
   const [params, setParams] = useSearchParams();
@@ -115,7 +114,6 @@ function RunPicker({
   onStart: () => void;
 }) {
   const game = gameInfo('make-24');
-  const { name } = useSession();
   const best = readBest(BEST_KEY);
   const description = challenge
     ? 'A friend sent you these ten hands. Use each number once to make 24. Stuck? Skip the hand for 30 seconds on the clock.'
@@ -138,11 +136,7 @@ function RunPicker({
       actions={
         <>
           <Button type="submit">Start</Button>
-          <ButtonLink
-            to={name ? '/games' : '/'}
-            variant="secondary"
-            icon="back"
-          >
+          <ButtonLink to="/" variant="secondary" icon="back">
             Back to games
           </ButtonLink>
         </>

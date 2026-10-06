@@ -1,8 +1,7 @@
-import { Popover } from '@base-ui/react/popover';
-import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 import { cx } from '../cx';
 import { Avatar, type AvatarProps } from './avatar';
+import { NameMenu, type NameMenuProps } from './name-menu';
 import { Wordmark } from './wordmark';
 import styles from './header.module.css';
 
@@ -17,19 +16,14 @@ export type Viewer = Pick<AvatarProps, 'initials' | 'tone' | 'label'>;
 
 export interface HeaderProps {
   links: readonly HeaderLink[];
-  /** The viewer, once they have a name. */
   viewer?: Viewer;
-  /** Opened from the viewer's avatar: who they are and what they can change. */
-  viewerMenu?: HeaderMenu;
+  /** Opened from the viewer's avatar: their name, and the way to change it. */
+  viewerMenu?: ViewerMenu;
   className?: string;
 }
 
-export interface HeaderMenu {
-  title: ReactNode;
-  description: ReactNode;
-  /** One full-width button; it should close the menu as it acts. */
-  action: ReactNode;
-}
+/** The name menu the viewer's avatar opens, all but its trigger. */
+export type ViewerMenu = Omit<NameMenuProps, 'trigger' | 'align'>;
 
 /**
  * Zumpo/Header: the wordmark home link, the main links and the viewer. On a
@@ -63,47 +57,32 @@ export function Header({ links, viewer, viewerMenu, className }: HeaderProps) {
 
 /**
  * The viewer's avatar at the end of a header or room bar: 40 px, 32 px on a
- * phone. With a menu it is the button that opens the session menu (P13).
+ * phone. With a menu it is the button that opens the name menu (P13).
  */
 export function ViewerAvatar({
   viewer,
   menu,
 }: {
   viewer: Viewer;
-  menu?: HeaderMenu;
+  menu?: ViewerMenu;
 }) {
   if (!menu) return <Avatar {...viewer} className={styles.viewer} />;
   return (
-    <Popover.Root>
-      <Popover.Trigger
-        className={styles.viewerButton}
-        aria-label={viewer.label ?? 'Your name'}
-      >
-        <Avatar
-          initials={viewer.initials}
-          tone={viewer.tone}
-          className={styles.viewer}
-        />
-      </Popover.Trigger>
-      <Popover.Portal>
-        <Popover.Positioner
-          className="zumpo"
-          side="bottom"
-          align="end"
-          sideOffset={16}
-          collisionPadding={16}
+    <NameMenu
+      {...menu}
+      trigger={
+        <button
+          type="button"
+          className={styles.viewerButton}
+          aria-label={viewer.label ?? 'Your name'}
         >
-          <Popover.Popup className={styles.menu}>
-            <Popover.Title className={styles.menuTitle}>
-              {menu.title}
-            </Popover.Title>
-            <Popover.Description className={styles.menuDescription}>
-              {menu.description}
-            </Popover.Description>
-            {menu.action}
-          </Popover.Popup>
-        </Popover.Positioner>
-      </Popover.Portal>
-    </Popover.Root>
+          <Avatar
+            initials={viewer.initials}
+            tone={viewer.tone}
+            className={styles.viewer}
+          />
+        </button>
+      }
+    />
   );
 }

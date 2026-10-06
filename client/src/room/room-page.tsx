@@ -259,8 +259,8 @@ const isLeaveRoom = (location: Location | undefined) =>
 /**
  * In the room. Any way out of the page passes through here and gives the seat
  * up before the page goes. Leave room between games goes at once; anything
- * else asks first: Leave room mid-game (P11), and the wordmark, the browser's
- * back button or Change name at any time (P11, P16).
+ * else asks first: Leave room mid-game (P11), and the wordmark or the
+ * browser's back button at any time (P11, P16). A new name is not a way out.
  */
 function SeatedRoom({
   snapshot,

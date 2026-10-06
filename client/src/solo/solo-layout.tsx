@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router';
 import type { GameType } from '../../../shared/wire-types';
 import { RoomBar, type TagTone } from '../ui';
 import { gameInfo } from '../games/catalog';
-import { useSession } from '../net/session';
 import { RulesDialog } from '../room/dialogs';
 import { Page, useViewer } from '../shell/page';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
@@ -27,7 +26,6 @@ export function SoloLayout({ gameType, phase, stage, side }: SoloLayoutProps) {
   const game = gameInfo(gameType);
   const phone = useMediaQuery(PHONE);
   const navigate = useNavigate();
-  const { name } = useSession();
   const { viewer, viewerMenu } = useViewer();
   const [rules, setRules] = useState(false);
 
@@ -40,8 +38,7 @@ export function SoloLayout({ gameType, phase, stage, side }: SoloLayoutProps) {
           room="On your own"
           phase={phase}
           onHowToPlay={() => setRules(true)}
-          // Without a name the games page would ask for one; home lists the games too.
-          onLeave={() => navigate(name ? '/games' : '/')}
+          onLeave={() => navigate('/')}
           leaveLabel="Leave"
           viewer={viewer}
           viewerMenu={viewerMenu}

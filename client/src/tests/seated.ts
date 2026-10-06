@@ -4,12 +4,19 @@ import { roomPath } from '../games/catalog';
 import { FakeSocket } from './fake-socket';
 import { renderApp } from './render-app';
 
-/** The app, seated in the room `state` describes. */
-export async function renderSeated(state: AnyRoomState) {
+/**
+ * The app, seated in the room `state` describes; `picked` when the viewer
+ * still has the name picked for them.
+ */
+export async function renderSeated(
+  state: AnyRoomState,
+  { picked = false }: { picked?: boolean } = {},
+) {
   const fake = new FakeSocket();
   fake.answer('room:sync', (): Result => ({ ok: true }));
   const view = await renderApp(roomPath(state.gameType, state.roomId), {
     fake,
+    picked,
   });
   act(() => fake.serverEmits('room:state', state));
   /** The server sends a newer snapshot. */

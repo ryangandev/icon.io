@@ -51,7 +51,7 @@
   outline-offset: 2px;
 }
 
-/* The avatar as the session menu's trigger: a round button, the avatar's size. */
+/* The avatar as the name menu's trigger: a round button, the avatar's size. */
 .viewerButton {
   display: inline-flex;
   padding: 0;
@@ -64,46 +64,6 @@
 .viewerButton:focus-visible {
   outline: 2px solid var(--zumpo-ink);
   outline-offset: 2px;
-}
-
-/* The session menu (P13): a 320 px paper card, lifted, under the avatar. */
-.menu {
-  display: flex;
-  flex-direction: column;
-  gap: var(--zumpo-space-16);
-  width: min(320px, calc(100vw - 2 * var(--zumpo-space-16)));
-  padding: var(--zumpo-space-32);
-  border: 1px solid var(--zumpo-line);
-  border-radius: var(--zumpo-radius-24);
-  background: var(--zumpo-paper);
-  box-shadow: var(--zumpo-shadow-menu-lift);
-  outline: none;
-  transition:
-    opacity 150ms ease-out,
-    transform 150ms ease-out;
-}
-
-.menu[data-starting-style],
-.menu[data-ending-style] {
-  opacity: 0;
-  transform: translateY(-4px);
-}
-
-.menuTitle {
-  font: var(--zumpo-text-heading);
-  letter-spacing: var(--zumpo-text-heading-tracking);
-}
-
-.menuDescription {
-  color: var(--zumpo-muted);
-  font: var(--zumpo-text-body);
-  letter-spacing: var(--zumpo-text-body-tracking);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .menu {
-    transition: none;
-  }
 }
 
 @media (max-width: 640px) {
