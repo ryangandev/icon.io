@@ -2,7 +2,12 @@
 // Runs the export plugin's own code through the Figma bridge, so an export
 // needs no switching of plugins in Figma desktop, then imports the result.
 //
-//   npm run design:export
+//   npm run design:export [-- --timeout seconds] [--no-previews]
+//
+// A full export with previews runs several minutes in the plugin; the bridge
+// gives up after `--timeout` seconds (default 1800), and the plugin finishes
+// the job all the same before it takes the next one. --no-previews skips the
+// PNG renders, the slow part, and leaves design/figma/previews/ as it was.
 //
 // The exporter in code.js is used as is: its plugin-window wiring (showUI and
 // the message handler at the end) is cut off, and its `post` is redirected to
@@ -15,6 +20,14 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parseArgs } from 'node:util';
+
+const { values } = parseArgs({
+  options: {
+    timeout: { type: 'string', default: '1800' },
+    'no-previews': { type: 'boolean', default: false },
+  },
+});
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const source = fs.readFileSync(path.join(here, 'code.js'), 'utf8');
@@ -37,7 +50,7 @@ post = (message) => {
     finished = message;
   }
 };
-await new Exporter({ previews: true }).run();
+await new Exporter({ previews: ${!values['no-previews']} }).run();
 return { files: collected, done: finished };
 `;
 
@@ -53,7 +66,7 @@ const output = execFileSync(
     '--label',
     'design export',
     '--timeout',
-    '600',
+    values.timeout,
   ],
   { maxBuffer: 1024 * 1024 * 1024, stdio: ['ignore', 'pipe', 'inherit'] },
 ).toString();

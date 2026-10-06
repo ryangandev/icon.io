@@ -4,7 +4,7 @@
   "id": "27:19237",
   "type": "COMPONENT_SET",
   "key": "33d56c2afada2775c35766c26eaf7bf61a2964d5",
-  "description": "One player’s pick in the Minesweeper round summary, shown under the board after every round: who, what happened, the risk the solver gave the cell before the round, and what it paid. Detail adds “split 2 ways” for a shared cell. Never shows which cell was picked by coordinates; the board’s pick markers do that.",
+  "description": "One player’s pick in the Minesweeper round summary, shown under the board after every round: who, what happened, the risk the solver gave the cell before the round, and what it paid. Detail adds “split 2 ways” for a shared cell. Never shows which cell was picked by coordinates; the board’s pick markers do that. Phone: two lines, the name above the outcome tag and its detail, so a long tag such as Auto-picked never squeezes the name at 390 px; Make 24 lists a hand’s solves with it too.",
   "properties": {
     "Name": {
       "type": "text",
@@ -26,20 +26,29 @@
         "Mine",
         "Auto"
       ]
+    },
+    "Layout": {
+      "type": "variant",
+      "default": "Desktop",
+      "options": [
+        "Desktop",
+        "Phone"
+      ]
     }
   },
-  "defaultVariant": "Outcome=Safe",
+  "defaultVariant": "Outcome=Safe, Layout=Desktop",
   "variants": [
     {
-      "name": "Outcome=Safe",
+      "name": "Outcome=Safe, Layout=Desktop",
       "id": "27:19188",
       "props": {
-        "Outcome": "Safe"
+        "Outcome": "Safe",
+        "Layout": "Desktop"
       },
       "node": {
         "type": "COMPONENT",
         "id": "27:19188",
-        "name": "Outcome=Safe",
+        "name": "Outcome=Safe, Layout=Desktop",
         "w": 832,
         "h": 56,
         "layout": {
@@ -159,15 +168,16 @@
       }
     },
     {
-      "name": "Outcome=Mine",
+      "name": "Outcome=Mine, Layout=Desktop",
       "id": "27:19202",
       "props": {
-        "Outcome": "Mine"
+        "Outcome": "Mine",
+        "Layout": "Desktop"
       },
       "node": {
         "type": "COMPONENT",
         "id": "27:19202",
-        "name": "Outcome=Mine",
+        "name": "Outcome=Mine, Layout=Desktop",
         "w": 832,
         "h": 56,
         "layout": {
@@ -287,15 +297,16 @@
       }
     },
     {
-      "name": "Outcome=Auto",
+      "name": "Outcome=Auto, Layout=Desktop",
       "id": "27:19223",
       "props": {
-        "Outcome": "Auto"
+        "Outcome": "Auto",
+        "Layout": "Desktop"
       },
       "node": {
         "type": "COMPONENT",
         "id": "27:19223",
-        "name": "Outcome=Auto",
+        "name": "Outcome=Auto, Layout=Desktop",
         "w": 832,
         "h": 56,
         "layout": {
@@ -396,6 +407,477 @@
           {
             "type": "TEXT",
             "id": "27:19236",
+            "name": "Points",
+            "w": 56,
+            "h": 24,
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Points"
+            },
+            "text": "+31",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "right",
+            "autoResize": "height"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Outcome=Safe, Layout=Phone",
+      "id": "96:114955",
+      "props": {
+        "Outcome": "Safe",
+        "Layout": "Phone"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "96:114955",
+        "name": "Outcome=Safe, Layout=Phone",
+        "w": 316,
+        "h": 70,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            8,
+            4
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "96:114956",
+            "name": "Avatar",
+            "w": 40,
+            "h": 40,
+            "component": "Zumpo/Avatar",
+            "variant": {
+              "Tone": "Peach"
+            },
+            "componentId": "4:34"
+          },
+          {
+            "type": "FRAME",
+            "id": "96:114967",
+            "name": "Body",
+            "w": 196,
+            "h": 54,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "96:114957",
+                "name": "Name",
+                "w": 196,
+                "h": 20,
+                "wSize": "fill",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Name"
+                },
+                "text": "Sam",
+                "textStyle": "Zumpo/Label",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "autoResize": "height",
+                "truncate": {
+                  "maxLines": 1
+                }
+              },
+              {
+                "type": "FRAME",
+                "id": "96:114968",
+                "name": "Outcome line",
+                "w": 196,
+                "h": 30,
+                "wSize": "fill",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "96:114958",
+                    "name": "Outcome",
+                    "w": 69,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Lime"
+                    },
+                    "componentId": "24:6521",
+                    "props": {
+                      "Show icon": true,
+                      "Icon": "Zumpo/Icon / Glyph=check",
+                      "Label": "Safe"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 69
+                      }
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "96:114960",
+                    "name": "Detail",
+                    "w": 48,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Detail"
+                    },
+                    "text": "23% risk",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "96:114961",
+            "name": "Points",
+            "w": 56,
+            "h": 24,
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Points"
+            },
+            "text": "+31",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "alignH": "right",
+            "autoResize": "height"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Outcome=Mine, Layout=Phone",
+      "id": "96:114969",
+      "props": {
+        "Outcome": "Mine",
+        "Layout": "Phone"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "96:114969",
+        "name": "Outcome=Mine, Layout=Phone",
+        "w": 316,
+        "h": 70,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            8,
+            4
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "96:114970",
+            "name": "Avatar",
+            "w": 40,
+            "h": 40,
+            "component": "Zumpo/Avatar",
+            "variant": {
+              "Tone": "Peach"
+            },
+            "componentId": "4:34"
+          },
+          {
+            "type": "FRAME",
+            "id": "96:114988",
+            "name": "Body",
+            "w": 196,
+            "h": 54,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "96:114971",
+                "name": "Name",
+                "w": 196,
+                "h": 20,
+                "wSize": "fill",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Name"
+                },
+                "text": "Sam",
+                "textStyle": "Zumpo/Label",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "autoResize": "height",
+                "truncate": {
+                  "maxLines": 1
+                }
+              },
+              {
+                "type": "FRAME",
+                "id": "96:114989",
+                "name": "Outcome line",
+                "w": 196,
+                "h": 30,
+                "wSize": "fill",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "96:114972",
+                    "name": "Outcome",
+                    "w": 72,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Peach"
+                    },
+                    "componentId": "24:6526",
+                    "props": {
+                      "Show icon": true,
+                      "Icon": "Zumpo/Icon / Glyph=mine",
+                      "Label": "Mine"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 72
+                      }
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "96:114974",
+                    "name": "Detail",
+                    "w": 48,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Detail"
+                    },
+                    "text": "23% risk",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "96:114975",
+            "name": "Points",
+            "w": 56,
+            "h": 24,
+            "hSize": "hug",
+            "propRefs": {
+              "characters": "Points"
+            },
+            "text": "+31",
+            "textStyle": "Zumpo/Number",
+            "fills": [
+              "$Zumpo · UI:color/danger"
+            ],
+            "alignH": "right",
+            "autoResize": "height"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Outcome=Auto, Layout=Phone",
+      "id": "96:114990",
+      "props": {
+        "Outcome": "Auto",
+        "Layout": "Phone"
+      },
+      "node": {
+        "type": "COMPONENT",
+        "id": "96:114990",
+        "name": "Outcome=Auto, Layout=Phone",
+        "w": 316,
+        "h": 70,
+        "hSize": "hug",
+        "layout": {
+          "mode": "row",
+          "gap": "$Zumpo · UI:space/8",
+          "pad": [
+            8,
+            4
+          ],
+          "align": "center",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "INSTANCE",
+            "id": "96:114991",
+            "name": "Avatar",
+            "w": 40,
+            "h": 40,
+            "component": "Zumpo/Avatar",
+            "variant": {
+              "Tone": "Peach"
+            },
+            "componentId": "4:34"
+          },
+          {
+            "type": "FRAME",
+            "id": "96:115002",
+            "name": "Body",
+            "w": 196,
+            "h": 54,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "96:114992",
+                "name": "Name",
+                "w": 196,
+                "h": 20,
+                "wSize": "fill",
+                "hSize": "hug",
+                "propRefs": {
+                  "characters": "Name"
+                },
+                "text": "Sam",
+                "textStyle": "Zumpo/Label",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "autoResize": "height",
+                "truncate": {
+                  "maxLines": 1
+                }
+              },
+              {
+                "type": "FRAME",
+                "id": "96:115003",
+                "name": "Outcome line",
+                "w": 196,
+                "h": 30,
+                "wSize": "fill",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "INSTANCE",
+                    "id": "96:114993",
+                    "name": "Outcome",
+                    "w": 116,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Sand"
+                    },
+                    "componentId": "24:6511",
+                    "props": {
+                      "Icon": "Zumpo/Icon / Glyph=clock",
+                      "Show icon": true,
+                      "Label": "Auto-picked"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 116
+                      }
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "96:114995",
+                    "name": "Detail",
+                    "w": 48,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "propRefs": {
+                      "characters": "Detail"
+                    },
+                    "text": "23% risk",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "96:114996",
             "name": "Points",
             "w": 56,
             "h": 24,
