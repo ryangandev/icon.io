@@ -62,6 +62,7 @@ Decisions from the design review rounds (their reports are in git history):
 - In Draw & Guess the guess is the chat input; it is locked for the drawer and for anyone who has scored this turn, as the server already enforces.
 - Brush colours are `color/brush/*` tokens, and the drawer's controls are one `Zumpo/Drawing toolbar`.
 - Minesweeper shows each round's outcome as `Zumpo/Pick result` rows: who picked how risky a cell, and what it paid.
+  On a phone the row is its Phone layout, two lines with the name above the outcome tag and its detail, so a long tag such as Auto-picked never squeezes the name (MO13, MO19); Make 24's hand results are the same rows.
 - No disabled primary buttons: a request in flight is a status line, and an action you cannot take is not shown.
 - Dialogs (leave, invite) sit over the screen they come from, behind a scrim.
 - Example data follows one story with four players (Maya, Ryan, Leo, Sam), each with a fixed avatar colour, and every score is computed with the real formula.
