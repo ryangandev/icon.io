@@ -1,5 +1,11 @@
 import { createRoom, expect, joinRoom, test } from './fixtures';
-import { boardOf, playTurn, whoseTurn, type Memory } from './play/pairs';
+import {
+  boardOf,
+  playTurn,
+  whoseTurn,
+  yourTurn,
+  type Memory,
+} from './play/pairs';
 
 test('two players take turns until every pair is found', async ({ player }) => {
   test.setTimeout(180_000);
@@ -28,10 +34,10 @@ test('two players take turns until every pair is found', async ({ player }) => {
         .getByText('Not a pair')
         .isVisible()
     ) {
-      // The other player saw both cards, and is told they are next.
-      await expect(
-        watcher.getByRole('region', { name: 'Turn' }).getByText(/You’re next/),
-      ).toBeVisible();
+      // The turn passes to the other player. "You’re next" lasts only the
+      // second both cards show, too short to catch under load; the room test
+      // checks it.
+      await expect(yourTurn(watcher)).toBeVisible();
     }
   }
 
