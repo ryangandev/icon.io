@@ -11,7 +11,7 @@
     "x": 6620,
     "y": 2552,
     "w": 390,
-    "h": 1854,
+    "h": 1831,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -98,7 +98,7 @@
         "id": "97:116364",
         "name": "Final scores",
         "w": 350,
-        "h": 495,
+        "h": 472,
         "wSize": "fill",
         "hSize": "hug",
         "fills": [
@@ -441,8 +441,8 @@
             "type": "FRAME",
             "id": "97:116381",
             "name": "Actions",
-            "w": 283,
-            "h": 48,
+            "w": 321,
+            "h": 25,
             "wSize": "hug",
             "hSize": "hug",
             "layout": {
@@ -453,52 +453,52 @@
             },
             "children": [
               {
-                "type": "INSTANCE",
-                "id": "97:116382",
-                "name": "Action / Play again",
-                "w": 110,
-                "h": 48,
+                "type": "FRAME",
+                "id": "99:116980",
+                "name": "Waiting for host",
+                "w": 321,
+                "h": 25,
                 "wSize": "hug",
-                "component": "Zumpo/Button",
-                "variant": {
-                  "Style": "Primary",
-                  "State": "Default"
+                "hSize": "hug",
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
                 },
-                "componentId": "4:15",
-                "props": {
-                  "Label": "Play again"
-                },
-                "overrides": [
+                "children": [
                   {
-                    "path": ".",
-                    "height": 48,
-                    "width": 110
-                  }
-                ]
-              },
-              {
-                "type": "INSTANCE",
-                "id": "97:116383",
-                "name": "Action / Invite friends",
-                "w": 161,
-                "h": 48,
-                "wSize": "hug",
-                "component": "Zumpo/Button",
-                "variant": {
-                  "Style": "Secondary",
-                  "State": "Default"
-                },
-                "componentId": "4:18",
-                "props": {
-                  "Icon": "Zumpo/Icon / Glyph=link",
-                  "Show icon": true,
-                  "Label": "Invite friends"
-                },
-                "overrides": [
+                    "type": "INSTANCE",
+                    "id": "99:116981",
+                    "name": "Zumpo/Icon",
+                    "w": 20,
+                    "h": 20,
+                    "component": "Zumpo/Icon",
+                    "variant": {
+                      "Glyph": "pending"
+                    },
+                    "componentId": "24:5002",
+                    "overrides": [
+                      {
+                        "path": "pending",
+                        "strokes": [
+                          "$Zumpo · UI:color/muted"
+                        ]
+                      }
+                    ]
+                  },
                   {
-                    "path": ".",
-                    "height": 48,
-                    "width": 161
+                    "type": "TEXT",
+                    "id": "99:116982",
+                    "w": 293,
+                    "h": 25,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "Waiting for Maya to start another game.",
+                    "textStyle": "Zumpo/Body",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
                   }
                 ]
               }
@@ -517,7 +517,6 @@
         "layout": {
           "mode": "column",
           "gap": "$Zumpo · UI:space/20",
-          "align": "center",
           "strokesIncluded": true
         },
         "children": [
