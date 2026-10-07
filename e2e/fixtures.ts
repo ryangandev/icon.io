@@ -19,6 +19,8 @@ export type GameType =
   | 'daily-word';
 
 export interface PlayerOptions {
+  /** Browser language, independent for each player in a mixed-language room. */
+  locale?: 'en' | 'zh';
   /** A 390 px touch screen, as Figma's mobile frames. */
   phone?: boolean;
   /**
@@ -57,6 +59,7 @@ export const test = base.extend<Fixtures>({
       const { picked = false } = options;
       const { scale = phone ? 2 : 1, server } = options;
       const context = await browser.newContext({
+        locale: options.locale === 'zh' ? 'zh-CN' : 'en-US',
         ...(phone
           ? {
               viewport: { width: 390, height: 844 },

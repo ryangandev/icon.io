@@ -1,3 +1,4 @@
+import { textOf } from './helpers/test-server.js';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { Room } from '../libs/rooms/types.js';
 import type { IoServer } from '../libs/rooms/emit.js';
@@ -52,8 +53,12 @@ describe('room chat', () => {
     const { messages } = await syncRoom(bob, roomId);
 
     expect(messages).toEqual([
-      { id: 1, kind: 'system', text: 'Alice created the room.' },
-      { id: 2, kind: 'system', text: 'Bob has joined the room.' },
+      {
+        id: 1,
+        kind: 'system',
+        notice: { type: 'room:created', name: 'Alice' },
+      },
+      { id: 2, kind: 'system', notice: { type: 'room:joined', name: 'Bob' } },
       {
         id: 3,
         kind: 'player',
@@ -61,8 +66,8 @@ describe('room chat', () => {
         username: 'Bob',
         text: 'hello all',
       },
-      { id: 4, kind: 'system', text: 'Carol has joined the room.' },
-      { id: 5, kind: 'alert', text: 'Carol has left the room.' },
+      { id: 4, kind: 'system', notice: { type: 'room:joined', name: 'Carol' } },
+      { id: 5, kind: 'alert', notice: { type: 'room:left', name: 'Carol' } },
     ]);
   });
 
@@ -112,7 +117,7 @@ describe('room chat', () => {
     alice.emit('chat:send', roomId, '  <b>hi</b>  ');
     await settle();
 
-    expect(heard.map((m) => m.text)).toEqual(['<b>hi</b>']);
+    expect(heard.map((m) => textOf(m))).toEqual(['<b>hi</b>']);
   });
 
   it('ignores a message from a client without a seat', async () => {
@@ -158,14 +163,17 @@ describe('the chat log', () => {
     registry.add(room);
 
     for (let i = 1; i <= CHAT_HISTORY_LIMIT + 5; i++) {
-      registry.lookup.announce(room.roomId, 'system', `message ${i}`);
+      registry.lookup.announce(room.roomId, 'system', {
+        type: 'room:joined',
+        name: `player ${i}`,
+      });
     }
 
     expect(room.chat.messages).toHaveLength(CHAT_HISTORY_LIMIT);
     expect(room.chat.messages[0]).toEqual({
       id: 6,
       kind: 'system',
-      text: 'message 6',
+      notice: { type: 'room:joined', name: 'player 6' },
     });
     expect(room.chat.messages.at(-1)?.id).toBe(CHAT_HISTORY_LIMIT + 5);
     expect(room.chat.nextId).toBe(CHAT_HISTORY_LIMIT + 6);

@@ -12,10 +12,8 @@ import {
 } from '../../libs/game-clock.js';
 import {
   bidStands,
-  bidWords,
   countFace,
   isRaise,
-  foundWords,
   OPENING_BID,
   rollDice,
   type Bid,
@@ -40,10 +38,8 @@ const STILL_IN = Number.MAX_SAFE_INTEGER;
  */
 const secureRandom = (): number => randomInt(0, 2 ** 32) / 2 ** 32;
 
-const diceWord = (count: number) => (count === 1 ? 'die' : 'dice');
-
 const nameOf = (room: LiarsDiceRoom, playerId: string) =>
-  room.playerList[playerId]?.username ?? 'Somebody';
+  room.playerList[playerId]?.username ?? '';
 
 const isTurnOf = (room: LiarsDiceRoom, playerId: string) =>
   room.isGameStarted &&
@@ -120,11 +116,11 @@ const createLiarsDiceGameEngine = (
       `Liar's Dice started in room ${room.roomId}, ${game.dicePerPlayer} dice each.`,
     );
 
-    ctx.rooms.announce(
-      room.roomId,
-      'system',
-      `Game has started! ${game.dicePerPlayer} dice each, ${durations.turn} seconds a turn.`,
-    );
+    ctx.rooms.announce(room.roomId, 'system', {
+      type: 'ld:started',
+      dice: game.dicePerPlayer,
+      seconds: durations.turn,
+    });
     ctx.rooms.emitLobby('liars-dice');
 
     beginRound(room, game.order[0], { next: true });
@@ -173,19 +169,15 @@ const createLiarsDiceGameEngine = (
 
     const name = nameOf(room, playerId);
     if (game.bids.length === 0) {
-      ctx.rooms.announce(
-        room.roomId,
-        'system',
-        `${name} ran out of time, so ${bidWords(OPENING_BID)} is bid for them.`,
-      );
+      ctx.rooms.announce(room.roomId, 'system', {
+        type: 'ld:auto-bid',
+        name,
+        bid: OPENING_BID,
+      });
       placeBid(room, playerId, OPENING_BID);
       return;
     }
-    ctx.rooms.announce(
-      room.roomId,
-      'system',
-      `${name} ran out of time, so Liar is called for them.`,
-    );
+    ctx.rooms.announce(room.roomId, 'system', { type: 'ld:auto-call', name });
     settleCall(room, playerId);
   };
 
@@ -248,13 +240,18 @@ const createLiarsDiceGameEngine = (
     game.phase = 'reveal';
     game.turnPlayerId = null;
 
-    ctx.rooms.announce(
-      room.roomId,
-      'system',
-      `${nameOf(room, callerId)} called Liar on ${bidWords(called)}: ${foundWords(count.matched)}. ${loser.username} loses a die.`,
-    );
+    ctx.rooms.announce(room.roomId, 'system', {
+      type: 'ld:called',
+      name: nameOf(room, callerId),
+      bid: { count: called.count, face: called.face },
+      matched: count.matched,
+      loser: loser.username,
+    });
     if (out) {
-      ctx.rooms.announce(room.roomId, 'alert', `${loser.username} is out.`);
+      ctx.rooms.announce(room.roomId, 'alert', {
+        type: 'ld:out',
+        name: loser.username,
+      });
     }
 
     // The game is over the moment one player has dice left; the reveal stays
@@ -302,11 +299,12 @@ const createLiarsDiceGameEngine = (
     ctx.rooms.emitState(room);
     const [winner] = standings;
     if (winner && winner.points > 0) {
-      ctx.rooms.announce(
-        room.roomId,
-        'system',
-        `Game over: ${winner.username} wins with ${winner.points} ${diceWord(winner.points)} left!`,
-      );
+      ctx.rooms.announce(room.roomId, 'system', {
+        type: 'game:over',
+        names: [winner.username],
+        points: winner.points,
+        unit: 'die',
+      });
     }
     ctx.rooms.emitLobby('liars-dice');
   };
@@ -317,11 +315,7 @@ const createLiarsDiceGameEngine = (
     const game = room.game;
 
     if (seatCount(room) < MIN_PLAYERS_TO_START) {
-      ctx.rooms.announce(
-        room.roomId,
-        'alert',
-        'Not enough players left to continue. Game has ended.',
-      );
+      ctx.rooms.announce(room.roomId, 'alert', { type: 'game:interrupted' });
       endGame(room, { endedEarly: true });
       return;
     }
@@ -343,11 +337,7 @@ const createLiarsDiceGameEngine = (
           ? turn
           : playerAfter(room, turn ?? playerId);
       if (starter === null) return;
-      ctx.rooms.announce(
-        room.roomId,
-        'system',
-        'A player left, so everybody rolls again.',
-      );
+      ctx.rooms.announce(room.roomId, 'system', { type: 'ld:reroll' });
       beginRound(room, starter, { next: false });
     }
   };

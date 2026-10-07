@@ -1,3 +1,4 @@
+import { useMessages } from '../i18n';
 import type { ReactNode } from 'react';
 import { LetterTile } from '../ui';
 import styles from './panel.module.css';
@@ -9,19 +10,20 @@ export function BoardPanel({ children }: { children: ReactNode }) {
 
 /** DW01-DW03: what the three marks mean, beside a board on your own. */
 export function MarkLegend() {
+  const m = useMessages();
   return (
     <ul className={styles.legend}>
       <li className={styles.mark}>
         <LetterTile letter="P" state="correct" size="small" />
-        Right letter, right place
+        {m.dailyWord.legend.correct}
       </li>
       <li className={styles.mark}>
         <LetterTile letter="L" state="present" size="small" />
-        In the word, somewhere else
+        {m.dailyWord.legend.present}
       </li>
       <li className={styles.mark}>
         <LetterTile letter="S" state="absent" size="small" />
-        Not in the word
+        {m.dailyWord.legend.absent}
       </li>
     </ul>
   );

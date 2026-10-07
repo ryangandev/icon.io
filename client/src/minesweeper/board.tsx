@@ -13,6 +13,7 @@ import { cx } from '../ui/cx';
 import { initialsOf } from '../players/avatar';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import { HIDDEN, KNOWN_MINE } from '../../../shared/minesweeper';
+import { useMessages } from '../i18n';
 import styles from './board.module.css';
 
 export interface BoardProps {
@@ -80,6 +81,7 @@ export type MineGridCell = Pick<
  * sideways.
  */
 export function MineGrid({ width, height, cell }: MineGridProps) {
+  const m = useMessages();
   const phone = useMediaQuery(PHONE);
   // Compact cells fit a Large board on a desktop; a phone pans instead.
   const size = width > 16 && !phone ? 'compact' : 'regular';
@@ -95,7 +97,7 @@ export function MineGrid({ width, height, cell }: MineGridProps) {
       <div
         className={styles.board}
         role="grid"
-        aria-label={`Board, ${width} by ${height}`}
+        aria-label={m.minesweeper.boardGrid(width, height)}
         aria-rowcount={height}
         aria-colcount={width}
       >

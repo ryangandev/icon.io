@@ -1,9 +1,12 @@
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { ME, minesweeperState } from '../tests/fixtures';
 import { onPhone } from '../tests/phone';
 import { renderSeated } from '../tests/seated';
+import { renderApp } from '../tests/render-app';
+import { FakeSocket } from '../tests/fake-socket';
+import { roomPath } from '../games/catalog';
 
 const picking = minesweeperState({
   isGameStarted: true,
@@ -27,6 +30,32 @@ const pick = {
 const confetti = () => document.querySelector('canvas[aria-hidden]');
 
 describe('a Minesweeper room', () => {
+  it('explains a shared pick and risk in Chinese', async () => {
+    const fake = new FakeSocket();
+    fake.answer('room:sync', () => ({ ok: true as const }));
+    await renderApp(roomPath('minesweeper', 'r1'), { locale: 'zh', fake });
+    act(() =>
+      fake.serverEmits('room:state', {
+        ...picking,
+        phase: 'reveal',
+        lastRound: [
+          { ...pick, sharedWith: 2 },
+          { ...pick, playerId: 'p2', username: 'Maya', sharedWith: 2 },
+        ],
+      }),
+    );
+    expect(screen.getByText('安全！+31')).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: '第 1 轮结果' }),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText('23% 踩雷概率')).toHaveLength(2);
+    expect(screen.getAllByText('2 人平分')).toHaveLength(2);
+    expect(
+      screen.getByText('你 和 Maya 选了同一个格子，平分奖励'),
+    ).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('说点什么…')).toBeInTheDocument();
+  });
+
   it('lets the host start once two players are in', async () => {
     const user = userEvent.setup();
     const { fake } = await renderSeated(minesweeperState());

@@ -1,4 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
+import { en } from '../i18n/en';
+import { zh } from '../i18n/zh';
 import {
   dayLabel,
   dayOf,
@@ -47,10 +49,17 @@ describe('the best of each day', () => {
   it('names a day by how long ago it was', () => {
     const now = at('2026-10-04');
     expect(dayOf(now)).toBe('2026-10-04');
-    expect(dayLabel('2026-10-04', now)).toBe('Today');
-    expect(dayLabel('2026-10-03', now)).toBe('Yesterday');
-    expect(dayLabel('2026-10-01', now)).toBe('Oct 1');
+    expect(dayLabel('2026-10-04', now, en)).toBe('Today');
+    expect(dayLabel('2026-10-03', now, en)).toBe('Yesterday');
+    expect(dayLabel('2026-10-01', now, en)).toBe('Oct 1');
     // Across a month.
-    expect(dayLabel('2026-09-30', at('2026-10-01'))).toBe('Yesterday');
+    expect(dayLabel('2026-09-30', at('2026-10-01'), en)).toBe('Yesterday');
+  });
+
+  it('names kept days in the player’s Chinese locale', () => {
+    const now = at('2026-10-04');
+    expect(dayLabel('2026-10-04', now, zh)).toBe('今天');
+    expect(dayLabel('2026-10-03', now, zh)).toBe('昨天');
+    expect(dayLabel('2026-10-01', now, zh)).toBe('10 月 1 日');
   });
 });

@@ -1,3 +1,4 @@
+import { useMessages } from '../../i18n';
 import { cx } from '../cx';
 import styles from './letter-tile.module.css';
 
@@ -13,15 +14,6 @@ export type LetterTileState =
   | 'absent';
 
 export type LetterTileSize = 'regular' | 'compact' | 'small' | 'mini';
-
-/** What a mark means, said by a tile's accessible name. */
-export const MARK_WORDS: Readonly<
-  Record<'correct' | 'present' | 'absent', string>
-> = {
-  correct: 'right place',
-  present: 'in the word, somewhere else',
-  absent: 'not in the word',
-};
 
 export interface LetterTileProps {
   /** One letter, shown in capitals; none on an empty or a Mini tile. */
@@ -44,13 +36,14 @@ export function LetterTile({
   state = 'empty',
   size = 'regular',
 }: LetterTileProps) {
+  const m = useMessages();
   const shown = size === 'mini' ? undefined : letter?.toUpperCase();
   const marked =
     state === 'correct' || state === 'present' || state === 'absent';
   const name = marked
     ? shown
-      ? `${shown}, ${MARK_WORDS[state]}`
-      : MARK_WORDS[state]
+      ? m.ui.word.marked(shown, m.ui.word.marks[state])
+      : m.ui.word.marks[state]
     : shown;
   // An empty tile says nothing, so a board reads as its guesses only.
   return (

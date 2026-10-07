@@ -6,6 +6,7 @@ import {
   type ReactElement,
   type ReactNode,
 } from 'react';
+import { useMessages } from '../../i18n';
 import { Button } from './button';
 import { TextField } from './text-field';
 import styles from './name-menu.module.css';
@@ -72,16 +73,19 @@ export interface NameMenuHintProps {
 
 /** State=Hint: the first visit's word about the name picked for them (P02). */
 export function NameMenuHint({ name, onDismiss, onChange }: NameMenuHintProps) {
+  const m = useMessages().shell.name;
   return (
     <>
-      <Popover.Title className={styles.title}>You’re {name}.</Popover.Title>
+      <Popover.Title className={styles.title}>
+        {m.hintTitle(name)}
+      </Popover.Title>
       <Popover.Description className={styles.description}>
-        We picked a name so you can jump right in. Change it here anytime.
+        {m.hintDescription}
       </Popover.Description>
       <div className={styles.actions}>
-        <Button onClick={onDismiss}>Got it</Button>
+        <Button onClick={onDismiss}>{m.gotIt}</Button>
         <Button variant="secondary" icon="edit" onClick={onChange}>
-          Change name
+          {m.changeName}
         </Button>
       </div>
     </>
@@ -110,6 +114,7 @@ export function NameMenuForm({
   onSave,
   onRoll,
 }: NameMenuFormProps) {
+  const m = useMessages().shell.name;
   const field = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -126,8 +131,8 @@ export function NameMenuForm({
     <form className={styles.form} onSubmit={submit} noValidate>
       <TextField
         ref={field}
-        label="Your name"
-        helper="Everyone in your rooms sees it."
+        label={m.yourName}
+        helper={m.helper}
         error={error}
         value={value}
         onValueChange={(next: string) => onValueChange(next)}
@@ -136,7 +141,7 @@ export function NameMenuForm({
         name="name"
       />
       <div className={styles.actions}>
-        <Button type="submit">Save</Button>
+        <Button type="submit">{m.save}</Button>
         <Button
           variant="secondary"
           icon="dice"
@@ -145,7 +150,7 @@ export function NameMenuForm({
             field.current?.focus();
           }}
         >
-          Roll a name
+          {m.roll}
         </Button>
       </div>
     </form>

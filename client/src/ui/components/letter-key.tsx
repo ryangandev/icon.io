@@ -1,6 +1,6 @@
+import { useMessages } from '../../i18n';
 import { cx } from '../cx';
 import { Icon } from './icon';
-import { MARK_WORDS } from './letter-tile';
 import styles from './letter-key.module.css';
 
 export type LetterKeyState = 'plain' | 'correct' | 'present' | 'absent';
@@ -33,15 +33,16 @@ export function LetterKey({
   onPress,
   disabled,
 }: LetterKeyProps) {
+  const m = useMessages();
   const shown = letter.toUpperCase();
   const label =
     kind === 'enter'
-      ? 'Enter'
+      ? m.ui.word.enter
       : kind === 'delete'
-        ? 'Delete letter'
+        ? m.ui.word.delete
         : state === 'plain'
           ? shown
-          : `${shown}, ${MARK_WORDS[state]}`;
+          : m.ui.word.marked(shown, m.ui.word.marks[state]);
   return (
     <button
       type="button"
@@ -65,7 +66,7 @@ export function LetterKey({
           className={kind === 'enter' ? styles.word : styles.letter}
           aria-hidden="true"
         >
-          {kind === 'enter' ? 'Enter' : shown}
+          {kind === 'enter' ? m.ui.word.enter : shown}
         </span>
       )}
     </button>

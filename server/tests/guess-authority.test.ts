@@ -1,3 +1,4 @@
+import { textOf } from './helpers/test-server.js';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   collectChat,
@@ -96,7 +97,7 @@ describe('guess authority', () => {
       [guesser.playerId]: guesserPoints,
       [drawer.playerId]: drawerPoints,
     });
-    expect((await announced).text).toBe(
+    expect(textOf(await announced)).toBe(
       `${guesserName} guessed the correct word! (+${guesserPoints})`,
     );
   });
@@ -167,7 +168,7 @@ describe('guess authority', () => {
     const otherHeard = waitForChat(drawer, (m) => m.kind === 'player');
     other.emit('chat:send', roomId, 'good luck');
 
-    expect((await otherHeard).text).toBe('good luck');
+    expect(textOf(await otherHeard)).toBe('good luck');
     await settle();
     expect(heard.filter((m) => m.playerId === drawer.playerId)).toEqual([]);
   });
@@ -290,7 +291,7 @@ describe('guess authority', () => {
     const { word, currentDrawer } = await reveal;
     const notDrawer = currentDrawer === alice.playerId ? bob : alice;
 
-    const heard = waitForChat(alice, (m) => m.text === word);
+    const heard = waitForChat(alice, (m) => textOf(m) === word);
     notDrawer.emit('chat:send', roomId, word!);
 
     expect((await heard).kind).toBe('player');
@@ -313,7 +314,7 @@ describe('guess authority', () => {
       1000, // far inside the five-second drawing phase
     );
     const announced = waitForChat(drawer, (m) =>
-      m.text.includes('Everybody guessed'),
+      textOf(m).includes('Everybody guessed'),
     );
     guesser.emit('chat:send', roomId, word);
 

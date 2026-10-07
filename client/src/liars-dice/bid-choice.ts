@@ -1,7 +1,7 @@
 import { useState } from 'react';
+import { useMessages, type Messages } from '../i18n';
 import {
   BID_FACES,
-  bidWords,
   smallestCountFor,
   smallestRaise,
   type Bid,
@@ -18,6 +18,7 @@ export function useBidChoice(
   diceOnTable: number,
   onBid: (bid: Bid) => void,
 ): Omit<BidPickerProps, 'onCall' | 'className'> | null {
+  const m = useMessages();
   const key = previous ? `${previous.count}×${previous.face}` : 'open';
   const opening = smallestRaise(previous, diceOnTable);
   const [choice, setChoice] = useState({ key, bid: opening });
@@ -29,8 +30,12 @@ export function useBidChoice(
   if (bid === null) return null;
   const chosen = bid;
   return {
-    ...pickerFor(chosen, previous, diceOnTable, (next) =>
-      setChoice({ key, bid: next }),
+    ...pickerFor(
+      chosen,
+      previous,
+      diceOnTable,
+      (next) => setChoice({ key, bid: next }),
+      m,
     ),
     onBid: () => onBid(chosen),
   };
@@ -42,6 +47,7 @@ export function pickerFor(
   previous: Bid | null,
   diceOnTable: number,
   choose: (bid: Bid) => void,
+  m: Messages,
 ): Omit<BidPickerProps, 'onCall' | 'onBid' | 'className'> {
   const lowest = smallestCountFor(bid.face, previous);
   return {
@@ -52,7 +58,7 @@ export function pickerFor(
     ),
     canFewer: bid.count - 1 >= Math.max(1, lowest),
     canMore: bid.count + 1 <= diceOnTable,
-    bidLabel: `Bid ${bidWords(bid)}`,
+    bidLabel: m.liarsDice.bidLabel(bid),
     onCountChange: (count) =>
       choose({
         ...bid,

@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { Button, Dialog, DialogClose, TextField } from '../ui';
 import type { GameInfo } from '../games/catalog';
+import { useMessages } from '../i18n';
 import { useCopy } from '../shell/use-copy';
 import styles from './dialogs.module.css';
 
@@ -25,6 +26,7 @@ export function LeaveDialog({
   onStay: () => void;
   onLeave: () => void;
 }) {
+  const m = useMessages();
   const stay = useRef<HTMLButtonElement>(null);
   return (
     <Dialog
@@ -32,20 +34,18 @@ export function LeaveDialog({
       onOpenChange={(next) => {
         if (!next) onStay();
       }}
-      title={`Leave ${roomName}?`}
+      title={m.room.leaveTitle(roomName)}
       description={
-        inGame
-          ? `The game carries on without you, and your seat and your ${score} go with you. You can join again while a seat is open.`
-          : 'Your seat goes with you. You can join again while a seat is open.'
+        inGame ? m.room.leaveInGame(score) : m.room.leaveBetweenGames
       }
       initialFocus={stay}
       actions={
         <>
           <Button variant="danger" icon="leave" onClick={onLeave}>
-            Leave room
+            {m.room.leave}
           </Button>
           <Button ref={stay} variant="secondary" onClick={onStay}>
-            Stay
+            {m.room.stay}
           </Button>
         </>
       }
@@ -66,17 +66,19 @@ export function RulesDialog({
   /** The rules of the game on your own rather than in a room. */
   solo?: boolean;
 }) {
+  const m = useMessages();
+  const text = m.games.of[game.type];
   const rules =
-    solo && game.solo
-      ? game.solo
-      : { summary: game.lobbySummary, facts: game.lobbyFacts };
+    solo && text.solo
+      ? text.solo
+      : { summary: text.lobbySummary, facts: text.lobbyFacts };
   return (
     <Dialog
       open={open}
       onOpenChange={onOpenChange}
-      title={`How to play ${game.name}`}
+      title={m.room.rulesTitle(text.name)}
       description={rules.summary}
-      actions={<DialogClose render={<Button>Back to the game</Button>} />}
+      actions={<DialogClose render={<Button>{m.room.backToGame}</Button>} />}
     >
       <ul className={styles.facts}>
         {rules.facts.map((fact) => (
@@ -99,6 +101,7 @@ export function InviteDialog({
   roomName: string;
   link: string;
 }) {
+  const m = useMessages();
   const { copied, copy } = useCopy(link);
   // Opening on Copy keeps the link whole on screen, rather than selected and
   // scrolled to its end, and makes Enter copy it.
@@ -108,8 +111,8 @@ export function InviteDialog({
     <Dialog
       open={open}
       onOpenChange={onOpenChange}
-      title="Invite friends"
-      description={`Anyone with this link can join ${roomName} while a seat is open.`}
+      title={m.room.invite}
+      description={m.room.inviteDescription(roomName)}
       initialFocus={copyButton}
       actions={
         <>
@@ -118,14 +121,16 @@ export function InviteDialog({
             icon={copied ? 'check' : 'copy'}
             onClick={copy}
           >
-            {copied ? 'Copied' : 'Copy'}
+            {copied ? m.room.copied : m.room.copy}
           </Button>
-          <DialogClose render={<Button variant="secondary">Done</Button>} />
+          <DialogClose
+            render={<Button variant="secondary">{m.room.done}</Button>}
+          />
         </>
       }
     >
       <TextField
-        label="Room link"
+        label={m.room.roomLink}
         value={link}
         readOnly
         // Figma wraps the link over two lines; a phone needs three.

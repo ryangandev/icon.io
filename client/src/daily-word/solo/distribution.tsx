@@ -1,3 +1,4 @@
+import { useMessages } from '../../i18n';
 import type { CSSProperties } from 'react';
 import { cx } from '../../ui/cx';
 import styles from './distribution.module.css';
@@ -14,6 +15,7 @@ export function Distribution({
   /** Today's guesses when it was found; no bar is picked out otherwise. */
   today: number | null;
 }) {
+  const m = useMessages();
   const most = Math.max(1, ...counts);
   return (
     <ol className={styles.list}>
@@ -23,7 +25,7 @@ export function Distribution({
           <span
             className={cx(styles.bar, today === index + 1 && styles.today)}
             style={{ '--share': count / most } as CSSProperties}
-            aria-label={`${count} found in ${index + 1}`}
+            aria-label={m.dailyWord.distribution(count, index + 1)}
           >
             <span aria-hidden="true">{count}</span>
           </span>

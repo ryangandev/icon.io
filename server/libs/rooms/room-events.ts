@@ -83,11 +83,10 @@ const roomEventsHandler = (
     reply({ ok: true });
 
     if (!isAlreadySeated) {
-      registry.lookup.announce(
-        roomId,
-        'system',
-        `${username} has joined the room.`,
-      );
+      registry.lookup.announce(roomId, 'system', {
+        type: 'room:joined',
+        name: username,
+      });
     }
     registry.lookup.emitState(room);
     registry.lookup.emitLobby(room.gameType);
@@ -198,11 +197,11 @@ const roomEventsHandler = (
       const username = nameInRoom(room, playerId, wanted);
       if (username === before) continue;
       renamePlayer(room, playerId, username);
-      registry.lookup.announce(
-        room.roomId,
-        'system',
-        `${before} is now ${username}.`,
-      );
+      registry.lookup.announce(room.roomId, 'system', {
+        type: 'room:renamed',
+        before,
+        name: username,
+      });
       registry.lookup.emitState(room);
       if (room.owner.playerId === playerId) {
         registry.lookup.emitLobby(room.gameType);

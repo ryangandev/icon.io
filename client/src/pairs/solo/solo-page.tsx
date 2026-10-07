@@ -14,7 +14,7 @@ import {
   type TurnBarProps,
 } from '../../ui';
 import { gameInfo, soloPath } from '../../games/catalog';
-import { plural } from '../../games/plural';
+import { useMessages, type Messages } from '../../i18n';
 import { FormPage } from '../../shell/form-page';
 import { PHONE, useMediaQuery } from '../../shell/use-media-query';
 import {
@@ -31,7 +31,7 @@ import { SoloLayout } from '../../solo/solo-layout';
 import { SoloResult } from '../../solo/solo-result';
 import { useClock } from '../../solo/use-clock';
 import { BoardPanel, PairsGrid } from '../board';
-import { boardLabel, BOARDS } from '../boards';
+import { BOARDS } from '../boards';
 import { readPairsBest, recordPairsBest, type PairsBest } from './best';
 import {
   cardsOf,
@@ -57,7 +57,8 @@ const isSeed = (value: string | null): value is string =>
   value !== null && SEED_PATTERN.test(value);
 
 /** "31 turns". */
-const turnsLabel = (best: PairsBest) => plural(best.turns, 'turn');
+const turnsLabel = (best: PairsBest, m: Messages) =>
+  m.pairs.solo.turnsCount(best.turns);
 
 /**
  * PR01-PR04, PR09: Pairs on your own. `?board=Large&seed=k3f9x2` is a
@@ -117,25 +118,25 @@ function BoardPicker({
   challenge: PairsBoard | null;
   onStart: (board: PairsBoard) => void;
 }) {
+  const m = useMessages();
   const game = gameInfo('pairs');
+  const text = m.games.of[game.type];
   const [board, setBoard] = useState<PairsBoard>(() => {
     if (challenge) return challenge;
     const last = readStored(LAST_BOARD);
     return isBoard(last) ? last : 'Small';
   });
-  const description = challenge
-    ? 'A friend sent you this deck. Fewer turns is better. Your time is kept too.'
-    : 'Fewer turns is better. Your time is kept too.';
+  const description = m.pairs.solo.description(challenge !== null);
 
   return (
     <FormPage
       heading={{
-        eyebrow: 'On your own',
-        title: game.name,
-        subtitle: game.solo?.summary,
+        eyebrow: m.pairs.solo.onYourOwn,
+        title: text.name,
+        subtitle: text.solo?.summary,
       }}
-      phone={{ eyebrow: game.name, subtitle: description }}
-      title="Pick a board."
+      phone={{ eyebrow: text.name, subtitle: description }}
+      title={m.pairs.solo.pickBoard}
       description={description}
       onSubmit={(event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -143,23 +144,26 @@ function BoardPicker({
       }}
       actions={
         <>
-          <Button type="submit">Start</Button>
+          <Button type="submit">{m.pairs.solo.start}</Button>
           <ButtonLink to="/" variant="secondary" icon="back">
-            Back to games
+            {m.pairs.solo.backToGames}
           </ButtonLink>
         </>
       }
     >
       <ChoiceList
-        label="Board"
+        label={m.pairs.solo.board}
         options={(challenge ? [challenge] : BOARDS).map((option) => {
           const best = readPairsBest(option);
           return {
             value: option,
-            label: boardLabel(option),
-            detail: `${PAIRS_BOARDS[option].pairs} pairs. ${
-              best === null ? 'No best yet' : `Best: ${turnsLabel(best)}`
-            }`,
+            label: m.pairs.boardLabel(option),
+            detail: m.pairs.solo.boardOption(
+              PAIRS_BOARDS[option].pairs,
+              best === null
+                ? m.pairs.solo.noBest
+                : m.pairs.solo.best(turnsLabel(best, m)),
+            ),
           };
         })}
         value={board}
@@ -185,6 +189,7 @@ function SoloGameView({
   seed: string;
   onPlayAgain: () => void;
 }) {
+  const m = useMessages();
   const phone = useMediaQuery(PHONE);
   const [game, setGame] = useState(() => newGame(board, seed));
   const [finish, setFinish] = useState<Finish | null>(null);
@@ -221,8 +226,8 @@ function SoloGameView({
   const bests: Stat[] = BOARDS.map((option) => {
     const best = readPairsBest(option);
     return {
-      label: boardLabel(option),
-      value: best === null ? 'Not yet' : turnsLabel(best),
+      label: m.pairs.boardLabel(option),
+      value: best === null ? m.pairs.solo.notYet : turnsLabel(best, m),
       tone:
         best === null
           ? 'muted'
@@ -237,32 +242,34 @@ function SoloGameView({
       gameType="pairs"
       phase={
         finish
-          ? { tone: 'lime', label: 'Board cleared' }
-          : { tone: 'blue', label: boardLabel(board) }
+          ? { tone: 'lime', label: m.pairs.solo.boardCleared }
+          : { tone: 'blue', label: m.pairs.boardLabel(board) }
       }
       stage={
         <>
           {finish ? (
             <SoloResult
-              title={`${pairs} pairs in ${plural(turns, 'turn')}.`}
-              body={finishBody(board, turns, finish)}
+              title={m.pairs.solo.finishedIn(pairs, turns)}
+              body={finishBody(board, turns, finish, m)}
               stats={[
-                { label: 'Time', value: formatDuration(timeMs) },
-                { label: 'Turns', value: String(turns) },
+                { label: m.pairs.solo.time, value: formatDuration(timeMs) },
+                { label: m.pairs.solo.turns, value: String(turns) },
                 {
-                  label: 'Longest streak',
-                  value: `${plural(streak, 'pair')} in a row`,
+                  label: m.pairs.solo.longestStreak,
+                  value: m.pairs.solo.streak(streak),
                 },
               ]}
               actions={
                 <>
-                  <Button onClick={onPlayAgain}>Play again</Button>
+                  <Button onClick={onPlayAgain}>
+                    {m.pairs.solo.playAgain}
+                  </Button>
                   <ChallengeButton link={link} />
                 </>
               }
             />
           ) : (
-            <TurnBar {...turnBar(game, now, phone)} />
+            <TurnBar {...turnBar(game, now, phone, m)} />
           )}
           <BoardPanel>
             <PairsGrid
@@ -275,29 +282,29 @@ function SoloGameView({
       side={
         finish ? (
           <>
-            <Card kind="panel" title="Best on this device">
+            <Card kind="panel" title={m.pairs.solo.bestOnDevice}>
               <StatList className={styles.stats} stats={bests} />
             </Card>
             <ChallengeCard
-              description={`They get this same deck and try to beat ${plural(turns, 'turn')}.`}
+              description={m.pairs.solo.challengeDescription(turns)}
               link={link}
             />
           </>
         ) : (
           <>
-            <Card kind="panel" title="This game">
+            <Card kind="panel" title={m.pairs.solo.thisGame}>
               <StatList
                 className={styles.stats}
                 stats={[
                   {
-                    label: 'Pairs',
-                    value: `${pairsFound(game)} of ${pairs}`,
+                    label: m.pairs.solo.pairs,
+                    value: m.pairs.solo.pairProgress(pairsFound(game), pairs),
                   },
-                  { label: 'Turns', value: String(turns) },
+                  { label: m.pairs.solo.turns, value: String(turns) },
                 ]}
               />
             </Card>
-            <Card kind="panel" title="Best on this device">
+            <Card kind="panel" title={m.pairs.solo.bestOnDevice}>
               <StatList className={styles.stats} stats={bests} />
             </Card>
           </>
@@ -307,22 +314,35 @@ function SoloGameView({
   );
 }
 
-function finishBody(board: PairsBoard, turns: number, finish: Finish): string {
+function finishBody(
+  board: PairsBoard,
+  turns: number,
+  finish: Finish,
+  m: Messages,
+): string {
   const { previous, isBest } = finish;
   if (previous === null) {
-    return `Your first ${board} board cleared on this device.`;
+    return m.pairs.solo.firstClear(board);
   }
   // The same turns as the best is told apart by the time.
   const best =
     previous.turns === turns
-      ? `${turnsLabel(previous)} in ${formatDuration(previous.ms)}`
-      : turnsLabel(previous);
+      ? m.pairs.solo.turnsInTime(
+          turnsLabel(previous, m),
+          formatDuration(previous.ms),
+        )
+      : turnsLabel(previous, m);
   return isBest
-    ? `A new best on this device. Your last best was ${best}.`
-    : `Your best on ${board} is ${best}.`;
+    ? m.pairs.solo.newBest(best)
+    : m.pairs.solo.previousBest(board, best);
 }
 
-function turnBar(game: SoloGame, now: number, phone: boolean): TurnBarProps {
+function turnBar(
+  game: SoloGame,
+  now: number,
+  phone: boolean,
+  m: Messages,
+): TurnBarProps {
   const turns = game.turns.length;
   const flipping = game.up.length === 1;
   const last = lastTurn(game);
@@ -333,44 +353,44 @@ function turnBar(game: SoloGame, now: number, phone: boolean): TurnBarProps {
   const number = finished ? turns : turns + 1;
   const pairs = PAIRS_BOARDS[game.board].pairs;
   const base = {
-    label: `Turn ${number}`,
+    label: m.pairs.solo.turn(number),
     kind: 'status' as const,
     countdown: {
       seconds: Math.floor(elapsed(game, now) / 1000),
-      label: 'run time',
+      label: m.pairs.solo.runTime,
       waiting: true,
     },
   };
   // A phone has no side cards, so the pairs found are on the turn bar.
-  const progress = `${pairsFound(game)} of ${pairs} pairs`;
+  const progress = m.pairs.progress(pairsFound(game), pairs);
   if (flipping) {
     return {
       ...base,
-      main: 'Find its pair',
-      meta: phone ? progress : 'Where did you see it?',
+      main: m.pairs.solo.findPair,
+      meta: phone ? progress : m.pairs.solo.whereSeen,
     };
   }
   if (isShowingMiss(game)) {
     return {
       ...base,
-      main: 'Not a pair',
-      meta: phone ? progress : 'They flip back in a moment',
+      main: m.pairs.notPair,
+      meta: phone ? progress : m.pairs.solo.flipBackSoon,
     };
   }
   if (finished) {
     return {
       ...base,
-      main: 'A pair!',
-      meta: phone ? progress : 'Flip another card',
+      main: m.pairs.solo.aPair,
+      meta: phone ? progress : m.pairs.solo.flipAnother,
     };
   }
   return {
     ...base,
-    main: 'Flip a card',
+    main: m.pairs.flipCard,
     meta: phone
       ? progress
       : game.startedAt === null
-        ? 'The clock starts with your first card'
-        : 'Then find its pair',
+        ? m.pairs.solo.clockStarts
+        : m.pairs.solo.thenFindPair,
   };
 }

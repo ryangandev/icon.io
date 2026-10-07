@@ -1,3 +1,4 @@
+import { textOf } from './helpers/test-server.js';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { DrawAndGuessRoomState } from '../models/types.js';
 import {
@@ -110,12 +111,12 @@ describe('the game engine', () => {
 
   it('announces the start and the word category', async () => {
     const { alice, roomId } = await seatTwoPlayers(harness);
-    const announced = waitForChat(alice, (m) => m.text.includes('started'));
+    const announced = waitForChat(alice, (m) => textOf(m).includes('started'));
     await startGame(alice, roomId);
 
     const message = await announced;
     expect(message.kind).toBe('system');
-    expect(message.text).toContain(
+    expect(textOf(message)).toContain(
       serverRoom(harness, roomId).game.wordCategory,
     );
   });
@@ -343,7 +344,7 @@ describe('the game engine', () => {
     );
     const announced = waitForChat(
       alice,
-      (m) => m.text === 'Game has ended!',
+      (m) => textOf(m) === 'Game has ended!',
       9000,
     );
 
@@ -398,7 +399,7 @@ describe('the game engine', () => {
       const witness = currentDrawer === alice.playerId ? bob : alice;
       const nextTurn = waitForDrawState(witness, (s) => s.turn === 2);
       const skipped = waitForChat(witness, (m) =>
-        m.text.includes('drawer lost connection'),
+        textOf(m).includes('drawer lost connection'),
       );
 
       clients.get(currentDrawer)!.close();
@@ -425,7 +426,7 @@ describe('the game engine', () => {
     expect(finalState.lastGame?.endedEarly).toBe(true);
     expect(harness.server.rooms.get(roomId)?.phaseEndsAt).toBe(0);
     expect(
-      messages.find((m) => m.text.startsWith('Not enough players')),
+      messages.find((m) => textOf(m).startsWith('Not enough players')),
     ).toMatchObject({ kind: 'alert' });
   });
 

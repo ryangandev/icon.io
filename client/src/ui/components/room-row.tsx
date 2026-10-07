@@ -1,3 +1,4 @@
+import { useMessages } from '../../i18n';
 import { useId } from 'react';
 import { cx } from '../cx';
 import { Avatar, type AvatarTone } from './avatar';
@@ -37,6 +38,7 @@ export function RoomRow({
   onJoin,
   className,
 }: RoomRowProps) {
+  const m = useMessages();
   const nameId = useId();
   return (
     <li className={cx(styles.container, className)}>
@@ -49,7 +51,7 @@ export function RoomRow({
               <Icon
                 glyph="lock"
                 size={16}
-                label="Password protected"
+                label={m.ui.room.password}
                 className={styles.lock}
               />
             )}
@@ -58,21 +60,21 @@ export function RoomRow({
         </div>
         <span
           className={styles.players}
-          aria-label={`${players} of ${seats} players`}
+          aria-label={m.ui.room.players(players, seats)}
         >
           <Icon glyph="user" size={16} />
           {players} / {seats}
         </span>
         <div className={styles.action}>
-          {status === 'full' && <Tag tone="peach">Full</Tag>}
-          {status === 'playing' && <Tag tone="blue">Playing</Tag>}
+          {status === 'full' && <Tag tone="peach">{m.ui.room.full}</Tag>}
+          {status === 'playing' && <Tag tone="blue">{m.ui.room.playing}</Tag>}
           {(status === 'open' || status === 'private') && (
             <Button
               variant="secondary"
               onClick={onJoin}
               aria-describedby={nameId}
             >
-              Join
+              {m.ui.room.join}
             </Button>
           )}
         </div>

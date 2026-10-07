@@ -1,7 +1,11 @@
-import { render, screen } from '@testing-library/react';
+import { LocaleProvider } from '../../i18n';
+import { render as renderRaw, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { CHAT_MAX_LENGTH, ChatInput } from './chat-input';
+
+const render = (ui: Parameters<typeof renderRaw>[0]) =>
+  renderRaw(ui, { wrapper: LocaleProvider });
 
 describe('ChatInput', () => {
   it('sends the trimmed message on Enter and clears the box', async () => {

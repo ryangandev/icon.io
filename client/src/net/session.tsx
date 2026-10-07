@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from 'react';
 import type { SessionInfo } from '../../../shared/wire-types';
+import { useLocale, type Locale } from '../i18n';
 import { createSocket, type ZumpoSocket } from './socket';
 import { randomName } from '../players/random-name';
 import { readName, writeIdentity, writeName, type StoredName } from './storage';
@@ -86,7 +87,9 @@ export function SessionProvider({
   const [playerId, setPlayerId] = useState('');
   const [reconnectGraceMs, setReconnectGraceMs] = useState(0);
   const [identified, setIdentified] = useState(0);
-  const [stored, setStored] = useState(firstName);
+  // The first visit's name is picked in the visitor's language.
+  const { locale } = useLocale();
+  const [stored, setStored] = useState(() => firstName(locale));
 
   useEffect(() => {
     let everOnline = false;
@@ -212,10 +215,10 @@ export function SessionProvider({
 }
 
 /** The remembered name, or a new random one remembered from now on. */
-function firstName(): StoredName {
+function firstName(locale: Locale): StoredName {
   const remembered = readName();
   if (remembered) return remembered;
-  const picked = { name: randomName(), picked: true };
+  const picked = { name: randomName(locale), picked: true };
   writeName(picked);
   return picked;
 }

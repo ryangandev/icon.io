@@ -19,6 +19,8 @@ const turn = () => within(screen.getByRole('region', { name: 'Turn' }));
 const table = () => within(screen.getByRole('group', { name: 'Table' }));
 /** The cards on the table, in their places. */
 const places = () => table().getAllByRole('button');
+const chineseCards = () =>
+  within(screen.getByRole('group', { name: '牌桌' })).getAllByRole('button');
 
 let user: ReturnType<typeof userEvent.setup>;
 /** The run as the page plays it, to know where the trios are. */
@@ -60,6 +62,32 @@ async function startRun() {
 }
 
 describe('Trios on your own', () => {
+  it('runs in Chinese with localized cards, hints and penalty explanations', async () => {
+    await renderApp(`/games/trios/solo?seed=${SEED}`, { locale: 'zh' });
+    expect(screen.getByText('找 10 组，看你多快。')).toBeInTheDocument();
+    expect(screen.getByText(/^朋友发来了这副牌。/)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: '开始' }));
+    const bar = within(screen.getByRole('region', { name: '当前回合' }));
+    expect(bar.getByText('第 1 / 10 组')).toBeInTheDocument();
+    expect(bar.getByText('找出一组')).toBeInTheDocument();
+    expect(chineseCards()).toHaveLength(12);
+    expect(chineseCards()[0]).toHaveAccessibleName(/^[123] 个/);
+    const t = model.deal.table;
+    const third = t.findIndex((_, c) => c > 1 && !isTrio(t[0], t[1], t[c]));
+    await user.click(chineseCards()[0]);
+    await user.click(chineseCards()[1]);
+    await user.click(chineseCards()[third]);
+    expect(bar.getByText('不成一组，+5 秒')).toBeInTheDocument();
+    expect(bar.getByText(/^其中 2 张/)).toBeInTheDocument();
+    await pause(FLASH_MS);
+    await user.click(screen.getByRole('button', { name: '提示，+10 秒' }));
+    expect(
+      chineseCards().filter((card) =>
+        (card.getAttribute('aria-label') ?? '').endsWith('，提示'),
+      ),
+    ).toHaveLength(1);
+  });
+
   it('is offered on the home page', async () => {
     await renderApp('/');
     const trios = screen.getByRole('region', { name: 'Trios' });

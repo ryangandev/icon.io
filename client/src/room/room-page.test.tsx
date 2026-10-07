@@ -35,6 +35,68 @@ function server({ password = '' } = {}) {
 }
 
 describe('a room page', () => {
+  it('renders tied results and the viewer’s place in Chinese', async () => {
+    const fake = server();
+    await renderApp(ROOM, { fake, locale: 'zh' });
+    act(() =>
+      fake.serverEmits(
+        'room:state',
+        minesweeperState({
+          lastGame: {
+            endedEarly: false,
+            difficulty: 'Small',
+            rounds: 6,
+            standings: [
+              { playerId: 'p2', username: 'Maya', points: 120 },
+              { playerId: 'p3', username: 'Sam', points: 120 },
+              { playerId: 'p1', username: 'Ryan', points: 90 },
+            ],
+          },
+        }),
+      ),
+    );
+    expect(
+      screen.getByRole('heading', { name: 'Maya 和 Sam 以 120 分并列获胜。' }),
+    ).toBeInTheDocument();
+    const standings = screen.getByRole('list', { name: '排名' });
+    expect(within(standings).getByText('第 3 名')).toBeInTheDocument();
+    expect(within(standings).getAllByText('获胜者')).toHaveLength(2);
+    expect(screen.getByText(/你获得了第 3 名。/)).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: '再玩一局' }),
+    ).toBeInTheDocument();
+  });
+
+  it('explains an unavailable room in Chinese and links to its rooms', async () => {
+    const fake = new FakeSocket();
+    fake.answer('room:sync', () => refused('roomNotExist'));
+    await renderApp(ROOM, { fake, locale: 'zh' });
+    expect(
+      screen.getByRole('heading', { name: '这个房间已关闭。' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('房间已不存在。找另一个房间，或自己创建一个。'),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: '返回房间列表' })).toHaveAttribute(
+      'href',
+      '/games/minesweeper',
+    );
+  });
+
+  it('asks for and rejects a room password in Chinese', async () => {
+    const user = userEvent.setup();
+    const fake = server({ password: 'turtle' });
+    await renderApp(ROOM, { fake, locale: 'zh' });
+    expect(
+      screen.getByRole('heading', { name: '这个房间需要密码。' }),
+    ).toBeInTheDocument();
+    const field = screen.getByLabelText('房间密码');
+    await user.type(field, 'wrong');
+    await user.click(screen.getByRole('button', { name: '加入房间' }));
+    expect(await screen.findByText('密码不对，再试一次。')).toBeInTheDocument();
+    expect(field).toHaveFocus();
+  });
+
   it('takes a seat when opened from a link', async () => {
     const fake = server();
     await renderApp(ROOM, { fake });

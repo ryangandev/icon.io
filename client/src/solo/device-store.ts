@@ -5,6 +5,8 @@
  * is kept and the games play on.
  */
 
+import type { Messages } from '../i18n';
+
 const PREFIX = 'zumpo:solo:';
 
 export function readStored(key: string): string | null {
@@ -95,14 +97,11 @@ export function recordDayBest(key: string, result: number, date: Date) {
 }
 
 /** "Today", "Yesterday", "Oct 1": a kept day, as of `now`. */
-export function dayLabel(day: string, now: Date): string {
-  if (day === dayOf(now)) return 'Today';
+export function dayLabel(day: string, now: Date, m: Messages): string {
+  if (day === dayOf(now)) return m.solo.today;
   const yesterday = new Date(now);
   yesterday.setDate(now.getDate() - 1);
-  if (day === dayOf(yesterday)) return 'Yesterday';
+  if (day === dayOf(yesterday)) return m.solo.yesterday;
   const [year, month, date] = day.split('-').map(Number);
-  return new Date(year, month - 1, date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-  });
+  return m.solo.date(new Date(year, month - 1, date));
 }

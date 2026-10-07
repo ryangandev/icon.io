@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { act, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import type {
@@ -8,6 +8,8 @@ import type {
 import { dailyWordState, ME } from '../tests/fixtures';
 import { onPhone } from '../tests/phone';
 import { renderSeated } from '../tests/seated';
+import { renderApp } from '../tests/render-app';
+import { FakeSocket } from '../tests/fake-socket';
 
 const board = (
   playerId: string,
@@ -214,5 +216,33 @@ describe('a Daily Word room', () => {
         .getAllByRole('img')
         .map((tile) => tile.getAttribute('aria-label')),
     ).toEqual(['S', 'L', 'A', 'T', 'E']);
+  });
+});
+
+describe('a Daily Word room in Chinese', () => {
+  it('translates validation and rejection without showing server diagnostics', async () => {
+    const user = userEvent.setup();
+    const fake = new FakeSocket();
+    fake.answer('room:sync', () => ({ ok: true as const }));
+    fake.answer('dw:guess', () => ({
+      ok: false as const,
+      error: {
+        type: 'invalidRequest' as const,
+        message: 'An English server diagnostic.',
+      },
+    }));
+    await renderApp('/games/daily-word/rooms/r1', { locale: 'zh', fake });
+    act(() => fake.serverEmits('room:state', start));
+    expect(screen.getByRole('group', { name: 'Maya 的猜词板' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: '其他玩家' })).toBeVisible();
+    await user.keyboard('sla{Enter}');
+    expect(screen.getByText('字母不够')).toBeVisible();
+    expect(guesses(fake)).toEqual([]);
+    await user.keyboard('te{Enter}');
+    expect(
+      await screen.findByText('猜词没能送达房间，请再试一次。'),
+    ).toBeVisible();
+    expect(screen.queryByText('An English server diagnostic.')).toBeNull();
+    expect(guesses(fake)).toEqual([['r1', 'slate']]);
   });
 });

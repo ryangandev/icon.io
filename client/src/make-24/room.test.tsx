@@ -1,10 +1,13 @@
-import { screen, within } from '@testing-library/react';
+import { act, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import type { Make24HandResult } from '../../../shared/wire-types';
 import { make24State, ME } from '../tests/fixtures';
 import { onPhone } from '../tests/phone';
 import { renderSeated } from '../tests/seated';
+import { renderApp } from '../tests/render-app';
+import { FakeSocket } from '../tests/fake-socket';
+import { roomPath } from '../games/catalog';
 
 const solving = make24State({
   isGameStarted: true,
@@ -57,6 +60,36 @@ async function step(
 }
 
 describe('a Make 24 room', () => {
+  it('plays with Chinese prompts and accessible operators', async () => {
+    const user = userEvent.setup();
+    const fake = new FakeSocket();
+    fake.answer('room:sync', () => ({ ok: true as const }));
+    await renderApp(roomPath('make-24', 'r1'), { locale: 'zh', fake });
+    act(() => fake.serverEmits('room:state', solving));
+    expect(screen.getAllByText('第 1 手，共 5 手')).toHaveLength(2);
+    expect(screen.getByText('每个数字用一次')).toBeInTheDocument();
+    await step(user, '3', '加', '9');
+    expect(screen.getByText('你的步骤')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: '12，来自 3 + 9' }),
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: '撤销' }));
+    expect(screen.queryByText('你的步骤')).toBeNull();
+
+    act(() =>
+      fake.serverEmits('room:state', {
+        ...solving,
+        solved: [mine],
+        mySolve: mine,
+      }),
+    );
+    expect(screen.getByText('算出来了！+117')).toBeInTheDocument();
+    expect(screen.getByText('等待 Maya')).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('算出来了！本手结束后才能聊天。'),
+    ).toBeDisabled();
+  });
+
   it('lets the host start once two players are in', async () => {
     const user = userEvent.setup();
     const { fake } = await renderSeated(make24State());

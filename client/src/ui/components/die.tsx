@@ -1,3 +1,4 @@
+import { useMessages } from '../../i18n';
 import type { CSSProperties } from 'react';
 import { cx } from '../cx';
 import styles from './die.module.css';
@@ -56,14 +57,6 @@ const PIPS: Record<DieFace, readonly (readonly [number, number])[]> = {
   ],
 };
 
-function describe(face: DieProps['face'], state: DieState): string {
-  if (face === 'hidden') return 'Hidden die';
-  if (face === 'empty') return 'Lost die';
-  if (state === 'wild') return `${face}, wild`;
-  if (state === 'counted') return `${face}, counts`;
-  return String(face);
-}
-
 /** Zumpo/Die: one die, its pips drawn on a 3 × 3 grid. */
 export function Die({
   face,
@@ -72,8 +65,20 @@ export function Die({
   label,
   className,
 }: DieProps) {
+  const m = useMessages();
   const pips = typeof face === 'number' ? PIPS[face] : [];
-  const name = label === undefined ? describe(face, state) : label;
+  const name =
+    label === undefined
+      ? face === 'hidden'
+        ? m.ui.dice.hidden
+        : face === 'empty'
+          ? m.ui.dice.lost
+          : state === 'wild'
+            ? m.ui.dice.wild(face)
+            : state === 'counted'
+              ? m.ui.dice.counts(face)
+              : String(face)
+      : label;
   return (
     <span
       className={cx(

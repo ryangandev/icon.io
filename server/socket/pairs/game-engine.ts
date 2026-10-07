@@ -2,7 +2,7 @@ import type { PairsSettings } from '../../models/types.js';
 import { RequestError } from '../../models/error.js';
 import { seatCount } from '../../libs/rooms/seats.js';
 import type { GameContext, Room } from '../../libs/rooms/types.js';
-import { gameOverMessage, resetPoints } from '../../libs/utils.js';
+import { gameOverNotice, resetPoints } from '../../libs/utils.js';
 import {
   pairsDurationsInSeconds as defaultDurations,
   type PairsDurationsInSeconds,
@@ -58,11 +58,11 @@ const createPairsGameEngine = (
 
     console.log(`Pairs started in room ${room.roomId}, ${game.board} board.`);
 
-    ctx.rooms.announce(
-      room.roomId,
-      'system',
-      `Game has started! ${PAIRS_BOARDS[game.board].pairs} pairs to find, ${durations.turn} seconds a turn.`,
-    );
+    ctx.rooms.announce(room.roomId, 'system', {
+      type: 'pairs:started',
+      pairs: PAIRS_BOARDS[game.board].pairs,
+      seconds: durations.turn,
+    });
     ctx.rooms.emitLobby('pairs');
 
     // The first player in the order, or the first after them who is here.
@@ -125,11 +125,10 @@ const createPairsGameEngine = (
     game.matched[second] = true;
     game.up = [];
     player.points += 1;
-    ctx.rooms.announce(
-      room.roomId,
-      'success',
-      `${player.username} found a pair! (+1)`,
-    );
+    ctx.rooms.announce(room.roomId, 'success', {
+      type: 'pairs:found',
+      name: player.username,
+    });
 
     if (game.matched.every(Boolean)) {
       endGame(room, { endedEarly: false });
@@ -173,7 +172,7 @@ const createPairsGameEngine = (
     ctx.rooms.announce(
       room.roomId,
       'system',
-      gameOverMessage(standings, 'pair'),
+      gameOverNotice(standings, 'pair'),
     );
     ctx.rooms.emitLobby('pairs');
   };
@@ -183,11 +182,7 @@ const createPairsGameEngine = (
     if (!room.isGameStarted) return;
 
     if (seatCount(room) < MIN_PLAYERS_TO_START) {
-      ctx.rooms.announce(
-        room.roomId,
-        'alert',
-        'Not enough players left to continue. Game has ended.',
-      );
+      ctx.rooms.announce(room.roomId, 'alert', { type: 'game:interrupted' });
       endGame(room, { endedEarly: true });
       return;
     }

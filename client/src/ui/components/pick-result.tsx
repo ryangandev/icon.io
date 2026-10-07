@@ -1,16 +1,14 @@
+import { useMessages } from '../../i18n';
 import { cx } from '../cx';
 import { Avatar, type AvatarTone } from './avatar';
 import type { PickOutcome } from './pick-marker';
 import { Tag, type TagProps } from './tag';
 import styles from './pick-result.module.css';
 
-const OUTCOMES: Record<
-  PickOutcome,
-  Pick<TagProps, 'tone' | 'icon'> & { label: string }
-> = {
-  safe: { tone: 'lime', icon: 'check', label: 'Safe' },
-  mine: { tone: 'peach', icon: 'mine', label: 'Mine' },
-  auto: { tone: 'sand', icon: 'clock', label: 'Auto-picked' },
+const OUTCOMES: Record<PickOutcome, Pick<TagProps, 'tone' | 'icon'>> = {
+  safe: { tone: 'lime', icon: 'check' },
+  mine: { tone: 'peach', icon: 'mine' },
+  auto: { tone: 'sand', icon: 'clock' },
 };
 
 export interface PickResultProps {
@@ -46,13 +44,14 @@ export function PickResult({
   detail,
   points,
 }: PickResultProps) {
-  const { label: outcomeLabel, ...tag } = OUTCOMES[outcome];
+  const m = useMessages();
+  const tag = OUTCOMES[outcome];
   return (
     <li className={cx(styles.row, outcome === 'mine' && styles.mine)}>
       <Avatar initials={initials} tone={tone} />
       <span className={styles.name}>{name}</span>
       <span className={styles.outcome}>
-        <Tag {...tag}>{label ?? outcomeLabel}</Tag>
+        <Tag {...tag}>{label ?? m.ui.outcome[outcome]}</Tag>
         <span className={styles.detail}>
           {detail.split(' · ').map((part, index) => (
             <span key={index}>

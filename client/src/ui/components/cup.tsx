@@ -1,3 +1,4 @@
+import { useMessages } from '../../i18n';
 import { cx } from '../cx';
 import { Avatar, type AvatarTone } from './avatar';
 import { Die, type DieProps } from './die';
@@ -37,6 +38,7 @@ export function Cup({
   dice,
   className,
 }: CupProps) {
+  const m = useMessages();
   return (
     <section
       className={cx(
@@ -45,7 +47,7 @@ export function Cup({
         state !== 'default' && styles[state],
         className,
       )}
-      aria-label={you ? `${name} (you)` : name}
+      aria-label={you ? m.ui.youName(name) : name}
     >
       <div className={styles.player}>
         <Avatar initials={initials} tone={tone} />
@@ -54,7 +56,7 @@ export function Cup({
             <span className={styles.name}>{name}</span>
             {you && (
               <Tag size="compact" tone="sand">
-                You
+                {m.ui.you}
               </Tag>
             )}
           </span>
@@ -64,7 +66,7 @@ export function Cup({
       <div
         className={cx(styles.dice, size === 'regular' && styles.regular)}
         role="list"
-        aria-label="Dice"
+        aria-label={m.ui.dice.title}
       >
         {dice.map((die, index) => (
           <span key={index} role="listitem" className={styles.slot}>

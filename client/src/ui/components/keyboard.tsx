@@ -1,3 +1,4 @@
+import { useMessages } from '../../i18n';
 import { LetterKey, type LetterKeyState } from './letter-key';
 import { cx } from '../cx';
 import { Fit } from '../../shell/fit';
@@ -28,10 +29,15 @@ export function Keyboard({
   disabled,
   className,
 }: KeyboardProps) {
+  const m = useMessages();
   return (
     <div className={cx(styles.container, className)}>
       <Fit>
-        <div role="group" aria-label="Keyboard" className={styles.keyboard}>
+        <div
+          role="group"
+          aria-label={m.ui.word.keyboard}
+          className={styles.keyboard}
+        >
           {ROWS.map((letters, row) => (
             <div key={letters} className={styles.row}>
               {row === 2 && (

@@ -1,29 +1,27 @@
 import type { AnyLobbyRoomInfo } from '../../../shared/wire-types';
-import { boardName } from '../minesweeper/boards';
-import { boardName as pairsBoardName } from '../pairs/boards';
 import { levelsFor } from '../../../shared/hush';
-import { plural } from './plural';
+import type { Messages } from '../i18n';
 
 /** The setting a room was made with: "2 rounds", "Small 9 × 9", "10 hands",
  * "Large 6 × 6", "20 trios", "3 dice each", "7 levels", "3 words". */
-export function roomSetting(room: AnyLobbyRoomInfo): string {
+export function roomSetting(room: AnyLobbyRoomInfo, m: Messages): string {
   switch (room.gameType) {
     case 'draw-and-guess':
-      return plural(room.rounds, 'round');
+      return m.games.counts['draw-and-guess'](room.rounds);
     case 'minesweeper':
-      return boardName(room.difficulty);
+      return m.minesweeper.boardName(room.difficulty);
     case 'make-24':
-      return plural(room.hands, 'hand');
+      return m.games.counts['make-24'](room.hands);
     case 'pairs':
-      return pairsBoardName(room.board);
+      return m.pairs.boardName(room.board);
     case 'trios':
-      return plural(room.trios, 'trio');
+      return m.games.counts.trios(room.trios);
     case 'liars-dice':
-      return `${room.dicePerPlayer} dice each`;
+      return m.games.counts['liars-dice'](room.dicePerPlayer);
     case 'hush':
       // Nothing is chosen; the level count follows who is seated.
-      return plural(levelsFor(room.currentPlayerCount), 'level');
+      return m.games.counts.hush(levelsFor(room.currentPlayerCount));
     case 'daily-word':
-      return plural(room.rounds, 'word');
+      return m.games.counts['daily-word'](room.rounds);
   }
 }

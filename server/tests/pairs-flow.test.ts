@@ -1,3 +1,4 @@
+import { textOf } from './helpers/test-server.js';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { PairsRoomState } from '../models/types.js';
 import {
@@ -196,7 +197,7 @@ describe('a turn', () => {
     expect(view.phase).toBe('flipping');
     expect(view.turnPlayerId).toBe(mover.playerId);
     expect(view.playerList[mover.playerId].points).toBe(1);
-    expect((await chat).text).toBe(`${nameOf(mover)} found a pair! (+1)`);
+    expect(textOf(await chat)).toBe(`${nameOf(mover)} found a pair! (+1)`);
 
     // A matched card cannot be turned over again.
     mover.emit('pairs:flip', roomId, a);
@@ -318,7 +319,7 @@ describe('a Pairs game', () => {
     });
     await settle();
     expect(messages.filter((m) => m.kind === 'success')).toHaveLength(8);
-    expect(messages.at(-1)!.text).toBe(
+    expect(textOf(messages.at(-1)!)).toBe(
       `Game over: ${nameOf(mover)} wins with 8 pairs!`,
     );
   });

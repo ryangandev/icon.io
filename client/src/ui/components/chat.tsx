@@ -1,3 +1,4 @@
+import { useMessages } from '../../i18n';
 import { useId, useLayoutEffect, useRef, type ReactNode } from 'react';
 import { cx } from '../cx';
 import { ChatInput, type ChatInputProps } from './chat-input';
@@ -13,6 +14,7 @@ export interface ChatProps {
 
 /** Zumpo/Chat: the room chat, newest last, with the input under it. */
 export function Chat({ children, input, className }: ChatProps) {
+  const m = useMessages();
   const log = useRef<HTMLUListElement>(null);
   const headingId = useId();
 
@@ -35,7 +37,7 @@ export function Chat({ children, input, className }: ChatProps) {
       aria-labelledby={headingId}
     >
       <h2 id={headingId} className={panel.heading}>
-        Chat
+        {m.ui.chat.title}
       </h2>
       <ul ref={log} className={styles.log} role="log" aria-live="polite">
         {children}

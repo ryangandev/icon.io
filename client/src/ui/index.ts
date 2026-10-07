@@ -71,7 +71,6 @@ export {
 } from './components/letter-key';
 export {
   LetterTile,
-  MARK_WORDS,
   type LetterTileProps,
   type LetterTileSize,
   type LetterTileState,

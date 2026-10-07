@@ -1,3 +1,4 @@
+import { useMessages, type Messages } from '../../i18n';
 import { cx } from '../cx';
 import styles from './lives.module.css';
 
@@ -15,8 +16,7 @@ export interface LivesProps {
 const HEART =
   'M10 18C10 18 0 11.6 0 5.4 0 2.4 2.4 0 5.4 0 7.4 0 9.1 1.1 10 2.8 10.9 1.1 12.6 0 14.6 0 17.6 0 20 2.4 20 5.4 20 11.6 10 18 10 18Z';
 
-export const livesLabel = (lives: number) =>
-  lives === 0 ? 'No lives' : lives === 1 ? '1 life' : `${lives} lives`;
+export const livesLabel = (lives: number, m: Messages) => m.ui.lives(lives);
 
 /** Zumpo/Lives: a team's lives in Hush, as hearts full or lost. */
 export function Lives({
@@ -25,11 +25,12 @@ export function Lives({
   showLabel = true,
   className,
 }: LivesProps) {
+  const m = useMessages();
   return (
     <span
       className={cx(styles.lives, className)}
       role="img"
-      aria-label={livesLabel(lives)}
+      aria-label={livesLabel(lives, m)}
     >
       <span className={styles.hearts}>
         {Array.from({ length: of }, (_, index) => (
@@ -44,7 +45,9 @@ export function Lives({
           </svg>
         ))}
       </span>
-      {showLabel && <span className={styles.label}>{livesLabel(lives)}</span>}
+      {showLabel && (
+        <span className={styles.label}>{livesLabel(lives, m)}</span>
+      )}
     </span>
   );
 }

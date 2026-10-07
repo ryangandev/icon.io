@@ -1,5 +1,6 @@
 import { ButtonLink, Tag } from '../ui';
 import { cx } from '../ui/cx';
+import { useMessages } from '../i18n';
 import { GameArtwork } from './artwork';
 import { lobbyPath, soloPath, type GameInfo } from './catalog';
 import styles from './game-card.module.css';
@@ -16,15 +17,16 @@ export function GameCard({
   game: GameInfo;
   layout: 'tile' | 'row';
 }) {
+  const text = useMessages().games.of[game.type];
   const copy = (
     <div className={styles.copy}>
       <h3 id={`game-${game.type}`} className={styles.name}>
-        {game.name}
+        {text.name}
       </h3>
       <p className={styles.tagline}>
-        {(layout === 'row' && game.rowTagline) || game.tagline}
+        {(layout === 'row' && text.rowTagline) || text.tagline}
       </p>
-      {layout === 'row' && <Tag tone="paper">{game.facts}</Tag>}
+      {layout === 'row' && <Tag tone="paper">{text.facts}</Tag>}
     </div>
   );
   return (
@@ -36,7 +38,7 @@ export function GameCard({
         <>
           <GameArtwork type={game.type} size="tile" />
           {copy}
-          <Tag tone="paper">{game.facts}</Tag>
+          <Tag tone="paper">{text.facts}</Tag>
         </>
       ) : (
         <div className={styles.top}>
@@ -60,19 +62,20 @@ export function GameWaysIn({
   game: GameInfo;
   className?: string;
 }) {
+  const m = useMessages();
   const to = lobbyPath(game.type);
   if (!game.solo) {
     return (
       <ButtonLink to={to} className={className}>
-        Find a room
+        {m.games.findRoom}
       </ButtonLink>
     );
   }
   return (
     <div className={cx(styles.actions, className)}>
-      <ButtonLink to={soloPath(game.type)}>Play solo</ButtonLink>
+      <ButtonLink to={soloPath(game.type)}>{m.games.playSolo}</ButtonLink>
       <ButtonLink to={to} variant="secondary">
-        Find a room
+        {m.games.findRoom}
       </ButtonLink>
     </div>
   );

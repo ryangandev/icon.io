@@ -1,3 +1,4 @@
+import { textOf } from './helpers/test-server.js';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { nameInRoom, renamePlayer } from '../libs/rooms/names.js';
 import type { Room } from '../libs/rooms/types.js';
@@ -115,7 +116,7 @@ describe('player:rename', () => {
       (state) => state.playerList[guest.playerId]?.username === 'Grace',
     );
     const announced = waitForChat(owner, (message) =>
-      message.text.includes('is now'),
+      textOf(message).includes('is now'),
     );
     expect(await request(guest, 'player:rename', 'Grace')).toEqual({
       ok: true,
@@ -124,7 +125,7 @@ describe('player:rename', () => {
     await Promise.all([ownerSees, guestSees]);
     expect(await announced).toMatchObject({
       kind: 'system',
-      text: 'Sleepy Otter is now Grace.',
+      notice: { type: 'room:renamed', before: 'Sleepy Otter', name: 'Grace' },
     });
   });
 

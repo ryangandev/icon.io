@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { act, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import type {
@@ -7,6 +7,7 @@ import type {
 } from '../../../shared/wire-types';
 import { liarsDiceState, ME } from '../tests/fixtures';
 import { renderSeated } from '../tests/seated';
+import { renderApp } from '../tests/render-app';
 
 const players = {
   p1: { username: 'Ryan', points: 2, isConnected: true },
@@ -43,6 +44,23 @@ const scoreboard = () =>
 const cupOf = (name: string) => within(screen.getByRole('region', { name }));
 
 describe('a Liar’s Dice room', () => {
+  it('shows a Chinese bidding turn and sends the same legal raise', async () => {
+    const user = userEvent.setup();
+    const { fake } = await renderApp('/games/liars-dice/rooms/r1', {
+      locale: 'zh',
+    });
+    act(() => fake.serverEmits('room:state', myTurn));
+    const bar = within(screen.getByRole('region', { name: '当前回合' }));
+    expect(screen.getByText('第 3 轮')).toBeInTheDocument();
+    expect(bar.getByText('轮到你了')).toBeInTheDocument();
+    expect(bar.getByText('Leo 叫了 5 个 5')).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: '你的叫点' })).toBeInTheDocument();
+    await user.click(screen.getByRole('radio', { name: '3 点' }));
+    await user.click(screen.getByRole('button', { name: '叫 6 个 3' }));
+    expect(fake.sentArgs('ld:bid')).toEqual([['r1', 6, 3]]);
+    expect(screen.queryByRole('button', { name: 'Call Liar' })).toBeNull();
+  });
+
   it('lets the host start once two players are in', async () => {
     const user = userEvent.setup();
     const { fake } = await renderSeated(liarsDiceState());

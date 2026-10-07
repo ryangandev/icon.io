@@ -61,6 +61,7 @@ import {
 } from '..';
 import { GAMES } from '../../games/catalog';
 import { GameCard } from '../../games/game-card';
+import { useMessages } from '../../i18n';
 import { glyphs } from '../generated/glyphs';
 import { pairsSymbols } from '../generated/pairs-symbols';
 import { Specimen } from './specimen';
@@ -153,6 +154,7 @@ const PLAYERS = {
 const SAMPLE_AVATAR = { initials: 'RG', tone: 'peach' } as const;
 
 export default function Gallery() {
+  const m = useMessages();
   const [seats, setSeats] = useState(8);
   const [rounds, setRounds] = useState(2);
   const [board, setBoard] = useState<'small' | 'medium' | 'large'>('medium');
@@ -1411,7 +1413,7 @@ export default function Gallery() {
           <Specimen
             key={`${game.type}-tile`}
             family="game-card"
-            variant={`Game=${game.name}, Layout=Tile`}
+            variant={`Game=${m.games.of[game.type].name}, Layout=Tile`}
             width={310}
           >
             <GameCard game={game} layout="tile" />
@@ -1421,7 +1423,7 @@ export default function Gallery() {
           <Specimen
             key={`${game.type}-row`}
             family="game-card"
-            variant={`Game=${game.name}, Layout=Row`}
+            variant={`Game=${m.games.of[game.type].name}, Layout=Row`}
             width={350}
           >
             <GameCard game={game} layout="row" />

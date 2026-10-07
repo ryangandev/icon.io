@@ -1,4 +1,5 @@
 import { useSearchParams } from 'react-router';
+import { useLocale, useMessages } from '../i18n';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import { FilterChip } from '../ui';
 import { GAME_KINDS, gamesOfKind, isGameKind, type GameKind } from './catalog';
@@ -11,12 +12,14 @@ import styles from './game-list.module.css';
  * address, so a refresh or a shared link keeps it.
  */
 export function GameList() {
+  const m = useMessages();
+  const { locale } = useLocale();
   const phone = useMediaQuery(PHONE);
   const [params, setParams] = useSearchParams();
   const param = params.get('kind');
   const selected: GameKind | null = isGameKind(param) ? param : null;
   const kinds = GAME_KINDS.filter(
-    (entry) => selected === null || entry.kind === selected,
+    (kind) => selected === null || kind === selected,
   );
 
   const select = (kind: GameKind | null) =>
@@ -25,17 +28,21 @@ export function GameList() {
       preventScrollReset: true,
     });
   const filters = (
-    <div className={styles.filters} role="group" aria-label="Kind of game">
+    <div
+      className={styles.filters}
+      role="group"
+      aria-label={m.games.kindOfGame}
+    >
       <FilterChip selected={selected === null} onSelect={() => select(null)}>
-        All
+        {m.games.all}
       </FilterChip>
-      {GAME_KINDS.map((entry) => (
+      {GAME_KINDS.map((kind) => (
         <FilterChip
-          key={entry.kind}
-          selected={selected === entry.kind}
-          onSelect={() => select(entry.kind)}
+          key={kind}
+          selected={selected === kind}
+          onSelect={() => select(kind)}
         >
-          {entry.name}
+          {m.games.kinds[kind].name}
         </FilterChip>
       ))}
     </div>
@@ -45,19 +52,19 @@ export function GameList() {
     return (
       <div className={styles.list}>
         <div className={styles.strip}>{filters}</div>
-        {kinds.map((entry) => (
+        {kinds.map((kind) => (
           <section
-            key={entry.kind}
+            key={kind}
             className={styles.kind}
-            aria-labelledby={`kind-${entry.kind}`}
+            aria-labelledby={`kind-${kind}`}
           >
             <div className={styles.kindHeading}>
-              <h2 id={`kind-${entry.kind}`} className={styles.kindName}>
-                {entry.name}
+              <h2 id={`kind-${kind}`} className={styles.kindName}>
+                {m.games.kinds[kind].name}
               </h2>
-              <p className={styles.about}>{entry.about}</p>
+              <p className={styles.about}>{m.games.kinds[kind].about}</p>
             </div>
-            {gamesOfKind(entry.kind).map((game) => (
+            {gamesOfKind(kind, m, locale).map((game) => (
               <GameCard key={game.type} game={game} layout="row" />
             ))}
           </section>
@@ -69,13 +76,13 @@ export function GameList() {
     <section className={styles.list} aria-labelledby="pick-a-game">
       <div className={styles.heading}>
         <h2 id="pick-a-game" className={styles.title}>
-          Pick a game
+          {m.games.pickAGame}
         </h2>
         {filters}
       </div>
       <div className={styles.tiles}>
-        {kinds.flatMap((entry) =>
-          gamesOfKind(entry.kind).map((game) => (
+        {kinds.flatMap((kind) =>
+          gamesOfKind(kind, m, locale).map((game) => (
             <GameCard key={game.type} game={game} layout="tile" />
           )),
         )}

@@ -1,3 +1,4 @@
+import { textOf } from './helpers/test-server.js';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { Make24RoomState, Make24Step } from '../models/types.js';
 import {
@@ -186,7 +187,7 @@ describe('a hand', () => {
     // Bob is told that Alice solved it, never her expression.
     expect(theirs.mySolve).toBeNull();
     expect(JSON.stringify(theirs)).not.toContain(mine.mySolve!.expression);
-    expect(message.text).toBe(`Alice solved it! (+${mine.mySolve!.points})`);
+    expect(textOf(message)).toBe(`Alice solved it! (+${mine.mySolve!.points})`);
     expect(theirs.playerList[alice.playerId].points).toBe(mine.mySolve!.points);
   });
 
@@ -216,7 +217,7 @@ describe('a hand', () => {
     // Bob, still solving, may talk.
     const heard = waitForChat(alice, (m) => m.kind === 'player');
     bob.emit('chat:send', roomId, 'hmm');
-    expect((await heard).text).toBe('hmm');
+    expect(textOf(await heard)).toBe('hmm');
   });
 
   it('ends early once everybody has solved it, with a way to solve it', async () => {

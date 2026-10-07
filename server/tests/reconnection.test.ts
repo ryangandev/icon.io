@@ -1,3 +1,4 @@
+import { textOf } from './helpers/test-server.js';
 import { randomUUID } from 'node:crypto';
 import { io as createClient } from 'socket.io-client';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -299,9 +300,9 @@ describe('reconnecting to a room', () => {
     await harness.reload(bob);
     await settle(200);
 
-    expect(messages.map(({ kind, text }) => ({ kind, text }))).toEqual([
-      { kind: 'alert', text: 'Bob lost connection.' },
-      { kind: 'system', text: 'Bob reconnected.' },
+    expect(messages.map(({ kind, notice }) => ({ kind, notice }))).toEqual([
+      { kind: 'alert', notice: { type: 'room:disconnected', name: 'Bob' } },
+      { kind: 'system', notice: { type: 'room:reconnected', name: 'Bob' } },
     ]);
     expect(states.at(-1)?.playerList[bob.playerId]?.isConnected).toBe(true);
   });
@@ -352,7 +353,9 @@ describe('reconnecting to a room', () => {
     harness = await startTestServer(SLOW_DRAWING);
 
     const { drawer, guesser } = await playToDrawingPhase(harness);
-    const back = waitForChat(guesser, (m) => m.text.includes('drawer is back'));
+    const back = waitForChat(guesser, (m) =>
+      textOf(m).includes('drawer is back'),
+    );
     const resumed = waitForDrawState(
       guesser,
       (s) =>
@@ -378,7 +381,7 @@ describe('reconnecting to a room', () => {
 
     const nextTurn = waitForDrawState(guesser, (s) => s.turn === 2, 3000);
     const gaveUp = waitForChat(guesser, (m) =>
-      m.text.includes('did not come back'),
+      textOf(m).includes('did not come back'),
     );
     drawer.close();
 
@@ -508,16 +511,19 @@ describe('reconnecting to a room', () => {
     // The duplicate is the player now: it is sent the room and can talk in it.
     const { state } = await syncRoom(duplicate, roomId);
     expect(state.playerList[bob.playerId]?.username).toBe('Bob');
-    const heard = waitForChat(alice, (message) => message.text === 'from here');
+    const heard = waitForChat(
+      alice,
+      (message) => textOf(message) === 'from here',
+    );
     duplicate.emit('chat:send', roomId, 'from here');
     expect(await heard).toMatchObject({ kind: 'player', username: 'Bob' });
 
     // And a seat that moved is still dropped like any other.
     const lost = waitForChat(alice, (message) =>
-      message.text.includes('lost connection'),
+      textOf(message).includes('lost connection'),
     );
     duplicate.close();
-    expect((await lost).text).toBe('Bob lost connection.');
+    expect(textOf(await lost)).toBe('Bob lost connection.');
   });
 
   it('does not let a returning player take somebody else s seat', async () => {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  gameOverMessage,
+  gameOverNotice,
   getRandomElementFromSet,
   getRemainingPhaseMs,
   resetPoints,
@@ -66,37 +66,41 @@ const standing = (username: string, points: number) => ({
   points,
 });
 
-describe('gameOverMessage', () => {
-  it('names the winner', () => {
-    expect(gameOverMessage([standing('Alice', 40), standing('Bob', 12)])).toBe(
-      'Game over: Alice wins with 40 points!',
-    );
-  });
-
-  it('names everyone who shares the top score', () => {
+describe('gameOverNotice', () => {
+  it('names the winner with public score facts', () => {
     expect(
-      gameOverMessage([
+      gameOverNotice([standing('Alice', 40), standing('Bob', 12)]),
+    ).toEqual({
+      type: 'game:over',
+      names: ['Alice'],
+      points: 40,
+      unit: 'point',
+    });
+  });
+  it('names everybody tied at the top', () => {
+    expect(
+      gameOverNotice([
         standing('Alice', 40),
         standing('Bob', 40),
         standing('Cat', 40),
         standing('Dan', 3),
       ]),
-    ).toBe('Game over: Alice, Bob and Cat tie with 40 points!');
+    ).toEqual({
+      type: 'game:over',
+      names: ['Alice', 'Bob', 'Cat'],
+      points: 40,
+      unit: 'point',
+    });
   });
-
-  it('counts in the game’s own unit, one or many', () => {
-    expect(
-      gameOverMessage([standing('Maya', 6), standing('Leo', 4)], 'pair'),
-    ).toBe('Game over: Maya wins with 6 pairs!');
-    expect(gameOverMessage([standing('Maya', 1)], 'pair')).toBe(
-      'Game over: Maya wins with 1 pair!',
-    );
-    expect(gameOverMessage([standing('Ada', 1)])).toBe(
-      'Game over: Ada wins with 1 point!',
-    );
+  it('keeps the game score unit, including a single pair', () => {
+    expect(gameOverNotice([standing('Maya', 1)], 'pair')).toEqual({
+      type: 'game:over',
+      names: ['Maya'],
+      points: 1,
+      unit: 'pair',
+    });
   });
-
-  it('just ends a game nobody is left in', () => {
-    expect(gameOverMessage([])).toBe('Game has ended!');
+  it('ends a game nobody is left in', () => {
+    expect(gameOverNotice([])).toEqual({ type: 'game:ended' });
   });
 });

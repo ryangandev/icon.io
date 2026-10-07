@@ -1,4 +1,5 @@
-import { cardFeatures, cardName } from '../../../../shared/trios';
+import { useMessages } from '../../i18n';
+import { cardFeatures } from '../../../../shared/trios';
 import { cx } from '../cx';
 import { TriosShape } from './trios-shape';
 import styles from './trios-card.module.css';
@@ -36,13 +37,6 @@ export interface TriosCardProps {
 /** Each size's shapes, as Figma scales the 40 px shape in it. */
 const SHAPE_SIZE = { regular: 40, compact: 24, mini: 16 } as const;
 
-const STATE_NAMES: Readonly<Record<TriosCardState, string>> = {
-  default: '',
-  selected: ', picked',
-  found: ', found',
-  wrong: ', not a trio',
-};
-
 /** Zumpo/Trios card: one card of a Trios table, with one to three shapes. */
 export function TriosCard({
   card,
@@ -53,8 +47,11 @@ export function TriosCard({
   onPick,
   disabled,
 }: TriosCardProps) {
-  const { colour, shape, count, fill } = cardFeatures(card);
-  const label = `${cardName(card)}${STATE_NAMES[state]}${badgeLabel ? `, ${badgeLabel}` : ''}`;
+  const m = useMessages();
+  const features = cardFeatures(card);
+  const { colour, shape, count, fill } = features;
+  const name = `${m.ui.trios.card(card)}${state === 'default' ? '' : m.ui.trios.states[state]}`;
+  const label = badgeLabel ? m.ui.trios.badge(name, badgeLabel) : name;
   const className = cx(
     styles.card,
     size !== 'regular' && styles[size],

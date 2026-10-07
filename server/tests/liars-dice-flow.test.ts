@@ -1,3 +1,4 @@
+import { textOf } from './helpers/test-server.js';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { LiarsDiceRoomState } from '../models/types.js';
 import {
@@ -231,7 +232,7 @@ describe('a call', () => {
     bid(opener, roomId, 3, 5);
     await passed;
 
-    const said = waitForChat(owner, (m) => m.text.includes('called Liar'));
+    const said = waitForChat(owner, (m) => textOf(m).includes('called Liar'));
     const revealed = waitForLiarsDiceState(owner, (s) => s.phase === 'reveal');
     second.emit('ld:call', roomId);
     const state = await revealed;
@@ -254,7 +255,7 @@ describe('a call', () => {
       expect(cupOf(view, opener).dice).toEqual([5, 1, 3]);
       expect(cupOf(view, second).dice).toEqual([5, 2, 6]);
     }
-    expect((await said).text).toMatch(
+    expect(textOf(await said)).toMatch(
       /called Liar on three 5s: there were three\. \w+ loses a die\./,
     );
   });
@@ -456,7 +457,7 @@ describe('the end of a game', () => {
       expect(cupOf(view, c).dice).toEqual([4]);
     }
     const winner = ['Alice', 'Bob', 'Cleo'][players.indexOf(a)];
-    expect(chat.map((m) => m.text)).toContain(
+    expect(chat.map((m) => textOf(m))).toContain(
       `Game over: ${winner} wins with 2 dice left!`,
     );
   });

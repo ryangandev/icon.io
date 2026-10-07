@@ -1,4 +1,5 @@
 import type { PlayerIdentity } from '../../../shared/wire-types';
+import { isLocale, type Locale } from '../i18n/locale';
 
 /*
  * The identity lives in sessionStorage: per tab, and surviving a reload, which
@@ -13,6 +14,7 @@ import type { PlayerIdentity } from '../../../shared/wire-types';
 const IDENTITY_KEY = 'zumpo:identity';
 const NAME_KEY = 'zumpo:name';
 const NAME_HINT_KEY = 'zumpo:name-hint';
+const LOCALE_KEY = 'zumpo:locale';
 
 type Store = 'sessionStorage' | 'localStorage';
 
@@ -100,4 +102,14 @@ export function readNameHintSeen(): boolean {
 
 export function writeNameHintSeen(): void {
   write('localStorage', NAME_HINT_KEY, 'seen');
+}
+
+/** The language the player chose from the switch, if they ever did. */
+export function readLocale(): Locale | null {
+  const stored = read('localStorage', LOCALE_KEY);
+  return isLocale(stored) ? stored : null;
+}
+
+export function writeLocale(locale: Locale): void {
+  write('localStorage', LOCALE_KEY, locale);
 }
