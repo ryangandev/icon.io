@@ -2,6 +2,7 @@ import {
   expect,
   test as base,
   type BrowserContext,
+  type Locator,
   type Page,
   type WebSocketRoute,
 } from '@playwright/test';
@@ -124,6 +125,22 @@ export interface RoomSettings {
   words?: 3 | 5;
 }
 
+/**
+ * The labels of everything matching the CSS `selector` inside `container`,
+ * read in one go. `evaluateAll` finds the elements and reads them in two
+ * steps, and a card turned in between has moved its label to another element.
+ */
+export function labelsIn(container: Locator, selector: string) {
+  return container.evaluate(
+    (root, inner) =>
+      Array.from(
+        root.querySelectorAll(inner),
+        (element) => element.getAttribute('aria-label') ?? '',
+      ),
+    selector,
+  );
+}
+
 /** Makes a room through the create page and returns its link. */
 export async function createRoom(
   page: Page,
@@ -168,9 +185,30 @@ export async function joinRoom(page: Page, link: string): Promise<void> {
   await expect(page.getByRole('button', { name: 'Leave room' })).toBeVisible();
 }
 
-async function choose(page: Page, field: string, option: RegExp) {
-  await page.getByLabel(field).click();
+/**
+ * Picks `option` from the select menu labelled `field`, as a player does.
+ *
+ * The menu slides in, and a click on an option still moving is retried, each
+ * retry scrolling the page another way. The menu follows the scroll, and can
+ * move between the press and the release: the click lands on the backdrop,
+ * the menu closes, and the field keeps its old value. So the click waits for
+ * the menu to settle, and the field has to show the choice.
+ */
+export async function choose(page: Page, field: string, option: RegExp) {
+  const trigger = page.getByLabel(field);
+  const menu = page.getByRole('listbox');
+  // The menu picked from last slides out after the pick.
+  await expect(menu).toHaveCount(0);
+  await trigger.click();
+  await menu.evaluate(async (list) => {
+    const moving: Animation[] = [];
+    for (let node: Element | null = list; node; node = node.parentElement) {
+      moving.push(...node.getAnimations());
+    }
+    await Promise.all(moving.map((animation) => animation.finished));
+  });
   await page.getByRole('option', { name: option }).click();
+  await expect(trigger).toHaveText(option);
 }
 
 /** A droppable player's connection, routed through the test. */

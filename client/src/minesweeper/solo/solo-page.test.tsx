@@ -1,4 +1,4 @@
-import { fireEvent, screen, within } from '@testing-library/react';
+import { act, fireEvent, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { onPhone } from '../../tests/phone';
@@ -83,9 +83,10 @@ describe('Play solo', () => {
 
     await user.click(screen.getByRole('button', { name: 'Leave' }));
     expect(router.state.location.pathname).toBe('/');
-    await router.navigate('/games/minesweeper/solo');
+    // The router renders a navigation as a transition; act sees it through.
+    await act(() => router.navigate('/games/minesweeper/solo'));
     expect(
-      await screen.findByRole('radio', { name: /Large · 30 × 16/ }),
+      screen.getByRole('radio', { name: /Large · 30 × 16/ }),
     ).toHaveAttribute('aria-checked', 'true');
   });
 });

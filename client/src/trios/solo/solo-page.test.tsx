@@ -154,7 +154,11 @@ describe('Trios on your own', () => {
 
   it('ends after ten trios with every one, keeps the best and copies a challenge', async () => {
     await startRun();
-    await findTrio();
+    await pickPlaces(findTrios(model.deal.table)[0]);
+    expect(turn().getByText('A trio!')).toBeInTheDocument();
+    expect(turn().getByText(/^Found in 0:0\d$/)).toBeInTheDocument();
+    await pause(FLASH_MS);
+    model = afterFlash(model, 0);
     expect(turn().getByText('Trio 2 of 10')).toBeInTheDocument();
     for (let trio = 1; trio < RUN_TRIOS; trio++) await findTrio();
 

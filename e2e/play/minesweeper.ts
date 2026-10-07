@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test';
-import { expect } from '../fixtures';
+import { expect, labelsIn } from '../fixtures';
 
 /**
  * Playing Minesweeper on your own as a player does: by what the cells'
@@ -26,9 +26,7 @@ async function boardOf(page: Page): Promise<Board> {
   const [, width, height] = /(\d+) by (\d+)/
     .exec((await grid.getAttribute('aria-label'))!)!
     .map(Number);
-  const labels = await grid
-    .locator('[aria-label^="Row "]')
-    .evaluateAll((cells) => cells.map((cell) => cell.ariaLabel ?? ''));
+  const labels = await labelsIn(grid, '[aria-label^="Row "]');
   const cells: Seen[] = Array.from({ length: width * height }, () => 0);
   for (const label of labels) {
     const [, row, column, text] = LABEL.exec(label)!;

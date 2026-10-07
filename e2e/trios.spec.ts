@@ -32,11 +32,15 @@ test('two players race for trios until the game is over', async ({
   await expect(turnOf(maya).getByText('Find a trio')).toBeVisible();
   await expect(maya.getByLabel(/, not a trio$/)).toHaveCount(0);
 
-  // Maya takes the first trio, and Leo sees who took it.
+  // Maya takes the first trio, and Leo sees who took it. The turn bar says so
+  // for half a second here, too short to catch under load; the table's last
+  // trio and the chat say so for good.
   await pickTrio(maya);
-  await expect(turnOf(maya).getByText('You found a trio!')).toBeVisible();
-  await expect(turnOf(leo).getByText('Maya found a trio')).toBeVisible();
-  await expect(leo.getByText('1 of 10 trios')).toBeVisible();
+  for (const page of [maya, leo]) {
+    await expect(page.getByText('1 of 10 trios')).toBeVisible();
+  }
+  await expect(leo.getByText('Last trio: Maya')).toBeVisible();
+  await expect(leo.getByText('Maya found a trio! (+1)')).toBeVisible();
 
   // Maya takes six in all and Leo four; the lockout is long over by then.
   for (let trio = 2; trio <= 10; trio++) {
@@ -80,19 +84,22 @@ test('a player with no name finds ten trios on their own', async ({
 
   const turn = turnOf(sam);
   await expect(turn.getByText('Trio 1 of 10')).toBeVisible();
-  // A wrong pick costs five seconds, never a trio.
+  // A wrong pick costs five seconds, never a trio. What the turn says about
+  // a pick lasts 600 ms, too short to catch under load; the run keeps count.
+  const thisRun = sam.getByRole('region', { name: 'This run' });
   await pickMiss(sam);
-  await expect(turn.getByText('Not a trio, +5 s')).toBeVisible();
-  await expect(
-    sam.getByRole('region', { name: 'This run' }).getByText('1, +0:05'),
-  ).toBeVisible();
+  await expect(thisRun.getByText('1, +0:05')).toBeVisible();
 
   for (let trio = 1; trio <= 10; trio++) {
     await expect(turn.getByText(`Trio ${trio} of 10`)).toBeVisible();
     await readyToFind(sam);
     await pickTrio(sam);
     // The last trio ends the run at once.
-    if (trio < 10) await expect(turn.getByText('A trio!')).toBeVisible();
+    if (trio < 10) {
+      await expect(thisRun.getByRole('definition').first()).toHaveText(
+        String(trio),
+      );
+    }
   }
 
   await expect(

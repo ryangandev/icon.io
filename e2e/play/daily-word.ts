@@ -1,7 +1,7 @@
-import type { Page } from '@playwright/test';
+import type { ElementHandle, Page } from '@playwright/test';
 import { ANSWERS, markGuess } from '../../shared/daily-word.js';
 import type { DailyWordMark } from '../../shared/wire-types.js';
-import { expect } from '../fixtures';
+import { expect, labelsIn } from '../fixtures';
 
 /** Playing Daily Word as a player does: by the marks the tiles' labels read. */
 
@@ -18,12 +18,8 @@ export interface Guessed {
   marks: DailyWordMark[];
 }
 
-/** The guesses on the player's own board, as its tiles read. */
-export async function guessesOf(page: Page): Promise<Guessed[]> {
-  const labels = await page
-    .getByRole('group', { name: 'Your guesses' })
-    .getByRole('img')
-    .evaluateAll((tiles) => tiles.map((tile) => tile.ariaLabel ?? ''));
+/** The guesses a board's tile labels read, five tiles to a row. */
+function rowsOf(labels: readonly string[]): Guessed[] {
   const tiles = labels.flatMap((label) => {
     const match = TILE.exec(label);
     return match && match[2] in MARKS
@@ -39,6 +35,29 @@ export async function guessesOf(page: Page): Promise<Guessed[]> {
     });
   }
   return rows;
+}
+
+/** The guesses on the player's own board, as its tiles read. */
+export async function guessesOf(page: Page): Promise<Guessed[]> {
+  return rowsOf(
+    await labelsIn(
+      page.getByRole('group', { name: 'Your guesses' }),
+      '[role="img"]',
+    ),
+  );
+}
+
+/** The guesses on one board, or null once it has left the page. */
+async function guessesOn(board: ElementHandle): Promise<Guessed[] | null> {
+  const labels = await board.evaluate((root) =>
+    root instanceof Element && root.isConnected
+      ? Array.from(
+          root.querySelectorAll('[role="img"]'),
+          (tile) => tile.getAttribute('aria-label') ?? '',
+        )
+      : null,
+  );
+  return labels && rowsOf(labels);
 }
 
 export const isFound = (guesses: readonly Guessed[]) =>
@@ -72,27 +91,42 @@ export async function typeGuess(page: Page, word: string) {
   await page.keyboard.press('Enter');
 }
 
+/** Whether `now` is the board `before` was, with more guesses on it. */
+const goesOn = (before: readonly Guessed[], now: readonly Guessed[]) =>
+  now.length > before.length &&
+  before.every((row, index) => row.word === now[index].word);
+
 /**
  * Guesses until the word is found or the guesses run out. In a room, the last
  * player's last guess ends the word at once and the reveal replaces the
- * board; what was seen until then comes back, without that guess.
+ * board; what was seen until then comes back, without that guess. The reveal
+ * lasts a second, too short to catch under load, and the next word has a
+ * board of its own, so the sign is this word's board leaving the page. A
+ * game on your own draws its board anew around the result, with every guess.
  */
 export async function solve(page: Page): Promise<Guessed[]> {
   const board = page.getByRole('group', { name: 'Your guesses' });
   // The board is up, so its keys are listened for.
   await expect(board).toBeVisible();
-  let guesses = await guessesOf(page);
+  let shown: ElementHandle = await board.elementHandle();
+  let guesses = (await guessesOn(shown)) ?? [];
   while (guesses.length < 6 && !isFound(guesses)) {
-    const count = guesses.length;
-    await typeGuess(page, nextGuess(guesses));
+    const before = guesses;
+    await typeGuess(page, nextGuess(before));
     await expect
-      .poll(
-        async () =>
-          !(await board.isVisible()) || (await guessesOf(page)).length > count,
-      )
+      .poll(async () => {
+        const now = await guessesOn(shown);
+        return now === null || now.length > before.length;
+      })
       .toBe(true);
-    if (!(await board.isVisible())) break;
-    guesses = await guessesOf(page);
+    let now = await guessesOn(shown);
+    if (!now) {
+      const [drawn] = await board.elementHandles();
+      now = drawn ? await guessesOn(drawn) : null;
+      if (!drawn || !now || !goesOn(before, now)) break;
+      shown = drawn;
+    }
+    guesses = now;
   }
   return guesses;
 }
