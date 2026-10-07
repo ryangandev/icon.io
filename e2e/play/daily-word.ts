@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 import { ANSWERS, markGuess } from '../../shared/daily-word.js';
 import type { DailyWordMark } from '../../shared/wire-types.js';
-import { expect } from '../fixtures';
+import { expect, labelsIn } from '../fixtures';
 
 /** Playing Daily Word as a player does: by the marks the tiles' labels read. */
 
@@ -20,10 +20,10 @@ export interface Guessed {
 
 /** The guesses on the player's own board, as its tiles read. */
 export async function guessesOf(page: Page): Promise<Guessed[]> {
-  const labels = await page
-    .getByRole('group', { name: 'Your guesses' })
-    .getByRole('img')
-    .evaluateAll((tiles) => tiles.map((tile) => tile.ariaLabel ?? ''));
+  const labels = await labelsIn(
+    page.getByRole('group', { name: 'Your guesses' }),
+    '[role="img"]',
+  );
   const tiles = labels.flatMap((label) => {
     const match = TILE.exec(label);
     return match && match[2] in MARKS

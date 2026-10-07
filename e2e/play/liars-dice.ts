@@ -1,4 +1,5 @@
-import { expect, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, labelsIn } from '../fixtures';
 
 /*
  * Playing Liar's Dice from a player's own page: what they can see of the
@@ -45,11 +46,11 @@ export async function latestBid(page: Page): Promise<Bid | null> {
 
 /** The player's own dice, face up in their cup. */
 export async function ownDice(page: Page): Promise<number[]> {
-  const labels = await page
-    .getByRole('region', { name: /\(you\)$/ })
-    .getByRole('img', { name: /^[1-6]$/ })
-    .evaluateAll((dice) => dice.map((die) => die.getAttribute('aria-label')));
-  return labels.map(Number);
+  const labels = await labelsIn(
+    page.getByRole('region', { name: /\(you\)$/ }),
+    '[role="img"]',
+  );
+  return labels.filter((label) => /^[1-6]$/.test(label)).map(Number);
 }
 
 /** How many of the player's own dice count towards `face`, ones being wild. */
