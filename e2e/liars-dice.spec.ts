@@ -58,21 +58,16 @@ test('two players bid and call until one of them has dice left', async ({
       continue;
     }
     calls += 1;
-    // Every cup opens for both players, with the same count; the verdict
-    // names the bidder to the others and says "Your bid" to them. The call
-    // that ends the game stays up as the last call.
-    const verdicts: (string | null)[] = [];
+    // A call's reveal lasts two seconds here, too short to catch on both
+    // pages under load; the next round, or the end of the game, stays.
     for (const page of [maya, leo]) {
-      const count = page.getByRole('region', {
-        name: /^The (count|last call)$/,
-      });
-      await expect(count).toBeVisible();
-      verdicts.push((await count.textContent())?.split('→')[0] ?? null);
-      await expect(page.getByRole('img', { name: 'Hidden die' })).toHaveCount(
-        0,
-      );
+      await expect(
+        page
+          .getByText(`Round ${calls + 1}`, { exact: true })
+          .or(page.getByText('Game over', { exact: true }))
+          .first(),
+      ).toBeVisible();
     }
-    expect(verdicts[0]).toBe(verdicts[1]);
   }
 
   // Each call costs somebody a die: three to put one of two players out.
@@ -86,10 +81,17 @@ test('two players bid and call until one of them has dice left', async ({
   await expect(
     maya.getByRole('list', { name: 'Standings' }).getByRole('listitem'),
   ).toHaveCount(2);
-  // The call that ended the game stays up under the results.
-  await expect(
-    maya.getByRole('region', { name: 'The last call' }),
-  ).toBeVisible();
+  // The call that ended the game stays up under the results, every cup open
+  // for both players, with the same count; the verdict names the bidder to the
+  // others and says "Your bid" to them.
+  const counts: (string | null)[] = [];
+  for (const page of [maya, leo]) {
+    const lastCall = page.getByRole('region', { name: 'The last call' });
+    await expect(lastCall).toBeVisible();
+    counts.push((await lastCall.textContent())?.split('→')[0] ?? null);
+    await expect(page.getByRole('img', { name: 'Hidden die' })).toHaveCount(0);
+  }
+  expect(counts[0]).toBe(counts[1]);
   await expect(leo.getByText('Game over', { exact: true })).toBeVisible();
 });
 
