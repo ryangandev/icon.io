@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { useMessages } from '../../i18n';
 import { cx } from '../cx';
 import { Button } from './button';
 import { ViewerAvatar, type Viewer, type ViewerMenu } from './header';
@@ -39,17 +40,18 @@ export function RoomBar({
   phase,
   onHowToPlay,
   onLeave,
-  leaveLabel = 'Leave room',
+  leaveLabel,
   viewer,
   viewerMenu,
   className,
 }: RoomBarProps) {
+  const m = useMessages();
   const phone = layout === 'phone';
   return (
     <header className={cx(styles.bar, phone && styles.phone, className)}>
       {!phone && (
         <>
-          <Link to="/" className={styles.home} aria-label="Zumpo home">
+          <Link to="/" className={styles.home} aria-label={m.shell.nav.home}>
             <Wordmark />
           </Link>
           <span className={styles.divider} aria-hidden="true" />
@@ -68,7 +70,7 @@ export function RoomBar({
         iconOnly={phone}
         onClick={onHowToPlay}
       >
-        How to play
+        {m.ui.room.howToPlay}
       </Button>
       {onLeave && (
         <Button
@@ -77,7 +79,7 @@ export function RoomBar({
           iconOnly={phone}
           onClick={onLeave}
         >
-          {leaveLabel}
+          {leaveLabel ?? m.ui.room.leave}
         </Button>
       )}
       {viewer && <ViewerAvatar viewer={viewer} menu={viewerMenu} />}

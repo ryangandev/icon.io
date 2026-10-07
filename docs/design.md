@@ -21,13 +21,13 @@ They are not copied here, so there is one place to change them.
 | 01 / Platform & shared flows         | `9:431`    | P01-P20 without P04, desktop                          |
 | 02 / Draw & Guess / complete flow    | `9:866`    | DL01-DL11 lobby, D01-D15 room, desktop                |
 | 03 / Minesweeper / complete flow     | `9:2526`   | ML01-ML10 lobby, M01-M16 room, MS01-MS05 solo         |
-| 04 / Mobile / 390px flow adaptations | `9:10060`  | MO01-MO18, the main flows at 390 px                   |
+| 04 / Mobile / 390px flow adaptations | `9:10060`  | MO01-MO19 without MO03, the main flows at 390 px      |
 | 05 / Make 24 / complete flow         | `40:60741` | T01-T05 solo, T06-T10 room, T11-T12 phone             |
 | 06 / Pairs / complete flow           | `40:60743` | PR01-PR04 solo, PR05-PR08 room, PR09-PR10 phone       |
 | 07 / Trios / complete flow           | `43:61070` | TS01-TS04 solo, TS05-TS10 room, TS11-TS12 phone       |
 | 08 / Liar's Dice / complete flow     | `43:61071` | LD01-LD06 solo, LD07-LD12 room, LD13-LD15 phone       |
 | 09 / Hush / complete flow            | `43:61072` | HU01-HU09 room, HU10-HU11 phone                       |
-| 10 / Daily Word / complete flow      | `43:61073` | DW01-DW06 solo, DW07-DW11 room, DW12-DW14 phone       |
+| 10 / Daily Word / complete flow      | `43:61073` | DW01-DW06 solo, DW07-DW11 room, DW12-DW16 phone       |
 | Shared pieces                        | `9:198`    | Component families, all named `Zumpo/…`               |
 | Archive                              | `9:197`    | Club Circuit and Pocket Studio, with their components |
 
@@ -49,12 +49,21 @@ Three early Paper Pop concepts (`3:53`, `3:54`, `3:55`) sit above the flows for 
 
 Decisions from the design review rounds (their reports are in git history):
 
+- One page lists every game: the home page (P01, MO01) is also the games page, so there is no separate games hub and the hero has no buttons to it; Ryan chose this on 2026-10-05.
+  Each game is a `Zumpo/Game card`, a tile four across on a desktop and a row on a phone, whose icon is the game's signature piece.
+  Games are sorted by kind, not by player count, because six of the eight play both on your own and in a room and every game has rooms: Party, Puzzles and Spot & remember, each kind and its games in alphabetical order.
+  How a game can be played stays a fact on its card ("Solo or 2–8 players").
+  A row of `Zumpo/Filter chip`s above the games shows one kind; on a phone each kind also has a heading, because the list is long.
+  Past about sixteen games, a desktop should give each kind its own shelf too.
+  The hero's right side holds real game pieces, as the first Paper Pop concept drew paper objects there.
 - A game card says how it can be played and its buttons are the way in: Play solo first where the game has it, because one click starts it with nobody to wait for, then Find a room.
   You pick the game, then how to play it, so a game without a solo mode never shows an empty entry.
 - A game screen states the turn in one `Zumpo/Turn bar` above the canvas or board: what is happening, whose turn, and the server's countdown.
 - In Draw & Guess the guess is the chat input; it is locked for the drawer and for anyone who has scored this turn, as the server already enforces.
 - Brush colours are `color/brush/*` tokens, and the drawer's controls are one `Zumpo/Drawing toolbar`.
 - Minesweeper shows each round's outcome as `Zumpo/Pick result` rows: who picked how risky a cell, and what it paid.
+  On a phone the row is its Phone layout, two lines with the name above the outcome tag and its detail, so a long tag such as Auto-picked never squeezes the name (MO13, MO19); Make 24's hand results are the same rows.
+- Daily Word's reveal lists every board as a `Zumpo/Race board` with its letters, best first; on a phone each is the Row layout, the name beside the board, one under another (DW15, DW16), since two Small boards do not fit across.
 - No disabled primary buttons: a request in flight is a status line, and an action you cannot take is not shown.
 - Dialogs (leave, invite) sit over the screen they come from, behind a scrim.
 - Example data follows one story with four players (Maya, Ryan, Leo, Sam), each with a fixed avatar colour, and every score is computed with the real formula.
@@ -95,7 +104,7 @@ Nobody is asked for a name any more.
 
 ## Figma export
 
-The Figma MCP and REST API allowances on the Starter plan are too low to read 167 screens, so a local, read-only plugin in [tools/figma-export/](../tools/figma-export/README.md) snapshots the file instead.
+The Figma MCP and REST API allowances on the Starter plan are too low to read 170 screens, so a local, read-only plugin in [tools/figma-export/](../tools/figma-export/README.md) snapshots the file instead.
 It writes tokens, each Shared pieces family in full detail, one compact JSON per screen, every vector drawing as SVG, an audit of hardcoded values, and PNG previews.
 `FORMAT.md` inside each export documents the format.
 
@@ -120,6 +129,12 @@ In code the same three are `Card`, `Card kind="panel"` and `Dialog`, which share
 
 `RoomBar` is `Zumpo/Room bar`, with `layout="phone"` for its Phone variant; `RoomLayout` renders it in the page's header slot, so it stays the page's banner, and `SeatedRoom` guards the navigation its wordmark and the viewer menu start.
 
+Figma draws every screen at 1440 px and at 390 px, and nothing between.
+Code has two breakpoints, both in [`use-media-query.ts`](../client/src/shell/use-media-query.ts): under 1024 px (`ONE_COLUMN`) a room, or a game on your own, is one column, the scoreboard and the chat under the stage and the room bar in its Phone layout, because beside the 344 px side column a narrower window leaves a board less than it needs; at 640 px (`PHONE`) the pages take their phone layouts.
+Between the widths Figma draws, a rigid piece, such as a board of fixed-size cards, the keyboard or the row of dice faces, sits in [`Fit`](../client/src/shell/fit.tsx), which scales it down to the width it is given when it would be wider, every proportion kept; at Figma's widths it is Figma's size.
+Where scaling would hurt, something else gives: a Minesweeper board wider than its panel pans sideways, the drawing toolbar takes two lines under the 898 px Desktop stage, the word choices share the sheet's width and wrap, and a tag's words end in an ellipsis.
+[The widths spec](../e2e/widths.spec.ts) plays every game and checks, at seven widths from 1280 to 320 px, that nothing reaches out of what holds it.
+
 Figma gives each sample player an avatar tone by hand; code picks one from a hash of the player's name, so a player keeps one colour in the header, the scoreboard and the results, on every screen.
 
 ### Comparing with Figma
@@ -137,6 +152,7 @@ Code differs from Figma on purpose in a few places:
 
 - The countdown is up to 7 px wider: DM Sans has no tabular figures, so each digit has a fixed cell and the clock keeps its width as it ticks.
 - The chat input's text is 16 px on touch screens, where Figma's 12 px would make iOS zoom the page on focus.
+- The chat's send button and the brush swatches keep Figma's drawn size, but take a tap from an invisible area 44 px tall around them, the size a thumb needs; on a phone the swatches sit 8 px apart, so there the area grows only up and down.
 - Hover and focus never change a control's size; Figma's hover variants are wider only because strokes count in its auto layout.
 - The chat hugs its messages and scrolls past 358 px of them, so a full chat ends level with the canvas; Figma's empty chats (D01, M01) keep the 354 px of the component's sample messages, which code does not reserve.
 - Figma rounds auto-width text boxes up to whole pixels, so a hugging component can be up to a pixel narrower in code.
@@ -147,6 +163,8 @@ Code differs from Figma on purpose in a few places:
 - A game that ends while the room is open bursts into confetti in the brand accents and the sun brush's gold, at Ryan's request; Figma draws the results still, and a game found finished on arrival or after a refresh is not celebrated.
   It stays off when the system asks for reduced motion, and a Hush game the team lost is not celebrated.
 - Where Daily Word has no line under the board, on a phone and in a room while guessing, as Figma draws them, the "Not in the word list" note is said over the board instead, across the row under the one being fixed; Figma draws it only on your own (DW03).
+- The footer carries a language switch, English and 中文 in the footer's small text, which the Figma file does not draw: the design is English, and the switch is the one control that lets a reader choose otherwise ([languages](architecture.md#languages)).
+  Chinese text sets in the system's own sans, because the Paper Pop fonts have no Chinese glyphs.
 - The others' boards in a Daily Word room stand 12 px apart, not DW07's 16 px: three at 16 px are 2 px wider than the panel holds beside the Desktop keyboard, which Figma lets overflow.
 
 ## Editing the Figma file

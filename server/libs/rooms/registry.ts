@@ -74,7 +74,12 @@ const createRoomRegistry = (io: IoServer) => {
   };
 
   /** Appends to a room's chat, keeps it bounded, and sends it to the room. */
-  const post = (room: Room, message: Omit<ChatMessage, 'id'>): void => {
+  type NewMessage = ChatMessage extends infer M
+    ? M extends ChatMessage
+      ? Omit<M, 'id'>
+      : never
+    : never;
+  const post = (room: Room, message: NewMessage): void => {
     const posted: ChatMessage = { id: room.chat.nextId, ...message };
     room.chat.nextId += 1;
     room.chat.messages.push(posted);
@@ -110,9 +115,9 @@ const createRoomRegistry = (io: IoServer) => {
       if (staleRooms.size === 0) queueMicrotask(flushStates);
       staleRooms.add(room.roomId);
     },
-    announce: (roomId, kind, text) => {
+    announce: (roomId, kind, notice) => {
       const room = rooms.get(roomId);
-      if (room) post(room, { kind, text });
+      if (room) post(room, { kind, notice });
     },
     startPhase: (room, seconds, onEnd) => {
       room.phaseEndsAt = Date.now() + seconds * 1000;

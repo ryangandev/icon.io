@@ -1,0 +1,43 @@
+/* The footer's language switch: the languages' names, dotted apart, in the
+   footer's small muted text, the current one in ink. */
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--zumpo-space-8);
+}
+
+.language {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--zumpo-radius-8);
+  background: none;
+  color: var(--zumpo-muted);
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.language + .language::before {
+  content: '·';
+  margin-inline-end: var(--zumpo-space-8);
+  color: var(--zumpo-muted);
+}
+
+.language[aria-checked='true'] {
+  color: var(--zumpo-ink);
+  font-weight: 700;
+  cursor: default;
+}
+
+@media (hover: hover) {
+  .language:hover {
+    color: var(--zumpo-ink);
+  }
+}
+
+.language:focus-visible {
+  outline: 2px solid var(--zumpo-ink);
+  outline-offset: 2px;
+}

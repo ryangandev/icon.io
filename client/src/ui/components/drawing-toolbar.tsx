@@ -1,3 +1,4 @@
+import { useMessages } from '../../i18n';
 import { Radio } from '@base-ui/react/radio';
 import { RadioGroup } from '@base-ui/react/radio-group';
 import type { CSSProperties } from 'react';
@@ -20,10 +21,6 @@ export interface DrawingToolbarProps {
   className?: string;
 }
 
-function title(name: string) {
-  return name[0].toUpperCase() + name.slice(1);
-}
-
 /**
  * Zumpo/Drawing toolbar: the drawer's controls during the drawing phase. It
  * lays itself out as the Phone variant when its container is narrow.
@@ -37,12 +34,17 @@ export function DrawingToolbar({
   onClear,
   className,
 }: DrawingToolbarProps) {
+  const m = useMessages();
   return (
     <div className={cx(styles.container, className)}>
-      <div className={styles.toolbar} role="toolbar" aria-label="Drawing tools">
+      <div
+        className={styles.toolbar}
+        role="toolbar"
+        aria-label={m.ui.drawing.tools}
+      >
         <RadioGroup
           className={styles.colours}
-          aria-label="Colour"
+          aria-label={m.ui.drawing.colour}
           value={colour}
           onValueChange={(value) => onColourChange(value as BrushName)}
         >
@@ -52,7 +54,7 @@ export function DrawingToolbar({
               value={brush.name}
               className={styles.swatch}
               style={{ background: brush.color }}
-              aria-label={title(brush.name)}
+              aria-label={m.ui.drawing.colours[brush.name]}
             />
           ))}
         </RadioGroup>
@@ -60,7 +62,7 @@ export function DrawingToolbar({
         <div className={styles.tools}>
           <RadioGroup
             className={styles.sizes}
-            aria-label="Brush size"
+            aria-label={m.ui.drawing.size}
             value={size}
             onValueChange={(value) => onSizeChange(value as BrushSize)}
           >
@@ -69,7 +71,7 @@ export function DrawingToolbar({
                 key={width}
                 value={width}
                 className={styles.size}
-                aria-label={`${width} pixels`}
+                aria-label={m.ui.drawing.pixels(width)}
               >
                 <span
                   className={styles.dot}
@@ -86,7 +88,7 @@ export function DrawingToolbar({
               onClick={onUndo}
               iconOnlyWhenNarrow
             >
-              Undo
+              {m.ui.drawing.undo}
             </Button>
             <Button
               variant="secondary"
@@ -94,7 +96,7 @@ export function DrawingToolbar({
               onClick={onClear}
               iconOnlyWhenNarrow
             >
-              Clear
+              {m.ui.drawing.clear}
             </Button>
           </div>
         </div>

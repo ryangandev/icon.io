@@ -84,7 +84,8 @@
   letter-spacing: var(--zumpo-text-body-tracking);
 }
 
-/* Your cup, and what you can do beside it. */
+/* Your cup, and what you can do beside it: the picker, whose stacked
+   controls are 312 px, the row of faces, goes under the cup once it has less. */
 .yours {
   display: flex;
   flex-wrap: wrap;
@@ -93,7 +94,7 @@
 }
 
 .yours > :last-child:not(:first-child) {
-  flex: 1 1 280px;
+  flex: 1 1 312px;
 }
 
 /* On a phone the table sits on the page, and your cup stacks over its actions. */

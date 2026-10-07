@@ -1,3 +1,4 @@
+import { useMessages } from '../../i18n';
 import { useId, type ReactNode } from 'react';
 import { cx } from '../cx';
 import panel from './panel.module.css';
@@ -18,6 +19,7 @@ export function Scoreboard({
   children,
   className,
 }: ScoreboardProps) {
+  const m = useMessages();
   const headingId = useId();
   return (
     <section
@@ -26,11 +28,11 @@ export function Scoreboard({
     >
       <div className={cx(panel.heading, styles.heading)}>
         <h2 id={headingId} className={panel.heading}>
-          Players
+          {m.ui.players}
         </h2>
         <span
           className={styles.count}
-          aria-label={`${players} of ${seats} seats taken`}
+          aria-label={m.ui.seatsTaken(players, seats)}
         >
           {players} / {seats}
         </span>

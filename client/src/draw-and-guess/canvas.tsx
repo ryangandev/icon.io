@@ -8,6 +8,7 @@ import {
 import type { CanvasStroke, Coordinate } from '../../../shared/wire-types';
 import type { CanvasChange, CanvasStream } from '../net/canvas-stream';
 import { cx } from '../ui/cx';
+import { useMessages } from '../i18n';
 import styles from './canvas.module.css';
 
 /** The shared bitmap every client draws in, whatever its size on screen. */
@@ -43,6 +44,7 @@ export function DrawingCanvas({
   onEnd,
   overlay,
 }: DrawingCanvasProps) {
+  const m = useMessages();
   const canvas = useRef<HTMLCanvasElement>(null);
   const drawing = useRef(false);
   const last = useRef<Coordinate | null>(null);
@@ -159,7 +161,9 @@ export function DrawingCanvas({
         onPointerUp={up}
         onPointerCancel={up}
         role="img"
-        aria-label={brush ? 'Drawing canvas' : 'The drawing'}
+        aria-label={
+          brush ? m.drawAndGuess.drawingCanvas : m.drawAndGuess.drawingImage
+        }
       />
       {overlay && <div className={styles.overlay}>{overlay}</div>}
     </div>

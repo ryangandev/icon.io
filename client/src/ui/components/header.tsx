@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { useMessages } from '../../i18n';
 import { cx } from '../cx';
 import { Avatar, type AvatarProps } from './avatar';
 import { NameMenu, type NameMenuProps } from './name-menu';
@@ -30,12 +31,13 @@ export type ViewerMenu = Omit<NameMenuProps, 'trigger' | 'align'>;
  * phone it is the Mobile navigation row: wordmark and a smaller avatar only.
  */
 export function Header({ links, viewer, viewerMenu, className }: HeaderProps) {
+  const m = useMessages();
   return (
     <header className={cx(styles.header, className)}>
-      <Link to="/" className={styles.home} aria-label="Zumpo home">
+      <Link to="/" className={styles.home} aria-label={m.shell.nav.home}>
         <Wordmark />
       </Link>
-      <nav className={styles.nav} aria-label="Main">
+      <nav className={styles.nav} aria-label={m.shell.nav.main}>
         <ul className={styles.links}>
           {links.map((link) => (
             <li key={link.label}>
@@ -66,6 +68,7 @@ export function ViewerAvatar({
   viewer: Viewer;
   menu?: ViewerMenu;
 }) {
+  const m = useMessages();
   if (!menu) return <Avatar {...viewer} className={styles.viewer} />;
   return (
     <NameMenu
@@ -74,7 +77,7 @@ export function ViewerAvatar({
         <button
           type="button"
           className={styles.viewerButton}
-          aria-label={viewer.label ?? 'Your name'}
+          aria-label={viewer.label ?? m.shell.name.yourName}
         >
           <Avatar
             initials={viewer.initials}

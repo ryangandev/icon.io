@@ -1,4 +1,5 @@
 import { Button, ButtonLink, Card } from '../ui';
+import { useMessages } from '../i18n';
 import { useSession } from '../net/session';
 
 /**
@@ -7,27 +8,24 @@ import { useSession } from '../net/session';
  * a duplicated tab most likely, and this one waits to be chosen again.
  */
 export function ConnectionLost() {
+  const m = useMessages().shell;
   const { status, connect } = useSession();
   const replaced = status === 'replaced';
   return (
     <Card
-      title={
-        replaced
-          ? 'Zumpo is open in another tab.'
-          : 'We couldn’t get connected.'
-      }
+      title={replaced ? m.connection.replacedTitle : m.connection.failedTitle}
       description={
         replaced
-          ? 'You’re playing there now. Use this tab instead, and the other one will wait.'
-          : 'The game server didn’t respond. Please try again.'
+          ? m.connection.replacedDescription
+          : m.connection.failedDescription
       }
       actions={
         <>
           <Button onClick={connect}>
-            {replaced ? 'Use this tab' : 'Try again'}
+            {replaced ? m.connection.useThisTab : m.connection.tryAgain}
           </Button>
-          <ButtonLink to="/games" variant="secondary" icon="back">
-            Back to games
+          <ButtonLink to="/" variant="secondary" icon="back">
+            {m.backToGames}
           </ButtonLink>
         </>
       }

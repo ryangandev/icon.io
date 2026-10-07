@@ -5,7 +5,7 @@ import type {
 import { RequestError } from '../../models/error.js';
 import { seatCount } from '../../libs/rooms/seats.js';
 import type { GameContext, Room } from '../../libs/rooms/types.js';
-import { gameOverMessage, resetPoints } from '../../libs/utils.js';
+import { gameOverNotice, resetPoints } from '../../libs/utils.js';
 import {
   minesweeperDurationsInSeconds as defaultDurations,
   type MinesweeperDurationsInSeconds,
@@ -101,11 +101,12 @@ const createMinesweeperGameEngine = (
       `Minesweeper started in room ${room.roomId} on ${room.game.difficulty}.`,
     );
 
-    ctx.rooms.announce(
-      room.roomId,
-      'system',
-      `Game has started! ${room.game.board.totalMines} mines on a ${room.game.board.width}×${room.game.board.height} board.`,
-    );
+    ctx.rooms.announce(room.roomId, 'system', {
+      type: 'ms:started',
+      mines: room.game.board.totalMines,
+      width: room.game.board.width,
+      height: room.game.board.height,
+    });
     ctx.rooms.emitLobby('minesweeper');
 
     beginRound(room);
@@ -244,11 +245,12 @@ const createMinesweeperGameEngine = (
     for (const result of results) {
       if (!result.hitMine) continue;
       // U+2212, a true minus: a hyphen reads as a dash beside a number.
-      ctx.rooms.announce(
-        room.roomId,
-        'alert',
-        `${result.username} hit a mine (${Math.round(result.risk * 100)}% risk): \u2212${Math.abs(result.points)}`,
-      );
+      ctx.rooms.announce(room.roomId, 'alert', {
+        type: 'ms:mine',
+        name: result.username,
+        risk: result.risk,
+        points: result.points,
+      });
     }
   };
 
@@ -285,7 +287,7 @@ const createMinesweeperGameEngine = (
     game.picks.clear();
 
     ctx.rooms.emitState(room);
-    ctx.rooms.announce(room.roomId, 'system', gameOverMessage(standings));
+    ctx.rooms.announce(room.roomId, 'system', gameOverNotice(standings));
     ctx.rooms.emitLobby('minesweeper');
   };
 
@@ -296,11 +298,7 @@ const createMinesweeperGameEngine = (
     if (!room.isGameStarted) return;
 
     if (seatCount(room) < MIN_PLAYERS_TO_START) {
-      ctx.rooms.announce(
-        room.roomId,
-        'alert',
-        'Not enough players left to continue. Game has ended.',
-      );
+      ctx.rooms.announce(room.roomId, 'alert', { type: 'game:interrupted' });
       endGame(room, { endedEarly: true });
       return;
     }

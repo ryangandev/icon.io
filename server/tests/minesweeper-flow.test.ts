@@ -1,3 +1,4 @@
+import { textOf } from './helpers/test-server.js';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { MinesweeperRoomState } from '../models/types.js';
 import {
@@ -19,7 +20,7 @@ import {
   waitForMineState,
   type TestServer,
 } from './helpers/test-server.js';
-import { gameOverMessage } from '../libs/utils.js';
+import { gameOverNotice } from '../libs/utils.js';
 import { hiddenIndexes } from '../socket/minesweeper/board.js';
 import { pointsForPick } from '../socket/minesweeper/scoring.js';
 
@@ -223,7 +224,7 @@ describe('a round', () => {
     const cell = aMine(roomId);
 
     const resolved = waitForMineState(alice, revealOf(1));
-    const announced = waitForChat(bob, (m) => m.text.includes('hit a mine'));
+    const announced = waitForChat(bob, (m) => textOf(m).includes('hit a mine'));
     alice.emit('ms:pick', roomId, cell);
     bob.emit('ms:pick', roomId, aSafeCell(roomId));
     const outcome = await resolved;
@@ -240,7 +241,12 @@ describe('a round', () => {
 
     expect(await announced).toMatchObject({
       kind: 'alert',
-      text: `Alice hit a mine (${Math.round(hit.risk * 100)}% risk): \u2212${-hit.points}`,
+      notice: {
+        type: 'ms:mine',
+        name: 'Alice',
+        risk: hit.risk,
+        points: hit.points,
+      },
     });
   });
 
@@ -483,7 +489,7 @@ describe('a Minesweeper game', () => {
     const ended = waitForMineState(alice, (s) => s.lastGame !== null, 20_000);
     const announced = waitForChat(
       alice,
-      (m) => m.text.startsWith('Game over'),
+      (m) => textOf(m).startsWith('Game over'),
       20_000,
     );
 
@@ -534,7 +540,7 @@ describe('a Minesweeper game', () => {
 
     expect(message).toMatchObject({
       kind: 'system',
-      text: gameOverMessage(summary.standings),
+      notice: gameOverNotice(summary.standings),
     });
     expect(hiddenIndexes(minesweeperRoom(harness, roomId).game.board)).toEqual(
       [],

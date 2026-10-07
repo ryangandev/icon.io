@@ -1,7 +1,7 @@
 import type { PairsCardView, PairsRoomState } from '../../../shared/wire-types';
 import { PAIRS_BOARDS } from '../../../shared/pairs';
 import { TurnBar, type PairsCardState, type TurnBarProps } from '../ui';
-import { plural } from '../games/plural';
+import { useMessages, type Messages } from '../i18n';
 import { useSecondsLeft } from '../net/use-seconds-left';
 import { EndedEarlyPanel, ResultsPanel, WaitingPanel } from '../room/panels';
 import { rankedPlayers, type Seat } from '../room/players';
@@ -9,12 +9,12 @@ import { useRoomContext, type Room as RoomOf } from '../room/room-context';
 import { RoomLayout, type PlayerLine } from '../room/room-layout';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import { BoardPanel, PairsGrid } from './board';
-import { boardName } from './boards';
 
 type Room = RoomOf<PairsRoomState>;
 
 /** PR05-PR07, PR10: a Pairs room, before, during and after a game. */
 export function PairsRoom() {
+  const m = useMessages();
   const room = useRoomContext<PairsRoomState>();
   const { state } = room;
   const players = rankedPlayers(state);
@@ -26,17 +26,20 @@ export function PairsRoom() {
         inGame
           ? {
               tone: 'blue',
-              label: `${state.pairsFound} of ${plural(PAIRS_BOARDS[state.board].pairs, 'pair')}`,
+              label: m.pairs.progress(
+                state.pairsFound,
+                PAIRS_BOARDS[state.board].pairs,
+              ),
             }
           : ended && !ended.endedEarly
-            ? { tone: 'lime', label: 'Game over' }
+            ? { tone: 'lime', label: m.pairs.gameOver }
             : ended && players.length < 2
-              ? { tone: 'peach', label: 'Game ended' }
-              : { tone: 'blue', label: 'Waiting room' }
+              ? { tone: 'peach', label: m.pairs.gameEnded }
+              : { tone: 'blue', label: m.pairs.waitingRoom }
       }
       stage={inGame ? <Turn room={room} /> : <BetweenGames room={room} />}
-      players={players.map((seat) => playerLine(state, seat))}
-      chat={{ placeholder: 'Say something…' }}
+      players={players.map((seat) => playerLine(state, seat, m))}
+      chat={{ placeholder: m.pairs.messagePlaceholder }}
     />
   );
 }
@@ -49,6 +52,7 @@ const cardsOf = (cards: readonly PairsCardView[]): PairsCardState[] =>
   );
 
 function BetweenGames({ room }: { room: Room }) {
+  const m = useMessages();
   const { state, startGame, starting } = room;
   const count = Object.keys(state.playerList).length;
   const summary = state.lastGame;
@@ -58,7 +62,7 @@ function BetweenGames({ room }: { room: Room }) {
       <>
         <ResultsPanel
           summary={summary}
-          detail={`${summary.board} board, ${plural(summary.pairs, 'pair')}.`}
+          detail={m.pairs.resultsDetail(summary.board, summary.pairs)}
           onPlayAgain={startGame}
           starting={starting}
         />
@@ -72,9 +76,9 @@ function BetweenGames({ room }: { room: Room }) {
   if (summary?.endedEarly && count < 2) return <EndedEarlyPanel />;
   return (
     <WaitingPanel
-      aloneTitle="A little better with company."
-      setup={`${plural(count, 'player')}, ${boardName(state.board)}. Take turns flipping two cards; find a pair and you go again.`}
-      guestSetup={`${plural(count, 'player')}, ${boardName(state.board)}.`}
+      aloneTitle={m.pairs.aloneTitle}
+      setup={m.pairs.setup(count, m.pairs.boardName(state.board))}
+      guestSetup={m.pairs.guestSetup(count, m.pairs.boardName(state.board))}
       onStart={startGame}
       starting={starting}
     />
@@ -83,6 +87,7 @@ function BetweenGames({ room }: { room: Room }) {
 
 /** PR05, PR06, PR10: whose turn it is, and the board. */
 function Turn({ room }: { room: Room }) {
+  const m = useMessages();
   const { state, receivedAt, reconnecting, socket, playerId } = room;
   const seconds = useSecondsLeft(state.phaseEndsInMs, receivedAt, reconnecting);
   const phone = useMediaQuery(PHONE);
@@ -92,7 +97,7 @@ function Turn({ room }: { room: Room }) {
     !reconnecting;
   return (
     <>
-      <TurnBar {...turnBar(room, seconds, phone)} />
+      <TurnBar {...turnBar(room, seconds, phone, m)} />
       <BoardPanel>
         <PairsGrid
           cards={cardsOf(state.cards)}
@@ -107,31 +112,38 @@ function Turn({ room }: { room: Room }) {
   );
 }
 
-function turnBar(room: Room, seconds: number, phone: boolean): TurnBarProps {
+function turnBar(
+  room: Room,
+  seconds: number,
+  phone: boolean,
+  m: Messages,
+): TurnBarProps {
   const { state, playerId, reconnecting } = room;
   const mine = state.turnPlayerId === playerId;
   const clock = (label: string, waiting: boolean) =>
     reconnecting
-      ? { seconds, label: 'paused', waiting: true }
+      ? { seconds, label: m.pairs.paused, waiting: true }
       : { seconds, label, waiting };
   const nameOf = (id: string | null) =>
     id === null ? null : (state.playerList[id]?.username ?? null);
-  const label = mine ? 'Your turn' : `${nameOf(state.turnPlayerId)}’s turn`;
+  const label = mine
+    ? m.pairs.yourTurn
+    : m.pairs.playerTurn(nameOf(state.turnPlayerId));
   const next = nameOf(state.nextPlayerId);
   const whoIsNext =
     state.nextPlayerId === playerId
-      ? 'You’re next.'
+      ? m.pairs.youreNext
       : next
-        ? `${next} is next.`
+        ? m.pairs.nextPlayer(next)
         : '';
 
   if (state.phase === 'showing') {
     return {
       label,
       kind: 'status',
-      main: 'Not a pair',
-      meta: `Both flip back. ${whoIsNext}`.trim(),
-      countdown: clock('flip back', true),
+      main: m.pairs.notPair,
+      meta: m.pairs.bothFlipBack(whoIsNext),
+      countdown: clock(m.pairs.flipBack, true),
     };
   }
   if (mine) {
@@ -139,29 +151,34 @@ function turnBar(room: Room, seconds: number, phone: boolean): TurnBarProps {
     return {
       label,
       kind: 'status',
-      main: oneUp ? 'Flip a second card' : 'Flip a card',
-      meta: phone ? 'A pair keeps your turn' : 'Find a pair and you go again',
-      countdown: clock('to flip', false),
+      main: oneUp ? m.pairs.flipSecond : m.pairs.flipCard,
+      meta: phone ? m.pairs.pairKeepsTurn : m.pairs.goAgain,
+      countdown: clock(m.pairs.toFlip, false),
     };
   }
   return {
     label,
     kind: 'status',
-    main: 'Watch closely',
+    main: m.pairs.watchClosely,
     meta: whoIsNext || undefined,
-    countdown: clock('to flip', true),
+    countdown: clock(m.pairs.toFlip, true),
   };
 }
 
 /** One player's line on the scoreboard. */
-function playerLine(state: PairsRoomState, seat: Seat): PlayerLine {
+function playerLine(
+  state: PairsRoomState,
+  seat: Seat,
+  m: Messages,
+): PlayerLine {
   if (!seat.isConnected) {
-    return { seat, status: 'Away', statusIcon: 'away', state: 'away' };
+    return { seat, status: m.pairs.away, statusIcon: 'away', state: 'away' };
   }
-  if (!state.isGameStarted) return { seat, status: 'Waiting' };
+  if (!state.isGameStarted) return { seat, status: m.pairs.waiting };
   if (seat.playerId === state.turnPlayerId) {
-    return { seat, status: 'Flipping', state: 'highlight' };
+    return { seat, status: m.pairs.flipping, state: 'highlight' };
   }
-  if (seat.playerId === state.nextPlayerId) return { seat, status: 'Up next' };
-  return { seat, status: 'Waiting' };
+  if (seat.playerId === state.nextPlayerId)
+    return { seat, status: m.pairs.upNext };
+  return { seat, status: m.pairs.waiting };
 }

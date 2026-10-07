@@ -1,3 +1,4 @@
+import { textOf } from './helpers/test-server.js';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { TriosRoomState } from '../models/types.js';
 import { findTrios, isTrio } from '../../shared/trios.js';
@@ -159,7 +160,7 @@ describe('a claim', () => {
     // The trio stays where it lay while it is on show.
     expect(view.table).toEqual(first.table);
     expect(view.phaseEndsInMs).toBeGreaterThan(0);
-    expect((await chat).text).toBe('Bob found a trio! (+1)');
+    expect(textOf(await chat)).toBe('Bob found a trio! (+1)');
 
     const refilled = await waitForTriosState(
       alice,
@@ -344,7 +345,7 @@ describe('a Trios game', () => {
     ]);
     await settle();
     expect(messages.filter((m) => m.kind === 'success')).toHaveLength(10);
-    expect(messages.at(-1)!.text).toBe('Game over: Bob wins with 7 trios!');
+    expect(textOf(messages.at(-1)!)).toBe('Game over: Bob wins with 7 trios!');
   });
 
   it('ends early when too few players are left', async () => {

@@ -1,10 +1,15 @@
+/* Three choices across the sheet, 260 px each where the sheet is wide
+   enough (D04); narrower, they share its width and wrap. */
 .choices {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: var(--zumpo-space-16);
 }
 
 .choices > * {
-  width: 260px;
+  flex: 1 1 200px;
+  max-width: 260px;
 }
 
 /* On a phone the choices stand in for the canvas, one under another. */
@@ -15,7 +20,9 @@
   }
 
   .choices > * {
+    flex: none;
     width: 100%;
+    max-width: none;
   }
 }
 

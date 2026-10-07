@@ -54,9 +54,26 @@ async function startChallenge() {
 }
 
 describe('Pairs on your own', () => {
-  it('is offered from the games page', async () => {
-    await renderApp('/games');
-    const game = screen.getByRole('heading', { name: 'Pairs' }).parentElement!;
+  it('picks a board and flips cards with Chinese instructions', async () => {
+    await renderApp('/games/pairs/solo', { locale: 'zh' });
+    expect(screen.getByText('选一个棋盘。')).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: /小 · 4 × 4/ })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    expect(screen.getByText('18 对。暂无最佳成绩')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: '开始' }));
+    expect(screen.getByRole('grid', { name: '卡牌' })).toBeInTheDocument();
+    expect(screen.getByText('第 1 次翻牌')).toBeInTheDocument();
+    expect(screen.getByText('翻一张牌')).toBeInTheDocument();
+    await user.click(screen.getAllByRole('button', { name: /背面朝上$/ })[0]);
+    expect(screen.getByText('找到它的另一张')).toBeInTheDocument();
+    expect(screen.getByText('你在哪里见过它？')).toBeInTheDocument();
+  });
+
+  it('is offered on the home page', async () => {
+    await renderApp('/');
+    const game = screen.getByRole('region', { name: 'Pairs' });
     expect(
       within(game).getByRole('link', { name: 'Play solo' }),
     ).toHaveAttribute('href', '/games/pairs/solo');

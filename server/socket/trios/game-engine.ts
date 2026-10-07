@@ -1,7 +1,7 @@
 import { RequestError } from '../../models/error.js';
 import { seatCount } from '../../libs/rooms/seats.js';
 import type { GameContext, Room } from '../../libs/rooms/types.js';
-import { gameOverMessage, resetPoints } from '../../libs/utils.js';
+import { gameOverNotice, resetPoints } from '../../libs/utils.js';
 import {
   triosDurationsInSeconds as defaultDurations,
   type TriosDurationsInSeconds,
@@ -76,11 +76,10 @@ const createTriosGameEngine = (
 
     console.log(`Trios started in room ${room.roomId}, ${game.trios} trios.`);
 
-    ctx.rooms.announce(
-      room.roomId,
-      'system',
-      `Game has started! ${game.trios} trios to find.`,
-    );
+    ctx.rooms.announce(room.roomId, 'system', {
+      type: 'trios:started',
+      trios: game.trios,
+    });
     ctx.rooms.emitLobby('trios');
     beginFinding(room);
   };
@@ -156,11 +155,10 @@ const createTriosGameEngine = (
     game.phase = 'taken';
     ctx.rooms.startPhase(room, durations.taken, () => refill(room, inOrder));
 
-    ctx.rooms.announce(
-      room.roomId,
-      'success',
-      `${player.username} found a trio! (+1)`,
-    );
+    ctx.rooms.announce(room.roomId, 'success', {
+      type: 'trios:found',
+      name: player.username,
+    });
     ctx.rooms.emitState(room);
   };
 
@@ -231,7 +229,7 @@ const createTriosGameEngine = (
     ctx.rooms.announce(
       room.roomId,
       'system',
-      gameOverMessage(standings, 'trio'),
+      gameOverNotice(standings, 'trio'),
     );
     ctx.rooms.emitLobby('trios');
   };
@@ -242,11 +240,7 @@ const createTriosGameEngine = (
     if (!room.isGameStarted) return;
 
     if (seatCount(room) < MIN_PLAYERS_TO_START) {
-      ctx.rooms.announce(
-        room.roomId,
-        'alert',
-        'Not enough players left to continue. Game has ended.',
-      );
+      ctx.rooms.announce(room.roomId, 'alert', { type: 'game:interrupted' });
       endGame(room, { endedEarly: true });
     }
   };

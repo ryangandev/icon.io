@@ -1,3 +1,4 @@
+import { useMessages } from '../../i18n';
 import { cx } from '../cx';
 import styles from './word-choice.module.css';
 
@@ -9,6 +10,7 @@ export interface WordChoiceProps {
 
 /** Zumpo/Word choice: one of the drawer's three candidates, never shown to anyone else. */
 export function WordChoice({ word, onChoose, className }: WordChoiceProps) {
+  const m = useMessages();
   const letters = word.replaceAll(' ', '').length;
   return (
     <button
@@ -17,9 +19,7 @@ export function WordChoice({ word, onChoose, className }: WordChoiceProps) {
       onClick={onChoose}
     >
       <span className={styles.word}>{word}</span>
-      <span className={styles.detail}>
-        {letters} {letters === 1 ? 'letter' : 'letters'}
-      </span>
+      <span className={styles.detail}>{m.ui.word.letters(letters)}</span>
     </button>
   );
 }

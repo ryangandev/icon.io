@@ -1,3 +1,4 @@
+import { useMessages } from '../../i18n';
 import { cx } from '../cx';
 import { WordBoard, type WordBoardRow } from './word-board';
 import styles from './race-board.module.css';
@@ -14,6 +15,12 @@ export interface RaceBoardProps {
    * with the letters.
    */
   board?: 'mini' | 'small';
+  /**
+   * Column stacks the name over the board, for boards side by side; Row puts
+   * the name beside the board and fills the width, for a phone's list of
+   * Small boards (DW15, DW16), where two do not fit across.
+   */
+  layout?: 'column' | 'row';
   rows: readonly WordBoardRow[];
 }
 
@@ -23,15 +30,24 @@ export function RaceBoard({
   status,
   state = 'guessing',
   board = 'mini',
+  layout = 'column',
   rows,
 }: RaceBoardProps) {
+  const m = useMessages();
   return (
-    <div className={cx(styles.race, styles[board], styles[state])}>
+    <div
+      className={cx(
+        styles.race,
+        styles[board],
+        styles[state],
+        layout === 'row' && styles.row,
+      )}
+    >
       <div className={styles.head}>
         <span className={styles.name}>{name}</span>
         <span className={styles.status}>{status}</span>
       </div>
-      <WordBoard rows={rows} size={board} label={`${name}’s board`} />
+      <WordBoard rows={rows} size={board} label={m.ui.word.board(name)} />
     </div>
   );
 }

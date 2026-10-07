@@ -49,6 +49,7 @@ export {
   type BrushSize,
   type DrawingToolbarProps,
 } from './components/drawing-toolbar';
+export { FilterChip, type FilterChipProps } from './components/filter-chip';
 export {
   Header,
   type HeaderLink,
@@ -70,7 +71,6 @@ export {
 } from './components/letter-key';
 export {
   LetterTile,
-  MARK_WORDS,
   type LetterTileProps,
   type LetterTileSize,
   type LetterTileState,

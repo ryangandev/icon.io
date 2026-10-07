@@ -6,7 +6,7 @@ import type {
 import { RequestError } from '../../models/error.js';
 import { seatCount } from '../../libs/rooms/seats.js';
 import type { GameContext, Room } from '../../libs/rooms/types.js';
-import { gameOverMessage, resetPoints } from '../../libs/utils.js';
+import { gameOverNotice, resetPoints } from '../../libs/utils.js';
 import {
   make24DurationsInSeconds as defaultDurations,
   type Make24DurationsInSeconds,
@@ -80,11 +80,11 @@ const createMake24GameEngine = (
 
     console.log(`Make 24 started in room ${room.roomId}, ${game.hands} hands.`);
 
-    ctx.rooms.announce(
-      room.roomId,
-      'system',
-      `Game has started! ${game.hands} hands, ${durations.hand} seconds each.`,
-    );
+    ctx.rooms.announce(room.roomId, 'system', {
+      type: 'make24:started',
+      hands: game.hands,
+      seconds: durations.hand,
+    });
     ctx.rooms.emitLobby('make-24');
 
     beginHand(room);
@@ -132,11 +132,11 @@ const createMake24GameEngine = (
     player.points += points;
 
     ctx.rooms.emitState(room);
-    ctx.rooms.announce(
-      room.roomId,
-      'success',
-      `${player.username} solved it! (+${points})`,
-    );
+    ctx.rooms.announce(room.roomId, 'success', {
+      type: 'make24:solved',
+      name: player.username,
+      points,
+    });
 
     maybeEndEarly(room);
   };
@@ -219,7 +219,7 @@ const createMake24GameEngine = (
     game.solves.clear();
 
     ctx.rooms.emitState(room);
-    ctx.rooms.announce(room.roomId, 'system', gameOverMessage(standings));
+    ctx.rooms.announce(room.roomId, 'system', gameOverNotice(standings));
     ctx.rooms.emitLobby('make-24');
   };
 
@@ -230,11 +230,7 @@ const createMake24GameEngine = (
     if (!room.isGameStarted) return;
 
     if (seatCount(room) < MIN_PLAYERS_TO_START) {
-      ctx.rooms.announce(
-        room.roomId,
-        'alert',
-        'Not enough players left to continue. Game has ended.',
-      );
+      ctx.rooms.announce(room.roomId, 'alert', { type: 'game:interrupted' });
       endGame(room, { endedEarly: true });
       return;
     }

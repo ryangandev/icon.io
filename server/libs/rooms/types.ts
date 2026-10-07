@@ -3,6 +3,7 @@ import type {
   AnyRoomState,
   ChatMessage,
   ChatMessageKind,
+  RoomNotice,
   GameType,
   OwnerInfo,
   PlayerInfo,
@@ -92,7 +93,7 @@ interface RoomLookup {
   announce(
     roomId: string,
     kind: Exclude<ChatMessageKind, 'player'>,
-    text: string,
+    notice: RoomNotice,
   ): void;
   /**
    * Starts the room's one clock: what its players count down from and what

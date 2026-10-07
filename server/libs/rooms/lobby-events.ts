@@ -127,7 +127,10 @@ const lobbyEventsHandler = (
     // leak from.
     reply({ ok: true, roomId });
 
-    registry.lookup.announce(roomId, 'system', `${username} created the room.`);
+    registry.lookup.announce(roomId, 'system', {
+      type: 'room:created',
+      name: username,
+    });
     registry.lookup.emitState(room);
     registry.lookup.emitLobby(gameType);
   });

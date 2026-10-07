@@ -1,7 +1,6 @@
-import { bidWords } from '../../../shared/liars-dice';
 import type { LiarsDiceRoomState } from '../../../shared/wire-types';
 import { BidPicker, Button, TurnBar, type TurnBarProps } from '../ui';
-import { plural } from '../games/plural';
+import { useMessages, type Messages } from '../i18n';
 import { useSecondsLeft } from '../net/use-seconds-left';
 import { EndedEarlyPanel, ResultsPanel, WaitingPanel } from '../room/panels';
 import { rankedPlayers, type Seat } from '../room/players';
@@ -9,20 +8,14 @@ import { useRoomContext, type Room as RoomOf } from '../room/room-context';
 import { RoomLayout, type PlayerLine } from '../room/room-layout';
 import { useBidChoice } from './bid-choice';
 import { Table, type TableSeat } from './table';
-import {
-  bidLine,
-  diceWord,
-  naming,
-  revealBar,
-  stood,
-  type Naming,
-} from './words';
+import { bidLine, naming, revealBar, stood, type Naming } from './words';
 import styles from './room.module.css';
 
 type Room = RoomOf<LiarsDiceRoomState>;
 
 /** LD08-LD12: a Liar's Dice room, before, during and after a game. */
 export function LiarsDiceRoom() {
+  const m = useMessages();
   const room = useRoomContext<LiarsDiceRoomState>();
   const { state } = room;
   const players = rankedPlayers(state);
@@ -32,31 +25,32 @@ export function LiarsDiceRoom() {
     <RoomLayout
       phase={
         inGame
-          ? { tone: 'blue', label: `Round ${state.round}` }
+          ? { tone: 'blue', label: m.liarsDice.round(state.round) }
           : ended && !ended.endedEarly
-            ? { tone: 'lime', label: 'Game over' }
+            ? { tone: 'lime', label: m.liarsDice.gameOver }
             : ended && players.length < 2
-              ? { tone: 'peach', label: 'Game ended' }
-              : { tone: 'blue', label: 'Waiting room' }
+              ? { tone: 'peach', label: m.liarsDice.gameEnded }
+              : { tone: 'blue', label: m.liarsDice.waitingRoom }
       }
       stage={inGame ? <Turn room={room} /> : <BetweenGames room={room} />}
-      players={players.map((seat) => playerLine(state, seat))}
-      chat={{ placeholder: 'Say something…' }}
+      players={players.map((seat) => playerLine(state, seat, m))}
+      chat={{ placeholder: m.liarsDice.chat }}
     />
   );
 }
 
-const whoIn = (room: Room): Naming =>
+const whoIn = (room: Room, m: Messages): Naming =>
   naming(
     room.playerId,
-    (id) => room.state.playerList[id]?.username ?? 'Somebody',
+    (id) => room.state.playerList[id]?.username ?? m.liarsDice.somebody,
+    m,
   );
 
 /** The cups as the table draws them: seated players, in turn order. */
-const seatsOf = (state: LiarsDiceRoomState): TableSeat[] =>
+const seatsOf = (state: LiarsDiceRoomState, m: Messages): TableSeat[] =>
   state.cups.map((cup) => ({
     id: cup.playerId,
-    name: state.playerList[cup.playerId]?.username ?? 'Somebody',
+    name: state.playerList[cup.playerId]?.username ?? m.liarsDice.somebody,
     diceLeft: cup.diceLeft,
     dice: cup.dice,
     outInRound: cup.outInRound,
@@ -66,40 +60,43 @@ const diceOnTable = (state: LiarsDiceRoomState) =>
   state.cups.reduce((total, cup) => total + cup.diceLeft, 0);
 
 function BetweenGames({ room }: { room: Room }) {
+  const m = useMessages();
   const { state, startGame, starting } = room;
   const count = Object.keys(state.playerList).length;
   const summary = state.lastGame;
-  const each = `${diceWord(state.dicePerPlayer)} each`;
 
   if (summary && !summary.endedEarly) {
     return (
       <>
         <ResultsPanel
           summary={summary}
-          detail={`${plural(summary.rounds, 'round')}, ${diceWord(summary.dicePerPlayer)} each.`}
+          detail={m.liarsDice.resultDetail(
+            summary.rounds,
+            summary.dicePerPlayer,
+          )}
           onPlayAgain={startGame}
           starting={starting}
           ranked
           statusOf={(standing, place) =>
             place === 1
-              ? 'Winner'
+              ? m.room.winner
               : standing.outInRound === null
-                ? 'Left the game'
-                : `Out in round ${standing.outInRound}`
+                ? m.liarsDice.leftGame
+                : m.liarsDice.outRound(standing.outInRound)
           }
         />
         {/* LD12: the last call stays open under the results. */}
         {state.reveal && (
           <Table
-            seats={seatsOf(state)}
+            seats={seatsOf(state, m)}
             youId={room.playerId}
             dicePerPlayer={state.dicePerPlayer}
             turnId={null}
             nextId={null}
             bids={[]}
             reveal={state.reveal}
-            who={whoIn(room)}
-            countLabel="The last call"
+            who={whoIn(room, m)}
+            countLabel={m.liarsDice.lastCall}
           />
         )}
       </>
@@ -108,9 +105,9 @@ function BetweenGames({ room }: { room: Room }) {
   if (summary?.endedEarly && count < 2) return <EndedEarlyPanel />;
   return (
     <WaitingPanel
-      aloneTitle="A little better with company."
-      setup={`${plural(count, 'player')}, ${each}. Everybody rolls in secret, then bids on the whole table; call Liar on a bid you doubt.`}
-      guestSetup={`${plural(count, 'player')}, ${each}.`}
+      aloneTitle={m.liarsDice.alone}
+      setup={m.liarsDice.setup(count, state.dicePerPlayer)}
+      guestSetup={m.liarsDice.guestSetup(count, state.dicePerPlayer)}
       onStart={startGame}
       starting={starting}
     />
@@ -119,6 +116,7 @@ function BetweenGames({ room }: { room: Room }) {
 
 /** LD08-LD11: whose turn it is, and the table. */
 function Turn({ room }: { room: Room }) {
+  const m = useMessages();
   const { state, receivedAt, reconnecting, playerId } = room;
   const seconds = useSecondsLeft(state.phaseEndsInMs, receivedAt, reconnecting);
   const mine =
@@ -128,24 +126,21 @@ function Turn({ room }: { room: Room }) {
   const out = (state.playerList[playerId]?.points ?? 0) === 0;
   return (
     <>
-      <TurnBar {...turnBar(room, seconds)} />
+      <TurnBar {...turnBar(room, seconds, m)} />
       <Table
-        seats={seatsOf(state)}
+        seats={seatsOf(state, m)}
         youId={playerId}
         dicePerPlayer={state.dicePerPlayer}
         turnId={state.turnPlayerId}
         nextId={state.nextPlayerId}
         bids={state.bids}
         reveal={state.phase === 'reveal' ? state.reveal : null}
-        who={whoIn(room)}
+        who={whoIn(room, m)}
         beside={
           mine ? (
             <YourMove room={room} />
           ) : out ? (
-            <p className={styles.note}>
-              You are out of dice. Stay to watch who wins, and keep the table
-              talk going.
-            </p>
+            <p className={styles.note}>{m.liarsDice.outNote}</p>
           ) : undefined
         }
       />
@@ -155,6 +150,7 @@ function Turn({ room }: { room: Room }) {
 
 /** LD09: the bid picker, opening on the smallest raise. */
 function YourMove({ room }: { room: Room }) {
+  const m = useMessages();
   const { state, socket } = room;
   const latest = state.bids.at(-1) ?? null;
   const picker = useBidChoice(latest, diceOnTable(state), (bid) =>
@@ -166,7 +162,7 @@ function YourMove({ room }: { room: Room }) {
     return (
       <div className={styles.callOnly}>
         <Button variant="danger" onClick={call}>
-          Call Liar
+          {m.liarsDice.callLiar}
         </Button>
       </div>
     );
@@ -174,70 +170,85 @@ function YourMove({ room }: { room: Room }) {
   return <BidPicker {...picker} onCall={call} />;
 }
 
-function turnBar(room: Room, seconds: number): TurnBarProps {
+function turnBar(room: Room, seconds: number, m: Messages): TurnBarProps {
   const { state, playerId, reconnecting } = room;
-  const who = whoIn(room);
+  const who = whoIn(room, m);
   const clock = (label: string, waiting: boolean) =>
     reconnecting
-      ? { seconds, label: 'paused', waiting: true }
+      ? { seconds, label: m.liarsDice.paused, waiting: true }
       : { seconds, label, waiting };
 
   if (state.phase === 'reveal' && state.reveal) {
     return {
-      ...revealBar(state.reveal, who),
+      ...revealBar(state.reveal, who, m),
       kind: 'status',
-      countdown: clock('next round', true),
+      countdown: clock(m.liarsDice.nextRound, true),
     };
   }
   const latest = state.bids.at(-1);
   const name = who(state.turnPlayerId ?? '').name;
-  const bidMeta = latest ? bidLine(who(latest.playerId), latest) : undefined;
+  const bidMeta = latest ? bidLine(who(latest.playerId), latest, m) : undefined;
   if (state.turnPlayerId === playerId) {
     return {
-      label: 'Your turn',
+      label: m.liarsDice.yourTurn,
       kind: 'status',
-      main: latest ? 'Raise, or call Liar' : 'Open the bidding',
-      meta: bidMeta ?? `${diceWord(diceOnTable(state))} on the table`,
-      countdown: clock('to bid', false),
+      main: latest ? m.liarsDice.raiseOrCall : m.liarsDice.openBidding,
+      meta: bidMeta ?? m.liarsDice.onTable(diceOnTable(state)),
+      countdown: clock(m.liarsDice.toBid, false),
     };
   }
   return {
-    label: `${name}’s turn`,
+    label: m.liarsDice.turn(name),
     kind: 'status',
-    main: `${name} is deciding`,
-    meta: bidMeta ?? 'Opening the round',
-    countdown: clock('to bid', true),
+    main: m.liarsDice.isDeciding(name),
+    meta: bidMeta ?? m.liarsDice.openingRound,
+    countdown: clock(m.liarsDice.toBid, true),
   };
 }
 
 /** One player's line on the scoreboard; their score is their dice left. */
-function playerLine(state: LiarsDiceRoomState, seat: Seat): PlayerLine {
+function playerLine(
+  state: LiarsDiceRoomState,
+  seat: Seat,
+  m: Messages,
+): PlayerLine {
   if (!seat.isConnected) {
-    return { seat, status: 'Away', statusIcon: 'away', state: 'away' };
+    return {
+      seat,
+      status: m.liarsDice.away,
+      statusIcon: 'away',
+      state: 'away',
+    };
   }
-  if (!state.isGameStarted) return { seat, status: 'Waiting' };
+  if (!state.isGameStarted) return { seat, status: m.liarsDice.waiting };
   const { reveal } = state;
   if (state.phase === 'reveal' && reveal) {
     if (seat.playerId === reveal.loserId) {
-      return { seat, status: reveal.out ? 'Out' : 'Lost a die' };
+      return {
+        seat,
+        status: reveal.out ? m.liarsDice.out : m.liarsDice.lostDie,
+      };
     }
     if (seat.playerId === reveal.bid.playerId) {
-      return { seat, status: stood(reveal) ? 'Bid stands' : 'Bid was a lie' };
+      return {
+        seat,
+        status: stood(reveal) ? m.liarsDice.bidStands : m.liarsDice.bidLie,
+      };
     }
     if (seat.playerId === reveal.callerId) {
-      return { seat, status: 'Called Liar' };
+      return { seat, status: m.liarsDice.calledLiar };
     }
   }
-  if (seat.points === 0) return { seat, status: 'Out' };
+  if (seat.points === 0) return { seat, status: m.liarsDice.out };
   if (state.phase === 'bidding') {
     if (seat.playerId === state.turnPlayerId) {
-      return { seat, status: 'Bidding', state: 'highlight' };
+      return { seat, status: m.liarsDice.bidding, state: 'highlight' };
     }
     if (seat.playerId === state.nextPlayerId) {
-      return { seat, status: 'Up next' };
+      return { seat, status: m.liarsDice.upNext };
     }
     const own = state.bids.findLast((bid) => bid.playerId === seat.playerId);
-    if (own) return { seat, status: `Bid ${bidWords(own)}` };
+    if (own) return { seat, status: m.liarsDice.bidLabel(own) };
   }
-  return { seat, status: 'Waiting' };
+  return { seat, status: m.liarsDice.waiting };
 }

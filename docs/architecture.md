@@ -174,6 +174,7 @@ Whenever anything visible in a room changes, every seated, connected player is s
 A client renders the latest snapshot and keeps no game state of its own, so a refresh, a reconnect or a missed event cannot leave it out of step.
 Changes made in one synchronous run are coalesced, so a turn that ends and the next that starts arrive as one snapshot; nothing may count snapshots.
 Only the drawing (`dg:canvas:*`) and the chat (`chat:message`, `chat:history`) travel as increments, because they are streams.
+A chat line is either what a player typed or a `RoomNotice`, the facts of something that happened, which each client words in its own language ([languages](#notices-on-the-wire)).
 
 A request that can fail takes an acknowledgement as its last argument and is answered once with a `Result`: `{ ok: true, ... }` or `{ ok: false, error: { type, message } }`.
 `onClientRequest` splits the acknowledgement off (the last argument, if it is a function), answers `invalidRequest` when the arguments do not parse, and does nothing harmful when a client sent none.
@@ -203,6 +204,7 @@ The design system lives in [`client/src/ui/`](../client/src/ui/index.ts), one co
   Portals (select menus, dialogs, the header menu) carry `.zumpo` themselves, because they render outside the page.
 - **Desktop and Phone variants are container queries**, so a component follows its own width, as Figma's `Layout` variants do, wherever a page puts it.
   Pages switch layouts at `(max-width: 640px)`, the width Figma's phone screens are drawn for, through `useMediaQuery(PHONE)` where the markup itself differs: a room's tabs instead of columns, and `FormPage`, which lays a one-question page's card straight on the page.
+  Under 1024 px (`ONE_COLUMN`) a room and a game on your own are one column, and between the widths Figma draws a rigid piece scales down inside `Fit` ([design](design.md#in-code)).
 - **States never change size:** hover borders, selection rings and cell outlines are inset shadows, not borders, so nothing shifts and overlays such as the pick marker cover the whole box.
 - **Hover only where a pointer hovers:** every `:hover` style sits inside `@media (hover: hover)`, because a touch screen keeps it after a tap, and a card just put back would still look picked.
 - **The `/design` gallery** renders every family in the states Figma draws, beside its Figma preview, and measures each specimen against the export.
@@ -214,9 +216,9 @@ Routes live in [`app.tsx`](../client/src/app.tsx), on a data router so a room ca
 
 | Path                         | Page                                                        |
 | ---------------------------- | ----------------------------------------------------------- |
-| `/`                          | Home                                                        |
+| `/`                          | Home, and every game; `?kind=` filters to one kind          |
 | `/how-to-play`               | Every game's rules                                          |
-| `/games`                     | The games                                                   |
+| `/games`                     | Redirects home, for old links                               |
 | `/games/:game`               | A game's lobby                                              |
 | `/games/:game/new`           | Making a room                                               |
 | `/games/:game/solo`          | The game on your own; `?board=` and the like pick the setup |
@@ -252,6 +254,50 @@ Serving the client from a different host than the server needs that changed firs
 The canvas bitmap is 798 × 598, scaled to the screen's pixel ratio; pointer positions are mapped into that space.
 It takes pointer events, so mouse, pen and touch all draw, and `touch-action: none` keeps a finger drawing rather than scrolling.
 The server never echoes a drawer's own strokes, so the drawer's input is applied locally as well as sent.
+
+## Languages
+
+The UI speaks English and Chinese, and the player picks either from the footer's language switch on any page; their choice is kept in `localStorage` (`zumpo:locale`), and a first visit follows the browser's languages.
+Everything is built so that a third language is one more catalog file, and so that the server never has to know what language anyone reads.
+
+### The catalog
+
+Every word a player reads comes from [`client/src/i18n/`](../client/src/i18n/index.tsx): `en/` holds the English catalog, one module per area of the app (`shell`, `home`, `games`, `room`, one per game, and so on), and `zh/` mirrors it file for file.
+The catalog is plain TypeScript, not JSON: a message with values is a function, so each language orders its own sentence and handles its own plurals.
+`Messages` is `typeof en`, so a key missing or misspelled in `zh/` fails `npm run typecheck` rather than showing English at runtime.
+There is no runtime library: `useMessages()` returns the current language's catalog, and components read `m.room.leave` with autocomplete.
+Code outside React takes the catalog as a parameter rather than importing a language.
+English grammar helpers (`plural`, `countWord`) live in `en/` because they are English, and `zh/` writes its own.
+
+What stays English on purpose: the wordmark, the footer's `zumpo. / play a little`, and the games' own content, because the Draw & Guess word bank and Daily Word's words are gameplay content; a Chinese word bank would be its own feature.
+A player's name is theirs, in any script; a first visit's random name is picked in the visitor's language, so a Chinese visitor starts as 活泼水獭 rather than Sleepy Otter.
+
+Pages switch at once when the language changes: `LocaleProvider` wraps the app above the session, holds the locale, and sets `<html lang>` so fonts and screen readers follow.
+The Paper Pop fonts have no Chinese glyphs; the font stacks end in `system-ui`, so Chinese text sets in the system's own sans (PingFang, Microsoft YaHei, Noto Sans CJK) and nothing is loaded for it.
+Chinese copy puts a space between a number and the characters around it ("2 轮"), as the common style guides do.
+It sets a player's name off with a space too ("Bob 加入了房间"), except 你, which runs into its verb ("你出局了"); the Liar's Dice module's `subject` helper does that where the subject may be either.
+A game's terms are the ones its rules in `zh/games.ts` already use (喊“吹牛” and 丢一颗骰子, 条命, 颗雷, 单人模式, 本机记录), so a new string reuses a term rather than coining one.
+
+### Notices on the wire
+
+The server posts to a room's chat, and it has players reading two languages, so it never words anything.
+A line nobody said is a `RoomNotice` in `shared/wire-types.d.ts`: what happened and its facts (`{ type: 'room:joined', name }`, `{ type: 'dg:guessed', name, points }`), namespaced like the events, and each client words it from its own catalog with an exhaustive discriminant switch in [`room/notice-text.ts`](../client/src/room/notice-text.ts).
+`ChatMessage` is a union: a player's line carries `text`, a notice line carries `notice`, so a client cannot render one as the other.
+Errors stay typed by `RoomError.type` and are worded by the client; `message` is for logs.
+The notice payload carries only public facts: Hush cards already discarded, a called bid and count after its reveal, and game standings after the game ends.
+Player chat is rendered verbatim in both languages.
+Any text the server sends that a player reads is a bug.
+
+Tests run in English by default; the client suite and e2e players take `locale: 'zh'` for Chinese coverage.
+The e2e suite includes players reading different languages in one room, history switching language, a refresh preserving the choice, and a Chinese phone visitor creating a room.
+The Figma comparison is English because the Figma file is.
+
+### Adding a language
+
+1. Add it to `Locale` and `LOCALE_NAMES` in `i18n/locale.ts`, and teach `detectLocale` its language tags.
+2. Copy `en/` to the new folder and translate; `typeof en` on each module keeps the shape honest.
+3. Add random name lists in `players/random-name.ts`, each pair within the server's 18 characters.
+4. Add it to `MESSAGES` in `i18n/index.tsx`; the footer switch lists `LOCALES`.
 
 ## Configuration
 
@@ -306,7 +352,7 @@ Reveals are cut to a second so a whole game fits in a test, any error in a brows
 A state that lasts a reveal or a flash is too short to catch under the load of the full suite, so an e2e test waits for what follows it or what stays (the next round, a count, a chat line), and the page tests, whose clocks hold still, check what the passing state says.
 A select menu is picked through `choose`, which waits for the menu to finish sliding in and checks that the field took the pick: a click Playwright retries scrolls the page, the menu follows, and the release can land on the backdrop and pick nothing.
 A board's labels are read through `labelsIn`, in one evaluation, because `evaluateAll` finds and reads in two steps and a card can turn in between.
-It checks behaviour, not looks.
+It checks behaviour, not looks, except for [`widths.spec.ts`](../e2e/widths.spec.ts), which plays each game and checks at seven window widths that nothing reaches out of what holds it.
 `npm run design:compare` covers looks: it drives the app into the state of each Figma screen and puts the capture beside Figma's preview ([design](design.md#comparing-with-figma)).
 
 ## Tooling

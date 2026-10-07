@@ -1,3 +1,4 @@
+import { useMessages } from '../i18n';
 import type { ReactNode } from 'react';
 import type { HushDiscard, HushPlay } from '../../../shared/wire-types';
 import { HushCard, Lives } from '../ui';
@@ -43,20 +44,21 @@ export function Pile({
   /** What the empty place says. */
   empty: string;
 }) {
+  const m = useMessages();
   const top = pile.at(-1);
   const under = [
     ...pile.slice(0, -1).map(({ card }) => ({ card, discarded: false })),
     ...discards.map(({ card }) => ({ card, discarded: true })),
   ].toSorted((a, b) => a.card - b.card);
   return (
-    <section className={styles.pile} aria-label="The pile">
+    <section className={styles.pile} aria-label={m.hush.pile}>
       {top ? (
         <HushCard value={top.card} state="pile" size="large" />
       ) : (
         <p className={styles.empty}>{empty}</p>
       )}
       {under.length > 0 && (
-        <ol className={styles.trail} aria-label="Under the top card">
+        <ol className={styles.trail} aria-label={m.hush.underTop}>
           {under.map(({ card, discarded }) => (
             <li key={card}>
               <HushCard

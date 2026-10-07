@@ -3,7 +3,7 @@ import type {
   MinesweeperRoomState,
 } from '../../../shared/wire-types';
 import { PickResult, TurnBar, type TurnBarProps } from '../ui';
-import { plural } from '../games/plural';
+import { useMessages, type Messages } from '../i18n';
 import { useSecondsLeft } from '../net/use-seconds-left';
 import { initialsOf, toneOf } from '../players/avatar';
 import { EndedEarlyPanel, ResultsPanel, WaitingPanel } from '../room/panels';
@@ -11,7 +11,7 @@ import { listNames, rankedPlayers, type Seat } from '../room/players';
 import { useRoomContext, type Room as RoomOf } from '../room/room-context';
 import { RoomLayout, type PlayerLine } from '../room/room-layout';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
-import { BOARD_SIZES, HIDDEN } from '../../../shared/minesweeper';
+import { HIDDEN } from '../../../shared/minesweeper';
 import { Board } from './board';
 import styles from './room.module.css';
 
@@ -19,6 +19,7 @@ type Room = RoomOf<MinesweeperRoomState>;
 
 /** M01-M16: a Minesweeper room, before, during and after a game. */
 export function MinesweeperRoom() {
+  const m = useMessages();
   const room = useRoomContext<MinesweeperRoomState>();
   const { state } = room;
   const players = rankedPlayers(state);
@@ -28,32 +29,38 @@ export function MinesweeperRoom() {
     <RoomLayout
       phase={
         inGame
-          ? { tone: 'blue', label: `Round ${state.round}` }
+          ? { tone: 'blue', label: m.minesweeper.round(state.round) }
           : ended && !ended.endedEarly
-            ? { tone: 'lime', label: 'Game over' }
+            ? { tone: 'lime', label: m.minesweeper.gameOver }
             : ended && players.length < 2
-              ? { tone: 'peach', label: 'Game ended' }
-              : { tone: 'blue', label: 'Waiting room' }
+              ? { tone: 'peach', label: m.minesweeper.gameEnded }
+              : { tone: 'blue', label: m.minesweeper.waitingRoom }
       }
       stage={inGame ? <Round room={room} /> : <BetweenGames room={room} />}
-      players={players.map((seat) => playerLine(state, seat))}
-      chat={{ placeholder: 'Say something…', alertIcon: 'mine' }}
+      players={players.map((seat) => playerLine(state, seat, m))}
+      chat={{
+        placeholder: m.minesweeper.messagePlaceholder,
+        alertIcon: 'mine',
+      }}
     />
   );
 }
 
 function BetweenGames({ room }: { room: Room }) {
+  const m = useMessages();
   const { state, startGame, starting } = room;
   const count = Object.keys(state.playerList).length;
   const summary = state.lastGame;
-  const { width, height, mines } = BOARD_SIZES[state.difficulty];
 
   if (summary && !summary.endedEarly) {
     return (
       <>
         <ResultsPanel
           summary={summary}
-          detail={`${summary.difficulty} board, ${plural(summary.rounds, 'round')}.`}
+          detail={m.minesweeper.resultsDetail(
+            summary.difficulty,
+            summary.rounds,
+          )}
           onPlayAgain={startGame}
           starting={starting}
         />
@@ -64,9 +71,9 @@ function BetweenGames({ room }: { room: Room }) {
   if (summary?.endedEarly && count < 2) return <EndedEarlyPanel />;
   return (
     <WaitingPanel
-      aloneTitle="A little better with company."
-      setup={`${plural(count, 'player')} on a ${state.difficulty} board: ${width} × ${height} with ${mines} mines. Every round, everyone picks one cell at the same time.`}
-      guestSetup={`${plural(count, 'player')} on a ${state.difficulty} board.`}
+      aloneTitle={m.minesweeper.aloneTitle}
+      setup={m.minesweeper.setup(count, state.difficulty)}
+      guestSetup={m.minesweeper.guestSetup(count, state.difficulty)}
       onStart={startGame}
       starting={starting}
     />
@@ -75,6 +82,7 @@ function BetweenGames({ room }: { room: Room }) {
 
 /** M04-M13: one round: the turn bar, then the board and the last results. */
 function Round({ room }: { room: Room }) {
+  const m = useMessages();
   const { state, receivedAt, reconnecting, socket } = room;
   const seconds = useSecondsLeft(state.phaseEndsInMs, receivedAt, reconnecting);
   const canPick =
@@ -83,7 +91,7 @@ function Round({ room }: { room: Room }) {
 
   return (
     <>
-      <TurnBar {...turnBar(room, seconds, phone)} />
+      <TurnBar {...turnBar(room, seconds, phone, m)} />
       <Minefield
         room={room}
         showPicks={state.phase === 'reveal'}
@@ -111,6 +119,7 @@ function Minefield({
   showPicks: boolean;
   onPick?: (index: number) => void;
 }) {
+  const m = useMessages();
   const { state } = room;
   const phone = useMediaQuery(PHONE);
   const results =
@@ -133,7 +142,7 @@ function Minefield({
       {results.length > 0 && (
         <section className={styles.results} aria-labelledby="round-results">
           <h2 id="round-results" className={styles.resultsTitle}>
-            Round {resultsRound} results
+            {m.minesweeper.roundResults(resultsRound)}
           </h2>
           <ul className={styles.resultList}>
             {results.map((pick) => (
@@ -143,7 +152,7 @@ function Minefield({
                 initials={initialsOf(pick.username)}
                 tone={toneOf(pick.username)}
                 outcome={outcomeOf(pick)}
-                detail={pickDetail(pick)}
+                detail={m.minesweeper.pickDetail(pick.risk, pick.sharedWith)}
                 points={pick.points}
               />
             ))}
@@ -159,55 +168,48 @@ function outcomeOf(pick: MinesweeperPickResult) {
   return pick.autoPlayed ? ('auto' as const) : ('safe' as const);
 }
 
-const percent = (risk: number) => `${Math.round(risk * 100)}%`;
-
-/** "23% risk", "0% risk · split 2 ways". */
-function pickDetail(pick: MinesweeperPickResult): string {
-  const risk = `${percent(pick.risk)} risk`;
-  return pick.sharedWith > 1 ? `${risk} · split ${pick.sharedWith} ways` : risk;
-}
-
-/** Signed with a true minus: "+31", "−105". */
-const signed = (points: number) =>
-  points > 0 ? `+${points}` : points < 0 ? `−${-points}` : '+0';
-
 /** "Ryan", "Ryan and Maya", "Ryan, Leo and Maya". */
-function turnBar(room: Room, seconds: number, phone: boolean): TurnBarProps {
+function turnBar(
+  room: Room,
+  seconds: number,
+  phone: boolean,
+  m: Messages,
+): TurnBarProps {
   const { state, playerId, reconnecting } = room;
-  const category = `${state.difficulty} · ${state.width} × ${state.height}`;
+  const category = m.minesweeper.boardLabel(state.difficulty);
   const clock = (label: string, waiting = false) =>
     reconnecting
-      ? { seconds, label: 'paused', waiting: true }
+      ? { seconds, label: m.minesweeper.paused, waiting: true }
       : { seconds, label, waiting };
 
   if (state.phase === 'reveal') {
     const mine = state.lastRound.find((pick) => pick.playerId === playerId);
     const base = {
       category,
-      label: `Round ${state.round} results`,
+      label: m.minesweeper.roundResults(state.round),
       kind: 'status' as const,
       // The last round leads to the final scores, not another round.
       countdown: clock(
-        state.board.includes(HIDDEN) ? 'next round' : 'final scores',
+        state.board.includes(HIDDEN)
+          ? m.minesweeper.nextRound
+          : m.minesweeper.finalScores,
         true,
       ),
     };
-    if (!mine) return { ...base, main: 'Round over' };
+    if (!mine) return { ...base, main: m.minesweeper.roundOver };
     if (mine.autoPlayed) {
       return {
         ...base,
-        main: 'Time ran out',
-        meta: `The safest cell was picked for you: ${percent(mine.risk)} risk, so ${signed(mine.points)}`,
+        main: m.minesweeper.timeRanOut,
+        meta: m.minesweeper.autoPickDetail(mine.risk, mine.points),
       };
     }
     if (mine.hitMine) {
       return {
         ...base,
-        main: `Mine. ${signed(mine.points)}`,
+        main: m.minesweeper.minePoints(mine.points),
         // MO13: a phone shows the risk alone.
-        meta: phone
-          ? `Your cell had a ${percent(mine.risk)} risk`
-          : `Your cell had a ${percent(mine.risk)} risk. A mine costs more the safer it looked.`,
+        meta: m.minesweeper.cellRisk(mine.risk, !phone),
       };
     }
     const sharers = state.lastRound
@@ -215,14 +217,16 @@ function turnBar(room: Room, seconds: number, phone: boolean): TurnBarProps {
       .map((pick) => pick.username);
     return {
       ...base,
-      main: `Safe! ${signed(mine.points)}`,
+      main: m.minesweeper.safePoints(mine.points),
       meta: sharers.length
-        ? `${listNames(['You', ...sharers])} picked the same cell, so you split its reward`
-        : `Your cell had a ${percent(mine.risk)} risk`,
+        ? m.minesweeper.splitReward(
+            listNames([m.minesweeper.you, ...sharers], m),
+          )
+        : m.minesweeper.cellRisk(mine.risk),
     };
   }
 
-  const label = `Round ${state.round}`;
+  const label = m.minesweeper.round(state.round);
   const connected = Object.entries(state.playerList).filter(
     ([, player]) => player.isConnected,
   );
@@ -233,8 +237,8 @@ function turnBar(room: Room, seconds: number, phone: boolean): TurnBarProps {
       category,
       label,
       kind: 'status',
-      main: 'Everyone is locked in',
-      meta: 'Revealing the picks…',
+      main: m.minesweeper.everyoneLocked,
+      meta: m.minesweeper.revealingPicks,
     };
   }
   if (state.myPick !== null) {
@@ -245,55 +249,64 @@ function turnBar(room: Room, seconds: number, phone: boolean): TurnBarProps {
       category,
       label,
       kind: 'status',
-      main: 'Locked in',
-      meta: `Waiting for ${listNames(waitingFor)}`,
-      countdown: clock('to pick'),
+      main: m.minesweeper.lockedIn,
+      meta: m.minesweeper.waitingFor(listNames(waitingFor, m)),
+      countdown: clock(m.minesweeper.toPick),
     };
   }
   return {
     category,
     label,
     kind: 'status',
-    main: 'Pick a cell',
+    main: m.minesweeper.pickCell,
     meta:
       state.minesFound > 0
-        ? `${state.totalMines} mines · ${state.minesFound} hit so far`
-        : `${state.totalMines} mines · your pick locks when you click`,
-    countdown: clock('to pick'),
+        ? m.minesweeper.minesFound(state.totalMines, state.minesFound)
+        : m.minesweeper.pickLocks(state.totalMines),
+    countdown: clock(m.minesweeper.toPick),
   };
 }
 
 /** One player's line on the scoreboard. */
-function playerLine(state: MinesweeperRoomState, seat: Seat): PlayerLine {
+function playerLine(
+  state: MinesweeperRoomState,
+  seat: Seat,
+  m: Messages,
+): PlayerLine {
   if (!seat.isConnected) {
-    return { seat, status: 'Away', statusIcon: 'away', state: 'away' };
+    return {
+      seat,
+      status: m.minesweeper.away,
+      statusIcon: 'away',
+      state: 'away',
+    };
   }
-  if (!state.isGameStarted) return { seat, status: 'Waiting' };
+  if (!state.isGameStarted) return { seat, status: m.minesweeper.waiting };
   if (state.phase === 'reveal') {
     const pick = state.lastRound.find((p) => p.playerId === seat.playerId);
-    if (!pick) return { seat, status: 'Waiting' };
+    if (!pick) return { seat, status: m.minesweeper.waiting };
     if (pick.hitMine) {
       return {
         seat,
-        status: `Hit a mine · ${signed(pick.points)}`,
+        status: m.minesweeper.hitMinePoints(pick.points),
         statusIcon: 'mine',
       };
     }
     if (pick.autoPlayed) {
       return {
         seat,
-        status: `Auto-picked · ${signed(pick.points)}`,
+        status: m.minesweeper.autoPickedPoints(pick.points),
         statusIcon: 'clock',
       };
     }
     return {
       seat,
-      status: `Safe · ${signed(pick.points)}`,
+      status: m.minesweeper.safeStatusPoints(pick.points),
       statusIcon: 'check',
       state: 'scored',
     };
   }
   return state.lockedIn.includes(seat.playerId)
-    ? { seat, status: 'Locked in', statusIcon: 'lock' }
-    : { seat, status: 'Picking' };
+    ? { seat, status: m.minesweeper.lockedIn, statusIcon: 'lock' }
+    : { seat, status: m.minesweeper.picking };
 }

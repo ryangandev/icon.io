@@ -1,19 +1,29 @@
-.artwork {
+.tile,
+.icon {
   display: flex;
-  align-self: stretch;
+  flex: none;
   align-items: center;
   justify-content: center;
-  gap: var(--zumpo-space-16);
-  height: 120px;
   overflow: hidden;
   border-radius: var(--zumpo-radius-16);
   background: var(--zumpo-paper);
 }
 
-/* The sample drawing at 0.32 of its 480 × 320 canvas, as on the cards. */
+.tile {
+  align-self: stretch;
+  gap: var(--zumpo-space-16);
+  height: 112px;
+}
+
+.icon {
+  width: 80px;
+  height: 80px;
+}
+
+/* The sample drawing at 0.26 of its 480 × 320 canvas, as on the tiles. */
 .turtle {
-  width: 153.6px;
-  height: 102.4px;
+  width: 124.8px;
+  height: 83.2px;
 }
 
 .cells {
@@ -28,50 +38,49 @@
   --zumpo-cell-size: 44px;
 }
 
-.lastCell {
-  display: contents;
-}
-
 .hand {
   display: flex;
   align-items: center;
   gap: var(--zumpo-space-8);
 }
 
-.answer {
-  display: contents;
-}
-
 .dice,
 .pairs,
 .trios,
 .pile,
-.word,
-.wordTail {
+.word {
   display: flex;
   align-items: center;
   gap: var(--zumpo-space-8);
 }
 
-/* The team's lives, beside Hush's pile. */
-.lives {
-  margin-left: var(--zumpo-space-16);
+/* A tile's hand is on cards smaller than any in play. */
+.hand > * {
+  width: 60px;
+  height: 80px;
 }
 
-/* The phone card drops the last cell, the last two letters, a hand's answer,
-   and Hush's lowest card and lives to fit; its cards are smaller than any card
-   in play, as in the mobile cards. */
-@media (max-width: 640px) {
-  .lastCell,
-  .wordTail,
-  .answer,
-  /* Two classes, to outrank the display a component gives its own root. */
-  .pile > .wideOnly {
-    display: none;
-  }
+/* An icon's drawing at 0.21 of its canvas, so the turtle fills the icon. */
+.iconTurtle {
+  flex: none;
+  width: 100px;
+  height: 66.7px;
+}
 
-  .hand > * {
-    width: 60px;
-    height: 80px;
-  }
+.iconGrid {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: var(--zumpo-space-8);
+}
+
+/* The solved 24 and Hush's top card, scaled to the icon's 64 px of height
+   as Figma scales them. */
+.iconSolved {
+  display: flex;
+  zoom: 0.64;
+}
+
+.iconPile {
+  display: flex;
+  zoom: 0.8;
 }

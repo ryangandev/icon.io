@@ -19,6 +19,22 @@
   min-width: 0;
 }
 
+/* Under 1024 px (ONE_COLUMN in use-media-query.ts) the side column would
+   leave the stage less than a board needs: one column, with the scoreboard
+   and the chat side by side under the stage where two fit, else one under
+   the other. */
+@media (max-width: 1023px) {
+  .room {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .side {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    align-items: start;
+  }
+}
+
 @media (max-width: 640px) {
   .stage {
     gap: var(--zumpo-space-24);

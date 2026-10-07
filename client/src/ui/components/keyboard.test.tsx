@@ -1,8 +1,12 @@
-import { render, screen, within } from '@testing-library/react';
+import { LocaleProvider } from '../../i18n';
+import { render as renderRaw, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { Keyboard } from './keyboard';
 import { WordBoard } from './word-board';
+
+const render = (ui: Parameters<typeof renderRaw>[0]) =>
+  renderRaw(ui, { wrapper: LocaleProvider });
 
 describe('Keyboard', () => {
   it('says what each letter is known to be, and presses keys', async () => {

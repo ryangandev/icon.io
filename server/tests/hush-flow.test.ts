@@ -1,3 +1,4 @@
+import { textOf } from './helpers/test-server.js';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { HushRoomState } from '../models/types.js';
 import {
@@ -171,7 +172,7 @@ describe('a Hush room', () => {
       'notRoomOwner',
     );
 
-    const chat = waitForChat(owner, (m) => m.text.startsWith('Game has'));
+    const chat = waitForChat(owner, (m) => textOf(m).startsWith('Game has'));
     const ready = waitForHushState(owner, (s) => s.phase === 'ready');
     await startGame(owner, roomId);
     expect(await ready).toMatchObject({
@@ -182,7 +183,7 @@ describe('a Hush room', () => {
       hand: [],
       phaseEndsInMs: 0,
     });
-    expect((await chat).text).toBe(
+    expect(textOf(await chat)).toBe(
       'Game has started! 7 levels and 3 lives. Not a word while a level is played.',
     );
   });
@@ -325,7 +326,7 @@ describe('a level', () => {
     expect(view.phaseEndsInMs).toBeGreaterThan(0);
     expect(view.playerList[players[0].playerId].points).toBe(1);
     expect(view.playerList[players[1].playerId].points).toBe(1);
-    expect((await chat).text).toBe('Level 1 cleared without a slip!');
+    expect(textOf(await chat)).toBe('Level 1 cleared without a slip!');
 
     const next = await waitForHushState(owner, (s) => s.phase === 'ready');
     expect(next).toMatchObject({
@@ -377,7 +378,7 @@ describe('a mistake', () => {
     });
     expect(view.phaseEndsInMs).toBeGreaterThan(0);
     expect(view.table[ryan.playerId].held).toBe(1);
-    expect((await alert).text).toBe(
+    expect(textOf(await alert)).toBe(
       'Maya played 52, but Ryan held 47 and 51 and Sam held 49.',
     );
 
@@ -429,7 +430,7 @@ describe('a mistake', () => {
       lifeBack: false,
       cleared: true,
     });
-    expect(chat.map((m) => m.text)).toEqual([
+    expect(chat.map((m) => textOf(m))).toEqual([
       'Alice played 60, but Bob held 30.',
       'Level 1 cleared!',
     ]);
@@ -448,7 +449,7 @@ describe('a mistake', () => {
     const view = await cleared;
     expect(view.lives).toBe(3);
     expect(view.lastLevel).toMatchObject({ level: 2, lifeBack: true });
-    expect((await chat).text).toBe(
+    expect(textOf(await chat)).toBe(
       'Level 2 cleared without a slip: a life back!',
     );
 
@@ -483,7 +484,7 @@ describe('the chat', () => {
 
     const nudge = waitForChat(bob, (m) => m.kind === 'player');
     alice.emit('chat:send', roomId, 'ready when you are');
-    expect((await nudge).text).toBe('ready when you are');
+    expect(textOf(await nudge)).toBe('ready when you are');
 
     const countdown = waitForHushState(alice, (s) => s.phase === 'countdown');
     const playing = waitForHushState(alice, (s) => s.phase === 'playing');
@@ -502,7 +503,7 @@ describe('the chat', () => {
     await cleared;
     const after = waitForChat(bob, (m) => m.kind === 'player');
     alice.emit('chat:send', roomId, 'nice');
-    expect((await after).text).toBe('nice');
+    expect(textOf(await after)).toBe('nice');
   });
 });
 
@@ -580,7 +581,7 @@ describe('a player away', () => {
     const [alice, bob, cat] = players;
     rig(harness, roomId, players, [[10, 50], [20], [15, 30]]);
 
-    const told = waitForChat(alice, (m) => m.text.startsWith('Their'));
+    const told = waitForChat(alice, (m) => textOf(m).startsWith('Their'));
     const resumed = waitForHushState(
       alice,
       (s) => s.phase === 'countdown' && !s.playerList[cat.playerId],
@@ -588,7 +589,7 @@ describe('a player away', () => {
     );
     cat.close();
     const view = await resumed;
-    expect((await told).text).toBe(
+    expect(textOf(await told)).toBe(
       'Their 15 and 30 are discarded, with no life lost.',
     );
     expect(view.lives).toBe(3);
@@ -653,10 +654,10 @@ describe('a player away', () => {
       held: [{ playerId: players[0].playerId, cards: [10] }],
     });
     await settle();
-    expect(chat.map((m) => m.text)).toContain(
+    expect(chat.map((m) => textOf(m))).toContain(
       'Not enough players left to continue. Game has ended.',
     );
-    expect(chat.map((m) => m.text)).not.toContain(
+    expect(chat.map((m) => textOf(m))).not.toContain(
       'Their 20 is discarded, with no life lost.',
     );
   });
@@ -724,7 +725,7 @@ describe('a Hush game', () => {
     );
     expect(view.lastGame!.standings.map((s) => s.points)).toEqual([5, 5, 5, 5]);
     await settle();
-    expect(chat.at(-1)!.text).toBe('All 5 levels cleared. Well played!');
+    expect(textOf(chat.at(-1)!)).toBe('All 5 levels cleared. Well played!');
     expect(chat.filter((m) => m.kind === 'success')).toHaveLength(5);
   });
 
@@ -764,7 +765,7 @@ describe('a Hush game', () => {
       held: [{ playerId: alice.playerId, cards: [90] }],
     });
     await settle();
-    expect(chat.at(-1)!.text).toBe(
+    expect(textOf(chat.at(-1)!)).toBe(
       'Out of lives on level 1: 0 of 7 levels cleared.',
     );
   });

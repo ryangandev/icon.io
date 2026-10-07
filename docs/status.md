@@ -6,7 +6,7 @@ Resolved items are deleted, not archived; history is in git.
 ## Now
 
 The project is rebranded and redesigned as **Zumpo**; the code, packages, folder and repository carry the name.
-The redesign is an editable Figma file of 167 screens and its shared component families (see [design.md](design.md)), with a snapshot in `design/figma/`.
+The redesign is an editable Figma file of 170 screens and its shared component families (see [design.md](design.md)), with a snapshot in `design/figma/`.
 Ryan approved it in review round two on 2026-10-03, after one fix (icons centred on their line of text).
 
 The implementation was built on `rework` and merged into `main` on 2026-10-05 ([#26](https://github.com/ryangandev/zumpo/pull/26)).
@@ -23,6 +23,11 @@ The server was hardened for that the same day ([#30](https://github.com/ryangand
 
 The name step is gone, at Ryan's request on 2026-10-05, because asking for a name before anything else was the biggest friction in the product.
 A first visit is given a random adjective and animal, introduced once on Home, and anyone can change their name in place at any time, in a room too, where everyone sees it at once ([design](design.md#names)).
+
+The interface supports English and simplified Chinese, chosen from the footer and remembered for the browser ([languages](architecture.md#languages)).
+The catalogs cover room flows, all eight games, solo records and accessible labels; each player renders room announcements in their own language.
+The wordmark, footer slogan and English gameplay words retain their original language.
+It was reviewed and played through in both languages, two players in one room, on 2026-10-07 (this session's branch), and Chinese terms now read the same across games (喊“吹牛”, 条命, 颗雷, 单人模式).
 
 ## Product direction
 
@@ -49,6 +54,7 @@ Nothing is queued; the [backlog](#backlog) is what comes next unless Ryan picks 
 | Decision             | Where it stands                                                                                                                                                                                                                                                                                         |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Hosting past testing | Render's free plan is for testing ([architecture](architecture.md#deployment)). Ryan's constraints: free to start, pay only once there is real demand, not all-Vercel. Once people play regularly, an always-on instance (Render's paid plans, or Fly.io from about $3 a month) removes the cold start. |
+| Chinese game content | The Draw & Guess word bank and Daily Word's words stay English in both languages; a Chinese word bank, or Chinese Daily Word words, would be a feature of its own ([languages](architecture.md#languages)). Undecided.                                                                                  |
 | Domain and trademark | Testing runs on Ryan's `zumpo.ryangan.me`; a domain of Zumpo's own is not checked. A Chinese name is deliberately undecided.                                                                                                                                                                            |
 
 ## Known issues
@@ -63,7 +69,7 @@ Ideas worth doing next, roughly in order:
 
 - Spectators, or letting a latecomer in for the next round; the canvas is already server state.
 - A round summary and close-guess feedback ("Sam is close!"); the server knows what it awarded and does not say.
-- A longer word bank and per-room word packs; six fixed categories today.
+- A longer word bank and per-room word packs; six fixed categories today, English only.
 
 ## Deliberately not doing
 

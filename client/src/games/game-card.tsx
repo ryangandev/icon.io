@@ -1,31 +1,52 @@
-import type { ReactNode } from 'react';
-import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import { ButtonLink, Tag } from '../ui';
 import { cx } from '../ui/cx';
+import { useMessages } from '../i18n';
 import { GameArtwork } from './artwork';
-import { soloPath, type GameInfo } from './catalog';
+import { lobbyPath, soloPath, type GameInfo } from './catalog';
 import styles from './game-card.module.css';
 
 /**
- * A game on the home and games pages: what it is, and the ways in. Play solo
- * starts at once; Find a room is the game's room list.
+ * Zumpo/Game card: a game on the home page, what it is and the ways in. A tile
+ * sits four across on a desktop; a row lists it on a phone, with the game's
+ * signature piece as its icon.
  */
-export function GameCard({ game, to }: { game: GameInfo; to: string }) {
-  const phone = useMediaQuery(PHONE);
+export function GameCard({
+  game,
+  layout,
+}: {
+  game: GameInfo;
+  layout: 'tile' | 'row';
+}) {
+  const text = useMessages().games.of[game.type];
+  const copy = (
+    <div className={styles.copy}>
+      <h3 id={`game-${game.type}`} className={styles.name}>
+        {text.name}
+      </h3>
+      <p className={styles.tagline}>
+        {(layout === 'row' && text.rowTagline) || text.tagline}
+      </p>
+      {layout === 'row' && <Tag tone="paper">{text.facts}</Tag>}
+    </div>
+  );
   return (
     <section
-      className={cx(styles.card, styles[game.tone])}
+      className={cx(styles.card, styles[layout], styles[game.tone])}
       aria-labelledby={`game-${game.type}`}
     >
-      <h2 id={`game-${game.type}`} className={styles.name}>
-        {game.name}
-      </h2>
-      <p className={styles.tagline}>
-        {(phone && game.phoneTagline) || game.tagline}
-      </p>
-      <Tag tone="paper">{game.facts}</Tag>
-      <GameArtwork type={game.type} />
-      <GameWaysIn game={game} to={to} />
+      {layout === 'tile' ? (
+        <>
+          <GameArtwork type={game.type} size="tile" />
+          {copy}
+          <Tag tone="paper">{text.facts}</Tag>
+        </>
+      ) : (
+        <div className={styles.top}>
+          <GameArtwork type={game.type} size="icon" />
+          {copy}
+        </div>
+      )}
+      <GameWaysIn game={game} className={styles.waysIn} />
     </section>
   );
 }
@@ -36,31 +57,26 @@ export function GameCard({ game, to }: { game: GameInfo; to: string }) {
  */
 export function GameWaysIn({
   game,
-  to,
   className,
 }: {
   game: GameInfo;
-  to: string;
   className?: string;
 }) {
+  const m = useMessages();
+  const to = lobbyPath(game.type);
   if (!game.solo) {
     return (
       <ButtonLink to={to} className={className}>
-        Find a room
+        {m.games.findRoom}
       </ButtonLink>
     );
   }
   return (
     <div className={cx(styles.actions, className)}>
-      <ButtonLink to={soloPath(game.type)}>Play solo</ButtonLink>
+      <ButtonLink to={soloPath(game.type)}>{m.games.playSolo}</ButtonLink>
       <ButtonLink to={to} variant="secondary">
-        Find a room
+        {m.games.findRoom}
       </ButtonLink>
     </div>
   );
-}
-
-/** The game cards two by two, stacked on a phone. */
-export function GameCards({ children }: { children: ReactNode }) {
-  return <div className={styles.cards}>{children}</div>;
 }

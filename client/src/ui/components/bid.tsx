@@ -1,3 +1,4 @@
+import { useMessages } from '../../i18n';
 import { cx } from '../cx';
 import { Die, type DieFace } from './die';
 import styles from './bid.module.css';
@@ -22,10 +23,11 @@ export function Bid({
   latest = false,
   className,
 }: BidProps) {
+  const m = useMessages();
   return (
     <span
       className={cx(styles.bid, latest && styles.latest, className)}
-      aria-label={`${name}: ${count} × ${face}`}
+      aria-label={m.ui.dice.bid(name, count, face)}
     >
       <span className={styles.name} aria-hidden="true">
         {name}

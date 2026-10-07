@@ -1,4 +1,5 @@
 import { Button, Card } from '../ui';
+import { useMessages } from '../i18n';
 import { useCopy } from '../shell/use-copy';
 import styles from './challenge.module.css';
 
@@ -11,10 +12,11 @@ export const challengeLink = (path: string, deal: Record<string, string>) =>
 
 /** Challenge a friend, among a finished game's actions (T05, PR04). */
 export function ChallengeButton({ link }: { link: string }) {
+  const m = useMessages();
   const { copied, copy } = useCopy(link);
   return (
     <Button variant="secondary" icon={copied ? 'check' : 'link'} onClick={copy}>
-      {copied ? 'Link copied' : 'Challenge a friend'}
+      {copied ? m.solo.linkCopied : m.solo.challengeFriend}
     </Button>
   );
 }
@@ -28,16 +30,17 @@ export function ChallengeCard({
   description: string;
   link: string;
 }) {
+  const m = useMessages();
   const { copied, copy } = useCopy(link);
   return (
-    <Card kind="panel" title="Challenge a friend" description={description}>
+    <Card kind="panel" title={m.solo.challengeFriend} description={description}>
       <Button
         className={styles.copy}
         variant="secondary"
         icon={copied ? 'check' : 'link'}
         onClick={copy}
       >
-        {copied ? 'Link copied' : 'Copy challenge link'}
+        {copied ? m.solo.linkCopied : m.solo.copyChallengeLink}
       </Button>
     </Card>
   );

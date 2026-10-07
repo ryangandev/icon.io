@@ -36,7 +36,7 @@ export function Tag({
       )}
     >
       {icon && <Icon glyph={icon} size={14} />}
-      {children}
+      <span className={styles.text}>{children}</span>
     </span>
   );
 }

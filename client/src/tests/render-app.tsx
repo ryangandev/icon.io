@@ -1,6 +1,7 @@
 import { act, render } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router';
 import { routes } from '../app';
+import { LocaleProvider, type Locale } from '../i18n';
 import { SessionProvider } from '../net/session';
 import { ME } from './fixtures';
 import { FakeSocket } from './fake-socket';
@@ -16,15 +17,20 @@ export async function renderApp(
     name = 'Ryan',
     picked = false,
     firstVisit = false,
+    locale,
     fake = new FakeSocket(),
   }: {
     name?: string;
     picked?: boolean;
     firstVisit?: boolean;
+    /** A language chosen from the switch; English, as the browser's, without. */
+    locale?: Locale;
     fake?: FakeSocket;
   } = {},
 ) {
   sessionStorage.clear();
+  if (locale) localStorage.setItem('zumpo:locale', locale);
+  else localStorage.removeItem('zumpo:locale');
   if (firstVisit) {
     localStorage.removeItem('zumpo:name');
     localStorage.removeItem('zumpo:name-hint');
@@ -35,9 +41,11 @@ export async function renderApp(
   fake.session = { playerId: ME, token: 't1', reconnectGraceMs: 30_000 };
   const router = createMemoryRouter(routes, { initialEntries: [path] });
   const view = render(
-    <SessionProvider socket={fake.asSocket()}>
-      <RouterProvider router={router} />
-    </SessionProvider>,
+    <LocaleProvider>
+      <SessionProvider socket={fake.asSocket()}>
+        <RouterProvider router={router} />
+      </SessionProvider>
+    </LocaleProvider>,
   );
   // Connect, as the server would accept the handshake.
   await act(async () => {

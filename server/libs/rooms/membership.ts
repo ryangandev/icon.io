@@ -75,7 +75,7 @@ const createRoomMembership = (
     const gameType = room.gameType;
     const module = registry.moduleOf(room);
     const wasOwner = room.owner.playerId === playerId;
-    const username = room.playerList[playerId]?.username ?? 'A player';
+    const username = room.playerList[playerId]?.username ?? '';
 
     delete room.playerList[playerId];
 
@@ -91,17 +91,16 @@ const createRoomMembership = (
         playerId: nextOwnerId,
       };
       room.owner = nextOwner;
-      registry.lookup.announce(
-        roomId,
-        'alert',
-        `Previous owner ${username} has left the room. ${nextOwner.username} is now the owner.`,
-      );
+      registry.lookup.announce(roomId, 'alert', {
+        type: 'room:owner-left',
+        name: username,
+        owner: nextOwner.username,
+      });
     } else {
-      registry.lookup.announce(
-        roomId,
-        'alert',
-        `${username} has left the room.`,
-      );
+      registry.lookup.announce(roomId, 'alert', {
+        type: 'room:left',
+        name: username,
+      });
     }
 
     // A departure can strand a turn: the player may have been the one whose
@@ -167,11 +166,10 @@ const createRoomMembership = (
       player.isConnected = false;
 
       registry.lookup.emitState(room);
-      registry.lookup.announce(
-        room.roomId,
-        'alert',
-        `${player.username} lost connection.`,
-      );
+      registry.lookup.announce(room.roomId, 'alert', {
+        type: 'room:disconnected',
+        name: player.username,
+      });
 
       // The seat waits for them. So, briefly, may their turn - that decision
       // belongs to the game, which is the only thing that knows whether there
@@ -227,11 +225,10 @@ const createRoomMembership = (
       player.isConnected = true;
 
       registry.lookup.emitState(room);
-      registry.lookup.announce(
-        room.roomId,
-        'system',
-        `${player.username} reconnected.`,
-      );
+      registry.lookup.announce(room.roomId, 'system', {
+        type: 'room:reconnected',
+        name: player.username,
+      });
 
       // If the room was holding a turn open for them, it can stop.
       registry.moduleOf(room)?.onReturn(room, playerId);

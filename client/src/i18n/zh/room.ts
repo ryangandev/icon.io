@@ -1,0 +1,74 @@
+import type { room as en } from '../en/room';
+
+export const room: typeof en = {
+  connectingTitle: '正在准备房间…',
+  connectingDescription: '正在连接 Zumpo，通常只需片刻。',
+  connecting: '连接中…',
+  unavailableTitle: '这个房间暂时进不去了。',
+  unavailableDescription:
+    '在你加入前，房间已满、游戏已开始，或房间已关闭。选另一个房间吧。',
+  notFoundTitle: '这个房间已关闭。',
+  notFoundDescription: '房间已不存在。找另一个房间，或自己创建一个。',
+  closedTitle: 'Zumpo 刚刚重启了。',
+  closedDescription:
+    'Zumpo 更新重启时会关闭所有房间，这一局也结束了。找另一个房间，或自己创建一个。',
+  expiredTitle: '重新开始吧。',
+  expiredDescription: '无法重新连接，你的座位可能已被释放。可以返回房间列表。',
+  backToRooms: '返回房间列表',
+  passwordDescription: (name) =>
+    name ? `请输入“${name}”的密码。` : '请输入这个房间的密码。',
+  comeIn: '进来吧',
+  passwordTitle: '这个房间需要密码。',
+  join: '加入房间',
+  password: '房间密码',
+  passwordHelper: '向房主询问房间密码。',
+  passwordPhoneHelper: '向房主询问密码。',
+  passwordRejected: '密码不对，再试一次。',
+  joining: '正在加入房间…',
+  reconnecting: '重新连接中…',
+  reconnectingNotice: (name, seconds) =>
+    `正在重新连接“${name}”…你的座位和得分会保留 ${seconds} 秒。`,
+  board: '棋盘',
+  players: (count) => `玩家 · ${count}`,
+  chat: '聊天',
+  leaveTitle: (name) => `离开“${name}”？`,
+  leaveInGame: (score) =>
+    `游戏会继续，但你的座位和 ${score} 会被移除。还有空位时，你可以再次加入。`,
+  leaveBetweenGames: '你的座位会被释放。还有空位时，你可以再次加入。',
+  leave: '离开房间',
+  stay: '留下',
+  rulesTitle: (game) => `${game}玩法`,
+  backToGame: '返回游戏',
+  invite: '邀请朋友',
+  inviteDescription: (name) =>
+    `还有空位时，任何拿到链接的人都可以加入“${name}”。`,
+  copied: '已复制',
+  copy: '复制',
+  done: '完成',
+  roomLink: '房间链接',
+  pickedName: (name) => `你现在叫 ${name}。起一个朋友们认得出的名字吧。`,
+  waitingForHost: (name) => `等待 ${name} 开始游戏。`,
+  guestSetup: (setup) => `${setup}只有房主可以开始游戏。`,
+  needsPlayers: (game) =>
+    `${game}至少需要 2 人。分享房间，邀请朋友加入就能开始。`,
+  everyoneHere: '大家到齐了吗？',
+  starting: '正在开始游戏…',
+  start: '开始游戏',
+  everyoneLeft: '其他人都离开了。',
+  endedEarly: (game) =>
+    `${game}至少需要 2 人，因此这一局已结束。你现在是房主，邀请朋友开始新的一局吧。`,
+  waitingForAgain: (name) => `等待 ${name} 开始下一局。`,
+  playAgain: '再玩一局',
+  gameOver: '游戏结束。',
+  wins: (name, score) => `${name} 以 ${score}获胜。`,
+  ties: (names, score) => `${names} 以 ${score}并列获胜。`,
+  finished: (detail, place) => `${detail}你获得了${place}。`,
+  standings: '排名',
+  winner: '获胜者',
+  place: (place) => place,
+  listNames: (names) => {
+    if (names.length <= 1) return names.join('');
+    return `${names.slice(0, -1).join('、')} 和 ${names[names.length - 1]}`;
+  },
+  ordinal: (place) => `第 ${place} 名`,
+};

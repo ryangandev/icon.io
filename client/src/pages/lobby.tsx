@@ -7,8 +7,8 @@ import {
   roomPath,
   type GameInfo,
 } from '../games/catalog';
-import { plural } from '../games/plural';
 import { roomSetting } from '../games/room-setting';
+import { useMessages, type Messages } from '../i18n';
 import { useLobby } from '../net/use-lobby';
 import { useSession } from '../net/session';
 import { initialsOf, toneOf } from '../players/avatar';
@@ -22,6 +22,8 @@ import styles from './lobby.module.css';
 /** DL01-DL03, ML01-ML03, MO04: a game's rooms, live. */
 export default function LobbyPage({ gameType }: { gameType: GameType }) {
   const game = gameInfo(gameType);
+  const m = useMessages();
+  const gameName = m.games.of[gameType].name;
   const { lost, name } = useSession();
   const rooms = useLobby(gameType);
   const phone = useMediaQuery(PHONE);
@@ -31,37 +33,34 @@ export default function LobbyPage({ gameType }: { gameType: GameType }) {
       {phone ? (
         // A phone counts the rooms up here rather than under the list.
         <PageHeading
-          eyebrow="Play together"
-          title="Find your room."
+          eyebrow={m.lobby.playTogether}
+          title={m.lobby.findRoom}
           subtitle={
-            rooms ? `${game.name} · ${plural(rooms.length, 'room')}` : game.name
+            rooms ? `${gameName} · ${m.lobby.count(rooms.length)}` : gameName
           }
         />
       ) : (
-        <LobbyHeading
-          game={game}
-          subtitle="Join a room or make one for your friends."
-        />
+        <LobbyHeading game={game} subtitle={m.lobby.subtitle} />
       )}
       {lost ? (
         <ConnectionLost />
       ) : (
         <>
           <div className={styles.actions}>
-            <ButtonLink to="/games" variant="secondary" icon="back">
-              Back to games
+            <ButtonLink to="/" variant="secondary" icon="back">
+              {m.shell.backToGames}
             </ButtonLink>
             {phone ? (
               <ButtonLink to={createRoomPath(gameType)}>
-                Create a room
+                {m.lobby.createRoom}
               </ButtonLink>
             ) : (
               <div className={styles.end}>
                 <NameMenuButton variant="quiet">
-                  Playing as {name}
+                  {m.lobby.playingAs(name)}
                 </NameMenuButton>
                 <ButtonLink to={createRoomPath(gameType)}>
-                  Create a room
+                  {m.lobby.createRoom}
                 </ButtonLink>
               </div>
             )}
@@ -69,7 +68,9 @@ export default function LobbyPage({ gameType }: { gameType: GameType }) {
           {phone && (
             // A row of its own on a phone, its icon on the content's edge.
             <div className={styles.playingAs}>
-              <NameMenuButton variant="quiet">Playing as {name}</NameMenuButton>
+              <NameMenuButton variant="quiet">
+                {m.lobby.playingAs(name)}
+              </NameMenuButton>
             </div>
           )}
           <div className={styles.layout}>
@@ -94,8 +95,13 @@ export default function LobbyPage({ gameType }: { gameType: GameType }) {
 export function lobbyHeading(
   game: GameInfo,
   subtitle: string,
+  m: Messages,
 ): PageHeadingProps {
-  return { eyebrow: 'Play together', title: `${game.name} rooms`, subtitle };
+  return {
+    eyebrow: m.lobby.playTogether,
+    title: m.lobby.title(m.games.of[game.type].name),
+    subtitle,
+  };
 }
 
 export function LobbyHeading({
@@ -105,7 +111,8 @@ export function LobbyHeading({
   game: GameInfo;
   subtitle: string;
 }) {
-  return <PageHeading {...lobbyHeading(game, subtitle)} />;
+  const m = useMessages();
+  return <PageHeading {...lobbyHeading(game, subtitle, m)} />;
 }
 
 function statusOf(room: AnyLobbyRoomInfo): RoomRowStatus {
@@ -123,14 +130,18 @@ function RoomList({
   counted: boolean;
 }) {
   const navigate = useNavigate();
+  const m = useMessages();
   return (
     <>
-      <ul className={styles.list} aria-label="Rooms">
+      <ul className={styles.list} aria-label={m.lobby.rooms}>
         {rooms.map((room) => (
           <RoomRow
             key={room.roomId}
             name={room.roomName}
-            details={`Hosted by ${room.owner.username} · ${roomSetting(room)}`}
+            details={m.lobby.hostedBy(
+              room.owner.username,
+              roomSetting(room, m),
+            )}
             host={{
               initials: initialsOf(room.owner.username),
               tone: toneOf(room.owner.username),
@@ -143,23 +154,22 @@ function RoomList({
         ))}
       </ul>
       {counted && (
-        <p className={styles.count}>
-          {plural(rooms.length, 'room')} · Updates live
-        </p>
+        <p className={styles.count}>{m.lobby.liveCount(rooms.length)}</p>
       )}
     </>
   );
 }
 
 function Empty({ gameType }: { gameType: GameType }) {
+  const m = useMessages();
   return (
     <Card
       kind="panel"
-      title="A little quiet in here."
-      description="Be the first to make a room. Bring a friend and get playing."
+      title={m.lobby.emptyTitle}
+      description={m.lobby.emptyDescription}
       actions={
         <ButtonLink to={createRoomPath(gameType)}>
-          Create the first room
+          {m.lobby.createFirstRoom}
         </ButtonLink>
       }
     />
@@ -167,12 +177,13 @@ function Empty({ gameType }: { gameType: GameType }) {
 }
 
 function Loading() {
+  const m = useMessages();
   return (
     <>
       <Card
         kind="panel"
-        title="Finding your people…"
-        description="Connecting to the room list."
+        title={m.lobby.loadingTitle}
+        description={m.lobby.loadingDescription}
         busy
       />
       <div className={styles.skeleton} aria-hidden="true" />
@@ -183,13 +194,15 @@ function Loading() {
 }
 
 function Rules({ game }: { game: GameInfo }) {
+  const m = useMessages();
+  const text = m.games.of[game.type];
   return (
     <aside className={styles.rules} aria-labelledby="lobby-rules">
       <h2 id="lobby-rules" className={styles.rulesTitle}>
-        How to play
+        {m.shell.nav.howToPlay}
       </h2>
-      <p className={styles.rulesText}>{game.lobbySummary}</p>
-      <p className={styles.rulesText}>{game.lobbyFacts.join('\n')}</p>
+      <p className={styles.rulesText}>{text.lobbySummary}</p>
+      <p className={styles.rulesText}>{text.lobbyFacts.join('\n')}</p>
     </aside>
   );
 }

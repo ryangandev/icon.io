@@ -32,17 +32,32 @@ beforeEach(() => {
 });
 
 describe('Play solo', () => {
+  it('picks a board and plays with Chinese instructions', async () => {
+    const user = userEvent.setup();
+    await renderApp('/games/minesweeper/solo', { locale: 'zh' });
+    expect(screen.getByText('选一个棋盘。')).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: /小 · 9 × 9/ })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    expect(screen.getByText('99 颗雷。暂无最佳成绩')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: '开始' }));
+    expect(
+      screen.getByRole('grid', { name: '棋盘，9 列，9 行' }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('剩余 10 颗雷')).toBeInTheDocument();
+    expect(screen.getByText('第一次点击一定安全')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: '插旗' }));
+    expect(screen.getByText('插旗模式：点击插旗')).toBeInTheDocument();
+  });
+
   it('is offered on the games that have it', async () => {
-    await renderApp('/games');
-    const minesweeper = screen.getByRole('heading', {
-      name: 'Minesweeper',
-    }).parentElement!;
+    await renderApp('/');
+    const minesweeper = screen.getByRole('region', { name: 'Minesweeper' });
     expect(
       within(minesweeper).getByRole('link', { name: 'Play solo' }),
     ).toHaveAttribute('href', '/games/minesweeper/solo');
-    const draw = screen.getByRole('heading', {
-      name: 'Draw & Guess',
-    }).parentElement!;
+    const draw = screen.getByRole('region', { name: 'Draw & Guess' });
     expect(within(draw).queryByRole('link', { name: 'Play solo' })).toBeNull();
   });
 
@@ -67,7 +82,7 @@ describe('Play solo', () => {
     ).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Leave' }));
-    expect(router.state.location.pathname).toBe('/games');
+    expect(router.state.location.pathname).toBe('/');
     // The router renders a navigation as a transition; act sees it through.
     await act(() => router.navigate('/games/minesweeper/solo'));
     expect(

@@ -85,4 +85,9 @@
   .boards {
     gap: var(--zumpo-space-12);
   }
+
+  /* The results' Small boards one under another, each a Row board (DW15). */
+  .results .boards {
+    flex-direction: column;
+  }
 }

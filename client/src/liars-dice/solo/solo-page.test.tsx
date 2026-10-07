@@ -36,11 +36,9 @@ afterEach(() => {
 });
 
 describe('Liar’s Dice on your own', () => {
-  it('is offered from the games page', async () => {
-    await renderApp('/games');
-    const game = screen.getByRole('heading', {
-      name: 'Liar’s Dice',
-    }).parentElement!;
+  it('is offered on the home page', async () => {
+    await renderApp('/');
+    const game = screen.getByRole('region', { name: 'Liar’s Dice' });
     expect(
       within(game).getByRole('link', { name: 'Play solo' }),
     ).toHaveAttribute('href', '/games/liars-dice/solo');

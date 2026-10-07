@@ -16,11 +16,26 @@
   padding: var(--zumpo-space-16);
 }
 
+/* Row: the name and status beside the board, taking the width the board
+   leaves. */
+.row {
+  flex: 1 1 auto;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--zumpo-space-16);
+  min-width: 0;
+}
+
 .head {
   display: flex;
   flex-direction: column;
   /* A long name is cut short rather than widening the board. */
   contain: inline-size;
+}
+
+.row .head {
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .name {

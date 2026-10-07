@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { StrictMode } from 'react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { FakeSocket } from '../tests/fake-socket';
+import { LocaleProvider } from '../i18n';
 import { SessionProvider, useConnectedSession, useSession } from './session';
 import { createSocket } from './socket';
 
@@ -37,7 +38,9 @@ function Naming() {
 function setup(children = <Status />) {
   const fake = new FakeSocket();
   render(
-    <SessionProvider socket={fake.asSocket()}>{children}</SessionProvider>,
+    <LocaleProvider>
+      <SessionProvider socket={fake.asSocket()}>{children}</SessionProvider>
+    </LocaleProvider>,
   );
   return fake;
 }
@@ -52,9 +55,11 @@ describe('the session', () => {
     const fake = new FakeSocket();
     render(
       <StrictMode>
-        <SessionProvider socket={fake.asSocket()}>
-          <Status />
-        </SessionProvider>
+        <LocaleProvider>
+          <SessionProvider socket={fake.asSocket()}>
+            <Status />
+          </SessionProvider>
+        </LocaleProvider>
       </StrictMode>,
     );
     expect(fake.active).toBe(true);
@@ -150,9 +155,11 @@ describe('the session', () => {
 
   it('picks a name on a first visit and keeps it for the next', () => {
     const first = render(
-      <SessionProvider socket={new FakeSocket().asSocket()}>
-        <Naming />
-      </SessionProvider>,
+      <LocaleProvider>
+        <SessionProvider socket={new FakeSocket().asSocket()}>
+          <Naming />
+        </SessionProvider>
+      </LocaleProvider>,
     );
     const picked = screen.getByRole('button').textContent;
     expect(picked).toMatch(/^name: \w+ \w+ picked$/);

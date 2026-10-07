@@ -7,6 +7,7 @@ import {
   type ButtonVariant,
   type ViewerMenu,
 } from '../ui';
+import { useLocale, useMessages } from '../i18n';
 import { useSession } from '../net/session';
 import { readNameHintSeen, writeNameHintSeen } from '../net/storage';
 import { randomName } from '../players/random-name';
@@ -16,6 +17,8 @@ import { randomName } from '../players/random-name';
  * the menu's popup, so it opens with the current name every time.
  */
 function NameForm({ onSaved }: { onSaved: () => void }) {
+  const m = useMessages();
+  const { locale } = useLocale();
   const { name, setName } = useSession();
   const [value, setValue] = useState(name);
   const [error, setError] = useState<string>();
@@ -31,7 +34,7 @@ function NameForm({ onSaved }: { onSaved: () => void }) {
       onSave={() => {
         const chosen = value.trim();
         if (!chosen) {
-          setError('Enter a name with at least one visible character.');
+          setError(m.shell.name.empty);
           return false;
         }
         // Always sent: the picked name saved unchanged becomes theirs, and a
@@ -41,7 +44,7 @@ function NameForm({ onSaved }: { onSaved: () => void }) {
         return true;
       }}
       onRoll={() => {
-        setValue(randomName(value.trim()));
+        setValue(randomName(locale, value.trim()));
         setError(undefined);
       }}
     />
@@ -54,6 +57,7 @@ function NameForm({ onSaved }: { onSaved: () => void }) {
  * name of their own, means it is never shown again.
  */
 export function useViewerMenu({ hint = false } = {}): ViewerMenu {
+  const m = useMessages();
   const { name, namePicked } = useSession();
   const [hinting, setHinting] = useState(
     () => hint && namePicked && !readNameHintSeen(),
@@ -73,7 +77,7 @@ export function useViewerMenu({ hint = false } = {}): ViewerMenu {
   return {
     open,
     onOpenChange,
-    label: hinting ? undefined : 'Your name',
+    label: hinting ? undefined : m.shell.name.yourName,
     children: hinting ? (
       <NameMenuHint
         name={name}
@@ -102,13 +106,14 @@ export function NameMenuButton({
   className?: string;
   children: ReactNode;
 }) {
+  const m = useMessages();
   const [open, setOpen] = useState(false);
   return (
     <NameMenu
       open={open}
       onOpenChange={setOpen}
       align="start"
-      label="Your name"
+      label={m.shell.name.yourName}
       trigger={
         <Button variant={variant} icon="edit" className={className}>
           {children}

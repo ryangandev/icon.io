@@ -1,8 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import {
-  Chat,
   ChatInput,
-  ChatMessage,
   MobileTabs,
   Notice,
   PlayerRow,
@@ -13,10 +11,12 @@ import {
   type TagTone,
 } from '../ui';
 import { gameInfo } from '../games/catalog';
+import { useMessages } from '../i18n';
 import { initialsOf, toneOf } from '../players/avatar';
 import { Page, useViewer } from '../shell/page';
-import { PHONE, useMediaQuery } from '../shell/use-media-query';
+import { ONE_COLUMN, PHONE, useMediaQuery } from '../shell/use-media-query';
 import { RulesDialog } from './dialogs';
+import { RoomChat } from './room-chat';
 import { useRoomContext } from './room-context';
 import type { Seat } from './players';
 import styles from './room-layout.module.css';
@@ -60,7 +60,8 @@ type View = 'board' | 'players' | 'chat';
 
 /**
  * A seated room's screen: the room bar, the game, the scoreboard and the
- * chat; on a phone, the three as tabs. How to play opens over the room. While
+ * chat; under 1024 px the scoreboard and the chat go under the game, and on a
+ * phone the three are tabs. How to play opens over the room. While
  * reconnecting it says so and holds still.
  */
 export function RoomLayout({
@@ -76,7 +77,9 @@ export function RoomLayout({
   const room = useRoomContext();
   const { state, reconnecting, reconnectGraceMs } = room;
   const game = gameInfo(state.gameType);
+  const m = useMessages();
   const phone = useMediaQuery(PHONE);
+  const oneColumn = useMediaQuery(ONE_COLUMN);
   const [view, setView] = useState<View>('board');
   const [rules, setRules] = useState(false);
   const { viewer, viewerMenu } = useViewer({
@@ -86,7 +89,7 @@ export function RoomLayout({
   const input = {
     onSend: room.sendChat,
     placeholder: chat.placeholder,
-    lockedReason: reconnecting ? 'Reconnecting…' : chat.lockedReason,
+    lockedReason: reconnecting ? m.room.reconnecting : chat.lockedReason,
   };
 
   const scoreboard = (
@@ -108,24 +111,7 @@ export function RoomLayout({
     </Scoreboard>
   );
 
-  const chatPanel = (
-    <Chat input={input}>
-      {room.chat.map((message) => (
-        <ChatMessage
-          key={message.id}
-          kind={message.kind}
-          alertIcon={chat.alertIcon}
-          name={
-            message.playerId === room.playerId
-              ? `${message.username} (you)`
-              : message.username
-          }
-        >
-          {message.text}
-        </ChatMessage>
-      ))}
-    </Chat>
-  );
+  const chatPanel = <RoomChat input={input} alertIcon={chat.alertIcon} />;
 
   const seconds = Math.round(reconnectGraceMs / 1000);
 
@@ -133,8 +119,8 @@ export function RoomLayout({
     <Page
       header={
         <RoomBar
-          layout={phone ? 'phone' : 'desktop'}
-          game={game.name}
+          layout={oneColumn ? 'phone' : 'desktop'}
+          game={m.games.of[state.gameType].name}
           room={state.roomName}
           phase={phase}
           onHowToPlay={() => setRules(true)}
@@ -146,8 +132,7 @@ export function RoomLayout({
     >
       {reconnecting ? (
         <Notice tone="pending">
-          Reconnecting to {state.roomName}… Your seat and score are kept for{' '}
-          {seconds} seconds.
+          {m.room.reconnectingNotice(state.roomName, seconds)}
         </Notice>
       ) : (
         notice
@@ -159,7 +144,7 @@ export function RoomLayout({
           tabs={[
             {
               value: 'board',
-              label: 'Board',
+              label: m.room.board,
               panel: (
                 <div className={styles.stage}>
                   {stage}
@@ -169,7 +154,7 @@ export function RoomLayout({
             },
             {
               value: 'players',
-              label: `Players · ${players.length}`,
+              label: m.room.players(players.length),
               panel: playersAside ? (
                 <div className={styles.side}>
                   {scoreboard}
@@ -179,7 +164,7 @@ export function RoomLayout({
                 scoreboard
               ),
             },
-            { value: 'chat', label: 'Chat', panel: chatPanel },
+            { value: 'chat', label: m.room.chat, panel: chatPanel },
           ]}
         />
       ) : (

@@ -1,5 +1,6 @@
+import { useMessages, type Messages } from '../../i18n';
 import { cx } from '../cx';
-import { PairsSymbol, symbolName } from './pairs-symbol';
+import { PairsSymbol } from './pairs-symbol';
 import styles from './pairs-card.module.css';
 
 export type PairsCardState =
@@ -20,14 +21,14 @@ export interface PairsCardProps {
   column: number;
 }
 
-function describe(state: PairsCardState): string {
+function describe(state: PairsCardState, m: Messages): string {
   switch (state.kind) {
     case 'down':
-      return 'face down';
+      return m.ui.pairs.down;
     case 'up':
-      return symbolName(state.symbol);
+      return m.ui.pairs.symbols[state.symbol];
     case 'matched':
-      return `${symbolName(state.symbol)}, matched`;
+      return m.ui.pairs.matched(m.ui.pairs.symbols[state.symbol]);
   }
 }
 
@@ -39,8 +40,9 @@ export function PairsCard({
   row,
   column,
 }: PairsCardProps) {
+  const m = useMessages();
   const compact = size === 'compact';
-  const label = `Row ${row + 1}, column ${column + 1}: ${describe(state)}`;
+  const label = m.ui.position(row + 1, column + 1, describe(state, m));
   const actionable = state.kind === 'down' && onPick != null;
   return (
     <span

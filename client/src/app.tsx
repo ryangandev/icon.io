@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import {
   createBrowserRouter,
+  Navigate,
   Outlet,
   RouterProvider,
   ScrollRestoration,
@@ -8,9 +9,9 @@ import {
   type RouteObject,
 } from 'react-router';
 import { isGameType } from './games/catalog';
+import { LocaleProvider } from './i18n';
 import { SessionProvider } from './net/session';
 import CreateRoomPage from './pages/create-room';
-import GamesPage from './pages/games';
 import HomePage from './pages/home';
 import HowToPlayPage from './pages/how-to-play';
 import LobbyPage from './pages/lobby';
@@ -55,7 +56,8 @@ export const routes: RouteObject[] = [
     children: [
       { path: '/', element: <HomePage /> },
       { path: '/how-to-play', element: <HowToPlayPage /> },
-      { path: '/games', element: <GamesPage /> },
+      // Every game is on the home page; old links to the games page land there.
+      { path: '/games', element: <Navigate to="/" replace /> },
       { path: '/games/:game', element: <GamePage page={LobbyPage} /> },
       { path: '/games/:game/new', element: <GamePage page={CreateRoomPage} /> },
       { path: '/games/:game/solo', element: <GamePage page={SoloPage} /> },
@@ -81,8 +83,10 @@ const router = createBrowserRouter(routes);
 
 export function App() {
   return (
-    <SessionProvider>
-      <RouterProvider router={router} />
-    </SessionProvider>
+    <LocaleProvider>
+      <SessionProvider>
+        <RouterProvider router={router} />
+      </SessionProvider>
+    </LocaleProvider>
   );
 }

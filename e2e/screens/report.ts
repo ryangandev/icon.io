@@ -16,10 +16,16 @@ const NOT_CAPTURED: Record<string, string> = {
  * a layout difference to fix or to note in docs/design.md.
  */
 const CONTENT: Record<string, string> = {
+  P02: 'Figma crops the home page to its top, around the Name menu; the capture is the whole page.',
+  P03: 'Figma crops the home page to its top, around the Name menu; the capture is the whole page.',
+  P13: 'Figma crops the home page to its top, around the Name menu; the capture is the whole page.',
+  MO02: 'Figma crops the home page to its top, around the Name menu; the capture is the whole page.',
   D13: 'The chat holds the whole game, more than Figma’s example of it.',
   D14: 'The chat holds the whole game, more than Figma’s example of it.',
   M04: 'The chat starts with the room’s join messages, which Figma leaves out.',
+  MO16: 'The chat holds the round so far, which depends on who drew first; Figma’s example has six lines of talk.',
   MO14: 'Figma shows round 19, whose shorter line fits beside "Pick a cell"; round 1’s wraps.',
+  MO19: 'Figma shows round 4, a mine hit and an auto-pick at 0% risk; the test’s round 2 shares one cell among four, whose longer detail wraps under the Auto-picked tag.',
   T07: 'The chat starts with the room’s join messages, which Figma leaves out.',
   T08: 'The chat starts with the room’s join messages, which Figma leaves out.',
   PR05: 'The chat starts with the room’s join messages, which Figma leaves out.',
@@ -45,6 +51,7 @@ const CONTENT: Record<string, string> = {
   DW07: 'The chat holds the game so far, from the start and the first word on; Figma’s example has two lines.',
   DW08: 'The chat holds the game so far, from the start and the first word on; Figma’s example has a few lines.',
   DW09: 'The chat holds the game so far, from the start and the first word on; Figma’s example has the second word only.',
+  DW16: 'The test’s game ends in a tie, whose heading takes a third line on a phone; Figma’s Maya wins in two.',
 };
 
 interface Screen {

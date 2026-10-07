@@ -9,6 +9,12 @@
   background: var(--zumpo-paper);
 }
 
+/* On a desktop the board sits straight in the minefield, whose padding has
+   room for the 4 px its viewport reaches out for the edge cells' focus rings. */
+.boardPanel {
+  display: contents;
+}
+
 .results {
   display: flex;
   flex-direction: column;
@@ -42,6 +48,7 @@
   }
 
   .boardPanel {
+    display: block;
     overflow: hidden;
     border-radius: var(--zumpo-radius-16);
     background: var(--zumpo-paper);

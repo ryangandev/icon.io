@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router';
 import type { GameType } from '../../../shared/wire-types';
 import { RoomBar, type TagTone } from '../ui';
 import { gameInfo } from '../games/catalog';
+import { useMessages } from '../i18n';
 import { RulesDialog } from '../room/dialogs';
 import { Page, useViewer } from '../shell/page';
-import { PHONE, useMediaQuery } from '../shell/use-media-query';
+import { ONE_COLUMN, PHONE, useMediaQuery } from '../shell/use-media-query';
 import styles from './solo-layout.module.css';
 
 export interface SoloLayoutProps {
@@ -20,11 +21,14 @@ export interface SoloLayoutProps {
 
 /**
  * A game on your own: a room bar with no room, the game, and its cards beside
- * it (MS02-MS05, T01-T05, PR01-PR04). There is no seat, so Leave just goes.
+ * it (MS02-MS05, T01-T05, PR01-PR04), or under it from 1023 px down. There is
+ * no seat, so Leave just goes.
  */
 export function SoloLayout({ gameType, phase, stage, side }: SoloLayoutProps) {
   const game = gameInfo(gameType);
+  const m = useMessages();
   const phone = useMediaQuery(PHONE);
+  const oneColumn = useMediaQuery(ONE_COLUMN);
   const navigate = useNavigate();
   const { viewer, viewerMenu } = useViewer();
   const [rules, setRules] = useState(false);
@@ -33,13 +37,13 @@ export function SoloLayout({ gameType, phase, stage, side }: SoloLayoutProps) {
     <Page
       header={
         <RoomBar
-          layout={phone ? 'phone' : 'desktop'}
-          game={game.name}
-          room="On your own"
+          layout={oneColumn ? 'phone' : 'desktop'}
+          game={m.games.of[gameType].name}
+          room={m.solo.onYourOwn}
           phase={phase}
           onHowToPlay={() => setRules(true)}
-          onLeave={() => navigate('/games')}
-          leaveLabel="Leave"
+          onLeave={() => navigate('/')}
+          leaveLabel={m.solo.leave}
           viewer={viewer}
           viewerMenu={viewerMenu}
         />

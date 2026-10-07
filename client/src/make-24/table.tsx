@@ -13,15 +13,10 @@ import {
 } from '../../../shared/make-24';
 import { Button, NumberCard, OperatorKey, type NumberCardState } from '../ui';
 import { cx } from '../ui/cx';
+import { Fit } from '../shell/fit';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
+import { useMessages, type Messages } from '../i18n';
 import styles from './table.module.css';
-
-const OPERATOR_NAMES: Readonly<Record<Operator, string>> = {
-  '+': 'plus',
-  '-': 'minus',
-  '*': 'times',
-  '/': 'divided by',
-};
 
 /** The cards after `steps`, or the deal itself if a step does not fit it. */
 export const cardsAfter = (deal: readonly number[], steps: readonly Step[]) =>
@@ -32,7 +27,7 @@ export function TablePanel({ children }: { children: ReactNode }) {
   return <div className={styles.panel}>{children}</div>;
 }
 
-/** The cards in one row, each as it stands. */
+/** The cards in one row, each as it stands; scaled down where the row is wider than the table. */
 function CardRow({
   cards,
   compact,
@@ -51,16 +46,18 @@ function CardRow({
   children?: ReactNode;
 }) {
   return (
-    <div className={cx(styles.cards, compact && styles.compactCards)}>
-      {cards.map(({ key, ...card }) => (
-        <NumberCard
-          key={key}
-          size={compact ? 'compact' : 'regular'}
-          {...card}
-        />
-      ))}
-      {children}
-    </div>
+    <Fit>
+      <div className={cx(styles.cards, compact && styles.compactCards)}>
+        {cards.map(({ key, ...card }) => (
+          <NumberCard
+            key={key}
+            size={compact ? 'compact' : 'regular'}
+            {...card}
+          />
+        ))}
+        {children}
+      </div>
+    </Fit>
   );
 }
 
@@ -104,7 +101,7 @@ export function FinalCard({
   );
 }
 
-function cardView(card: Card, cards: readonly Card[]) {
+function cardView(card: Card, cards: readonly Card[], m: Messages) {
   const value = formatFraction(card.value);
   const last = cards.length === 1;
   if (last && isTarget(card.value)) {
@@ -114,13 +111,14 @@ function cardView(card: Card, cards: readonly Card[]) {
       state: 'solved' as const,
     };
   }
-  if (last) return { value, formula: 'Not 24', state: 'not-24' as const };
+  if (last)
+    return { value, formula: m.make24.table.not24, state: 'not-24' as const };
   const formula = formatLastStep(card.expression) ?? undefined;
   return {
     value,
     formula,
     state: formula ? ('made' as const) : undefined,
-    label: formula ? `${value}, from ${formula}` : value,
+    label: formula ? m.make24.table.cardFrom(value, formula) : value,
   };
 }
 
@@ -156,6 +154,7 @@ export function HandTable({
   paused = false,
   extraTool,
 }: HandTableProps) {
+  const m = useMessages();
   const phone = useMediaQuery(PHONE);
   const cards = cardsAfter(deal, steps);
   // A selection belongs to the cards it was made on; any step resets it.
@@ -170,7 +169,7 @@ export function HandTable({
     setSelection({ at: steps.length, ...next });
 
   const compact = phone && cards.length > 2;
-  const views = cards.map((card) => cardView(card, cards));
+  const views = cards.map((card) => cardView(card, cards, m));
 
   if (done !== undefined) {
     return (
@@ -195,10 +194,10 @@ export function HandTable({
 
   const prompt =
     first === null
-      ? 'Pick a number to start.'
+      ? m.make24.table.pickNumber
       : op === null
-        ? `Pick a sign for ${views[first].value}.`
-        : `${views[first].value} ${OPERATOR_SYMBOLS[op]} ?  Pick the second number.`;
+        ? m.make24.table.pickSign(views[first].value)
+        : m.make24.table.pickSecond(views[first].value, OPERATOR_SYMBOLS[op]);
 
   const tools = (
     <>
@@ -208,14 +207,14 @@ export function HandTable({
         onClick={onUndo}
         disabled={paused || steps.length === 0}
       >
-        Undo
+        {m.make24.table.undo}
       </Button>
       <Button
         variant="secondary"
         onClick={onStartOver}
         disabled={paused || steps.length === 0}
       >
-        Start over
+        {m.make24.table.startOver}
       </Button>
     </>
   );
@@ -241,12 +240,16 @@ export function HandTable({
           <p className={styles.prompt} aria-live="polite">
             {prompt}
           </p>
-          <div className={styles.operators} role="group" aria-label="Signs">
+          <div
+            className={styles.operators}
+            role="group"
+            aria-label={m.make24.table.signs}
+          >
             {OPERATORS.map((sign) => (
               <OperatorKey
                 key={sign}
                 symbol={OPERATOR_SYMBOLS[sign]}
-                label={OPERATOR_NAMES[sign]}
+                label={m.make24.table.operator(sign)}
                 selected={op === sign}
                 disabled={paused || first === null}
                 onPick={() => select({ first, op: op === sign ? null : sign })}
@@ -278,6 +281,7 @@ export function StepList({
   deal: readonly number[];
   steps: readonly Step[];
 }) {
+  const m = useMessages();
   const phone = useMediaQuery(PHONE);
   if (phone || steps.length === 0) return null;
   const lines = steps.map((step, index) => {
@@ -290,7 +294,7 @@ export function StepList({
   return (
     <section className={styles.steps} aria-labelledby="your-steps">
       <h2 id="your-steps" className={styles.heading}>
-        Your steps
+        {m.make24.table.yourSteps}
       </h2>
       <ol className={styles.list}>
         {lines.map((line, index) => (
