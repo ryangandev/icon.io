@@ -15,7 +15,7 @@ import {
 import { gameInfo } from '../games/catalog';
 import { initialsOf, toneOf } from '../players/avatar';
 import { Page, useViewer } from '../shell/page';
-import { PHONE, useMediaQuery } from '../shell/use-media-query';
+import { ONE_COLUMN, PHONE, useMediaQuery } from '../shell/use-media-query';
 import { RulesDialog } from './dialogs';
 import { useRoomContext } from './room-context';
 import type { Seat } from './players';
@@ -60,7 +60,8 @@ type View = 'board' | 'players' | 'chat';
 
 /**
  * A seated room's screen: the room bar, the game, the scoreboard and the
- * chat; on a phone, the three as tabs. How to play opens over the room. While
+ * chat; under 1024 px the scoreboard and the chat go under the game, and on a
+ * phone the three are tabs. How to play opens over the room. While
  * reconnecting it says so and holds still.
  */
 export function RoomLayout({
@@ -77,6 +78,7 @@ export function RoomLayout({
   const { state, reconnecting, reconnectGraceMs } = room;
   const game = gameInfo(state.gameType);
   const phone = useMediaQuery(PHONE);
+  const oneColumn = useMediaQuery(ONE_COLUMN);
   const [view, setView] = useState<View>('board');
   const [rules, setRules] = useState(false);
   const { viewer, viewerMenu } = useViewer({
@@ -133,7 +135,7 @@ export function RoomLayout({
     <Page
       header={
         <RoomBar
-          layout={phone ? 'phone' : 'desktop'}
+          layout={oneColumn ? 'phone' : 'desktop'}
           game={game.name}
           room={state.roomName}
           phase={phase}
