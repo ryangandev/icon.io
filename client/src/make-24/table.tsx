@@ -13,6 +13,7 @@ import {
 } from '../../../shared/make-24';
 import { Button, NumberCard, OperatorKey, type NumberCardState } from '../ui';
 import { cx } from '../ui/cx';
+import { Fit } from '../shell/fit';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import styles from './table.module.css';
 
@@ -32,7 +33,7 @@ export function TablePanel({ children }: { children: ReactNode }) {
   return <div className={styles.panel}>{children}</div>;
 }
 
-/** The cards in one row, each as it stands. */
+/** The cards in one row, each as it stands; scaled down where the row is wider than the table. */
 function CardRow({
   cards,
   compact,
@@ -51,16 +52,18 @@ function CardRow({
   children?: ReactNode;
 }) {
   return (
-    <div className={cx(styles.cards, compact && styles.compactCards)}>
-      {cards.map(({ key, ...card }) => (
-        <NumberCard
-          key={key}
-          size={compact ? 'compact' : 'regular'}
-          {...card}
-        />
-      ))}
-      {children}
-    </div>
+    <Fit>
+      <div className={cx(styles.cards, compact && styles.compactCards)}>
+        {cards.map(({ key, ...card }) => (
+          <NumberCard
+            key={key}
+            size={compact ? 'compact' : 'regular'}
+            {...card}
+          />
+        ))}
+        {children}
+      </div>
+    </Fit>
   );
 }
 

@@ -10,9 +10,12 @@
   background: var(--zumpo-paper);
 }
 
+/* As wide as the panel, so the card row knows what it has to fit; what is
+   on the table centres itself. */
 .table {
   display: flex;
   flex-direction: column;
+  align-self: stretch;
   align-items: center;
   gap: var(--zumpo-space-24);
   padding: var(--zumpo-space-24) 0;

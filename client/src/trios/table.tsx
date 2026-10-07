@@ -6,6 +6,7 @@ import {
   type TurnBarProps,
 } from '../ui';
 import { cx } from '../ui/cx';
+import { Fit } from '../shell/fit';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import styles from './table.module.css';
 
@@ -30,22 +31,24 @@ export interface TriosTableProps {
 /**
  * The twelve cards: four columns of three on a desktop, three columns of four
  * compact cards on a phone, in the same order, so nothing moves while you
- * look.
+ * look. Where neither fits, the table scales down to the width it has.
  */
 export function TriosTable({ cards, places = {}, onPick }: TriosTableProps) {
   const phone = useMediaQuery(PHONE);
   return (
-    <div className={styles.table} role="group" aria-label="Table">
-      {cards.map((card, place) => (
-        <TriosCard
-          key={place}
-          card={card}
-          size={phone ? 'compact' : 'regular'}
-          {...places[place]}
-          onPick={onPick ? () => onPick(place) : undefined}
-        />
-      ))}
-    </div>
+    <Fit>
+      <div className={styles.table} role="group" aria-label="Table">
+        {cards.map((card, place) => (
+          <TriosCard
+            key={place}
+            card={card}
+            size={phone ? 'compact' : 'regular'}
+            {...places[place]}
+            onPick={onPick ? () => onPick(place) : undefined}
+          />
+        ))}
+      </div>
+    </Fit>
   );
 }
 
