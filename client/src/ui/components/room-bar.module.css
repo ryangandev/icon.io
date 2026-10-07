@@ -32,9 +32,15 @@
   min-width: 0;
 }
 
+/* Given less than its name, as beside the buttons of a 320 px phone, the
+   heading ends in an ellipsis rather than reach under them. */
 .game {
+  overflow: hidden;
+  max-width: 100%;
   font: var(--zumpo-text-heading);
   letter-spacing: var(--zumpo-text-heading-tracking);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .tags {

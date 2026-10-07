@@ -1,0 +1,16 @@
+/* The box takes the width it is given. The piece hugs its content, centred,
+   never wider than the box; content wider than the box is scaled down to it
+   (fit.tsx). */
+.box {
+  width: 100%;
+}
+
+.piece {
+  width: max-content;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.start {
+  margin: 0;
+}

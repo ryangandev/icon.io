@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { PairsCard, type PairsCardState } from '../ui';
 import { cx } from '../ui/cx';
+import { Fit } from '../shell/fit';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
 import { useMessages } from '../i18n';
 import styles from './board.module.css';
@@ -25,29 +26,31 @@ export function PairsGrid({ cards, onFlip }: PairsGridProps) {
     cards.slice(row * side, (row + 1) * side),
   );
   return (
-    <div
-      className={cx(styles.board, size === 'compact' && styles.compact)}
-      role="grid"
-      aria-label={m.pairs.cards}
-    >
-      {rows.map((row, r) => (
-        <div key={r} className={styles.row} role="row">
-          {row.map((card, c) => {
-            const index = r * side + c;
-            return (
-              <PairsCard
-                key={index}
-                state={card}
-                size={size}
-                row={r}
-                column={c}
-                onPick={onFlip ? () => onFlip(index) : undefined}
-              />
-            );
-          })}
-        </div>
-      ))}
-    </div>
+    <Fit>
+      <div
+        className={cx(styles.board, size === 'compact' && styles.compact)}
+        role="grid"
+        aria-label={m.pairs.cards}
+      >
+        {rows.map((row, r) => (
+          <div key={r} className={styles.row} role="row">
+            {row.map((card, c) => {
+              const index = r * side + c;
+              return (
+                <PairsCard
+                  key={index}
+                  state={card}
+                  size={size}
+                  row={r}
+                  column={c}
+                  onPick={onFlip ? () => onFlip(index) : undefined}
+                />
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    </Fit>
   );
 }
 

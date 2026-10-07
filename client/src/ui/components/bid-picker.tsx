@@ -3,6 +3,7 @@ import { useId } from 'react';
 import { cx } from '../cx';
 import { Button } from './button';
 import { Die, type DieFace } from './die';
+import { Fit } from '../../shell/fit';
 import styles from './bid-picker.module.css';
 
 /** The faces a bid may name; ones are wild and never bid. */
@@ -87,30 +88,32 @@ export function BidPicker({
             <span className={styles.label} id={`${id}-face`}>
               {m.ui.dice.showing}
             </span>
-            <div
-              className={styles.faces}
-              role="radiogroup"
-              aria-labelledby={`${id}-face`}
-            >
-              {FACES.map((option) => (
-                <button
-                  key={option}
-                  type="button"
-                  role="radio"
-                  aria-checked={option === face}
-                  aria-label={m.ui.dice.face(option)}
-                  className={styles.face}
-                  disabled={!openFaces.includes(option)}
-                  onClick={() => onFaceChange(option)}
-                >
-                  <Die
-                    face={option}
-                    state={option === face ? 'counted' : 'default'}
-                    label={null}
-                  />
-                </button>
-              ))}
-            </div>
+            <Fit align="start">
+              <div
+                className={styles.faces}
+                role="radiogroup"
+                aria-labelledby={`${id}-face`}
+              >
+                {FACES.map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    role="radio"
+                    aria-checked={option === face}
+                    aria-label={m.ui.dice.face(option)}
+                    className={styles.face}
+                    disabled={!openFaces.includes(option)}
+                    onClick={() => onFaceChange(option)}
+                  >
+                    <Die
+                      face={option}
+                      state={option === face ? 'counted' : 'default'}
+                      label={null}
+                    />
+                  </button>
+                ))}
+              </div>
+            </Fit>
           </div>
         </div>
         <div className={styles.actions}>

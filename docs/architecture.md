@@ -204,6 +204,7 @@ The design system lives in [`client/src/ui/`](../client/src/ui/index.ts), one co
   Portals (select menus, dialogs, the header menu) carry `.zumpo` themselves, because they render outside the page.
 - **Desktop and Phone variants are container queries**, so a component follows its own width, as Figma's `Layout` variants do, wherever a page puts it.
   Pages switch layouts at `(max-width: 640px)`, the width Figma's phone screens are drawn for, through `useMediaQuery(PHONE)` where the markup itself differs: a room's tabs instead of columns, and `FormPage`, which lays a one-question page's card straight on the page.
+  Under 1024 px (`ONE_COLUMN`) a room and a game on your own are one column, and between the widths Figma draws a rigid piece scales down inside `Fit` ([design](design.md#in-code)).
 - **States never change size:** hover borders, selection rings and cell outlines are inset shadows, not borders, so nothing shifts and overlays such as the pick marker cover the whole box.
 - **Hover only where a pointer hovers:** every `:hover` style sits inside `@media (hover: hover)`, because a touch screen keeps it after a tap, and a card just put back would still look picked.
 - **The `/design` gallery** renders every family in the states Figma draws, beside its Figma preview, and measures each specimen against the export.
@@ -348,7 +349,7 @@ The client suite renders the whole app in jsdom against a fake socket ([`tests/f
 Two serious bugs were found only by playing in a browser (a redundant hint, and the lost identity under [pitfalls](#pitfalls)), so UI and flow changes are verified end to end, not just by the suites.
 `npm run e2e` does the repeatable part: [Playwright](../e2e/) builds the app, serves it as production does on port 3310 (`E2E_PORT`), and plays the main flows with each player in a browser context of their own.
 Reveals are cut to a second so a whole game fits in a test, any error in a browser console fails it, and a player made `droppable` can lose the connection mid-game through `dropConnection`, which cuts both Socket.IO transports; browser offline emulation leaves an open WebSocket alone.
-It checks behaviour, not looks.
+It checks behaviour, not looks, except for [`widths.spec.ts`](../e2e/widths.spec.ts), which plays each game and checks at seven window widths that nothing reaches out of what holds it.
 `npm run design:compare` covers looks: it drives the app into the state of each Figma screen and puts the capture beside Figma's preview ([design](design.md#comparing-with-figma)).
 
 ## Tooling

@@ -129,6 +129,12 @@ In code the same three are `Card`, `Card kind="panel"` and `Dialog`, which share
 
 `RoomBar` is `Zumpo/Room bar`, with `layout="phone"` for its Phone variant; `RoomLayout` renders it in the page's header slot, so it stays the page's banner, and `SeatedRoom` guards the navigation its wordmark and the viewer menu start.
 
+Figma draws every screen at 1440 px and at 390 px, and nothing between.
+Code has two breakpoints, both in [`use-media-query.ts`](../client/src/shell/use-media-query.ts): under 1024 px (`ONE_COLUMN`) a room, or a game on your own, is one column, the scoreboard and the chat under the stage and the room bar in its Phone layout, because beside the 344 px side column a narrower window leaves a board less than it needs; at 640 px (`PHONE`) the pages take their phone layouts.
+Between the widths Figma draws, a rigid piece, such as a board of fixed-size cards, the keyboard or the row of dice faces, sits in [`Fit`](../client/src/shell/fit.tsx), which scales it down to the width it is given when it would be wider, every proportion kept; at Figma's widths it is Figma's size.
+Where scaling would hurt, something else gives: a Minesweeper board wider than its panel pans sideways, the drawing toolbar takes two lines under the 898 px Desktop stage, the word choices share the sheet's width and wrap, and a tag's words end in an ellipsis.
+[The widths spec](../e2e/widths.spec.ts) plays every game and checks, at seven widths from 1280 to 320 px, that nothing reaches out of what holds it.
+
 Figma gives each sample player an avatar tone by hand; code picks one from a hash of the player's name, so a player keeps one colour in the header, the scoreboard and the results, on every screen.
 
 ### Comparing with Figma
