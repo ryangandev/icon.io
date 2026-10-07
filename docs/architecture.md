@@ -274,6 +274,8 @@ A player's name is theirs, in any script; a first visit's random name is picked 
 Pages switch at once when the language changes: `LocaleProvider` wraps the app above the session, holds the locale, and sets `<html lang>` so fonts and screen readers follow.
 The Paper Pop fonts have no Chinese glyphs; the font stacks end in `system-ui`, so Chinese text sets in the system's own sans (PingFang, Microsoft YaHei, Noto Sans CJK) and nothing is loaded for it.
 Chinese copy puts a space between a number and the characters around it ("2 轮"), as the common style guides do.
+It sets a player's name off with a space too ("Bob 加入了房间"), except 你, which runs into its verb ("你出局了"); the Liar's Dice module's `subject` helper does that where the subject may be either.
+A game's terms are the ones its rules in `zh/games.ts` already use (喊“吹牛” and 丢一颗骰子, 条命, 颗雷, 单人模式, 本机记录), so a new string reuses a term rather than coining one.
 
 ### Notices on the wire
 
