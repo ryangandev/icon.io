@@ -12,10 +12,14 @@
   background: var(--zumpo-paper);
 }
 
+/* The swatches' tap areas reach 8 px past them, into padding of their own
+   that sits in the toolbar's; so nothing hangs out of its box. */
 .colours {
   display: flex;
   align-items: center;
   gap: var(--zumpo-space-8);
+  margin: calc(-1 * var(--zumpo-space-8));
+  padding: var(--zumpo-space-8);
 }
 
 .swatch {
@@ -118,6 +122,25 @@
   gap: var(--zumpo-space-8);
 }
 
+/* Narrower than the Desktop stage (898 px), where the one line was drawn to
+   fit: the colours on one line, the sizes and actions on a second. */
+@container (max-width: 897px) {
+  .toolbar {
+    flex-wrap: wrap;
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .tools {
+    display: flex;
+    flex: 1 0 100%;
+    align-items: center;
+    gap: var(--zumpo-space-16);
+  }
+}
+
 /* Phone: the colours across the top, sizes and icon-only actions under them. */
 @container (max-width: 560px) {
   .toolbar {
@@ -131,6 +154,8 @@
   .colours {
     justify-content: space-between;
     gap: 0;
+    margin: calc(-1 * var(--zumpo-space-12)) calc(-1 * var(--zumpo-space-4));
+    padding: var(--zumpo-space-12) var(--zumpo-space-4);
   }
 
   .swatch {
@@ -162,5 +187,28 @@
   .dot {
     max-width: 24px;
     max-height: 24px;
+  }
+}
+
+/* A 320 px phone, 286 px being what the sizes and actions take: smaller
+   swatches and sizes, closer together. */
+@container (max-width: 285px) {
+  .swatch {
+    width: 20px;
+    height: 20px;
+  }
+
+  .tools {
+    gap: var(--zumpo-space-4);
+  }
+
+  .size {
+    width: 32px;
+    height: 32px;
+  }
+
+  .dot {
+    max-width: 20px;
+    max-height: 20px;
   }
 }
