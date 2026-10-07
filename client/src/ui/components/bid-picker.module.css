@@ -83,9 +83,17 @@
 /* Narrower than the row's 518px, as on a phone: the controls stack and the
    two actions share the width. */
 @container (width < 518px) {
+  /* Single-line, or the stacked fields would be as wide as the row of faces
+     rather than the picker. */
   .controls {
     flex-direction: column;
+    flex-wrap: nowrap;
     gap: var(--zumpo-space-16);
+  }
+
+  /* As wide as the picker, so the faces know what they have to fit. */
+  .field {
+    min-width: 0;
   }
 
   .actions > * {
