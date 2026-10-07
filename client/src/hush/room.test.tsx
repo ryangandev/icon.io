@@ -362,7 +362,7 @@ describe('a Hush room in Chinese', () => {
     expect(bar.getByText('第 3 / 7 关')).toBeVisible();
     expect(bar.getByText('准备开始')).toBeVisible();
     expect(bar.getByText('Maya 准备好了。')).toBeVisible();
-    expect(screen.getByRole('img', { name: '2 条生命' })).toBeVisible();
+    expect(screen.getByRole('img', { name: '2 条命' })).toBeVisible();
     await user.click(screen.getByRole('button', { name: '我准备好了' }));
     expect(fake.sentArgs('hush:ready')).toEqual([['r1']]);
 

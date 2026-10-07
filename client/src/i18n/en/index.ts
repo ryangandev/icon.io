@@ -11,7 +11,6 @@ import { make24 } from './make-24';
 import { minesweeper } from './minesweeper';
 import { notices } from './notices';
 import { pairs } from './pairs';
-import { players } from './players';
 import { room } from './room';
 import { shell } from './shell';
 import { solo } from './solo';
@@ -34,7 +33,6 @@ export const en = {
   chat,
   notices,
   solo,
-  players,
   ui,
   drawAndGuess,
   minesweeper,

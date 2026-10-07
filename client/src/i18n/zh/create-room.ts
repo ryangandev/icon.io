@@ -35,7 +35,7 @@ export const createRoom: typeof en = {
   boardName: (board) => ({ Small: '小', Medium: '中', Large: '大' })[board],
   minesweeperDetail: (board) => {
     const { width, height, mines } = BOARD_SIZES[board];
-    return `${width} × ${height} · ${mines} 个雷`;
+    return `${width} × ${height} · ${mines} 颗雷`;
   },
   pairsDetail: (board) => {
     const { side, pairs } = PAIRS_BOARDS[board];

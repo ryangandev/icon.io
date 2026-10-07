@@ -57,7 +57,7 @@ export const ui: typeof en = {
     fewer: '减少',
     more: '增加',
     showing: '点数',
-    call: '质疑',
+    call: '喊“吹牛”',
     face: (face) => `${face} 点`,
   },
   word: {
@@ -73,7 +73,7 @@ export const ui: typeof en = {
     board: (name) => `${name} 的猜词板`,
     letters: (count) => `${count} 个字母`,
   },
-  lives: (lives) => (lives === 0 ? '没有生命了' : `${lives} 条生命`),
+  lives: (lives) => (lives === 0 ? '没有命了' : `${lives} 条命`),
   discarded: (value) => `${value}，已弃置`,
   position: (row, column, detail) => `第 ${row} 行，第 ${column} 列：${detail}`,
   mine: {
@@ -114,7 +114,7 @@ export const ui: typeof en = {
   trios: {
     card: (card) => {
       const { colour, shape, count, fill } = cardFeatures(card);
-      return `${count} 个${{ coral: '珊瑚色', blue: '蓝色', ink: '墨黑色' }[colour]}${{ solid: '实心', striped: '条纹', outline: '空心' }[fill]}${{ circle: '圆形', triangle: '三角形', square: '方形' }[shape]}`;
+      return `${count} 个${{ coral: '珊瑚色', blue: '蓝色', ink: '墨色' }[colour]}${{ solid: '实心', striped: '条纹', outline: '空心' }[fill]}${{ circle: '圆形', triangle: '三角形', square: '方形' }[shape]}`;
     },
     states: { selected: '，已选中', found: '，已找到', wrong: '，不成一组' },
     badge: (name, badge) => `${name}，${badge}`,

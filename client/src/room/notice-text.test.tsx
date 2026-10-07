@@ -50,7 +50,7 @@ describe('room announcements', () => {
         loser: 'Bob',
       },
       'Ada called Liar on two 5s: there were none. Bob loses a die.',
-      'Ada 质疑 2 个 5：实际有 0 个。Bob 失去一颗骰子。',
+      'Ada 对 2 个 5 喊了“吹牛”：实际有 0 个。Bob 丢一颗骰子。',
     ],
     [
       {
@@ -65,7 +65,7 @@ describe('room announcements', () => {
     [
       { type: 'hush:cleared', level: 2, clean: true, lifeBack: true },
       'Level 2 cleared without a slip: a life back!',
-      '第 2 关完美通过，恢复一条命！',
+      '第 2 关完美通过，赢回一条命！',
     ],
     [
       { type: 'dw:revealed', word: 'APPLE' },

@@ -29,18 +29,18 @@ export const minesweeper: typeof en = {
   boardGrid: (width, height) => `棋盘，${width} 列，${height} 行`,
   round: (round) => `第 ${round} 轮`,
   gameOver: '游戏结束',
-  gameEnded: '游戏已结束',
+  gameEnded: '游戏已中止',
   waitingRoom: '等待室',
   messagePlaceholder: '说点什么…',
   resultsDetail: (difficulty, rounds) =>
     `${SIZES[difficulty]}棋盘，${rounds} 轮。`,
-  aloneTitle: '有人一起玩更开心。',
+  aloneTitle: '叫上朋友更好玩。',
   setup: (players, difficulty) => {
     const { width, height, mines } = BOARD_SIZES[difficulty];
-    return `${players} 位玩家，${SIZES[difficulty]}棋盘：${width} × ${height}，${mines} 颗雷。每轮所有人同时选一个格子。`;
+    return `${players} 人，${SIZES[difficulty]}棋盘：${width} × ${height}，${mines} 颗雷。每轮所有人同时选一个格子。`;
   },
   guestSetup: (players, difficulty) =>
-    `${players} 位玩家，${SIZES[difficulty]}棋盘。`,
+    `${players} 人，${SIZES[difficulty]}棋盘。`,
   roundResults: (round) => `第 ${round} 轮结果`,
   pickDetail: (risk, shared) =>
     shared > 1

@@ -22,11 +22,11 @@ const ld10: LiarsDiceReveal = {
 describe('the words of a reveal', () => {
   it('explains the count, the bid and your loss in Chinese', () => {
     const asSamZh = naming('sam', (id) => NAMES[id], zh);
-    expect(countDetail(ld10, zh)).toBe('含 2 颗万能点数 1 · 叫了 5 个');
+    expect(countDetail(ld10, zh)).toBe('含 2 颗百搭 · 叫了 5 个');
     expect(revealBar(ld10, asSamZh, zh)).toEqual({
       label: '你喊了“吹牛”',
       main: 'Leo的叫点成立',
-      meta: '你失去 1 颗骰子',
+      meta: '你丢一颗骰子',
     });
     expect(
       verdict({ ...ld10, matched: 0, loserId: 'sam', out: true }, asSamZh, zh),

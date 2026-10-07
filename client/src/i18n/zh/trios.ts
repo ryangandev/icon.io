@@ -2,7 +2,7 @@ import type { trios as en } from '../en/trios';
 import type { CardFeatures, Feature } from '../../../../shared/trios';
 
 const colours = { coral: '珊瑚色', blue: '蓝色', ink: '墨色' };
-const shapes = { circle: '圆形', triangle: '三角形', square: '正方形' };
+const shapes = { circle: '圆形', triangle: '三角形', square: '方形' };
 const fills = { solid: '实心', striped: '条纹', outline: '空心' };
 const value = (feature: Feature, f: CardFeatures) => {
   switch (feature) {
@@ -26,8 +26,8 @@ export const trios: typeof en = {
   lastTrio: (finder) => `上一组：${finder}`,
   progress: (found, total) => `${found} / ${total} 组`,
   gameOver: '游戏结束',
-  gameEnded: '游戏中止',
-  waitingRoom: '等待开始',
+  gameEnded: '游戏已中止',
+  waitingRoom: '等待室',
   chat: '聊点什么…',
   you: '你',
   by: (name) => `${name}找到的`,
@@ -59,7 +59,7 @@ export const trios: typeof en = {
   toHint: '距离提示',
   toSecondHint: '距离第 2 次提示',
   withoutTrio: '未找到一组的时间',
-  away: '离线',
+  away: '暂离',
   waiting: '等待中',
   foundTrio: '找到了一组',
   looking: '寻找中',

@@ -56,9 +56,9 @@ export const notices: typeof en = {
     `游戏开始！每人 ${n.dice} 颗骰子，每回合 ${n.seconds} 秒。`,
   'ld:auto-bid': (n) =>
     `${who(n.name)} 超时，自动叫 ${n.bid.count} 个 ${n.bid.face}。`,
-  'ld:auto-call': (n) => `${who(n.name)} 超时，自动质疑上一手。`,
+  'ld:auto-call': (n) => `${who(n.name)} 超时，自动喊了“吹牛”。`,
   'ld:called': (n) =>
-    `${who(n.name)} 质疑 ${n.bid.count} 个 ${n.bid.face}：实际有 ${n.matched} 个。${who(n.loser)} 失去一颗骰子。`,
+    `${who(n.name)} 对 ${n.bid.count} 个 ${n.bid.face} 喊了“吹牛”：实际有 ${n.matched} 个。${who(n.loser)} 丢一颗骰子。`,
   'ld:out': (n) => `${who(n.name)} 出局了。`,
   'ld:reroll': (_n) => '有玩家离开，大家重新掷骰。',
   'hush:started': (n) =>
@@ -67,15 +67,15 @@ export const notices: typeof en = {
     `${who(n.name)} 出了 ${n.card}，但 ${list(n.held.map((h) => `${who(h.name)} 还拿着 ${list(h.cards.map(String))}`))}。`,
   'hush:cleared': (n) =>
     n.lifeBack
-      ? `第 ${n.level} 关完美通过，恢复一条命！`
+      ? `第 ${n.level} 关完美通过，赢回一条命！`
       : n.clean
         ? `第 ${n.level} 关完美通过！`
         : `第 ${n.level} 关通过！`,
   'hush:won': (n) => `全部 ${n.levels} 关通过，配合得真好！`,
   'hush:lost': (n) =>
-    `在第 ${n.level} 关用尽了生命：共 ${n.levels} 关，已通过 ${n.cleared} 关。`,
+    `在第 ${n.level} 关用完了命：共 ${n.levels} 关，通过了 ${n.cleared} 关。`,
   'hush:discarded': (n) =>
-    `其手中的 ${list(n.cards.map(String))} 已弃掉，不扣生命。`,
+    `离开玩家手里的 ${list(n.cards.map(String))} 已弃掉，不扣命。`,
   'dw:started': (n) =>
     `游戏开始！共 ${n.rounds} 个单词，每个 ${n.seconds} 秒。`,
   'dw:solved': (n) =>

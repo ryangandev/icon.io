@@ -275,7 +275,7 @@ describe('making a room', () => {
     });
     const field = screen.getByLabelText('房间名称');
     expect(field).toHaveValue('Ryan的房间');
-    expect(screen.getByText('9 × 9 · 10 个雷')).toBeInTheDocument();
+    expect(screen.getByText('9 × 9 · 10 颗雷')).toBeInTheDocument();
     await user.clear(field);
     await user.click(screen.getByRole('button', { name: '创建房间' }));
     expect(screen.getByText('给房间起个名字。')).toBeInTheDocument();

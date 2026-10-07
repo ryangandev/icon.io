@@ -113,7 +113,7 @@ describe('public components in Chinese', () => {
     expect(screen.getByLabelText('已有 1 人，共 8 个位置')).toBeVisible();
     expect(screen.getByRole('img', { name: '房主' })).toBeVisible();
     expect(screen.getByText('你')).toBeVisible();
-    expect(screen.getByRole('img', { name: '2 条生命' })).toBeVisible();
+    expect(screen.getByRole('img', { name: '2 条命' })).toBeVisible();
     expect(
       screen.getByRole('gridcell', { name: '第 1 行，第 2 列：你的选择' }),
     ).toBeVisible();
@@ -167,7 +167,7 @@ describe('public components in Chinese', () => {
     expect(
       screen.getByRole('radio', { name: '3 点', checked: true }),
     ).toBeVisible();
-    expect(screen.getByRole('button', { name: '质疑' })).toBeVisible();
+    expect(screen.getByRole('button', { name: '喊“吹牛”' })).toBeVisible();
     expect(screen.getByRole('img', { name: '未揭开的骰子' })).toBeVisible();
     expect(screen.getByRole('img', { name: '1 点，百搭' })).toBeVisible();
     await userEvent.click(screen.getByRole('button', { name: '增加' }));

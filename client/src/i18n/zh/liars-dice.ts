@@ -4,7 +4,7 @@ import type { Naming } from '../../liars-dice/words';
 
 const loss = (reveal: LiarsDiceReveal, who: Naming) => {
   const loser = who(reveal.loserId);
-  return reveal.out ? `${loser.name}出局了` : `${loser.name}失去 1 颗骰子`;
+  return reveal.out ? `${loser.name}出局了` : `${loser.name}丢一颗骰子`;
 };
 const stands = (reveal: LiarsDiceReveal) => reveal.matched >= reveal.bid.count;
 
@@ -17,7 +17,7 @@ export const liarsDice: typeof en = {
   bidLabel: (bid) => `叫 ${bid.count} 个 ${bid.face}`,
   bidLine: (who, bid) => `${who.name}叫了 ${bid.count} 个 ${bid.face}`,
   countDetail: (reveal) =>
-    `${reveal.wild === 0 ? '没有万能点数 1' : `含 ${reveal.wild} 颗万能点数 1`} · 叫了 ${reveal.bid.count} 个`,
+    `${reveal.wild === 0 ? '不含百搭' : `含 ${reveal.wild} 颗百搭`} · 叫了 ${reveal.bid.count} 个`,
   lossLine: loss,
   verdict: (reveal, who) =>
     stands(reveal)
@@ -29,7 +29,7 @@ export const liarsDice: typeof en = {
     meta: loss(reveal, who),
   }),
   out: '出局',
-  lostDie: '失去 1 颗骰子',
+  lostDie: '丢了一颗骰子',
   calledLiar: '喊了“吹牛”',
   outRound: (round) => `第 ${round} 轮出局`,
   yourTurn: '轮到你了',
@@ -40,30 +40,30 @@ export const liarsDice: typeof en = {
   face: (face) => `点数 ${face}`,
   round: (round) => `第 ${round} 轮`,
   gameOver: '游戏结束',
-  gameEnded: '游戏中止',
-  waitingRoom: '等待开始',
+  gameEnded: '游戏已中止',
+  waitingRoom: '等待室',
   chat: '聊点什么…',
   somebody: '有人',
   each: (dice) => `每人 ${dice} 颗骰子`,
   resultDetail: (rounds, dice) => `${rounds} 轮，每人 ${dice} 颗骰子。`,
   leftGame: '已离开游戏',
-  lastCall: '最后一次质疑',
+  lastCall: '最后一次“吹牛”',
   alone: '叫上朋友更好玩。',
   setup: (players, dice) =>
     `${players} 人，每人 ${dice} 颗骰子。大家暗中摇骰，然后对全桌叫点；不相信对方时，就喊“吹牛”。`,
   guestSetup: (players, dice) => `${players} 人，每人 ${dice} 颗骰子。`,
   outNote: '你的骰子用完了。留下看看谁会获胜，也可以继续聊天。',
-  callLiar: '质疑',
+  callLiar: '喊“吹牛”',
   paused: '已暂停',
   nextRound: '下一轮',
-  raiseOrCall: '加码，或质疑',
+  raiseOrCall: '加注，或喊“吹牛”',
   openBidding: '开始叫点',
   onTable: (dice) => `桌上有 ${dice} 颗骰子`,
   toBid: '叫点时间',
   turn: (name) => `轮到 ${name}`,
   isDeciding: (name) => `${name}正在决定`,
   openingRound: '本轮开始',
-  away: '离线',
+  away: '暂离',
   waiting: '等待中',
   bidStands: '叫点成立',
   bidLie: '叫点不成立',
