@@ -1,8 +1,11 @@
+/* Never wider than what holds it: given less than its words, they end in an
+   ellipsis. */
 .tag {
   display: inline-flex;
   flex: none;
   align-items: center;
   gap: 6px;
+  max-width: 100%;
   padding: 6px 12px;
   border-radius: var(--zumpo-radius-999);
   background: var(--zumpo-sand);
@@ -10,6 +13,13 @@
   font: var(--zumpo-text-small);
   letter-spacing: var(--zumpo-text-small-tracking);
   white-space: nowrap;
+}
+
+/* The words, cut short with the ellipsis. */
+.text {
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
 }
 
 .blue {

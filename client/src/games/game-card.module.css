@@ -37,6 +37,8 @@
   gap: var(--zumpo-space-16);
 }
 
+/* Narrower than its facts tag on a 320 px phone, the copy lets the tag end
+   in an ellipsis rather than widen the card. */
 .copy {
   display: flex;
   flex: 1;
@@ -44,11 +46,16 @@
   align-items: flex-start;
   align-self: stretch;
   gap: var(--zumpo-space-4);
+  min-width: 0;
 }
 
+/* A name longer than its line, "Minesweeper" on a 320 px phone, breaks with
+   a hyphen rather than reach out of the card. */
 .name {
   font: var(--zumpo-text-heading);
   letter-spacing: var(--zumpo-text-heading-tracking);
+  hyphens: auto;
+  overflow-wrap: anywhere;
 }
 
 .tagline {
