@@ -1,10 +1,12 @@
 import type { liarsDice as en } from '../en/liars-dice';
 import type { LiarsDiceReveal } from '../../../../shared/wire-types';
-import type { Naming } from '../../liars-dice/words';
+import type { Naming, Who } from '../../liars-dice/words';
 
+/** "你" runs into the verb; any other name is set off by a space. */
+const subject = (w: Who) => (w.you ? w.name : `${w.name} `);
 const loss = (reveal: LiarsDiceReveal, who: Naming) => {
   const loser = who(reveal.loserId);
-  return reveal.out ? `${loser.name}出局了` : `${loser.name}丢一颗骰子`;
+  return reveal.out ? `${subject(loser)}出局了` : `${subject(loser)}丢一颗骰子`;
 };
 const stands = (reveal: LiarsDiceReveal) => reveal.matched >= reveal.bid.count;
 
@@ -12,10 +14,10 @@ export const liarsDice: typeof en = {
   dice: (count) => `${count} 颗骰子`,
   you: '你',
   youLabel: '你',
-  possessive: (name, you) => (you ? '你的' : `${name}的`),
+  possessive: (name, you) => (you ? '你的' : `${name} 的`),
   bid: (bid) => `${bid.count} 个 ${bid.face}`,
   bidLabel: (bid) => `叫 ${bid.count} 个 ${bid.face}`,
-  bidLine: (who, bid) => `${who.name}叫了 ${bid.count} 个 ${bid.face}`,
+  bidLine: (who, bid) => `${subject(who)}叫了 ${bid.count} 个 ${bid.face}`,
   countDetail: (reveal) =>
     `${reveal.wild === 0 ? '不含百搭' : `含 ${reveal.wild} 颗百搭`} · 叫了 ${reveal.bid.count} 个`,
   lossLine: loss,
@@ -24,7 +26,7 @@ export const liarsDice: typeof en = {
       ? `${who(reveal.bid.playerId).possessive}叫点成立`
       : `叫点不成立，${loss(reveal, who)}`,
   revealBar: (reveal, who) => ({
-    label: `${who(reveal.callerId).name}喊了“吹牛”`,
+    label: `${subject(who(reveal.callerId))}喊了“吹牛”`,
     main: `${who(reveal.bid.playerId).possessive}叫点${stands(reveal) ? '成立' : '不成立'}`,
     meta: loss(reveal, who),
   }),
@@ -61,7 +63,7 @@ export const liarsDice: typeof en = {
   onTable: (dice) => `桌上有 ${dice} 颗骰子`,
   toBid: '叫点时间',
   turn: (name) => `轮到 ${name}`,
-  isDeciding: (name) => `${name}正在决定`,
+  isDeciding: (name) => `${name} 正在决定`,
   openingRound: '本轮开始',
   away: '暂离',
   waiting: '等待中',
@@ -87,7 +89,7 @@ export const liarsDice: typeof en = {
     wonIn: (rounds) => `你在 ${rounds} 轮后获胜。`,
     outIn: (place, of) => `你出局了，在 ${of} 人中获得${place}。`,
     lastAtTable: (dice) => `你坚持到了最后，还剩 ${dice} 颗骰子。`,
-    stillIn: (names, _count, round) => `第 ${round} 轮时，${names}还在场上。`,
+    stillIn: (names, _count, round) => `第 ${round} 轮时，${names} 还在场上。`,
     place: '名次',
     placeOf: (place, of) => `${place} / ${of} 人`,
     rounds: '轮数',
@@ -103,6 +105,6 @@ export const liarsDice: typeof en = {
     notYet: '暂无',
     currentRun: '当前连胜',
     wins: (count) => `${count} 局`,
-    thinking: (name) => `${name}正在思考`,
+    thinking: (name) => `${name} 正在思考`,
   },
 };

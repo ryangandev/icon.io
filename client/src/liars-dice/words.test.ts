@@ -25,7 +25,7 @@ describe('the words of a reveal', () => {
     expect(countDetail(ld10, zh)).toBe('含 2 颗百搭 · 叫了 5 个');
     expect(revealBar(ld10, asSamZh, zh)).toEqual({
       label: '你喊了“吹牛”',
-      main: 'Leo的叫点成立',
+      main: 'Leo 的叫点成立',
       meta: '你丢一颗骰子',
     });
     expect(

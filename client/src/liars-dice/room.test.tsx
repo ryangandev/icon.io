@@ -53,7 +53,7 @@ describe('a Liar’s Dice room', () => {
     const bar = within(screen.getByRole('region', { name: '当前回合' }));
     expect(screen.getByText('第 3 轮')).toBeInTheDocument();
     expect(bar.getByText('轮到你了')).toBeInTheDocument();
-    expect(bar.getByText('Leo叫了 5 个 5')).toBeInTheDocument();
+    expect(bar.getByText('Leo 叫了 5 个 5')).toBeInTheDocument();
     expect(screen.getByRole('group', { name: '你的叫点' })).toBeInTheDocument();
     await user.click(screen.getByRole('radio', { name: '3 点' }));
     await user.click(screen.getByRole('button', { name: '叫 6 个 3' }));

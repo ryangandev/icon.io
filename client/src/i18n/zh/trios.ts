@@ -30,7 +30,7 @@ export const trios: typeof en = {
   waitingRoom: '等待室',
   chat: '聊点什么…',
   you: '你',
-  by: (name) => `${name}找到的`,
+  by: (name) => (name === trios.you ? '你找到的' : `${name} 找到的`),
   resultDetail: (count) => `${count} 组。`,
   alone: '叫上朋友更好玩。',
   setup: (players, count) =>

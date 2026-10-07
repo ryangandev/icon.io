@@ -3,7 +3,7 @@ import { PAIRS_BOARDS } from '../../../../shared/pairs';
 import type { createRoom as en } from '../en/create-room';
 
 export const createRoom: typeof en = {
-  defaultName: (name) => `${name}的房间`,
+  defaultName: (name) => `${name} 的房间`,
   subtitle: '为下一局游戏准备一个小空间。',
   eyebrow: '创建房间',
   title: '给你一个小房间。',
