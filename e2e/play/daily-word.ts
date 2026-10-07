@@ -48,11 +48,9 @@ export async function guessesOf(page: Page): Promise<Guessed[]> {
 }
 
 /** The guesses on one board, or null once it has left the page. */
-async function guessesOn(
-  board: ElementHandle<Element>,
-): Promise<Guessed[] | null> {
+async function guessesOn(board: ElementHandle): Promise<Guessed[] | null> {
   const labels = await board.evaluate((root) =>
-    root.isConnected
+    root instanceof Element && root.isConnected
       ? Array.from(
           root.querySelectorAll('[role="img"]'),
           (tile) => tile.getAttribute('aria-label') ?? '',
@@ -93,30 +91,41 @@ export async function typeGuess(page: Page, word: string) {
   await page.keyboard.press('Enter');
 }
 
+/** Whether `now` is the board `before` was, with more guesses on it. */
+const goesOn = (before: readonly Guessed[], now: readonly Guessed[]) =>
+  now.length > before.length &&
+  before.every((row, index) => row.word === now[index].word);
+
 /**
  * Guesses until the word is found or the guesses run out. In a room, the last
  * player's last guess ends the word at once and the reveal replaces the
  * board; what was seen until then comes back, without that guess. The reveal
  * lasts a second, too short to catch under load, and the next word has a
- * board of its own, so the sign is this word's board leaving the page.
+ * board of its own, so the sign is this word's board leaving the page. A
+ * game on your own draws its board anew around the result, with every guess.
  */
 export async function solve(page: Page): Promise<Guessed[]> {
   const board = page.getByRole('group', { name: 'Your guesses' });
   // The board is up, so its keys are listened for.
   await expect(board).toBeVisible();
-  const shown = await board.elementHandle();
+  let shown: ElementHandle = await board.elementHandle();
   let guesses = (await guessesOn(shown)) ?? [];
   while (guesses.length < 6 && !isFound(guesses)) {
-    const count = guesses.length;
-    await typeGuess(page, nextGuess(guesses));
+    const before = guesses;
+    await typeGuess(page, nextGuess(before));
     await expect
       .poll(async () => {
         const now = await guessesOn(shown);
-        return now === null || now.length > count;
+        return now === null || now.length > before.length;
       })
       .toBe(true);
-    const now = await guessesOn(shown);
-    if (!now) break;
+    let now = await guessesOn(shown);
+    if (!now) {
+      const [drawn] = await board.elementHandles();
+      now = drawn ? await guessesOn(drawn) : null;
+      if (!drawn || !now || !goesOn(before, now)) break;
+      shown = drawn;
+    }
     guesses = now;
   }
   return guesses;
