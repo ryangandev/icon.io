@@ -92,7 +92,7 @@ export const dailyWord: typeof en = {
   friendSame: '朋友会猜同一个词。他们只能看到你的标记，看不到字母。',
   yourMarks: '你的标记',
   copyChallenge: '复制挑战',
-  onDevice: '此设备上的记录',
+  onDevice: '本机记录',
   stats: {
     played: '已玩',
     found: '猜中率',

@@ -153,9 +153,7 @@ describe('Daily Word on your own in Chinese', () => {
     expect(
       screen.getByText(`答案是 ${TODAY.toUpperCase()}。连胜开始了。`),
     ).toBeVisible();
-    expect(
-      screen.getByRole('heading', { name: '此设备上的记录' }),
-    ).toBeVisible();
+    expect(screen.getByRole('heading', { name: '本机记录' })).toBeVisible();
     expect(screen.getByText('猜中率')).toBeVisible();
     expect(screen.getByText('当前连胜')).toBeVisible();
     expect(screen.getByText('距下一个单词')).toBeVisible();

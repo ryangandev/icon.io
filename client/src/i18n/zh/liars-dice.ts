@@ -101,7 +101,7 @@ export const liarsDice: typeof en = {
     round: '当前轮数',
     diceOnTable: '桌上骰子数',
     yourDice: '你的骰子数',
-    onDevice: '这台设备上的记录',
+    onDevice: '本机记录',
     notYet: '暂无',
     currentRun: '当前连胜',
     wins: (count) => `${count} 局`,

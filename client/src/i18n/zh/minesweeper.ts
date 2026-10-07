@@ -77,7 +77,7 @@ export const minesweeper: typeof en = {
   picking: '正在选择',
   solo: {
     description: '第一次点击一定安全，计时也从这时开始。',
-    onYourOwn: '一个人玩',
+    onYourOwn: '单人模式',
     pickBoard: '选一个棋盘。',
     start: '开始',
     backToGames: '返回游戏列表',

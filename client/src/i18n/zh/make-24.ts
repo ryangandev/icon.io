@@ -63,7 +63,7 @@ export const make24: typeof en = {
       challenge
         ? '朋友发来了这十手牌。每个数字用一次，算出 24。卡住了？跳过一手，计时加 30 秒。'
         : '每个数字用一次，算出 24。卡住了？跳过一手，计时加 30 秒。',
-    onYourOwn: '一个人玩',
+    onYourOwn: '单人模式',
     tenHandsClock: '十手牌，一起计时。',
     start: '开始',
     backToGames: '返回游戏列表',

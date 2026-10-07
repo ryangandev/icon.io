@@ -53,7 +53,7 @@ export const pairs: typeof en = {
       challenge
         ? '朋友发来了这副牌。翻牌次数越少越好，也会记录用时。'
         : '翻牌次数越少越好，也会记录用时。',
-    onYourOwn: '一个人玩',
+    onYourOwn: '单人模式',
     pickBoard: '选一个棋盘。',
     start: '开始',
     backToGames: '返回游戏列表',
