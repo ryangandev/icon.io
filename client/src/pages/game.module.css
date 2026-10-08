@@ -89,6 +89,15 @@
 
 /* A phone packs the rooms tighter, and its rules panel takes less padding. */
 @media (max-width: 640px) {
+  /* Back to games and Playing as share one row on a phone, as in MO04. */
+  .actions {
+    gap: var(--zumpo-space-8);
+  }
+
+  .main {
+    gap: var(--zumpo-space-24);
+  }
+
   .list {
     gap: var(--zumpo-space-12);
   }
