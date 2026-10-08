@@ -174,26 +174,45 @@
                 ]
               },
               {
-                "type": "INSTANCE",
-                "id": "120:118650",
-                "name": "Facts",
+                "type": "FRAME",
+                "id": "124:119797",
+                "name": "Tags",
                 "w": 162,
                 "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
                 },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "2–8 players · 1–4 rounds"
-                },
-                "overrides": [
+                "children": [
                   {
-                    "path": ".",
-                    "height": 30,
-                    "width": 162
+                    "type": "INSTANCE",
+                    "id": "120:118650",
+                    "name": "Players",
+                    "w": 162,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "2–8 players · 1–4 rounds"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 162
+                      }
+                    ]
                   }
                 ]
               },
@@ -386,26 +405,69 @@
                 ]
               },
               {
-                "type": "INSTANCE",
-                "id": "120:118695",
-                "name": "Facts",
-                "w": 134,
+                "type": "FRAME",
+                "id": "124:119798",
+                "name": "Tags",
+                "w": 148,
                 "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
                 },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "Solo or 2–8 players"
-                },
-                "overrides": [
+                "children": [
                   {
-                    "path": ".",
-                    "height": 30,
-                    "width": 134
+                    "type": "INSTANCE",
+                    "id": "124:119799",
+                    "name": "Solo",
+                    "w": 49,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "Solo"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 49
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "120:118695",
+                    "name": "Players",
+                    "w": 91,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "2–8 players"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 91
+                      }
+                    ]
                   }
                 ]
               },
@@ -622,26 +684,69 @@
                 ]
               },
               {
-                "type": "INSTANCE",
-                "id": "120:118737",
-                "name": "Facts",
-                "w": 134,
+                "type": "FRAME",
+                "id": "124:119804",
+                "name": "Tags",
+                "w": 148,
                 "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
                 },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "Solo or 2–8 players"
-                },
-                "overrides": [
+                "children": [
                   {
-                    "path": ".",
-                    "height": 30,
-                    "width": 134
+                    "type": "INSTANCE",
+                    "id": "124:119805",
+                    "name": "Solo",
+                    "w": 49,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "Solo"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 49
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "120:118737",
+                    "name": "Players",
+                    "w": 91,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "2–8 players"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 91
+                      }
+                    ]
                   }
                 ]
               },
@@ -858,26 +963,69 @@
                 ]
               },
               {
-                "type": "INSTANCE",
-                "id": "120:118779",
-                "name": "Facts",
-                "w": 134,
+                "type": "FRAME",
+                "id": "124:119810",
+                "name": "Tags",
+                "w": 148,
                 "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
                 },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "Solo or 2–6 players"
-                },
-                "overrides": [
+                "children": [
                   {
-                    "path": ".",
-                    "height": 30,
-                    "width": 134
+                    "type": "INSTANCE",
+                    "id": "124:119811",
+                    "name": "Solo",
+                    "w": 49,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "Solo"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 49
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "120:118779",
+                    "name": "Players",
+                    "w": 91,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "2–6 players"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 91
+                      }
+                    ]
                   }
                 ]
               },
@@ -1094,26 +1242,69 @@
                 ]
               },
               {
-                "type": "INSTANCE",
-                "id": "120:118844",
-                "name": "Facts",
-                "w": 134,
+                "type": "FRAME",
+                "id": "124:119816",
+                "name": "Tags",
+                "w": 148,
                 "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
                 },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "Solo or 2–8 players"
-                },
-                "overrides": [
+                "children": [
                   {
-                    "path": ".",
-                    "height": 30,
-                    "width": 134
+                    "type": "INSTANCE",
+                    "id": "124:119817",
+                    "name": "Solo",
+                    "w": 49,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "Solo"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 49
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "120:118844",
+                    "name": "Players",
+                    "w": 91,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "2–8 players"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 91
+                      }
+                    ]
                   }
                 ]
               },
@@ -1330,26 +1521,69 @@
                 ]
               },
               {
-                "type": "INSTANCE",
-                "id": "120:118889",
-                "name": "Facts",
-                "w": 134,
+                "type": "FRAME",
+                "id": "124:119822",
+                "name": "Tags",
+                "w": 148,
                 "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
                 },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "Solo or 2–6 players"
-                },
-                "overrides": [
+                "children": [
                   {
-                    "path": ".",
-                    "height": 30,
-                    "width": 134
+                    "type": "INSTANCE",
+                    "id": "124:119823",
+                    "name": "Solo",
+                    "w": 49,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "Solo"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 49
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "120:118889",
+                    "name": "Players",
+                    "w": 91,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "2–6 players"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 91
+                      }
+                    ]
                   }
                 ]
               },
@@ -1566,26 +1800,45 @@
                 ]
               },
               {
-                "type": "INSTANCE",
-                "id": "120:118925",
-                "name": "Facts",
+                "type": "FRAME",
+                "id": "124:119828",
+                "name": "Tags",
                 "w": 91,
                 "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
                 },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "2–4 players"
-                },
-                "overrides": [
+                "children": [
                   {
-                    "path": ".",
-                    "height": 30,
-                    "width": 91
+                    "type": "INSTANCE",
+                    "id": "120:118925",
+                    "name": "Players",
+                    "w": 91,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "2–4 players"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 91
+                      }
+                    ]
                   }
                 ]
               },
@@ -1778,26 +2031,69 @@
                 ]
               },
               {
-                "type": "INSTANCE",
-                "id": "120:118955",
-                "name": "Facts",
-                "w": 134,
+                "type": "FRAME",
+                "id": "124:119829",
+                "name": "Tags",
+                "w": 148,
                 "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
                 },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "Solo or 2–8 players"
-                },
-                "overrides": [
+                "children": [
                   {
-                    "path": ".",
-                    "height": 30,
-                    "width": 134
+                    "type": "INSTANCE",
+                    "id": "124:119830",
+                    "name": "Solo",
+                    "w": 49,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "Solo"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 49
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "120:118955",
+                    "name": "Players",
+                    "w": 91,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "2–8 players"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 91
+                      }
+                    ]
                   }
                 ]
               },
@@ -2008,26 +2304,45 @@
                 ]
               },
               {
-                "type": "INSTANCE",
-                "id": "120:119001",
-                "name": "Facts",
+                "type": "FRAME",
+                "id": "124:119835",
+                "name": "Tags",
                 "w": 162,
                 "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
                 },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "2–8 players · 1–4 rounds"
-                },
-                "overrides": [
+                "children": [
                   {
-                    "path": ".",
-                    "height": 30,
-                    "width": 162
+                    "type": "INSTANCE",
+                    "id": "120:119001",
+                    "name": "Players",
+                    "w": 162,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "2–8 players · 1–4 rounds"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 162
+                      }
+                    ]
                   }
                 ]
               },
@@ -2214,26 +2529,69 @@
                 ]
               },
               {
-                "type": "INSTANCE",
-                "id": "120:119046",
-                "name": "Facts",
-                "w": 134,
+                "type": "FRAME",
+                "id": "124:119836",
+                "name": "Tags",
+                "w": 148,
                 "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
                 },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "Solo or 2–8 players"
-                },
-                "overrides": [
+                "children": [
                   {
-                    "path": ".",
-                    "height": 30,
-                    "width": 134
+                    "type": "INSTANCE",
+                    "id": "124:119837",
+                    "name": "Solo",
+                    "w": 49,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "Solo"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 49
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "120:119046",
+                    "name": "Players",
+                    "w": 91,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "2–8 players"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 91
+                      }
+                    ]
                   }
                 ]
               },
@@ -2444,26 +2802,69 @@
                 ]
               },
               {
-                "type": "INSTANCE",
-                "id": "120:119088",
-                "name": "Facts",
-                "w": 134,
+                "type": "FRAME",
+                "id": "124:119842",
+                "name": "Tags",
+                "w": 148,
                 "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
                 },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "Solo or 2–8 players"
-                },
-                "overrides": [
+                "children": [
                   {
-                    "path": ".",
-                    "height": 30,
-                    "width": 134
+                    "type": "INSTANCE",
+                    "id": "124:119843",
+                    "name": "Solo",
+                    "w": 49,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "Solo"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 49
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "120:119088",
+                    "name": "Players",
+                    "w": 91,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "2–8 players"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 91
+                      }
+                    ]
                   }
                 ]
               },
@@ -2674,26 +3075,69 @@
                 ]
               },
               {
-                "type": "INSTANCE",
-                "id": "120:119130",
-                "name": "Facts",
-                "w": 134,
+                "type": "FRAME",
+                "id": "124:119848",
+                "name": "Tags",
+                "w": 148,
                 "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
                 },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "Solo or 2–6 players"
-                },
-                "overrides": [
+                "children": [
                   {
-                    "path": ".",
-                    "height": 30,
-                    "width": 134
+                    "type": "INSTANCE",
+                    "id": "124:119849",
+                    "name": "Solo",
+                    "w": 49,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "Solo"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 49
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "120:119130",
+                    "name": "Players",
+                    "w": 91,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "2–6 players"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 91
+                      }
+                    ]
                   }
                 ]
               },
@@ -2904,26 +3348,69 @@
                 ]
               },
               {
-                "type": "INSTANCE",
-                "id": "120:119195",
-                "name": "Facts",
-                "w": 134,
+                "type": "FRAME",
+                "id": "124:119854",
+                "name": "Tags",
+                "w": 148,
                 "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
                 },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "Solo or 2–8 players"
-                },
-                "overrides": [
+                "children": [
                   {
-                    "path": ".",
-                    "height": 30,
-                    "width": 134
+                    "type": "INSTANCE",
+                    "id": "124:119855",
+                    "name": "Solo",
+                    "w": 49,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "Solo"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 49
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "120:119195",
+                    "name": "Players",
+                    "w": 91,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "2–8 players"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 91
+                      }
+                    ]
                   }
                 ]
               },
@@ -3134,26 +3621,69 @@
                 ]
               },
               {
-                "type": "INSTANCE",
-                "id": "120:119240",
-                "name": "Facts",
-                "w": 134,
+                "type": "FRAME",
+                "id": "124:119860",
+                "name": "Tags",
+                "w": 148,
                 "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
                 },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "Solo or 2–6 players"
-                },
-                "overrides": [
+                "children": [
                   {
-                    "path": ".",
-                    "height": 30,
-                    "width": 134
+                    "type": "INSTANCE",
+                    "id": "124:119861",
+                    "name": "Solo",
+                    "w": 49,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "Solo"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 49
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "120:119240",
+                    "name": "Players",
+                    "w": 91,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "2–6 players"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 91
+                      }
+                    ]
                   }
                 ]
               },
@@ -3364,26 +3894,45 @@
                 ]
               },
               {
-                "type": "INSTANCE",
-                "id": "120:119276",
-                "name": "Facts",
+                "type": "FRAME",
+                "id": "124:119866",
+                "name": "Tags",
                 "w": 91,
                 "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
                 },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "2–4 players"
-                },
-                "overrides": [
+                "children": [
                   {
-                    "path": ".",
-                    "height": 30,
-                    "width": 91
+                    "type": "INSTANCE",
+                    "id": "120:119276",
+                    "name": "Players",
+                    "w": 91,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "2–4 players"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 91
+                      }
+                    ]
                   }
                 ]
               },
@@ -3570,26 +4119,69 @@
                 ]
               },
               {
-                "type": "INSTANCE",
-                "id": "120:119306",
-                "name": "Facts",
-                "w": 134,
+                "type": "FRAME",
+                "id": "124:119867",
+                "name": "Tags",
+                "w": 148,
                 "h": 30,
                 "wSize": "hug",
                 "hSize": "hug",
-                "component": "Zumpo/Tag",
-                "variant": {
-                  "Tone": "Paper"
+                "layout": {
+                  "mode": "row",
+                  "gap": "$Zumpo · UI:space/8",
+                  "wrap": true,
+                  "crossGap": "$Zumpo · UI:space/8",
+                  "align": "center",
+                  "strokesIncluded": true
                 },
-                "componentId": "24:6531",
-                "props": {
-                  "Label": "Solo or 2–8 players"
-                },
-                "overrides": [
+                "children": [
                   {
-                    "path": ".",
-                    "height": 30,
-                    "width": 134
+                    "type": "INSTANCE",
+                    "id": "124:119868",
+                    "name": "Solo",
+                    "w": 49,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "Solo"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 49
+                      }
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "120:119306",
+                    "name": "Players",
+                    "w": 91,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "component": "Zumpo/Tag",
+                    "variant": {
+                      "Tone": "Paper"
+                    },
+                    "componentId": "24:6531",
+                    "props": {
+                      "Label": "2–8 players"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 30,
+                        "width": 91
+                      }
+                    ]
                   }
                 ]
               },
