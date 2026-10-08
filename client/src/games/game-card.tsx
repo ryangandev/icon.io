@@ -1,13 +1,14 @@
 import { Link } from 'react-router';
-import { ButtonLink, Icon, Tag } from '../ui';
+import { ButtonLink, Icon } from '../ui';
 import { cx } from '../ui/cx';
 import { useMessages } from '../i18n';
 import { GameArtwork } from './artwork';
 import { gamePath, soloPath, type GameInfo } from './catalog';
+import { GameTags, gameTagIds } from './game-tags';
 import styles from './game-card.module.css';
 
 /**
- * Zumpo/Game card: a game on the home page, what it is and how many can play,
+ * Zumpo/Game card: a game on the home page, what it is and who can play it,
  * the whole card a link to the game's page, where you pick how to play it. A
  * tile sits four across on a desktop; a row lists it on a phone, with the
  * game's signature piece as its icon.
@@ -21,11 +22,7 @@ export function GameCard({
 }) {
   const text = useMessages().games.of[game.type];
   const id = `game-${game.type}`;
-  const facts = (
-    <Tag tone="paper" id={`${id}-facts`}>
-      {text.facts}
-    </Tag>
-  );
+  const facts = <GameTags game={game} id={id} />;
   const copy = (
     <div className={styles.copy}>
       <h3 id={id} className={styles.name}>
@@ -38,13 +35,13 @@ export function GameCard({
     </div>
   );
   return (
-    // The name is the link's name; the tagline and facts describe it, so a
+    // The name is the link's name; the tagline and tags describe it, so a
     // screen reader does not read the whole card as one name.
     <Link
       to={gamePath(game.type)}
       className={cx(styles.card, styles[layout], styles[game.tone])}
       aria-labelledby={id}
-      aria-describedby={`${id}-tagline ${id}-facts`}
+      aria-describedby={[`${id}-tagline`, ...gameTagIds(game, id)].join(' ')}
     >
       {layout === 'tile' ? (
         <>

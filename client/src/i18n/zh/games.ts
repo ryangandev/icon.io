@@ -15,6 +15,7 @@ export const games: typeof en = {
   kindOfGame: '游戏类型',
   all: '全部',
   pickAGame: '选个游戏',
+  solo: '单人',
   playSolo: '单人玩',
   findRoom: '找房间',
   counts: {
@@ -51,7 +52,7 @@ export const games: typeof en = {
     minesweeper: {
       name: '扫雷',
       tagline: '自己清一盘，或大家共用一盘、各自暗中选格。',
-      facts: '单人或 2–8 人',
+      facts: '2–8 人',
       lobbySummary:
         '所有人同时各选一个未翻开的格子。越冒险的安全格得分越高，踩到雷会扣分。',
       lobbyFacts: [
@@ -86,7 +87,7 @@ export const games: typeof en = {
     'make-24': {
       name: '24 点',
       tagline: '四个数，加减乘除，算出 24。',
-      facts: '单人或 2–8 人',
+      facts: '2–8 人',
       lobbySummary:
         '所有人同时拿到同样的四个数。每个数用一次，用加减乘除算出 24。答得越快，得分越高。',
       lobbyFacts: [
@@ -120,7 +121,7 @@ export const games: typeof en = {
       name: '翻牌配对',
       tagline: '翻两张牌，记住每张的位置，找出所有的对子。',
       rowTagline: '翻两张牌，记住每张的位置。',
-      facts: '单人或 2–6 人',
+      facts: '2–6 人',
       lobbySummary:
         '轮流翻两张牌。翻出一对就归你，并且可以再来一次。找到最多对子的人获胜。',
       lobbyFacts: [
@@ -153,7 +154,7 @@ export const games: typeof en = {
     trios: {
       name: '凑三',
       tagline: '找出三张：每项特征要么全同，要么全异。',
-      facts: '单人或 2–8 人',
+      facts: '2–8 人',
       lobbySummary:
         '所有人同时看同样的十二张牌。选出三张，每项特征要么全部相同、要么全部不同，这一组就归你。',
       lobbyFacts: [
@@ -189,7 +190,7 @@ export const games: typeof en = {
     'liars-dice': {
       name: '大话骰',
       tagline: '暗中掷骰，押注全桌，揭穿吹牛。',
-      facts: '单人或 2–6 人',
+      facts: '2–6 人',
       lobbySummary:
         '每个人掷的骰子只有自己看得到，然后轮流叫全桌一共有多少。怀疑对方就喊“吹牛”：说错的人丢一颗骰子。最后还有骰子的人获胜。',
       lobbyFacts: [
@@ -246,7 +247,7 @@ export const games: typeof en = {
     'daily-word': {
       name: '每日单词',
       tagline: '五个字母，六次机会。每天一个新单词。',
-      facts: '单人或 2–8 人',
+      facts: '2–8 人',
       lobbySummary:
         '所有人同时猜同一个五字母单词，各有六次机会。用的次数越少，得分越高。',
       lobbyFacts: [

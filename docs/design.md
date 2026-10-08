@@ -52,12 +52,14 @@ Decisions from the design review rounds (their reports are in git history):
 - One page lists every game: the home page (P01, MO01) is also the games page, so there is no separate games hub and the hero has no buttons to it; Ryan chose this on 2026-10-05.
   Each game is a `Zumpo/Game card`, a tile four across on a desktop and a row on a phone, whose icon is the game's signature piece.
   Games are sorted by kind, not by player count, because six of the eight play both on your own and in a room and every game has rooms: Party, Puzzles and Spot & remember, each kind and its games in alphabetical order.
-  How a game can be played stays a fact on its card ("Solo or 2–8 players").
+  How a game can be played stays on its card as paper tags: Solo, where it has a game on your own, then the player count ("2–8 players"); Ryan asked on 2026-10-08 for the two to be separate tags.
   A row of `Zumpo/Filter chip`s above the games shows one kind; on a phone each kind also has a heading, because the list is long.
   Past about sixteen games, a desktop should give each kind its own shelf too.
   The hero's right side holds real game pieces, as the first Paper Pop concept drew paper objects there.
 - You pick the game on the home page, then how to play it on the game's page; Ryan chose this on 2026-10-08, as multi-game sites such as Papergames and Board Game Arena do.
   A game card says what the game is and how many can play, and the whole card is a link to the game's page, drawn with an arrow and no buttons.
+  Under the pointer the card lifts 4 px onto the Paper lift shadow and its arrow leads 3 px on, easing out over 180 ms (`State=Hover`); Ryan found an ink border that came at once too hard for the cards, so it was redesigned in Claude Design among four (lift, sticker, tilt, brighten) on 2026-10-08.
+  With reduced motion only the shadow comes.
   The page (DL01-DL03, ML01-ML03, MO04) opens with one `Zumpo/Game intro`: the game's artwork, kind, name and tagline, and its ways in, Play solo first where the game has it, because one click starts it with nobody to wait for, then Create a room.
   The open rooms to join are listed under it, and the How to play panel beside it gives the rules in a room and on your own at a glance, with a link to the full rules on How to play (P14); a phone shows the panel too, after the rooms.
   A game without a solo mode never shows an empty entry: its only way in is Create a room, or a room to join.

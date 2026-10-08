@@ -3,6 +3,7 @@ import { cx } from '../ui/cx';
 import { useMessages } from '../i18n';
 import { GameArtwork } from './artwork';
 import { createRoomPath, soloPath, type GameInfo } from './catalog';
+import { GameTags } from './game-tags';
 import styles from './game-intro.module.css';
 
 /**
@@ -38,7 +39,7 @@ export function GameIntro({
             </h1>
             <p className={styles.tagline}>{text.tagline}</p>
           </div>
-          <Tag tone="paper">{text.facts}</Tag>
+          <GameTags game={game} />
           <div className={styles.actions}>
             {game.solo && (
               <ButtonLink to={soloPath(game.type)}>

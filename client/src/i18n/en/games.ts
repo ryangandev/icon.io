@@ -9,7 +9,10 @@ export interface GameText {
   tagline: string;
   /** A shorter one for a phone's row, where the tagline takes three lines. */
   rowTagline?: string;
-  /** The game card's paper tag: "Solo or 2–8 players". */
+  /**
+   * Who plays, as a paper tag on the game's card and intro: "2–8 players". A
+   * game with a solo mode has a Solo tag before it.
+   */
   facts: string;
   /** The lobby's "How to play" card: a summary, then one fact per line. */
   lobbySummary: string;
@@ -43,6 +46,8 @@ export const games = {
   kindOfGame: 'Kind of game',
   all: 'All',
   pickAGame: 'Pick a game',
+  /** The tag before a game's player count when it can be played alone. */
+  solo: 'Solo',
   /** The ways into a game. */
   playSolo: 'Play solo',
   findRoom: 'Find a room',
@@ -82,7 +87,7 @@ Faster guesses earn more, from 50 to 150 points, and the drawer gets two fifths 
     minesweeper: {
       name: 'Minesweeper',
       tagline: 'Clear a board on your own, or share one and pick in secret.',
-      facts: 'Solo or 2–8 players',
+      facts: '2–8 players',
       lobbySummary:
         'Everyone picks a hidden cell at the same time. Riskier safe picks score more, and a mine costs points.',
       lobbyFacts: [
@@ -118,7 +123,7 @@ On your own, it is classic Minesweeper: open every safe cell without hitting a m
     'make-24': {
       name: 'Make 24',
       tagline: 'Four numbers. Plus, minus, times, divide. Make 24.',
-      facts: 'Solo or 2–8 players',
+      facts: '2–8 players',
       lobbySummary:
         'Everyone gets the same four numbers at once. Use each one once, with plus, minus, times and divide, to make 24. Quicker answers score more.',
       lobbyFacts: [
@@ -154,7 +159,7 @@ On your own, a run is ten hands against one clock. Skip a hand you are stuck on,
       name: 'Pairs',
       tagline: 'Flip two cards. Remember where everything is. Find every pair.',
       rowTagline: 'Flip two cards. Remember where everything is.',
-      facts: 'Solo or 2–6 players',
+      facts: '2–6 players',
       lobbySummary:
         'Take turns flipping two cards. Find a pair and it is yours, and you go again. Whoever finds the most pairs wins.',
       lobbyFacts: [
@@ -188,7 +193,7 @@ On your own, clear the board in as few turns as you can; your time breaks a tie.
     trios: {
       name: 'Trios',
       tagline: 'Spot three that are all the same or all different.',
-      facts: 'Solo or 2–8 players',
+      facts: '2–8 players',
       lobbySummary:
         'Everybody looks at the same twelve cards at once. Pick three that are all the same or all different in every feature, and the trio is yours.',
       lobbyFacts: [
@@ -225,7 +230,7 @@ On your own, a run is ten trios against one clock. A wrong pick adds 5 seconds; 
     'liars-dice': {
       name: 'Liar’s Dice',
       tagline: 'Roll in secret. Bid on the whole table. Call the bluff.',
-      facts: 'Solo or 2–6 players',
+      facts: '2–6 players',
       lobbySummary:
         'Everybody rolls dice nobody else can see, then bids on what the whole table holds. Call Liar on a bid you doubt: whoever was wrong loses a die. The last player with dice wins.',
       lobbyFacts: [
@@ -284,7 +289,7 @@ Clear the last level to win together. Two players play 7 levels, three play 6 an
     'daily-word': {
       name: 'Daily Word',
       tagline: 'Five letters, six guesses. A new word every day.',
-      facts: 'Solo or 2–8 players',
+      facts: '2–8 players',
       lobbySummary:
         'Everyone gets the same hidden five-letter word at once, with six guesses each. Fewer guesses score more.',
       lobbyFacts: [

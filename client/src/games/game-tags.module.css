@@ -1,0 +1,13 @@
+/* Wider than its card on a narrow phone, a tag ends in an ellipsis rather
+   than push the card wider. */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--zumpo-space-8);
+  max-width: 100%;
+  min-width: 0;
+}
+
+.tags > * {
+  min-width: 0;
+}

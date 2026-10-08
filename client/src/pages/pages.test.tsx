@@ -190,7 +190,7 @@ describe('the home page', () => {
     const { router } = await renderApp('/');
     const card = screen.getByRole('link', { name: 'Trios' });
     expect(card).toHaveAccessibleDescription(
-      'Spot three that are all the same or all different. Solo or 2–8 players',
+      'Spot three that are all the same or all different. Solo 2–8 players',
     );
     expect(
       within(screen.getByRole('region', { name: 'Pick a game' })).queryByRole(
