@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "exportedAt": "2026-10-06T16:19:21.975Z",
+  "exportedAt": "2026-10-08T16:11:59.259Z",
   "file": {
     "key": "pd5Hgp7zbT2cMqQNan35uY",
     "name": "Zumpo · Paper Pop flows",
@@ -14,12 +14,12 @@
   },
   "counts": {
     "flows": 171,
-    "componentFamilies": 52,
+    "componentFamilies": 54,
     "outsideComponents": 0,
-    "svgs": 85,
-    "seconds": 27,
-    "nodes": 10303,
-    "instances": 5687,
+    "svgs": 86,
+    "seconds": 29,
+    "nodes": 10514,
+    "instances": 5767,
     "grids": 69,
     "gridCells": 2252
   },
@@ -172,10 +172,24 @@
       "variants": 3
     },
     {
+      "name": "Zumpo/Game artwork",
+      "id": "120:117076",
+      "file": "components/game-artwork.json",
+      "preview": "previews/components/game-artwork.png",
+      "variants": 16
+    },
+    {
       "name": "Zumpo/Game card",
       "id": "90:105409",
       "file": "components/game-card.json",
       "preview": "previews/components/game-card.png",
+      "variants": 16
+    },
+    {
+      "name": "Zumpo/Game intro",
+      "id": "120:119324",
+      "file": "components/game-intro.json",
+      "preview": "previews/components/game-intro.png",
       "variants": 16
     },
     {
@@ -197,7 +211,7 @@
       "id": "24:5086",
       "file": "components/icon.json",
       "preview": "previews/components/icon.png",
-      "variants": 24
+      "variants": 25
     },
     {
       "name": "Zumpo/Input",
@@ -457,7 +471,7 @@
           "id": "9:433",
           "size": [
             1440,
-            1400
+            1300
           ],
           "file": "flows/01-platform/P01.json",
           "preview": "previews/01-platform/P01.png",
@@ -689,11 +703,11 @@
       "flows": [
         {
           "code": "DL01",
-          "title": "Room list · open, private, full and playing states",
+          "title": "Game page · open, private, full and playing rooms",
           "id": "9:868",
           "size": [
             1440,
-            885
+            1107
           ],
           "file": "flows/02-draw-and-guess/DL01.json",
           "preview": "previews/02-draw-and-guess/DL01.png",
@@ -701,11 +715,11 @@
         },
         {
           "code": "DL02",
-          "title": "No available rooms",
+          "title": "Game page · no rooms yet",
           "id": "9:943",
           "size": [
             1440,
-            771
+            866
           ],
           "file": "flows/02-draw-and-guess/DL02.json",
           "preview": "previews/02-draw-and-guess/DL02.png",
@@ -713,11 +727,11 @@
         },
         {
           "code": "DL03",
-          "title": "Room list loading",
+          "title": "Game page · rooms loading",
           "id": "9:978",
           "size": [
             1440,
-            868
+            1090
           ],
           "file": "flows/02-draw-and-guess/DL03.json",
           "preview": "previews/02-draw-and-guess/DL03.png",
@@ -1021,11 +1035,11 @@
       "flows": [
         {
           "code": "ML01",
-          "title": "Room list · open, private, full and playing states",
+          "title": "Game page · open, private, full and playing rooms",
           "id": "9:2528",
           "size": [
             1440,
-            885
+            1107
           ],
           "file": "flows/03-minesweeper/ML01.json",
           "preview": "previews/03-minesweeper/ML01.png",
@@ -1033,11 +1047,11 @@
         },
         {
           "code": "ML02",
-          "title": "No available rooms",
+          "title": "Game page · no rooms yet",
           "id": "9:2603",
           "size": [
             1440,
-            746
+            904
           ],
           "file": "flows/03-minesweeper/ML02.json",
           "preview": "previews/03-minesweeper/ML02.png",
@@ -1045,11 +1059,11 @@
         },
         {
           "code": "ML03",
-          "title": "Room list loading",
+          "title": "Game page · rooms loading",
           "id": "9:2638",
           "size": [
             1440,
-            868
+            1090
           ],
           "file": "flows/03-minesweeper/ML03.json",
           "preview": "previews/03-minesweeper/ML03.png",
@@ -1405,7 +1419,7 @@
           "id": "9:10062",
           "size": [
             390,
-            2485
+            2123
           ],
           "file": "flows/04-mobile/MO01.json",
           "preview": "previews/04-mobile/MO01.png",
@@ -1425,11 +1439,11 @@
         },
         {
           "code": "MO04",
-          "title": "Room list",
+          "title": "Game page",
           "id": "9:10156",
           "size": [
             390,
-            887
+            1600
           ],
           "file": "flows/04-mobile/MO04.json",
           "preview": "previews/04-mobile/MO04.png",
@@ -1617,7 +1631,7 @@
         }
       ],
       "notes": [
-        "MO01 · Home / rows under a heading per kind, with filters that scroll sideways. Every way in is one tap.",
+        "MO01 · Home / rows under a heading per kind, with filters that scroll sideways. A tap on a game opens its page.",
         "MO17 · A second tab with the same player took over. This one waits until Use this tab takes the player back; the other tab then shows this card.",
         "MO18 · Zumpo restarted for an update, which closes every room. Everyone in the room sees this card in place of the game.",
         "MO19 · 390 px, M10’s round seen from Leo’s phone: time ran out on Sam and the safest cell was picked for him. The result rows are the Pick result’s Phone layout, the name above the outcome and its detail, so the Auto-picked tag never squeezes the name; MO13 uses it too."
@@ -2659,8 +2673,5 @@
       ]
     }
   ],
-  "warnings": [
-    "Expected 50 component families, found 52",
-    "Expected 170 flow frames, found 171"
-  ]
+  "warnings": []
 }

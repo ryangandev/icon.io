@@ -1,20 +1,20 @@
 {
   "format": 1,
   "code": "DL01",
-  "title": "Room list · open, private, full and playing states",
+  "title": "Game page · open, private, full and playing rooms",
   "id": "9:868",
   "section": "02 / Draw & Guess / complete flow",
   "reviewNotes": [
-    "DL01 · Room list · open, private, full and playing states"
+    "DL01 · Game page / the game and its ways in, its open, private, full and playing rooms, and How to play beside them"
   ],
   "frame": {
     "type": "FRAME",
     "id": "9:868",
-    "name": "DL01 / Room list · open, private, full and playing states",
+    "name": "DL01 / Game page · open, private, full and playing rooms",
     "x": 40,
     "y": 150,
     "w": 1440,
-    "h": 885,
+    "h": 1107,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -62,71 +62,6 @@
               "Initials": "SA",
               "Tone": "Sand"
             }
-          }
-        ]
-      },
-      {
-        "type": "FRAME",
-        "id": "9:879",
-        "name": "Page heading",
-        "w": 1312,
-        "h": 121,
-        "hSize": "hug",
-        "layout": {
-          "mode": "column",
-          "gap": "$Zumpo · UI:space/12",
-          "strokesIncluded": true
-        },
-        "children": [
-          {
-            "type": "INSTANCE",
-            "id": "24:6610",
-            "name": "Tag / PLAY TOGETHER",
-            "w": 117,
-            "h": 30,
-            "wSize": "hug",
-            "hSize": "hug",
-            "component": "Zumpo/Tag",
-            "variant": {
-              "Tone": "Sand"
-            },
-            "componentId": "24:6511",
-            "props": {
-              "Label": "PLAY TOGETHER"
-            },
-            "overrides": [
-              {
-                "path": ".",
-                "height": 30,
-                "width": 117
-              }
-            ]
-          },
-          {
-            "type": "TEXT",
-            "id": "9:882",
-            "w": 1312,
-            "h": 42,
-            "hSize": "hug",
-            "text": "Draw & Guess rooms",
-            "textStyle": "Zumpo/Title",
-            "fills": [
-              "$Zumpo · UI:color/ink"
-            ],
-            "autoResize": "height"
-          },
-          {
-            "type": "TEXT",
-            "id": "9:883",
-            "w": 1312,
-            "h": 25,
-            "hSize": "hug",
-            "text": "Join a room or make one for your friends.",
-            "textStyle": "Zumpo/Body",
-            "fills": [
-              "$Zumpo · UI:color/muted"
-            ],
-            "autoResize": "height"
           }
         ]
       },
@@ -201,7 +136,7 @@
             "type": "FRAME",
             "id": "90:112597",
             "name": "End",
-            "w": 320,
+            "w": 170,
             "h": 48,
             "wSize": "hug",
             "hSize": "hug",
@@ -238,56 +173,6 @@
                     "width": 170
                   }
                 ]
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:887",
-                "name": "Action / Create a room",
-                "w": 138,
-                "h": 48,
-                "wSize": "hug",
-                "component": "Zumpo/Button",
-                "variant": {
-                  "Style": "Primary",
-                  "State": "Default"
-                },
-                "componentId": "4:15",
-                "props": {
-                  "Label": "Create a room"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 48,
-                    "reactions": [
-                      {
-                        "on": "on_click",
-                        "do": [
-                          {
-                            "nav": "navigate",
-                            "to": "9:1014",
-                            "toName": "DL04 / Create room · game-specific settings",
-                            "transition": "dissolve"
-                          }
-                        ]
-                      }
-                    ],
-                    "width": 138
-                  }
-                ],
-                "reactions": [
-                  {
-                    "on": "on_click",
-                    "do": [
-                      {
-                        "nav": "navigate",
-                        "to": "9:1014",
-                        "toName": "DL04 / Create room · game-specific settings",
-                        "transition": "dissolve"
-                      }
-                    ]
-                  }
-                ]
               }
             ]
           }
@@ -298,7 +183,7 @@
         "id": "9:889",
         "name": "Lobby layout",
         "w": 1312,
-        "h": 442,
+        "h": 809,
         "hSize": "hug",
         "layout": {
           "mode": "row",
@@ -308,182 +193,235 @@
         "children": [
           {
             "type": "FRAME",
-            "id": "9:890",
-            "name": "Rooms",
+            "id": "120:119325",
+            "name": "Main",
             "w": 920,
-            "h": 442,
+            "h": 809,
+            "wSize": "fill",
             "hSize": "hug",
             "layout": {
               "mode": "column",
-              "gap": "$Zumpo · UI:space/16",
+              "gap": "$Zumpo · UI:space/32",
               "strokesIncluded": true
             },
             "children": [
               {
                 "type": "INSTANCE",
-                "id": "9:891",
-                "name": "Zumpo/Room row",
+                "id": "120:119326",
+                "name": "Game intro",
                 "w": 920,
-                "h": 90,
+                "h": 289,
+                "wSize": "fill",
                 "hSize": "hug",
-                "component": "Zumpo/Room row",
+                "component": "Zumpo/Game intro",
                 "variant": {
-                  "Status": "Open",
+                  "Game": "Draw & Guess",
                   "Layout": "Desktop"
                 },
-                "componentId": "9:252",
-                "props": {
-                  "Players": "3 / 8",
-                  "Details": "Hosted by Maya · 2 rounds"
-                },
+                "componentId": "120:118622",
                 "overrides": [
                   {
                     "path": ".",
-                    "height": 90,
+                    "height": 289,
                     "width": 920
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "9:890",
+                "name": "Rooms",
+                "w": 920,
+                "h": 488,
+                "wSize": "fill",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/16",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "TEXT",
+                    "id": "120:119366",
+                    "name": "Rooms heading",
+                    "w": 245,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "Draw & Guess rooms",
+                    "textStyle": "Zumpo/Heading",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
                   },
                   {
-                    "path": "Action / Action / Join",
-                    "reactions": [
+                    "type": "INSTANCE",
+                    "id": "9:891",
+                    "name": "Zumpo/Room row",
+                    "w": 920,
+                    "h": 90,
+                    "hSize": "hug",
+                    "component": "Zumpo/Room row",
+                    "variant": {
+                      "Status": "Open",
+                      "Layout": "Desktop"
+                    },
+                    "componentId": "9:252",
+                    "props": {
+                      "Players": "3 / 8",
+                      "Details": "Hosted by Maya · 2 rounds"
+                    },
+                    "overrides": [
                       {
-                        "on": "on_click",
-                        "do": [
+                        "path": ".",
+                        "height": 90,
+                        "width": 920
+                      },
+                      {
+                        "path": "Action / Action / Join",
+                        "reactions": [
                           {
-                            "nav": "navigate",
-                            "to": "9:1431",
-                            "toName": "D03 / Guest · waiting for host"
+                            "on": "on_click",
+                            "do": [
+                              {
+                                "nav": "navigate",
+                                "to": "9:1431",
+                                "toName": "D03 / Guest · waiting for host"
+                              }
+                            ]
                           }
                         ]
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:902",
-                "name": "Zumpo/Room row",
-                "w": 920,
-                "h": 90,
-                "hSize": "hug",
-                "component": "Zumpo/Room row",
-                "variant": {
-                  "Status": "Private",
-                  "Layout": "Desktop"
-                },
-                "componentId": "9:264",
-                "props": {
-                  "Players": "2 / 6",
-                  "Details": "Hosted by Leo · 3 rounds",
-                  "Room name": "Friday doodles"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 90,
-                    "width": 920
                   },
                   {
-                    "path": "Host",
-                    "componentProperties": {
-                      "Initials": "LE",
-                      "Tone": "Lime"
-                    }
-                  },
-                  {
-                    "path": "Action / Action / Join",
-                    "reactions": [
+                    "type": "INSTANCE",
+                    "id": "9:902",
+                    "name": "Zumpo/Room row",
+                    "w": 920,
+                    "h": 90,
+                    "hSize": "hug",
+                    "component": "Zumpo/Room row",
+                    "variant": {
+                      "Status": "Private",
+                      "Layout": "Desktop"
+                    },
+                    "componentId": "9:264",
+                    "props": {
+                      "Players": "2 / 6",
+                      "Details": "Hosted by Leo · 3 rounds",
+                      "Room name": "Friday doodles"
+                    },
+                    "overrides": [
                       {
-                        "on": "on_click",
-                        "do": [
+                        "path": ".",
+                        "height": 90,
+                        "width": 920
+                      },
+                      {
+                        "path": "Host",
+                        "componentProperties": {
+                          "Initials": "LE",
+                          "Tone": "Lime"
+                        }
+                      },
+                      {
+                        "path": "Action / Action / Join",
+                        "reactions": [
                           {
-                            "nav": "navigate",
-                            "to": "9:1176",
-                            "toName": "DL07 / Password-protected room"
+                            "on": "on_click",
+                            "do": [
+                              {
+                                "nav": "navigate",
+                                "to": "9:1176",
+                                "toName": "DL07 / Password-protected room"
+                              }
+                            ]
                           }
                         ]
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:913",
-                "name": "Zumpo/Room row",
-                "w": 920,
-                "h": 90,
-                "hSize": "hug",
-                "component": "Zumpo/Room row",
-                "variant": {
-                  "Status": "Full",
-                  "Layout": "Desktop"
-                },
-                "componentId": "9:276",
-                "props": {
-                  "Players": "4 / 4",
-                  "Details": "Hosted by Ryan · 1 round",
-                  "Room name": "The full house"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 90,
-                    "width": 920
                   },
                   {
-                    "path": "Host",
-                    "componentProperties": {
-                      "Initials": "RG",
-                      "Tone": "Blue"
-                    }
-                  }
-                ]
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:924",
-                "name": "Zumpo/Room row",
-                "w": 920,
-                "h": 90,
-                "hSize": "hug",
-                "component": "Zumpo/Room row",
-                "variant": {
-                  "Status": "Playing",
-                  "Layout": "Desktop"
-                },
-                "componentId": "9:288",
-                "props": {
-                  "Players": "5 / 8",
-                  "Details": "Hosted by Sam · 4 rounds",
-                  "Room name": "Sketch club"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 90,
-                    "width": 920
+                    "type": "INSTANCE",
+                    "id": "9:913",
+                    "name": "Zumpo/Room row",
+                    "w": 920,
+                    "h": 90,
+                    "hSize": "hug",
+                    "component": "Zumpo/Room row",
+                    "variant": {
+                      "Status": "Full",
+                      "Layout": "Desktop"
+                    },
+                    "componentId": "9:276",
+                    "props": {
+                      "Players": "4 / 4",
+                      "Details": "Hosted by Ryan · 1 round",
+                      "Room name": "The full house"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 90,
+                        "width": 920
+                      },
+                      {
+                        "path": "Host",
+                        "componentProperties": {
+                          "Initials": "RG",
+                          "Tone": "Blue"
+                        }
+                      }
+                    ]
                   },
                   {
-                    "path": "Host",
-                    "componentProperties": {
-                      "Initials": "SA",
-                      "Tone": "Sand"
-                    }
+                    "type": "INSTANCE",
+                    "id": "9:924",
+                    "name": "Zumpo/Room row",
+                    "w": 920,
+                    "h": 90,
+                    "hSize": "hug",
+                    "component": "Zumpo/Room row",
+                    "variant": {
+                      "Status": "Playing",
+                      "Layout": "Desktop"
+                    },
+                    "componentId": "9:288",
+                    "props": {
+                      "Players": "5 / 8",
+                      "Details": "Hosted by Sam · 4 rounds",
+                      "Room name": "Sketch club"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 90,
+                        "width": 920
+                      },
+                      {
+                        "path": "Host",
+                        "componentProperties": {
+                          "Initials": "SA",
+                          "Tone": "Sand"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "9:935",
+                    "w": 126,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "4 rooms · Updates live",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
                   }
-                ]
-              },
-              {
-                "type": "TEXT",
-                "id": "9:935",
-                "w": 126,
-                "h": 18,
-                "wSize": "hug",
-                "hSize": "hug",
-                "text": "4 rooms · Updates live",
-                "textStyle": "Zumpo/Small",
-                "fills": [
-                  "$Zumpo · UI:color/muted"
                 ]
               }
             ]
@@ -493,7 +431,7 @@
             "id": "9:936",
             "name": "How to play",
             "w": 368,
-            "h": 328,
+            "h": 416,
             "hSize": "hug",
             "fills": [
               "$Zumpo · UI:color/lime"
@@ -538,18 +476,73 @@
                 "autoResize": "height"
               },
               {
-                "type": "TEXT",
-                "id": "9:939",
-                "name": "2–8 players Host chooses 1–4 rounds 15s to choose a word 90s to draw ·",
-                "w": 304,
-                "h": 125,
+                "type": "FRAME",
+                "id": "120:119367",
+                "name": "Play together",
+                "w": 302,
+                "h": 149,
+                "wSize": "fill",
                 "hSize": "hug",
-                "text": "2–8 players\n1–4 rounds, everyone draws once a round\n15s to pick a word · 90s to draw\nThe answer shows for 10s",
-                "textStyle": "Zumpo/Body",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/4",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "TEXT",
+                    "id": "120:119368",
+                    "name": "Label",
+                    "w": 92,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "Play together",
+                    "textStyle": "Zumpo/Label",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "9:939",
+                    "name": "2–8 players Host chooses 1–4 rounds 15s to choose a word 90s to draw ·",
+                    "w": 302,
+                    "h": 125,
+                    "wSize": "fill",
+                    "hSize": "hug",
+                    "text": "2–8 players\n1–4 rounds, everyone draws once a round\n15s to pick a word · 90s to draw\nThe answer shows for 10s",
+                    "textStyle": "Zumpo/Body",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ],
+                    "autoResize": "height"
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "120:119369",
+                "name": "Action / Full rules",
+                "w": 104,
+                "h": 48,
+                "wSize": "hug",
+                "component": "Zumpo/Button",
+                "variant": {
+                  "Style": "Secondary",
+                  "State": "Default"
+                },
+                "componentId": "4:18",
+                "props": {
+                  "Label": "Full rules"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 48,
+                    "width": 104
+                  }
+                ]
               }
             ]
           }

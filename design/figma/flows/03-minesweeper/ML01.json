@@ -1,20 +1,20 @@
 {
   "format": 1,
   "code": "ML01",
-  "title": "Room list · open, private, full and playing states",
+  "title": "Game page · open, private, full and playing rooms",
   "id": "9:2528",
   "section": "03 / Minesweeper / complete flow",
   "reviewNotes": [
-    "ML01 · Room list · open, private, full and playing states"
+    "ML01 · Game page / Play solo first, then Create a room; How to play gives the rules in a room and on your own"
   ],
   "frame": {
     "type": "FRAME",
     "id": "9:2528",
-    "name": "ML01 / Room list · open, private, full and playing states",
+    "name": "ML01 / Game page · open, private, full and playing rooms",
     "x": 40,
     "y": 150,
     "w": 1440,
-    "h": 885,
+    "h": 1107,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -62,71 +62,6 @@
               "Initials": "SA",
               "Tone": "Sand"
             }
-          }
-        ]
-      },
-      {
-        "type": "FRAME",
-        "id": "9:2539",
-        "name": "Page heading",
-        "w": 1312,
-        "h": 121,
-        "hSize": "hug",
-        "layout": {
-          "mode": "column",
-          "gap": "$Zumpo · UI:space/12",
-          "strokesIncluded": true
-        },
-        "children": [
-          {
-            "type": "INSTANCE",
-            "id": "24:6815",
-            "name": "Tag / PLAY TOGETHER",
-            "w": 117,
-            "h": 30,
-            "wSize": "hug",
-            "hSize": "hug",
-            "component": "Zumpo/Tag",
-            "variant": {
-              "Tone": "Sand"
-            },
-            "componentId": "24:6511",
-            "props": {
-              "Label": "PLAY TOGETHER"
-            },
-            "overrides": [
-              {
-                "path": ".",
-                "height": 30,
-                "width": 117
-              }
-            ]
-          },
-          {
-            "type": "TEXT",
-            "id": "9:2542",
-            "w": 1312,
-            "h": 42,
-            "hSize": "hug",
-            "text": "Minesweeper rooms",
-            "textStyle": "Zumpo/Title",
-            "fills": [
-              "$Zumpo · UI:color/ink"
-            ],
-            "autoResize": "height"
-          },
-          {
-            "type": "TEXT",
-            "id": "9:2543",
-            "w": 1312,
-            "h": 25,
-            "hSize": "hug",
-            "text": "Join a room or make one for your friends.",
-            "textStyle": "Zumpo/Body",
-            "fills": [
-              "$Zumpo · UI:color/muted"
-            ],
-            "autoResize": "height"
           }
         ]
       },
@@ -201,7 +136,7 @@
             "type": "FRAME",
             "id": "90:112573",
             "name": "End",
-            "w": 320,
+            "w": 170,
             "h": 48,
             "wSize": "hug",
             "hSize": "hug",
@@ -238,56 +173,6 @@
                     "width": 170
                   }
                 ]
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:2547",
-                "name": "Action / Create a room",
-                "w": 138,
-                "h": 48,
-                "wSize": "hug",
-                "component": "Zumpo/Button",
-                "variant": {
-                  "Style": "Primary",
-                  "State": "Default"
-                },
-                "componentId": "4:15",
-                "props": {
-                  "Label": "Create a room"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 48,
-                    "reactions": [
-                      {
-                        "on": "on_click",
-                        "do": [
-                          {
-                            "nav": "navigate",
-                            "to": "9:2674",
-                            "toName": "ML04 / Create room · game-specific settings",
-                            "transition": "dissolve"
-                          }
-                        ]
-                      }
-                    ],
-                    "width": 138
-                  }
-                ],
-                "reactions": [
-                  {
-                    "on": "on_click",
-                    "do": [
-                      {
-                        "nav": "navigate",
-                        "to": "9:2674",
-                        "toName": "ML04 / Create room · game-specific settings",
-                        "transition": "dissolve"
-                      }
-                    ]
-                  }
-                ]
               }
             ]
           }
@@ -298,7 +183,7 @@
         "id": "9:2549",
         "name": "Lobby layout",
         "w": 1312,
-        "h": 442,
+        "h": 809,
         "hSize": "hug",
         "layout": {
           "mode": "row",
@@ -308,181 +193,234 @@
         "children": [
           {
             "type": "FRAME",
-            "id": "9:2550",
-            "name": "Rooms",
+            "id": "120:119475",
+            "name": "Main",
             "w": 920,
-            "h": 442,
+            "h": 809,
+            "wSize": "fill",
             "hSize": "hug",
             "layout": {
               "mode": "column",
-              "gap": "$Zumpo · UI:space/16",
+              "gap": "$Zumpo · UI:space/32",
               "strokesIncluded": true
             },
             "children": [
               {
                 "type": "INSTANCE",
-                "id": "9:2551",
-                "name": "Zumpo/Room row",
+                "id": "120:119476",
+                "name": "Game intro",
                 "w": 920,
-                "h": 90,
+                "h": 289,
+                "wSize": "fill",
                 "hSize": "hug",
-                "component": "Zumpo/Room row",
+                "component": "Zumpo/Game intro",
                 "variant": {
-                  "Status": "Open",
+                  "Game": "Minesweeper",
                   "Layout": "Desktop"
                 },
-                "componentId": "9:252",
-                "props": {
-                  "Players": "3 / 8",
-                  "Details": "Hosted by Maya · Small 9 × 9"
-                },
+                "componentId": "120:118662",
                 "overrides": [
                   {
                     "path": ".",
-                    "height": 90,
+                    "height": 289,
                     "width": 920
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "9:2550",
+                "name": "Rooms",
+                "w": 920,
+                "h": 488,
+                "wSize": "fill",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/16",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "TEXT",
+                    "id": "120:119527",
+                    "name": "Rooms heading",
+                    "w": 233,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "Minesweeper rooms",
+                    "textStyle": "Zumpo/Heading",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
                   },
                   {
-                    "path": "Action / Action / Join",
-                    "reactions": [
+                    "type": "INSTANCE",
+                    "id": "9:2551",
+                    "name": "Zumpo/Room row",
+                    "w": 920,
+                    "h": 90,
+                    "hSize": "hug",
+                    "component": "Zumpo/Room row",
+                    "variant": {
+                      "Status": "Open",
+                      "Layout": "Desktop"
+                    },
+                    "componentId": "9:252",
+                    "props": {
+                      "Players": "3 / 8",
+                      "Details": "Hosted by Maya · Small 9 × 9"
+                    },
+                    "overrides": [
                       {
-                        "on": "on_click",
-                        "do": [
+                        "path": ".",
+                        "height": 90,
+                        "width": 920
+                      },
+                      {
+                        "path": "Action / Action / Join",
+                        "reactions": [
                           {
-                            "nav": "navigate",
-                            "to": "9:3176",
-                            "toName": "M03 / Guest · waiting for host"
+                            "on": "on_click",
+                            "do": [
+                              {
+                                "nav": "navigate",
+                                "to": "9:3176",
+                                "toName": "M03 / Guest · waiting for host"
+                              }
+                            ]
                           }
                         ]
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:2562",
-                "name": "Zumpo/Room row",
-                "w": 920,
-                "h": 90,
-                "hSize": "hug",
-                "component": "Zumpo/Room row",
-                "variant": {
-                  "Status": "Private",
-                  "Layout": "Desktop"
-                },
-                "componentId": "9:264",
-                "props": {
-                  "Players": "2 / 4",
-                  "Details": "Hosted by Leo · Medium 16 × 16",
-                  "Room name": "Lunch break"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 90,
-                    "width": 920
                   },
                   {
-                    "path": "Host",
-                    "componentProperties": {
-                      "Initials": "LE",
-                      "Tone": "Lime"
-                    }
-                  },
-                  {
-                    "path": "Action / Action / Join",
-                    "reactions": [
+                    "type": "INSTANCE",
+                    "id": "9:2562",
+                    "name": "Zumpo/Room row",
+                    "w": 920,
+                    "h": 90,
+                    "hSize": "hug",
+                    "component": "Zumpo/Room row",
+                    "variant": {
+                      "Status": "Private",
+                      "Layout": "Desktop"
+                    },
+                    "componentId": "9:264",
+                    "props": {
+                      "Players": "2 / 4",
+                      "Details": "Hosted by Leo · Medium 16 × 16",
+                      "Room name": "Lunch break"
+                    },
+                    "overrides": [
                       {
-                        "on": "on_click",
-                        "do": [
+                        "path": ".",
+                        "height": 90,
+                        "width": 920
+                      },
+                      {
+                        "path": "Host",
+                        "componentProperties": {
+                          "Initials": "LE",
+                          "Tone": "Lime"
+                        }
+                      },
+                      {
+                        "path": "Action / Action / Join",
+                        "reactions": [
                           {
-                            "nav": "navigate",
-                            "to": "9:2836",
-                            "toName": "ML07 / Password-protected room"
+                            "on": "on_click",
+                            "do": [
+                              {
+                                "nav": "navigate",
+                                "to": "9:2836",
+                                "toName": "ML07 / Password-protected room"
+                              }
+                            ]
                           }
                         ]
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:2573",
-                "name": "Zumpo/Room row",
-                "w": 920,
-                "h": 90,
-                "hSize": "hug",
-                "component": "Zumpo/Room row",
-                "variant": {
-                  "Status": "Full",
-                  "Layout": "Desktop"
-                },
-                "componentId": "9:276",
-                "props": {
-                  "Players": "6 / 6",
-                  "Details": "Hosted by Ryan · Large 30 × 16",
-                  "Room name": "Mine field trip"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 90,
-                    "width": 920
                   },
                   {
-                    "path": "Host",
-                    "componentProperties": {
-                      "Initials": "RG",
-                      "Tone": "Blue"
-                    }
-                  }
-                ]
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:2584",
-                "name": "Zumpo/Room row",
-                "w": 920,
-                "h": 90,
-                "hSize": "hug",
-                "component": "Zumpo/Room row",
-                "variant": {
-                  "Status": "Playing",
-                  "Layout": "Desktop"
-                },
-                "componentId": "9:288",
-                "props": {
-                  "Details": "Hosted by Sam · Small 9 × 9",
-                  "Room name": "Lucky clicks"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 90,
-                    "width": 920
+                    "type": "INSTANCE",
+                    "id": "9:2573",
+                    "name": "Zumpo/Room row",
+                    "w": 920,
+                    "h": 90,
+                    "hSize": "hug",
+                    "component": "Zumpo/Room row",
+                    "variant": {
+                      "Status": "Full",
+                      "Layout": "Desktop"
+                    },
+                    "componentId": "9:276",
+                    "props": {
+                      "Players": "6 / 6",
+                      "Details": "Hosted by Ryan · Large 30 × 16",
+                      "Room name": "Mine field trip"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 90,
+                        "width": 920
+                      },
+                      {
+                        "path": "Host",
+                        "componentProperties": {
+                          "Initials": "RG",
+                          "Tone": "Blue"
+                        }
+                      }
+                    ]
                   },
                   {
-                    "path": "Host",
-                    "componentProperties": {
-                      "Initials": "SA",
-                      "Tone": "Sand"
-                    }
+                    "type": "INSTANCE",
+                    "id": "9:2584",
+                    "name": "Zumpo/Room row",
+                    "w": 920,
+                    "h": 90,
+                    "hSize": "hug",
+                    "component": "Zumpo/Room row",
+                    "variant": {
+                      "Status": "Playing",
+                      "Layout": "Desktop"
+                    },
+                    "componentId": "9:288",
+                    "props": {
+                      "Details": "Hosted by Sam · Small 9 × 9",
+                      "Room name": "Lucky clicks"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 90,
+                        "width": 920
+                      },
+                      {
+                        "path": "Host",
+                        "componentProperties": {
+                          "Initials": "SA",
+                          "Tone": "Sand"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "9:2595",
+                    "w": 126,
+                    "h": 18,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "4 rooms · Updates live",
+                    "textStyle": "Zumpo/Small",
+                    "fills": [
+                      "$Zumpo · UI:color/muted"
+                    ]
                   }
-                ]
-              },
-              {
-                "type": "TEXT",
-                "id": "9:2595",
-                "w": 126,
-                "h": 18,
-                "wSize": "hug",
-                "hSize": "hug",
-                "text": "4 rooms · Updates live",
-                "textStyle": "Zumpo/Small",
-                "fills": [
-                  "$Zumpo · UI:color/muted"
                 ]
               }
             ]
@@ -492,7 +430,7 @@
             "id": "9:2596",
             "name": "How to play",
             "w": 368,
-            "h": 303,
+            "h": 606,
             "hSize": "hug",
             "fills": [
               "$Zumpo · UI:color/lime"
@@ -537,18 +475,118 @@
                 "autoResize": "height"
               },
               {
-                "type": "TEXT",
-                "id": "9:2599",
-                "name": "2–8 players Small, Medium or Large boards 15s to pick · 4s reveal Same",
-                "w": 304,
-                "h": 100,
+                "type": "FRAME",
+                "id": "120:119528",
+                "name": "Play together",
+                "w": 302,
+                "h": 124,
+                "wSize": "fill",
                 "hSize": "hug",
-                "text": "2–8 players\nSmall, Medium or Large board\n15s to pick · 4s reveal\nSame safe cell? The points are split.",
-                "textStyle": "Zumpo/Body",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/4",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "TEXT",
+                    "id": "120:119529",
+                    "name": "Label",
+                    "w": 92,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "Play together",
+                    "textStyle": "Zumpo/Label",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "9:2599",
+                    "name": "2–8 players Small, Medium or Large boards 15s to pick · 4s reveal Same",
+                    "w": 302,
+                    "h": 100,
+                    "wSize": "fill",
+                    "hSize": "hug",
+                    "text": "2–8 players\nSmall, Medium or Large board\n15s to pick · 4s reveal\nSame safe cell? The points are split.",
+                    "textStyle": "Zumpo/Body",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ],
+                    "autoResize": "height"
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "120:119530",
+                "name": "On your own",
+                "w": 302,
+                "h": 199,
+                "wSize": "fill",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/4",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "TEXT",
+                    "id": "120:119531",
+                    "name": "Label",
+                    "w": 86,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "On your own",
+                    "textStyle": "Zumpo/Label",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "120:119532",
+                    "name": "Facts",
+                    "w": 302,
+                    "h": 175,
+                    "wSize": "fill",
+                    "hSize": "hug",
+                    "text": "Your first click is always safe\nRight-click or long-press to flag; Flag mode makes a tap flag\nClick a number whose flags are placed to open the rest around it\nYour best time on each board is kept on this device",
+                    "textStyle": "Zumpo/Body",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ],
+                    "autoResize": "height"
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "120:119533",
+                "name": "Action / Full rules",
+                "w": 104,
+                "h": 48,
+                "wSize": "hug",
+                "component": "Zumpo/Button",
+                "variant": {
+                  "Style": "Secondary",
+                  "State": "Default"
+                },
+                "componentId": "4:18",
+                "props": {
+                  "Label": "Full rules"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 48,
+                    "width": 104
+                  }
+                ]
               }
             ]
           }

@@ -121,6 +121,10 @@ export const glyphs = {
     { d: 'M1.5 1C1.776 1 2 1.224 2 1.5C2 1.776 1.776 2 1.5 2C1.224 2 1 1.776 1 1.5C1 1.224 1.224 1 1.5 1Z', x: 10.5, y: 10.5, fill: true },
     { d: 'M1.5 1C1.776 1 2 1.224 2 1.5C2 1.776 1.776 2 1.5 2C1.224 2 1 1.776 1 1.5C1 1.224 1.224 1 1.5 1Z', x: 14, y: 14, fill: true },
   ],
+  'forward': [
+    { d: 'M15 1H1', x: 4, y: 11 },
+    { d: 'M1 1L7 7L1 13', x: 12, y: 5 },
+  ],
 } as const satisfies Record<string, readonly GlyphPath[]>;
 
 export type GlyphName = keyof typeof glyphs;
