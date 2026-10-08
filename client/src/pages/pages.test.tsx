@@ -485,7 +485,6 @@ describe('on a phone', () => {
       screen.getByText('Good games for good company.'),
     ).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Let’s play' })).toBeNull();
-    expect(screen.queryByText(/Play solo starts at once/)).toBeNull();
     const party = screen.getByRole('region', { name: 'Party' });
     expect(
       within(party)

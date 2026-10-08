@@ -53,6 +53,7 @@ Decisions from the design review rounds (their reports are in git history):
   Each game is a `Zumpo/Game card`, a tile four across on a desktop and a row on a phone, whose icon is the game's signature piece.
   Games are sorted by kind, not by player count, because six of the eight play both on your own and in a room and every game has rooms: Party, Puzzles and Spot & remember, each kind and its games in alphabetical order.
   How a game can be played stays on its card as paper tags: Solo, where it has a game on your own, then the player count ("2–8 players"); Ryan asked on 2026-10-08 for the two to be separate tags.
+  The page ends with the games: no notice under them on how solo and rooms start, since each game's page says how to play it; Ryan removed it on 2026-10-08.
   A row of `Zumpo/Filter chip`s above the games shows one kind; on a phone each kind also has a heading, because the list is long.
   Past about sixteen games, a desktop should give each kind its own shelf too.
   The hero's right side holds real game pieces, as the first Paper Pop concept drew paper objects there.
