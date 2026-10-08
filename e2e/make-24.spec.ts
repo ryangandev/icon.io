@@ -1,4 +1,4 @@
-import { createRoom, expect, joinRoom, test } from './fixtures';
+import { createRoom, expect, joinRoom, test, playSolo } from './fixtures';
 import { solveHand } from './play/make-24';
 
 test('two players solve every hand of a game', async ({ player }) => {
@@ -35,13 +35,7 @@ test('a player with no name plays ten hands on their own', async ({
 }) => {
   test.setTimeout(120_000);
   const sam = await player('Sam', { named: false });
-  let sockets = 0;
-  sam.on('websocket', () => sockets++);
-  await sam.goto('/');
-  await sam
-    .getByRole('region', { name: 'Make 24' })
-    .getByRole('link', { name: 'Play solo' })
-    .click();
+  const sent = await playSolo(sam, 'Make 24');
   await sam.getByRole('button', { name: 'Start' }).click();
 
   const turn = sam.getByRole('region', { name: 'Turn' });
@@ -58,5 +52,5 @@ test('a player with no name plays ten hands on their own', async ({
   await expect(
     sam.getByRole('button', { name: 'Challenge a friend' }).first(),
   ).toBeVisible();
-  expect(sockets).toBe(0);
+  expect(sent()).toEqual([]);
 });

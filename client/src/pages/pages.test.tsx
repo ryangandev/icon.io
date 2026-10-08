@@ -126,7 +126,7 @@ describe('a name', () => {
     expect(field).toHaveFocus();
   });
 
-  it('is shown in a lobby, and changed from there', async () => {
+  it('is shown on a game’s page, and changed from there', async () => {
     const user = userEvent.setup();
     await renderApp('/games/minesweeper');
     await user.click(screen.getByRole('button', { name: 'Playing as Ryan' }));
@@ -185,13 +185,82 @@ describe('the home page', () => {
     expect(tiles()).toHaveLength(8);
   });
 
+  it('opens a game’s page from its card', async () => {
+    const user = userEvent.setup();
+    const { router } = await renderApp('/');
+    const card = screen.getByRole('link', { name: 'Trios' });
+    expect(card).toHaveAccessibleDescription(
+      'Spot three that are all the same or all different. Solo 2–8 players',
+    );
+    expect(
+      within(screen.getByRole('region', { name: 'Pick a game' })).queryByRole(
+        'link',
+        { name: 'Play solo' },
+      ),
+    ).toBeNull();
+    await user.click(card);
+    expect(router.state.location.pathname).toBe('/games/trios');
+  });
+
   it('is where the old games page leads', async () => {
     const { router } = await renderApp('/games');
     expect(router.state.location.pathname).toBe('/');
   });
 });
 
-describe('a lobby', () => {
+describe('a game’s page', () => {
+  it('says what the game is and offers Play solo first, then a room', async () => {
+    await renderApp('/games/minesweeper');
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Minesweeper' }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Puzzles')).toBeInTheDocument();
+    const intro = screen.getByRole('region', { name: 'Minesweeper' });
+    expect(
+      within(intro)
+        .getAllByRole('link')
+        .map((link) => [link.textContent, link.getAttribute('href')]),
+    ).toEqual([
+      ['Play solo', '/games/minesweeper/solo'],
+      ['Create a room', '/games/minesweeper/new'],
+    ]);
+  });
+
+  it('offers only a room for a game played together', async () => {
+    await renderApp('/games/hush');
+    const intro = screen.getByRole('region', { name: 'Hush' });
+    expect(within(intro).queryByRole('link', { name: 'Play solo' })).toBeNull();
+    expect(
+      within(intro).getByRole('link', { name: 'Create a room' }),
+    ).toHaveAttribute('href', '/games/hush/new');
+  });
+
+  it('gives the rules in a room and on your own, and links to them all', async () => {
+    await renderApp('/games/minesweeper');
+    const howToPlay = screen.getByRole('complementary', {
+      name: 'How to play',
+    });
+    expect(
+      within(howToPlay).getByRole('region', { name: 'Play together' }),
+    ).toHaveTextContent('15s to pick · 4s reveal');
+    expect(
+      within(howToPlay).getByRole('region', { name: 'On your own' }),
+    ).toHaveTextContent('Your first click is always safe');
+    expect(
+      within(howToPlay).getByRole('link', { name: 'Full rules' }),
+    ).toHaveAttribute('href', '/how-to-play#rules-minesweeper');
+  });
+
+  it('gives a game played together only its rules in a room', async () => {
+    await renderApp('/games/draw-and-guess');
+    const howToPlay = screen.getByRole('complementary', {
+      name: 'How to play',
+    });
+    expect(
+      within(howToPlay).queryByRole('region', { name: 'On your own' }),
+    ).toBeNull();
+  });
+
   it('shows the room list and each room’s setting in Chinese', async () => {
     const { fake } = await renderApp('/games/minesweeper', { locale: 'zh' });
     expect(
@@ -416,7 +485,6 @@ describe('on a phone', () => {
       screen.getByText('Good games for good company.'),
     ).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Let’s play' })).toBeNull();
-    expect(screen.queryByText(/Play solo starts at once/)).toBeNull();
     const party = screen.getByRole('region', { name: 'Party' });
     expect(
       within(party)
@@ -439,15 +507,17 @@ describe('on a phone', () => {
     ).toBeInTheDocument();
   });
 
-  it('counts the rooms in the heading', async () => {
+  it('shows a game’s page whole, its rules included', async () => {
     onPhone();
     const { fake } = await renderApp('/games/minesweeper');
     expect(
-      screen.getByRole('heading', { level: 1, name: 'Find your room.' }),
+      screen.getByRole('heading', { level: 1, name: 'Minesweeper' }),
     ).toBeInTheDocument();
     act(() => fake.serverEmits('lobby:rooms', 'minesweeper', [lobbyRoom]));
-    expect(screen.getByText('Minesweeper · 1 room')).toBeInTheDocument();
-    expect(screen.queryByText('1 room · Updates live')).toBeNull();
+    expect(screen.getByText('1 room · Updates live')).toBeInTheDocument();
+    expect(
+      screen.getByRole('complementary', { name: 'How to play' }),
+    ).toBeInTheDocument();
   });
 
   it('makes a room straight on the page', async () => {

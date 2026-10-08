@@ -52,13 +52,14 @@ describe('Play solo', () => {
   });
 
   it('is offered on the games that have it', async () => {
-    await renderApp('/');
-    const minesweeper = screen.getByRole('region', { name: 'Minesweeper' });
-    expect(
-      within(minesweeper).getByRole('link', { name: 'Play solo' }),
-    ).toHaveAttribute('href', '/games/minesweeper/solo');
-    const draw = screen.getByRole('region', { name: 'Draw & Guess' });
-    expect(within(draw).queryByRole('link', { name: 'Play solo' })).toBeNull();
+    const { unmount } = await renderApp('/games/minesweeper');
+    expect(screen.getByRole('link', { name: 'Play solo' })).toHaveAttribute(
+      'href',
+      '/games/minesweeper/solo',
+    );
+    unmount();
+    await renderApp('/games/draw-and-guess');
+    expect(screen.queryByRole('link', { name: 'Play solo' })).toBeNull();
   });
 
   it('plays on a first visit, and remembers the board', async () => {

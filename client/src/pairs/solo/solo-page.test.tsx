@@ -71,12 +71,12 @@ describe('Pairs on your own', () => {
     expect(screen.getByText('你在哪里见过它？')).toBeInTheDocument();
   });
 
-  it('is offered on the home page', async () => {
-    await renderApp('/');
-    const game = screen.getByRole('region', { name: 'Pairs' });
-    expect(
-      within(game).getByRole('link', { name: 'Play solo' }),
-    ).toHaveAttribute('href', '/games/pairs/solo');
+  it('is offered on the game’s page', async () => {
+    await renderApp('/games/pairs');
+    expect(screen.getByRole('link', { name: 'Play solo' })).toHaveAttribute(
+      'href',
+      '/games/pairs/solo',
+    );
   });
 
   it('offers both boards on a first visit', async () => {

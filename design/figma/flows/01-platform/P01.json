@@ -5,7 +5,7 @@
   "id": "9:433",
   "section": "01 / Platform & shared flows",
   "reviewNotes": [
-    "P01 · Home / every game on one page: four tiles across, sorted by kind, with a filter per kind. Every way in is one click."
+    "P01 · Home / every game on one page: four tiles across, sorted by kind, with a filter per kind. A click on a game opens its page."
   ],
   "frame": {
     "type": "FRAME",
@@ -14,7 +14,7 @@
     "x": 40,
     "y": 150,
     "w": 1440,
-    "h": 1400,
+    "h": 1224,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -345,7 +345,7 @@
         "id": "90:109630",
         "name": "Games",
         "w": 1312,
-        "h": 774,
+        "h": 674,
         "wSize": "fill",
         "hSize": "hug",
         "layout": {
@@ -492,7 +492,7 @@
             "id": "90:109642",
             "name": "Cards",
             "w": 1312,
-            "h": 712,
+            "h": 612,
             "wSize": "fill",
             "hSize": "hug",
             "layout": {
@@ -508,12 +508,13 @@
                 "id": "90:109643",
                 "name": "Zumpo/Game card",
                 "w": 310,
-                "h": 344,
+                "h": 294,
                 "hSize": "hug",
                 "component": "Zumpo/Game card",
                 "variant": {
                   "Game": "Draw & Guess",
-                  "Layout": "Tile"
+                  "Layout": "Tile",
+                  "State": "Default"
                 },
                 "componentId": "90:104955"
               },
@@ -522,12 +523,13 @@
                 "id": "90:109676",
                 "name": "Zumpo/Game card",
                 "w": 310,
-                "h": 344,
+                "h": 294,
                 "hSize": "hug",
                 "component": "Zumpo/Game card",
                 "variant": {
                   "Game": "Hush",
-                  "Layout": "Tile"
+                  "Layout": "Tile",
+                  "State": "Default"
                 },
                 "componentId": "90:105310"
               },
@@ -536,12 +538,13 @@
                 "id": "90:109699",
                 "name": "Zumpo/Game card",
                 "w": 310,
-                "h": 344,
+                "h": 294,
                 "hSize": "hug",
                 "component": "Zumpo/Game card",
                 "variant": {
                   "Game": "Liar’s Dice",
-                  "Layout": "Tile"
+                  "Layout": "Tile",
+                  "State": "Default"
                 },
                 "componentId": "90:105242"
               },
@@ -550,12 +553,13 @@
                 "id": "90:109738",
                 "name": "Zumpo/Game card",
                 "w": 310,
-                "h": 344,
+                "h": 294,
                 "hSize": "hug",
                 "component": "Zumpo/Game card",
                 "variant": {
                   "Game": "Daily Word",
-                  "Layout": "Tile"
+                  "Layout": "Tile",
+                  "State": "Default"
                 },
                 "componentId": "90:105349"
               },
@@ -564,12 +568,13 @@
                 "id": "90:109768",
                 "name": "Zumpo/Game card",
                 "w": 310,
-                "h": 344,
+                "h": 294,
                 "hSize": "hug",
                 "component": "Zumpo/Game card",
                 "variant": {
                   "Game": "Make 24",
-                  "Layout": "Tile"
+                  "Layout": "Tile",
+                  "State": "Default"
                 },
                 "componentId": "90:105074"
               },
@@ -578,12 +583,13 @@
                 "id": "90:109804",
                 "name": "Zumpo/Game card",
                 "w": 310,
-                "h": 344,
+                "h": 294,
                 "hSize": "hug",
                 "component": "Zumpo/Game card",
                 "variant": {
                   "Game": "Minesweeper",
-                  "Layout": "Tile"
+                  "Layout": "Tile",
+                  "State": "Default"
                 },
                 "componentId": "90:105002"
               },
@@ -592,12 +598,13 @@
                 "id": "90:109849",
                 "name": "Zumpo/Game card",
                 "w": 310,
-                "h": 344,
+                "h": 294,
                 "hSize": "hug",
                 "component": "Zumpo/Game card",
                 "variant": {
                   "Game": "Pairs",
-                  "Layout": "Tile"
+                  "Layout": "Tile",
+                  "State": "Default"
                 },
                 "componentId": "90:105129"
               },
@@ -606,39 +613,17 @@
                 "id": "90:109885",
                 "name": "Zumpo/Game card",
                 "w": 310,
-                "h": 344,
+                "h": 294,
                 "hSize": "hug",
                 "component": "Zumpo/Game card",
                 "variant": {
                   "Game": "Trios",
-                  "Layout": "Tile"
+                  "Layout": "Tile",
+                  "State": "Default"
                 },
                 "componentId": "90:105184"
               }
             ]
-          }
-        ]
-      },
-      {
-        "type": "INSTANCE",
-        "id": "9:473",
-        "name": "Zumpo/Notice",
-        "w": 1312,
-        "h": 52,
-        "hSize": "hug",
-        "component": "Zumpo/Notice",
-        "variant": {
-          "Tone": "Info"
-        },
-        "componentId": "9:227",
-        "props": {
-          "Message": "Play solo starts at once. Rooms start with 2 players, so grab a friend."
-        },
-        "overrides": [
-          {
-            "path": ".",
-            "height": 52,
-            "width": 1312
           }
         ]
       },

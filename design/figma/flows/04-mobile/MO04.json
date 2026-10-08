@@ -1,20 +1,20 @@
 {
   "format": 1,
   "code": "MO04",
-  "title": "Room list",
+  "title": "Game page",
   "id": "9:10156",
   "section": "04 / Mobile / 390px flow adaptations",
   "reviewNotes": [
-    "MO04 · 390px / responsive redesign"
+    "MO04 · Game page / the intro, the rooms, then How to play"
   ],
   "frame": {
     "type": "FRAME",
     "id": "9:10156",
-    "name": "MO04 / Room list",
+    "name": "MO04 / Game page",
     "x": 1510,
     "y": 150,
     "w": 390,
-    "h": 887,
+    "h": 1600,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -83,71 +83,6 @@
       },
       {
         "type": "FRAME",
-        "id": "9:10164",
-        "name": "Page heading",
-        "w": 350,
-        "h": 121,
-        "hSize": "hug",
-        "layout": {
-          "mode": "column",
-          "gap": "$Zumpo · UI:space/12",
-          "strokesIncluded": true
-        },
-        "children": [
-          {
-            "type": "INSTANCE",
-            "id": "24:7140",
-            "name": "Tag / PLAY TOGETHER",
-            "w": 117,
-            "h": 30,
-            "wSize": "hug",
-            "hSize": "hug",
-            "component": "Zumpo/Tag",
-            "variant": {
-              "Tone": "Sand"
-            },
-            "componentId": "24:6511",
-            "props": {
-              "Label": "PLAY TOGETHER"
-            },
-            "overrides": [
-              {
-                "path": ".",
-                "height": 30,
-                "width": 117
-              }
-            ]
-          },
-          {
-            "type": "TEXT",
-            "id": "9:10167",
-            "w": 350,
-            "h": 42,
-            "hSize": "hug",
-            "text": "Find your room.",
-            "textStyle": "Zumpo/Title",
-            "fills": [
-              "$Zumpo · UI:color/ink"
-            ],
-            "autoResize": "height"
-          },
-          {
-            "type": "TEXT",
-            "id": "9:10168",
-            "w": 350,
-            "h": 25,
-            "hSize": "hug",
-            "text": "Draw & Guess · 4 rooms",
-            "textStyle": "Zumpo/Body",
-            "fills": [
-              "$Zumpo · UI:color/muted"
-            ],
-            "autoResize": "height"
-          }
-        ]
-      },
-      {
-        "type": "FRAME",
         "id": "29:23993",
         "name": "Lobby actions",
         "w": 350,
@@ -158,6 +93,7 @@
           "mode": "row",
           "gap": "$Zumpo · UI:space/8",
           "justify": "space_between",
+          "align": "center",
           "strokesIncluded": true
         },
         "children": [
@@ -189,25 +125,28 @@
           },
           {
             "type": "INSTANCE",
-            "id": "29:24002",
-            "name": "Action / Create a room",
-            "w": 138,
+            "id": "90:112543",
+            "name": "Action / Playing as",
+            "w": 170,
             "h": 48,
             "wSize": "hug",
             "component": "Zumpo/Button",
             "variant": {
-              "Style": "Primary",
+              "Style": "Quiet",
               "State": "Default"
             },
-            "componentId": "4:15",
+            "componentId": "4:21",
             "props": {
-              "Label": "Create a room"
+              "Icon": "Zumpo/Icon / Glyph=edit",
+              "Show icon": true,
+              "Label": "Playing as Sam"
             },
             "overrides": [
               {
                 "path": ".",
                 "height": 48,
-                "width": 138
+                "paddingLeft": "$Zumpo · UI:space/20",
+                "width": 170
               }
             ]
           }
@@ -215,37 +154,25 @@
       },
       {
         "type": "INSTANCE",
-        "id": "90:112543",
-        "name": "Action / Playing as",
-        "w": 150,
-        "h": 48,
-        "wSize": "hug",
-        "component": "Zumpo/Button",
+        "id": "120:119667",
+        "name": "Game intro",
+        "w": 350,
+        "h": 410,
+        "wSize": "fill",
+        "hSize": "hug",
+        "component": "Zumpo/Game intro",
         "variant": {
-          "Style": "Quiet",
-          "State": "Default"
+          "Game": "Draw & Guess",
+          "Layout": "Phone"
         },
-        "componentId": "4:21",
-        "props": {
-          "Icon": "Zumpo/Icon / Glyph=edit",
-          "Show icon": true,
-          "Label": "Playing as Sam"
-        },
-        "overrides": [
-          {
-            "path": ".",
-            "height": 48,
-            "paddingLeft": 0,
-            "width": 150
-          }
-        ]
+        "componentId": "120:118973"
       },
       {
         "type": "FRAME",
         "id": "29:24008",
         "name": "Rooms",
         "w": 350,
-        "h": 436,
+        "h": 508,
         "wSize": "fill",
         "hSize": "hug",
         "layout": {
@@ -254,6 +181,20 @@
           "strokesIncluded": true
         },
         "children": [
+          {
+            "type": "TEXT",
+            "id": "120:119707",
+            "name": "Rooms heading",
+            "w": 245,
+            "h": 30,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "Draw & Guess rooms",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ]
+          },
           {
             "type": "INSTANCE",
             "id": "29:24009",
@@ -357,6 +298,140 @@
                   "Initials": "SA",
                   "Tone": "Sand"
                 }
+              }
+            ]
+          },
+          {
+            "type": "TEXT",
+            "id": "120:119708",
+            "w": 126,
+            "h": 18,
+            "wSize": "hug",
+            "hSize": "hug",
+            "text": "4 rooms · Updates live",
+            "textStyle": "Zumpo/Small",
+            "fills": [
+              "$Zumpo · UI:color/muted"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "FRAME",
+        "id": "120:119709",
+        "name": "How to play",
+        "w": 350,
+        "h": 400,
+        "wSize": "fill",
+        "hSize": "hug",
+        "fills": [
+          "$Zumpo · UI:color/lime"
+        ],
+        "strokes": [
+          "$Zumpo · UI:color/line"
+        ],
+        "strokeAlign": "inside",
+        "radius": "$Zumpo · UI:radius/24",
+        "layout": {
+          "mode": "column",
+          "gap": "$Zumpo · UI:space/16",
+          "pad": "$Zumpo · UI:space/24",
+          "strokesIncluded": true
+        },
+        "children": [
+          {
+            "type": "TEXT",
+            "id": "120:119710",
+            "w": 304,
+            "h": 30,
+            "hSize": "hug",
+            "text": "How to play",
+            "textStyle": "Zumpo/Heading",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "TEXT",
+            "id": "120:119711",
+            "name": "Choose a word, draw it, and race to guess. Fast guesses earn more poin",
+            "w": 304,
+            "h": 75,
+            "hSize": "hug",
+            "text": "Take turns drawing a word while everyone else races to guess it in the chat. Faster guesses score more.",
+            "textStyle": "Zumpo/Body",
+            "fills": [
+              "$Zumpo · UI:color/ink"
+            ],
+            "autoResize": "height"
+          },
+          {
+            "type": "FRAME",
+            "id": "120:119712",
+            "name": "Play together",
+            "w": 300,
+            "h": 149,
+            "wSize": "fill",
+            "hSize": "hug",
+            "layout": {
+              "mode": "column",
+              "gap": "$Zumpo · UI:space/4",
+              "strokesIncluded": true
+            },
+            "children": [
+              {
+                "type": "TEXT",
+                "id": "120:119713",
+                "name": "Label",
+                "w": 92,
+                "h": 20,
+                "wSize": "hug",
+                "hSize": "hug",
+                "text": "Play together",
+                "textStyle": "Zumpo/Label",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ]
+              },
+              {
+                "type": "TEXT",
+                "id": "120:119714",
+                "name": "2–8 players Host chooses 1–4 rounds 15s to choose a word 90s to draw ·",
+                "w": 300,
+                "h": 125,
+                "wSize": "fill",
+                "hSize": "hug",
+                "text": "2–8 players\n1–4 rounds, everyone draws once a round\n15s to pick a word · 90s to draw\nThe answer shows for 10s",
+                "textStyle": "Zumpo/Body",
+                "fills": [
+                  "$Zumpo · UI:color/ink"
+                ],
+                "autoResize": "height"
+              }
+            ]
+          },
+          {
+            "type": "INSTANCE",
+            "id": "120:119715",
+            "name": "Action / Full rules",
+            "w": 104,
+            "h": 48,
+            "wSize": "hug",
+            "component": "Zumpo/Button",
+            "variant": {
+              "Style": "Secondary",
+              "State": "Default"
+            },
+            "componentId": "4:18",
+            "props": {
+              "Label": "Full rules"
+            },
+            "overrides": [
+              {
+                "path": ".",
+                "height": 48,
+                "width": 104
               }
             ]
           }

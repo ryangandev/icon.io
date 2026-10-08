@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test';
-import { createRoom, expect, joinRoom, test } from './fixtures';
+import { createRoom, expect, joinRoom, test, playSolo } from './fixtures';
 import { isFound, solve, typeGuess } from './play/daily-word';
 
 /** The word is open, with nothing guessed yet. */
@@ -86,13 +86,7 @@ test('a player with no name plays today’s word, then a practice word', async (
   player,
 }) => {
   const sam = await player('Sam', { named: false });
-  let sockets = 0;
-  sam.on('websocket', () => sockets++);
-  await sam.goto('/');
-  await sam
-    .getByRole('region', { name: 'Daily Word' })
-    .getByRole('link', { name: 'Play solo' })
-    .click();
+  const sent = await playSolo(sam, 'Daily Word');
 
   const today = await solve(sam);
   await expect(
@@ -122,5 +116,5 @@ test('a player with no name plays today’s word, then a practice word', async (
   await expect(
     sam.getByRole('button', { name: 'Challenge a friend' }).first(),
   ).toBeVisible();
-  expect(sockets).toBe(0);
+  expect(sent()).toEqual([]);
 });

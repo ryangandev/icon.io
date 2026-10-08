@@ -1,5 +1,5 @@
 import type { Locator } from '@playwright/test';
-import { createRoom, expect, joinRoom, test } from './fixtures';
+import { createRoom, expect, joinRoom, test, playSolo } from './fixtures';
 import { startServer } from './own-server';
 import {
   missWith,
@@ -73,13 +73,7 @@ test('a player with no name finds ten trios on their own', async ({
 }) => {
   test.setTimeout(120_000);
   const sam = await player('Sam', { named: false });
-  let sockets = 0;
-  sam.on('websocket', () => sockets++);
-  await sam.goto('/');
-  await sam
-    .getByRole('region', { name: 'Trios' })
-    .getByRole('link', { name: 'Play solo' })
-    .click();
+  const sent = await playSolo(sam, 'Trios');
   await sam.getByRole('button', { name: 'Start' }).click();
 
   const turn = turnOf(sam);
@@ -109,7 +103,7 @@ test('a player with no name finds ten trios on their own', async ({
   await expect(
     sam.getByRole('button', { name: 'Challenge a friend' }).first(),
   ).toBeVisible();
-  expect(sockets).toBe(0);
+  expect(sent()).toEqual([]);
 });
 
 test('on a phone, the table stays put through every phase', async ({

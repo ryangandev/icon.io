@@ -304,3 +304,49 @@ export async function duplicateTab(page: Page): Promise<Page> {
   }, storage);
   return copy;
 }
+
+/**
+ * Goes from the home page to `game` on your own, as a player does: its card,
+ * then Play solo on its page. That page lists the game's rooms live, so it
+ * connects; solo play says nothing to the server, so the returned function,
+ * the Socket.IO messages the page has sent since it left the rooms over
+ * either transport (Engine.IO's own pings and upgrade left out), stays empty.
+ */
+export async function playSolo(page: Page, game: string) {
+  const sent: string[] = [];
+  const read = (payload: string) => {
+    // A long-poll POST carries a batch of packets, split by a record separator.
+    for (const packet of payload.split('\x1e')) {
+      if (packet.startsWith('4')) sent.push(packet);
+    }
+  };
+  page.on('websocket', (socket) =>
+    socket.on('framesent', ({ payload }) => {
+      if (typeof payload === 'string') read(payload);
+    }),
+  );
+  page.on('request', (request) => {
+    if (request.method() === 'POST' && SOCKET.test(request.url())) {
+      read(request.postData() ?? '');
+    }
+  });
+
+  await page.goto('/');
+  await page.getByRole('link', { name: game, exact: true }).click();
+  await expect(
+    page.getByRole('heading', { name: game, level: 1 }),
+  ).toBeVisible();
+  // The rooms, or that there are none, arrive: the page has subscribed.
+  await expect(
+    page
+      .getByText('Updates live')
+      .or(page.getByText('A little quiet in here.')),
+  ).toBeVisible();
+  await page.getByRole('link', { name: 'Play solo' }).click();
+  // Left, the page's last word is that it no longer wants the rooms.
+  await expect
+    .poll(() => sent.at(-1), { message: 'the rooms left' })
+    .toContain('"lobby:unsubscribe"');
+  const left = sent.length;
+  return () => sent.slice(left);
+}

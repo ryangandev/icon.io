@@ -105,8 +105,8 @@ export function isGameType(value: string | undefined): value is GameType {
 /** A game on your own, which never reaches the server. */
 export const soloPath = (type: GameType) => `/games/${type}/solo`;
 
-/** The game's room list. */
-export const lobbyPath = (type: GameType) => `/games/${type}`;
+/** The game's page: what it is, its ways in, its open rooms and its rules. */
+export const gamePath = (type: GameType) => `/games/${type}`;
 export const createRoomPath = (type: GameType) => `/games/${type}/new`;
 export const roomPath = (type: GameType, roomId: string) =>
   `/games/${type}/rooms/${roomId}`;

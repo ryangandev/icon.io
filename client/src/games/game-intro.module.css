@@ -1,0 +1,94 @@
+.container {
+  container-type: inline-size;
+}
+
+/* Layout=Desktop: the artwork beside the copy, as tall as it. */
+.intro {
+  display: flex;
+  gap: var(--zumpo-space-24);
+  padding: var(--zumpo-space-16);
+  border: 1px solid var(--zumpo-line);
+  border-radius: var(--zumpo-radius-24);
+}
+
+.peach {
+  background: var(--zumpo-peach);
+}
+
+.blue {
+  background: var(--zumpo-blue);
+}
+
+.lime {
+  background: var(--zumpo-lime);
+}
+
+.sand {
+  background: var(--zumpo-sand);
+}
+
+/* Beats the artwork's own tile height, which the row stretches instead. */
+.intro .art {
+  width: 400px;
+  height: auto;
+  align-self: stretch;
+}
+
+.copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--zumpo-space-16);
+  min-width: 0;
+  padding: var(--zumpo-space-16) var(--zumpo-space-16) var(--zumpo-space-16) 0;
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  gap: var(--zumpo-space-8);
+}
+
+.kind {
+  text-transform: uppercase;
+}
+
+/* A name longer than its line breaks with a hyphen rather than reach out. */
+.name {
+  font: var(--zumpo-text-title);
+  letter-spacing: var(--zumpo-text-title-tracking);
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+
+.tagline {
+  font: var(--zumpo-text-body);
+  letter-spacing: var(--zumpo-text-body-tracking);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--zumpo-space-12);
+}
+
+/* Layout=Phone: the artwork on top, the copy under it. */
+@container (max-width: 640px) {
+  .intro {
+    flex-direction: column;
+    gap: var(--zumpo-space-16);
+  }
+
+  .intro .art {
+    width: auto;
+    height: 112px;
+  }
+
+  .copy {
+    padding: 0;
+  }
+}

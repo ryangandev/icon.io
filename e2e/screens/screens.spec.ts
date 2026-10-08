@@ -193,7 +193,8 @@ test('a picked name in a room, and changing it there', async ({ player }) => {
     seats: 4,
     rounds: 2,
   });
-  await joinRoom(await player('Ryan', desktop), link);
+  const ryan = await player('Ryan', desktop);
+  await joinRoom(ryan, link);
   const leo = await player('Brave Noodle', desktop);
   await joinRoom(leo, link);
   await leo.getByRole('button', { name: 'Brave Noodle: your name' }).click();
@@ -212,6 +213,13 @@ test('a picked name in a room, and changing it there', async ({ player }) => {
   await otter.getByRole('button', { name: 'Sleepy Otter: your name' }).click();
   await otter.getByRole('textbox', { name: 'Your name' }).fill('Sam');
   await shot(otter, 'P20');
+  await otter.keyboard.press('Escape');
+  // Everybody leaves, so the room closes now rather than waiting out the away
+  // grace on the shared server, where the next game's rooms are listed.
+  for (const page of [otter, leo, ryan, maya]) {
+    await page.getByRole('button', { name: 'Leave room' }).click();
+    await expect(page).toHaveURL(/\/games\/draw-and-guess$/);
+  }
 });
 
 test('before a connection, and when it fails', async ({ player }) => {
@@ -288,7 +296,7 @@ async function lobbyScreens(
 ) {
   const sam = await player('Sam', desktop);
   await sam.goto(`/games/${game}`);
-  await expect(sam.getByText('Finding your people…')).toBeHidden();
+  await expect(sam.getByText('A little quiet in here.')).toBeVisible();
   await shot(sam, codes.empty);
 
   const maya = await player('Maya', desktop);

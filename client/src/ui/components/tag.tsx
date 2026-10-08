@@ -16,6 +16,8 @@ export interface TagProps {
   icon?: GlyphName;
   children: ReactNode;
   className?: string;
+  /** For a control that names or describes itself by the tag. */
+  id?: string;
 }
 
 /** Zumpo/Tag: a small label for context and state. */
@@ -25,9 +27,11 @@ export function Tag({
   icon,
   children,
   className,
+  id,
 }: TagProps) {
   return (
     <span
+      id={id}
       className={cx(
         styles.tag,
         tone !== 'sand' && styles[tone],

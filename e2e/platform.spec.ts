@@ -32,10 +32,7 @@ test('a first visit starts with a picked name, introduced once', async ({
   await expect(hint).toBeHidden();
 
   // Nothing stands between the visitor and a room.
-  await sam
-    .getByRole('region', { name: 'Minesweeper' })
-    .getByRole('link', { name: 'Find a room' })
-    .click();
+  await sam.getByRole('link', { name: 'Minesweeper', exact: true }).click();
   await expect(sam).toHaveURL(/\/games\/minesweeper$/);
   await expect(
     sam.getByRole('button', { name: `Playing as ${name}` }),
@@ -47,10 +44,7 @@ test('a player goes home and straight back into another game', async ({
 }) => {
   const sam = await player('Sam');
   await sam.goto('/');
-  await sam
-    .getByRole('region', { name: 'Draw & Guess' })
-    .getByRole('link', { name: 'Find a room' })
-    .click();
+  await sam.getByRole('link', { name: 'Draw & Guess', exact: true }).click();
   await expect(sam).toHaveURL(/\/games\/draw-and-guess$/);
 
   await sam.getByRole('link', { name: 'Zumpo home' }).click();
@@ -59,13 +53,11 @@ test('a player goes home and straight back into another game', async ({
     .getByRole('button', { name: 'Puzzles' })
     .click();
   await expect(sam).toHaveURL(/\/\?kind=puzzles$/);
-  await expect(sam.getByRole('region', { name: 'Draw & Guess' })).toHaveCount(
-    0,
-  );
-  await sam
-    .getByRole('region', { name: 'Make 24' })
-    .getByRole('link', { name: 'Play solo' })
-    .click();
+  await expect(
+    sam.getByRole('link', { name: 'Draw & Guess', exact: true }),
+  ).toHaveCount(0);
+  await sam.getByRole('link', { name: 'Make 24', exact: true }).click();
+  await sam.getByRole('link', { name: 'Play solo' }).click();
   await expect(sam).toHaveURL(/\/games\/make-24\/solo$/);
 });
 

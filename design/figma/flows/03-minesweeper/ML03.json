@@ -1,20 +1,20 @@
 {
   "format": 1,
   "code": "ML03",
-  "title": "Room list loading",
+  "title": "Game page · rooms loading",
   "id": "9:2638",
   "section": "03 / Minesweeper / complete flow",
   "reviewNotes": [
-    "ML03 · Room list loading"
+    "ML03 · Game page · rooms loading"
   ],
   "frame": {
     "type": "FRAME",
     "id": "9:2638",
-    "name": "ML03 / Room list loading",
+    "name": "ML03 / Game page · rooms loading",
     "x": 3120,
     "y": 150,
     "w": 1440,
-    "h": 868,
+    "h": 1090,
     "hSize": "hug",
     "fills": [
       "$Zumpo · UI:color/cream"
@@ -62,71 +62,6 @@
               "Initials": "SA",
               "Tone": "Sand"
             }
-          }
-        ]
-      },
-      {
-        "type": "FRAME",
-        "id": "9:2649",
-        "name": "Page heading",
-        "w": 1312,
-        "h": 121,
-        "hSize": "hug",
-        "layout": {
-          "mode": "column",
-          "gap": "$Zumpo · UI:space/12",
-          "strokesIncluded": true
-        },
-        "children": [
-          {
-            "type": "INSTANCE",
-            "id": "24:6825",
-            "name": "Tag / PLAY TOGETHER",
-            "w": 117,
-            "h": 30,
-            "wSize": "hug",
-            "hSize": "hug",
-            "component": "Zumpo/Tag",
-            "variant": {
-              "Tone": "Sand"
-            },
-            "componentId": "24:6511",
-            "props": {
-              "Label": "PLAY TOGETHER"
-            },
-            "overrides": [
-              {
-                "path": ".",
-                "height": 30,
-                "width": 117
-              }
-            ]
-          },
-          {
-            "type": "TEXT",
-            "id": "9:2652",
-            "w": 1312,
-            "h": 42,
-            "hSize": "hug",
-            "text": "Minesweeper rooms",
-            "textStyle": "Zumpo/Title",
-            "fills": [
-              "$Zumpo · UI:color/ink"
-            ],
-            "autoResize": "height"
-          },
-          {
-            "type": "TEXT",
-            "id": "9:2653",
-            "w": 1312,
-            "h": 25,
-            "hSize": "hug",
-            "text": "Join a room or make one for your friends.",
-            "textStyle": "Zumpo/Body",
-            "fills": [
-              "$Zumpo · UI:color/muted"
-            ],
-            "autoResize": "height"
           }
         ]
       },
@@ -201,7 +136,7 @@
             "type": "FRAME",
             "id": "90:112557",
             "name": "End",
-            "w": 320,
+            "w": 170,
             "h": 48,
             "wSize": "hug",
             "hSize": "hug",
@@ -238,56 +173,6 @@
                     "width": 170
                   }
                 ]
-              },
-              {
-                "type": "INSTANCE",
-                "id": "9:2657",
-                "name": "Action / Create a room",
-                "w": 138,
-                "h": 48,
-                "wSize": "hug",
-                "component": "Zumpo/Button",
-                "variant": {
-                  "Style": "Primary",
-                  "State": "Default"
-                },
-                "componentId": "4:15",
-                "props": {
-                  "Label": "Create a room"
-                },
-                "overrides": [
-                  {
-                    "path": ".",
-                    "height": 48,
-                    "reactions": [
-                      {
-                        "on": "on_click",
-                        "do": [
-                          {
-                            "nav": "navigate",
-                            "to": "9:2674",
-                            "toName": "ML04 / Create room · game-specific settings",
-                            "transition": "dissolve"
-                          }
-                        ]
-                      }
-                    ],
-                    "width": 138
-                  }
-                ],
-                "reactions": [
-                  {
-                    "on": "on_click",
-                    "do": [
-                      {
-                        "nav": "navigate",
-                        "to": "9:2674",
-                        "toName": "ML04 / Create room · game-specific settings",
-                        "transition": "dissolve"
-                      }
-                    ]
-                  }
-                ]
               }
             ]
           }
@@ -298,7 +183,7 @@
         "id": "9:2659",
         "name": "Lobby layout",
         "w": 1312,
-        "h": 425,
+        "h": 792,
         "hSize": "hug",
         "layout": {
           "mode": "row",
@@ -308,77 +193,130 @@
         "children": [
           {
             "type": "FRAME",
-            "id": "9:2660",
-            "name": "Rooms",
+            "id": "120:119603",
+            "name": "Main",
             "w": 920,
-            "h": 425,
+            "h": 792,
+            "wSize": "fill",
             "hSize": "hug",
             "layout": {
               "mode": "column",
-              "gap": "$Zumpo · UI:space/16",
+              "gap": "$Zumpo · UI:space/32",
               "strokesIncluded": true
             },
             "children": [
               {
                 "type": "INSTANCE",
-                "id": "35:13622",
-                "name": "Finding your people…",
+                "id": "120:119604",
+                "name": "Game intro",
                 "w": 920,
-                "h": 137,
+                "h": 289,
+                "wSize": "fill",
                 "hSize": "hug",
-                "component": "Zumpo/Card",
+                "component": "Zumpo/Game intro",
                 "variant": {
-                  "Kind": "Panel"
+                  "Game": "Minesweeper",
+                  "Layout": "Desktop"
                 },
-                "componentId": "35:13438",
-                "props": {
-                  "Show content": false,
-                  "Description": "Connecting to the room list.",
-                  "Title": "Finding your people…"
-                },
+                "componentId": "120:118662",
                 "overrides": [
                   {
                     "path": ".",
-                    "height": 137,
+                    "height": 289,
                     "width": 920
                   }
-                ],
-                "slots": {
-                  "Content": []
-                }
+                ]
               },
               {
                 "type": "FRAME",
-                "id": "9:2664",
-                "name": "Loading room row",
+                "id": "9:2660",
+                "name": "Rooms",
                 "w": 920,
-                "h": 80,
-                "fills": [
-                  "$Zumpo · UI:color/sand"
-                ],
-                "radius": "$Zumpo · UI:radius/16"
-              },
-              {
-                "type": "FRAME",
-                "id": "9:2665",
-                "name": "Loading room row",
-                "w": 920,
-                "h": 80,
-                "fills": [
-                  "$Zumpo · UI:color/sand"
-                ],
-                "radius": "$Zumpo · UI:radius/16"
-              },
-              {
-                "type": "FRAME",
-                "id": "9:2666",
-                "name": "Loading room row",
-                "w": 920,
-                "h": 80,
-                "fills": [
-                  "$Zumpo · UI:color/sand"
-                ],
-                "radius": "$Zumpo · UI:radius/16"
+                "h": 471,
+                "wSize": "fill",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/16",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "TEXT",
+                    "id": "120:119655",
+                    "name": "Rooms heading",
+                    "w": 233,
+                    "h": 30,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "Minesweeper rooms",
+                    "textStyle": "Zumpo/Heading",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  },
+                  {
+                    "type": "INSTANCE",
+                    "id": "35:13622",
+                    "name": "Finding your people…",
+                    "w": 920,
+                    "h": 137,
+                    "hSize": "hug",
+                    "component": "Zumpo/Card",
+                    "variant": {
+                      "Kind": "Panel"
+                    },
+                    "componentId": "35:13438",
+                    "props": {
+                      "Show content": false,
+                      "Description": "Connecting to the room list.",
+                      "Title": "Finding your people…"
+                    },
+                    "overrides": [
+                      {
+                        "path": ".",
+                        "height": 137,
+                        "width": 920
+                      }
+                    ],
+                    "slots": {
+                      "Content": []
+                    }
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "9:2664",
+                    "name": "Loading room row",
+                    "w": 920,
+                    "h": 80,
+                    "fills": [
+                      "$Zumpo · UI:color/sand"
+                    ],
+                    "radius": "$Zumpo · UI:radius/16"
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "9:2665",
+                    "name": "Loading room row",
+                    "w": 920,
+                    "h": 80,
+                    "fills": [
+                      "$Zumpo · UI:color/sand"
+                    ],
+                    "radius": "$Zumpo · UI:radius/16"
+                  },
+                  {
+                    "type": "FRAME",
+                    "id": "9:2666",
+                    "name": "Loading room row",
+                    "w": 920,
+                    "h": 80,
+                    "fills": [
+                      "$Zumpo · UI:color/sand"
+                    ],
+                    "radius": "$Zumpo · UI:radius/16"
+                  }
+                ]
               }
             ]
           },
@@ -387,7 +325,7 @@
             "id": "9:2667",
             "name": "How to play",
             "w": 368,
-            "h": 303,
+            "h": 606,
             "hSize": "hug",
             "fills": [
               "$Zumpo · UI:color/lime"
@@ -432,18 +370,118 @@
                 "autoResize": "height"
               },
               {
-                "type": "TEXT",
-                "id": "9:2670",
-                "name": "2–8 players Small, Medium or Large boards 15s to pick · 4s reveal Same",
-                "w": 304,
-                "h": 100,
+                "type": "FRAME",
+                "id": "120:119656",
+                "name": "Play together",
+                "w": 302,
+                "h": 124,
+                "wSize": "fill",
                 "hSize": "hug",
-                "text": "2–8 players\nSmall, Medium or Large board\n15s to pick · 4s reveal\nSame safe cell? The points are split.",
-                "textStyle": "Zumpo/Body",
-                "fills": [
-                  "$Zumpo · UI:color/ink"
-                ],
-                "autoResize": "height"
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/4",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "TEXT",
+                    "id": "120:119657",
+                    "name": "Label",
+                    "w": 92,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "Play together",
+                    "textStyle": "Zumpo/Label",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "9:2670",
+                    "name": "2–8 players Small, Medium or Large boards 15s to pick · 4s reveal Same",
+                    "w": 302,
+                    "h": 100,
+                    "wSize": "fill",
+                    "hSize": "hug",
+                    "text": "2–8 players\nSmall, Medium or Large board\n15s to pick · 4s reveal\nSame safe cell? The points are split.",
+                    "textStyle": "Zumpo/Body",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ],
+                    "autoResize": "height"
+                  }
+                ]
+              },
+              {
+                "type": "FRAME",
+                "id": "120:119658",
+                "name": "On your own",
+                "w": 302,
+                "h": 199,
+                "wSize": "fill",
+                "hSize": "hug",
+                "layout": {
+                  "mode": "column",
+                  "gap": "$Zumpo · UI:space/4",
+                  "strokesIncluded": true
+                },
+                "children": [
+                  {
+                    "type": "TEXT",
+                    "id": "120:119659",
+                    "name": "Label",
+                    "w": 86,
+                    "h": 20,
+                    "wSize": "hug",
+                    "hSize": "hug",
+                    "text": "On your own",
+                    "textStyle": "Zumpo/Label",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ]
+                  },
+                  {
+                    "type": "TEXT",
+                    "id": "120:119660",
+                    "name": "Facts",
+                    "w": 302,
+                    "h": 175,
+                    "wSize": "fill",
+                    "hSize": "hug",
+                    "text": "Your first click is always safe\nRight-click or long-press to flag; Flag mode makes a tap flag\nClick a number whose flags are placed to open the rest around it\nYour best time on each board is kept on this device",
+                    "textStyle": "Zumpo/Body",
+                    "fills": [
+                      "$Zumpo · UI:color/ink"
+                    ],
+                    "autoResize": "height"
+                  }
+                ]
+              },
+              {
+                "type": "INSTANCE",
+                "id": "120:119661",
+                "name": "Action / Full rules",
+                "w": 104,
+                "h": 48,
+                "wSize": "hug",
+                "component": "Zumpo/Button",
+                "variant": {
+                  "Style": "Secondary",
+                  "State": "Default"
+                },
+                "componentId": "4:18",
+                "props": {
+                  "Label": "Full rules"
+                },
+                "overrides": [
+                  {
+                    "path": ".",
+                    "height": 48,
+                    "width": 104
+                  }
+                ]
               }
             ]
           }

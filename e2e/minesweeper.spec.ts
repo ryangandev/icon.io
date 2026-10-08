@@ -1,4 +1,4 @@
-import { createRoom, expect, joinRoom, test } from './fixtures';
+import { createRoom, expect, joinRoom, test, playSolo } from './fixtures';
 
 const HIDDEN = /: hidden$/;
 
@@ -47,13 +47,7 @@ test('two players pick until the board is done', async ({ player }) => {
 
 test('a player with no name plays a board on their own', async ({ player }) => {
   const sam = await player('Sam', { named: false });
-  let sockets = 0;
-  sam.on('websocket', () => sockets++);
-  await sam.goto('/');
-  await sam
-    .getByRole('region', { name: 'Minesweeper' })
-    .getByRole('link', { name: 'Play solo' })
-    .click();
+  const sent = await playSolo(sam, 'Minesweeper');
   await sam.getByRole('radio', { name: /Small/ }).click();
   await sam.getByRole('button', { name: 'Start' }).click();
   await expect(sam).toHaveURL(/\/games\/minesweeper\/solo\?board=Small$/);
@@ -79,5 +73,5 @@ test('a player with no name plays a board on their own', async ({ player }) => {
   await expect(
     sam.getByRole('button', { name: /^(Try|Play) again$/ }).first(),
   ).toBeVisible();
-  expect(sockets).toBe(0);
+  expect(sent()).toEqual([]);
 });

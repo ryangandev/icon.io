@@ -12,7 +12,7 @@ import {
 } from '../../../shared/liars-dice';
 import { Button, ButtonLink, Notice, SelectField, TextField } from '../ui';
 import { GAME_LENGTHS as TRIOS_LENGTHS } from '../../../shared/trios';
-import { gameInfo, lobbyPath, roomPath } from '../games/catalog';
+import { gameInfo, gamePath, roomPath } from '../games/catalog';
 import { useMessages } from '../i18n';
 import { DIFFICULTIES } from '../../../shared/minesweeper';
 import { levelsFor } from '../../../shared/hush';
@@ -24,7 +24,7 @@ import { FormPage } from '../shell/form-page';
 import { Page } from '../shell/page';
 import { Stage } from '../shell/stage';
 import { StatusLine } from '../shell/status-line';
-import { LobbyHeading, lobbyHeading } from './lobby';
+import { LobbyHeading, lobbyHeading } from './lobby-heading';
 
 /** The server's limits. */
 const ROOM_NAME_MAX_LENGTH = 40;
@@ -143,7 +143,7 @@ export default function CreateRoomPage({ gameType }: { gameType: GameType }) {
         pending ? undefined : (
           <>
             <Button type="submit">{m.createRoom.create}</Button>
-            <ButtonLink to={lobbyPath(gameType)} variant="secondary">
+            <ButtonLink to={gamePath(gameType)} variant="secondary">
               {m.createRoom.cancel}
             </ButtonLink>
           </>

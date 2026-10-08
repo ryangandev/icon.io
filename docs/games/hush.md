@@ -56,7 +56,7 @@ With 5–7 levels and a clean level giving a life back, the game does not need a
 ## On your own
 
 There is no game on your own.
-The hub card offers only **Find a room**, and How to play describes rooms only.
+Its page offers only **Create a room** and the open rooms to join, and How to play describes rooms only.
 
 ## In a room
 

@@ -1,4 +1,3 @@
-import { Notice } from '../ui';
 import { GameList } from '../games/game-list';
 import { HeroArt } from '../games/hero-art';
 import { useMessages } from '../i18n';
@@ -27,7 +26,6 @@ export default function HomePage() {
         {!phone && <HeroArt className={styles.art} />}
       </div>
       <GameList />
-      {!phone && <Notice>{m.home.notice}</Notice>}
     </Page>
   );
 }
