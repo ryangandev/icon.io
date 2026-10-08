@@ -17,22 +17,26 @@ import {
   type DrawingPart,
 } from '../ui/generated/drawings';
 import type { GameType } from '../../../shared/wire-types';
+import { cx } from '../ui/cx';
 import styles from './artwork.module.css';
 
 /**
- * The paper panel on a game card that shows what the game looks like: a strip
- * of play on a tile, the game's signature piece as a row's icon.
+ * Zumpo/Game artwork: the paper panel that shows what a game looks like, a
+ * strip of play on a tile and a game's page, its signature piece as a row's
+ * icon.
  */
 export function GameArtwork({
   type,
   size,
+  className,
 }: {
   type: GameType;
   size: 'tile' | 'icon';
+  className?: string;
 }) {
   const Art = (size === 'tile' ? TILES : ICONS)[type];
   return (
-    <div className={styles[size]} aria-hidden="true">
+    <div className={cx(styles[size], className)} aria-hidden="true">
       <Art />
     </div>
   );

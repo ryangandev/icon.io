@@ -65,7 +65,7 @@ A game on your own needs no name, no room and no server: it runs in the browser,
   A game left unfinished does not count.
 
 There is no Challenge a friend: the bots answer what you bid, so the same dice would not make the same game for a friend.
-Find a room is the way to play with friends.
+A room, made or joined from the game's page, is the way to play with friends.
 
 ### The bots
 

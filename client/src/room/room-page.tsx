@@ -10,7 +10,7 @@ import {
 import { Navigate, useBlocker, useNavigate, type Location } from 'react-router';
 import type { GameType } from '../../../shared/wire-types';
 import { Button, ButtonLink, Card, TextField } from '../ui';
-import { gameInfo, lobbyPath, roomPath, scoreOf } from '../games/catalog';
+import { gameInfo, gamePath, roomPath, scoreOf } from '../games/catalog';
 import { useMessages } from '../i18n';
 import { DrawAndGuessRoom } from '../draw-and-guess/room';
 import { MinesweeperRoom } from '../minesweeper/room';
@@ -29,7 +29,7 @@ import { Page } from '../shell/page';
 import { Stage } from '../shell/stage';
 import { StatusLine } from '../shell/status-line';
 import { PHONE, useMediaQuery } from '../shell/use-media-query';
-import { LobbyHeading, lobbyHeading } from '../pages/lobby';
+import { LobbyHeading, lobbyHeading } from '../pages/lobby-heading';
 import { Confetti } from './confetti';
 import { InviteDialog, LeaveDialog } from './dialogs';
 import { RoomContext, type Room } from './room-context';
@@ -93,7 +93,7 @@ export default function RoomPage({
               title={m.room.unavailableTitle}
               description={m.room.unavailableDescription}
               actions={
-                <ButtonLink to={lobbyPath(gameType)}>
+                <ButtonLink to={gamePath(gameType)}>
                   {m.room.backToRooms}
                 </ButtonLink>
               }
@@ -109,7 +109,7 @@ export default function RoomPage({
               title={m.room.notFoundTitle}
               description={m.room.notFoundDescription}
               actions={
-                <ButtonLink to={lobbyPath(gameType)}>
+                <ButtonLink to={gamePath(gameType)}>
                   {m.room.backToRooms}
                 </ButtonLink>
               }
@@ -127,7 +127,7 @@ export default function RoomPage({
               title={m.room.closedTitle}
               description={m.room.closedDescription}
               actions={
-                <ButtonLink to={lobbyPath(gameType)}>
+                <ButtonLink to={gamePath(gameType)}>
                   {m.room.backToRooms}
                 </ButtonLink>
               }
@@ -166,7 +166,7 @@ function ExpiredPage({ gameType }: { gameType: GameType }) {
           description={m.room.expiredDescription}
           actions={
             <>
-              <ButtonLink to={lobbyPath(gameType)}>
+              <ButtonLink to={gamePath(gameType)}>
                 {m.room.backToRooms}
               </ButtonLink>
               <ButtonLink to="/" variant="secondary" icon="back">
@@ -224,11 +224,7 @@ function PasswordPage({
         pending ? undefined : (
           <>
             <Button type="submit">{m.room.join}</Button>
-            <ButtonLink
-              to={lobbyPath(gameType)}
-              variant="secondary"
-              icon="back"
-            >
+            <ButtonLink to={gamePath(gameType)} variant="secondary" icon="back">
               {m.room.backToRooms}
             </ButtonLink>
           </>
@@ -345,7 +341,7 @@ function SeatedRoom({
             sendChat: (text) => socket.emit('chat:send', state.roomId, text),
             openInvite: () => setInviting(true),
             leave: () =>
-              navigate(lobbyPath(state.gameType), {
+              navigate(gamePath(state.gameType), {
                 state: { via: LEAVE_ROOM },
               }),
             startGame,

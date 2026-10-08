@@ -198,7 +198,7 @@ The design system lives in [`client/src/ui/`](../client/src/ui/index.ts), one co
   Radix's maintenance has slowed since its authors moved to Base UI, and React Aria is heavier than these few widgets need.
   Base UI exposes state as `data-*` attributes (`data-checked`, `data-highlighted`, `data-popup-open`), which the styles select on.
 - **CSS Modules over generated custom properties.**
-  `npm run design:tokens` writes `ui/generated/` from the Figma export: `tokens.css` (`--zumpo-*` colours, spacing, radii, text styles as `font` shorthands, shadows), `glyphs.ts` (icon paths), `brushes.ts` (the canvas palette, which JavaScript needs as values) and `drawings.ts` (the sample turtle drawing on the game cards).
+  `npm run design:tokens` writes `ui/generated/` from the Figma export: `tokens.css` (`--zumpo-*` colours, spacing, radii, text styles as `font` shorthands, shadows), `glyphs.ts` (icon paths), `brushes.ts` (the canvas palette, which JavaScript needs as values) and `drawings.ts` (the sample turtle drawing in the game artwork).
   `npm run verify` fails if they are stale.
 - **`zumpo.css`** loads the self-hosted fonts and the tokens; the `.zumpo` class scopes the base styles and `.zumpo-page` adds the page canvas.
   Portals (select menus, dialogs, the header menu) carry `.zumpo` themselves, because they render outside the page.
@@ -219,7 +219,7 @@ Routes live in [`app.tsx`](../client/src/app.tsx), on a data router so a room ca
 | `/`                          | Home, and every game; `?kind=` filters to one kind          |
 | `/how-to-play`               | Every game's rules                                          |
 | `/games`                     | Redirects home, for old links                               |
-| `/games/:game`               | A game's lobby                                              |
+| `/games/:game`               | A game's page: its ways in, its rooms, live, and its rules  |
 | `/games/:game/new`           | Making a room                                               |
 | `/games/:game/solo`          | The game on your own; `?board=` and the like pick the setup |
 | `/games/:game/rooms/:roomId` | A room, and the link a host shares                          |

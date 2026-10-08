@@ -50,12 +50,12 @@ async function startRun() {
 }
 
 describe('Make 24 on your own', () => {
-  it('is offered on the home page', async () => {
-    await renderApp('/');
-    const make24 = screen.getByRole('region', { name: 'Make 24' });
-    expect(
-      within(make24).getByRole('link', { name: 'Play solo' }),
-    ).toHaveAttribute('href', '/games/make-24/solo');
+  it('is offered on the game’s page', async () => {
+    await renderApp('/games/make-24');
+    expect(screen.getByRole('link', { name: 'Play solo' })).toHaveAttribute(
+      'href',
+      '/games/make-24/solo',
+    );
   });
 
   it('starts on a first visit when asked', async () => {

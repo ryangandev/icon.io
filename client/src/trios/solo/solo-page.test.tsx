@@ -88,12 +88,12 @@ describe('Trios on your own', () => {
     ).toHaveLength(1);
   });
 
-  it('is offered on the home page', async () => {
-    await renderApp('/');
-    const trios = screen.getByRole('region', { name: 'Trios' });
-    expect(
-      within(trios).getByRole('link', { name: 'Play solo' }),
-    ).toHaveAttribute('href', '/games/trios/solo');
+  it('is offered on the game’s page', async () => {
+    await renderApp('/games/trios');
+    expect(screen.getByRole('link', { name: 'Play solo' })).toHaveAttribute(
+      'href',
+      '/games/trios/solo',
+    );
   });
 
   it('deals on a first visit when asked', async () => {

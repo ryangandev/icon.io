@@ -19,8 +19,8 @@ They are not copied here, so there is one place to change them.
 | ------------------------------------ | ---------- | ----------------------------------------------------- |
 | 00 / Review guide & flow map         | `9:14700`  | Review order, the real rules, which UX is new         |
 | 01 / Platform & shared flows         | `9:431`    | P01-P20 without P04, desktop                          |
-| 02 / Draw & Guess / complete flow    | `9:866`    | DL01-DL11 lobby, D01-D15 room, desktop                |
-| 03 / Minesweeper / complete flow     | `9:2526`   | ML01-ML10 lobby, M01-M16 room, MS01-MS05 solo         |
+| 02 / Draw & Guess / complete flow    | `9:866`    | DL01-DL11 game page, D01-D15 room, desktop            |
+| 03 / Minesweeper / complete flow     | `9:2526`   | ML01-ML10 game page, M01-M16 room, MS01-MS05 solo     |
 | 04 / Mobile / 390px flow adaptations | `9:10060`  | MO01-MO19 without MO03, the main flows at 390 px      |
 | 05 / Make 24 / complete flow         | `40:60741` | T01-T05 solo, T06-T10 room, T11-T12 phone             |
 | 06 / Pairs / complete flow           | `40:60743` | PR01-PR04 solo, PR05-PR08 room, PR09-PR10 phone       |
@@ -56,8 +56,12 @@ Decisions from the design review rounds (their reports are in git history):
   A row of `Zumpo/Filter chip`s above the games shows one kind; on a phone each kind also has a heading, because the list is long.
   Past about sixteen games, a desktop should give each kind its own shelf too.
   The hero's right side holds real game pieces, as the first Paper Pop concept drew paper objects there.
-- A game card says how it can be played and its buttons are the way in: Play solo first where the game has it, because one click starts it with nobody to wait for, then Find a room.
-  You pick the game, then how to play it, so a game without a solo mode never shows an empty entry.
+- You pick the game on the home page, then how to play it on the game's page; Ryan chose this on 2026-10-08, as multi-game sites such as Papergames and Board Game Arena do.
+  A game card says what the game is and how many can play, and the whole card is a link to the game's page, drawn with an arrow and no buttons.
+  The page (DL01-DL03, ML01-ML03, MO04) opens with one `Zumpo/Game intro`: the game's artwork, kind, name and tagline, and its ways in, Play solo first where the game has it, because one click starts it with nobody to wait for, then Create a room.
+  The open rooms to join are listed under it, and the How to play panel beside it gives the rules in a room and on your own at a glance, with a link to the full rules on How to play (P14); a phone shows the panel too, after the rooms.
+  A game without a solo mode never shows an empty entry: its only way in is Create a room, or a room to join.
+  `Zumpo/Game artwork` is the paper panel both draw, one per game and size, so the artwork is drawn once.
 - A game screen states the turn in one `Zumpo/Turn bar` above the canvas or board: what is happening, whose turn, and the server's countdown.
 - In Draw & Guess the guess is the chat input; it is locked for the drawer and for anyone who has scored this turn, as the server already enforces.
 - Brush colours are `color/brush/*` tokens, and the drawer's controls are one `Zumpo/Drawing toolbar`.
@@ -95,7 +99,7 @@ Nobody is asked for a name any more.
 
 - A first visit picks a random name, an adjective and an animal such as Sleepy Otter, and this browser remembers it.
 - `Zumpo/Name menu` is the one place to change it: State=Edit is the field, Save and Roll a name, which fills in another random name (P13, MO02); State=Error is an empty name (P03).
-- It opens from the viewer's avatar on every page and in every room, and from Playing as in a lobby's actions (DL01-DL03, ML01-ML03, MO04).
+- It opens from the viewer's avatar on every page and in every room, and from Playing as in a game page's actions (DL01-DL03, ML01-ML03, MO04).
 - State=Hint opens once from the avatar on a first visit (P02); Got it, Change name or any rename closes it for good.
 - A rename reaches every seat at once and the room's chat says so, as Brave Noodle becoming Leo does in P20; nothing is lost, so it never asks first.
 - While the name is still the picked one, a room's waiting card says so beside a Change name button (P19), because a friend who came from an invite link should be recognisable.
@@ -104,7 +108,7 @@ Nobody is asked for a name any more.
 
 ## Figma export
 
-The Figma MCP and REST API allowances on the Starter plan are too low to read 170 screens, so a local, read-only plugin in [tools/figma-export/](../tools/figma-export/README.md) snapshots the file instead.
+The Figma MCP and REST API allowances on the Starter plan are too low to read 171 screens, so a local, read-only plugin in [tools/figma-export/](../tools/figma-export/README.md) snapshots the file instead.
 It writes tokens, each Shared pieces family in full detail, one compact JSON per screen, every vector drawing as SVG, an audit of hardcoded values, and PNG previews.
 `FORMAT.md` inside each export documents the format.
 
@@ -123,7 +127,7 @@ To review the design system, run `npm run dev -w client` (it needs no server) an
 Every specimen is captioned with its Figma variant, uses that variant's sample copy, and shows its size beside Figma's, in red when they differ by more than half a pixel.
 Each family's Figma preview sits under it at the same scale.
 
-`Zumpo/Card` is every focused surface: the one card of a create-room, password or error page (Kind=Focused), a dialog over a room (Dialog), and a panel in a page's column, such as an empty or loading lobby (Panel).
+`Zumpo/Card` is every focused surface: the one card of a create-room, password or error page (Kind=Focused), a dialog over a room (Dialog), and a panel in a page's column, such as a game page's empty or loading room list (Panel).
 Its Title and Description are text properties, and each screen puts its own fields, status and actions into its Content slot, so a change to the surface reaches all 28 screens that use it.
 In code the same three are `Card`, `Card kind="panel"` and `Dialog`, which shares the card's styles.
 

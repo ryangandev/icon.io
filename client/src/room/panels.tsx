@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { GameSummary } from '../../../shared/wire-types';
 import { Button, ButtonLink, Notice, PlayerRow } from '../ui';
-import { lobbyPath, scoreOf } from '../games/catalog';
+import { gamePath, scoreOf } from '../games/catalog';
 import { useMessages } from '../i18n';
 import { initialsOf, toneOf } from '../players/avatar';
 import { useSession } from '../net/session';
@@ -158,7 +158,7 @@ export function EndedEarlyPanel() {
         <>
           <InviteButton primary />
           <ButtonLink
-            to={lobbyPath(state.gameType)}
+            to={gamePath(state.gameType)}
             variant="secondary"
             icon="back"
           >

@@ -56,8 +56,8 @@ The drawer cannot guess their own word.
 
 ## How to play
 
-1. Pick Draw & Guess from the games and **Find a room**, choosing a name first if you have none.
-2. **Create a room** (name, 2–8 seats, 1–4 rounds, and an optional password) or join one from the lobby.
+1. Pick Draw & Guess from the games, which opens its page.
+2. **Create a room** (name, 2–8 seats, 1–4 rounds, and an optional password) or join one of the open rooms listed under it.
    A locked room asks for its password.
 3. The host (the crown in the player list) presses **Start game**.
    It needs at least two players.

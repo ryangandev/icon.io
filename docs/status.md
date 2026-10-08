@@ -24,6 +24,9 @@ The server was hardened for that the same day ([#30](https://github.com/ryangand
 The name step is gone, at Ryan's request on 2026-10-05, because asking for a name before anything else was the biggest friction in the product.
 A first visit is given a random adjective and animal, introduced once on Home, and anyone can change their name in place at any time, in a room too, where everyone sees it at once ([design](design.md#names)).
 
+Every game has its own page, at Ryan's request on 2026-10-08, so you pick a game first and how to play it second ([design](design.md#what-the-screens-are-and-are-not)).
+A home card opens the game's page, which holds its ways in (Play solo, Create a room), its open rooms and its rules at a glance; the old room list at the same address became that page.
+
 The interface supports English and simplified Chinese, chosen from the footer and remembered for the browser ([languages](architecture.md#languages)).
 The catalogs cover room flows, all eight games, solo records and accessible labels; each player renders room announcements in their own language.
 The wordmark, footer slogan and English gameplay words retain their original language.

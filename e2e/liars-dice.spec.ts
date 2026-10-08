@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test';
-import { createRoom, expect, joinRoom, test } from './fixtures';
+import { createRoom, expect, joinRoom, test, playSolo } from './fixtures';
 import { whoseTurn, yourTurn } from './play/liars-dice';
 
 /** Calls Liar on the bid in front of them, or opens the round when there is none. */
@@ -100,13 +100,7 @@ test('a player with no name plays a table of bots to the end', async ({
 }) => {
   test.setTimeout(150_000);
   const sam = await player('Sam', { named: false });
-  let sockets = 0;
-  sam.on('websocket', () => sockets++);
-  await sam.goto('/');
-  await sam
-    .getByRole('region', { name: 'Liar’s Dice' })
-    .getByRole('link', { name: 'Play solo' })
-    .click();
+  const sent = await playSolo(sam, 'Liar’s Dice');
   await expect(
     sam.getByRole('heading', { name: 'Pick a table.' }),
   ).toBeVisible();
@@ -136,5 +130,5 @@ test('a player with no name plays a table of bots to the end', async ({
   }
   await expect(sam.getByRole('button', { name: 'Play again' })).toBeVisible();
   await expect(sam.getByText('Games won').first()).toBeVisible();
-  expect(sockets).toBe(0);
+  expect(sent()).toEqual([]);
 });

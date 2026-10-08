@@ -89,8 +89,8 @@ A player who is disconnected sits the round out entirely.
 
 ## How to play
 
-1. Pick Minesweeper from the games and **Find a room**, choosing a name first if you have none.
-2. **Create a room** (name, 2–8 seats, a board size, and an optional password) or join one from the lobby.
+1. Pick Minesweeper from the games, which opens its page.
+2. **Create a room** (name, 2–8 seats, a board size, and an optional password) or join one of the open rooms listed under it.
 3. The host (the crown in the player list) presses **Start game**.
    It needs at least two players.
 4. Each round, **click one cell**.

@@ -12,9 +12,9 @@ import { isGameType } from './games/catalog';
 import { LocaleProvider } from './i18n';
 import { SessionProvider } from './net/session';
 import CreateRoomPage from './pages/create-room';
+import GamePage from './pages/game';
 import HomePage from './pages/home';
 import HowToPlayPage from './pages/how-to-play';
-import LobbyPage from './pages/lobby';
 import NotFoundPage from './pages/not-found';
 import RoomPage from './room/room-page';
 import SoloPage from './solo/solo-page';
@@ -34,10 +34,10 @@ function Root() {
 }
 
 /** A page under /games/:game, for a game that exists. */
-function GamePage({
+function GameRoute({
   page: Page,
 }: {
-  page: typeof LobbyPage | typeof CreateRoomPage | typeof SoloPage;
+  page: typeof GamePage | typeof CreateRoomPage | typeof SoloPage;
 }) {
   const { game } = useParams();
   if (!isGameType(game)) return <NotFoundPage />;
@@ -58,9 +58,12 @@ export const routes: RouteObject[] = [
       { path: '/how-to-play', element: <HowToPlayPage /> },
       // Every game is on the home page; old links to the games page land there.
       { path: '/games', element: <Navigate to="/" replace /> },
-      { path: '/games/:game', element: <GamePage page={LobbyPage} /> },
-      { path: '/games/:game/new', element: <GamePage page={CreateRoomPage} /> },
-      { path: '/games/:game/solo', element: <GamePage page={SoloPage} /> },
+      { path: '/games/:game', element: <GameRoute page={GamePage} /> },
+      {
+        path: '/games/:game/new',
+        element: <GameRoute page={CreateRoomPage} />,
+      },
+      { path: '/games/:game/solo', element: <GameRoute page={SoloPage} /> },
       { path: '/games/:game/rooms/:roomId', element: <GameRoomPage /> },
       ...(DesignGallery
         ? [

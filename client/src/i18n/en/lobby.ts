@@ -2,14 +2,13 @@ import { plural } from './plural';
 
 export const lobby = {
   playTogether: 'Play together',
-  findRoom: 'Find your room.',
   title: (game: string) => `${game} rooms`,
   subtitle: 'Join a room or make one for your friends.',
-  rooms: 'Rooms',
-  count: (count: number) => plural(count, 'room'),
   liveCount: (count: number) => `${plural(count, 'room')} · Updates live`,
   playingAs: (name: string) => `Playing as ${name}`,
   hostedBy: (name: string, setting: string) => `Hosted by ${name} · ${setting}`,
+  /** The game page's rules panel links to every rule on the rules page. */
+  fullRules: 'Full rules',
   createRoom: 'Create a room',
   emptyTitle: 'A little quiet in here.',
   emptyDescription:

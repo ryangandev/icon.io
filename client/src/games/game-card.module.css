@@ -5,6 +5,28 @@
   padding: var(--zumpo-space-16);
   border: 1px solid var(--zumpo-line);
   border-radius: var(--zumpo-radius-24);
+  color: var(--zumpo-ink);
+  text-decoration: none;
+}
+
+/* Hover draws the border in ink, 2 px inside, so the card never moves; the
+   tile's arrow fills in as the button it stands for would. */
+@media (hover: hover) {
+  .card:hover {
+    border-color: var(--zumpo-ink);
+    box-shadow: inset 0 0 0 1px var(--zumpo-ink);
+  }
+
+  .card:hover .go {
+    border-color: var(--zumpo-ink);
+    background: var(--zumpo-ink);
+    color: var(--zumpo-cream);
+  }
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--zumpo-ink);
+  outline-offset: 2px;
 }
 
 .tile {
@@ -68,9 +90,35 @@
   min-height: 2lh;
 }
 
-/* The ways in sit at a tile's foot when a neighbour's copy is longer. */
-.waysIn {
+/* The facts and the arrow sit at a tile's foot when a neighbour's copy is
+   longer. */
+.footer {
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  justify-content: space-between;
+  gap: var(--zumpo-space-12);
+  min-width: 0;
   margin-top: auto;
+}
+
+.go {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--zumpo-line);
+  border-radius: var(--zumpo-radius-999);
+  background: var(--zumpo-paper);
+}
+
+/* A row's arrow is centred on the whole row. */
+.arrow {
+  display: flex;
+  flex: none;
+  align-items: center;
 }
 
 .actions {

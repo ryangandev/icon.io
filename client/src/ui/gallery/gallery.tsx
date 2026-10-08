@@ -60,7 +60,9 @@ import {
   type GlyphName,
 } from '..';
 import { GAMES } from '../../games/catalog';
+import { GameArtwork } from '../../games/artwork';
 import { GameCard } from '../../games/game-card';
+import { GameIntro } from '../../games/game-intro';
 import { useMessages } from '../../i18n';
 import { glyphs } from '../generated/glyphs';
 import { pairsSymbols } from '../generated/pairs-symbols';
@@ -1427,6 +1429,51 @@ export default function Gallery() {
             width={350}
           >
             <GameCard game={game} layout="row" />
+          </Specimen>
+        ))}
+      </Family>
+
+      <Family name="Game artwork" file="game-artwork">
+        {GAMES.map((game) => (
+          <Specimen
+            key={`${game.type}-tile`}
+            family="game-artwork"
+            variant={`Game=${m.games.of[game.type].name}, Size=Tile`}
+            width={276}
+          >
+            <GameArtwork type={game.type} size="tile" />
+          </Specimen>
+        ))}
+        {GAMES.map((game) => (
+          <Specimen
+            key={`${game.type}-icon`}
+            family="game-artwork"
+            variant={`Game=${m.games.of[game.type].name}, Size=Icon`}
+          >
+            <GameArtwork type={game.type} size="icon" />
+          </Specimen>
+        ))}
+      </Family>
+
+      <Family name="Game intro" file="game-intro">
+        {GAMES.map((game) => (
+          <Specimen
+            key={`${game.type}-desktop`}
+            family="game-intro"
+            variant={`Game=${m.games.of[game.type].name}, Layout=Desktop`}
+            width={920}
+          >
+            <GameIntro game={game} />
+          </Specimen>
+        ))}
+        {GAMES.map((game) => (
+          <Specimen
+            key={`${game.type}-phone`}
+            family="game-intro"
+            variant={`Game=${m.games.of[game.type].name}, Layout=Phone`}
+            width={350}
+          >
+            <GameIntro game={game} />
           </Specimen>
         ))}
       </Family>

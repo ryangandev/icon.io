@@ -7,112 +7,60 @@ import {
   roomPath,
   type GameInfo,
 } from '../games/catalog';
+import { GameIntro } from '../games/game-intro';
 import { roomSetting } from '../games/room-setting';
-import { useMessages, type Messages } from '../i18n';
+import { useMessages } from '../i18n';
 import { useLobby } from '../net/use-lobby';
 import { useSession } from '../net/session';
 import { initialsOf, toneOf } from '../players/avatar';
 import { ConnectionLost } from '../shell/connection-lost';
 import { NameMenuButton } from '../shell/name-menu';
 import { Page } from '../shell/page';
-import { PageHeading, type PageHeadingProps } from '../shell/page-heading';
-import { PHONE, useMediaQuery } from '../shell/use-media-query';
-import styles from './lobby.module.css';
+import styles from './game.module.css';
 
-/** DL01-DL03, ML01-ML03, MO04: a game's rooms, live. */
-export default function LobbyPage({ gameType }: { gameType: GameType }) {
+/**
+ * DL01-DL03, ML01-ML03, MO04: a game's page. What the game is and its ways in,
+ * its rooms, live, and how to play it; you pick the game on the home page and
+ * how to play it here.
+ */
+export default function GamePage({ gameType }: { gameType: GameType }) {
   const game = gameInfo(gameType);
   const m = useMessages();
-  const gameName = m.games.of[gameType].name;
   const { lost, name } = useSession();
   const rooms = useLobby(gameType);
-  const phone = useMediaQuery(PHONE);
 
   return (
     <Page>
-      {phone ? (
-        // A phone counts the rooms up here rather than under the list.
-        <PageHeading
-          eyebrow={m.lobby.playTogether}
-          title={m.lobby.findRoom}
-          subtitle={
-            rooms ? `${gameName} · ${m.lobby.count(rooms.length)}` : gameName
-          }
-        />
-      ) : (
-        <LobbyHeading game={game} subtitle={m.lobby.subtitle} />
-      )}
-      {lost ? (
-        <ConnectionLost />
-      ) : (
-        <>
-          <div className={styles.actions}>
-            <ButtonLink to="/" variant="secondary" icon="back">
-              {m.shell.backToGames}
-            </ButtonLink>
-            {phone ? (
-              <ButtonLink to={createRoomPath(gameType)}>
-                {m.lobby.createRoom}
-              </ButtonLink>
+      <div className={styles.actions}>
+        <ButtonLink to="/" variant="secondary" icon="back">
+          {m.shell.backToGames}
+        </ButtonLink>
+        <NameMenuButton variant="quiet">
+          {m.lobby.playingAs(name)}
+        </NameMenuButton>
+      </div>
+      <div className={styles.layout}>
+        <div className={styles.main}>
+          <GameIntro game={game} titleId="game-name" />
+          <section className={styles.rooms} aria-labelledby="game-rooms">
+            <h2 id="game-rooms" className={styles.roomsTitle}>
+              {m.lobby.title(m.games.of[gameType].name)}
+            </h2>
+            {lost ? (
+              <ConnectionLost />
+            ) : rooms === null ? (
+              <Loading />
+            ) : rooms.length === 0 ? (
+              <Empty gameType={gameType} />
             ) : (
-              <div className={styles.end}>
-                <NameMenuButton variant="quiet">
-                  {m.lobby.playingAs(name)}
-                </NameMenuButton>
-                <ButtonLink to={createRoomPath(gameType)}>
-                  {m.lobby.createRoom}
-                </ButtonLink>
-              </div>
+              <RoomList rooms={rooms} />
             )}
-          </div>
-          {phone && (
-            // A row of its own on a phone, its icon on the content's edge.
-            <div className={styles.playingAs}>
-              <NameMenuButton variant="quiet">
-                {m.lobby.playingAs(name)}
-              </NameMenuButton>
-            </div>
-          )}
-          <div className={styles.layout}>
-            <div className={styles.rooms}>
-              {rooms === null ? (
-                <Loading />
-              ) : rooms.length === 0 ? (
-                <Empty gameType={gameType} />
-              ) : (
-                <RoomList rooms={rooms} counted={!phone} />
-              )}
-            </div>
-            <Rules game={game} />
-          </div>
-        </>
-      )}
+          </section>
+        </div>
+        <Rules game={game} />
+      </div>
     </Page>
   );
-}
-
-/** A game's rooms pages share one heading on a wide screen. */
-export function lobbyHeading(
-  game: GameInfo,
-  subtitle: string,
-  m: Messages,
-): PageHeadingProps {
-  return {
-    eyebrow: m.lobby.playTogether,
-    title: m.lobby.title(m.games.of[game.type].name),
-    subtitle,
-  };
-}
-
-export function LobbyHeading({
-  game,
-  subtitle,
-}: {
-  game: GameInfo;
-  subtitle: string;
-}) {
-  const m = useMessages();
-  return <PageHeading {...lobbyHeading(game, subtitle, m)} />;
 }
 
 function statusOf(room: AnyLobbyRoomInfo): RoomRowStatus {
@@ -121,19 +69,12 @@ function statusOf(room: AnyLobbyRoomInfo): RoomRowStatus {
   return room.hasPassword ? 'private' : 'open';
 }
 
-function RoomList({
-  rooms,
-  counted,
-}: {
-  rooms: AnyLobbyRoomInfo[];
-  /** Says how many rooms there are, under the list. */
-  counted: boolean;
-}) {
+function RoomList({ rooms }: { rooms: AnyLobbyRoomInfo[] }) {
   const navigate = useNavigate();
   const m = useMessages();
   return (
     <>
-      <ul className={styles.list} aria-label={m.lobby.rooms}>
+      <ul className={styles.list} aria-labelledby="game-rooms">
         {rooms.map((room) => (
           <RoomRow
             key={room.roomId}
@@ -153,9 +94,7 @@ function RoomList({
           />
         ))}
       </ul>
-      {counted && (
-        <p className={styles.count}>{m.lobby.liveCount(rooms.length)}</p>
-      )}
+      <p className={styles.count}>{m.lobby.liveCount(rooms.length)}</p>
     </>
   );
 }
@@ -193,16 +132,33 @@ function Loading() {
   );
 }
 
+/** The rules at a glance, in a room and on your own, and a link to them all. */
 function Rules({ game }: { game: GameInfo }) {
   const m = useMessages();
   const text = m.games.of[game.type];
   return (
-    <aside className={styles.rules} aria-labelledby="lobby-rules">
-      <h2 id="lobby-rules" className={styles.rulesTitle}>
+    <aside className={styles.rules} aria-labelledby="game-rules">
+      <h2 id="game-rules" className={styles.rulesTitle}>
         {m.shell.nav.howToPlay}
       </h2>
       <p className={styles.rulesText}>{text.lobbySummary}</p>
-      <p className={styles.rulesText}>{text.lobbyFacts.join('\n')}</p>
+      <section className={styles.mode} aria-labelledby="game-rules-room">
+        <h3 id="game-rules-room" className={styles.modeTitle}>
+          {m.lobby.playTogether}
+        </h3>
+        <p className={styles.rulesText}>{text.lobbyFacts.join('\n')}</p>
+      </section>
+      {text.solo && (
+        <section className={styles.mode} aria-labelledby="game-rules-solo">
+          <h3 id="game-rules-solo" className={styles.modeTitle}>
+            {m.solo.onYourOwn}
+          </h3>
+          <p className={styles.rulesText}>{text.solo.facts.join('\n')}</p>
+        </section>
+      )}
+      <ButtonLink to={`/how-to-play#rules-${game.type}`} variant="secondary">
+        {m.lobby.fullRules}
+      </ButtonLink>
     </aside>
   );
 }
